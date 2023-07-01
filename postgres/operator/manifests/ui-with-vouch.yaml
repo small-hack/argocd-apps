@@ -1,0 +1,57 @@
+# Helm Values:
+# https://github.com/zalando/postgres-operator/blob/master/charts/postgres-operator-ui/values.yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: pgoperator-ui
+spec:
+  destination:
+    namespace: postgres-operator
+    server: 'https://kubernetes.default.svc'
+  source:
+    repoURL: >-
+      https://opensource.zalando.com/postgres-operator/charts/postgres-operator-ui
+    targetRevision: 1.9.0
+    chart: postgres-operator-ui
+    helm:
+      skipCrds: true
+      values: |
+        envs:
+          # IMPORTANT: While operator chart and UI chart are independent, this is the interface between
+          # UI and operator API. Insert the service name of the operator API here!
+          # appUrl: "http://localhost:8081"
+          # operatorApiUrl: "http://postgres-operator:8080"
+          # operatorClusterNameLabel: "cluster-name"
+          # resourcesVisible: "False"
+          # targetNamespace: "default"
+          teams:
+            - "team-a"
+            - "team-b"
+            - "team-c"
+        ingress:
+          enabled: true
+          ingressClassName: nginx
+          annotations:
+            cert-manager.io/cluster-issuer: "letsencrypt-prod"
+            kubernetes.io/tls-acme: "true"
+            nginx.ingress.kubernetes.io/auth-signin: "https://vouch.vleermuis.tech/login?url=$scheme://$http_host$request_uri&vouch-failcount=$auth_resp_failcount&X-Vouch-Token=$auth_resp_jwt&error=$auth_resp_err"
+            nginx.ingress.kubernetes.io/auth-url: https://vouch.vleermuis.tech/validate
+            nginx.ingress.kubernetes.io/auth-response-headers: X-Vouch-User
+            nginx.ingress.kubernetes.io/auth-snippet: |
+              auth_request_set $auth_resp_jwt $upstream_http_x_vouch_jwt;
+              auth_request_set $auth_resp_err $upstream_http_x_vouch_err;
+              auth_request_set $auth_resp_failcount $upstream_http_x_vouch_failcount;   
+          hosts:
+            - host: pg-operator.vleermuis.tech
+              paths: ["/"]
+          tls:
+            - secretName: pg-operator-tls
+              hosts:
+                - pg-operator.vleermuis.tech
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
