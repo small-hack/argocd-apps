@@ -70,21 +70,28 @@ kubectl exec $POSTGRES_POD -- /bin/bash -c "psql -U postgres nextcloud < /tmp/$P
 
 # files restoration
 p_echo "grabing only the most recent nextcloud *files* snapshot"
-files_snapshot=$(restic snapshots --latest 1 | grep sql)
+files_snapshot=$(restic snapshots --latest 1 | grep "nextcloud-files")
 FILES_SNAPSHOT_ID=$(echo $files_snapshot | awk '{print $1}')
 echo "󰅟  FILES_SNAPSHOT_ID is $FILES_SNAPSHOT_ID"
 
 p_echo "restoring latest snapshot of nextcloud files using this file:"
 sed -i "s/REPLACE_ME/$FILES_SNAPSHOT_ID/" restore_files.yaml
-cat restore_files.yaml
-kubectl apply -f restore_files.yaml
-sed -i "s/$FILES_SNAPSHOT_ID/REPLACE_ME/" restore_files.yaml
+bat restore_files.yaml
+
 # this is to do the same thing, but with the k8up cli - untested
 # k8up cli restore $FILES_SNAPSHOT_ID
+
+p_echo "restoring latest snapshot of nextcloud files"
+kubectl apply -f restore_files.yaml
+sed -i "s/$FILES_SNAPSHOT_ID/REPLACE_ME/" restore_files.yaml
+
 p_echo "Waiting up to 45 minutes for restore to complete..."
 kubectl wait --timeout=2700s --for='condition=Completed' restore.k8up.io/nextcloud-files
 
 sleep 10
+
+p_echo "chowning all of the data dir to be owned by www-data"
+kubectl exec $NEXTCLOUD_POD -- su -s /bin/bash root -c "chown -R www-data /var/www/html/data"
 
 p_echo "doing a file cache cleanup"
 kubectl exec $NEXTCLOUD_POD -- su -s /bin/bash www-data -c "php occ files:cleanup"
