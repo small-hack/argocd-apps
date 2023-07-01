@@ -26,7 +26,7 @@ spec:
               name: nextcloud-nginx-config
           containers:
             - name: nextcloud
-              image: nextcloud:25.0.2-fpm
+              image: nextcloud:27.0.0-fpm
               imagePullPolicy: IfNotPresent
               command:
                 - /bin/bash
@@ -76,9 +76,6 @@ spec:
                 - mountPath: /var/www/html/config/autoconfig.php
                   name: nextcloud-config
                   subPath: autoconfig.php
-                - mountPath: /var/www/html/config/redis.config.php
-                  name: nextcloud-config
-                  subPath: redis.config.php
                 - mountPath: /var/www/html/config/smtp.config.php
                   name: nextcloud-config
                   subPath: smtp.config.php
@@ -111,12 +108,3 @@ spec:
                   value: cloud.vleermuis.tech
                 - name: NEXTCLOUD_DATA_DIR
                   value: /var/www/html/data
-                - name: REDIS_HOST
-                  value: nextcloud-web-app-redis-master
-                - name: REDIS_HOST_PORT
-                  value: "6379"
-                - name: REDIS_HOST_PASSWORD
-                  valueFrom:
-                    secretKeyRef:
-                      key: redis_password
-                      name: nextcloud-redis-credentials
