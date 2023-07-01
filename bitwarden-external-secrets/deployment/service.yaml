@@ -1,0 +1,20 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: bitwarden-cli
+  namespace: bitwarden
+  labels:
+    app.kubernetes.io/instance: bitwarden-cli
+    app.kubernetes.io/name: bitwarden-cli
+  annotations:
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8087
+    targetPort: http
+    protocol: TCP
+    name: http
+  selector:
+    app.kubernetes.io/name: bitwarden-cli
+    app.kubernetes.io/instance: bitwarden-cli

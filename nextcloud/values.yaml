@@ -1,0 +1,712 @@
+## Official nextcloud image version
+## ref: https://hub.docker.com/r/library/nextcloud/tags/
+##
+image:
+  repository: nextcloud
+  flavor: fpm
+  pullPolicy: Always
+replicaCount: 1
+
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: 4G
+    kubernetes.io/tls-acme: "true"
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-headers: "X-Forwarded-For"
+    nginx.ingress.kubernetes.io/server-snippet: |-
+      server_tokens off;
+      proxy_hide_header X-Powered-By;
+
+      rewrite ^/.well-known/webfinger /public.php?service=webfinger last;
+      rewrite ^/.well-known/host-meta /public.php?service=host-meta last;
+      rewrite ^/.well-known/host-meta.json /public.php?service=host-meta-json;
+      location = /.well-known/carddav {
+        return 301 $scheme://$host/remote.php/dav;
+      }
+      location = /.well-known/caldav {
+        return 301 $scheme://$host/remote.php/dav;
+      }
+      location = /robots.txt {
+        allow all;
+        log_not_found off;
+        access_log off;
+      }
+      location ~ ^/(?:build|tests|config|lib|3rdparty|templates|data)/ {
+        deny all;
+      }
+      location ~ ^/(?:autotest|occ|issue|indie|db_|console) {
+        deny all;
+      }
+  tls:
+    - secretName: nextcloud-tls
+      hosts:
+        - cloud.vleermuis.tech
+  labels: {}
+  path: /
+  pathType: Prefix
+
+
+# Allow configuration of lifecycle hooks
+# ref: https://kubernetes.io/docs/tasks/configure-pod-container/attach-handler-lifecycle-event/
+lifecycle: {}
+  # postStartCommand: []
+  # preStopCommand: []
+
+phpClientHttpsFix:
+  enabled: false
+  protocol: https
+
+nextcloud:
+  host: cloud.vleermuis.tech
+  ## Use an existing secret
+  existingSecret:
+    enabled: true
+    secretName: nextcloud-admin-credentials
+    usernameKey: username
+    passwordKey: password
+    # tokenKey: serverinfo_token
+    # smtpUsernameKey: smtp_username
+    # smtpPasswordKey: smtp_password
+  update: 0
+  # If web server is not binding default port, you can define it
+  # containerPort: 8080
+  datadir: /var/www/html/data
+  persistence:
+    subPath:
+  mail:
+    enabled: false
+    fromAddress: user
+    domain: domain.com
+    smtp:
+      host: domain.com
+      secure: ssl
+      port: 465
+      authtype: LOGIN
+      name: user
+      password: pass
+  # PHP Configuration files
+  # Will be injected in /usr/local/etc/php/conf.d for apache image and in /usr/local/etc/php-fpm.d when nginx.enabled: true
+  phpConfigs: {}
+  # Default config files
+  # IMPORTANT: Will be used only if you put extra configs, otherwise default will come from nextcloud itself
+  # Default confgurations can be found here: https://github.com/nextcloud/docker/tree/master/16.0/apache/config
+  defaultConfigs:
+    # To protect /var/www/html/config
+    .htaccess: true
+    # Redis default configuration
+    redis.config.php: true
+    # Apache configuration for rewrite urls
+    apache-pretty-urls.config.php: true
+    # Define APCu as local cache
+    apcu.config.php: true
+    # Apps directory configs
+    apps.config.php: true
+    # Used for auto configure database
+    autoconfig.php: true
+    # SMTP default configuration
+    smtp.config.php: true
+  # Extra config files created in /var/www/html/config/
+  # ref: https://docs.nextcloud.com/server/15/admin_manual/configuration_server/config_sample_php_parameters.html#multiple-config-php-file
+  configs:
+    logging.config.php: |-
+      <?php
+      $CONFIG = array (
+        'log_type' => 'file',
+        'logfile' => 'nextcloud.log',
+        'loglevel' => 2,
+        'logdateformat' => 'F d, Y H:i:s'
+        );
+    proxy.config.php: |-
+      <?php
+      $CONFIG = array (
+        'trusted_proxies' => array(
+          0 => '127.0.0.1',
+          1 => '10.0.0.0/8',
+          2 => '192.168.50.50',
+          3 => '192.168.50.1'
+        ),
+        'forwarded_for_headers' => array('HTTP_X_FORWARDED_FOR'),
+      );
+
+  # For example, to use S3 as primary storage
+  # ref: https://docs.nextcloud.com/server/13/admin_manual/configuration_files/primary_storage.html#simple-storage-service-s3
+  #
+  #  configs:
+  #    s3.config.php: |-
+  #      <?php
+  #      $CONFIG = array (
+  #        'objectstore' => array(
+  #          'class' => '\\OC\\Files\\ObjectStore\\S3',
+  #          'arguments' => array(
+  #            'bucket'     => 'my-bucket',
+  #            'autocreate' => true,
+  #            'key'        => 'xxx',
+  #            'secret'     => 'xxx',
+  #            'region'     => 'us-east-1',
+  #            'use_ssl'    => true
+  #          )
+  #        )
+  #      );
+
+  ## Strategy used to replace old pods
+  ## IMPORTANT: use with care, it is suggested to leave as that for upgrade purposes
+  ## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
+  strategy:
+    type: Recreate
+    # type: RollingUpdate
+    # rollingUpdate:
+    #   maxSurge: 1
+    #   maxUnavailable: 0
+
+  ##
+  ## Extra environment variables
+  extraEnv:
+  #  - name: SOME_SECRET_ENV
+  #    valueFrom:
+  #      secretKeyRef:
+  #        name: nextcloud
+  #        key: secret_key
+
+  # Extra init containers that runs before pods start.
+  extraInitContainers: []
+  #  - name: do-something
+  #    image: busybox
+  #    command: ['do', 'something']
+
+  # Extra sidecar containers.
+  extraSidecarContainers: []
+  #  - name: nextcloud-logger
+  #    image: busybox
+  #    command: [/bin/sh, -c, 'while ! test -f "/run/nextcloud/data/nextcloud.log"; do sleep 1; done; tail -n+1 -f /run/nextcloud/data/nextcloud.log']
+  #    volumeMounts:
+  #    - name: nextcloud-data
+  #      mountPath: /run/nextcloud/data
+
+  # Extra mounts for the pods. Example shown is for connecting a legacy NFS volume
+  # to NextCloud pods in Kubernetes. This can then be configured in External Storage
+  extraVolumes:
+  #  - name: nfs
+  #    nfs:
+  #      server: "10.0.0.1"
+  #      path: "/nextcloud_data"
+  #      readOnly: false
+  extraVolumeMounts:
+  #  - name: nfs
+  #    mountPath: "/legacy_data"
+
+  # Set securityContext parameters. For example, you may need to define runAsNonRoot directive
+  securityContext: {}
+  #   runAsUser: "33"
+  #   runAsGroup: "33"
+  #   runAsNonRoot: true
+  #   readOnlyRootFilesystem: true
+
+  # Set securityContext parameters for the pod. For example, you may need to define runAsNonRoot directive
+  podSecurityContext: {}
+  #   runAsUser: "33"
+  #   runAsGroup: "33"
+  #   runAsNonRoot: true
+  #   readOnlyRootFilesystem: true
+
+nginx:
+  ## You need to set an fpm version of the image for nextcloud if you want to use nginx!
+  enabled: true
+  image:
+    repository: nginx
+    tag: alpine
+    pullPolicy: IfNotPresent
+
+  config:
+    # This generates the default nginx config as per the nextcloud documentation
+    default: false
+    custom: |-
+      worker_processes auto;
+
+      error_log  /var/log/nginx/error.log warn;
+      pid        /var/run/nginx.pid;
+
+      events {
+        worker_connections  1024;
+      }
+
+      http {
+        include       /etc/nginx/mime.types;
+        default_type  application/octet-stream;
+
+        log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                          '$status $body_bytes_sent "$http_referer" '
+                          '"$http_user_agent" "$http_x_forwarded_for"';
+
+        access_log  /var/log/nginx/access.log  main;
+
+        sendfile        on;
+        #tcp_nopush     on;
+
+        keepalive_timeout  65;
+
+        #gzip  on;
+
+        upstream php-handler {
+            server 127.0.0.1:9000;
+            # unsure if this still works, worked in php7.x-fpm
+            server unix:/var/run/php/php8.1-fpm.sock;
+        }
+
+        server {
+            listen 80;
+
+            # set max upload size
+            client_max_body_size 10G;
+            fastcgi_buffers 64 4K;
+
+            # Enable gzip but do not remove ETag headers
+            gzip on;
+            gzip_vary on;
+            gzip_comp_level 4;
+            gzip_min_length 256;
+            gzip_proxied expired no-cache no-store private no_last_modified no_etag auth;
+            gzip_types application/atom+xml application/javascript application/json application/ld+json application/manifest+json application/rss+xml application/vnd.geo+json application/vnd.ms-fontobject application/x-font-ttf application/x-web-app-manifest+json application/xhtml+xml application/xml font/opentype image/bmp image/svg+xml image/x-icon text/cache-manifest text/css text/plain text/vcard text/vnd.rim.location.xloc text/vtt text/x-component text/x-cross-domain-policy;
+
+            # Pagespeed is not supported by Nextcloud, so if your server is built
+            # with the `ngx_pagespeed` module, uncomment this line to disable it.
+            #pagespeed off;
+
+            # HTTP response headers borrowed from Nextcloud `.htaccess`
+            add_header Referrer-Policy                      "no-referrer"   always;
+            add_header X-Content-Type-Options               "nosniff"       always;
+            add_header X-Download-Options                   "noopen"        always;
+            add_header X-Frame-Options                      "SAMEORIGIN"    always;
+            add_header X-Permitted-Cross-Domain-Policies    "none"          always;
+            add_header X-Robots-Tag                         "none"          always;
+            add_header X-XSS-Protection                     "1; mode=block" always;
+
+            # Remove X-Powered-By, which is an information leak
+            fastcgi_hide_header X-Powered-By;
+
+            # Path to the root of your installation
+            root /var/www/html;
+
+            # Specify how to handle directories -- specifying `/index.php$request_uri`
+            # here as the fallback means that Nginx always exhibits the desired behaviour
+            # when a client requests a path that corresponds to a directory that exists
+            # on the server. In particular, if that directory contains an index.php file,
+            # that file is correctly served; if it doesn't, then the request is passed to
+            # the front-end controller. This consistent behaviour means that we don't need
+            # to specify custom rules for certain paths (e.g. images and other assets,
+            # `/updater`, `/ocm-provider`, `/ocs-provider`), and thus
+            # `try_files $uri $uri/ /index.php$request_uri`
+            # always provides the desired behaviour.
+            index index.php index.html /index.php$request_uri;
+
+            # Rule borrowed from `.htaccess` to handle Microsoft DAV clients
+            location = / {
+                if ( $http_user_agent ~ ^DavClnt ) {
+                    return 302 /remote.php/webdav/$is_args$args;
+                }
+            }
+
+            location = /robots.txt {
+                allow all;
+                log_not_found off;
+                access_log off;
+            }
+
+            # Make a regex exception for `/.well-known` so that clients can still
+            # access it despite the existence of the regex rule
+            # `location ~ /(\.|autotest|...)` which would otherwise handle requests
+            # for `/.well-known`.
+            location ^~ /.well-known {
+                # The following 6 rules are borrowed from `.htaccess`
+
+                location = /.well-known/carddav     { return 301 /remote.php/dav/; }
+                location = /.well-known/caldav      { return 301 /remote.php/dav/; }
+                # Anything else is dynamically handled by Nextcloud
+                location ^~ /.well-known            { return 301 /index.php$uri; }
+
+                try_files $uri $uri/ =404;
+            }
+
+            # Rules borrowed from `.htaccess` to hide certain paths from clients
+            location ~ ^/(?:build|tests|config|lib|3rdparty|templates|data)(?:$|/)  { return 404; }
+            location ~ ^/(?:\.|autotest|occ|issue|indie|db_|console)              { return 404; }
+
+            # Ensure this block, which passes PHP files to the PHP process, is above the blocks
+            # which handle static assets (as seen below). If this block is not declared first,
+            # then Nginx will encounter an infinite rewriting loop when it prepends `/index.php`
+            # to the URI, resulting in a HTTP 500 error response.
+            location ~ \.php(?:$|/) {
+                fastcgi_split_path_info ^(.+?\.php)(/.*)$;
+                set $path_info $fastcgi_path_info;
+
+                try_files $fastcgi_script_name =404;
+
+                include fastcgi_params;
+                fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+                fastcgi_param PATH_INFO $path_info;
+                #fastcgi_param HTTPS on;
+
+                # Avoid sending the security headers twice
+                fastcgi_param modHeadersAvailable true;
+                fastcgi_param front_controller_active true; # Enable pretty urls
+                fastcgi_pass php-handler;
+
+                fastcgi_intercept_errors on;
+                fastcgi_request_buffering off;
+            }
+
+            location ~ \.(?:css|js|svg|gif)$ {
+                try_files $uri /index.php$request_uri;
+                expires 6M;         # Cache-Control policy borrowed from `.htaccess`
+                access_log off;     # Optional: Don't log access to assets
+            }
+
+            location ~ \.woff2?$ {
+                try_files $uri /index.php$request_uri;
+                expires 7d;         # Cache-Control policy borrowed from `.htaccess`
+                access_log off;     # Optional: Don't log access to assets
+            }
+
+            location / {
+                try_files $uri $uri/ /index.php$request_uri;
+            }
+        }
+      }
+
+  resources: {}
+
+  # Set securityContext parameters. For example, you may need to define runAsNonRoot directive
+  securityContext: {}
+  #   runAsUser: "82"
+  #   runAsGroup: "33"
+  #   runAsNonRoot: true
+  #   readOnlyRootFilesystem: true
+
+internalDatabase:
+  enabled: false
+
+##
+## External database configuration
+##
+externalDatabase:
+  enabled: true
+
+  ## Supported database engines: mysql or postgresql
+  type: postgresql
+
+  ## Database host
+  host: localhost:5432
+
+  ## Database user
+  user: nextcloud
+
+  ## Database password
+  password:
+
+  ## Database name
+  database: nextcloud
+
+  ## Use a existing secret
+  existingSecret:
+    enabled: true
+    secretName: nextcloud-pgsql-credentials
+    usernameKey: username
+    passwordKey: nextcloudPassword
+
+##
+## MariaDB chart configuration
+##
+mariadb:
+  ## Whether to deploy a mariadb server to satisfy the applications database requirements. To use an external database set this to false and configure the externalDatabase parameters
+  enabled: false
+
+  auth:
+    database: nextcloud
+    username: nextcloud
+    password: changeme
+
+  architecture: standalone
+
+  ## Enable persistence using Persistent Volume Claims
+  ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+  ##
+  primary:
+    persistence:
+      enabled: false
+      # Use an existing Persistent Volume Claim (must be created ahead of time)
+      # existingClaim: ""
+      # storageClass: ""
+      accessMode: ReadWriteOnce
+      size: 8Gi
+
+##
+## PostgreSQL chart configuration
+## for more options see https://github.com/bitnami/charts/tree/master/bitnami/postgresql
+##
+postgresql:
+  enabled: true
+  global:
+    postgresql:
+      auth:
+        username: nextcloud
+        database: nextcloud
+        existingSecret: nextcloud-pgsql-credentials
+        secretKeys:
+          userPasswordKey: nextcloudPassword
+          adminPasswordKey: postgresPassword
+  volumePermissions:
+    enabled: true
+  primary:
+    podAnnotations:
+      k8up.io/backupcommand: "sh -c 'PGDATABASE=\"$POSTGRES_DB\" PGUSER=\"$POSTGRES_USER\" PGPASSWORD=\"$POSTGRES_PASSWORD\" pg_dump --clean'"
+      k8up.io/file-extension: .sql
+    pgHbaConfiguration: |-
+      local all all trust
+      host all all 127.0.0.1/32 md5
+      host all nextcloud 10.0.0.0/8 md5
+    # type database user cidr-address method
+    # host all postgres 10.0.0.0/8 md5
+    # alls traffic from everywhere
+    # host all all 0.0.0.0/0 md5
+    initdb:
+      scripts:
+        my_init_script.sql: |
+          ALTER DATABASE nextcloud OWNER TO nextcloud;
+          GRANT ALL PRIVILEGES ON DATABASE nextcloud TO nextcloud;
+          GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO nextcloud;
+    persistence:
+      enabled: true
+      # Use an existing Persistent Volume Claim (must be created ahead of time)
+      existingClaim: "nextcloud-postgresql"
+      # storageClass: ""
+
+##
+## Redis chart configuration
+## for more options see https://github.com/bitnami/charts/tree/master/bitnami/redis
+##
+
+redis:
+  enabled: false
+  replica:
+    replicaCount: 2
+  auth:
+    enabled: true
+    existingSecret: nextcloud-redis-credentials
+    existingSecretPasswordKey: redis_password
+
+
+## Cronjob to execute Nextcloud background tasks
+## ref: https://docs.nextcloud.com/server/latest/admin_manual/configurationi_server/background_jobs_configuration.html#cron
+##
+cronjob:
+  enabled: false
+  # Nexcloud image is used as default but only curl is needed
+  image: {}
+    # repository: nextcloud
+    # tag: 16.0.3-apache
+    # pullPolicy: IfNotPresent
+    # pullSecrets:
+    #   - myRegistrKeySecretName
+  # Every 5 minutes
+  # Note: Setting this to any any other value than 5 minutes might
+  # cause issues with how nextcloud background jobs are executed
+  schedule: "*/5 * * * *"
+  annotations: {}
+  # Set curl's insecure option if you use e.g. self-signed certificates
+  curlInsecure: false
+  failedJobsHistoryLimit: 5
+  successfulJobsHistoryLimit: 2
+
+  # Allow configuration of lifecycle hooks
+  # ref: https://kubernetes.io/docs/tasks/configure-pod-container/attach-handler-lifecycle-event/
+  lifecycle: {}
+    # postStartCommand: []
+    # preStopCommand: []
+  # Set securityContext parameters. For example, you may need to define runAsNonRoot directive
+  securityContext: {}
+  #   runAsUser: "33"
+  #   runAsGroup: "33"
+  #   runAsNonRoot: true
+  #   readOnlyRootFilesystem: true
+
+service:
+  type: ClusterIP
+  port: 8080
+  loadBalancerIP: nil
+  nodePort: nil
+
+## Enable persistence using Persistent Volume Claims
+## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+##
+persistence:
+  # Nextcloud Data (/var/www/html)
+  enabled: true
+  existingClaim: nextcloud-files
+  annotations: {}
+  ## nextcloud data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  # storageClass: "-"
+
+  ## A manually managed Persistent Volume and Claim
+  ## Requires persistence.enabled: true
+  ## If defined, PVC must be created manually before volume will be bound
+  # existingClaim:
+
+  accessMode: ReadWriteOnce
+  size: 8Gi
+
+  ## Use an additional pvc for the data directory rather than a subpath of the default PVC
+  ## Useful to store data on a different storageClass (e.g. on slower disks)
+  nextcloudData:
+    enabled: false
+    subPath:
+    annotations: {}
+    # storageClass: "-"
+    # existingClaim:
+    accessMode: ReadWriteOnce
+    size: 8Gi
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+## Liveness and readiness probe values
+## Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-probes
+##
+livenessProbe:
+  enabled: false
+  initialDelaySeconds: 45
+  periodSeconds: 15
+  timeoutSeconds: 5
+  failureThreshold: 3
+  successThreshold: 1
+readinessProbe:
+  enabled: true
+  initialDelaySeconds: 45
+  periodSeconds: 15
+  timeoutSeconds: 5
+  failureThreshold: 3
+  successThreshold: 1
+startupProbe:
+  enabled: false
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 30
+  successThreshold: 1
+
+
+## Enable pod autoscaling using HorizontalPodAutoscaler
+## ref: https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/
+##
+hpa:
+  enabled: false
+  cputhreshold: 60
+  minPods: 1
+  maxPods: 10
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+
+## Prometheus Exporter / Metrics
+##
+metrics:
+  enabled: true
+
+  replicaCount: 1
+  # The metrics exporter needs to know how you serve Nextcloud either http or https
+  https: true
+  # Use API token if set, otherwise fall back to password authentication
+  # https://github.com/xperimental/nextcloud-exporter#token-authentication
+  # Currently you still need to set the token manually in your nextcloud install
+  # token: ""
+  timeout: 10s
+  # if set to true, exporter skips certificate verification of Nextcloud server.
+  tlsSkipVerify: true
+
+  image:
+    repository: xperimental/nextcloud-exporter
+    tag: 0.6.0
+    pullPolicy: IfNotPresent
+
+  ## Metrics exporter resource requests and limits
+  ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  ##
+  # resources: {}
+
+  ## Metrics exporter pod Annotation and Labels
+  # podAnnotations: {}
+
+  podLabels:
+    jobLabel: nextcloud-metrics
+
+  service:
+    type: ClusterIP
+    ## Use serviceLoadBalancerIP to request a specific static IP,
+    ## otherwise leave blank
+    # loadBalancerIP:
+    annotations:
+      prometheus.io/scrape: "true"
+      prometheus.io/port: "9205"
+    labels:
+      jobLabel: nextcloud-metrics
+
+  ## Prometheus Operator ServiceMonitor configuration
+  ##
+  serviceMonitor:
+    ## @param metrics.serviceMonitor.enabled Create ServiceMonitor Resource for scraping metrics using PrometheusOperator
+    ##
+    enabled: true
+
+    ## @param metrics.serviceMonitor.namespace Namespace in which Prometheus is running
+    ##
+    namespace: "nextcloud"
+
+    ## @param metrics.serviceMonitor.jobLabel The name of the label on the target service to use as the job name in prometheus.
+    ##
+    jobLabel: ""
+
+    ## @param metrics.serviceMonitor.interval Interval at which metrics should be scraped
+    ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#endpoint
+    ##
+    interval: 30s
+
+    ## @param metrics.serviceMonitor.scrapeTimeout Specify the timeout after which the scrape is ended
+    ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#endpoint
+    ##
+    scrapeTimeout: ""
+
+    ## @param metrics.serviceMonitor.labels Extra labels for the ServiceMonitor
+    ##
+    labels: {}
+
+
+rbac:
+  enabled: true
+  serviceaccount:
+    create: true
+    name: nextcloud-serviceaccount
+    annotations: {}
+
+
+## @param securityContext @deprecated Use `nextcloud.podSecurityContext` instead
+securityContext: {}
