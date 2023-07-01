@@ -99,10 +99,9 @@ spec:
 
 ## TODO/Bugs to fix
 Still Under construction, so we're working out a few kinks.
-- overall infosec overhaul and threatmodel
+- overall infosec overhaul and threatmodel <-- active task
 - make prometheus work??? - on pause till security is under wraps
 - install default apps to [directory listed here](https://github.com/nextcloud/docker/blob/8cfb0e50ef8a42ee366d1413df969ac801cac30c/24/fpm/config/apps.config.php)... :thinking: but we might be able to just have those mounted on their own volume, and that volume could be public, which would be nice
-- vault integration (longer term goal)
 
 <!-- link references -->
 [Debian]: https://www.debian.org/
