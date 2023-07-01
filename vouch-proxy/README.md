@@ -1,0 +1,6 @@
+# Vouch Proxy (VP) 
+
+Vouch is an SSO and OAuth / OIDC login solution for Nginx using the `auth_request` module. 
+It forces visitors to login and authenticate with an `Identity Provider` before allowing them access to a website.
+
+See: https://github.com/vouch/vouch-proxy

@@ -1,0 +1,109 @@
+---
+# First sync wave done in parallel with creating secrets. Must be BEFORE
+# nextcloud so that nextcloud persists it's data between upgrades. Sync policy
+# is set to ApplyOutOfSyncOnly=true to create the volume initially only.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nextcloud-persistence
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  project: default
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: nextcloud
+  source:
+    repoURL: https://github.com/small-hack/argocd.git
+    path: manifests/persistence/
+  syncPolicy:
+    syncOptions:
+      - ApplyOutOfSyncOnly=true
+    automated:
+      selfHeal: true
+
+---
+# First sync wave because we need secrets for nextcloud, so it has to be
+# before nextcloud so it has secrets for all its credentials.
+# In a private repo right now while we figure out a custom argocd plugin
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nextcloud-external-secrets
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  project: default
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: nextcloud
+  source:
+    repoURL: https://github.com/small-hack/nextcloud-external-secrets.git
+    path: external_secrets/
+  syncPolicy:
+    syncOptions:
+      - Replace=true
+    automated:
+      prune: true
+      selfHeal: true
+
+---
+# webapp is deployed 2nd because we need secrets and persistent volumes up 1st
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nextcloud-minimal-web-app
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  project: default
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: nextcloud
+  sources:
+    # official nextcloud helm repo
+    - repoURL: 'https://nextcloud.github.io/helm'
+      chart: nextcloud
+      targetRevision: 3.5.15
+      helm:
+        valueFiles:
+        - $values/values.yaml
+    # our values.yaml file locally
+    - repoURL: 'https://github.com/small-hack/argocd.git'
+      targetRevision: main
+      ref: values
+  syncPolicy:
+    syncOptions:
+      - ApplyOutOfSyncOnly=true
+    automated:
+      prune: true
+      selfHeal: true
+
+---
+# Third wave because we need scheduled k8up (restic via k8s) k8up_backups
+# after the external secrets and pvcs for nextcloud have been created
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nextcloud-k8up-b2-backups
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+spec:
+  project: default
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: nextcloud
+  source:
+    repoURL: https://github.com/small-hack/argocd.git
+    path: manifests/k8up_backups/
+  syncPolicy:
+    syncOptions:
+      - Replace=true
+    automated:
+      prune: true
+      selfHeal: true
+

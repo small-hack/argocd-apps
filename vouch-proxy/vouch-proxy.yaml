@@ -1,0 +1,58 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: vouch
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  project: default
+  source:
+    repoURL: 'https://vouch.github.io/helm-charts/'
+    targetRevision: 3.1.0
+    chart: vouch
+    helm:
+      values: |
+        config:
+          vouch:
+            port: 9090
+            domains: [ "cloudydev.net", "social-media-for-dogs.com" ]
+            allowAllUsers: false
+            whiteList: []
+            jwt:
+              secret: ''
+              maxAge: 900
+            cookie:
+              maxAge: 900
+              domain: social-media-for-dogs.com
+            testing: false
+          oauth:
+            provider: google
+            client_id: 
+            client_secret: 
+            callback_urls: 
+              - https://***REMOVED***/auth
+            preferredDomain:
+        ingress:
+          enabled: true
+          annotations:
+            kubernetes.io/ingress.class: nginx
+            cert-manager.io/cluster-issuer: letsencrypt-prod
+          paths:
+            - /
+          hosts:
+            - ***REMOVED***
+          tls:
+            - secretName: vouch-tls
+              hosts:
+                - ***REMOVED***
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: vouch
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+    automated:
+      prune: true
+      selfHeal: true
