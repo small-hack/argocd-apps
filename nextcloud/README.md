@@ -83,8 +83,8 @@ spec:
     namespace: nextcloud
     server: 'https://kubernetes.default.svc'
   source:
-    path: .
-    repoURL: 'https://github.com/small-hack/argocd/tree/main/nextcloud'
+    path: nextcloud/
+    repoURL: 'https://github.com/small-hack/argocd.git'
     targetRevision: main
   sources: []
   project: default
