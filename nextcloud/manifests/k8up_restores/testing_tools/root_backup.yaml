@@ -5,6 +5,7 @@ metadata:
   name: root-backup-nextcloud-b2
   namespace: nextcloud
 spec:
+  promURL: http://prometheus-helm-chart-kube-prometheus.monitoring:9090/
   podSecurityContext:
     runAsUser: 0
   failedJobsHistoryLimit: 10
