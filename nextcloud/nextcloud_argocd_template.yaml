@@ -70,7 +70,7 @@ spec:
       targetRevision: 3.5.15
       helm:
         valueFiles:
-        - $values/values.yaml
+        - $values/nextcloud/values.yaml
     # our values.yaml file locally
     - repoURL: 'https://github.com/small-hack/argocd.git'
       targetRevision: main
@@ -99,11 +99,10 @@ spec:
     namespace: nextcloud
   source:
     repoURL: https://github.com/small-hack/argocd.git
-    path: manifests/k8up_backups/
+    path: nextcloud/manifests/k8up_backups/
   syncPolicy:
     syncOptions:
       - Replace=true
     automated:
       prune: true
       selfHeal: true
-
