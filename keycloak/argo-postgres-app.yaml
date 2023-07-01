@@ -10,7 +10,7 @@ spec:
     namespace: keycloak
     server: 'https://kubernetes.default.svc'
   source:
-    path: keycloak/manifests/
+    path: keycloak/postgres/
     repoURL: 'https://github.com/small-hack/argocd.git'
   project: default
   syncPolicy:
