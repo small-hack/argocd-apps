@@ -18,7 +18,7 @@ NEXTCLOUD_URL="https://cloud.vleermuis.tech"
 # pretty echo so that I don't have to remember this
 function p_echo() {
     # prints with green colors and centered
-    echo -e "\nPlease run:\033[92m $1 \033[00m\n"
+    echo -e "\n\033[92m $1\033[00m\n"
 }
 
 p_echo "sourcing an env file for restic"
@@ -81,30 +81,27 @@ kubectl wait --timeout=2700s --for='condition=Completed' restore.k8up.io/nextclo
 
 sleep 10
 
-# p_echo "doing a file cache cleanup"
-# kubectl exec $NEXTCLOUD_POD -- su -s /bin/bash www-data -c "php occ files:cleanup"
+p_echo "doing a file cache cleanup"
+kubectl exec $NEXTCLOUD_POD -- su -s /bin/bash www-data -c "php occ files:cleanup"
 
-# echo "taking nextcloud out of maintanence mode when we're done"
-# kubectl exec $NEXTCLOUD_POD -- su -s /bin/bash www-data -c "php occ maintenance:mode --off"
-# 
-# echo -e "Check if we're out of MAINTENANCE MODE...\n"
-# MAINTENANCE_MODE=$(curl -k -s -w "%{http_code}\n" $NEXTCLOUD_URL -o /dev/null)
-# 
-# while [ $MAINTENANCE_MODE != "302" ]; do
-#     echo "Not out of maintanence mode yet, since URL returned $MAINTENANCE_MODE."
-#     echo "Sleeping 30 seconds"
-#     sleep 30
-#     MAINTENANCE_MODE=$(curl -k -s -w "%{http_code}\n" $NEXTCLOUD_URL -o /dev/null)
-# done
-# echo "🎉 Out of maintanence mode and ready to roll 🚊"
-# 
-# # p_echo "fixing permissions to be www-data, the nextcloud user"
-# # shouldn't need to be done if the backups run as www-data
-# # kubectl exec $NEXTCLOUD_POD -- /bin/bash -c "chown -R www-data: /var/www/html/data"
-# 
-# p_echo "doing a file scan to make thumbnails just in case"
-# kubectl exec $NEXTCLOUD_POD -- su -s /bin/bash www-data -c "php occ files:scan --all"
-# sleep 10
-# 
-# # echo "setting namespace back to default"
-# # kubectl ns -
+echo "taking nextcloud out of maintanence mode when we're done"
+kubectl exec $NEXTCLOUD_POD -- su -s /bin/bash www-data -c "php occ maintenance:mode --off"
+
+echo -e "Check if we're out of MAINTENANCE MODE...\n"
+MAINTENANCE_MODE=$(curl -k -s -w "%{http_code}\n" $NEXTCLOUD_URL -o /dev/null)
+
+while [ $MAINTENANCE_MODE != "302" ]; do
+    echo "Not out of maintanence mode yet, since URL returned $MAINTENANCE_MODE."
+    echo "Sleeping 30 seconds"
+    sleep 30
+    MAINTENANCE_MODE=$(curl -k -s -w "%{http_code}\n" $NEXTCLOUD_URL -o /dev/null)
+done
+echo "🎉 Out of maintanence mode and ready to roll 🚊"
+
+# p_echo "fixing permissions to be www-data, the nextcloud user"
+# shouldn't need to be done if the backups run as www-data
+# kubectl exec $NEXTCLOUD_POD -- /bin/bash -c "chown -R www-data: /var/www/html/data"
+
+p_echo "doing a file scan to make thumbnails just in case"
+kubectl exec $NEXTCLOUD_POD -- su -s /bin/bash www-data -c "php occ files:scan --all"
+sleep 10
