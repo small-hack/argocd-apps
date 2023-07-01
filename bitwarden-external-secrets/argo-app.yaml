@@ -11,8 +11,8 @@ spec:
   destination:
     server: "https://kubernetes.default.svc"
   source:
-    repoURL: https://github.com/small-hack/bitwarden-external-secrets.git
-    path: deployment/
+    repoURL: https://github.com/small-hack/argocd.git
+    path: bitwarden-external-secrets/deployment/
   syncPolicy:
     syncOptions:
       - Replace=true
