@@ -74,8 +74,13 @@ files_snapshot=$(restic snapshots --latest 1 | grep sql)
 FILES_SNAPSHOT_ID=$(echo $files_snapshot | awk '{print $1}')
 echo "󰅟  FILES_SNAPSHOT_ID is $FILES_SNAPSHOT_ID"
 
-p_echo "restoring latest snapshot of nextcloud files"
+p_echo "restoring latest snapshot of nextcloud files using this file:"
+sed -i "s/REPLACE_ME/$FILES_SNAPSHOT_ID/" restore_files.yaml
+cat restore_files.yaml
 kubectl apply -f restore_files.yaml
+sed -i "s/$FILES_SNAPSHOT_ID/REPLACE_ME/" restore_files.yaml
+# this is to do the same thing, but with the k8up cli - untested
+# k8up cli restore $FILES_SNAPSHOT_ID
 p_echo "Waiting up to 45 minutes for restore to complete..."
 kubectl wait --timeout=2700s --for='condition=Completed' restore.k8up.io/nextcloud-files
 
