@@ -16,7 +16,7 @@ spec:
     namespace: nextcloud
   source:
     repoURL: https://github.com/small-hack/argocd.git
-    path: manifests/persistence/
+    path: nextcloud/manifests/persistence/
   syncPolicy:
     syncOptions:
       - ApplyOutOfSyncOnly=true
