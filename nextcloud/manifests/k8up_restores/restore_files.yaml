@@ -6,7 +6,8 @@ metadata:
   namespace: nextcloud
 spec:
   podSecurityContext:
-    runAsUser: 33
+    # change to 33 for www-data
+    runAsUser: 0
   # This is optional to specify a specific snapshot to restore from
   # snapshot: 8549dhs
   restoreMethod:
