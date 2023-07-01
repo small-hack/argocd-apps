@@ -18,10 +18,7 @@ NEXTCLOUD_URL="https://cloud.social-media-for-dogs.com"
 # pretty echo so that I don't have to remember this
 function p_echo() {
     # prints with green colors and centered
-    green=$(tput setaf 2)
-    norm=$(tput sgr0)
-    COLUMNS=$(tput cols)
-    printf "$green\n%*s\n\n$norm" "$([[${#title} + ${COLUMNS} /2 ]])" "$1"
+    echo -e "\nPlease run:\033[92m $1 \033[00m\n"
 }
 
 p_echo "sourcing an env file for restic"
