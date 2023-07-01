@@ -1,4 +1,4 @@
-# Bitanmi Keycloak (Doesnt Work)
+# Bitnami Keycloak (Doesnt Work)
 
 https://bitnami.com/stack/keycloak/helm
 https://github.com/bitnami/charts/tree/main/bitnami/keycloak/
