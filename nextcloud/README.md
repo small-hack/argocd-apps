@@ -73,6 +73,31 @@ Make sure that you follow this process for backups:
 ### Restoring from backups
 In the case of restores, please refer to the doc, [`manifests/restores/README.md`](./manifests/restores/README.md).
 
+## Argo App
+
+```yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nextcloud
+spec:
+  destination:
+    name: ''
+    namespace: nextcloud
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: .
+    repoURL: 'https://github.com/small-hack/argocd/tree/main/nextcloud'
+    targetRevision: main
+  sources: []
+  project: default
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false
+    syncOptions:
+      - CreateNamespace=true
+```
 ---
 
 ## TODO/Bugs to fix
