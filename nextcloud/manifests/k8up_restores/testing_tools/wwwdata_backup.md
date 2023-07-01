@@ -1,3 +1,5 @@
+Untested.
+```yaml
 ---
 apiVersion: k8up.io/v1
 kind: Backup
@@ -22,3 +24,4 @@ spec:
       secretAccessKeySecretRef:
         name: k8up-b2-creds-nextcloud
         key: application-key
+```
