@@ -45,7 +45,7 @@ spec:
             mountPath: /bitnami/postgresql
             size: 2Gi
           service:
-            type: LoadBalancer
+            type: ClusterIP
         metrics:
           enabled: true
   syncPolicy:
