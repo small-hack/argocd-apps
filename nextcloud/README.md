@@ -15,21 +15,18 @@ Finally, Why do you want to use this instead of just the helm chart directly? Th
 # Tech Stack
 
 NextCloud would be running ontop of the following
-*(Further Below we teach you how to create all of this :blue-heart:)*
+*(Further Below we teach you how to create all of this 💙)*
 
-|           app/tool          |            what is it?           | Description                                                  |
-|:---------------------------:|:--------------------------------:|:-------------------------------------------------------------|
-|           [Debian]          |                OS                | Debian seems to be the most (easy) FOSS aligned Linux Distro |
-|         [Kuberentes]        | Container Orchestration Platform | Scale docker containers/more failure tolerance               |
-| [External Secrets Operator] |        Secrets Management        | This allows us to keep secrets in Bitwarden                  |
-|            [k8up]           |              Backups             | Use restic to backup k8s persistent volumes to Backblaze B2  |
-
-If you don't have a k8s cluster and want to get rolling quickly, checkout `smol-k8s-lab` on github.
+|           app/tool          |            what is it?           | Description                                                       |
+|:---------------------------:|:--------------------------------:|:------------------------------------------------------------------|
+|           [Debian]          |                OS                | Debian seems to be the most (easy) FOSS aligned Linux Distro      |
+|         [Kuberentes]        | Container Orchestration Platform | Scale docker containers/more failure tolerance via [smol-k8s-lab] |
+| [External Secrets Operator] |        Secrets Management        | This allows us to keep secrets in Bitwarden                       |
+|            [k8up]           |              Backups             | Use restic to backup k8s persistent volumes to Backblaze B2       |
 
 ## Argo CD Nextcloud app of apps
 
 Here's a quick peak at what we're deploying with Argo CD.
-- **Secret Store** is the External Secrets Operator "storage" we're using, in this case, Bitwarden is our secret store.
 - **External Secrets** are the actual secrets populated from the external secrets store. This includes things like the admin password.
 - **Persistence** are the two persistent volumes needed to persist nextcloud data. This includes the postgresql database as well as the actual files we're storing in nextcloud
 - **K8up B2 Backups** are the cronjobs needed for putting nextcloud into maintanence mode, as well as custom resource for backups, using Restic.
@@ -110,5 +107,6 @@ Still Under construction, so we're working out a few kinks.
 <!-- link references -->
 [Debian]: https://www.debian.org/
 [Kuberentes]: https://kubernetes.io/
+[smol-k8s-lab]: https://github.com/small-hack/smol-k8s-lab
 [External Secrets Operator]: https://external-secrets.io/v0.9.0/examples/bitwarden/
 [k8up]: https://k8up.io/k8up/2.5/index.html
