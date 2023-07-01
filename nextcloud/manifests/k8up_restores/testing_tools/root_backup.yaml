@@ -15,10 +15,10 @@ spec:
       key: password
     s3:
       endpoint: s3.eu-central-003.backblazeb2.com
-      bucket: k3s-nextcloud
+      bucket: vmt-ncloud
       accessKeyIDSecretRef:
         name: k8up-b2-creds-nextcloud
-        key: application-key-id
+        key: applicationKeyId
       secretAccessKeySecretRef:
         name: k8up-b2-creds-nextcloud
-        key: application-key
+        key: applicationKey
