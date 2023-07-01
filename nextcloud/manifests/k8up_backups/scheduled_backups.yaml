@@ -12,7 +12,7 @@ spec:
       name: k8up-restic-b2-repo-pw-nextcloud
       key: password
     b2:
-      bucket: k3s-nextcloud
+      bucket: vmt-ncloud
       accountIDSecretRef:
         name: k8up-b2-creds-nextcloud
         key: applicationKeyId
