@@ -22,9 +22,15 @@ spec:
           - "start"
         env:
         - name: KEYCLOAK_ADMIN
-          value: "admin"
+          valueFrom:
+            secretKeyRef:
+              name: keycloak-admin-credentials
+              key: username
         - name: KEYCLOAK_ADMIN_PASSWORD
-          value: "admin"
+          valueFrom:
+            secretKeyRef:
+              name: keycloak-admin-credentials
+              key: password
         - name: KC_HTTPS_PORT
           value: "8443"
         - name: KC_HTTP_ENABLED
@@ -38,23 +44,41 @@ spec:
         #- name: KC_HTTP_RELAITVE_PATH
         #  value: "/admin"
         - name: KC_DB
-          value: "postgres"
+          valueFrom:
+            secretKeyRef:
+              name: keycloak-db-credentials
+              key: dbName
         - name: KC_DB_SCHEMA
           value: "public"
         - name: KC_DB_URL_DATABASE
           value: "keycloak"
         - name: KC_DB_URL_HOST
-          value: "85.10.207.24"
+          valueFrom:
+            secretKeyRef:
+              name: keycloak-db-credentials
+              key: url
         - name: KC_DB_URL_PORT
-          value: "5432"
+          valueFrom:
+            secretKeyRef:
+              name: keycloak-db-credentials
+              key: port
         - name: KC_HOSTNAME
-          value: "keycloak.cloudydev.net"
+          valueFrom:
+            secretKeyRef:
+              name: keycloak-db-credentials
+              key: hostname
         - name : KC_HOSTNAME_STRICT
           value: "false"
         - name: KC_DB_USERNAME
-          value: "admin"
+          valueFrom:
+            secretKeyRef:
+              name: keycloak-db-credentials
+              key: username
         - name: KC_DB_PASSWORD
-          value: "flattered-tropics-tidings"
+          valueFrom:
+            secretKeyRef:
+              name: keycloak-db-credentials
+              key: password
         ports:
         - name: http
           containerPort: 8080
