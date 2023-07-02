@@ -10,7 +10,7 @@ spec:
   project: default
   destination:
     server: 'https://kubernetes.default.svc'
-    namespace: keycloak
+    namespace: mastodon
   source:
     chart: postgresql
     repoURL: 'https://charts.bitnami.com/bitnami'
