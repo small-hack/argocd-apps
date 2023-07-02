@@ -60,7 +60,7 @@ spec:
           valueFrom:
             secretKeyRef:
               name: keycloak-postgres-credentials
-              key: POSTGRES_ADMIN_PASSWORD
+              key: POSTGRES_USER_PASSWORD
         ports:
         - name: http
           containerPort: 8080
