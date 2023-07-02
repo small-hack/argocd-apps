@@ -23,10 +23,27 @@ spec:
           ingress:
             enabled: true
             ingressClassName: nginx
+            annotations:
+              cert-manager.io/cluster-issuer: "letsencrypt-prod"
             hosts:
               - prometheus.vleermuis.tech
+            tls:
+              - secretName: prometheus-tls
+                hosts:
+                - prometheus.vleermuis.tech
           prometheusSpec:
             serviceMonitorSelectorNilUsesHelmValues: false
+            resources:
+              requests:
+                memory: 700Mi
+                cpu: 100m
+              #limits:
+              #  memory: 1000Mi
+              #  cpu: 750m
+            additionalScrapeConfigsSecret:
+              enabled: true
+              name: additional-scrape-configs
+              key: prometheus-additional.yaml
           prometheusOperator:
             namespaces:
               releaseNamespace: true
@@ -34,18 +51,47 @@ spec:
                 - kube-system
                 - nextcloud
                 - k8up
+                - keycloak
+            admissionWebhooks:
+              certManager:
+                enabled: true
+              patch:
+                enabled: false
         alertmanager:
+          enabled: true
+          annotations: {}
           ingress:
             enabled: true
             ingressClassName: nginx
+            annotations:
+              cert-manager.io/cluster-issuer: "letsencrypt-prod"
             hosts:
               - alertmanager.vleermuis.tech
+            paths: 
+              - /
+            tls:
+              - secretName: alertmanager-tls
+                hosts:
+                - alertmanager.vleermuis.tech
         grafana:
           ingress:
             enabled: true
             ingressClassName: nginx
+            annotations:
+              cert-manager.io/cluster-issuer: "letsencrypt-staging"
             hosts:
               - grafana.vleermuis.tech
+            tls:
+              - secretName: grafana-tls
+                hosts:
+                - grafana.vleermuis.tech
+        scrape_configs:
+        - job_name: ingress
+          honor_timestamps: true
+          scrape_interval: 1m
+          scrape_timeout: 1m
+          metrics_path: /metrics
+          scheme: http
   syncPolicy:
     automated:
       prune: true
