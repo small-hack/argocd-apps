@@ -59,7 +59,7 @@ spec:
         - name: KC_DB_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: postgres-credentials
+              name: keycloak-postgres-credentials
               key: POSTGRES_ADMIN_PASSWORD
         ports:
         - name: http
