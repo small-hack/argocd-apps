@@ -52,6 +52,8 @@ Deploy the following container and attach to the shell, then install `postgresql
 connection string format:
   ```bash
   psql postgresql://mastodon:<password>@mastodon-postgresql.keycloak.svc.cluster.local:5432/mastodon
+  psql -U admin -d postgres -h keycloak-postgres-postgresql.keycloak.svc.cluster.local -p 5432
+  CREATE DATABASE keycloak;
   ```
 
 
