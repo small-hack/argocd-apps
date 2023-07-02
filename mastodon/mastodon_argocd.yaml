@@ -5,14 +5,20 @@ kind: Application
 metadata:
   name: mastodon
   namespace: argocd
-  annotations:
-    argocd.argoproj.io/sync-wave: "2"
 spec:
   project: default
-  source:
-    chart: mastodon
-    repoURL: https://github.com/mastodon/chart.git
-    targetRevision: 4.0.0
+  sources:
+    # official mastodon helm repo
+    - repoURL: 'https://github.com/mastodon/chart.git'
+      chart: mastodon
+      targetRevision: 4.0.0
+      helm:
+        valueFiles:
+        - $values/mastodon/values.yaml
+    # our values.yaml file locally
+    - repoURL: 'https://github.com/small-hack/argocd.git'
+      targetRevision: main
+      ref: values
   destination:
     server: "https://kubernetes.default.svc"
     namespace: mastodon
