@@ -22,10 +22,7 @@ spec:
           - "start"
         env:
         - name: KEYCLOAK_ADMIN
-          valueFrom:
-            secretKeyRef:
-              name: keycloak-admin-credentials
-              key: username
+          value: "admin"
         - name: KEYCLOAK_ADMIN_PASSWORD
           valueFrom:
             secretKeyRef:
@@ -44,41 +41,26 @@ spec:
         #- name: KC_HTTP_RELAITVE_PATH
         #  value: "/admin"
         - name: KC_DB
-          valueFrom:
-            secretKeyRef:
-              name: keycloak-db-credentials
-              key: dbName
+          value: "postgres"
         - name: KC_DB_SCHEMA
           value: "public"
         - name: KC_DB_URL_DATABASE
           value: "keycloak"
         - name: KC_DB_URL_HOST
-          valueFrom:
-            secretKeyRef:
-              name: keycloak-db-credentials
-              key: url
+          value: "postgres-postgresql.keycloak.svc.cluster.local"
         - name: KC_DB_URL_PORT
-          valueFrom:
-            secretKeyRef:
-              name: keycloak-db-credentials
-              key: port
+          value: "5432"
         - name: KC_HOSTNAME
-          valueFrom:
-            secretKeyRef:
-              name: keycloak-db-credentials
-              key: hostname
+          value: "postgres-postgresql.keycloak.svc.cluster.local"
         - name : KC_HOSTNAME_STRICT
           value: "false"
         - name: KC_DB_USERNAME
-          valueFrom:
-            secretKeyRef:
-              name: keycloak-db-credentials
-              key: username
+          value: "admin"
         - name: KC_DB_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: keycloak-db-credentials
-              key: password
+              name: postgres-credentials
+              key: POSTGRES_USER_PASSWORD
         ports:
         - name: http
           containerPort: 8080
