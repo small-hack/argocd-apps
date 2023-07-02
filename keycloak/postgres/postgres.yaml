@@ -25,8 +25,8 @@ spec:
               database: "config"
               existingSecret: "postgres-credentials"
               secretKeys:
-                adminPasswordKey: "POSTGRES_USER_PASSWORD"
-                userPasswordKey: "POSTGRES_ADMIN_PASSWORD"
+                adminPasswordKey: "POSTGRES_ADMIN_PASSWORD"
+                userPasswordKey: "POSTGRES_USER_PASSWORD"
                 replicationPasswordKey: "POSTGRES_REPLICATION_PASSWORD"
         image:
           registry: docker.io
