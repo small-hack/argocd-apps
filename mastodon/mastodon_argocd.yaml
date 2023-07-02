@@ -9,7 +9,7 @@ spec:
   project: default
   sources:
     # official mastodon helm repo
-    - repoURL: 'https://github.com/jessebot/mastodon-helm-chart.git'
+    - repoURL: 'https://jessebot.github.io/mastodon-helm-chart'
       chart: mastodon
       targetRevision: 4.0.1
       helm:
