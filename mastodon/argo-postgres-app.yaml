@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: keycloak-postgres
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: '2'
+spec:
+  destination:
+    namespace: keycloak
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: keycloak/postgres/
+    repoURL: 'https://github.com/small-hack/argocd.git'
+  project: default
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+    automated:
+      prune: true
+      selfHeal: true
