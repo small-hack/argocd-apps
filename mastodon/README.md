@@ -30,13 +30,13 @@ spec:
 
 ## Connect to postgres with worker container
 
-Deploy the following container and attach to the shell, then install `postgresql-client`.
+Deploy the following container and attach to the shell, then run:
 
   ```yaml
   apiVersion: v1
   kind: Pod
   metadata:
-    name: mastodon-postgres-client
+    name: debug-container
     namespace: mastodon
   spec:
     containers:
@@ -49,11 +49,17 @@ Deploy the following container and attach to the shell, then install `postgresql
     restartPolicy: Always
   ```
 
+Run the following to install utilities
+  ```bash
+  apt-get update && apt-get install -y postgresql-client dnsutils curl
+  ```
+
 connection string format:
   ```bash
-  psql postgresql://mastodon:<password>@mastodon-postgresql.keycloak.svc.cluster.local:5432/mastodon
-  psql -U admin -d postgres -h keycloak-postgres-postgresql.keycloak.svc.cluster.local -p 5432
-  CREATE DATABASE keycloak;
+  psql -U mastodon \
+    -d mastodon_production \
+    -h mastodon-postgres-postgresql.mastodon.svc.cluster.local \
+    -p 5432
   ```
 
 
