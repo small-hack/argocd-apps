@@ -9,3 +9,8 @@ Keycloak is an Open Source Identity and Access Management solution which provide
 Bitnami Helm Chart: https://bitnami.com/stack/keycloak/helm
 
 Helm Values: https://github.com/bitnami/charts/tree/main/bitnami/keycloak/
+
+
+1. Deploy postgres
+2. Connect to client container and create the keycloak database
+4. deploy keycloak
