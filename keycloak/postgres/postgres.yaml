@@ -23,7 +23,7 @@ spec:
             auth:
               username: "admin"
               database: "config"
-              existingSecret: "postgres-credentials"
+              existingSecret: "keycloak-postgres-credentials"
               secretKeys:
                 adminPasswordKey: "POSTGRES_ADMIN_PASSWORD"
                 userPasswordKey: "POSTGRES_USER_PASSWORD"
