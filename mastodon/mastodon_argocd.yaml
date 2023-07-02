@@ -9,9 +9,9 @@ spec:
   project: default
   sources:
     # official mastodon helm repo
-    - repoURL: 'https://github.com/mastodon/chart.git'
+    - repoURL: 'https://github.com/jessebot/mastodon-helm-chart.git'
       chart: mastodon
-      targetRevision: 4.0.0
+      targetRevision: 4.0.1
       helm:
         valueFiles:
         - $values/mastodon/values.yaml
