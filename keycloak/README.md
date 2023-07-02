@@ -5,8 +5,8 @@ Keycloak is an Open Source Identity and Access Management solution which provide
 - Add authentication to applications and secure services with minimum effort.
 - No need to deal with storing users or authenticating users.
 
-1. Deploy postgres
-2. deploy cli container
+1. Deploy `argo-postgres-app`
+2. Deploy `cli-container`
 3. Connect to cli container and install postgresql-client
 4. Create the keycloak database
-5. Deploy keycloak
+5. Deploy `argo-keycloak-app`
