@@ -3,7 +3,7 @@ Social networking that's not for sale:
 https://joinmastodon.org/
 
 
-# Deploy postgres DB
+## Deploy postgres DB
 
 ```yaml
 apiVersion: argoproj.io/v1alpha1
