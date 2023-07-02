@@ -38,7 +38,7 @@ spec:
             additionalScrapeConfigsSecret:
               enabled: true
               name: additional-scrape-configs
-              key: prometheus-additional.yaml
+              key: scrape-targets.yaml
           prometheusOperator:
             namespaces:
               releaseNamespace: true
