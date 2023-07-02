@@ -11,7 +11,8 @@ spec:
     repoPasswordSecretRef:
       name: k8up-restic-b2-repo-pw-nextcloud
       key: password
-    b2:
+    s3:
+      endpoint: s3.eu-central-003.backblazeb2.com
       bucket: vmt-ncloud
       accountIDSecretRef:
         name: k8up-b2-creds-nextcloud
@@ -26,6 +27,9 @@ spec:
     successfulJobsHistoryLimit: 2
     ## optional
     # promURL: https://prometheus-io-instance:8443
+    promURL: http://prometheus-helm-chart-kube-prometheus.monitoring:9090/
+    podSecurityContext:
+      runAsUser: 0
   check:
     # daily at 11:15 PM (UTC)
     schedule: '15 23 * * *'
@@ -36,4 +40,4 @@ spec:
     schedule: '30 23 * * *'
     retention:
       keepDaily: 7
-      keepWeekly: 2
+      keepWeekly: 8
