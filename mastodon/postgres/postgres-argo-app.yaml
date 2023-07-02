@@ -21,9 +21,9 @@ spec:
         global:
           postgresql:
             auth:
-              username: "admin"
-              database: "config"
-              existingSecret: "mastadon-postgres-credentials"
+              username: "mastodon"
+              database: "mastodon_production"
+              existingSecret: "mastodon-postgres-credentials"
               secretKeys:
                 adminPasswordKey: "POSTGRES_ADMIN_PASSWORD"
                 userPasswordKey: "POSTGRES_USER_PASSWORD"
