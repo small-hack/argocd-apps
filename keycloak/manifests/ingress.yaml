@@ -16,10 +16,10 @@ metadata:
 spec:
   tls:
     - hosts:
-      - keycloak.vleermuis.tech
+      - iam.vleermuis.tech
       secretName: keycloak-tls
   rules:
-  - host: keycloak.vleermuis.tech
+  - host: iam.vleermuis.tech
     http:
       paths:
       - path: /
