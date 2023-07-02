@@ -16,10 +16,10 @@ metadata:
 spec:
   tls:
     - hosts:
-      - keycloak.social-media-for-dogs.com
+      - iam.social-media-for-dogs.com
       secretName: keycloak-tls
   rules:
-  - host: keycloak.social-media-for-dogs.com
+  - host: iam.social-media-for-dogs.com
     http:
       paths:
       - path: /
