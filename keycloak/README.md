@@ -1,9 +1,8 @@
 # Keycloak
 
-Keycloak is an Open Source Identity and Access Management solution which provides user federation, strong authentication, user management, fine-grained authorization, and more. 
+> Depends on `external-secrets-operator`, and `bitwarden-external-secrets`
 
-- Add authentication to applications and secure services with minimum effort.
-- No need to deal with storing users or authenticating users.
+Keycloak is an Open Source Identity and Access Management solution which provides user federation, strong authentication, user management, fine-grained authorization, and more. Add authentication to applications and secure services with minimum effort. No need to deal with storing users or authenticating users.
 
 1. Deploy `argo-postgres-app`
 2. Deploy `cli-container`
