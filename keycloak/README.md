@@ -30,7 +30,7 @@ Deploy the following container and attach to the shell, then install `postgresql
 Install psql client:
 
   ```bash
-  apt-get update && apt-get install -y postgresql-client
+  apt-get update && apt-get install -y postgresql-client dnsutils curl
   ```
 
 Connect to the server, and craete the keycloak DB:
