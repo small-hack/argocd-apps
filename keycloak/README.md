@@ -12,5 +12,7 @@ Helm Values: https://github.com/bitnami/charts/tree/main/bitnami/keycloak/
 
 
 1. Deploy postgres
-2. Connect to client container and create the keycloak database
-4. deploy keycloak
+2. deploy cli container
+3. Connect to cli container and install postgresql-client
+4. Create the keycloak database
+5. Deploy keycloak
