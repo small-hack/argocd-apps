@@ -444,4 +444,12 @@ nodeSelector: {}
 tolerations: []
 
 # -- Affinity for all pods unless overwritten
-affinity: {}
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: hostname
+          operator: In
+          values:
+          - ax102
