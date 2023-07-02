@@ -35,9 +35,15 @@ ingress:
         access_log off;
       }
       location ~ ^/(?:build|tests|config|lib|3rdparty|templates|data)/ {
+        proxy_buffer_size          128k;
+        proxy_buffers              4 256k;
+        proxy_busy_buffers_size    256k;
         deny all;
       }
       location ~ ^/(?:autotest|occ|issue|indie|db_|console) {
+        proxy_buffer_size          128k;
+        proxy_buffers              4 256k;
+        proxy_busy_buffers_size    256k;
         deny all;
       }
   tls:
