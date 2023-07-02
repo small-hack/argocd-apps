@@ -97,6 +97,16 @@ spec:
 ```
 ---
 
+## Video Tumbnails
+
+By default videos won't get thumbnails. 
+
+Requires installing smbclient and ffmpeg into the minimal-web-app container, then edit a file to trigger the thumbnail generation, be patient though it takes a minute or so.
+
+See: https://help.nextcloud.com/t/show-thumbnails-for-videos/71251/14
+
+
+
 ## TODO/Bugs to fix
 Still Under construction, so we're working out a few kinks.
 - overall infosec overhaul and threatmodel <-- active task
