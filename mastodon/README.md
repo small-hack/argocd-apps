@@ -36,8 +36,8 @@ Deploy the following container and attach to the shell, then install `postgresql
   apiVersion: v1
   kind: Pod
   metadata:
-    name: postgres-client
-    namespace: keycloak
+    name: mastodon-postgres-client
+    namespace: mastodon
   spec:
     containers:
     - name: postgres-client
