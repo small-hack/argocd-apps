@@ -2,18 +2,17 @@
 Social networking that's not for sale:
 https://joinmastodon.org/
 
-## Creating Secrets
+## Creating Mastodon Secrets
 
-    ```bash
-    SECRET_KEY_BASE=$(docker run --rm -it tootsuite/mastodon:latest bin/rake secret)
+```bash
+SECRET_KEY_BASE=$(docker run --rm -it tootsuite/mastodon:latest bin/rake secret)
 
-    OTP_SECRET=$(docker run --rm -it tootsuite/mastodon:latest bin/rake secret)
+OTP_SECRET=$(docker run --rm -it tootsuite/mastodon:latest bin/rake secret)
 
-    docker run --rm -e "OTP_SECRET=$OTP_SECRET" \
-      -e "SECRET_KEY_BASE=$SECRET_KEY_BASE" \
-      -it tootsuite/mastodon:latest bin/rake mastodon:webpush:generate_vapid_key 
-    ```
-  
+docker run --rm -e "OTP_SECRET=$OTP_SECRET" \
+    -e "SECRET_KEY_BASE=$SECRET_KEY_BASE" \
+    -it tootsuite/mastodon:latest bin/rake mastodon:webpush:generate_vapid_key 
+```
 
 ## Deploy postgres DB
 
