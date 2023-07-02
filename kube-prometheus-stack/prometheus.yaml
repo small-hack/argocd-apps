@@ -27,19 +27,14 @@ spec:
               cert-manager.io/cluster-issuer: "letsencrypt-prod"
             hosts:
               - prometheus.social-media-for-dogs.com
+            paths: 
+              - /
             tls:
               - secretName: prometheus-tls
                 hosts:
                 - prometheus.social-media-for-dogs.com
           prometheusSpec:
             serviceMonitorSelectorNilUsesHelmValues: false
-            resources:
-              requests:
-                memory: 700Mi
-                cpu: 100m
-              #limits:
-              #  memory: 1000Mi
-              #  cpu: 750m
             additionalScrapeConfigsSecret:
               enabled: true
               name: additional-scrape-configs
