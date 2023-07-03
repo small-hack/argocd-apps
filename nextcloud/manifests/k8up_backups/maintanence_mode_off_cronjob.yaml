@@ -5,7 +5,8 @@ metadata:
   name: nextcloud-maintanence-mode-off
   namespace: nextcloud
 spec:
-  schedule: "35 15 * * *"
+  # daily at 8:30PM Central Europe Time
+  schedule: "30 20 * * *"
   jobTemplate:
     spec:
       template:
@@ -23,8 +24,11 @@ spec:
                 defaultMode: 420
                 name: nextcloud-minimal-web-app-nginxconfig
               name: nextcloud-nginx-config
+          # consider this to chown /var/www/html/data and /data to www-data:root
+          # initContainers:
+          #   - name: nextcloud-maintanence-perm-fix
           containers:
-            - name: nextcloud
+            - name: nextcloud-maintanence
               image: nextcloud:27.0.0-fpm
               imagePullPolicy: IfNotPresent
               command:
@@ -39,9 +43,9 @@ spec:
                   name: nextcloud-main
                   subPath: html
                 # only needed if you have a seperate data dir for nextcloud
-                # - mountPath: /var/www/html/data
-                #   name: nextcloud-data
-                #   subPath: data
+                - mountPath: /var/www/html/data
+                  name: nextcloud-main
+                  subPath: data
                 - mountPath: /var/www/html/config
                   name: nextcloud-main
                   subPath: config
