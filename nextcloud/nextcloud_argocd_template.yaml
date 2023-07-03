@@ -40,7 +40,7 @@ spec:
     server: "https://kubernetes.default.svc"
     namespace: nextcloud
   source:
-    repoURL: https://github.com/small-hack/nextcloud-external-secrets.git
+    repoURL: https://github.com/small-hack/vleermuis-external-secrets.git
     path: external_secrets/nextcloud/
   syncPolicy:
     syncOptions:
