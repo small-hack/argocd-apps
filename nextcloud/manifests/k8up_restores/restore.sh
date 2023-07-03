@@ -110,10 +110,6 @@ while [ $MAINTENANCE_MODE != "302" ]; do
 done
 echo "🎉 Out of maintanence mode and ready to roll 🚊"
 
-# p_echo "fixing permissions to be www-data, the nextcloud user"
-# shouldn't need to be done if the backups run as www-data
-# kubectl exec $NEXTCLOUD_POD -- /bin/bash -c "chown -R www-data: /var/www/html/data"
-
 p_echo "doing a file scan to make thumbnails just in case"
 kubectl exec $NEXTCLOUD_POD -- su -s /bin/bash www-data -c "php occ files:scan --all"
 sleep 10

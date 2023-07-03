@@ -20,9 +20,9 @@ spec:
       accountKeySecretRef:
         name: k8up-b2-creds-nextcloud
         key: applicationKey
-  # daily at 2:40 PM (Central Europe Time)
+  # daily at 3:25 PM (Central Europe Time)
   backup:
-    schedule: '40 14 * * *'
+    schedule: '25 15 * * *'
     failedJobsHistoryLimit: 10
     successfulJobsHistoryLimit: 2
     # optional... not sure which port to use here? 8443? 100100? 9090?
@@ -30,11 +30,11 @@ spec:
     podSecurityContext:
       runAsUser: 0
   check:
-    schedule: '50 14 * * *'
+    schedule: '35 15 * * *'
     # optional... not sure which port to use here? 8443? 100100? 9090?
     promURL: http://prometheus-helm-chart-kube-prometheus.monitoring:9090/
   prune:
-    schedule: '55 14 * * *'
+    schedule: '38 15 * * *'
     retention:
       keepDaily: 7
       keepWeekly: 8
