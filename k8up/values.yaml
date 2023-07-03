@@ -93,9 +93,9 @@ metrics:
   serviceMonitor:
     # -- Whether to enable ServiceMonitor manifests for
     # [Prometheus Operator][prometheus-operator]
-    enabled: false
+    enabled: true
     # -- Scrape interval to collect metrics
-    scrapeInterval: 60s
+    scrapeInterval: 15s
     # -- If the object should be installed in a different namespace than operator
     namespace: ""
     # -- Add labels to the ServiceMonitor object
