@@ -105,6 +105,13 @@ Requires installing smbclient and ffmpeg into the minimal-web-app container, the
 
 See: https://help.nextcloud.com/t/show-thumbnails-for-videos/71251/14
 
+## Image Recognition
+
+You can use the [recognize](https://github.com/nextcloud/recognize) app to track faces, objects, common landmarks, and music. Recognize uses open source machine learning models that run entirely self contained on your Nextcloud instance. It does not come with models pre-downloaded though, so you may have to run:
+
+```bash
+kubectl exec $NEXTCLOUD_POD -- su -s /bin/bash www-data -c "php occ recognize:download-models"
+```
 
 
 ## TODO/Bugs to fix
