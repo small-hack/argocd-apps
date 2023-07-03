@@ -2,7 +2,7 @@
 apiVersion: k8up.io/v1
 kind: Schedule
 metadata:
-  name: scheduled-backups-nextcloud-b2
+  name: nightly-nextcloud-b2-backup
   namespace: nextcloud
 spec:
   failedJobsHistoryLimit: 10
@@ -25,16 +25,15 @@ spec:
     schedule: '10 11 * * *'
     failedJobsHistoryLimit: 10
     successfulJobsHistoryLimit: 2
-    ## optional
-    # promURL: https://prometheus-io-instance:8443
-    promURL: http://prometheus-helm-chart-kube-prometheus.monitoring:100100/
+    # optional... not sure which port to use here? 8443? 100100? 9090?
+    promURL: http://prometheus-helm-chart-kube-prometheus.monitoring:9090/
     podSecurityContext:
       runAsUser: 0
   check:
     # daily at 11:20 AM (UTC)
     schedule: '20 11 * * *'
-    ## optional
-    # promURL: https://prometheus-io-instance:8443
+    # optional... not sure which port to use here? 8443? 100100? 9090?
+    promURL: http://prometheus-helm-chart-kube-prometheus.monitoring:9090/
   prune:
     # daily at 11:30 AM (UTC)
     schedule: '30 11 * * *'
