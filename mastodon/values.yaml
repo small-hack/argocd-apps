@@ -62,8 +62,8 @@ mastodon:
     # with keys AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY
     existingSecret: "b2-creds-mastodon"
     bucket: "vmt-mastodon-primary"
-    endpoint: "s3.eu-central-003.backblazeb2.com"
-    hostname: ""
+    endpoint: "https://s3.eu-central-003.backblazeb2.com"
+    hostname: "s3.eu-central-003.backblazeb2.com"
     region: "eu-central-003"
     permission: ""
     # -- If you have a caching proxy, enter its base URL here.
