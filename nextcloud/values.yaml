@@ -525,7 +525,7 @@ redis:
 ## ref: https://docs.nextcloud.com/server/latest/admin_manual/configurationi_server/background_jobs_configuration.html#cron
 ##
 cronjob:
-  enabled: false
+  enabled: true
   # Nexcloud image is used as default but only curl is needed
   image: {}
     # repository: nextcloud
