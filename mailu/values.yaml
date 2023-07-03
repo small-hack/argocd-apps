@@ -96,7 +96,7 @@ initialAccount:
   username: "mailadmin"
   domain: "enby.city"
   # password: ""
-  existingSecret: "enby-city-mailu-admin"
+  existingSecret: "mailu-admin-creds"
   existingSecretPasswordKey: "password"
   mode: "update"
 
