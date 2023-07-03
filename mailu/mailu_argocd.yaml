@@ -1,0 +1,58 @@
+---
+# First sync wave because we need secrets for mailu, so it has to be
+# before mailu so it has secrets for all its credentials.
+# In a private repo right now while we figure out a custom argocd plugin
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: mailu-external-secrets
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  project: default
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: mailu
+  source:
+    repoURL: https://github.com/small-hack/vleermuis-external-secrets.git
+    path: external_secrets/mailu/
+  syncPolicy:
+    syncOptions:
+      - Replace=true
+    automated:
+      prune: true
+      selfHeal: true
+
+---
+# mailu is a simple email server for mastodon, keycloak, and nextcloud
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: mailu-helm-chart
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  project: default
+  sources:
+    # official mailu helm repo
+    - repoURL: https://mailu.github.io/helm-charts/
+      chart: mailu
+      targetRevision: 1.2.0
+      helm:
+        valueFiles:
+        - $values/mailu/values.yaml
+    # our values.yaml file locally
+    - repoURL: 'https://github.com/small-hack/argocd.git'
+      targetRevision: main
+      ref: values
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: mailu
+  syncPolicy:
+    syncOptions:
+      - Replace=true
+    automated:
+      prune: true
+      selfHeal: true
