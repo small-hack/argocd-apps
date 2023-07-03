@@ -8,7 +8,7 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "3"
 spec:
-  project: default
+  project: monitoring
   destination:
     server: "https://kubernetes.default.svc"
     namespace: monitoring
@@ -101,7 +101,7 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "2"
 spec:
-  project: default
+  project: monitoring
   destination:
     name: in-cluster
     namespace: monitoring
