@@ -90,8 +90,8 @@ kubectl wait --timeout=2700s --for='condition=Completed' restore.k8up.io/nextclo
 
 sleep 10
 
-p_echo "chowning all of the data dir to be owned by www-data"
-kubectl exec $NEXTCLOUD_POD -- su -s /bin/bash root -c "chown -R www-data /var/www/html/data"
+p_echo "Recursively chown data dir to be owned by www-data user and root group"
+kubectl exec $NEXTCLOUD_POD -- su -s /bin/bash root -c "chown -R www-data:root /var/www/html/data && chown -R www-data:root /data"
 
 p_echo "doing a file cache cleanup"
 kubectl exec $NEXTCLOUD_POD -- su -s /bin/bash www-data -c "php occ files:cleanup"
