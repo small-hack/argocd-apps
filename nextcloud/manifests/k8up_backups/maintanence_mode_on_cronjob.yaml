@@ -6,7 +6,7 @@ metadata:
   namespace: nextcloud
 spec:
   # daily at 2:00AM Central Europe Time
-  schedule: 0 2 * * *"
+  schedule: "0 2 * * *"
   jobTemplate:
     spec:
       template:
