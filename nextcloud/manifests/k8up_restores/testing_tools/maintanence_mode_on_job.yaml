@@ -76,7 +76,7 @@ spec:
               subPath: smtp.config.php
           env:
             - name: POSTGRES_HOST
-              value: nextcloud-web-app-postgresql
+              value: nextcloud-minimal-web-app-postgresql
             - name: POSTGRES_DB
               value: nextcloud
             - name: POSTGRES_USER
