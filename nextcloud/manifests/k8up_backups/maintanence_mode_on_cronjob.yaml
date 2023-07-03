@@ -5,8 +5,8 @@ metadata:
   name: nextcloud-maintanence-mode-on
   namespace: nextcloud
 spec:
-  # daily at 3:15PM Central Europe Time
-  schedule: "15 15 * * *"
+  # daily at 19:45PM Central Europe Time
+  schedule: "45 19 * * *"
   jobTemplate:
     spec:
       template:
@@ -43,9 +43,9 @@ spec:
                   name: nextcloud-main
                   subPath: html
                 # only needed if you have a seperate data dir for nextcloud
-                # - mountPath: /var/www/html/data
-                #   name: nextcloud-data
-                #   subPath: data
+                - mountPath: /var/www/html/data
+                  name: nextcloud-main
+                  subPath: data
                 - mountPath: /var/www/html/config
                   name: nextcloud-main
                   subPath: config
