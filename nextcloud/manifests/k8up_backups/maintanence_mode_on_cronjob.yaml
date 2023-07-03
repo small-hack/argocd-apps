@@ -5,8 +5,8 @@ metadata:
   name: nextcloud-maintanence-mode-on
   namespace: nextcloud
 spec:
-  # daily at 1PM Central Europe Time
-  schedule: "00 13 * * *"
+  # daily at 2:30PM Central Europe Time
+  schedule: "30 14 * * *"
   jobTemplate:
     spec:
       template:
