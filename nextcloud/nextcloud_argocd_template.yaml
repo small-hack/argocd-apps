@@ -41,7 +41,7 @@ spec:
     namespace: nextcloud
   source:
     repoURL: https://github.com/small-hack/nextcloud-external-secrets.git
-    path: external_secrets/
+    path: external_secrets/nextcloud/
   syncPolicy:
     syncOptions:
       - Replace=true
