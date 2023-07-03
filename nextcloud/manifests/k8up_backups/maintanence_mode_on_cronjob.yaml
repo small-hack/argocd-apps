@@ -5,8 +5,8 @@ metadata:
   name: nextcloud-maintanence-mode-on
   namespace: nextcloud
 spec:
-  # daily at 2:30PM Central Europe Time
-  schedule: "30 14 * * *"
+  # daily at 3:15PM Central Europe Time
+  schedule: "15 15 * * *"
   jobTemplate:
     spec:
       template:
@@ -24,8 +24,12 @@ spec:
                 defaultMode: 420
                 name: nextcloud-minimal-web-app-nginxconfig
               name: nextcloud-nginx-config
+          # consider this to chown /var/www/html/data and /data to www-data:root
+          initContainers:
+            - name: nextcloud-maintanence
+
           containers:
-            - name: nextcloud
+            - name: nextcloud-maintanence
               image: nextcloud:27.0.0-fpm
               imagePullPolicy: IfNotPresent
               command:
