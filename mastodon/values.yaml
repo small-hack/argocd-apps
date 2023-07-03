@@ -134,20 +134,20 @@ mastodon:
     auth_method: plain
     ca_file: /etc/ssl/certs/ca-certificates.crt
     delivery_method: smtp
-    domain:
+    domain: enby.city
     enable_starttls: 'auto'
-    from_address: notifications@example.com
+    from_address: toots@enby.city
     return_path:
     openssl_verify_mode: peer
     port: 587
     reply_to:
-    server: smtp.mailgun.org
+    server: mail.enby.city
     tls: false
-    login:
-    password:
+    # login:
+    # password:
     # -- Instead of defining login/password above, you can specify the name of an existing secret here. Login and
     # password must be located in keys named `login` and `password` respectively.
-    existingSecret:
+    existingSecret: mastodon-smtp-credentials
   streaming:
     port: 4000
     # -- this should be set manually since os.cpus() returns the number of CPUs on
