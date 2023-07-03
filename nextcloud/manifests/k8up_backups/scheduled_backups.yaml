@@ -26,13 +26,14 @@ spec:
     failedJobsHistoryLimit: 10
     successfulJobsHistoryLimit: 2
     # optional... not sure which port to use here? 8443? 100100? 9090?
-    promURL: http://prometheus-helm-chart-kube-prometheus.monitoring:9090/
+    # promURL: http://prometheus-helm-chart-kube-prometheus.monitoring:9090/
     podSecurityContext:
       runAsUser: 0
   # verify the backups are ok
   check:
     schedule: '10 20 * * *'
-    promURL: http://prometheus-helm-chart-kube-prometheus.monitoring:9090/
+    # may not be needed if service monitor is working
+    # promURL: http://prometheus-helm-chart-kube-prometheus.monitoring:9090/
   # delete old backups
   prune:
     schedule: '12 20 * * *'
