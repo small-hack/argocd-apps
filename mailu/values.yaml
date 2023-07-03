@@ -532,6 +532,7 @@ ingress:
   ##   - Rely on cert-manager to create it by setting the corresponding annotations
   ##   - Rely on Helm to create self-signed certificates by setting `ingress.tls=true` and `ingress.certManager=false`
   tls: true
+  certManager: true
 
   ## @param ingress.existingSecret Name of an existing Secret containing the TLS certificates for the Ingress
   ## If empty, the expected secret name will be `{{ printf "%s-certificates" (include "mailu.fullname" . ) }}`
