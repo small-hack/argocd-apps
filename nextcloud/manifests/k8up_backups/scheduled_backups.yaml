@@ -21,8 +21,8 @@ spec:
         name: k8up-b2-creds-nextcloud
         key: applicationKey
   backup:
-    # daily at 11:10PM (UTC)
-    schedule: '10 23 * * *'
+    # daily at 11:10AM (UTC)
+    schedule: '10 11 * * *'
     failedJobsHistoryLimit: 10
     successfulJobsHistoryLimit: 2
     ## optional
@@ -31,13 +31,13 @@ spec:
     podSecurityContext:
       runAsUser: 0
   check:
-    # daily at 11:20 PM (UTC)
-    schedule: '20 23 * * *'
+    # daily at 11:20 AM (UTC)
+    schedule: '20 11 * * *'
     ## optional
     # promURL: https://prometheus-io-instance:8443
   prune:
-    # daily at 11:30 PM (UTC)
-    schedule: '30 23 * * *'
+    # daily at 11:30 AM (UTC)
+    schedule: '30 11 * * *'
     retention:
       keepDaily: 7
       keepWeekly: 8
