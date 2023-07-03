@@ -29,7 +29,7 @@ mastodon:
       schedule: "0 0 * * 0"
   # -- available locales: https://github.com/mastodon/mastodon/blob/main/config/application.rb#L71
   locale: en
-  local_domain: mastodon.social-media-for-dogs.com
+  local_domain: enby.city
   # -- Use of WEB_DOMAIN requires careful consideration: https://docs.joinmastodon.org/admin/config/#federation
   # You must redirect the path LOCAL_DOMAIN/.well-known/ to WEB_DOMAIN/.well-known/ as described
   # Example: mastodon.example.com
@@ -224,13 +224,13 @@ ingress:
   # -- you can specify the ingressClassName if it differs from the default
   ingressClassName:
   hosts:
-    - host: mastodon.social-media-for-dogs.com
+    - host: enby.city
       paths:
         - path: '/'
   tls:
     - secretName: mastodon-tls
       hosts:
-        - mastodon.social-media-for-dogs.com
+        - enby.city
 
 # -- https://github.com/bitnami/charts/tree/master/bitnami/elasticsearch#parameters
 elasticsearch:
