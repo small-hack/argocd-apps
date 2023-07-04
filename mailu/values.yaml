@@ -60,7 +60,7 @@ hostnames:
 ## e.g.:
 ## domain: example.com
 ## @param domain Mail domain name. See https://github.com/Mailu/Mailu/blob/master/docs/faq.rst#what-is-the-difference-between-domain-and-hostnames
-domain: "enby.city"
+domain: enby.city
 
 ## e.g.:
 ## secretKey: chang3m3!
