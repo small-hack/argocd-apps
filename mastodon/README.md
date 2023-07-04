@@ -9,7 +9,6 @@ We create in the manifests and helm chart in this sync wave order:
 - DB migrate job as per suggestion in [issue#18](https://github.com/mastodon/chart/issues/18#issuecomment-1369804876)
 - mastodon web app (including elastic search and redis)
 
-
 ## Creating Mastodon Secrets
 This template relies on you already having created secrets using the below method and then creating those as k8s secrets.
 
