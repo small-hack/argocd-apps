@@ -1,5 +1,4 @@
 ---
-# keycloak needs postgres so it is first sync wave
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
