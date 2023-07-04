@@ -1028,6 +1028,7 @@ postgresql:
     username: keycloak
     database: keycloak
     existingSecret: keycloak-postgres-credentials
+    passwordSecretKey: POSTGRES_USER_PASSWORD
   volumePermissions:
     enabled: true
   primary:
