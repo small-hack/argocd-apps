@@ -74,31 +74,32 @@ spec:
         global:
           postgresql:
             auth:
-              username: "mastodon"
-              database: "mastodon_production"
-              existingSecret: "mastodon-postgres-credentials"
+              username: mastodon
+              database: mastodon
+              existingSecret: mastodon-postgres-credentials
               secretKeys:
-                adminPasswordKey: "POSTGRES_ADMIN_PASSWORD"
-                userPasswordKey: "POSTGRES_USER_PASSWORD"
-                replicationPasswordKey: "POSTGRES_REPLICATION_PASSWORD"
-        image:
-          registry: docker.io
-          repository: bitnami/postgresql
-          tag: 15.2.0-debian-11-r5
-          digest: ""
+                userPasswordKey: mastodonPassword
+                adminPasswordKey: postgresPassword
+        volumePermissions:
+          enabled: true
         primary:
-          resources:
-            limits:
-              memory: 1024Mi
-              cpu: 1000m
-            requests:
-              memory: 256Mi
-              cpu: 250m
+          podAnnotations:
+            k8up.io/backupcommand: "sh -c 'PGDATABASE=\"$POSTGRES_DB\" PGUSER=\"$POSTGRES_USER\" PGPASSWORD=\"$POSTGRES_PASSWORD\" pg_dump --clean'"
+            k8up.io/file-extension: .sql
+          pgHbaConfiguration: |-
+            local all all trust
+            host all all 127.0.0.1/32 md5
+            host all mastodon 10.0.0.0/8 md5
+          initdb:
+            scripts:
+              my_init_script.sql: |
+                ALTER DATABASE mastodon OWNER TO mastodon;
+                GRANT ALL PRIVILEGES ON DATABASE mastodon TO mastodon;
+                GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO mastodon;
           persistence:
-            mountPath: /bitnami/postgresql
-            size: 2Gi
-          service:
-            type: ClusterIP
+            enabled: true
+            # Use an existing Persistent Volume Claim (must be created ahead of time)
+            existingClaim: "mastodon-postgres"
         metrics:
           enabled: true
   syncPolicy:
