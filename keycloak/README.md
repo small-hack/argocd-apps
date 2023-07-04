@@ -7,6 +7,7 @@ Keycloak is an Open Source Identity and Access Management solution which provide
 Be sure to run the following to add the oci compliant repo to argocd first:
 
 ```bash
+# see: https://github.com/argoproj/argo-cd/issues/10823#issuecomment-1620308484
 argocd repo add registry-1.docker.io \
   --type helm \
   --name docker \
