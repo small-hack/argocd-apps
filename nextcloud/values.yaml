@@ -87,8 +87,8 @@ nextcloud:
     fromAddress: cloud
     domain: enby.city
     smtp:
-      host: enby.city
-      secure: ssl
+      host: mail.enby.city
+      secure: tls
       port: 465
       authtype: LOGIN
       # name: user
