@@ -11,8 +11,8 @@ metadata:
   name: mastodon-web-app-env
   namespace: mastodon
 data:
-  DB_HOST: preexisting-postgresql
-  DB_NAME: mastodon-postgres-postgresql.mastodon.svc.cluster.local
+  DB_HOST: mastodon-postgres-postgresql.mastodon.svc.cluster.local
+  DB_NAME: mastodon
   DB_POOL: '25'
   DB_PORT: '5432'
   DB_USER: mastodon
