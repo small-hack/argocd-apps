@@ -1,4 +1,29 @@
 ---
+# First sync wave done in parallel with creating secrets. Must be BEFORE
+# keycloak so that keycloak persists it's data between upgrades. Sync policy
+# is set to ApplyOutOfSyncOnly=true to create the volume initially only.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: keycloak-persistence
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  project: default
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: keycloak
+  source:
+    repoURL: https://github.com/small-hack/argocd.git
+    path: keycloak/persistence/
+  syncPolicy:
+    syncOptions:
+      - ApplyOutOfSyncOnly=true
+    automated:
+      selfHeal: true
+
+---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -28,7 +53,7 @@ metadata:
   name: keycloak-web-app
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "3"
+    argocd.argoproj.io/sync-wave: "2"
 spec:
   project: default
   destination:
