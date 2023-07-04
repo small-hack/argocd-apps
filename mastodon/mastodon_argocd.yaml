@@ -49,6 +49,28 @@ spec:
       prune: true
       selfHeal: true
 
+---
+# db job requires this so it has to be setup first
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: mastodon-configmaps
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  project: default
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: mastodon
+  source:
+    repoURL: https://github.com/small-hack/argocd.git
+    path: mastodon/manifests/config-map
+  syncPolicy:
+    syncOptions:
+      - ApplyOutOfSyncOnly=true
+    automated:
+      selfHeal: false
 
 ---
 # has to be after secrets, but before web-app
@@ -109,6 +131,28 @@ spec:
     automated:
       selfHeal: true
       prune: true
+
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: mastodon-db-setup-job
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  project: default
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: mastodon
+  source:
+    repoURL: https://github.com/small-hack/argocd.git
+    path: mastodon/manifests/jobs
+  syncPolicy:
+    syncOptions:
+      - ApplyOutOfSyncOnly=true
+    automated:
+      selfHeal: false
 
 ---
 # third sync wave because it has to be up after postgres
