@@ -78,7 +78,7 @@ spec:
               database: mastodon
               existingSecret: mastodon-pg-user-credentials
               secretKeys:
-                userPasswordKey: mastodonPassword
+                userPasswordKey: password
                 adminPasswordKey: postgresPassword
         volumePermissions:
           enabled: true
