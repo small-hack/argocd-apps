@@ -303,93 +303,6 @@ externalRedis:
   ## ref: https://rspamd.com/doc/configuration/redis.html#available-redis-options
   rspamdDbId: 0
 
-## @param database.mysql.roundcubePassword DEPRECATED - DO NOT USE: Password for the roundcube database
-## @param database.postgresql.roundcubePassword DEPRECATED - DO NOT USE: Password for the roundcube database
-database:
-  mysql:
-    roundcubePassword: ""
-  postgresql:
-    roundcubePassword: ""
-
-## MariaDB chart configuration
-## for more options see https://github.com/bitnami/charts/tree/master/bitnami/mariadb
-mariadb:
-  ## @param mariadb.enabled Enable MariaDB deployment
-  enabled: false
-
-  ## @param mariadb.architecture MariaDB architecture. Allowed values: standalone or replication
-  architecture: standalone
-
-  ## @param mariadb.auth.rootPassword Password for the `root` user. Ignored if existing secret is provided.
-  ## @param mariadb.auth.database Name for a custom database to create
-  ## @param mariadb.auth.username Name for a custom user to create
-  ## @param mariadb.auth.password Password for the new user. Ignored if existing secret is provided
-  ## @param mariadb.auth.existingSecret Use existing secret for password details (`auth.rootPassword`, `auth.password`, `auth.replicationPassword`
-  ## will be ignored and picked up from this secret). The secret has to contain the keys `mariadb-root-password`, `mariadb-replication-password`
-  ## and `mariadb-password`
-  auth:
-    rootPassword: ""
-    database: mailu
-    username: mailu
-    password: ""
-    existingSecret: ""
-
-  ## Enable persistence using Persistent Volume Claims
-  ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
-  ##
-  ## @param mariadb.primary.persistence.enabled Enable persistence using PVC
-  ## @param mariadb.primary.persistence.storageClass PVC Storage Class for MariaDB volume
-  ## If defined, storageClassName: <storageClass>
-  ## If set to "-", storageClassName: "", which disables dynamic provisioning
-  ## If undefined (the default) or set to null, no storageClassName spec is
-  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
-  ##   GKE, AWS & OpenStack)
-  ## @param mariadb.primary.persistence.accessMode PVC Access Mode for MariaDB volume
-  ## @param mariadb.primary.persistence.size PVC Storage Request for MariaDB volume
-  primary:
-    persistence:
-      enabled: false
-      storageClass: ""
-      accessMode: ReadWriteOnce
-      size: 8Gi
-
-    ## @skip mariadb.primary.extraEnvVars
-    ## Array with extra environment variables, used to create the initial `roundcube` database; DO NOT EDIT; see `global.database` instead
-    extraEnvVars: |
-      - name: ROUNDCUBE_DB_PW
-        valueFrom:
-          secretKeyRef:
-            name: {{ include "mailu.database.roundcube.secretName" . }}
-            key: {{ include "mailu.database.roundcube.secretKey" . }}
-      - name: ROUNDCUBE_DB_NAME
-        value: {{ include "mailu.database.roundcube.name" . }}
-      - name: ROUNDCUBE_DB_USER
-        value: {{ include "mailu.database.roundcube.username" . }}
-
-  ## @skip mariadb.initdbScripts.create_roundcube_database.sh
-  ## DO NOT EDIT Script to create the roundcube database
-  initdbScripts:
-    create_roundcube_database.sh: |
-      #!/bin/bash
-      # set -o errexit
-      # set -o nounset
-      # set -o pipefail
-      echo "Checking for DB initialisation"
-      if [ -S /opt/bitnami/mariadb/tmp/mysql.sock ]; then
-        echo "Running DB initialisation..."
-        /opt/bitnami/mariadb/bin/mysql --user="root" --password="${MARIADB_ROOT_PASSWORD}" <<SQL
-        --
-        -- Initialisation script for roundcube database
-        --
-        CREATE DATABASE IF NOT EXISTS ${ROUNDCUBE_DB_NAME};
-        GRANT ALL PRIVILEGES ON ${ROUNDCUBE_DB_NAME}.* TO '${ROUNDCUBE_DB_USER}'@'%' IDENTIFIED BY '${ROUNDCUBE_DB_PW}';
-        FLUSH PRIVILEGES;
-      SQL
-        echo "DB initialisation complete"
-      else
-        echo "Not running initialisation, exiting..."
-      fi
-
 ## PostgreSQL chart configuration
 ## for more options see https://github.com/bitnami/charts/tree/master/bitnami/postgresql
 postgresql:
@@ -484,11 +397,11 @@ postgresql:
 ## @param persistence.claimNameOverride Override the name of the PVC (for single PVC)
 persistence:
   single_pvc: true
-  size: 100Gi
+  size: 50Gi
   accessModes: [ReadWriteOnce]
   annotations: {}
   hostPath: ""
-  existingClaim: ""
+  existingClaim: "mailu-pvc"
   storageClass: ""
   claimNameOverride: ""
 

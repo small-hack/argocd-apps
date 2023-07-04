@@ -25,6 +25,29 @@ spec:
       selfHeal: true
 
 ---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: mailu-pvc
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  project: default
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: mailu
+  source:
+    repoURL: https://github.com/small-hack/argocd.git
+    path: manifests/persistence/
+  syncPolicy:
+    syncOptions:
+      - Replace=true
+    automated:
+      prune: true
+      selfHeal: true
+
+---
 # mailu is a simple email server for mastodon, keycloak, and nextcloud
 apiVersion: argoproj.io/v1alpha1
 kind: Application
