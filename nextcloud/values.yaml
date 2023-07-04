@@ -74,8 +74,8 @@ nextcloud:
     usernameKey: username
     passwordKey: password
     tokenKey: serverinfo_token
-    smtpUsernameKey: username
-    smtpPasswordKey: password
+    smtpUsernameKey: smtpUsername
+    smtpPasswordKey: smtpPassword
   update: 0
   # If web server is not binding default port, you can define it
   # containerPort: 8080
