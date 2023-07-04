@@ -11,7 +11,7 @@ spec:
     namespace: keycloak
     server: 'https://kubernetes.default.svc'
   source:
-    path: external-secrets/keycloak/
+    path: external_secrets/keycloak/
     repoURL: 'https://github.com/small-hack/vleermuis-external-secrets.git'
   project: default
   syncPolicy:
