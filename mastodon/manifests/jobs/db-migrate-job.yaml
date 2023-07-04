@@ -30,7 +30,7 @@ spec:
             - db:migrate
           envFrom:
             - configMapRef:
-                name: release-name-mastodon-env
+                name: mastodon-web-app-env
             - secretRef:
                 name: mastodon-server-credentials
           env:
@@ -42,7 +42,7 @@ spec:
             - name: "REDIS_PASSWORD"
               valueFrom:
                 secretKeyRef:
-                  name: release-name-redis
+                  name: mastodon-redis-credentials
                   key: redis-password
             - name: "PORT"
               value: "3000"
