@@ -84,7 +84,7 @@ nextcloud:
     subPath:
   mail:
     enabled: true
-    fromAddress: cloud@enby.city
+    fromAddress: cloud
     domain: enby.city
     smtp:
       host: mail.enby.city
