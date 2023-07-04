@@ -84,11 +84,11 @@ nextcloud:
     subPath:
   mail:
     enabled: true
-    fromAddress: cloud
+    fromAddress: cloud@enby.city
     domain: enby.city
     smtp:
       host: mail.enby.city
-      secure: tls
+      secure: ssl
       port: 465
       authtype: LOGIN
       # name: user
@@ -662,7 +662,7 @@ metrics:
   # Use API token if set, otherwise fall back to password authentication
   # https://github.com/xperimental/nextcloud-exporter#token-authentication
   # Currently you still need to set the token manually in your nextcloud install
-  # token: ""
+  token: "enabled"
   timeout: 10s
   # if set to true, exporter skips certificate verification of Nextcloud server.
   tlsSkipVerify: true
