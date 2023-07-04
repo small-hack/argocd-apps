@@ -1,7 +1,7 @@
-# Common ArgoCD templates we use for self hosted cloud stuff
+# Common ArgoCD templates for self hosted infra
 Check out each app directory's README for more info.
 
-# Social Media and chat
+## Social Media and chat
 
 | ArgoCD App               | Description                                                                      |
 |:------------------------:|:---------------------------------------------------------------------------------|
