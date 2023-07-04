@@ -39,7 +39,7 @@ spec:
     namespace: mailu
   source:
     repoURL: https://github.com/small-hack/argocd.git
-    path: manifests/persistence/
+    path: mailu/manifests/persistence/
   syncPolicy:
     syncOptions:
       - Replace=true
