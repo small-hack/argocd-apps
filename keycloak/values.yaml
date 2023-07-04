@@ -1024,15 +1024,10 @@ keycloakConfigCli:
 postgresql:
   enabled: true
   architecture: standalone
-  global:
-    postgresql:
-      auth:
-        username: keycloak
-        database: keycloak
-        existingSecret: keycloak-postgres-credentials
-        secretKeys:
-          userPasswordKey: POSTGRES_USER_PASSWORD
-          adminPasswordKey: POSTGRES_ADMIN_PASSWORD
+  auth:
+    username: keycloak
+    database: keycloak
+    existingSecret: keycloak-postgres-credentials
   volumePermissions:
     enabled: true
   primary:
@@ -1077,12 +1072,12 @@ externalDatabase:
   user: bn_keycloak
   database: bitnami_keycloak
   password: ""
-  existingSecret: ""
+  existingSecret: "keycloak-postgres-credentials"
   existingSecretHostKey: ""
   existingSecretPortKey: ""
   existingSecretUserKey: ""
   existingSecretDatabaseKey: ""
-  existingSecretPasswordKey: ""
+  existingSecretPasswordKey: "POSTGRES_USER_PASSWORD"
 
 ## @section Keycloak Cache parameters
 
