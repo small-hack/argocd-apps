@@ -15,11 +15,11 @@ mastodon:
   # have to be reset
   createAdmin:
     # @ignored
-    enabled: false
+    enabled: true
     # @ignored
-    username: not_gargron
+    username: broodje_toots
     # @ignored
-    email: not@example.com
+    email: admin@vleermuis.tech
   cron:
     # -- run `tootctl media remove` every week
     removeMedia:
@@ -131,7 +131,7 @@ mastodon:
     #  queues:
     #    - default
   smtp:
-    auth_method: plain
+    auth_method: login
     ca_file: /etc/ssl/certs/ca-certificates.crt
     delivery_method: smtp
     domain: enby.city
@@ -142,7 +142,7 @@ mastodon:
     port: 587
     reply_to:
     server: mail.enby.city
-    tls: false
+    tls: true
     # login:
     # password:
     # -- Instead of defining login/password above, you can specify the name of an existing secret here. Login and
