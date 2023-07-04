@@ -3,7 +3,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: keycloak-postgres-app
+  name: keycloak-external-secrets
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: '1'
@@ -12,7 +12,7 @@ spec:
     namespace: keycloak
     server: 'https://kubernetes.default.svc'
   source:
-    path: keycloak/postgres/
+    path: keycloak/external-secrets/
     repoURL: 'https://github.com/small-hack/argocd.git'
   project: default
   syncPolicy:
@@ -26,10 +26,68 @@ spec:
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: keycloak
+  name: keycloak-postgres
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: '2'
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  project: default
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: keycloak
+  source:
+    chart: postgresql
+    repoURL: 'https://charts.bitnami.com/bitnami'
+    targetRevision: 12.2.2
+    helm:
+      skipCrds: true
+      values: |
+        global:
+          postgresql:
+            auth:
+              username: "admin"
+              database: "keycloak"
+              existingSecret: "keycloak-postgres-credentials"
+              secretKeys:
+                adminPasswordKey: "POSTGRES_ADMIN_PASSWORD"
+                userPasswordKey: "POSTGRES_USER_PASSWORD"
+                replicationPasswordKey: "POSTGRES_REPLICATION_PASSWORD"
+        image:
+          registry: docker.io
+          repository: bitnami/postgresql
+          tag: 15.2.0-debian-11-r5
+          digest: ""
+        primary:
+          resources:
+            limits:
+              memory: 1024Mi
+              cpu: 1000m
+            requests:
+              memory: 256Mi
+              cpu: 250m
+          persistence:
+            mountPath: /bitnami/postgresql
+            size: 2Gi
+          service:
+            type: ClusterIP
+        metrics:
+          enabled: true
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+      - Replace=true
+    automated:
+      selfHeal: true
+      prune: true
+
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: keycloak-web-app
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: '3'
 spec:
   destination:
     namespace: keycloak
