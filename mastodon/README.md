@@ -1,7 +1,13 @@
 # Mastodon ArgoCD Template
 Mastodon is social networking that's not for sale: https://joinmastodon.org/
 
-Here we rangle the helm chart into ArgoCD :) We create PVCs, query a private secrets repo, setup postgres and then attempt to deploy the web app :shrug:
+Here we rangle the helm chart into ArgoCD :)
+
+We create in the manifests and helm chart in this sync wave order:
+- all required PVCs, ConfigMap, and Secrets (secrets are external secrets in a private repo)
+- Postgresql stateful set
+- DB migrate job as per suggestion in [issue#18](https://github.com/mastodon/chart/issues/18#issuecomment-1369804876)
+- mastodon web app (including elastic search and redis)
 
 
 ## Creating Mastodon Secrets
@@ -17,7 +23,6 @@ docker run --rm -e "OTP_SECRET=$OTP_SECRET" \
 ```
 
 ## Connect to postgres with worker container
-
 Deploy the following container and attach to the shell, then run:
 
 ```yaml
@@ -47,7 +52,7 @@ connection string format:
 
 ```bash
 psql -U mastodon \
-  -d mastodon_production \
-  -h mastodon-postgres-postgresql.mastodon.svc.cluster.local \
+  -d mastodon \
+  -h mastodon-postgres.mastodon.svc.cluster.local \
   -p 5432
 ```
