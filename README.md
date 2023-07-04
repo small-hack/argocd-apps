@@ -39,20 +39,13 @@ Check out each app directory's README for more info.
 
 |  | |
 |:------------------------------:|:---------------------------------------------------------------------------------|
-| [kube-prometheus-stack](./kube-prometheus-stack) | [promtheus], alertmanager, [grafana] for collecting metrics for monitoring/alerting, and dashboards/charts |
-| [loki-stack](./loki-stack)     | [loki] and [promtail] for collecting logs in prometheus |
+| [kube-prometheus-stack](./kube-prometheus-stack) | [prometheus](https://prometheus.io/docs/introduction/overview/), alertmanager, [grafana](https://grafana.com) for collecting metrics for monitoring/alerting, and dashboards/charts |
+| [loki-stack](./loki-stack)     | [loki](https://grafana.com/oss/loki/) and [promtail](https://grafana.com/docs/loki/latest/clients/promtail/) for collecting logs in prometheus |
 
 ## Security
 
 |  | |
 |:----:|:---------------------------------------------------:|
 | [bitwarden-external-secrets](./bitwarden-external-secrets) | External Secrets Operator [Bitwarden] [secret store]()                          |
-| [external-secrets-operator](./external-secrets-operator)   | [External Secrets Operator] used for sourcing k8s secrets from an external provider |
+| [external-secrets-operator](./external-secrets-operator)   | [External Secrets Operator](https://external-secrets.io/latest/) used for sourcing k8s secrets from an external provider |
 | [headscale](./headscale)                                   | VPN, coming soon |
-
-Bitwarden: https://bitwarden.com/
-External Secrets Operator: https://external-secrets.io/latest/
-loki: https://grafana.com/oss/loki/
-grafana: https://grafana.com
-promtail: https://grafana.com/docs/loki/latest/clients/promtail/
-prometheus: https://prometheus.io/docs/introduction/overview/
