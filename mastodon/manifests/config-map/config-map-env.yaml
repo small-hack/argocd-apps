@@ -33,7 +33,7 @@ data:
   S3_HOSTNAME: s3.eu-central-003.backblazeb2.com
   S3_PROTOCOL: https
   S3_REGION: eu-central-003
-  SMTP_AUTH_METHOD: plain
+  SMTP_AUTH_METHOD: login
   SMTP_CA_FILE: /etc/ssl/certs/ca-certificates.crt
   SMTP_DELIVERY_METHOD: smtp
   SMTP_DOMAIN: enby.city
@@ -42,4 +42,5 @@ data:
   SMTP_OPENSSL_VERIFY_MODE: peer
   SMTP_PORT: '587'
   SMTP_SERVER: mail.enby.city
+  SMTP_TLS: 'true'
   STREAMING_CLUSTER_NUM: '1'
