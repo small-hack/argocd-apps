@@ -47,7 +47,7 @@ spec:
           tls:
             - secretName: pg-operator-tls
               hosts:
-                - pg-operator.social-media-for-dogs.com
+                - pg-ops.social-media-for-dogs.com
   project: default
   syncPolicy:
     automated:
