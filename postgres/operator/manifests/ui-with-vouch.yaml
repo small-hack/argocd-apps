@@ -47,7 +47,7 @@ spec:
           tls:
             - secretName: pg-operator-tls
               hosts:
-                - pg-operator.vleermuis.tech
+                - pg-ops.vleermuis.tech
   project: default
   syncPolicy:
     automated:
