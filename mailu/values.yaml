@@ -1763,7 +1763,7 @@ clamav:
 ## @section webmail parameters
 webmail:
   ## @param webmail.enabled Enable deployment of Roundcube webmail
-  enabled: true
+  enabled: false
 
   ## @param webmail.uri URI to access Roundcube webmail
   uri: /webmail
