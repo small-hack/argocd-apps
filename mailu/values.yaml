@@ -576,7 +576,7 @@ front:
     ## Example for LoadBalancer:
     ## type: LoadBalancer
     loadBalancerIP: ""
-    externalTrafficPolicy: Local
+    # externalTrafficPolicy: Local
     annotations: {}
     ports:
       pop3: false
