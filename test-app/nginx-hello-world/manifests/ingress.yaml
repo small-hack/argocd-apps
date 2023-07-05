@@ -11,7 +11,7 @@ metadata:
 spec:
   tls:
     - hosts:
-      - hello.vleermuis.tech
+      - plarts.vleermuis.tech
       secretName: "letsencrypt-prod"
   rules:
   - host: plarts.vleermuis.tech
