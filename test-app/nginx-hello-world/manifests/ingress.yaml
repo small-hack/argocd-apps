@@ -14,7 +14,7 @@ spec:
       - hello.vleermuis.tech
       secretName: "letsencrypt-prod"
   rules:
-  - host: hello.vleermuis.tech
+  - host: plarts.vleermuis.tech
     http:
       paths:
       - path: /
