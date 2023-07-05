@@ -95,7 +95,7 @@ nextcloud:
     smtp:
       host: mail.enby.city
       secure: ssl
-      port: 25
+      port: 465
       authtype: LOGIN
       # name: user
       # password: pass
