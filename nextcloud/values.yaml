@@ -126,6 +126,7 @@ nextcloud:
     logging.config.php: |-
       <?php
       $CONFIG = array (
+        'mail_smtpdebug' => true,
         'log_type' => 'file',
         'logfile' => 'nextcloud.log',
         'loglevel' => 2,
