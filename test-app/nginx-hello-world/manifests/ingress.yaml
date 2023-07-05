@@ -14,7 +14,7 @@ spec:
       - hello.social-media-for-dogs.com
       secretName: "letsencrypt-prod"
   rules:
-  - host: hello.social-media-for-dogs.com
+  - host: plarts.social-media-for-dogs.com
     http:
       paths:
       - path: /
