@@ -19,6 +19,10 @@ spec:
     helm:
       skipCrds: true
       values: |
+        global:
+          evaluation_interval: 5s
+          scrape_interval: 5s
+          scrape_timeout: 10s
         prometheus:
           ingress:
             enabled: true
