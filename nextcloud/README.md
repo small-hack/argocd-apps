@@ -3,13 +3,15 @@ A NextCloud k8s repo for those who want to get started quickly with nextcloud on
 
 # Tech Stack
 
-NextCloud would be running ontop of the following:
+NextCloud would be running ontop of Kubernetes (we use k3s) and using the following additional k8s apps:
 
 |       app/tool              |    what is it?       | Description                             |
 |:----------------------------|:---------------------|:------------------------------------------------------------|
 | [Ingress Nginx controller]  |  Ingress controller  | for routing external traffic to nextcloud                   |
 | [External Secrets Operator] |  Secrets Management  | This allows us to keep secrets in Bitwarden                 |
 | [k8up]                      |  Backups             | Use restic to backup k8s persistent volumes to Backblaze B2 |
+
+(If you need a local cluster on linux, checkout [smol-k8s-lab] to try out both KIND and k3s)
 
 ## Argo CD Nextcloud app of apps
 
