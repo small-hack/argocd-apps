@@ -97,6 +97,8 @@ spec:
 ```
 ---
 
+# Known issues
+
 ## Video Tumbnails
 
 By default videos won't get thumbnails. 
@@ -112,6 +114,14 @@ You can use the [recognize](https://github.com/nextcloud/recognize) app to track
 ```bash
 kubectl exec $NEXTCLOUD_POD -- su -s /bin/bash www-data -c "php occ recognize:download-models"
 ```
+
+## Maps
+
+The maps app can sometimes have an issue where it won't enable. You need to delete this file:
+```
+/var/www/html/custom_apps/maps/appinfo/application.php
+```
+Then it seems to allow an update and enable via the console 🤷 See [issue#1069](https://github.com/nextcloud/maps/issues/1069).
 
 
 ## TODO/Bugs to fix
