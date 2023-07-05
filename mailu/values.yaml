@@ -573,8 +573,6 @@ front:
   externalService:
     enabled: true
     type: LoadBalancer
-    ## Example for LoadBalancer:
-    ## type: LoadBalancer
     loadBalancerIP: ""
     externalTrafficPolicy: Cluster
     annotations: {}
@@ -749,7 +747,7 @@ front:
 ## @section Admin parameters
 admin:
   ## @param admin.enabled Enable access to the admin interface
-  enabled: true
+  enabled: false
 
   ## @param admin.uri URI to access the admin interface
   uri: /admin
