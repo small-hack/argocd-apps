@@ -23,23 +23,28 @@ ingress:
       rewrite ^/.well-known/webfinger /public.php?service=webfinger last;
       rewrite ^/.well-known/host-meta /public.php?service=host-meta last;
       rewrite ^/.well-known/host-meta.json /public.php?service=host-meta-json;
+
       location = /.well-known/carddav {
         return 301 $scheme://$host/remote.php/dav;
       }
+
       location = /.well-known/caldav {
         return 301 $scheme://$host/remote.php/dav;
       }
+
       location = /robots.txt {
         allow all;
         log_not_found off;
         access_log off;
       }
+
       location ~ ^/(?:build|tests|config|lib|3rdparty|templates|data)/ {
         proxy_buffer_size          128k;
         proxy_buffers              4 256k;
         proxy_busy_buffers_size    256k;
         deny all;
       }
+
       location ~ ^/(?:autotest|occ|issue|indie|db_|console) {
         proxy_buffer_size          128k;
         proxy_buffers              4 256k;
