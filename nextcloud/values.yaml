@@ -517,7 +517,7 @@ postgresql:
 ##
 
 redis:
-  enabled: false
+  enabled: true
   replica:
     replicaCount: 2
   auth:
