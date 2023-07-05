@@ -88,8 +88,8 @@ nextcloud:
     domain: enby.city
     smtp:
       host: mail.enby.city
-      secure: ssl
-      port: 465
+      secure: tls
+      port: 587
       authtype: LOGIN
       # name: user
       # password: pass
