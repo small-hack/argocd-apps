@@ -11,7 +11,7 @@ metadata:
 spec:
   tls:
     - hosts:
-      - hello.social-media-for-dogs.com
+      - plarts.social-media-for-dogs.com
       secretName: "letsencrypt-prod"
   rules:
   - host: plarts.social-media-for-dogs.com
