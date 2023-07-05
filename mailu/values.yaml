@@ -571,7 +571,7 @@ front:
   ## @param front.externalService.ports.smtps Expose SMTP port (TLS)
   ## @param front.externalService.ports.submission Expose Submission port
   externalService:
-    enabled: false
+    enabled: true
     type: ClusterIP
     ## Example for LoadBalancer:
     ## type: LoadBalancer
