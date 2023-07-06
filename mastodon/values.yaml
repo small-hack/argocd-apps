@@ -274,6 +274,8 @@ redis:
   # disable if you want to use an existing redis instance; in which case the
   # values below must match those of that external redis instance
   enabled: true
+  replica:
+    replicaCount: 2
   hostname: ""
   port: 6379
   auth:
