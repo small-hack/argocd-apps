@@ -210,7 +210,7 @@ ingress:
   enabled: true
   annotations:
     kubernetes.io/tls-acme: "true"
-    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    cert-manager.io/cluster-issuer: "letsencrypt-staging"
     # For choosing an ingress ingressClassName is preferred over annotations
     # kubernetes.io/ingress.class: nginx
     #
