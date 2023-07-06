@@ -50,29 +50,6 @@ spec:
       selfHeal: true
 
 ---
-# db job requires this so it has to be setup first
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: mastodon-configmaps
-  namespace: argocd
-  annotations:
-    argocd.argoproj.io/sync-wave: "1"
-spec:
-  project: default
-  destination:
-    server: "https://kubernetes.default.svc"
-    namespace: mastodon
-  source:
-    repoURL: https://github.com/small-hack/argocd.git
-    path: mastodon/manifests/config-map
-  syncPolicy:
-    syncOptions:
-      - ApplyOutOfSyncOnly=true
-    automated:
-      selfHeal: false
-
----
 # has to be after secrets, but before web-app
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -132,27 +109,27 @@ spec:
       selfHeal: true
       prune: true
 
----
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: mastodon-db-setup-job
-  namespace: argocd
-  annotations:
-    argocd.argoproj.io/sync-wave: "3"
-spec:
-  project: default
-  destination:
-    server: "https://kubernetes.default.svc"
-    namespace: mastodon
-  source:
-    repoURL: https://github.com/small-hack/argocd.git
-    path: mastodon/manifests/jobs
-  syncPolicy:
-    syncOptions:
-      - ApplyOutOfSyncOnly=true
-    automated:
-      selfHeal: false
+# ---
+# apiVersion: argoproj.io/v1alpha1
+# kind: Application
+# metadata:
+#   name: mastodon-db-setup-job
+#   namespace: argocd
+#   annotations:
+#     argocd.argoproj.io/sync-wave: "3"
+# spec:
+#   project: default
+#   destination:
+#     server: "https://kubernetes.default.svc"
+#     namespace: mastodon
+#   source:
+#     repoURL: https://github.com/small-hack/argocd.git
+#     path: mastodon/manifests/jobs
+#   syncPolicy:
+#     syncOptions:
+#       - ApplyOutOfSyncOnly=true
+#     automated:
+#       selfHeal: false
 
 ---
 # third sync wave because it has to be up after postgres
@@ -162,15 +139,14 @@ metadata:
   name: mastodon-web-app
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "4"
+    argocd.argoproj.io/sync-wave: "3"
 spec:
   project: default
   sources:
-    # using:       https://github.com/small-hack/argocd.git
     # forked from: https://github.com/mastodon/chart/tree/main
     - repoURL: 'https://jessebot.github.io/mastodon-helm-chart'
       chart: mastodon
-      targetRevision: 4.0.1
+      targetRevision: 4.0.2
       helm:
         valueFiles:
         - $values/mastodon/values.yaml
