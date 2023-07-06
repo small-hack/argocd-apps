@@ -1,12 +1,9 @@
 # Mastodon ArgoCD Template
 Mastodon is social networking that's not for sale: https://joinmastodon.org/
 
-Here we rangle the helm chart into ArgoCD :)
-
 We create in the manifests and helm chart in this sync wave order:
-- all required PVCs, ConfigMap, and Secrets (secrets are external secrets in a private repo)
+- all required PVCs, and Secrets (secrets are external secrets in a private repo)
 - Postgresql stateful set
-- DB migrate job as per suggestion in [issue#18](https://github.com/mastodon/chart/issues/18#issuecomment-1369804876)
 - mastodon web app (including elastic search and redis)
 
 ## Creating Mastodon Secrets
@@ -55,3 +52,7 @@ psql -U mastodon \
   -h mastodon-postgres.mastodon.svc.cluster.local \
   -p 5432
 ```
+
+## `relation "accounts" does not exist` error in the logs:
+
+You may need to generate a DB migrate job from a `helm template` command as per suggestion in [issue#18](https://github.com/mastodon/chart/issues/18#issuecomment-1369804876)
