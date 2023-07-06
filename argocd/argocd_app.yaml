@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+ name: argocd
+ namespace: argocd     
+spec:
+ project: default
+ destination:
+   namespace: argocd
+   server: https://kubernetes.default.svc
+ source:
+   chart: argo-cd
+   repoURL: https://argoproj.github.io/argo-helm
+   targetRevision: 5.37.1
+   helm:
+     releaseName: argo
+ syncPolicy:
+   automated:
+     prune: false # Specifies if resources should be pruned during auto-syncing ( false by default ).
+     selfHeal: true # Specifies if partial app sync should be executed when resources are changed only in target Kubernetes cluster and no git change detected ( false by default ).
+     allowEmpty: false # Allows deleting all application resources during automatic syncing ( false by default ).
