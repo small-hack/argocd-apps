@@ -146,7 +146,7 @@ spec:
     # forked from: https://github.com/mastodon/chart/tree/main
     - repoURL: 'https://jessebot.github.io/mastodon-helm-chart'
       chart: mastodon
-      targetRevision: 4.0.2
+      targetRevision: 4.0.3
       helm:
         valueFiles:
         - $values/mastodon/values.yaml
