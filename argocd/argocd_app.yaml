@@ -44,7 +44,7 @@ spec:
     helm:
       releaseName: argo-cd
       valueFiles:
-      - $values/argocd/values.yaml
+      - $values/argocd/values/values.yaml
   # our values.yaml file locally
   - repoURL: 'https://github.com/small-hack/argocd.git'
     targetRevision: main
