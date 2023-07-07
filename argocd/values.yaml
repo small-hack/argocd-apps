@@ -197,16 +197,15 @@ configs:
     #         - name: your-github-org
 
     # OIDC configuration as an alternative to dex (optional).
+    # to source a secret from somewhere else:
+    # https://argo-cd.readthedocs.io/en/stable/operator-manual/user-management/#example_1
     oidc.config: |
       name: Keycloak
       issuer: https://iam.vleermuis.tech/realms/master
       clientID: argocd
       clientSecret: $argocd-keycloak:oidc.keycloak.clientSecret
-      requestedScopes:
-        - openid
-        - profile
-        - email
-        - groups
+      requestedScopes: ["openid", "profile", "email", "groups"]
+      requestedIDTokenClaims: {"groups": {"essential": true}}
 
   # Argo CD configuration parameters
   ## Ref: https://github.com/argoproj/argo-cd/blob/master/docs/operator-manual/argocd-cmd-params-cm.yaml
