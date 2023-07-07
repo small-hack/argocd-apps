@@ -44,7 +44,7 @@ spec:
     helm:
       releaseName: argo-cd
       valueFiles:
-      - $values/charts/prometheus/values.yaml
+      - $values/argocd/values.yaml
   # our values.yaml file locally
   - repoURL: 'https://github.com/small-hack/argocd.git'
     targetRevision: main
