@@ -13,5 +13,5 @@ Using [freifunkMUC/wg-access-server-chart](https://github.com/freifunkMUC/wg-acc
 - create a key-pair
 
   ```bash
-  umask 077 && wg genkey | tee privatekey | wg pubkey > publickey
+  wg genkey | tee privatekey | wg pubkey > publickey
   ```
