@@ -9,13 +9,17 @@ spec:
     namespace: postgres-operator
     server: 'https://kubernetes.default.svc'
   source:
-    repoURL: 'https://opensource.zalando.com/postgres-operator/charts/postgres-operator'
+  - repoURL: 'https://opensource.zalando.com/postgres-operator/charts/postgres-operator'
     targetRevision: 1.10.0
     chart: postgres-operator
     helm:
-      values: |
-        configLoadBalancer:
-          db_hosted_zone: db.social-media-for-dogs.com
+      releaseName: pgoperator
+      valueFiles:
+      - $values/postgres/operator/values/values.yaml
+  # our values.yaml file locally
+  - repoURL: 'https://github.com/small-hack/argocd.git'
+    targetRevision: main
+    ref: values
   project: default
   syncPolicy:
     syncOptions:
