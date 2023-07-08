@@ -75,3 +75,33 @@ CREATE TABLE pcmark (
   results JSONB,
   system_info JSONB
 );
+
+
+## Create a backup job
+
+```yaml
+---
+apiVersion: k8up.io/v1
+kind: Backup
+metadata:
+  name: root-backup-to-b2
+  namespace: default
+spec:
+  podSecurityContext:
+    runAsUser: 0
+  failedJobsHistoryLimit: 10
+  successfulJobsHistoryLimit: 10
+  backend:
+    repoPasswordSecretRef:
+      name: name-of-your-secret
+      key: password
+    s3:
+      endpoint: s3.<region>.backblazeb2.com
+      bucket: <bucket name>
+      accessKeyIDSecretRef:
+        name: your-secret-name
+        key: applicationKeyId
+      secretAccessKeySecretRef:
+        name: your-other-secret-name
+        key: applicationKey
+```
