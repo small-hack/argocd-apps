@@ -25,9 +25,7 @@ spec:
           # resourcesVisible: "False"
           # targetNamespace: "default"
           teams:
-            - "team-a"
-            - "team-b"
-            - "team-c"
+            - "team-friendship"
         ingress:
           enabled: true
           ingressClassName: nginx
@@ -42,12 +40,12 @@ spec:
               auth_request_set $auth_resp_err $upstream_http_x_vouch_err;
               auth_request_set $auth_resp_failcount $upstream_http_x_vouch_failcount;   
           hosts:
-            - host: pg-operator.social-media-for-dogs.com
+            - host: pgops.social-media-for-dogs.com
               paths: ["/"]
           tls:
             - secretName: pg-operator-tls
               hosts:
-                - pg-ops.social-media-for-dogs.com
+                - pgops.social-media-for-dogs.com
   project: default
   syncPolicy:
     automated:
