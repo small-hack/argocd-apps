@@ -1,5 +1,13 @@
 # Postgres Setup
 
+Add annotation to PVC
+
+```yaml
+  annotations:
+    k8up.io/backupcommand: sh -c 'PGDATABASE="$POSTGRES_DB" PGUSER="$POSTGRES_USER" PGPASSWORD="$POSTGRES_PASSWORD" pg_dump --clean'
+    k8up.io/file-extension: .sql
+```
+
 ## Connection Strings
 
 Log in via password prompt to an interractive shell:
