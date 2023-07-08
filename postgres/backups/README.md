@@ -69,6 +69,76 @@
 - Create a new application key
 - Create an external secret
 
+## Create an External Secret
+
+```yaml
+---
+---
+# b2 bucket key/key ID for k8up, backups for persistent volumes using restic
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: k8up-b2-creds-pg-backup
+  namespace: default
+spec:
+  target:
+    name: k8up-b2-creds-pg-backup
+    deletionPolicy: Delete
+    template:
+      type: Opaque
+      data:
+        applicationKeyId: |-
+          {{ .applicationKeyId }}
+        applicationKey: |-
+          {{ .applicationKey }}
+  data:
+    - secretKey: applicationKeyId
+      sourceRef:
+        storeRef:
+          name: bitwarden-login
+          kind: ClusterSecretStore
+      remoteRef:
+        key: <bitwarden secret id>
+        property: username
+
+    - secretKey: applicationKey
+      sourceRef:
+        storeRef:
+          name: bitwarden-login
+          kind: ClusterSecretStore
+      remoteRef:
+        key: <bitwarden secret id>
+        property: password
+
+---
+# repo secret for k8up, backups for persistent volumes using restic
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: k8up-restic-b2-repo-pw-pg-backup
+  namespace: default
+spec:
+  target:
+    # Name for the secret to be created on the cluster
+    name: k8up-restic-b2-repo-pw-pg-backup
+    deletionPolicy: Delete
+    template:
+      type: Opaque
+      data:
+        password: |-
+          {{ .password }}
+
+  data:
+    - secretKey: password
+      sourceRef:
+        storeRef:
+          name: bitwarden-login
+          kind: ClusterSecretStore
+      remoteRef:
+        key: <bitwarden secret id>
+        property: password
+```
+
 ## Create a backup job
 
 ```yaml
