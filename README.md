@@ -43,7 +43,8 @@ Check out each app directory's README for more info.
 |:----|:---------------------------------------------------|
 | [external-secrets-operator](./external-secrets-operator)   | ESO ([External Secrets Operator](https://external-secrets.io/latest/)) used for sourcing k8s secrets from an external provider |
 | [bitwarden-external-secrets](./bitwarden-external-secrets) | ESO [Bitwarden] SecretStore, for using secrets directly from bitwarden items    |
-| [headscale](./headscale)                                   | VPN, 🏗️ coming soon |
+| [wireguard](./wg-access-server)                            | A helm chart for wg-access-server which uses Wireguard®️ for a VPN |
+| [headscale](./headscale)                                   | VPN, 🏗️ there isn't an official helm chart, so we're still working on this |
 
 ## Social Media and chat
 
