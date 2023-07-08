@@ -13,7 +13,7 @@ spec:
   project: default
   destination:
     server: "https://kubernetes.default.svc"
-    namespace: wg-access-server
+    namespace: wireguard
   source:
     repoURL: https://github.com/small-hack/argocd.git
     path: wg-access-server/manifests/persistence/
@@ -38,7 +38,7 @@ spec:
   project: default
   destination:
     server: "https://kubernetes.default.svc"
-    namespace: wg-access-server
+    namespace: wireguard
   source:
     repoURL: https://github.com/small-hack/vleermuis-external-secrets.git
     path: external_secrets/wg-access-server/
@@ -63,7 +63,7 @@ spec:
   project: default
   destination:
     server: "https://kubernetes.default.svc"
-    namespace: wg-access-server
+    namespace: wireguard
   sources:
     # official wg-access-server helm repo
     - repoURL: 'https://place1.github.io/wg-access-server'
