@@ -51,7 +51,7 @@ spec:
 
 ---
 # webapp is deployed 2nd because we need secrets
-# chart: https://github.com/wg-access-server/manifests/tree/main/helm/wg-access-server
+# chart: https://freifunkMUC.github.io/wg-access-server-chart/
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -66,9 +66,9 @@ spec:
     namespace: wireguard
   sources:
     # official wg-access-server helm repo
-    - repoURL: 'https://place1.github.io/wg-access-server'
+    - repoURL: 'https://freifunkMUC.github.io/wg-access-server-chart/'
       chart: wg-access-server
-      targetRevision: 0.4.6
+      targetRevision: 0.12.0
       helm:
         valueFiles:
         - $values/wg-access-server/values/values.yaml
