@@ -1,4 +1,6 @@
-# Postgres Setup
+# Postgres Bakups Test Process
+
+## Create a Postgres Database
 
 Add annotation to PVC
 
@@ -76,6 +78,11 @@ CREATE TABLE pcmark (
   system_info JSONB
 );
 
+## Create a B2 Bucket
+
+- Create a new bucket
+- Create a new application key
+- Create an external secret
 
 ## Create a backup job
 
