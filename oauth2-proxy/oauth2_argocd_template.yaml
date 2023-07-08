@@ -45,7 +45,7 @@ spec:
       targetRevision: 6.13.1
       helm:
         valueFiles:
-        - $values/oauth2-proxy/values.yaml
+        - $values/oauth2-proxy/values/values.yaml
     # our values.yaml file locally
     - repoURL: 'https://github.com/small-hack/argocd.git'
       targetRevision: main
