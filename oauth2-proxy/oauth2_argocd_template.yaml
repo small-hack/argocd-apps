@@ -1,0 +1,58 @@
+# First sync wave because we need secrets for oauth2-proxy, so it has to be
+# before oauth2-proxy so it has secrets for all its credentials.
+# In a private repo right now while we figure out a custom argocd plugin
+# ---
+# apiVersion: argoproj.io/v1alpha1
+# kind: Application
+# metadata:
+#   name: oauth2-proxy-external-secrets
+#   namespace: argocd
+#   annotations:
+#     argocd.argoproj.io/sync-wave: "1"
+# spec:
+#   project: default
+#   destination:
+#     server: "https://kubernetes.default.svc"
+#     namespace: oauth2-proxy
+#   source:
+#     repoURL: https://github.com/small-hack/vleermuis-external-secrets.git
+#     path: external_secrets/oauth2-proxy/
+#   syncPolicy:
+#     syncOptions:
+#       - Replace=true
+#     automated:
+#       prune: true
+#       selfHeal: true
+
+---
+# webapp is deployed 2nd because we need secrets and persistent volumes up 1st
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: oauth2-proxy-minimal-web-app
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  project: default
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: oauth2-proxy
+  sources:
+    # official oauth2-proxy helm repo
+    - repoURL: 'https://oauth2-proxy.github.io/helm'
+      chart: oauth2-proxy
+      targetRevision: 3.5.15
+      helm:
+        valueFiles:
+        - $values/oauth2-proxy/values.yaml
+    # our values.yaml file locally
+    - repoURL: 'https://github.com/small-hack/argocd.git'
+      targetRevision: main
+      ref: values
+  syncPolicy:
+    syncOptions:
+      - ApplyOutOfSyncOnly=true
+    automated:
+      prune: true
+      selfHeal: true
