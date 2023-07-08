@@ -6,8 +6,8 @@ Check out each app directory's README for more info.
 |  | |
 |:------------------------------:|:------------------------------------------------------------------------------------------------------|
 | [keycloak](./keycloak)         | An Identity Access Management tool with built in OpenIDConnect for authenticating to self hosted apps |
-| [oauth2-proxy](./oauth2-proxy) | 🏗️ Oauth2 proxy that works with Google, however we're testing a keycloak provider right now |
-| [vouch-proxy](./vouch-proxy)   | Oauth2 proxy that works with Google, however we've currently been unsuccessful in making it work with keycloak 🤷|
+| [vouch-proxy](./vouch-proxy)   | Oauth2 proxy that allows you to use ingress-nginx annotations to connect to a third party identity provider, giving you proper auth on websites that don't have auth. Currently works with the keycloak provider in this template, but also known to work with google and github |
+| [oauth2-proxy](./oauth2-proxy) | 🏗️ Under construction. Oauth2 proxy that works with Google, however we're testing a keycloak provider right now |
 
 ## Backups
 
