@@ -21,8 +21,8 @@ secretConfig:
 
 web:
   config:
-    # adminUsername: "admin"
-    # adminPassword: ""
+    adminUsername: ""
+    adminPassword: ""
     existingSecret: "wg-admin-creds"
     secretRefKeys:
       adminUsername: "username"
