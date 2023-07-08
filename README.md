@@ -1,14 +1,13 @@
 # Common ArgoCD templates for self hosted infra
 Check out each app directory's README for more info.
 
-## Social Media and chat
+## Auth and Identity Management
 
 |  | |
-|:------------------------:|:---------------------------------------------------------------------------------|
-| [mastodon](./mastodon)   | Selfhosted social media site, includes [postgres], [elastic search] (for full text searching), and [redis] (in memory caching) |
-| [matrix](./matrix)       | Selfhosted chat app 🚧 UNDER CONSTRUCTION |
-| [nextcloud](./nextcloud) | File storage solution (and a chat)        |
-</div>
+|:------------------------------:|:------------------------------------------------------------------------------------------------------|
+| [keycloak](./keycloak)         | An Identity Access Management tool with built in OpenIDConnect for authenticating to self hosted apps |
+| [oauth2-proxy](./oauth2-proxy) | 🏗️ Oauth2 proxy that works with Google, however we're testing a keycloak provider right now |
+| [vouch-proxy](./vouch-proxy)   | Oauth2 proxy that works with Google, however we've currently been unsuccessful in making it work with keycloak 🤷|
 
 ## Backups
 
@@ -28,14 +27,6 @@ Check out each app directory's README for more info.
 |:----------------:|:----------------------------------------------------------------|
 | [mailu](./mailu) | A k8s native approach to an email server and antivirus (clamav) |
 
-## Auth and Identity Management
-
-|  | |
-|:------------------------------:|:------------------------------------------------------------------------------------------------------|
-| [keycloak](./keycloak)         | An Identity Access Management tool with built in OpenIDConnect for authenticating to self hosted apps |
-| [oauth2-proxy](./oauth2-proxy) | 🏗️ Oauth2 proxy that works with Google, however we're testing a keycloak provider right now |
-| [vouch-proxy](./vouch-proxy)   | Oauth2 proxy that works with Google, however we've currently been unsuccessful in making it work with keycloak 🤷|
-
 ## Monitoring
 
 |  | |
@@ -50,3 +41,11 @@ Check out each app directory's README for more info.
 | [external-secrets-operator](./external-secrets-operator)   | ESO ([External Secrets Operator](https://external-secrets.io/latest/)) used for sourcing k8s secrets from an external provider |
 | [bitwarden-external-secrets](./bitwarden-external-secrets) | ESO [Bitwarden] SecretStore, for using secrets directly from bitwarden items    |
 | [headscale](./headscale)                                   | VPN, 🏗️ coming soon |
+
+## Social Media and chat
+
+|  | |
+|:------------------------:|:---------------------------------------------------------------------------------|
+| [mastodon](./mastodon)   | Selfhosted social media site, includes [postgres], [elastic search] (for full text searching), and [redis] (in memory caching) |
+| [matrix](./matrix)       | Selfhosted chat app 🚧 UNDER CONSTRUCTION |
+| [nextcloud](./nextcloud) | File storage solution (and a chat)        |
