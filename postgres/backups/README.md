@@ -73,7 +73,6 @@
 
 ```yaml
 ---
----
 # b2 bucket key/key ID for k8up, backups for persistent volumes using restic
 apiVersion: external-secrets.io/v1beta1
 kind: ExternalSecret
