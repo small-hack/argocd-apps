@@ -1,0 +1,108 @@
+# ---
+# # First sync wave done in parallel with creating secrets. Must be BEFORE
+# # kyverno so that kyverno persists it's data between upgrades. Sync policy
+# # is set to ApplyOutOfSyncOnly=true to create the volume initially only.
+# apiVersion: argoproj.io/v1alpha1
+# kind: Application
+# metadata:
+#   name: kyverno-persistence
+#   namespace: argocd
+#   annotations:
+#     argocd.argoproj.io/sync-wave: "1"
+# spec:
+#   project: default
+#   destination:
+#     server: "https://kubernetes.default.svc"
+#     namespace: kyverno
+#   source:
+#     repoURL: https://github.com/small-hack/argocd.git
+#     path: kyverno/manifests/persistence/
+#   syncPolicy:
+#     syncOptions:
+#       - ApplyOutOfSyncOnly=true
+#     automated:
+#       selfHeal: true
+# 
+# ---
+# # First sync wave because we need secrets for kyverno, so it has to be
+# # before kyverno so it has secrets for all its credentials.
+# # In a private repo right now while we figure out a custom argocd plugin
+# apiVersion: argoproj.io/v1alpha1
+# kind: Application
+# metadata:
+#   name: kyverno-external-secrets
+#   namespace: argocd
+#   annotations:
+#     argocd.argoproj.io/sync-wave: "1"
+# spec:
+#   project: default
+#   destination:
+#     server: "https://kubernetes.default.svc"
+#     namespace: kyverno
+#   source:
+#     repoURL: https://github.com/small-hack/vleermuis-external-secrets.git
+#     path: external_secrets/kyverno/
+#   syncPolicy:
+#     syncOptions:
+#       - Replace=true
+#     automated:
+#       prune: true
+#       selfHeal: true
+
+---
+# webapp is deployed 2nd because we need secrets and persistent volumes up 1st
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kyverno-minimal-web-app
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  project: default
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: kyverno
+  sources:
+    # official kyverno helm repo
+    - repoURL: 'https://kyverno.github.io/kyverno/'
+      chart: kyverno
+      targetRevision: 3.0.0
+      helm:
+        valueFiles:
+        - $values/kyverno/values.yaml
+    # our values.yaml file locally
+    - repoURL: 'https://github.com/small-hack/argocd.git'
+      targetRevision: main
+      ref: values
+  syncPolicy:
+    syncOptions:
+      - ApplyOutOfSyncOnly=true
+    automated:
+      prune: true
+      selfHeal: true
+
+# ---
+# # Third wave because we need scheduled k8up (restic via k8s) k8up_backups
+# # after the external secrets and pvcs for kyverno have been created
+# apiVersion: argoproj.io/v1alpha1
+# kind: Application
+# metadata:
+#   name: kyverno-k8up-b2-backups
+#   namespace: argocd
+#   annotations:
+#     argocd.argoproj.io/sync-wave: "3"
+# spec:
+#   project: default
+#   destination:
+#     server: "https://kubernetes.default.svc"
+#     namespace: kyverno
+#   source:
+#     repoURL: https://github.com/small-hack/argocd.git
+#     path: kyverno/manifests/k8up_backups/
+#   syncPolicy:
+#     syncOptions:
+#       - Replace=true
+#     automated:
+#       prune: true
+#       selfHeal: true
