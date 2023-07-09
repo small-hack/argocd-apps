@@ -1,0 +1,35 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: onboardme
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: onboardme
+  template:
+    metadata:
+      labels:
+        app: onboardme
+    spec:
+      containers:
+        - name: onboardme
+          image: jessebot/onboardme:debian12
+          command:
+            - /bin/sleep
+            - 3650d
+          imagePullPolicy: IfNotPresent
+      restartPolicy: Always
+      ports:
+        - containerPort: 80
+          name: "http"
+        - containerPort: 443
+          name: "https"
+        - containerPort: 22
+          name: "ssh"
+        - containerPort: 5900
+          name: "vnc"
+      volumeMounts:
+        - mountPath: "/tmp"
+          name: restore-test-mfw
