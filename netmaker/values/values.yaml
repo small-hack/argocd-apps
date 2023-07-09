@@ -117,7 +117,7 @@ wireguard:
   networkLimit: 10
 
 postgresql-ha:
-  enabled: true
+  enabled: false
   postgresql:
     # -- postgres user to generate
     username: netmaker
