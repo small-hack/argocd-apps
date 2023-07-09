@@ -2,9 +2,11 @@
 
 ## Create a Postgres Database
  
- - TODO
+ 1. TODO w/ operator
  
- - Add annotation to PVC
+ 2. TODO w/ bitnami
+ 
+ 3. Add an annotation to the database's PVC
 
     ```yaml
     annotations:
@@ -12,15 +14,17 @@
       k8up.io/file-extension: .sql
     ```
 
-## Connect to postgres
+## Prepare the test database
 
-- Log in via password prompt to an interractive shell:
+1. Log in via password prompt to an interractive shell using one of the following methods:
 
+- Via interractive shell w/ password prompt
+  
   ```bash
   psql postgres://<user>:<password>@<ip>:<port>/<database>
   ```
 
-- Login + Query:
+- Run command as a one-liner
 
   ```bash
   PGPASSWORD= \
@@ -34,7 +38,7 @@
     -c "SELECT * FROM <table>"
   ```
 
-## create a table
+2. create a table
 
   ```sql
   CREATE TABLE <table> (
@@ -49,7 +53,7 @@
   );
   ```
 
-## Insert data into table:
+3. Insert data into table:
 
   ```bash
   INSERT INTO <table> VALUES (
@@ -63,13 +67,13 @@
     '$system_info')"
   ```
 
-## Create a B2 Bucket
+## Prepare external Storage in B2
 
-- Create a new bucket
-- Create a new application key
-- Create an external secret
+1. Create a new bucket
+2. Create a new application key
+3. Save the bucket's endpoint URL and Name for the next step
 
-## Create an External Secret
+## Prepare the External Secrets
 
 ```yaml
 ---
@@ -138,7 +142,7 @@ spec:
         property: password
 ```
 
-## Create a backup job
+## Prepare the backup job
 
 ```yaml
 ---
