@@ -1,0 +1,16 @@
+---
+# Dynamic Persistent volume claim for postgresql specifically to persist
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: netmaker
+  name: netmaker-postgresql
+  annotations:
+    k8up.io/backupcommand: sh -c 'PGDATABASE="$POSTGRES_DB" PGUSER="$POSTGRES_USER" PGPASSWORD="$POSTGRES_PASSWORD" pg_dump --clean'
+    k8up.io/file-extension: .sql
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 15Gi
