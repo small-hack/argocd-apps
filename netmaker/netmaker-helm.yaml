@@ -131,7 +131,7 @@ spec:
     # official netmaker helm repo: https://github.com/gravitl/netmaker-helm
     # we're using a fork with fixes we need for security:
     # https://aldiserg.github.io/netmaker-helm/
-    - repoURL: 'https://jessebot.github.io/netmaker-helm/'
+    - repoURL: 'https://github.com/jessebot/netmaker-helm.git'
       chart: netmaker
       targetRevision: 0.4.0
       helm:
