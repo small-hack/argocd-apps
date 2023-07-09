@@ -25,7 +25,6 @@ spec:
     path: longhorn/
     repoURL: 'https://github.com/small-hack/argocd.git'
     targetRevision: HEAD
-  sources: []
   project: default
   syncPolicy:
     syncOptions:
