@@ -118,8 +118,9 @@ wireguard:
   networkLimit: 10
 
 postgresql-ha:
-  enabled: false
+  enabled: true
   postgresql:
+    existingSecret: "netmaker-pgsql-credentials"
     # -- postgres user to generate
     username: netmaker
     # -- postgres pass to generate
@@ -129,15 +130,10 @@ postgresql-ha:
     # -- postgress number of replicas to deploy
     replicaCount: 2
   persistence:
-    # -- size of postgres DB
-    size: 1Gi
+    existingClaim: "netmaker-postgresql"
 
 # name of an existing secret to use for mq pass and db config
 # keys must be the following:
-# SQL_HOST
-# SQL_PORT
-# SQL_DB
-# SQL_USER
 # SQL_PASS
 # MQ_ADMIN_PASSWORD
-existingSecret: 'netmaker-creds'
+existingSecret: 'netmaker-pgsql-credentials'
