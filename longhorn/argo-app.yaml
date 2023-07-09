@@ -17,10 +17,9 @@ spec:
       releaseName: longhorn-fs
       valueFiles:
       - $values/longhorn/values.yaml
-    # our values.yaml file locally
-    - repoURL: 'https://github.com/small-hack/argocd.git'
-      targetRevision: main
-      ref: values
+  - repoURL: 'https://github.com/small-hack/argocd.git'
+    targetRevision: main
+    ref: values
   sources: []
   project: default
   syncPolicy:
