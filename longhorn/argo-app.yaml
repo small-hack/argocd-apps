@@ -13,7 +13,7 @@ spec:
     helm:
       releaseName: longhorn-fs
       valueFiles:
-      - $values/longhorn/values/values.yaml
+      - $values/longhorn/values.yaml
   # our values.yaml file locally
   - repoURL: 'https://github.com/small-hack/argocd.git'
     targetRevision: main
