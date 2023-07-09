@@ -11,14 +11,14 @@ spec:
   successfulJobsHistoryLimit: 10
   backend:
     repoPasswordSecretRef:
-      name: name-of-your-secret
+      name: <name-of-your-secret>
       key: password
     s3:
-      endpoint: s3.<region>.backblazeb2.com
+      endpoint: <S3 bucket api endpoint>
       bucket: <bucket name>
       accessKeyIDSecretRef:
-        name: your-secret-name
+        name: <your-secret-name>
         key: applicationKeyId
       secretAccessKeySecretRef:
-        name: your-other-secret-name
+        name: <your-other-secret-name<
         key: applicationKey
