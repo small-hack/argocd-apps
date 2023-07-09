@@ -2,6 +2,7 @@
 # Created during second sync wave because we need secrets to exist before
 # the job gets created, but after the "secret-store" is configured so we 
 # have access to the external secrets operator
+---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -10,19 +11,18 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "2"
 spec:
-  project: default
   destination:
-    server: "https://kubernetes.default.svc"
+    name: ''
     namespace: default
+    server: 'https://kubernetes.default.svc'
   source:
-    repoURL: https://gitlab.com/small-hack/nextcloud-external-secrets.git
-    path: external-secrets/k8up-backups/
+    path: external_secrets/k8up-backups/
+    repoURL: 'https://github.com/small-hack/vleermuis-external-secrets.git'
+    targetRevision: HEAD
+  sources: []
+  project: default
   syncPolicy:
-    syncOptions:
-      - Replace=true
-    automated:
-      prune: true
-      selfHeal: true
+    automated: null
 
 ---
 apiVersion: argoproj.io/v1alpha1
@@ -38,7 +38,7 @@ spec:
     server: "https://kubernetes.default.svc"
     namespace: default
   source:
-    repoURL: https://gitlab.com/small-hack/argocd.git
+    repoURL: 'https://gitlab.com/small-hack/argocd.git'
     path: postgres/backups/k8up-test/k8up-job/
   syncPolicy:
     syncOptions:
