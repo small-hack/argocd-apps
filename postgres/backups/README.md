@@ -2,11 +2,11 @@
 
 ## Create a Postgres Database
  
- 1. TODO w/ operator
+ - Use the postgres operator to create a database via the [Web UI](https://pgops.social-media-for-dogs.com/#/list), or [manifest](examples/operator-database.yaml).
  
- 2. TODO w/ bitnami
+ - TODO: bitnami example
  
- 3. Add an annotation to the database's PVC
+ 3. Add an annotation for k8up to the database's PVC:
 
     ```yaml
     annotations:
