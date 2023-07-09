@@ -1,12 +1,12 @@
 # Postgres Bakups Test Process
+ - TODO: bitnami example
+
 
 ## Create a Postgres Database
  
- - Use the postgres operator to create a database via the [Web UI](https://pgops.social-media-for-dogs.com/#/list), or [manifest](examples/operator-database.yaml).
+ 1. Use the postgres operator to create a database via the [Web UI](https://pgops.social-media-for-dogs.com/#/list), or [manifest](examples/operator-database.yaml).
  
- - TODO: bitnami example
- 
- 3. Add an annotation for k8up to the database's PVC:
+ 2. Add an annotation for k8up to the database's PVC:
 
     ```yaml
     annotations:
@@ -170,3 +170,9 @@ spec:
         name: your-other-secret-name
         key: applicationKey
 ```
+
+## Run the backup job
+
+- Log into argocd
+- deploy the app
+- 
