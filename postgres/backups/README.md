@@ -249,21 +249,21 @@ psql  --username=k8up  \
 
   ```bash
   export KUBECONFIG=""
-  export NAMESPACE="default"
-  export BUCKET="vmt-pg-backup-test"
+  export NAMESPACE=""
+  export BUCKET=""
   export ENDPOINT=""
   export REPO_SECRET=""
   export BUCKET_SECRET=""
-  export PVC="pgdata-k8up-test-0"
-  export SNAPSHOT="e3e9ab1b"
+  export PVC=""
+  export SNAPSHOT=""
 
   k8up cli restore --restoreMethod pvc \
    --kubeconfig "$KUBECONFIG" \
-   --secretRef "$REPO_SECRET" \
+   --secretRef "REPO_SECRET" \
    --namespace "$NAMESPACE" \
    --s3endpoint "$ENDPOINT" \
    --s3bucket "$BUCKET" \
-   --s3secretRef "$BUCKET_SECRET" \
+   --s3secretRef "BUCKET_SECRET" \
    --snapshot "$SNAPSHOT" \
    --claimName "$PVC" \
    --runAsUser 0
