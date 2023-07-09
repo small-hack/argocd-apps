@@ -15,7 +15,7 @@ Longhorn is a lightweight, reliable and easy-to-use distributed block storage sy
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: longhorn
+  name: longhorn-app
 spec:
   destination:
     name: ''
