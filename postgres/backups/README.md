@@ -175,4 +175,21 @@ spec:
 
 - Log into argocd
 - deploy the app
-- 
+
+```yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: k8up-pg-backup-test-app
+spec:
+  destination:
+    name: ''
+    namespace: default
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: postgres/backups/k8up-test/
+    repoURL: 'https://github.com/small-hack/argocd.git'
+    targetRevision: HEAD
+  sources: []
+  project: default
+```
