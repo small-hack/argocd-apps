@@ -15,21 +15,23 @@ Longhorn is a lightweight, reliable and easy-to-use distributed block storage sy
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: longhorn-app
+  name: longhorn
 spec:
   destination:
     name: ''
-    namespace: argocd
+    namespace: longhorn-system
     server: 'https://kubernetes.default.svc'
   source:
-    path: longhorn/
+    path: longhorn
     repoURL: 'https://github.com/small-hack/argocd.git'
     targetRevision: HEAD
+  sources: []
   project: default
   syncPolicy:
-    syncOptions:
-      - CreateNamespace=true
     automated:
       prune: false
-      selfHeal: true
+      selfHeal: false
+    syncOptions:
+      - CreateNamespace=true
+
 ```
