@@ -31,5 +31,6 @@ spec:
         - containerPort: 5900
           name: "vnc"
       volumeMounts:
-        - mountPath: "/tmp"
-          name: restore-test-mfw
+        - name: backups
+          persistentVolumeClaim:
+            claimName: restore-test-mfw
