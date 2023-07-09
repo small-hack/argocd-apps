@@ -97,106 +97,17 @@
 
 ## Prepare the External Secrets
 
-```yaml
----
-# b2 bucket key/key ID for k8up, backups for persistent volumes using restic
-apiVersion: external-secrets.io/v1beta1
-kind: ExternalSecret
-metadata:
-  name: k8up-b2-creds-pg-backup
-  namespace: default
-spec:
-  target:
-    name: k8up-b2-creds-pg-backup
-    deletionPolicy: Delete
-    template:
-      type: Opaque
-      data:
-        applicationKeyId: |-
-          {{ .applicationKeyId }}
-        applicationKey: |-
-          {{ .applicationKey }}
-  data:
-    - secretKey: applicationKeyId
-      sourceRef:
-        storeRef:
-          name: bitwarden-login
-          kind: ClusterSecretStore
-      remoteRef:
-        key: <bitwarden secret id>
-        property: username
-
-    - secretKey: applicationKey
-      sourceRef:
-        storeRef:
-          name: bitwarden-login
-          kind: ClusterSecretStore
-      remoteRef:
-        key: <bitwarden secret id>
-        property: password
-
----
-# repo secret for k8up, backups for persistent volumes using restic
-apiVersion: external-secrets.io/v1beta1
-kind: ExternalSecret
-metadata:
-  name: k8up-restic-b2-repo-pw-pg-backup
-  namespace: default
-spec:
-  target:
-    # Name for the secret to be created on the cluster
-    name: k8up-restic-b2-repo-pw-pg-backup
-    deletionPolicy: Delete
-    template:
-      type: Opaque
-      data:
-        password: |-
-          {{ .password }}
-
-  data:
-    - secretKey: password
-      sourceRef:
-        storeRef:
-          name: bitwarden-login
-          kind: ClusterSecretStore
-      remoteRef:
-        key: <bitwarden secret id>
-        property: password
-```
+- See [example](examples/external-secret.yaml).
 
 ## Prepare the backup job
 
-```yaml
----
-apiVersion: k8up.io/v1
-kind: Backup
-metadata:
-  name: root-backup-to-b2
-  namespace: default
-spec:
-  podSecurityContext:
-    runAsUser: 0
-  failedJobsHistoryLimit: 10
-  successfulJobsHistoryLimit: 10
-  backend:
-    repoPasswordSecretRef:
-      name: name-of-your-secret
-      key: password
-    s3:
-      endpoint: s3.<region>.backblazeb2.com
-      bucket: <bucket name>
-      accessKeyIDSecretRef:
-        name: your-secret-name
-        key: applicationKeyId
-      secretAccessKeySecretRef:
-        name: your-other-secret-name
-        key: applicationKey
-```
+- See [example](examples/backup-job.yaml).
 
 ## Run the backup job
 
 - Log into argocd
-- deploy the app
+  
+- deploy the backup app
 
 ```yaml
 apiVersion: argoproj.io/v1alpha1
