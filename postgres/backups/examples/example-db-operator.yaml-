@@ -1,0 +1,27 @@
+apiVersion: acid.zalan.do/v1
+kind: postgresql
+metadata:
+  labels:
+    team: <your-team>
+  name: k8up-test
+  namespace: default
+spec:
+  allowedSourceRanges: null
+  databases:
+    <database name>: <database owner username>
+  numberOfInstances: 1
+  postgresql:
+    version: '15'
+  resources:
+    limits:
+      cpu: 500m
+      memory: 500Mi
+    requests:
+      cpu: 100m
+      memory: 100Mi
+  teamId: <your team>
+  users:
+    k8up: []
+  volume:
+    iops: 3000
+    size: 10Gi
