@@ -5,7 +5,7 @@ metadata:
   name: longhorn-helm-chart
 spec:
   destination:
-    namespace: longhorn
+    namespace: longhorn-system
     server: 'https://kubernetes.default.svc'
   sources:
   - repoURL: 'https://charts.longhorn.io'
@@ -13,11 +13,11 @@ spec:
     chart: longhorn
     helm:
       releaseName: longhorn
-  #    valueFiles:
-  #    - $values/longhorn/values.yaml
-  #- repoURL: 'https://github.com/small-hack/argocd.git'
-  #  targetRevision: main
-  #  ref: values
+      valueFiles:
+      - $values/longhorn/values.yaml
+  - repoURL: 'https://github.com/small-hack/argocd.git'
+    targetRevision: main
+    ref: values
   project: default
   syncPolicy:
     syncOptions:
