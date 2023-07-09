@@ -81,7 +81,7 @@
    --no-password \
    --host=localhost \
    --dbname=test \
-   -t -c\
+   -t -c \
    "SELECT vendor AS vendor,
     machine_name AS machine_name,
     cpu_alias AS cpu_alias,
@@ -218,16 +218,53 @@ spec:
 
 ## Verify Data in B2
 
+## Delete data in the database
+
+```bash
+psql  --username=k8up  \
+ --port=6432 \
+ --no-password \
+ --host=localhost \
+ --dbname=test -t -c \
+ "DROP TABLE pcmark;"
+```
+
 ## Restore Data
 
-1. Get list of snapshots, inspect a snapshot:
+1. Get list of snapshots
 
   ```bash
   # list snapshots in namespace
   kubectl get snapshots -n default
-
-  # inspect specific snapshot
-  kubectl get snapshots -n default 162e7a85 -o yaml
   ```
 
-2.  
+2. Get Snapshot's ID
+   
+  ```bash
+  # inspect specific snapshot and get it's ID using jq
+  kubectl get snapshots -n default e3e9ab1b -o json |jq -r '.spec.id'
+  ```
+
+3. Run the restore
+
+  ```bash
+  export KUBECONFIG=""
+  export NAMESPACE="default"
+  export BUCKET="vmt-pg-backup-test"
+  export ENDPOINT=""
+  export REPO_SECRET=""
+  export BUCKET_SECRET=""
+  export PVC="pgdata-k8up-test-0"
+  export SNAPSHOT="e3e9ab1b"
+
+  k8up cli restore --restoreMethod pvc \
+   --kubeconfig "$KUBECONFIG" \
+   --secretRef "$REPO_SECRET" \
+   --namespace "$NAMESPACE" \
+   --s3endpoint "$ENDPOINT" \
+   --s3bucket "$BUCKET" \
+   --s3secretRef "$BUCKET_SECRET" \
+   --snapshot "$SNAPSHOT" \
+   --claimName "$PVC" \
+   --runAsUser 0
+ ```  
