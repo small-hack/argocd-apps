@@ -12,7 +12,7 @@ metadata:
   #  app: multi-file-writer
 spec:
   # Optional:
-  storageClassName: local-path
+  # storageClassName:
   accessModes:
     - ReadWriteMany
   resources:
