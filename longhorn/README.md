@@ -19,7 +19,7 @@ metadata:
 spec:
   destination:
     name: ''
-    namespace: longhorn
+    namespace: argocd
     server: 'https://kubernetes.default.svc'
   source:
     path: longhorn/
