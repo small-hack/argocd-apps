@@ -1,0 +1,132 @@
+# Default values for netmaker.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# -- number of netmaker server replicas to create
+replicas: 1
+
+image:
+  # -- The image repo to pull Netmaker image from
+  repository: gravitl/netmaker
+  # -- Pull Policy for images
+  pullPolicy: Always
+  # -- Override the image tag to pull
+  tag: "v0.17.1"
+
+# -- override the name for netmaker objects
+nameOverride: ""
+
+# -- override the full name for netmaker objects
+fullnameOverride: ""
+
+serviceAccount:
+  # -- Specifies whether a service account should be created
+  create: true
+  # -- Annotations to add to the service account
+  annotations: {}
+  # -- Name of SA to use. If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+# -- pod annotations to add
+podAnnotations: {}
+
+# -- pod security contect to add
+podSecurityContext: {}
+# fsGroup: 2000
+
+baseDomain: wg.vleermuis.tech
+
+ui:
+  # -- how many UI replicas to create
+  replicas: 2
+
+mq:
+  # -- how many MQTT replicas to create
+  replicas: 2
+  singlenode: false
+  storageSize: 128Mi
+  password: 3yyerWGdds43yegGR
+  RWX:
+    storageClassName: ""
+
+dns:
+  # -- whether or not to deploy coredns
+  enabled: false
+  storageSize: 128Mi
+  RWX:
+    storageClassName: ""
+
+setIpForwarding:
+  enabled: true
+
+service:
+  # -- type for netmaker server services
+  type: ClusterIP
+  # -- port for API service
+  restPort: 8081
+  # -- port for MQTT service
+  mqPort: 443
+  # -- port for UI service
+  uiPort: 80
+
+ingress:
+  # -- attempts to configure ingress if true
+  enabled: true
+  tls:
+    enabled: false
+    issuerName: "letsencrypt-prod"
+  annotations:
+    ui: {}
+    rest: {}
+    mq: {}
+    base:
+      # -- annotation to generate ACME certs if available
+      kubernetes.io/ingress.allow-http: "false"
+    tls:
+      # -- use acme cert if available
+      kubernetes.io/tls-acme: "true"
+    nginx:
+      # -- Redirect http to https
+      nginx.ingress.kubernetes.io/ssl-redirect: 'true'
+      # -- destination addr for route
+      nginx.ingress.kubernetes.io/rewrite-target: /
+    traefik:
+      # -- Redirect to https
+      traefik.ingress.kubernetes.io/redirect-entry-point: https
+      # -- Redirect to https permanently
+      traefik.ingress.kubernetes.io/redirect-permanent: "true"
+      # -- rule type
+      traefik.ingress.kubernetes.io/rule-type: "PathPrefixStrip"
+  hostPrefix:
+    # -- ui route subdomain
+    ui: 'dashboard.'
+    # -- api (REST) route subdomain
+    rest: 'api.'
+    # -- mqtt route subdomain
+    broker: 'broker.'
+
+wireguard:
+  # -- whether or not to use WireGuard on server
+  enabled: true
+  service:
+    annotations: {}
+    serviceType: NodePort
+  # -- whether or not to use Kernel WG (should be false unless WireGuard is installed on hosts).
+  kernel: false
+  # -- max number of networks that Netmaker will support if running with WireGuard enabled
+  networkLimit: 10
+
+postgresql-ha:
+  enabled: true
+  postgresql:
+    # -- postgres user to generate
+    username: netmaker
+    # -- postgres pass to generate
+    password: netmaker
+    # -- postgress db to generate
+    database: netmaker
+    # -- postgress number of replicas to deploy
+    replicaCount: 2
+  persistence:
+    # -- size of postgres DB
+    size: 1Gi
