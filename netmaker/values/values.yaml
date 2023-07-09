@@ -45,7 +45,8 @@ mq:
   replicas: 2
   singlenode: false
   storageSize: 128Mi
-  password: 3yyerWGdds43yegGR
+  # password: 3yyerWGdds43yegGR
+  existingClaim: "netmaker-mq-pvc"
   RWX:
     storageClassName: ""
 
@@ -130,3 +131,13 @@ postgresql-ha:
   persistence:
     # -- size of postgres DB
     size: 1Gi
+
+# name of an existing secret to use for mq pass and db config
+# keys must be the following:
+# SQL_HOST
+# SQL_PORT
+# SQL_DB
+# SQL_USER
+# SQL_PASS
+# MQ_ADMIN_PASSWORD
+existingSecret: 'netmaker-creds'
