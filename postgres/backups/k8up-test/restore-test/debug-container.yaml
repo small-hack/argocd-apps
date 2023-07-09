@@ -13,9 +13,9 @@ spec:
       labels:
         app: onboardme
     spec:
+      restartPolicy: Always
       containers:
         - name: onboardme
-          restartPolicy: Always
           image: jessebot/onboardme:debian12
           command:
             - /bin/sleep
