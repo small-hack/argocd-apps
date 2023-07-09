@@ -15,6 +15,7 @@ spec:
     spec:
       containers:
         - name: onboardme
+          restartPolicy: Always
           image: jessebot/onboardme:debian12
           command:
             - /bin/sleep
@@ -29,8 +30,10 @@ spec:
               name: "ssh"
             - containerPort: 5900
               name: "vnc"
-          restartPolicy: Always
-          volumes:
-            - name: backups
-              persistentVolumeClaim:
-                claimName: restore-test-mfw
+          volumeMounts:
+          - mountPath: /tmp
+            name: backups
+      volumes:
+      - name: backups
+        persistentVolumeClaim:
+          claimName: restore-test-mfw
