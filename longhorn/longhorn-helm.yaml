@@ -12,12 +12,12 @@ spec:
     targetRevision: 1.5.0
     chart: longhorn
     helm:
-      releaseName: longhornfs
-      valueFiles:
-      - $values/longhorn/values.yaml
-  - repoURL: 'https://github.com/small-hack/argocd.git'
-    targetRevision: main
-    ref: values
+      releaseName: longhorn
+  #    valueFiles:
+  #    - $values/longhorn/values.yaml
+  #- repoURL: 'https://github.com/small-hack/argocd.git'
+  #  targetRevision: main
+  #  ref: values
   project: default
   syncPolicy:
     syncOptions:
