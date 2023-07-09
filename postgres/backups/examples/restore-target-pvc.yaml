@@ -14,7 +14,7 @@ spec:
   # Optional:
   storageClassName: local-path
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   resources:
     requests:
       # Must be sufficient to hold your data
