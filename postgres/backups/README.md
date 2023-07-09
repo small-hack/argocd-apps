@@ -218,4 +218,16 @@ spec:
 
 ## Verify Data in B2
 
-## 
+## Restore Data
+
+1. Get list of snapshots, inspect a snapshot:
+
+  ```bash
+  # list snapshots in namespace
+  kubectl get snapshots -n default
+
+  # inspect specific snapshot
+  kubectl get snapshots -n default 162e7a85 -o yaml
+  ```
+
+2.  
