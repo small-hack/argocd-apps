@@ -8,17 +8,23 @@ spec:
     namespace: longhorn
     server: 'https://kubernetes.default.svc'
   source:
-    - repoURL: 'https://charts.longhorn.io'
-      path: ''
-      targetRevision: 1.5.0
-      chart: longhorn
-      helm:
-        releaseName: longhorn-fs
-        valueFiles:
-        - $values/longhorn/values.yaml
+  - repoURL: 'https://charts.longhorn.io'
+    path: ''
+    targetRevision: 1.5.0
+    chart: longhorn
+    helm:
+      releaseName: longhorn-fs
+      valueFiles:
+      - $values/longhorn/values.yaml
     # our values.yaml file locally
     - repoURL: 'https://github.com/small-hack/argocd.git'
       targetRevision: main
       ref: values
   sources: []
   project: default
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+    automated:
+      prune: true
+      selfHeal: true
