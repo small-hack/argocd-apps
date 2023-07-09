@@ -67,6 +67,22 @@
     '$system_info')"
   ```
 
+4. Query the database
+
+  ```bash
+  psql  --username=k8up \
+   --port=6432 \
+   --no-password \
+   --host=localhost \
+   --dbname=test \
+   -t -c\
+   "SELECT vendor AS vendor,
+    machine_name AS machine_name,
+    cpu_alias AS cpu_alias,
+    system_info->>'Processor' AS cpu,
+    results->>'CPU_SINGLETHREAD' AS single_threaded FROM pcmark";
+  ```
+
 ## Prepare external Storage in B2
 
 1. Create a new bucket
@@ -193,3 +209,7 @@ spec:
   sources: []
   project: default
 ```
+
+## Verify Data in B2
+
+## 
