@@ -43,7 +43,8 @@ wireguard:
     # privateKey: "qJvFeHHuffBaPWx4veJGQqXw6j5zdo5cSOaBd1Z0Km4="
   service:
     annotations: {}
-    type: ClusterIP
+    # type: ClusterIP
+    type: LoadBalancer
     sessionAffinity: ClientIP
     externalTrafficPolicy: ""
     ipFamilyPolicy: SingleStack
