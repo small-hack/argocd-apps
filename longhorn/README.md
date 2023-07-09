@@ -27,5 +27,10 @@ spec:
     targetRevision: HEAD
   sources: []
   project: default
-
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+    automated:
+      prune: false
+      selfHeal: true
 ```
