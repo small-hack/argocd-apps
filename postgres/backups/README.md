@@ -16,7 +16,13 @@
 
 ## Prepare the test database
 
-1. Log in via password prompt to an interractive shell using one of the following methods:
+1. Expose the DB if you didnt use a LoadBalancer or NodePort.
+
+   ```bash
+   kubectl port-forward k8up-test-0 6432:5432 -n default
+   ```
+
+2. Log in via password prompt to an interractive shell using one of the following methods:
 
 - Via interractive shell w/ password prompt
   
@@ -53,7 +59,7 @@
   );
   ```
 
-3. Insert data into table:
+4. Insert data into table:
 
   ```bash
   INSERT INTO <table> VALUES (
@@ -67,7 +73,7 @@
     '$system_info')"
   ```
 
-4. Query the database
+5. Query the table
 
   ```bash
   psql  --username=k8up \
