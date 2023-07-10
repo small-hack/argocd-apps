@@ -132,7 +132,7 @@ spec:
     # https://aldiserg.github.io/netmaker-helm/
     - repoURL: 'https://jessebot.github.io/netmaker-helm'
       chart: netmaker
-      targetRevision: 0.5.0
+      targetRevision: 0.5.1
       helm:
         valueFiles:
         - $values/netmaker/values/values.yaml
