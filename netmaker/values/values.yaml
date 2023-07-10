@@ -80,7 +80,7 @@ ingress:
   # -- attempts to configure ingress if true
   enabled: true
   tls:
-    enabled: false
+    enabled: true
     issuerName: "letsencrypt-prod"
   annotations:
     ui: {}
