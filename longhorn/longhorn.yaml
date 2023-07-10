@@ -3964,7 +3964,7 @@ spec:
   ports:
   - name: http
     port: 80
-    targetPort: http
+    targetPort: 8000
     nodePort: null
 ---
 # Source: longhorn/templates/services.yaml
