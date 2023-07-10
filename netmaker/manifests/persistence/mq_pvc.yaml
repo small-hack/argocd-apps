@@ -6,7 +6,7 @@ metadata:
   name: netmaker-mq-pvc
 spec:
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   resources:
     requests:
       storage: 8Gi
