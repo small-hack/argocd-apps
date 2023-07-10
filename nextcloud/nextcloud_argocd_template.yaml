@@ -6,7 +6,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: nextcloud-persistence
-  namespace: nextcloud
+  namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "1"
 spec:
@@ -31,7 +31,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: nextcloud-external-secrets
-  namespace: nextcloud
+  namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "1"
 spec:
@@ -55,7 +55,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: nextcloud-minimal-web-app
-  namespace: nextcloud
+  namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "2"
 spec:
@@ -89,7 +89,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: nextcloud-k8up-b2-backups
-  namespace: nextcloud
+  namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "3"
 spec:
