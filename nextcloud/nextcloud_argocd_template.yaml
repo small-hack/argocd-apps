@@ -10,7 +10,7 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "1"
 spec:
-  project: default
+  project: nextcloud
   destination:
     server: "https://kubernetes.default.svc"
     namespace: nextcloud
@@ -35,7 +35,7 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "1"
 spec:
-  project: default
+  project: nextcloud
   destination:
     server: "https://kubernetes.default.svc"
     namespace: nextcloud
@@ -59,7 +59,7 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "2"
 spec:
-  project: default
+  project: nextcloud
   destination:
     server: "https://kubernetes.default.svc"
     namespace: nextcloud
@@ -93,7 +93,7 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "3"
 spec:
-  project: default
+  project: nextcloud
   destination:
     server: "https://kubernetes.default.svc"
     namespace: nextcloud
