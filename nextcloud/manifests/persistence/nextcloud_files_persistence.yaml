@@ -8,8 +8,9 @@ metadata:
   annotations:
     k8up.io/backup: "true"
 spec:
+  storageClassName: longhorn
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   resources:
     requests:
       storage: 500Gi
