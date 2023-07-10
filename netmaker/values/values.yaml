@@ -50,6 +50,8 @@ mq:
   singlenode: false
   storageSize: 128Mi
   # password: 3yyerWGdds43yegGR
+  existingSecret: 'netmaker-pgsql-credentials'
+  secretKey: "MQ_ADMIN_PASSWORD"
   existingClaim: "netmaker-mq-pvc"
   RWX:
     storageClassName: ""
@@ -121,23 +123,20 @@ wireguard:
   # -- max number of networks that Netmaker will support if running with WireGuard enabled
   networkLimit: 10
 
-postgresql-ha:
+postgresql:
   enabled: true
-  postgresql:
-    existingSecret: "netmaker-pgsql-credentials"
+  auth:
     # -- postgres user to generate
     username: netmaker
-    # -- postgres pass to generate
-    password: netmaker
-    # -- postgress db to generate
+    # -- postgress database
     database: netmaker
+    # -- postgres pass to generate, ignored if existingSecret passed in
+    # password: netmaker
     # -- postgress number of replicas to deploy
+    existingSecret: "netmaker-pgsql-credentials"
+    secretKeys:
+      userPasswordKey: SQL_PASS
+      adminPasswordKey: "postgres-password"
     replicaCount: 2
   persistence:
     existingClaim: "netmaker-postgresql"
-
-# name of an existing secret to use for mq pass and db config
-# keys must be the following:
-# SQL_PASS
-# MQ_ADMIN_PASSWORD
-existingSecret: 'netmaker-pgsql-credentials'
