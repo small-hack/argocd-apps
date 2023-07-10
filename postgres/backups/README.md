@@ -19,14 +19,21 @@
 1. Expose the DB if you didnt use a LoadBalancer or NodePort.
 
    ```bash
-   kubectl port-forward k8up-test-0 6432:5432 -n default
+   # find your postgres pod
+   kubectl get pods -n default
+   NAME              READY   STATUS    RESTARTS   AGE
+   longhorn-test-0   1/1     Running   0          9m15s
+
+   # forward the port
+   kubectl port-forward longhorn-test-0 6432:5432 -n default
    ```
 
  - Get the password for the DB (if you used the operator)
    
    ```bash
-   kubectl get secret k8up.longhorn-test.credentials.postgresql.acid.zalan.do \
-   -o json |jq -r .data.password |base64 -d
+   export PGPASSWORD=$(kubectl get secret k8up.longhorn-test.credentials.postgresql.acid.zalan.do \
+   -n default \
+   -o json |jq -r .data.password |base64 -d)
    ```
 
 2. Log in via password prompt to an interractive shell using one of the following methods:
@@ -34,23 +41,13 @@
   - Via interractive shell w/ password prompt
   
     ```bash
-    psql postgres://<user>:<password>@<ip>:<port>/<database>
+    psql postgres://k8up:$PGPASSWORD@localhost:6432/test
     ```
 
-  - Run command as a one-liner
+  - Run commands as one-liners
 
     ```bash
-    export id=0
-    export machine_name="bradley"
-    export vendor="on-prem"
-    export cpu_alias="i7-11700"
-    export baseline_info=$(yq -o=json -I=0 '.BaselineInfo' results_all.yml)
-    export version=$(yq -o=json -I=0 '.Version' results_all.yml)
-    export results=$(yq -o=json -I=0 '.Results' results_all.yml)
-    export system_info=$(yq -o=json -I=0 '.SystemInformation' results_all.yml)
-
-    psql \
-      --username=k8up  \
+    psql --username=k8up  \
       --port=6432  \
       --no-password  \
       --host=localhost  \
@@ -62,48 +59,79 @@
 2. create a table
 
     ```sql
-    CREATE TABLE <table> (
-      id INTEGER NOT NULL,
-      vendor TEXT NOT NULL,
-      machine_name TEXT NOT NULL,
-      cpu_alias TEXT,
-      baseline_info JSONB,
-      version JSONB,
-      results JSONB,
-      system_info JSONB
-    );
+    psql --username k8up  \
+      --port 6432  \
+      --no-password  \
+      --host localhost  \
+      --dbname test  \
+      -t  \
+      -c "CREATE TABLE pcmark (
+       id INTEGER NOT NULL,
+       vendor TEXT NOT NULL,
+       machine_name TEXT NOT NULL,
+       cpu_alias TEXT,
+       baseline_info JSONB,
+       version JSONB,
+       results JSONB,
+       system_info JSONB
+    );"
     ```
 
 4. Insert data into table:
 
     ```bash
-    INSERT INTO <table> VALUES (
-      $id,
-      '$vendor',
-      '$machine_name',
-      '$cpu_alias',
-      '$baseline_info',
-      '$version',
-      '$results',
-      '$system_info')"
+    export id=0
+    export machine_name="bradley"
+    export vendor="on-prem"
+    export cpu_alias="i7-11700"
+    export baseline_info=$(yq -o=json -I=0 '.BaselineInfo' test-data.yaml)
+    export version=$(yq -o=json -I=0 '.Version' test-data.yaml)
+    export results=$(yq -o=json -I=0 '.Results' test-data.yaml)
+    export system_info=$(yq -o=json -I=0 '.SystemInformation' test-data.yaml)
+
+    psql --username k8up  \
+      --port 6432  \
+      --no-password  \
+      --host localhost  \
+      --dbname test  \
+      -t  \
+      -c "INSERT INTO pcmark VALUES (
+       $id,
+       '$vendor',
+       '$machine_name',
+       '$cpu_alias',
+       '$baseline_info',
+       '$version',
+       '$results',
+       '$system_info');"
     ```
 
 5. Query the table
 
     ```bash
-    psql  --username=k8up \
-     --port=6432 \
-     --no-password \
-     --host=localhost \
-     --dbname=test \
-     -t -c \
-     "SELECT vendor AS vendor,
-      machine_name AS machine_name,
-      cpu_alias AS cpu_alias,
-      system_info->>'Processor' AS cpu,
-      results->>'CPU_SINGLETHREAD' AS single_threaded FROM pcmark;"
+    psql --username k8up  \
+      --port 6432  \
+      --no-password  \
+      --host localhost  \
+      --dbname test  \
+      -x \
+      -c "SELECT vendor AS vendor,
+         machine_name AS machine_name,
+         cpu_alias AS cpu_alias,
+         system_info->>'Processor' AS cpu,
+         results->>'CPU_SINGLETHREAD' AS single_threaded FROM pcmark;"
     ```
-
+  
+  - Expected Output:
+    
+    ```bash
+    -[ RECORD 1 ]---+---------------------------------------
+    vendor          | on-prem
+    machine_name    | bradley
+    cpu_alias       | i7-11700
+    cpu             | 11th Gen Intel Core i7-11700 @ 2.50GHz
+    single_threaded | 3447.1733723816888
+    ```
 ## Prepare external Storage in B2
 
 1. Create a new bucket
