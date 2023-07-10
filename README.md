@@ -40,8 +40,8 @@ Beyond just ensuring everything meets basic reliability and security needs, we a
 |:-------------------------|:---------------------------------------------------------------------------------|
 | [k8up](./k8up)           | k8s native backups done via restic, so you can sync your persistent volumes to external s3 compliant storage |
 | [nextcloud](./nextcloud) | Self hosted file storage cloud solution. Replaces something like google drive/photos/notes/meets/calendar    |
-| [Harbor](./harbor)       | Container Registry and OCI artifact store with built-in vulernability scanning via Trivy                     |
-| [Longhorn](./longhorn)   | Longhorn is a lightweight, reliable and easy-to-use distributed block storage system for Kubernetes.         |
+| [Harbor](./harbor)       | 🚧 UNDER CONSTRUCTION - Container Registry and OCI artifact store with built-in vulernability scanning via Trivy                     |
+| [Longhorn](./longhorn)   | 🚧 UNDER CONSTRUCTION - Longhorn is a lightweight, reliable and easy-to-use distributed block storage system for Kubernetes.         |
 
 ### Email
 
@@ -73,4 +73,4 @@ Beyond just ensuring everything meets basic reliability and security needs, we a
 | App                      | Description                                                                      |
 |:-------------------------|:---------------------------------------------------------------------------------|
 | [mastodon](./mastodon)   | Selfhosted social media site, includes [postgres], [elastic search] (for full text searching), and [redis] (in memory caching) 🚧 UNDER CONSTRUCTION |
-| [matrix](./matrix)       | Selfhosted chat app 🚧 UNDER CONSTRUCTION |
+| [matrix](./matrix)       |  🚧 UNDER CONSTRUCTION - Selfhosted chat app|
