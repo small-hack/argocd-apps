@@ -49,6 +49,7 @@ mq:
   replicas: 2
   singlenode: false
   storageSize: 128Mi
+  username: "netmaker"
   # password: 3yyerWGdds43yegGR
   existingSecret: 'netmaker-pgsql-credentials'
   secretKey: "MQ_ADMIN_PASSWORD"

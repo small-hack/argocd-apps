@@ -65,11 +65,11 @@ spec:
     namespace: netmaker
   sources:
     # official netmaker helm repo: https://github.com/gravitl/netmaker-helm
-    # we're using a fork with fixes we need for security:
+    # we're using a fork of this repo with fixes we need for security:
     # https://aldiserg.github.io/netmaker-helm/
     - repoURL: 'https://jessebot.github.io/netmaker-helm'
       chart: netmaker
-      targetRevision: 0.7.1
+      targetRevision: 0.7.2
       helm:
         valueFiles:
         - $values/netmaker/values/values.yaml
