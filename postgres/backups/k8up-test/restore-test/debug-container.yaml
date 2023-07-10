@@ -1,4 +1,25 @@
 ---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: restore-test-mfw
+  namespace: default
+  annotations:
+    # set to "true" to include in future backups
+    k8up.io/backup: "false"
+  # Optional:
+  #labels:
+  #  app: multi-file-writer
+spec:
+  # Optional:
+  storageClassName: longhorn
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      # Must be sufficient to hold your data
+      storage: 16Gi
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
