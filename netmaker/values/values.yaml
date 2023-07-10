@@ -36,6 +36,10 @@ podSecurityContext: {}
 
 baseDomain: wg.social-media-for-dogs.com
 
+persistence:
+  sharedData:
+    existingClaim: "netmaker-shared-data-pvc"
+
 ui:
   # -- how many UI replicas to create
   replicas: 2
