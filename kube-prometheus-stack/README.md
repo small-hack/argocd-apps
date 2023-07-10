@@ -23,25 +23,23 @@ https://blog.ediri.io/kube-prometheus-stack-and-argocd-23-how-to-remove-a-workar
     ```
 ## Adding additional scrape targets
 
-- Create a yaml file containing your prometheus scrape configs
+1. Create a yaml file containing your prometheus scrape configs
 
-  ```yaml
-  - job_name: "nginx-ingress"
-    static_configs:
-    - targets: ["ingress-nginx-controller-metrics.ingress-nginx.svc.cluster.local:10254"]
-  - job_name: "postgres"
-    static_configs:
-    - targets: ["postgres-postgresql-metrics.default.svc.cluster.local:9187"]
-  - job_name: "nvidia-smi"
-    static_configs:
-    - targets: ["nvidia-dcgm-exporter.default.svc.cluster.local:9400"]
-  ```
+      ```yaml
+      - job_name: "nginx-ingress"
+        static_configs:
+        - targets: ["ingress-nginx-controller-metrics.ingress-nginx.svc.cluster.local:10254"]
+      - job_name: "postgres"
+        static_configs:
+        - targets: ["postgres-postgresql-metrics.default.svc.cluster.local:9187"]
+      - job_name: "nvidia-smi"
+        static_configs:
+        - targets: ["nvidia-dcgm-exporter.default.svc.cluster.local:9400"]
+      ```
   
-- Convert the file to a secret.
+2. Convert the file to a secret. Name of secret must match what is set in the helm `values.yaml`
   
-  > name of secret must match what is set in the helm values.yaml
-  
-  ```bash
-  kubectl create secret generic additional-scrape-configs --from-file=prometheus-additional.yaml \
+      ```bash
+      kubectl create secret generic additional-scrape-configs --from-file=prometheus-additional.yaml \
       --dry-run=client -oyaml > additional-scrape-configs.yaml
-  ```
+      ```
