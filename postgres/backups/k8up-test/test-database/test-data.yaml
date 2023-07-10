@@ -1,0 +1,80 @@
+BaselineInfo:
+  WebDBID: -1
+  TimeStamp: 20230617112142
+Version:
+  Major: 11
+  Minor: 0
+  Build: 1000
+  SpecialBuildName: ""
+  ptArchitecture: x86_64_linux
+Results:
+  Results Complete: true
+  NumTestProcesses: 16
+  CPU_INTEGER_MATH: 85852.589399999997
+  CPU_FLOATINGPOINT_MATH: 43994.850710610401
+  CPU_PRIME: 77.45307142049117
+  CPU_SORTING: 41711.865911053625
+  CPU_ENCRYPTION: 18874.294737994394
+  CPU_COMPRESSION: 319758.36064927746
+  CPU_SINGLETHREAD: 3447.1733723816888
+  CPU_PHYSICS: 1209.5966936233212
+  CPU_MATRIX_MULT_SSE: 19882.444089412864
+  CPU_mm: 1860.2107274208681
+  CPU_sse: 8053.918310395431
+  CPU_fma: 23549.151596364074
+  CPU_avx: 17208.222752410977
+  CPU_avx512: 30718.483698480984
+  m_CPU_enc_SHA: 19075856763.794998
+  m_CPU_enc_AES: 28275289421.550415
+  m_CPU_enc_ECDSA: 12022251252.216211
+  ME_ALLOC_S: 9436.5850227815645
+  ME_READ_S: 33962.586718749997
+  ME_READ_L: 24185.4140625
+  ME_WRITE: 18575.970703125
+  ME_LARGE: 126922
+  ME_LATENCY: 30.308855077604942
+  ME_THREADED: 43805.904296875
+  SUMM_CPU: 25241.356677054398
+  SUMM_ME: 4174.4817134204595
+SystemInformation:
+  OSName: Debian GNU/Linux 12 (bookworm)
+  Kernel: 6.1.0-9-amd64
+  Device: ""
+  Processor: 11th Gen Intel Core i7-11700 @ 2.50GHz
+  NumSockets: 1
+  Manufacturer: GenuineIntel
+  NumCores: 8
+  NumLogicals: 16
+  CPUFrequency: 4800
+  Memory: 128703
+  MemModuleInfo:
+    iNumMemSticks: 4
+    DIMM 1:
+      manufacturer: Crucial
+      modulePartNo: "CT32G4DFD832A.C16FF "
+      memType: DDR4
+      size: 32
+      clkspeed: 1600
+      moduleVoltage: 1.20000005
+    DIMM 2:
+      manufacturer: Crucial
+      modulePartNo: "CT32G4DFD832A.C16FB "
+      memType: DDR4
+      size: 32
+      clkspeed: 1600
+      moduleVoltage: 1.20000005
+    DIMM 3:
+      manufacturer: Crucial
+      modulePartNo: "CT32G4DFD832A.C16FF "
+      memType: DDR4
+      size: 32
+      clkspeed: 1600
+      moduleVoltage: 1.20000005
+    DIMM 4:
+      manufacturer: Crucial
+      modulePartNo: "CT32G4DFD832A.C16FB "
+      memType: DDR4
+      size: 32
+      clkspeed: 1600
+      moduleVoltage: 1.20000005
+Checksum: 60D44B2EC7A7313B734983E45A504B7A325A9742
