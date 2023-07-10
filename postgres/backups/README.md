@@ -31,80 +31,78 @@
 
 2. Log in via password prompt to an interractive shell using one of the following methods:
 
-- Via interractive shell w/ password prompt
+  - Via interractive shell w/ password prompt
   
-  ```bash
-  psql postgres://<user>:<password>@<ip>:<port>/<database>
-  ```
+    ```bash
+    psql postgres://<user>:<password>@<ip>:<port>/<database>
+    ```
 
-- Run command as a one-liner
+  - Run command as a one-liner
 
-  ```bash
-  
-  export id=0
-  export machine_name="bradley"
-  export vendor="on-prem"
-  export cpu_alias="i7-11700"
-  export baseline_info=$(yq -o=json -I=0 '.BaselineInfo' results_all.yml)
-  export version=$(yq -o=json -I=0 '.Version' results_all.yml)
-  export results=$(yq -o=json -I=0 '.Results' results_all.yml)
-  export system_info=$(yq -o=json -I=0 '.SystemInformation' results_all.yml)
+    ```bash
+    export id=0
+    export machine_name="bradley"
+    export vendor="on-prem"
+    export cpu_alias="i7-11700"
+    export baseline_info=$(yq -o=json -I=0 '.BaselineInfo' results_all.yml)
+    export version=$(yq -o=json -I=0 '.Version' results_all.yml)
+    export results=$(yq -o=json -I=0 '.Results' results_all.yml)
+    export system_info=$(yq -o=json -I=0 '.SystemInformation' results_all.yml)
 
-
-  psql \
-    --username=k8up  \
-    --port=6432  \
-    --no-password  \
-    --host=localhost  \
-    --dbname=pcmark  \
-    -t  \
-    -c "SELECT * FROM <table>"
-  ```
+    psql \
+      --username=k8up  \
+      --port=6432  \
+      --no-password  \
+      --host=localhost  \
+      --dbname=pcmark  \
+      -t  \
+      -c "SELECT * FROM <table>"
+    ```
 
 2. create a table
 
-  ```sql
-  CREATE TABLE <table> (
-    id INTEGER NOT NULL,
-    vendor TEXT NOT NULL,
-    machine_name TEXT NOT NULL,
-    cpu_alias TEXT,
-    baseline_info JSONB,
-    version JSONB,
-    results JSONB,
-    system_info JSONB
-  );
-  ```
+    ```sql
+    CREATE TABLE <table> (
+      id INTEGER NOT NULL,
+      vendor TEXT NOT NULL,
+      machine_name TEXT NOT NULL,
+      cpu_alias TEXT,
+      baseline_info JSONB,
+      version JSONB,
+      results JSONB,
+      system_info JSONB
+    );
+    ```
 
 4. Insert data into table:
 
-  ```bash
-  INSERT INTO <table> VALUES (
-    $id,
-    '$vendor',
-    '$machine_name',
-    '$cpu_alias',
-    '$baseline_info',
-    '$version',
-    '$results',
-    '$system_info')"
-  ```
+    ```bash
+    INSERT INTO <table> VALUES (
+      $id,
+      '$vendor',
+      '$machine_name',
+      '$cpu_alias',
+      '$baseline_info',
+      '$version',
+      '$results',
+      '$system_info')"
+    ```
 
 5. Query the table
 
-  ```bash
-  psql  --username=k8up \
-   --port=6432 \
-   --no-password \
-   --host=localhost \
-   --dbname=test \
-   -t -c \
-   "SELECT vendor AS vendor,
-    machine_name AS machine_name,
-    cpu_alias AS cpu_alias,
-    system_info->>'Processor' AS cpu,
-    results->>'CPU_SINGLETHREAD' AS single_threaded FROM pcmark;"
-  ```
+    ```bash
+    psql  --username=k8up \
+     --port=6432 \
+     --no-password \
+     --host=localhost \
+     --dbname=test \
+     -t -c \
+     "SELECT vendor AS vendor,
+      machine_name AS machine_name,
+      cpu_alias AS cpu_alias,
+      system_info->>'Processor' AS cpu,
+      results->>'CPU_SINGLETHREAD' AS single_threaded FROM pcmark;"
+    ```
 
 ## Prepare external Storage in B2
 
@@ -126,73 +124,73 @@
   
 - deploy the backup app
 
-```yaml
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: k8up-pg-backup-test-app
-spec:
-  destination:
-    name: ''
-    namespace: default
-    server: 'https://kubernetes.default.svc'
-  source:
-    path: postgres/backups/k8up-test/
-    repoURL: 'https://github.com/small-hack/argocd.git'
-    targetRevision: HEAD
-  sources: []
-  project: default
-```
+  ```yaml
+  apiVersion: argoproj.io/v1alpha1
+  kind: Application
+  metadata:
+    name: k8up-pg-backup-test-app
+  spec:
+    destination:
+      name: ''
+      namespace: default
+      server: 'https://kubernetes.default.svc'
+    source:
+      path: postgres/backups/k8up-test/
+      repoURL: 'https://github.com/small-hack/argocd.git'
+      targetRevision: HEAD
+    sources: []
+    project: default
+  ```
 
-## Verify Data in B2
+- Verify Data in B2
 
-## Delete data in the database
+- Delete data in the database
 
-```bash
-psql  --username=k8up  \
- --port=6432 \
- --no-password \
- --host=localhost \
- --dbname=test -t -c \
- "DROP TABLE pcmark;"
-```
+  ```bash
+  psql  --username=k8up  \
+   --port=6432 \
+   --no-password \
+   --host=localhost \
+   --dbname=test -t -c \
+   "DROP TABLE pcmark;"
+  ```
 
 ## Restore Data
 
 1. Get list of snapshots
 
-  ```bash
-  # list snapshots in namespace
-  kubectl get snapshots -n default
-  ```
+   ```bash
+   # list snapshots in namespace
+   kubectl get snapshots -n default
+   ```
 
 2. Get Snapshot's ID
    
-  ```bash
-  # inspect specific snapshot and get it's ID using jq
-  kubectl get snapshots -n default e3e9ab1b -o json |jq -r '.spec.id'
-  ```
+   ```bash
+   # inspect specific snapshot and get it's ID using jq
+   kubectl get snapshots -n default e3e9ab1b -o json |jq -r '.spec.id'
+   ```
 
 3. Run the restore
 
-  ```bash
-  export KUBECONFIG=""
-  export NAMESPACE=""
-  export BUCKET=""
-  export ENDPOINT=""
-  export REPO_SECRET=""
-  export BUCKET_SECRET=""
-  export PVC=""
-  export SNAPSHOT=""
+   ```bash
+   export KUBECONFIG=""
+   export NAMESPACE=""
+   export BUCKET=""
+   export ENDPOINT=""
+   export REPO_SECRET=""
+   export BUCKET_SECRET=""
+   export PVC=""
+   export SNAPSHOT=""
 
-  k8up cli restore --restoreMethod pvc \
-   --kubeconfig "$KUBECONFIG" \
-   --secretRef "REPO_SECRET" \
-   --namespace "$NAMESPACE" \
-   --s3endpoint "$ENDPOINT" \
-   --s3bucket "$BUCKET" \
-   --s3secretRef "BUCKET_SECRET" \
-   --snapshot "$SNAPSHOT" \
-   --claimName "$PVC" \
-   --runAsUser 0
- ```  
+   k8up cli restore --restoreMethod pvc \
+    --kubeconfig "$KUBECONFIG" \
+    --secretRef "REPO_SECRET" \
+    --namespace "$NAMESPACE" \
+    --s3endpoint "$ENDPOINT" \
+    --s3bucket "$BUCKET" \
+    --s3secretRef "BUCKET_SECRET" \
+    --snapshot "$SNAPSHOT" \
+    --claimName "$PVC" \
+    --runAsUser 0
+   ```  
