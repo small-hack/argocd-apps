@@ -103,7 +103,7 @@ metrics:
   prometheusRule:
     # -- Whether to enable PrometheusRule manifest for
     # [Prometheus Operator][prometheus-operator]
-    enabled: false
+    enabled: true
     # -- If the object should be installed in a different namespace than operator
     namespace: ""
     # -- Add labels to the PrometheusRule object
