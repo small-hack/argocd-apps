@@ -8,10 +8,6 @@ replicas: 1
 image:
   # -- The image repo to pull Netmaker image from
   repository: gravitl/netmaker
-  # -- Pull Policy for images
-  pullPolicy: Always
-  # -- Override the image tag to pull
-  tag: "v0.17.1"
 
 # -- override the name for netmaker objects
 nameOverride: ""
@@ -42,12 +38,12 @@ persistence:
 
 ui:
   # -- how many UI replicas to create
-  replicas: 2
+  replicas: 1
 
 mq:
   # -- how many MQTT replicas to create
-  replicas: 2
-  singlenode: false
+  replicas: 1
+  singlenode: true
   storageSize: 128Mi
   username: "netmaker"
   # password: 3yyerWGdds43yegGR
