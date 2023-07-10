@@ -161,3 +161,12 @@ postgresql:
           GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO netmaker;
   persistence:
     existingClaim: "netmaker-postgresql"
+
+oauth:
+  enabled: false
+  frontendURL: dashboard.wg.social-media-for-dogs.com
+  existingSecret:
+  secretKeys:
+    clientID:
+    clientSecret:
+    issuer:
