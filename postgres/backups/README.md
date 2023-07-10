@@ -22,6 +22,13 @@
    kubectl port-forward k8up-test-0 6432:5432 -n default
    ```
 
+ - Get the password for the DB (if you used the operator)
+   
+   ```bash
+   kubectl get secret k8up.longhorn-test.credentials.postgresql.acid.zalan.do \
+   -o json |jq -r .data.password |base64 -d
+   ```
+
 2. Log in via password prompt to an interractive shell using one of the following methods:
 
 - Via interractive shell w/ password prompt
@@ -33,13 +40,23 @@
 - Run command as a one-liner
 
   ```bash
-  PGPASSWORD= \
+  
+  export id=0
+  export machine_name="bradley"
+  export vendor="on-prem"
+  export cpu_alias="i7-11700"
+  export baseline_info=$(yq -o=json -I=0 '.BaselineInfo' results_all.yml)
+  export version=$(yq -o=json -I=0 '.Version' results_all.yml)
+  export results=$(yq -o=json -I=0 '.Results' results_all.yml)
+  export system_info=$(yq -o=json -I=0 '.SystemInformation' results_all.yml)
+
+
   psql \
-    --username=admin  \
-    --port=5432  \
+    --username=k8up  \
+    --port=6432  \
     --no-password  \
-    --host=85.10.207.24  \
-    --dbname=benchmarks  \
+    --host=localhost  \
+    --dbname=pcmark  \
     -t  \
     -c "SELECT * FROM <table>"
   ```
@@ -86,7 +103,7 @@
     machine_name AS machine_name,
     cpu_alias AS cpu_alias,
     system_info->>'Processor' AS cpu,
-    results->>'CPU_SINGLETHREAD' AS single_threaded FROM pcmark";
+    results->>'CPU_SINGLETHREAD' AS single_threaded FROM pcmark;"
   ```
 
 ## Prepare external Storage in B2
