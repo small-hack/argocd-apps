@@ -38,7 +38,7 @@ spec:
     namespace: default
     server: 'https://kubernetes.default.svc'
   source:
-    path: postgres/backups/k8up-test/k8up-job/
+    path: postgres/backups/k8up-test/k8up-job/manifests/
     repoURL: 'https://github.com/small-hack/argocd.git'
     targetRevision: HEAD
   sources: []
