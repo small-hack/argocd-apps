@@ -1,0 +1,30 @@
+---
+kind: "postgresql"
+apiVersion: "acid.zalan.do/v1"
+metadata:
+  name: "longhorn-test"
+  namespace: "default"
+  labels:
+    team: team-friendship
+spec:
+  teamId: "team-friendship"
+  postgresql:
+    version: "15"
+  numberOfInstances: 1
+  volume:
+    size: "10Gi"
+    storageClass: "longhorn"
+    iops: 3000
+  users:
+    k8up: []
+  databases:
+    test: k8up
+  allowedSourceRanges:
+    # IP ranges to access your cluster go here
+  resources:
+    requests:
+      cpu: 100m
+      memory: 100Mi
+    limits:
+      cpu: 500m
+      memory: 500Mi
