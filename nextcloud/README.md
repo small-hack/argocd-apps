@@ -64,8 +64,20 @@ Make sure that you follow this process for backups:
    kubectl exec $NEXTCLOUD_POD -- su -s /bin/bash www-data -c "php occ maintenance:mode --off"
    ```
 
+#### Manual backups
+Just in case you need to do a manual postgresql backup:
+```bash
+PGDATABASE="$POSTGRES_DB" PGUSER="$POSTGRES_USER" PGPASSWORD="$POSTGRES_PASSWORD" pg_dump --clean
+```
+
 ### Restoring from backups
 In the case of restores, please refer to the doc, [`manifests/restores/README.md`](./manifests/k8s_restores/README.md).
+
+You may need to drop a table or two, requiring a psql shell and credentials. Connect to the postgresql pod and run:
+
+```bash
+PGDATABASE="$POSTGRES_DB" PGUSER="$POSTGRES_USER" PGPASSWORD="$POSTGRES_PASSWORD" psql
+```
 
 ## Argo App
 
