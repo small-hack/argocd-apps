@@ -6,7 +6,7 @@ metadata:
   name: netmaker-shared-data-pvc
 spec:
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   resources:
     requests:
       storage: 8Gi
