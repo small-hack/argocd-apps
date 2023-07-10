@@ -1,0 +1,20 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: k8up-pg-backup-test-postgres
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+spec:
+  destination:
+    namespace: default
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: postgres/backups/k8up-test/test-database/
+    repoURL: 'https://github.com/small-hack/argocd.git'
+    targetRevision: HEAD
+  sources: []
+  project: default
+  syncPolicy:
+    automated: null
