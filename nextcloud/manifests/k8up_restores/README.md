@@ -8,7 +8,6 @@ Assuming the entire cluster is gone, first we'll need a new persistent volume an
 
 ```bash
 kubectl apply -f manifests/persistence/
-kubectl apply -f manifests/secret_store/
 kubectl apply -f manifests/external_secrets/
 ```
 
@@ -57,6 +56,71 @@ to do most of this, just create a file called `.env` with the shell environment
 variables from above and then run the script.
 
 
-## Caveat
+# Caveats
+
+## B2 lockout D:
+
 This could all fail if you're at any of your caps on your b2 account.
 Check the caps on your B2 account first.
+
+## 2FA is broken
+
+sometimes TOTP doesn't restore correctly locking you and your users out of nextcloud. Here's a few tips.
+
+### Regenating a one time token
+
+If you as an admin still have access to the nextcloud web interface or you can still run OCC commands, try generating a one time code for your user using the Nextcloud 2FA Admin Support App using these [docs](https://nextcloud-twofactor-admin.readthedocs.io/en/latest/Admin%20Documentation/):
+
+```bash
+kubectl exec $NEXTCLOUD_POD -- su -s /bin/bash www-data -c "php occ twofactorauth:admin:generate-code $USER_NAME"
+```
+
+### `hash_hkdf(): Argument #2 ($key) cannot be empty`
+This is a weird [issue](https://github.com/nextcloud/server/issues/34012#issuecomment-1363010835) that happens after restores sometimes. The best way I've found to get around it is modifying `/var/www/html/lib/private/Security/Crypto.php` on line 132 you want to edit:
+
+```php
+		if ($password === '' ) {
+```
+
+to be:
+
+
+```php
+		if ($password === $secret) {
+```
+
+Here's the context around that part of the file, in case the line number changes and you need to go find it again. In this example, I've already changed the empty value:
+
+```php
+/**
+ * Decrypts a value and verifies the HMAC (Encrypt-Then-Mac)
+ * @param string $authenticatedCiphertext
+ * @param string $password Password to encrypt, if not specified the secret from config.php will be taken
+ * @return string plaintext
+ * @throws Exception If the HMAC does not match
+ * @throws Exception If the decryption failed
+ */
+public function decrypt(string $authenticatedCiphertext, string $password = ''): string {
+	$secret = $this->config->getSystemValue('secret');
+	try {
+		if ($password === '') {
+			return $this->decryptWithoutSecret($authenticatedCiphertext, $secret);
+		}
+		return $this->decryptWithoutSecret($authenticatedCiphertext, $password);
+	} catch (Exception $e) {
+		if ($password === $secret) {
+			// Retry with empty secret as a fallback for instances where the secret might not have been set by accident
+			return $this->decryptWithoutSecret($authenticatedCiphertext, '');
+		}
+		throw $e;
+	}
+}
+```
+
+### "HMAC does not match" error when using 2fA
+
+This is a weird one, but we followed the advice on [this forum post](https://help.nextcloud.com/t/external-storage-hmac-does-not-match/7771/10) and it resolved the issue:
+
+```sql
+TRUNCATE TABLE oc_storages_credentials;
+```
