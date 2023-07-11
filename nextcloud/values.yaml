@@ -31,11 +31,11 @@ ingress:
         return 301 $scheme://$host/remote.php/dav/;
       }
 
-      location = /robots.txt {
-        allow all;
-        log_not_found off;
-        access_log off;
-      }
+    # location = /robots.txt {
+    #   allow all;
+    #   log_not_found off;
+    #   access_log off;
+    # }
   tls:
     - secretName: nextcloud-tls
       hosts:
@@ -97,7 +97,7 @@ nextcloud:
       $CONFIG = array (
         'log_type' => 'file',
         'logfile' => 'nextcloud.log',
-        'loglevel' => 0,
+        'loglevel' => 1,
         'logdateformat' => 'F d, Y H:i:s'
         );
     video_previews.config.php: |-
