@@ -1,10 +1,9 @@
 ## Official nextcloud image version
 ## ref: https://hub.docker.com/r/library/nextcloud/tags/
-##
 image:
   repository: nextcloud
   flavor: fpm
-  pullPolicy: IfNotPresent
+
 replicaCount: 1
 
 ingress:
@@ -25,12 +24,6 @@ ingress:
   path: /
   pathType: Prefix
 
-# Allow configuration of lifecycle hooks
-# ref: https://kubernetes.io/docs/tasks/configure-pod-container/attach-handler-lifecycle-event/
-lifecycle: {}
-  # postStartCommand: []
-  # preStopCommand: []
-
 nextcloud:
   host: cloud.vleermuis.tech
   ## Use an existing secret
@@ -45,9 +38,6 @@ nextcloud:
   update: 0
   # If web server is not binding default port, you can define it
   # containerPort: 8080
-  datadir: /var/www/html/data
-  persistence:
-    subPath:
   mail:
     enabled: true
     fromAddress: cloud
@@ -58,7 +48,7 @@ nextcloud:
       port: 465
       authtype: LOGIN
   # PHP Configuration files
-  # Will be injected in /usr/local/etc/php/conf.d for apache image and in /usr/local/etc/php-fpm.d when nginx.enabled: true
+  # Will be injected in /usr/local/etc/php-fpm.d when nginx.enabled: true
   phpConfigs: {}
   # Default config files
   # IMPORTANT: Will be used only if you put extra configs, otherwise default will come from nextcloud itself
@@ -84,7 +74,6 @@ nextcloud:
     logging.config.php: |-
       <?php
       $CONFIG = array (
-        'mail_smtpdebug' => true,
         'log_type' => 'file',
         'logfile' => 'nextcloud.log',
         'loglevel' => 2,
@@ -119,26 +108,6 @@ nextcloud:
         'forwarded_for_headers' => array('HTTP_X_FORWARDED_FOR'),
       );
 
-  # For example, to use S3 as primary storage
-  # ref: https://docs.nextcloud.com/server/13/admin_manual/configuration_files/primary_storage.html#simple-storage-service-s3
-  #
-  #  configs:
-  #    s3.config.php: |-
-  #      <?php
-  #      $CONFIG = array (
-  #        'objectstore' => array(
-  #          'class' => '\\OC\\Files\\ObjectStore\\S3',
-  #          'arguments' => array(
-  #            'bucket'     => 'my-bucket',
-  #            'autocreate' => true,
-  #            'key'        => 'xxx',
-  #            'secret'     => 'xxx',
-  #            'region'     => 'us-east-1',
-  #            'use_ssl'    => true
-  #          )
-  #        )
-  #      );
-
   ## Strategy used to replace old pods
   ## IMPORTANT: use with care, it is suggested to leave as that for upgrade purposes
   ## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
@@ -148,42 +117,6 @@ nextcloud:
     # rollingUpdate:
     #   maxSurge: 1
     #   maxUnavailable: 0
-
-  ##
-  ## Extra environment variables
-  extraEnv:
-  #  - name: SOME_SECRET_ENV
-  #    valueFrom:
-  #      secretKeyRef:
-  #        name: nextcloud
-  #        key: secret_key
-
-  # Extra init containers that runs before pods start.
-  extraInitContainers: []
-  #  - name: do-something
-  #    image: busybox
-  #    command: ['do', 'something']
-
-  # Extra sidecar containers.
-  extraSidecarContainers: []
-  #  - name: nextcloud-logger
-  #    image: busybox
-  #    command: [/bin/sh, -c, 'while ! test -f "/run/nextcloud/data/nextcloud.log"; do sleep 1; done; tail -n+1 -f /run/nextcloud/data/nextcloud.log']
-  #    volumeMounts:
-  #    - name: nextcloud-data
-  #      mountPath: /run/nextcloud/data
-
-  # Extra mounts for the pods. Example shown is for connecting a legacy NFS volume
-  # to NextCloud pods in Kubernetes. This can then be configured in External Storage
-  extraVolumes:
-  #  - name: nfs
-  #    nfs:
-  #      server: "10.0.0.1"
-  #      path: "/nextcloud_data"
-  #      readOnly: false
-  extraVolumeMounts:
-  #  - name: nfs
-  #    mountPath: "/legacy_data"
 
   # Set securityContext parameters. For example, you may need to define runAsNonRoot directive
   securityContext: {}
@@ -210,7 +143,6 @@ nginx:
   #   runAsNonRoot: true
   #   readOnlyRootFilesystem: true
 
-
 ## ----------- DATABASE STUFF ------------- ##
 internalDatabase:
   enabled: false
@@ -218,29 +150,17 @@ internalDatabase:
 ## External database configuration
 externalDatabase:
   enabled: true
-
   ## Supported database engines: mysql or postgresql
   type: postgresql
-
-  ## Database host
   host: localhost:5432
-
-  ## Database user
   user: nextcloud
-
-  ## Database password
-  password:
-
-  ## Database name
   database: nextcloud
-
   ## Use a existing secret
   existingSecret:
     enabled: true
     secretName: nextcloud-pgsql-credentials
     usernameKey: username
     passwordKey: nextcloudPassword
-
 
 ## PostgreSQL chart configuration
 ## for more options see https://github.com/bitnami/charts/tree/master/bitnami/postgresql
@@ -288,7 +208,6 @@ redis:
     existingSecret: nextcloud-redis-credentials
     existingSecretPasswordKey: redis_password
 
-
 ## Cronjob to execute Nextcloud background tasks
 ## ref: https://docs.nextcloud.com/server/latest/admin_manual/configurationi_server/background_jobs_configuration.html#cron
 cronjob:
@@ -334,34 +253,12 @@ persistence:
   # Nextcloud Data (/var/www/html)
   enabled: true
   existingClaim: nextcloud-files
-  annotations: {}
-  ## nextcloud data Persistent Volume Storage Class
-  ## If defined, storageClassName: <storageClass>
-  ## If set to "-", storageClassName: "", which disables dynamic provisioning
-  ## If undefined (the default) or set to null, no storageClassName spec is
-  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
-  ##   GKE, AWS & OpenStack)
-  ##
-  # storageClass: "-"
-
-  ## A manually managed Persistent Volume and Claim
-  ## Requires persistence.enabled: true
-  ## If defined, PVC must be created manually before volume will be bound
-  # existingClaim:
-
-  accessMode: ReadWriteOnce
-  size: 8Gi
-
   ## Use an additional pvc for the data directory rather than a subpath of the default PVC
   ## Useful to store data on a different storageClass (e.g. on slower disks)
   nextcloudData:
     enabled: false
     subPath:
-    annotations: {}
-    # storageClass: "-"
     # existingClaim:
-    accessMode: ReadWriteOnce
-    size: 8Gi
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -417,8 +314,6 @@ affinity: {}
 ## Prometheus Exporter / Metrics
 metrics:
   enabled: true
-
-  replicaCount: 1
   # The metrics exporter needs to know how you serve Nextcloud either http or https
   https: true
   # Use API token if set, otherwise fall back to password authentication
@@ -426,30 +321,14 @@ metrics:
   # Currently you still need to set the token manually in your nextcloud install
   token: "enabled"
   timeout: 10s
-  # if set to true, exporter skips certificate verification of Nextcloud server.
-  tlsSkipVerify: true
 
   image:
-    repository: xperimental/nextcloud-exporter
     tag: 0.6.0
-    pullPolicy: IfNotPresent
-
-  ## Metrics exporter resource requests and limits
-  ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
-  ##
-  # resources: {}
-
-  ## Metrics exporter pod Annotation and Labels
-  # podAnnotations: {}
 
   podLabels:
     jobLabel: nextcloud-metrics
 
   service:
-    type: ClusterIP
-    ## Use serviceLoadBalancerIP to request a specific static IP,
-    ## otherwise leave blank
-    # loadBalancerIP:
     annotations:
       prometheus.io/scrape: "true"
       prometheus.io/port: "9205"
@@ -460,32 +339,8 @@ metrics:
   serviceMonitor:
     ## @param metrics.serviceMonitor.enabled Create ServiceMonitor Resource for scraping metrics using PrometheusOperator
     enabled: true
-
     ## @param metrics.serviceMonitor.namespace Namespace in which Prometheus is running
     namespace: "nextcloud"
 
-    ## @param metrics.serviceMonitor.jobLabel The name of the label on the target service to use as the job name in prometheus.
-    jobLabel: ""
-
-    ## @param metrics.serviceMonitor.interval Interval at which metrics should be scraped
-    ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#endpoint
-    interval: 30s
-
-    ## @param metrics.serviceMonitor.scrapeTimeout Specify the timeout after which the scrape is ended
-    ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#endpoint
-    scrapeTimeout: ""
-
-    ## @param metrics.serviceMonitor.labels Extra labels for the ServiceMonitor
-    ##
-    labels: {}
-
-
 rbac:
   enabled: true
-  serviceaccount:
-    create: true
-    name: nextcloud-serviceaccount
-    annotations: {}
-
-## @param securityContext @deprecated Use `nextcloud.podSecurityContext` instead
-securityContext: {}
