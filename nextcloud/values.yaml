@@ -26,11 +26,11 @@ ingress:
       rewrite ^/.well-known/host-meta.json /public.php?service=host-meta-json;
 
       location = /.well-known/carddav {
-        return 301 $scheme://$host/remote.php/dav;
+        return 301 $scheme://$host/remote.php/dav/;
       }
 
       location = /.well-known/caldav {
-        return 301 $scheme://$host/remote.php/dav;
+        return 301 $scheme://$host/remote.php/dav/;
       }
 
       location = /robots.txt {
