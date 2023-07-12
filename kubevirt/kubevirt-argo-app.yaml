@@ -1,0 +1,30 @@
+# KubeVirt extends Kubernetes by adding additional virtualization resource types 
+# (especially the VM type) through Kubernetes's Custom Resource Definitions API. 
+# By using this mechanism, the Kubernetes API can be used to manage these VM resources 
+# alongside all other resources Kubernetes provides.
+# https://github.com/kubevirt/kubevirt
+#
+# Using The NVIDIA GPU Operator with kubevirt:
+# https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/gpu-operator-kubevirt.html
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kubevirt
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/cloudymax/argocd-nvidia-lab.git
+    path: kubevirt/
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: kubevirt
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+    automated:
+      prune: true
+      selfHeal: true

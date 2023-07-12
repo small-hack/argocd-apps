@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kubevirt-manager
+  namespace: kubevirt-manager
+  labels:
+    app: kubevirt-manager
+    kubevirt-manager.io/version: 1.2.3
+spec:
+  selector:
+    matchLabels:
+      app: kubevirt-manager
+      kubevirt-manager.io/version: 1.2.3
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: kubevirt-manager
+        kubevirt-manager.io/version: 1.2.3
+    spec:
+      containers:
+        - name: kubevirtmgr
+          image: kubevirtmanager/kubevirt-manager:1.2.3
+          imagePullPolicy: IfNotPresent
+          ports:
+          - name: http
+            containerPort: 8080
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsUser: 10000
+            runAsGroup: 30000
+          volumeMounts:
+          - name: cache-volume
+            mountPath: /var/cache/nginx
+          - name: run-volume
+            mountPath: /var/run
+          - name: auth-config
+            mountPath: /etc/nginx/auth.d/
+          - name: auth-secret
+            mountPath: /etc/nginx/secret.d/
+         # - name: prometheus-config
+         #   mountPath: /etc/nginx/location.d/
+      serviceAccountName: kubevirt-manager
+      restartPolicy: Always
+      volumes:
+        - name: cache-volume
+          emptyDir: {}
+        - name: run-volume
+          emptyDir: {}
+        - name: auth-config
+          configMap:
+            name: auth-config
+            optional: true
+        - name: auth-secret
+          secret:
+            secretName: auth-secret
+            optional: true
+        #- name: prometheus-config
+        #  configMap:
+        #    name: prometheus-config
+        #    optional: true
