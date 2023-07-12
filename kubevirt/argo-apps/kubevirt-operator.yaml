@@ -17,7 +17,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/cloudymax/argocd-nvidia-lab.git
+    repoURL: https://github.com/small-hack/argocd.git
     path: kubevirt/operator/
   destination:
     server: "https://kubernetes.default.svc"
