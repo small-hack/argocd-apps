@@ -14,8 +14,8 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/cloudymax/argocd-nvidia-lab.git
-    path: kubevirt/machine-sizes/
+    repoURL: https://github.com/small-hack/argocd.git
+    path: kubevirt/disks/
   destination:
     server: "https://kubernetes.default.svc"
     namespace: default
