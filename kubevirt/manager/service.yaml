@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kubevirt-manager-service
+  namespace: kubevirt-manager
+  labels:
+    app: kubevirt-manager
+    kubevirt-manager.io/version: 1.2.3
+spec:
+  selector:
+    app: kubevirt-manager
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080

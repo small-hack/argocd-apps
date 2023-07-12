@@ -1,0 +1,126 @@
+---
+# namespace for isolation
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: vm0
+---
+# Expose ports via a nodeport
+kind: Service
+apiVersion: v1
+metadata:
+  name: vm0-np
+  namespace: vm0
+spec:
+  externalTrafficPolicy: Cluster
+  ports:
+    - name: nodeport
+      nodePort: 30000
+      protocol: TCP
+      port: 22
+      targetPort: 22
+  type: NodePort
+  selector:
+    metallb-service: vm0
+---
+# The datavolume is the VM's harddrive
+apiVersion: cdi.kubevirt.io/v1alpha1
+kind: DataVolume
+metadata:
+  name: vm0-dv
+  namespace: vm0
+spec:
+  source:
+    pvc:
+      namespace: debian12
+      name: debian12-pvc
+  pvc:
+    accessModes:
+      - ReadWriteOnce
+    resources:
+      requests:
+        storage: 120Gi
+---
+# Create the VM
+apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+metadata:
+  generation: 1
+  labels:
+    kubevirt.io/os: linux
+    metallb-service: vm0
+  namespace: vm0
+  name: vm0
+spec:
+  runStrategy: "RerunOnFailure"
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        kubevirt.io/domain: vm0
+        metallb-service: vm0
+    spec:
+      domain:
+        features:
+          kvm: {}
+          acpi: {}
+          smm:
+            enabled: true
+        cpu:
+          model: host-passthrough
+          sockets: 1
+          cores: 4
+          threads: 1
+        firmware:
+          bootloader:
+            efi: {}
+        devices:
+          autoattachPodInterface: true
+          autoattachSerialConsole: true
+          autoattachGraphicsDevice: true
+          inputs:
+          - type: tablet
+            bus: virtio
+            name: tablet1
+          disks:
+          - name: harddrive
+            disk:
+              bus: virtio
+            bootOrder: 2
+          - name: cloudinitvolume
+            cdrom:
+              bus: sata
+              readonly: true
+            bootOrder: 1
+          interfaces:
+            - masquerade: {}
+              name: default
+        machine:
+          type: q35
+        resources:
+          limits:
+            memory: 16Gi
+      networks:
+      - name: default
+        pod: {}
+      volumes:
+        - name: harddrive
+          persistentVolumeClaim:
+            claimName: vm0-dv
+        - name: cloudinitvolume
+          cloudInitNoCloud:
+            userData: |
+              #cloud-config
+              hostname: debian
+              ssh_pwauth: True
+              disable_root: false
+              users:
+               - name: friend
+                 gecos: VM adminsitrator
+                 groups: users, admin, docker, sudo
+                 sudo: ALL=(ALL) NOPASSWD:ALL
+                 shell: /bin/bash
+                 lock_passwd: false
+                 passwd: "$6$rounds=4096$saltsaltlettuce$Lp/FV.2oOgew7GbM6Nr8KMGMBn7iFM0x9ZwLqtx9Y4QJmKvfcnS.2zx4MKmymCPQGpHS7gqYOiqWjvdCIV2uN."
+                 ssh_authorized_keys:
+                   - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC3xEankn5zUklqZ5XVRbjP9XrXmK49VZ4OJqkzRF5JJpolBAwmJIUoww6G51g9IlYWzzijtfRSsQxoZHmHp+sSz/qP5zbjoFVCJ08N0ulqb8okM5C7+uET3dZKxwMT6DLFKSLebYnFlCtbp6VnDvp6gP+ZIesL6cxVWC/fSjTbyesEaNWkigI+2zF3sSDOvrSGvRmQSOfOvdjAY8xvcKkwj4uSXa5qsVM7OX+j+2vARredbvya6YyAkumB9SXVHqnFdOOo1jgMtdNGFPi703dgAnfQp7yafR9Ext46pkO8zcyroysogKjI0HqLqUtV6tAG7NZo4+u8k9uYkZmQa26u2rmkx6kUP1jaDfrSp/33dcCLRVKd/FOiv5Ztwvl71fKh3az9khf/ZxFO2thDy8M0TY46TWs87eow8McNmOJWvsyuvVsI7ZyRhGWQkx7V0vpsd8ClDf91enKt4tBDlTu8PYvI2i2UMCeFb+uSt4c2D/kjTCM/+XPrljLupIfs7pM= max
