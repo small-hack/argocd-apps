@@ -1,0 +1,123 @@
+# High Memory machines: Num Cores == (GB RAM)/4
+---
+apiVersion: instancetype.kubevirt.io/v1alpha2
+kind: VirtualMachineClusterInstancetype
+metadata:
+  name: highmem-micro
+spec:
+  cpu:
+    guest: 1
+  memory:
+    guest: 4Gi
+---
+apiVersion: instancetype.kubevirt.io/v1alpha2
+kind: VirtualMachineClusterInstancetype
+metadata:
+  name: highmem-small
+spec:
+  cpu:
+    guest: 2
+  memory:
+    guest: 8Gi
+---
+apiVersion: instancetype.kubevirt.io/v1alpha2
+kind: VirtualMachineClusterInstancetype
+metadata:
+  name: highmem-medium
+spec:
+  cpu:
+    guest: 4
+  memory:
+    guest: 16Gi
+---
+apiVersion: instancetype.kubevirt.io/v1alpha2
+kind: VirtualMachineClusterInstancetype
+metadata:
+  name: highmem-large
+spec:
+  cpu:
+    guest: 8
+  memory:
+    guest: 32Gi
+# High CPU machines: Num Cores == GB RAM  
+---
+apiVersion: instancetype.kubevirt.io/v1alpha2
+kind: VirtualMachineClusterInstancetype
+metadata:
+  name: highcpu-micro
+spec:
+  cpu:
+    guest: 2
+  memory:
+    guest: 2Gi
+---
+apiVersion: instancetype.kubevirt.io/v1alpha2
+kind: VirtualMachineClusterInstancetype
+metadata:
+  name: highcpu-small
+spec:
+  cpu:
+    guest: 4
+  memory:
+    guest: 4Gi
+---
+apiVersion: instancetype.kubevirt.io/v1alpha2
+kind: VirtualMachineClusterInstancetype
+metadata:
+  name: highcpu-medium
+spec:
+  cpu:
+    guest: 8
+  memory:
+    guest: 8Gi
+---
+apiVersion: instancetype.kubevirt.io/v1alpha2
+kind: VirtualMachineClusterInstancetype
+metadata:
+  name: highcpu-large
+spec:
+  cpu:
+    guest: 16
+  memory:
+    guest: 16Gi
+# Standard machines: Num Cores == (GB RAM)/2  
+---
+apiVersion: instancetype.kubevirt.io/v1alpha2
+kind: VirtualMachineClusterInstancetype
+metadata:
+  name: standard-micro
+spec:
+  cpu:
+    guest: 1
+  memory:
+    guest: 2Gi
+---
+apiVersion: instancetype.kubevirt.io/v1alpha2
+kind: VirtualMachineClusterInstancetype
+metadata:
+  name: standard-small
+spec:
+  cpu:
+    guest: 2
+  memory:
+    guest: 4Gi
+---
+apiVersion: instancetype.kubevirt.io/v1alpha2
+kind: VirtualMachineClusterInstancetype
+metadata:
+  name: standard-medium
+spec:
+  cpu:
+    guest: 4
+  memory:
+    guest: 8Gi
+---
+apiVersion: instancetype.kubevirt.io/v1alpha2
+kind: VirtualMachineClusterInstancetype
+metadata:
+  name: standard-large
+spec:
+  cpu:
+    guest: 8
+  memory:
+    guest: 16Gi
