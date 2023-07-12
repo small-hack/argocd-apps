@@ -15,10 +15,10 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "3"
 spec:
-  project: default
+  project: kubevirt
   source:
-    repoURL: https://github.com/cloudymax/argocd-nvidia-lab.git
-    path: kubevirt/
+    repoURL: https://github.com/small-hack/argocd.git
+    path: kubevirt/argo-apps/
   destination:
     server: "https://kubernetes.default.svc"
     namespace: kubevirt
