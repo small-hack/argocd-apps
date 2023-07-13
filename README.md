@@ -20,6 +20,7 @@ Beyond just ensuring everything meets basic reliability and security needs, we a
 
 * [Auth and Identity Management](#auth-and-identity-management)
 * [Database](#database)
+* [Virtual Machines](#virtual-machines)
 * [File Storage and Backups](#file-storage-and-backups)
 * [Email](#email)
 * [Monitoring](#monitoring)
