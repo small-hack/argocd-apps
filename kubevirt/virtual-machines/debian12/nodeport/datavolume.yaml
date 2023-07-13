@@ -4,7 +4,6 @@ apiVersion: cdi.kubevirt.io/v1alpha1
 kind: DataVolume
 metadata:
   name: vm0-dv
-  namespace: vm0
 spec:
   source:
     pvc:
