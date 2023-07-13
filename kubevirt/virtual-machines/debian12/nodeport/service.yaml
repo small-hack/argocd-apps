@@ -1,0 +1,18 @@
+---
+# Expose ports via a nodeport
+kind: Service
+apiVersion: v1
+metadata:
+  name: vm0-np
+  namespace: vm0
+spec:
+  externalTrafficPolicy: Cluster
+  ports:
+    - name: nodeport
+      nodePort: 30000
+      protocol: TCP
+      port: 22
+      targetPort: 22
+  type: NodePort
+  selector:
+    metallb-service: vm0
