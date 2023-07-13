@@ -22,7 +22,7 @@ spec:
       - vm.social-media-for-dogs.com
       secretName: "kubevirt-manager-tls"
   rules:
-  - host: kubevirt.buildstar.online
+  - host: vm.social-media-for-dogs.com
     http:
       paths:
       - path: /
