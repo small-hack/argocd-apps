@@ -124,7 +124,7 @@ spec:
     # forked from: https://github.com/mastodon/chart/tree/main
     - repoURL: 'https://jessebot.github.io/mastodon-helm-chart'
       chart: mastodon
-      targetRevision: 4.0.6
+      targetRevision: 4.0.7
       helm:
         valueFiles:
         - $values/mastodon/values.yaml
@@ -141,3 +141,26 @@ spec:
     automated:
       prune: true
       selfHeal: true
+
+# ---
+# apiVersion: argoproj.io/v1alpha1
+# kind: Application
+# metadata:
+#   name: mastodon-db-migrate-job
+#   namespace: argocd
+#   annotations:
+#     argocd.argoproj.io/sync-wave: "4"
+# spec:
+#   project: default
+#   destination:
+#     server: "https://kubernetes.default.svc"
+#     namespace: mastodon
+#   source:
+#     repoURL: https://github.com/small-hack/argocd.git
+#     path: mastodon/manifests/migrate-job/
+#   syncPolicy:
+#     syncOptions:
+#       - Replace=true
+#     automated:
+#       prune: true
+#       selfHeal: true
