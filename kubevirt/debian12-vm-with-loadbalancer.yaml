@@ -2,7 +2,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: debian12-vm
+  name: debian12-vm-lb
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "3"
@@ -10,7 +10,7 @@ spec:
   project: kubevirt
   source:
     repoURL: https://github.com/small-hack/argocd.git
-    path: kubevirt/virtual-machines/debian12/nodeport/
+    path: kubevirt/virtual-machines/debian12/loadbalancer/
   destination:
     server: "https://kubernetes.default.svc"
     namespace: vm0
