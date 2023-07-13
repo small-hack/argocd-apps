@@ -1,0 +1,41 @@
+---
+# Source: mastodon/templates/job-db-migrate.yaml
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: mastodon-db-migrate
+  labels:
+    app.kubernetes.io/name: mastodon
+spec:
+  template:
+    metadata:
+      name: release-name-mastodon-db-migrate
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: release-name-mastodon-db-migrate
+          image: "ghcr.io/mastodon/mastodon:latest"
+          imagePullPolicy: Always
+          command:
+            - bundle
+            - exec
+            - rake
+            - db:migrate
+          envFrom:
+            - configMapRef:
+                name: mastodon-web-app-env
+            - secretRef:
+                name: mastodon-server-credentials
+          env:
+            - name: "DB_PASS"
+              valueFrom:
+                secretKeyRef:
+                  name: mastodon-pg-user-credentials
+                  key: password
+            - name: "REDIS_PASSWORD"
+              valueFrom:
+                secretKeyRef:
+                  name: mastodon-redis-credentials
+                  key: redis-password
+            - name: "PORT"
+              value: "3000"
