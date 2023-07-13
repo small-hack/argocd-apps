@@ -272,7 +272,7 @@ redis:
   # disable if you want to use an existing redis instance; in which case the
   # values below must match those of that external redis instance
   enabled: false
-  hostname: "mastodon-web-app-redis-master"
+  hostname: "mastodon-redis-master"
   port: 6379
   auth:
     # you can also specify the name of an existing Secret
