@@ -4,7 +4,6 @@ kind: Service
 apiVersion: v1
 metadata:
   name: vm0-lb
-  namespace: vm0
 spec:
   externalTrafficPolicy: Local
   ipFamilies:
@@ -23,7 +22,6 @@ apiVersion: cdi.kubevirt.io/v1alpha1
 kind: DataVolume
 metadata:
   name: vm0-dv
-  namespace: vm0
 spec:
   source:
     pvc:
@@ -44,7 +42,6 @@ metadata:
   labels:
     kubevirt.io/os: linux
     metallb-service: vm0
-  namespace: vm0
   name: vm0
 spec:
   runStrategy: "RerunOnFailure"
