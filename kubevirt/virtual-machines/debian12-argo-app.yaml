@@ -10,7 +10,7 @@ spec:
   project: kubevirt
   source:
     repoURL: https://github.com/small-hack/argocd.git
-    path: virtual-machines/debian12/nodeport/
+    path: kubevirt/virtual-machines/debian12/nodeport/
   destination:
     server: "https://kubernetes.default.svc"
     namespace: vm0
