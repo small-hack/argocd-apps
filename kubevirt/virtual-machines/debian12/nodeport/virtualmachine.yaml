@@ -7,7 +7,6 @@ metadata:
   labels:
     kubevirt.io/os: linux
     metallb-service: vm0
-  namespace: vm0
   name: vm0
 spec:
   runStrategy: "RerunOnFailure"
