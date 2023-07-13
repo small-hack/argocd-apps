@@ -45,6 +45,13 @@ Beyond just ensuring everything meets basic reliability and security needs, we a
 | [postgres-operator](./postgres/operator) | PostgreSQL database management tool to spin up additional postgres instances, collect metrics, and create backups |
 | [postgres](./postgres/bitnami)           | Just a bitnami PostgreSQL database helm chart on k8s, in case you need that for something                         |
 
+### Virtual Machines
+
+| App                                      | Description                                                                                                       |
+|:-----------------------------------------|:------------------------------------------------------------------------------------------------------------------|
+| [kubevirt](./kubevirt) | KubeVirt is a virtual machine management add-on for Kubernetes.                                                                     |
+| [Nvidia GPU Operator](./nvidia/gpu-operator) | 🚧 UNDER CONSTRUCTION The GPU Operator allows administrators of Kubernetes clusters to manage GPU nodes       |
+
 
 ### File Storage and Backups
 
