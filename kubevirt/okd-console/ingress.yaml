@@ -19,10 +19,10 @@ metadata:
 spec:
   tls:
     - hosts:
-      - okd.vleermuis.tech
+      - plarts.vleermuis.tech
       secretName: "console-tls"
   rules:
-  - host: okd.vleermuis.tech
+  - host: plarts.vleermuis.tech
     http:
       paths:
       - path: /
