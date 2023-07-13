@@ -4,7 +4,6 @@ kind: Service
 apiVersion: v1
 metadata:
   name: vm0-np
-  namespace: vm0
 spec:
   externalTrafficPolicy: Cluster
   ports:
