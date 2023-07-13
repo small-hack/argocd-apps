@@ -13,7 +13,7 @@ spec:
     path: kubevirt/virtual-machines/windows10/
   destination:
     server: "https://kubernetes.default.svc"
-    namespace: vm0
+    namespace: vm-win10
   syncPolicy:
     syncOptions:
       - CreateNamespace=true
