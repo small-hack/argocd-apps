@@ -1,10 +1,4 @@
 ---
-# namespace for isolation
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: vm0
----
 # Expose ports via a loadbalancer
 kind: Service
 apiVersion: v1
@@ -33,7 +27,7 @@ metadata:
 spec:
   source:
     pvc:
-      namespace: debian12
+      namespace: default
       name: debian12-pvc
   pvc:
     accessModes:
