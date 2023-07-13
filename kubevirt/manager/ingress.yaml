@@ -22,7 +22,7 @@ spec:
       - vm.vleermuis.tech
       secretName: "kubevirt-manager-tls"
   rules:
-  - host: kubevirt.buildstar.online
+  - host: vm.vleermuis.tech
     http:
       paths:
       - path: /
