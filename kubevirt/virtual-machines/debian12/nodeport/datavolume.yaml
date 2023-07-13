@@ -1,0 +1,18 @@
+---
+# The datavolume is the VM's harddrive
+apiVersion: cdi.kubevirt.io/v1alpha1
+kind: DataVolume
+metadata:
+  name: vm0-dv
+  namespace: vm0
+spec:
+  source:
+    pvc:
+      namespace: default
+      name: debian12-pvc
+  pvc:
+    accessModes:
+      - ReadWriteOnce
+    resources:
+      requests:
+        storage: 120Gi
