@@ -68,3 +68,4 @@ Following: https://kubevirt.io/quickstart_cloud/
 
 - https://kubevirt.io/user-guide/operations/component_monitoring/
 - use the `prometheus-helm-chart-kube-prometheus` service account created by kube-prometheus-stack
+- dashboard: https://grafana.com/grafana/dashboards/11748-kubevirt/
