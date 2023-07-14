@@ -63,7 +63,7 @@ spec:
       volumes:
         - name: harddrive
           persistentVolumeClaim:
-            claimName: vm1-dv
+            claimName: debian12-pvc
         - name: cloudinitvolume
           cloudInitNoCloud:
             userData: |
