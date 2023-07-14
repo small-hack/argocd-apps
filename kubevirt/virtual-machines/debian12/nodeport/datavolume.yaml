@@ -11,7 +11,7 @@ spec:
       name: debian12-pvc
   pvc:
     accessModes:
-      - ReadWriteMany
+      - ReadWriteOnce
     resources:
       requests:
         storage: 120Gi
