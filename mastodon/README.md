@@ -56,3 +56,15 @@ psql -U mastodon \
 ## `relation "accounts" does not exist` error in the logs:
 
 You may need to generate a DB migrate job from a `helm template` command as per suggestion in [issue#18](https://github.com/mastodon/chart/issues/18#issuecomment-1369804876)
+
+# current errors
+redacted exact paths for security
+```bash
+[paperclip] saving accounts/avatars/../original/5eb5eab423667b38.png
+
+method=PUT path=/settings/profile format=html controller=Settings::ProfilesController action=update status=500 error='Aws::S3::Errors::InvalidArgument: Unsupported value for canned acl 'public-read'' duration=368.45 view=0.00 db=1.15
+
+Aws::S3::Errors::InvalidArgument (Unsupported value for canned acl 'public-read'):
+```
+
+pretty sure this was due to the bucket not having public read :)
