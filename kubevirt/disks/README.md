@@ -23,7 +23,7 @@ virtctl image-upload $VOLUME_TYPE $VOLUME_NAME \
     --image-path=$IMAGE_PATH \
     --uploadproxy-url=https://$PROXY_ADDRESS:443 \
     --namespace=$NAMESPACE \
-    --storage_class=$STORAGE_CLASS \
+    --storage-class=$STORAGE_CLASS \
     --access-mode=$ACCESS_MODE \
     --insecure --force-bind
 ```
@@ -48,7 +48,7 @@ virtctl image-upload $VOLUME_TYPE $VOLUME_NAME \
     --image-path=$IMAGE_PATH \
     --uploadproxy-url=https://$PROXY_ADDRESS:443 \
     --namespace=$NAMESPACE \
-    --storage_class=$STORAGE_CLASS \
+    --storage-class=$STORAGE_CLASS \
     --access-mode=$ACCESS_MODE \
     --insecure --force-bind
 ```
@@ -73,7 +73,7 @@ virtctl image-upload $VOLUME_TYPE $VOLUME_NAME \
     --image-path=$IMAGE_PATH \
     --uploadproxy-url=https://$PROXY_ADDRESS:443 \
     --namespace=$NAMESPACE \
-    --storage_class=$STORAGE_CLASS \
+    --storage-class=$STORAGE_CLASS \
     --access-mode=$ACCESS_MODE \
     --insecure --force-bind
 ```
@@ -98,7 +98,7 @@ virtctl image-upload $VOLUME_TYPE $VOLUME_NAME \
     --image-path=$IMAGE_PATH \
     --uploadproxy-url=https://$PROXY_ADDRESS:443 \
     --namespace=$NAMESPACE \
-    --storage_class=$STORAGE_CLASS \
+    --storage-class=$STORAGE_CLASS \
     --access-mode=$ACCESS_MODE \
     --insecure --force-bind
 ```
@@ -123,7 +123,7 @@ virtctl image-upload $VOLUME_TYPE $VOLUME_NAME \
     --image-path=$IMAGE_PATH \
     --uploadproxy-url=https://$PROXY_ADDRESS:443 \
     --namespace=$NAMESPACE \
-    --storage_class=$STORAGE_CLASS \
+    --storage-class=$STORAGE_CLASS \
     --access-mode=$ACCESS_MODE \
     --insecure --force-bind
 ```
@@ -148,7 +148,7 @@ virtctl image-upload $VOLUME_TYPE $VOLUME_NAME \
     --image-path=$IMAGE_PATH \
     --uploadproxy-url=https://$PROXY_ADDRESS:443 \
     --namespace=$NAMESPACE \
-    --storage_class=$STORAGE_CLASS \
+    --storage-class=$STORAGE_CLASS \
     --access-mode=$ACCESS_MODE \
     --insecure --force-bind
 ```
@@ -173,7 +173,7 @@ virtctl image-upload $VOLUME_TYPE $VOLUME_NAME \
     --image-path=$IMAGE_PATH \
     --uploadproxy-url=https://$PROXY_ADDRESS:443 \
     --namespace=$NAMESPACE \
-    --storage_class=$STORAGE_CLASS \
+    --storage-class=$STORAGE_CLASS \
     --access-mode=$ACCESS_MODE \
     --insecure --force-bind
 ```
