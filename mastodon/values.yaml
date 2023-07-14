@@ -33,8 +33,10 @@ mastodon:
   limitedFederationMode: false
   persistence:
     assets:
+      accessMode: ReadWriteMany
       existingClaim: mastodon-assets
     system:
+      accessMode: ReadWriteMany
       existingClaim: mastodon-system
   s3:
     enabled: false
