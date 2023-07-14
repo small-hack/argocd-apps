@@ -4,11 +4,12 @@ apiVersion: cdi.kubevirt.io/v1alpha1
 kind: DataVolume
 metadata:
   name: vm1-dv
+  namespace: vm1
 spec:
   source:
     pvc:
-      namespace: vm1
       name: debian12-pvc
+      namespace: default
   pvc:
     accessModes:
       - ReadWriteOnce
