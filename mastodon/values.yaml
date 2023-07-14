@@ -33,29 +33,19 @@ mastodon:
   limitedFederationMode: false
   persistence:
     assets:
-      # -- ReadWriteOnce is more widely supported than ReadWriteMany, but limits
-      # scalability, since it requires the Rails and Sidekiq pods to run on the
-      # same node.
-      accessMode: ReadWriteMany
-      resources:
-        requests:
-          storage: 10Gi
+      existingClaim: mastodon-assets
     system:
-      accessMode: ReadWriteMany
-      resources:
-        requests:
-          storage: 100Gi
+      existingClaim: mastodon-system
   s3:
-    enabled: true
+    enabled: false
     # access_key: ""
     # access_secret: ""
     # -- you can also specify the name of an existing Secret
     # with keys AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY
-    existingSecret: "b2-creds-mastodon"
-    bucket: "vmt-mastodon-primary"
-    endpoint: "https://s3.eu-central-003.backblazeb2.com"
-    hostname: "s3.eu-central-003.backblazeb2.com"
-    region: "eu-central-003"
+    existingSecret: ""
+    secretKeys:
+      s3Bucket:
+      s3Hostname:
     permission: ""
     # -- If you have a caching proxy, enter its base URL here.
     # alias_host: ""
