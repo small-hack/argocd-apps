@@ -3,7 +3,7 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: vm0-np
+  name: vm1-np
 spec:
   externalTrafficPolicy: Cluster
   ports:
@@ -14,4 +14,4 @@ spec:
       targetPort: 22
   type: NodePort
   selector:
-    metallb-service: vm0
+    metallb-service: vm1
