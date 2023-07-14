@@ -4,9 +4,9 @@ metadata:
   name: mastodon-postgres
   namespace: mastodon
 spec:
-  storageClassName: local-path
+  storageClassName: longhorn
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   resources:
     requests:
-      storage: 25Gi
+      storage: 10Gi
