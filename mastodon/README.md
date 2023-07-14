@@ -57,7 +57,7 @@ psql -U mastodon \
 
 You may need to generate a DB migrate job from a `helm template` command as per suggestion in [issue#18](https://github.com/mastodon/chart/issues/18#issuecomment-1369804876)
 
-# current errors
+## Unsupported value for canned acl 'public-read'
 redacted exact paths for security
 ```bash
 [paperclip] saving accounts/avatars/../original/5eb5eab423667b38.png
@@ -68,3 +68,12 @@ Aws::S3::Errors::InvalidArgument (Unsupported value for canned acl 'public-read'
 ```
 
 pretty sure this was due to the bucket not having public read :)
+
+## admin commands
+
+To get a shell into the main mastodon container:
+```bash
+kubectl exec deploy/mastodon-web-app -- /bin/bash
+```
+
+`tootctl` commands can then be run as normal. Checkout the [mastodon docs](https://docs.joinmastodon.org/admin/tootctl/) for more!
