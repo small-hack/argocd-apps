@@ -6,16 +6,16 @@ metadata:
   generation: 1
   labels:
     kubevirt.io/os: linux
-    metallb-service: vm0
-  name: vm0
+    metallb-service: vm1
+  name: vm1
 spec:
   runStrategy: "RerunOnFailure"
   template:
     metadata:
       creationTimestamp: null
       labels:
-        kubevirt.io/domain: vm0
-        metallb-service: vm0
+        kubevirt.io/domain: vm1
+        metallb-service: vm1
     spec:
       domain:
         features:
@@ -63,7 +63,7 @@ spec:
       volumes:
         - name: harddrive
           persistentVolumeClaim:
-            claimName: vm0-dv
+            claimName: vm1-dv
         - name: cloudinitvolume
           cloudInitNoCloud:
             userData: |
