@@ -18,7 +18,7 @@ export PROXY_ADDRESS=$(kubectl get svc cdi-uploadproxy-loadbalancer -n cdi -o js
 # $(kubectl get svc cdi-uploadproxy -n cdi -o json | jq --raw-output 
 
 time wget -O $IMAGE_PATH $IMAGE_URL && \
-virtctl image-upload $VOLUME_TYPE $VOLUME_NAME \
+time virtctl image-upload $VOLUME_TYPE $VOLUME_NAME \
     --size=$SIZE \
     --image-path=$IMAGE_PATH \
     --uploadproxy-url=https://$PROXY_ADDRESS:443 \
@@ -43,7 +43,7 @@ export PROXY_ADDRESS=$(kubectl get svc cdi-uploadproxy-loadbalancer -n cdi -o js
 # $(kubectl get svc cdi-uploadproxy -n cdi -o json | jq --raw-output 
 
 time wget -O $IMAGE_PATH $IMAGE_URL && \
-virtctl image-upload $VOLUME_TYPE $VOLUME_NAME \
+time virtctl image-upload $VOLUME_TYPE $VOLUME_NAME \
     --size=$SIZE \
     --image-path=$IMAGE_PATH \
     --uploadproxy-url=https://$PROXY_ADDRESS:443 \
@@ -68,7 +68,7 @@ export PROXY_ADDRESS=$(kubectl get svc cdi-uploadproxy-loadbalancer -n cdi -o js
 # $(kubectl get svc cdi-uploadproxy -n cdi -o json | jq --raw-output 
 
 time wget -O $IMAGE_PATH $IMAGE_URL &&
-virtctl image-upload $VOLUME_TYPE $VOLUME_NAME \
+time virtctl image-upload $VOLUME_TYPE $VOLUME_NAME \
     --size=$SIZE \
     --image-path=$IMAGE_PATH \
     --uploadproxy-url=https://$PROXY_ADDRESS:443 \
@@ -93,7 +93,7 @@ export PROXY_ADDRESS=$(kubectl get svc cdi-uploadproxy-loadbalancer -n cdi -o js
 # $(kubectl get svc cdi-uploadproxy -n cdi -o json | jq --raw-output 
 
 time wget -O $IMAGE_PATH $IMAGE_URL && \
-virtctl image-upload $VOLUME_TYPE $VOLUME_NAME \
+time virtctl image-upload $VOLUME_TYPE $VOLUME_NAME \
     --size=$SIZE \
     --image-path=$IMAGE_PATH \
     --uploadproxy-url=https://$PROXY_ADDRESS:443 \
@@ -118,7 +118,7 @@ export PROXY_ADDRESS=$(kubectl get svc cdi-uploadproxy-loadbalancer -n cdi -o js
 # $(kubectl get svc cdi-uploadproxy -n cdi -o json | jq --raw-output 
 
 time wget -O $IMAGE_PATH $IMAGE_URL && \
-virtctl image-upload $VOLUME_TYPE $VOLUME_NAME \
+time virtctl image-upload $VOLUME_TYPE $VOLUME_NAME \
     --size=$SIZE \
     --image-path=$IMAGE_PATH \
     --uploadproxy-url=https://$PROXY_ADDRESS:443 \
@@ -143,7 +143,7 @@ export PROXY_ADDRESS=$(kubectl get svc cdi-uploadproxy-loadbalancer -n cdi -o js
 # $(kubectl get svc cdi-uploadproxy -n cdi -o json | jq --raw-output 
 
 time wget -O $IMAGE_PATH $IMAGE_URL && \
-virtctl image-upload $VOLUME_TYPE $VOLUME_NAME \
+time virtctl image-upload $VOLUME_TYPE $VOLUME_NAME \
     --size=$SIZE \
     --image-path=$IMAGE_PATH \
     --uploadproxy-url=https://$PROXY_ADDRESS:443 \
@@ -168,7 +168,7 @@ export PROXY_ADDRESS=$(kubectl get svc cdi-uploadproxy-loadbalancer -n cdi -o js
 # $(kubectl get svc cdi-uploadproxy -n cdi -o json | jq --raw-output 
 
 time wget -O $IMAGE_PATH $IMAGE_URL && \
-virtctl image-upload $VOLUME_TYPE $VOLUME_NAME \
+time virtctl image-upload $VOLUME_TYPE $VOLUME_NAME \
     --size=$SIZE \
     --image-path=$IMAGE_PATH \
     --uploadproxy-url=https://$PROXY_ADDRESS:443 \
