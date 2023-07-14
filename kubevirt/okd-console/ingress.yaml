@@ -31,4 +31,4 @@ spec:
           service:
             name: console-service
             port:
-              number: 80
+              number: 9000
