@@ -8,6 +8,7 @@ metadata:
     kubevirt.io/os: linux
     metallb-service: vm1
   name: vm1
+  namespace: vm1
 spec:
   runStrategy: "RerunOnFailure"
   template:
