@@ -4752,7 +4752,7 @@ spec:
         - name: UPLOAD_PROXY_IMAGE
           value: quay.io/kubevirt/cdi-uploadproxy:v1.54.3
         - name: VERBOSITY
-          value: "1"
+          value: "2"
         - name: PULL_POLICY
           value: IfNotPresent
         - name: MONITORING_NAMESPACE
@@ -4765,8 +4765,8 @@ spec:
           protocol: TCP
         resources:
           requests:
-            cpu: 10m
-            memory: 150Mi
+            cpu: 1000m
+            memory: 1024Mi
       nodeSelector:
         kubernetes.io/os: linux
       securityContext:
