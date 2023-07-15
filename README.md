@@ -93,4 +93,23 @@ Beyond just ensuring everything meets basic reliability and security needs, we a
 | App                    | Description                                                                                                                                          |
 |:-----------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------|
 | [mastodon](./mastodon) | Selfhosted social media site, includes [postgres], [elastic search] (for full text searching), and [redis] (in memory caching) 🚧 UNDER CONSTRUCTION |
-| [matrix](./matrix)     | 🚧 UNDER CONSTRUCTION - Selfhosted chat app                                                                                                          |
+| [matrix](./matrix)     | 🚧 UNDER CONSTRUCTION - Selfhosted chat app                                |        
+
+## Troubleshooting Tips
+
+- Namespace stuck in terminating state
+  ```bash
+  kubectl get namespace "<NAMESPACE>" -o json   | tr -d "\n" | sed "s/\"finalizers\": \[[^]]\+\]/\"finalizers\": []/"   | kubectl replace --raw /api/v1/<NAMESPACE>/cdi/finalize -f -
+  ```
+
+- Find all items in a namespace
+  ```bash
+  kubectl api-resources --verbs=list --namespaced -o name   | xargs -n 1 kubectl get --show-kind --ignore-not-found -n <NAMESPACE>
+  ```
+  
+- be sure to check for and remove `Mutatingwebhookconfiguration` and `Validatingwebhookconfiguration`
+
+- Patching a resource you found via the Xargs search
+  ```bash
+  kubectl patch <CLASS>/<NAME>-p '{"metadata":{"finalizers":[]}}' --type=merge -n <NAMESPACE>
+  ```
