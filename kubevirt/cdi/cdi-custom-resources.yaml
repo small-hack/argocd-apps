@@ -3,6 +3,9 @@ kind: CDI
 metadata:
   name: cdi
 spec:
+  config:
+    featureGates:
+    - HonorWaitForFirstConsumer
   imagePullPolicy: IfNotPresent
   infra:
     nodeSelector:
@@ -10,9 +13,6 @@ spec:
     tolerations:
     - key: CriticalAddonsOnly
       operator: Exists
-  config:
-    featureGates:
-    - HonorWaitForFirstConsumer
   workload:
     nodeSelector:
       kubernetes.io/os: linux
