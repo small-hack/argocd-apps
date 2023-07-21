@@ -124,7 +124,7 @@ spec:
   source:
     chart: matrix
     repoURL: https://jessebot.github.io/matrix-chart 
-    targetRevision: matrix-3.0.1
+    targetRevision: matrix-3.1.0
   destination:
     server: "https://kubernetes.default.svc"
     namespace: matrix
