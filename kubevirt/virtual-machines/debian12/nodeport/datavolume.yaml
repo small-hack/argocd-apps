@@ -8,7 +8,7 @@ metadata:
 spec:
   source:
     pvc:
-      name: debian-disk
+      name: debian12-pvc
       namespace: default
   pvc:
     accessModes:
