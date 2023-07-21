@@ -1,65 +1,61 @@
 # Runtime configuration for Synapse and settings related to the Matrix protocol
 matrix:
   # Manual overrides for homeserver.yaml, the main configuration file for Synapse
-  # If homeserverOverride is set, the entirety of homeserver.yaml will be replaced with the contents.
-  # If homeserverExtra is set, the contents will be appended to the end of the default configuration.
   # It is highly recommended that you take a look at the defaults in templates/synapse/_homeserver.yaml, to get a sense
   # of the requirements and default configuration options to use other services in this chart.
-  # homeserverOverride: {}
-  # homeserverExtra: {}
+  # -- If homeserverOverride is set, the entirety of homeserver.yaml will be replaced with the contents.
+  homeserverOverride: {}
+  # -- If homeserverExtra is set, the contents will be appended to the end of the default configuration.
+  homeserverExtra: {}
 
-  # Domain name of the server
-  # This is not necessarily the host name where the service is reachable. In fact, you may want to omit any subdomains
-  # from this value as the server name set here will be the name of your homeserver in the fediverse, and will be the
-  # domain name at the end of every user's username
+  # -- Domain name of the server: This is not necessarily the host name where the service is reachable. In fact, you may want to omit any subdomains from this value as the server name set here will be the name of your homeserver in the fediverse, and will be the domain name at the end of every user's username
   serverName: "matrix.enby.city"
 
-  # Enable anonymous telemetry to matrix.org
+  # -- Enable anonymous telemetry to matrix.org
   telemetry: false
 
-  # Hostname where Synapse can be reached.
-  # This is *optional* if an Ingress is configured below. If hostname is unspecified, the Synapse hostname of the
-  # Ingress will be used
+  # -- Hostname where Synapse can be reached.
+  # This is *optional* if an Ingress is configured below. If hostname is unspecified, the Synapse hostname of the Ingress will be used
   # hostname: "matrix.example.com"
 
-  # Set to false to disable presence (online/offline indicators)
+  # -- Set to false to disable presence (online/offline indicators)
   presence: true
 
-  # Set to true to block non-admins from inviting users to any rooms
-  blockNonAdminInvites: true
+  # -- Set to true to block non-admins from inviting users to any rooms
+  blockNonAdminInvites: false
 
-  # Set to false to disable message searching
+  # -- Set to false to disable message searching
   search: true
 
   # Which types of rooms to enable end-to-end encryption on by default
   # off: none
   # invite: private messages, or rooms created with the private_chat or trusted_private_chat room preset
   # all: all rooms
-  encryptByDefault: all
+  encryptByDefault: invite
 
-  # Email address of the administrator
+  # -- Email address of the administrator
   adminEmail: "admin@social-media-for-dogs.com"
 
-  # Settings related to image and multimedia uploads
+  # -- Settings related to image and multimedia uploads
   uploads:
-    # Max upload size in bytes
+    # -- Max upload size in bytes
     maxSize: 10M
 
-    # Max image size in pixels
+    # -- Max image size in pixels
     maxPixels: 32M
 
   # Settings related to federation
   federation:
-    # Set to false to disable federation and run an isolated homeserver
+    # -- Set to false to disable federation and run an isolated homeserver
     enabled: true
 
-    # Set to false to disallow members of other homeservers from fetching *public* rooms
-    allowPublicRooms: false
+    # -- Set to false to disallow members of other homeservers from fetching *public* rooms
+    allowPublicRooms: true
 
-    # Whitelist of domains to federate with (comment for all domains except blacklisted)
-    # whitelist: []
+    # -- Whitelist of domains to federate with (comment for all domains except blacklisted)
+    whitelist: []
 
-    # IP addresses to blacklist federation requests to
+    # -- IP addresses to blacklist federation requests to
     blacklist:
       - '127.0.0.0/8'
       - '10.0.0.0/8'
@@ -73,7 +69,7 @@ matrix:
 
   # User registration settings
   registration:
-    # Allow new users to register an account
+    # -- Allow new users to register an account
     enabled: false
 
     # If set, allows registration of standard or admin accounts by anyone who
@@ -81,7 +77,7 @@ matrix:
     #
     # sharedSecret: <PRIVATE STRING>
 
-    # Allow users to join rooms as a guest
+    # -- Allow users to join rooms as a guest
     allowGuests: false
 
     # Required "3PIDs" - third-party identifiers such as email or msisdn (SMS)
@@ -89,28 +85,28 @@ matrix:
     #   - email
     #   - msisdn
 
-    # Rooms to automatically join all new users to
+    # -- Rooms to automatically join all new users to
     autoJoinRooms: []
     # - "#welcome:example.com"
 
-    # Whether to allow token based registration
+    # -- Whether to allow token based registration
     requiresToken: false
 
   # Settings for the URL preview crawler
   urlPreviews:
-    # Enable URL previews.
+    # -- Enable URL previews.
     # WARNING: Make sure to review the default rules below to ensure that users cannot crawl
     # sensitive internal endpoints in your cluster.
     enabled: false
 
     # Blacklists and whitelists for the URL preview crawler
     rules:
-      # Maximum size of a crawlable page. Keep this low to prevent a DOS vector
+      # -- Maximum size of a crawlable page. Keep this low to prevent a DOS vector
       maxSize: 10M
 
       # Whitelist and blacklist for crawlable IP addresses
       ip:
-        # whitelist:
+        whitelist: []
         blacklist:
           - '127.0.0.0/8'
           - '10.0.0.0/8'
@@ -122,7 +118,7 @@ matrix:
           - 'fe80::/64'
           - 'fc00::/7'
 
-      # Whitelist and blacklist based on URL pattern matching
+      # -- Whitelist and blacklist based on URL pattern matching
       url: {}
         # whitelist:
         # blacklist:
@@ -143,7 +139,7 @@ matrix:
         #  # blacklist any URL with a literal IPv4 address
         #  - netloc: '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$'
 
-  # How long to keep redacted events in unredacted form in the database
+  # -- How long to keep redacted events in unredacted form in the database
   retentionPeriod: 7d
 
   security:
@@ -219,16 +215,19 @@ matrix:
 volumes:
   # Uploaded attachments/multimedia
   media:
-    # Capacity of the media persistent volume claim
+    # -- Capacity of the media persistent volume claim - ignored if using exsitingClaim
     capacity: 10Gi
-    # Storage class (optional)
+    # -- Storage class of the media PVC (optional) - ignored if using exsitingClaim
     storageClass: ""
+    # -- name of an existing persistent volume claim to use for uploaded attachments and multimedia
+    existingClaim: ""
   signingKey:
-    # Capacity of the signing key PVC
-    # Note: 1Mi is more than enough, but some cloud providers set a minimum PVC size of 1Mi or 1Gi, adjust as necessary
+    # -- Capacity of the signing key PVC. Note: 1Mi is more than enough, but some cloud providers set a minimum PVC size of 1Mi or 1Gi, adjust as necessary
     capacity: 1Mi
-    # Storage class (optional)
+    # -- Storage class (optional)
     storageClass: ""
+    # -- name of an existing persistent volume claim to use for signing key
+    existingClaim: ""
 
 ingress:
   enabled: true
@@ -250,27 +249,49 @@ ingress:
 
 # PostgreSQL Database Configuration
 postgresql:
-  # Whether to deploy the stable/postgresql chart with this chart. If disabled, make sure PostgreSQL is available at the hostname below and credentials are configured below
-  enabled: false
+  # -- Whether to deploy the stable/postgresql chart with this chart. If disabled, make sure PostgreSQL is available at the hostname below and credentials are configured below
+  enabled: true
 
+  # database credentials to use if you don't use an existingSecret
+  # -- username of matrix postgres user
   username: matrix
+  # -- password of matrix postgres user
   password: matrix
+  # -- name of database to use for matrix
   database: matrix
-
-  # Set this if postgresql.enabled = false
-  hostname: ""
+  # -- which port to use to connect to your database server
   port: 5432
+  # -- hostname of postgres server to use. Can be left blank if using bundled bitnami postgresql sub-chart
+  hostname: ""
 
-  # Whether to connect to the database over SSL
+  # -- Name of existing secret to use for PostgreSQL credentials
+  existingSecret: ""
+  # secretKeys to grab from existingSecret
+  # if postgresql.existingSecret is provided, the following are ignored
+  # postgresql.password/username/hostname/database/port
+  secretKeys:
+    # -- key in existingSecret with hostname of the database
+    databaseHostname: hostname 
+    # -- key in existingSecret with port of the database
+    databasePort: port 
+    # -- key in existingSecret with name of the database
+    database: database
+    # -- key in existingSecret with username for matrix to connect to database
+    databaseUsername: username
+    # -- key in existingSecret with password for matrix to connect to database
+    databasePassword: password
+
+  # -- Whether to connect to the database over SSL
   ssl: false
-  # See https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PARAMKEYWORDS for documentation of these modes
+  # -- which ssl mode to use. See [documentation](https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PARAMKEYWORDS) for more info
   sslMode: prefer
 
-  # Storage to allocate for stable/postgresql
+  # -- persistent volume claim configuration for postgresql to persist data
   persistence:
+    # -- size of postgresql volume claim
     size: 8Gi
 
-  # If postgresql.enabled, stable/postgresql will run the scripts in templates/postgresql/initdb-configmap.yaml
+  # -- If postgresql.enabled, stable/postgresql will run the scripts in templates/postgresql/initdb-configmap.yaml
   # If using an external Postgres server, make sure to configure the database as specified at https://github.com/matrix-org/synapse/blob/master/docs/postgres.md
   initdbScriptsConfigMap: "{{ .Release.Name }}-postgresql-initdb"
 
@@ -282,11 +303,16 @@ postgresql:
 # Synapse Kubernetes resource settings
 synapse:
   image:
+    # -- image registry and repository to use for synapse
     repository: "matrixdotorg/synapse"
-    tag: v1.22.1
+    # -- tag of synapse docker image to use. change this to latest to grab the cutting-edge release of synapse
+    tag: "{{ .Chart.AppVersion }}"
+    # -- pullPolicy for synapse image, set to Always if using synapse.image.tag: latest
     pullPolicy: IfNotPresent
   service:
+    # -- service type for synpase
     type: ClusterIP
+    # -- service port for synapse
     port: 80
     federation:
       type: ClusterIP
@@ -296,37 +322,46 @@ synapse:
   # Configure timings for readiness, startup, and liveness probes here
   probes:
     readiness:
+      # -- readiness probe seconds before timing out
       timeoutSeconds: 5
+      # -- readiness probe seconds trying again
       periodSeconds: 10
     startup:
+      # -- startup probe seconds before timing out
       timeoutSeconds: 5
+      # -- startup probe seconds trying again
       periodSeconds: 5
+      # -- startup probe times to try and fail before giving up
       failureThreshold: 6
     liveness:
+      # -- liveness probe seconds before timing out
       timeoutSeconds: 5
+      # -- liveness probe seconds trying again
       periodSeconds: 10
 
   # Does not work by default in all cloud providers, disable by default
   securityContext:
+    # -- user to run the synapse container as
     runAsUser: 1000
+    # -- group to run the synapse container as
     runAsGroup: 1000
     fsGroup: 1000
     runAsNonRoot: true
 
-    # Enable if your k8s environment allows containers to chuser/setuid
+    # -- Enable if your k8s environment allows containers to chuser/setuid
     # https://github.com/matrix-org/synapse/blob/96cf81e312407f0caba1b45ba9899906b1dcc098/docker/start.py#L196
     env: false
 
-  # Labels to be appended to all Synapse resources
+  # -- Labels to be appended to all Synapse resources
   labels:
     component: synapse
   
   # Prometheus metrics for Synapse
   # https://github.com/matrix-org/synapse/blob/master/docs/metrics-howto.md
   metrics:
-    # Whether Synapse should capture metrics on an additional endpoint
+    # -- Whether Synapse should capture metrics on an additional endpoint
     enabled: true
-    # Port to listen on for metrics scraping
+    # -- Port to listen on for metrics scraping
     port: 9092
     annotations: true
 
@@ -335,33 +370,33 @@ synapse:
 
   extraVolumeMounts: []
 
-# Element Web (formerly Riot Web) client configuration
+# Element client configuration. see: https://element.io/
 element:
-  # Set to false to disable a deployment of Element. Users will still be able to connect via any other instances of Element (such as https://app.element.io), Element Desktop, or any other Matrix clients
+  # -- Set to false to disable a deployment of Element. Users will still be able to connect via any other instances of Element (such as https://app.element.io), Element Desktop, or any other Matrix clients
   enabled: true
 
   # Organization/enterprise branding
   branding:
-    # Shown in email notifications
+    # -- brand shown in email notifications
     brand: "Element"
-    # Background of login splash screen
+    # -- Background of login splash screen
     welcomeBackgroundUrl: ""
-    # Logo shown at top of login screen
+    # -- Logo shown at top of login screen
     authHeaderLogoUrl: ""
-    # Array of links to show at the bottom of the login screen
+    # -- Array of links to show at the bottom of the login screen
     authFooterLinks: []
 #      - text:
 #        url:
 
   # Element integrations configuration
   integrations:
-    # Set to false to disable the Integrations menu (including widgets, bots, and other plugins to Element)
+    # -- Set to false to disable the Integrations menu (including widgets, bots, and other plugins to Element)
     enabled: true
-    # UI to load when a user selects the Integrations button at the top-right of a room
+    # -- UI to load when a user selects the Integrations button at the top-right of a room
     ui: "https://scalar.vector.im/"
-    # API for the integration server
+    # -- API for the integration server
     api: "https://scalar.vector.im/api"
-    # Array of API paths providing widgets
+    # -- Array of API paths providing widgets
     widgets:
       - "https://scalar.vector.im/_matrix/integrations/v1"
       - "https://scalar.vector.im/api"
@@ -383,20 +418,23 @@ element:
     - feature_presence_in_room_list
     - feature_custom_themes
 
-  # Servers to show in the Explore menu (the current server is always shown)
+  # -- Servers to show in the Explore menu (the current server is always shown)
   roomDirectoryServers:
     - matrix.org
 
-  # Set to the user ID (@username:domain.tld) of a bot to invite all new users to a DM with the bot upon registration
+  # -- Set to the user ID (@username:domain.tld) of a bot to invite all new users to a DM with the bot upon registration
   welcomeUserId: ""
 
-  # Prefix before permalinks generated when users share links to rooms, users, or messages. If running an unfederated Synapse, set the below to the URL of your Element instance.
+  # -- Prefix before permalinks generated when users share links to rooms, users, or messages. If running an unfederated Synapse, set the below to the URL of your Element instance.
   permalinkPrefix: "https://matrix.to"
 
   # Element Kubernetes resource settings
   image:
+    # -- registry and repository to use for element docker image
     repository: "vectorim/element-web"
-    tag: v1.7.12
+    # -- tag to use for element docker image
+    tag: v1.11.36
+    # -- pullPolicy to use for element docker image, set to Always if using latest tag
     pullPolicy: IfNotPresent
   service:
     type: ClusterIP
@@ -408,20 +446,20 @@ element:
     startup: {}
     liveness: {}
 
-  # Element specific labels
+  # -- Element specific labels
   labels:
     component: element
 
 # Settings for Coturn TURN relay, used for routing voice calls
 coturn:
-  # Set to false to disable the included deployment of Coturn
+  # -- Set to false to disable the included deployment of Coturn
   enabled: true
 
   # URIs of the Coturn servers
   # If deploying Coturn with this chart, include the public IPs of each node in your cluster (or a DNS round-robin hostname)
   # You can also include an external Coturn instance if you'd prefer
-  uris: []
-#    - "turn:turn.example.com?transport=udp"
+  uris:
+    - "turn:turn.enby.city?transport=udp"
 
   # How to deploy Coturn
   # Options:
@@ -432,17 +470,17 @@ coturn:
   #               This is more flexible and can use fewer pods in a multi-node setup, but will require additional networking configuration.
   kind: DaemonSet
 
-  # Whether to allow guests to use the TURN server
-  allowGuests: true
+  # -- Whether to allow guests to use the TURN server
+  allowGuests: false
 
-  # Shared secret for communication between Synapse and Coturn.
+  # -- Shared secret for communication between Synapse and Coturn.
   # Optional, will be auto-generated if not overridden here.
   sharedSecret: ""
 
-  # UDP port range for TURN connections
+  # -- UDP port range for TURN connections
   ports:
-    from: 49152
-    to: 49172
+    from: 3478
+    to: 3478
 
   service:
     # The type of service to deploy for routing Coturn traffic
@@ -455,30 +493,30 @@ coturn:
     type: ClusterIP
 
   image:
-    repository: "instrumentisto/coturn"
-    tag: "4.5.1.3"
+    repository: "coturn/coturn"
+    tag: "4.6.2"
     pullPolicy: IfNotPresent
   replicaCount: 1
   resources: {}
 
-  # Coturn specific labels
+  # -- Coturn specific labels
   labels:
     component: coturn
 
 # Settings for email notifications
 mail:
-  # Set to false to disable all email notifications
-  # NOTE: If enabled, either enable the Exim relay or configure an external mail server below
+  # -- disabled all email notifications by default. NOTE: If enabled, either enable the Exim relay or configure an external mail server below
   enabled: false
-  # Name and email address for outgoing mail
-  from: "Matrix <trinity@enby.city>"
-  # Optional: Element instance URL.
+  # -- Name and email address for outgoing mail
+  from: "Matrix <matrix@example.com>"
+  # -- Optional: Element instance URL.
   # If the ingress is enabled, this is unnecessary.
   # If the ingress is disabled and this is left unspecified, emails will contain a link to https://app.element.io
   elementUrl: ""
 
   # Exim relay
   relay:
+    # -- whether to enable exim relay or not
     enabled: true
     image:
       repository: "devture/exim-relay"
@@ -500,39 +538,43 @@ mail:
   
   # External mail server
   external:
+    # -- External mail server hostname
     host: ""
+    # -- External mail server port
     port: 25  # SSL: 465, STARTTLS: 587
+    # -- External mail server username
     username: ""
+    # -- External mail server password
     password: ""
     requireTransportSecurity: true
 
 bridges:
   irc:
-    # Set to true to enable the IRC bridge
+    # -- Set to true to enable the IRC bridge
     enabled: false
-    # Whether to enable presence (online/offline indicators). If presence is disabled for the homeserver (above), it should be disabled here too
+    # -- Whether to enable presence (online/offline indicators). If presence is disabled for the homeserver (above), it should be disabled here too
     presence: false
-    # Name of Postgres database to store IRC bridge data in, this database will be created if the included Postgres chart is enabled, otherwise you must create it manually
+    # -- Name of Postgres database to store IRC bridge data in, this database will be created if the included Postgres chart is enabled, otherwise you must create it manually
     database: "matrix_irc"
     databaseSslVerify: true
 
     # Object of IRC servers to connect to, see https://github.com/matrix-org/matrix-appservice-irc/blob/master/config.sample.yaml for config options
     servers:
       chat.freenode.net:
-        # A human-readable short name.
+        # -- A human-readable short name.
         name: "Freenode"
-        # The port to connect to. Optional.
+        # -- The port to connect to. Optional.
         port: 6697
-        # Whether to use SSL or not. Default: false.
+        # -- Whether to use SSL or not. Default: false.
         ssl: true
 
     data:
-      # Size of the data PVC to allocate
+      # -- Size of the data PVC to allocate
       capacity: 1Mi
 
     image:
       repository: "matrixdotorg/matrix-appservice-irc"
-      tag: "release-0.22.0-rc1"
+      tag: "release-1.0.0"
       pullPolicy: IfNotPresent
     replicaCount: 1
     resources: {}
@@ -627,13 +669,15 @@ bridges:
       port: 29318
 
   discord:
-    # Set to true to enable the Discord bridge
+    # -- Set to true to enable the Discord bridge
     enabled: false
 
     # Discord bot authentication
     # See https://github.com/Half-Shot/matrix-appservice-discord#setting-up-discord
     auth:
+      # -- Discord bot clientID for authentication
       clientId: ""
+      # -- Discord bot token for authentication
       botToken: ""
 
     # The name of bridged rooms
@@ -696,15 +740,17 @@ bridges:
   # the ReadWriteMany access mode (see below)
   affinity: false
   volume:
-    # Capacity of the shared volume for storing bridge/appservice registration files
+    # -- Capacity of the shared volume for storing bridge/appservice registration files
     # Note: 1Mi should be enough but some cloud providers may set a minimum PVC size of 1Gi, adjust as necessary
     capacity: 1Mi
-    # Storage class (optional)
+    # -- Storage class (optional)
     storageClass: ""
-    # Access mode of the shared volume. ReadWriteMany is recommended to allow bridges to be scheduled on separate nodes.
+    # -- Access mode of the shared volume. ReadWriteMany is recommended to allow bridges to be scheduled on separate nodes.
     # Some cloud providers may not allow the ReadWriteMany access mode. In that case, change this to ReadWriteOnce -AND-
     # set bridges.affinity (above) to true
     accessMode: ReadWriteMany
+    # -- name of an existing persistent volume claim to use for bridges
+    existingClaim: ""
 
 imagePullSecrets: []
 nameOverride: ""
