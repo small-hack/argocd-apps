@@ -26,7 +26,7 @@ spec:
   source:
     pvc:
       namespace: default
-      name: debian12-pvc
+      name: debian-disk
   pvc:
     accessModes:
       - ReadWriteOnce
