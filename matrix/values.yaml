@@ -12,7 +12,7 @@ matrix:
   # This is not necessarily the host name where the service is reachable. In fact, you may want to omit any subdomains
   # from this value as the server name set here will be the name of your homeserver in the fediverse, and will be the
   # domain name at the end of every user's username
-  serverName: "enby.city"
+  serverName: "matrix.enby.city"
 
   # Enable anonymous telemetry to matrix.org
   telemetry: false
@@ -26,7 +26,7 @@ matrix:
   presence: true
 
   # Set to true to block non-admins from inviting users to any rooms
-  blockNonAdminInvites: false
+  blockNonAdminInvites: true
 
   # Set to false to disable message searching
   search: true
@@ -38,7 +38,7 @@ matrix:
   encryptByDefault: all
 
   # Email address of the administrator
-  adminEmail: "trinity@enby.city"
+  adminEmail: "admin@vleermuis.tech"
 
   # Settings related to image and multimedia uploads
   uploads:
@@ -54,7 +54,7 @@ matrix:
     enabled: true
 
     # Set to false to disallow members of other homeservers from fetching *public* rooms
-    allowPublicRooms: true
+    allowPublicRooms: false
 
     # Whitelist of domains to federate with (comment for all domains except blacklisted)
     # whitelist: []
@@ -235,7 +235,10 @@ ingress:
   # Whether to expose the federation API behind the Ingress
   # If you would rather use an external proxy to run federation on a port other than 443, set this to false and set the synapse.service.federation.type value to either LoadBalancer or NodePort
   federation: true
-  tls: []
+  tls:
+    - secretName: matrix-tls
+      hosts:
+        - matrix.enby.city
   hosts:
     synapse: matrix.enby.city
     element: element.enby.city
@@ -248,7 +251,7 @@ ingress:
 # PostgreSQL Database Configuration
 postgresql:
   # Whether to deploy the stable/postgresql chart with this chart. If disabled, make sure PostgreSQL is available at the hostname below and credentials are configured below
-  enabled: true
+  enabled: false
 
   username: matrix
   password: matrix
@@ -466,7 +469,7 @@ coturn:
 mail:
   # Set to false to disable all email notifications
   # NOTE: If enabled, either enable the Exim relay or configure an external mail server below
-  enabled: true
+  enabled: false
   # Name and email address for outgoing mail
   from: "Matrix <trinity@enby.city>"
   # Optional: Element instance URL.
