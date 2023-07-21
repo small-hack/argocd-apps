@@ -8,8 +8,8 @@ metadata:
 spec:
   source:
     pvc:
-      name: debian12-pvc
       namespace: default
+      name: debian12-pvc
   pvc:
     accessModes:
       - ReadWriteOnce
