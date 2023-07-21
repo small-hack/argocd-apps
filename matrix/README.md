@@ -2,5 +2,4 @@
 
 [Matrix](https://matrix.org/) is an open network for secure, decentralised communication :)
 
-We're using: https://github.com/Arkaniad/matrix-chart
-(which is a fork of https://github.com/typokign/matrix-chart)
+We're using [jessebot/matrix-chart](https://github.com/jessebot/matrix-chart), which is a fork of [Arkaniad/matrix-chart](https://github.com/Arkaniad), which is a fork of [typokign/matrix-chart](https://github.com/typokign/matrix-chart) (no longer maintained).
