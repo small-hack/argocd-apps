@@ -1,4 +1,117 @@
-# we're using https://github.com/Arkaniad/matrix-chart
+---
+# First sync wave done in parallel with creating secrets. Must be BEFORE
+# matrix so that matrix persists it's data between upgrades. Sync policy
+# is set to ApplyOutOfSyncOnly=true to create the volume initially only.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: matrix-persistence
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  project: default
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: matrix
+  source:
+    repoURL: https://github.com/small-hack/argocd.git
+    path: matrix/manifests/persistence/
+  syncPolicy:
+    syncOptions:
+      - ApplyOutOfSyncOnly=true
+    automated:
+      selfHeal: true
+
+---
+# First sync wave because we need secrets for matrix, so it has to be
+# before matrix so it has secrets for all its credentials.
+# In a private repo right now while we figure out a custom argocd plugin
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: matrix-external-secrets
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  project: default
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: matrix
+  source:
+    repoURL: https://github.com/small-hack/vleermuis-external-secrets.git
+    path: external_secrets/matrix/
+  syncPolicy:
+    syncOptions:
+      - Replace=true
+    automated:
+      prune: true
+      selfHeal: true
+
+---
+# has to be after secrets, but before web-app
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: matrix-postgres
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  project: default
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: matrix
+  source:
+    chart: postgresql
+    repoURL: 'https://charts.bitnami.com/bitnami'
+    targetRevision: 12.6.8
+    helm:
+      skipCrds: true
+      values: |
+        global:
+          postgresql:
+            auth:
+              username: matrix
+              database: matrix
+              existingSecret: matrix-pg-user-credentials
+              secretKeys:
+                userPasswordKey: password
+                adminPasswordKey: postgresPassword
+        volumePermissions:
+          enabled: true
+        primary:
+          podAnnotations:
+            k8up.io/backupcommand: "sh -c 'PGDATABASE=\"$POSTGRES_DB\" PGUSER=\"$POSTGRES_USER\" PGPASSWORD=\"$POSTGRES_PASSWORD\" pg_dump --clean'"
+            k8up.io/file-extension: .sql
+          pgHbaConfiguration: |-
+            local all all trust
+            host all all 127.0.0.1/32 md5
+            host all matrix 10.0.0.0/8 md5
+          initdb:
+            scripts:
+              my_init_script.sql: |
+                ALTER DATABASE matrix OWNER TO matrix;
+                GRANT ALL PRIVILEGES ON DATABASE matrix TO matrix;
+                GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO matrix;
+          persistence:
+            enabled: true
+            # Use an existing Persistent Volume Claim (must be created ahead of time)
+            existingClaim: "matrix-postgres"
+        metrics:
+          enabled: true
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+      - Replace=true
+    automated:
+      selfHeal: true
+      prune: true
+
+
+# we're using https://github.com/jessebot/matrix-chart
+# which is a fork of https://github.com/Arkaniad/matrix-chart
 # which is a fork of https://github.com/typokign/matrix-chart
 ---
 apiVersion: argoproj.io/v1alpha1
@@ -10,8 +123,8 @@ spec:
   project: default
   source:
     chart: matrix
-    repoURL: https://github.com/Arkaniad/matrix-chart.git
-    targetRevision: v2.9.2
+    repoURL: https://jessebot.github.io/matrix-chart 
+    targetRevision: matrix-3.0.1
   destination:
     server: "https://kubernetes.default.svc"
     namespace: matrix
