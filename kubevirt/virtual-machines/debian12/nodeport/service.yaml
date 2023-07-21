@@ -9,7 +9,7 @@ spec:
   externalTrafficPolicy: Cluster
   ports:
     - name: nodeport
-      nodePort: 33300
+      nodePort: 30001
       protocol: TCP
       port: 22
       targetPort: 22
