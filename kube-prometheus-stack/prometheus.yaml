@@ -14,7 +14,7 @@ spec:
     namespace: monitoring
   source:
     repoURL: https://prometheus-community.github.io/helm-charts
-    targetRevision: 47.1.0
+    targetRevision: 47.6.1
     chart: kube-prometheus-stack
     helm:
       skipCrds: true
