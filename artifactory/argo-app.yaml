@@ -1,0 +1,34 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: artifactory
+spec:
+  destination:
+    name: ''
+    namespace: artifactory
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: ''
+    repoURL: 'https://charts.jfrog.io'
+    targetRevision: 107.63.5
+    chart: artifactory-oss
+    helm:
+      parameters:
+        - name: artifactory.ingress.enabled
+          value: 'true'
+        - name: artifactory.ingress.tls
+          value: 'true'
+        - name: artifactory.databaseUpgradeReady
+          value: 'yes'
+        - name: artifactory.nginx.enabled
+          value: 'false'
+        - name: artifactory.nginx.tlsSecretName
+          value: artifactory-tls
+  sources: []
+  project: default
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false
+    syncOptions:
+      - CreateNamespace=true
