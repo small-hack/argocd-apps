@@ -9,7 +9,6 @@ A collection of [Argo CD](https://argo-cd.readthedocs.io/en/stable/) templates f
 * [Database](#database)
 * [Virtual Machines](#virtual-machines)
 * [File Storage and Backups](#file-storage-and-backups)
-* [Email](#email)
 * [Monitoring](#monitoring)
 * [Security](#security)
 * [Social Media and chat](#social-media-and-chat)
