@@ -55,11 +55,11 @@ nextcloud:
     tokenKey: serverinfo_token
     smtpUsernameKey: smtpUsername
     smtpPasswordKey: smtpPassword
-  update: 1
+  update: 0
   # If web server is not binding default port, you can define it
   # containerPort: 8080
   mail:
-    enabled: false
+    enabled: true
     fromAddress: cloud
     domain: enby.city
     smtp:
