@@ -5,26 +5,20 @@ If you're interested in contributing, checkout our guidelines [here](./CONTRIBUT
 
 ## All Apps
 
-<!-- vim-markdown-toc GFM -->
-
-    * [Auth and Identity Management](#auth-and-identity-management)
-    * [Database](#database)
-    * [Virtual Machines](#virtual-machines)
-    * [File Storage and Backups](#file-storage-and-backups)
-    * [Monitoring](#monitoring)
-    * [Security](#security)
-    * [Social Media and chat](#social-media-and-chat)
-* [Troubleshooting Tips](#troubleshooting-tips)
-
-<!-- vim-markdown-toc -->
-
+* [Auth and Identity Management](#auth-and-identity-management)
+* [Database](#database)
+* [Virtual Machines](#virtual-machines)
+* [File Storage and Backups](#file-storage-and-backups)
+* [Monitoring](#monitoring)
+* [Security](#security)
+* [Social Media and chat](#social-media-and-chat)
 
 ### Auth and Identity Management
 
 |               App              | Description                                                                                                                                                                                                                                                                                                 |
 |:------------------------------:|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-|     [keycloak](./keycloak)     | helm chart for [Keycloak], an Identity Access Management tool with built in OpenIDConnect for authenticating to self hosted apps                                                                                                                                                                            |
-|  [vouch-proxy](./vouch-proxy)  | helm chart for [Vouch], an OAuth2 proxy that allows you to use ingress-nginx annotations to connect to a third party identity provider, giving you proper auth on websites that don't have auth. Currently works with the keycloak provider in this template, but also known to work with google and github |
+|     [keycloak](./keycloak)     | helm chart for [Keycloak](https://www.keycloak.org/), an Identity Access Management tool with built in OpenIDConnect for authenticating to self hosted apps                                                                                                                                                                            |
+|  [vouch-proxy](./vouch-proxy)  | helm chart for [Vouch](https://github.com/vouch/vouch-proxy), an OAuth2 proxy that allows you to use ingress-nginx annotations to connect to a third party identity provider, giving you proper auth on websites that don't have auth. Currently works with the keycloak provider in this template, but also known to work with google and github |
 | [oauth2-proxy](./oauth2-proxy) | 🏗️ Under construction. Oauth2 proxy that works with Google, however we're testing a keycloak provider right now                                                                                                                                                                                             |
 
 
@@ -39,7 +33,7 @@ If you're interested in contributing, checkout our guidelines [here](./CONTRIBUT
 
 | App                                      | Description                                                                                                       |
 |:-----------------------------------------|:------------------------------------------------------------------------------------------------------------------|
-| [kubevirt](./kubevirt) | KubeVirt is a virtual machine management add-on for Kubernetes.                                                                     |
+| [kubevirt](./kubevirt) | [KubeVirt](https://kubevirt.io/) is a virtual machine management add-on for Kubernetes.                                                                     |
 | [Nvidia GPU Operator](./nvidia/gpu-operator) | 🚧 UNDER CONSTRUCTION The GPU Operator allows administrators of Kubernetes clusters to manage GPU nodes       |
 
 
@@ -47,10 +41,10 @@ If you're interested in contributing, checkout our guidelines [here](./CONTRIBUT
 
 | App                      | Description                                                                                                                  |
 |:-------------------------|:-----------------------------------------------------------------------------------------------------------------------------|
-| [k8up](./k8up)           | k8s native backups done via restic, so you can sync your persistent volumes to external s3 compliant storage                 |
-| [nextcloud](./nextcloud) | Self hosted file storage cloud solution. Replaces something like google drive/photos/notes/meets/calendar - mostly stable    |
+| [k8up](./k8up)           | [K8up](https://k8up.io/k8up/2.7/index.html) is a k8s native backups done via restic, so you can sync your persistent volumes to external s3 compliant storage                 |
+| [nextcloud](./nextcloud) | [Nextcloud](https://nextcloud.com/) is a self hosted file storage cloud solution. Replaces something like google drive/photos/notes/meets/calendar - mostly stable    |
 | [Harbor](./harbor)       | 🚧 UNDER CONSTRUCTION - Container Registry and OCI artifact store with built-in vulernability scanning via Trivy             |
-| [Longhorn](./longhorn)   | Longhorn is a lightweight, reliable and easy-to-use distributed block storage system for Kubernetes. |
+| [Longhorn](./longhorn)   | [Longhorn](https://github.com/longhorn/longhorn) is a lightweight, reliable and easy-to-use distributed block storage system for Kubernetes. |
 
 
 ### Monitoring
