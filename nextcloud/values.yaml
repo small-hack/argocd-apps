@@ -2,7 +2,8 @@
 ## ref: https://hub.docker.com/r/library/nextcloud/tags/
 image:
   repository: nextcloud
-  flavor: fpm
+  # flavor: fpm
+  tag: "27.0.1-fpm"
 
 replicaCount: 1
 
@@ -55,7 +56,7 @@ nextcloud:
     tokenKey: serverinfo_token
     smtpUsernameKey: smtpUsername
     smtpPasswordKey: smtpPassword
-  update: 0
+  update: 1
   # If web server is not binding default port, you can define it
   # containerPort: 8080
   mail:
