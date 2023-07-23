@@ -2,6 +2,10 @@ global:
   evaluation_interval: 5s
   scrape_interval: 5s
   scrape_timeout: 10s
+
+crds:
+  enabled: true
+
 prometheus:
   ingress:
     enabled: true
@@ -52,6 +56,7 @@ prometheus:
         enabled: true
       patch:
         enabled: false
+
 alertmanager:
   enabled: true
   annotations: {}
@@ -75,6 +80,7 @@ alertmanager:
       - secretName: alertmanager-tls
         hosts:
         - alertmanager.vleermuis.tech
+
 grafana:
   grafana.ini:
     auth:
@@ -111,6 +117,7 @@ grafana:
       - secretName: grafana-tls
         hosts:
         - grafana.vleermuis.tech
+
 scrape_configs:
 - job_name: ingress
   honor_timestamps: true
