@@ -1,0 +1,20 @@
+name: Lint
+
+on:
+  pull_request:
+    paths-ignore:
+    - 'README.md'
+    - '**/README.md'
+    - '.github/**'
+
+jobs:
+  lint:
+    name: Lint YAML
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: "0"
+
+      - uses: ibiqlik/action-yamllint@v3
