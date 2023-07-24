@@ -38,7 +38,7 @@ config:
     #  - group2@example.com
   # Default configuration, to be overridden
   configFile: |-
-    email_domains = [ "*" ]
+    email_domains = [ "linux.com", "cloudydev.net" ]
     upstreams = [ "file:///dev/null" ]
   # Custom configuration file: oauth2_proxy.cfg
   # configFile: |-
@@ -49,7 +49,7 @@ config:
   # existingConfig: config
 
 alphaConfig:
-  enabled: false
+  enabled: true
   # Add config annotations
   annotations: {}
   # Arbitrary configuration data to append to the server section
@@ -62,7 +62,7 @@ alphaConfig:
   # This is treated as a Go template and rendered with the root context
   configFile: ""
   # Use an existing config map (see configmap-alpha.yaml for required fields)
-  existingConfig: ~
+  existingConfig: oauth2-proxy-configmap
 
 image:
   repository: "quay.io/oauth2-proxy/oauth2-proxy"
