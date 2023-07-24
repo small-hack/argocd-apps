@@ -1,0 +1,31 @@
+global:
+  postgresql:
+    auth:
+      username: matrix
+      database: matrix
+      existingSecret: matrix-pg-user-credentials
+      secretKeys:
+        userPasswordKey: password
+        adminPasswordKey: postgresPassword
+volumePermissions:
+  enabled: true
+primary:
+  podAnnotations:
+    k8up.io/backupcommand: "sh -c 'PGDATABASE=\"$POSTGRES_DB\" PGUSER=\"$POSTGRES_USER\" PGPASSWORD=\"$POSTGRES_PASSWORD\" pg_dump --clean'"
+    k8up.io/file-extension: .sql
+  pgHbaConfiguration: |-
+    local all all trust
+    host all all 127.0.0.1/32 md5
+    host all matrix 10.0.0.0/8 md5
+  initdb:
+    scripts:
+      my_init_script.sql: |
+        ALTER DATABASE matrix OWNER TO matrix;
+        GRANT ALL PRIVILEGES ON DATABASE matrix TO matrix;
+        GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO matrix;
+  persistence:
+    enabled: true
+    # Use an existing Persistent Volume Claim (must be created ahead of time)
+    existingClaim: "matrix-postgres"
+metrics:
+  enabled: true
