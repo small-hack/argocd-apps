@@ -58,7 +58,7 @@ spec:
   project: default
   destination:
     server: "https://kubernetes.default.svc"
-    namespace: keycloak 
+    namespace: keycloak
   sources:
     # bitnami keycloak helm repo
     - repoURL: registry-1.docker.io
