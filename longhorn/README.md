@@ -23,7 +23,7 @@ spec:
     server: 'https://kubernetes.default.svc'
   source:
     path: longhorn
-    repoURL: 'https://github.com/small-hack/argocd.git'
+    repoURL: 'https://github.com/small-hack/argocd-apps.git'
     targetRevision: HEAD
   sources: []
   project: default

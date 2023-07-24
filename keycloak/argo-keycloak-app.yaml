@@ -15,7 +15,7 @@ spec:
     server: "https://kubernetes.default.svc"
     namespace: keycloak
   source:
-    repoURL: https://github.com/small-hack/argocd.git
+    repoURL: https://github.com/small-hack/argocd-apps.git
     path: keycloak/persistence/
   syncPolicy:
     syncOptions:
@@ -68,7 +68,7 @@ spec:
         valueFiles:
         - $values/keycloak/values.yaml
     # our values.yaml file locally
-    - repoURL: 'https://github.com/small-hack/argocd.git'
+    - repoURL: 'https://github.com/small-hack/argocd-apps.git'
       targetRevision: main
       ref: values
   syncPolicy:

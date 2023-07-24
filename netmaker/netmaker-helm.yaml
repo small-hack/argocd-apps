@@ -15,7 +15,7 @@ spec:
     server: "https://kubernetes.default.svc"
     namespace: netmaker
   source:
-    repoURL: https://github.com/small-hack/argocd.git
+    repoURL: https://github.com/small-hack/argocd-apps.git
     path: netmaker/manifests/persistence/
   syncPolicy:
     syncOptions:
@@ -74,7 +74,7 @@ spec:
         valueFiles:
         - $values/netmaker/values/values.yaml
     # our values.yaml file locally
-    - repoURL: 'https://github.com/small-hack/argocd.git'
+    - repoURL: 'https://github.com/small-hack/argocd-apps.git'
       targetRevision: main
       ref: values
   syncPolicy:
