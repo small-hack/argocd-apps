@@ -90,12 +90,12 @@ spec:
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: matrix
+  name: matrix-web-app
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "3"
 spec:
-  project: matrix-web-app
+  project: matrix
   destination:
     server: "https://kubernetes.default.svc"
     namespace: matrix
