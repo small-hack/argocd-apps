@@ -15,7 +15,7 @@ spec:
     server: "https://kubernetes.default.svc"
     namespace: wireguard
   source:
-    repoURL: https://github.com/small-hack/argocd.git
+    repoURL: https://github.com/small-hack/argocd-apps.git
     path: wg-access-server/manifests/persistence/
   syncPolicy:
     syncOptions:
@@ -73,7 +73,7 @@ spec:
         valueFiles:
         - $values/wg-access-server/values/values.yaml
     # our values.yaml file locally
-    - repoURL: 'https://github.com/small-hack/argocd.git'
+    - repoURL: 'https://github.com/small-hack/argocd-apps.git'
       targetRevision: main
       ref: values
   syncPolicy:

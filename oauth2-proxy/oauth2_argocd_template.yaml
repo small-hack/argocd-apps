@@ -48,7 +48,7 @@ spec:
         valueFiles:
         - $values/oauth2-proxy/values/values.yaml
     # our values.yaml file locally
-    - repoURL: 'https://github.com/small-hack/argocd.git'
+    - repoURL: 'https://github.com/small-hack/argocd-apps.git'
       targetRevision: main
       ref: values
   syncPolicy:
