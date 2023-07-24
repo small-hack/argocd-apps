@@ -14,7 +14,7 @@ metadata:
 spec:
   project: kubevirt
   source:
-    repoURL: https://github.com/small-hack/argocd.git
+    repoURL: https://github.com/small-hack/argocd-apps.git
     path: kubevirt/disks/
   destination:
     server: "https://kubernetes.default.svc"

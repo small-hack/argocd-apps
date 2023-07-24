@@ -1,3 +1,4 @@
+---
 ## Official nextcloud image version
 ## ref: https://hub.docker.com/r/library/nextcloud/tags/
 image:
@@ -71,9 +72,6 @@ nextcloud:
   # PHP Configuration files
   # Will be injected in /usr/local/etc/php-fpm.d when nginx.enabled: true
   phpConfigs: {}
-  # Default config files
-  # IMPORTANT: Will be used only if you put extra configs, otherwise default will come from nextcloud itself
-  # Default confgurations can be found here: https://github.com/nextcloud/docker/tree/master/16.0/apache/config
   defaultConfigs:
     # To protect /var/www/html/config
     .htaccess: true
@@ -89,10 +87,8 @@ nextcloud:
     autoconfig.php: true
     # SMTP default configuration
     smtp.config.php: true
-  # Extra config files created in /var/www/html/config/
-  # ref: https://docs.nextcloud.com/server/15/admin_manual/configuration_server/config_sample_php_parameters.html#multiple-config-php-file
   configs:
-    # Loglevel to start logging at. Valid values are: 0 = Debug, 1 = Info, 2 = Warning, 3 = Error, and 4 = Fatal. The default value is Warning.
+    # log levels: 0 = Debug, 1 = Info, 2 = Warning, 3 = Error, and 4 = Fatal
     logging.config.php: |-
       <?php
       $CONFIG = array (
@@ -119,7 +115,7 @@ nextcloud:
           'OC\Preview\PDF'
         ),
       );
-    # adding your local ip might help on a self-hosted instance on your home network
+    # adding your local ip might help on an instance on your home network
     proxy.config.php: |-
       <?php
       $CONFIG = array (
@@ -130,24 +126,12 @@ nextcloud:
         'forwarded_for_headers' => array('HTTP_X_FORWARDED_FOR'),
       );
 
-  ## Strategy used to replace old pods
-  ## IMPORTANT: use with care, it is suggested to leave as that for upgrade purposes
-  ## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
-  strategy:
-    type: Recreate
-    # type: RollingUpdate
-    # rollingUpdate:
-    #   maxSurge: 1
-    #   maxUnavailable: 0
-
-  # Set securityContext parameters. For example, you may need to define runAsNonRoot directive
   securityContext: {}
   #   runAsUser: "33"
   #   runAsGroup: "33"
   #   runAsNonRoot: true
   #   readOnlyRootFilesystem: true
 
-  # Set securityContext parameters for the pod. For example, you may need to define runAsNonRoot directive
   podSecurityContext: {}
   #   runAsUser: "33"
   #   runAsGroup: "33"
@@ -155,10 +139,8 @@ nextcloud:
   #   readOnlyRootFilesystem: true
 
 nginx:
-  ## You need to set an fpm version of the image for nextcloud if you want to use nginx!
   enabled: true
   resources: {}
-  # Set securityContext parameters. For example, you may need to define runAsNonRoot directive
   securityContext: {}
   #   runAsUser: "82"
   #   runAsGroup: "33"
@@ -185,7 +167,7 @@ externalDatabase:
     passwordKey: nextcloudPassword
 
 ## PostgreSQL chart configuration
-## for more options see https://github.com/bitnami/charts/tree/master/bitnami/postgresql
+## https://github.com/bitnami/charts/tree/master/bitnami/postgresql
 postgresql:
   enabled: true
   global:
@@ -219,8 +201,7 @@ postgresql:
       existingClaim: "nextcloud-postgresql"
       # storageClass: ""
 
-## Redis chart configuration
-## for more options see https://github.com/bitnami/charts/tree/master/bitnami/redis
+# Redis chart configuration
 redis:
   enabled: true
   replica:
@@ -230,17 +211,11 @@ redis:
     existingSecret: nextcloud-redis-credentials
     existingSecretPasswordKey: redis_password
 
-## Cronjob to execute Nextcloud background tasks
-## ref: https://docs.nextcloud.com/server/latest/admin_manual/configurationi_server/background_jobs_configuration.html#cron
+# Cronjob to execute Nextcloud background tasks
 cronjob:
   enabled: true
   # Nexcloud image is used as default but only curl is needed
   image: {}
-    # repository: nextcloud
-    # tag: 16.0.3-apache
-    # pullPolicy: IfNotPresent
-    # pullSecrets:
-    #   - myRegistrKeySecretName
   # Every 5 minutes
   # Note: Setting this to any any other value than 5 minutes might
   # cause issues with how nextcloud background jobs are executed
@@ -252,11 +227,8 @@ cronjob:
   successfulJobsHistoryLimit: 2
 
   # Allow configuration of lifecycle hooks
-  # ref: https://kubernetes.io/docs/tasks/configure-pod-container/attach-handler-lifecycle-event/
+  # kubernetes.io/docs/tasks/configure-pod-container/attach-handler-lifecycle-event/
   lifecycle: {}
-    # postStartCommand: []
-    # preStopCommand: []
-  # Set securityContext parameters. For example, you may need to define runAsNonRoot directive
   securityContext: {}
   #   runAsUser: "33"
   #   runAsGroup: "33"
@@ -275,27 +247,21 @@ persistence:
   # Nextcloud Data (/var/www/html)
   enabled: true
   existingClaim: nextcloud-files
-  ## Use an additional pvc for the data directory rather than a subpath of the default PVC
-  ## Useful to store data on a different storageClass (e.g. on slower disks)
+  # Use an additional pvc for the data dir rather than a subpath of the default
+  # Useful to store data on a different storageClass (e.g. on slower disks)
   nextcloudData:
     enabled: false
     subPath:
     # existingClaim:
 
 resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #  cpu: 100m
-  #  memory: 128Mi
-  # requests:
-  #  cpu: 100m
-  #  memory: 128Mi
+# limits:
+#  cpu: 100m
+#  memory: 128Mi
+# requests:
+#  cpu: 100m
+#  memory: 128Mi
 
-## Liveness and readiness probe values
-## Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-probes
 livenessProbe:
   enabled: false
   initialDelaySeconds: 45
@@ -319,8 +285,7 @@ startupProbe:
   successThreshold: 1
 
 
-## Enable pod autoscaling using HorizontalPodAutoscaler
-## ref: https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/
+# https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/
 hpa:
   enabled: false
   cputhreshold: 60
@@ -336,7 +301,6 @@ affinity: {}
 ## Prometheus Exporter / Metrics
 metrics:
   enabled: true
-  # The metrics exporter needs to know how you serve Nextcloud either http or https
   https: true
   # Use API token if set, otherwise fall back to password authentication
   # https://github.com/xperimental/nextcloud-exporter#token-authentication
@@ -359,9 +323,7 @@ metrics:
 
   ## Prometheus Operator ServiceMonitor configuration
   serviceMonitor:
-    ## @param metrics.serviceMonitor.enabled Create ServiceMonitor Resource for scraping metrics using PrometheusOperator
     enabled: true
-    ## @param metrics.serviceMonitor.namespace Namespace in which Prometheus is running
     namespace: "nextcloud"
 
 rbac:
