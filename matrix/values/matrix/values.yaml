@@ -220,14 +220,14 @@ volumes:
     # -- Storage class of the media PVC (optional) - ignored if using exsitingClaim
     storageClass: ""
     # -- name of an existing persistent volume claim to use for uploaded attachments and multimedia
-    existingClaim: ""
+    existingClaim: "matrix-media"
   signingKey:
     # -- Capacity of the signing key PVC. Note: 1Mi is more than enough, but some cloud providers set a minimum PVC size of 1Mi or 1Gi, adjust as necessary
     capacity: 1Mi
     # -- Storage class (optional)
     storageClass: ""
     # -- name of an existing persistent volume claim to use for signing key
-    existingClaim: ""
+    existingClaim: "matrix-signing-key"
 
 ingress:
   enabled: true
@@ -750,7 +750,7 @@ bridges:
     # set bridges.affinity (above) to true
     accessMode: ReadWriteMany
     # -- name of an existing persistent volume claim to use for bridges
-    existingClaim: ""
+    existingClaim: "matrix-bridges"
 
 imagePullSecrets: []
 nameOverride: ""
