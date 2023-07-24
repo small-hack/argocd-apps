@@ -228,6 +228,8 @@ volumes:
     storageClass: ""
     # -- name of an existing persistent volume claim to use for signing key
     existingClaim: "matrix-signing-key"
+  synapseConfig:
+    existingClaim: "matrix-synapse-config"
 
 ingress:
   enabled: true
