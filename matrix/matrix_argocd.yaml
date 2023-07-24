@@ -65,7 +65,7 @@ spec:
     namespace: matrix
   sources:
     # our bitnami postgresql helm repo
-    - repoURL: 'https://charts.bitnami.com/bitnami'
+    - repoURL: 'registry-1.docker.io/bitnamicharts'
       chart: postgresql
       targetRevision: 12.6.8
       helm:
