@@ -70,7 +70,7 @@ spec:
       targetRevision: 3.5.19
       helm:
         valueFiles:
-        - $values/nextcloud/values.yaml
+          - $values/nextcloud/values.yaml
     # our values.yaml file locally
     - repoURL: 'https://github.com/small-hack/argocd-apps.git'
       targetRevision: main
