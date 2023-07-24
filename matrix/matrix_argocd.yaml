@@ -67,7 +67,7 @@ spec:
     # our bitnami postgresql helm repo
     - repoURL: registry-1.docker.io
       chart: bitnamicharts/postgresql
-      targetRevision: 12.6.8
+      targetRevision: 12.6.9
       helm:
         valueFiles:
         - $values/matrix/values/postgres/values.yaml
@@ -106,7 +106,7 @@ spec:
       targetRevision: 3.2.0
       helm:
         valueFiles:
-        - $values/matrix/values/matrix/values.yaml
+          - $values/matrix/values/matrix/values.yaml
     # our values.yaml file locally
     - repoURL: 'https://github.com/small-hack/argocd.git'
       targetRevision: main
