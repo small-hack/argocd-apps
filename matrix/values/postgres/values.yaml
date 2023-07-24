@@ -26,6 +26,6 @@ primary:
   persistence:
     enabled: true
     # Use an existing Persistent Volume Claim (must be created ahead of time)
-    existingClaim: "matrix-postgres"
+    existingClaim: "matrix-postgresql"
 metrics:
   enabled: true
