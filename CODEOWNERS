@@ -1,0 +1,29 @@
+.github/* @jessebot
+argocd @jessebot @cloudymax
+artifactory @cloudymax
+bitwarden-external-secrets @cloudymax
+cluster-issuers @cloudymax
+CONTRIBUTING.md @jessebot
+diagrams @cloudymax
+external-secrets-operator @jessebot
+harbor @cloudymax
+home-assistant @jessebot
+k8up @jessebot
+keycloak @cloudymax @jessebot
+kube-prometheus-stack @jessebot @cloudymax
+kubevirt @cloudymax
+kyverno @jessebot
+LICENSE @jessebot @cloudymax
+loki-sack @cloudymax
+longhorn @cloudymax
+mailu @jessebot
+mastodon @jessebot
+matrix @jessebot
+netmaker @jessebot
+oauth2-proxy @jessebot
+postgres @cloudymax
+README.md @jessebot @cloudymax
+renovate.json @jessebot
+test-app @cloudymax @jessebot
+vouch-proxy @cloudymax @jessebot
+wg-access-server @jessebot @cloudymax
