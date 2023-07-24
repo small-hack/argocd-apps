@@ -12,7 +12,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/small-hack/argocd.git
+    repoURL: https://github.com/small-hack/argocd-apps.git
     path: postgres/operator/manifests/
   destination:
     server: "https://kubernetes.default.svc"
