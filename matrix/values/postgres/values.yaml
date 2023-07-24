@@ -3,7 +3,7 @@ global:
     auth:
       username: matrix
       database: matrix
-      existingSecret: matrix-pg-user-credentials
+      existingSecret: matrix-pgsql-credentials
       secretKeys:
         userPasswordKey: password
         adminPasswordKey: postgresPassword
