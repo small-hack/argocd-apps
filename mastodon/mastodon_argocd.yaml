@@ -130,7 +130,7 @@ spec:
     helm:
       values: |
         replica:
-          replicaCount: 2
+          replicaCount: 1
         auth:
           # you can also specify the name of an existing Secret
           # with a key of redis-password set to the password you want
