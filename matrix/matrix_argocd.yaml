@@ -103,7 +103,7 @@ spec:
     # our matrix helm repo
     - repoURL: 'https://jessebot.github.io/matrix-chart'
       chart: matrix
-      targetRevision: 3.3.0
+      targetRevision: 4.0.2
       helm:
         valueFiles:
           - $values/matrix/values/matrix/values.yaml
