@@ -277,17 +277,13 @@ postgresql:
         # database credentials to use if you don't use an existingSecret
         # -- username of matrix postgres user
         username: matrix
-        # -- password of matrix postgres user - ignored using exsitingSecret
-        password: changeme
         # -- name of database to use for matrix
         database: matrix
         # -- which port to use to connect to your database server
         port: 5432
-        # -- hostname of db server. Can be left blank if using postgres subchart
-        hostname: ""
 
         # -- Name of existing secret to use for PostgreSQL credentials
-        existingSecret: ""
+        existingSecret: "matrix-pgsql-credentials"
         # secretKeys to grab from existingSecret
         # if postgresql.existingSecret is provided, the following are ignored
         # postgresql.password/username/hostname/database/port
@@ -305,12 +301,20 @@ postgresql:
 
   # primary database node config
   primary:
+    podAnnotations:
+      k8up.io/backupcommand: "sh -c 'PGDATABASE=\"$POSTGRES_DB\" PGUSER=\"$POSTGRES_USER\" PGPASSWORD=\"$POSTGRES_PASSWORD\" pg_dump --clean'"
+      k8up.io/file-extension: .sql
+    pgHbaConfiguration: |-
+      local all all trust
+      host all all 127.0.0.1/32 md5
+      host all matrix 10.0.0.0/8 md5
     # -- persistent volume claim configuration for postgresql to persist data
     persistence:
       # -- Enable PostgreSQL Primary data persistence using PVC
       enabled: true
       # -- size of postgresql volume claim
       size: 8Gi
+      existingClaim: "matrix-postgresql"
 
     # templates/postgresql/initdb-configmap.yaml
     # ref: https://github.com/matrix-org/synapse/blob/master/docs/postgres.md

@@ -15,7 +15,7 @@ spec:
     server: "https://kubernetes.default.svc"
     namespace: matrix
   source:
-    repoURL: https://github.com/small-hack/argocd.git
+    repoURL: https://github.com/small-hack/argocd-apps.git
     path: matrix/manifests/persistence/
   syncPolicy:
     syncOptions:
@@ -49,40 +49,6 @@ spec:
       prune: true
       selfHeal: true
 
----
-# has to be after secrets, but before web-app
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: matrix-postgres
-  namespace: argocd
-  annotations:
-    argocd.argoproj.io/sync-wave: "2"
-spec:
-  project: matrix
-  destination:
-    server: 'https://kubernetes.default.svc'
-    namespace: matrix
-  sources:
-    # our bitnami postgresql helm repo
-    - repoURL: registry-1.docker.io
-      chart: bitnamicharts/postgresql
-      targetRevision: 12.6.9
-      helm:
-        valueFiles:
-        - $values/matrix/values/postgres/values.yaml
-    # our values.yaml file locally
-    - repoURL: 'https://github.com/small-hack/argocd.git'
-      targetRevision: main
-      ref: values
-  syncPolicy:
-    syncOptions:
-      - CreateNamespace=true
-      - Replace=true
-    automated:
-      selfHeal: true
-      prune: true
-
 # we're using https://github.com/jessebot/matrix-chart
 # which is a fork of https://github.com/Arkaniad/matrix-chart
 # which is a fork of https://github.com/typokign/matrix-chart
@@ -93,7 +59,7 @@ metadata:
   name: matrix-web-app
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "3"
+    argocd.argoproj.io/sync-wave: "2"
 spec:
   project: matrix
   destination:
@@ -108,7 +74,7 @@ spec:
         valueFiles:
           - $values/matrix/values/matrix/values.yaml
     # our values.yaml file locally
-    - repoURL: 'https://github.com/small-hack/argocd.git'
+    - repoURL: 'https://github.com/small-hack/argocd-apps.git'
       targetRevision: main
       ref: values
   syncPolicy:
