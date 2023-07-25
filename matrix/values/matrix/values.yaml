@@ -77,9 +77,7 @@ matrix:
     ingress:
       enabled: true
       tls:
-        - secretName: federation-tls
-          hosts:
-            - matrix-fed.enby.city
+        enabled: true
       host: matrix-fed.enby.city
       annotations:
         # -- required for the Nginx ingress provider. You can remove it if you
@@ -350,9 +348,7 @@ synapse:
     enabled: true
     host: matrix.enby.city
     tls:
-      - secretName: matrix-tls
-        hosts:
-          - matrix.enby.city
+      enabled: true
     annotations:
       # -- This annotation is required for the Nginx ingress provider. You can
       # remove it if you use a different ingress provider
@@ -425,10 +421,7 @@ element:
     # -- enable ingress for element
     enabled: true
     tls:
-      - secretName: element-tls
-        # -- the hostname to use for element if using TLS certs
-        hosts:
-          - element.enby.city
+      enabled: true
     # -- the hostname to use for element
     hosts: element.enby.city
     annotations:
