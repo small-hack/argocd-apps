@@ -516,7 +516,7 @@ coturn:
 
   certificate:
     # -- set to true to generate a TLS certificate for encrypted comms
-    enabled: false
+    enabled: true
     # -- hostname for TLS cert
     host: turn.enby.city
     # -- cert-manager cert Issuer or ClusterIssuer to use
