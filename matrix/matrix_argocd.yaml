@@ -78,8 +78,6 @@ spec:
       targetRevision: upgrade-matrix
       ref: values
   syncPolicy:
-    syncOptions:
-      - Replace=true
     automated:
       prune: true
       selfHeal: true
