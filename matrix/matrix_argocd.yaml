@@ -72,7 +72,7 @@ spec:
       targetRevision: 4.0.3
       helm:
         valueFiles:
-          - $values/matrix/values/matrix/values.yaml
+          - $values/matrix/values/values.yaml
     # our values.yaml file locally
     - repoURL: 'https://github.com/small-hack/argocd-apps.git'
       targetRevision: main
