@@ -275,8 +275,6 @@ postgresql:
         # database credentials to use if you don't use an existingSecret
         # -- username of matrix postgres user
         username: matrix
-        # -- name of database to use for matrix
-        database: matrix
         # -- which port to use to connect to your database server
         port: 5432
 
@@ -288,8 +286,6 @@ postgresql:
         secretKeys:
           # -- key in existingSecret with hostname of the database
           databaseHostname: hostname
-          # -- key in existingSecret with name of the database
-          database: database
           # -- key in existingSecret with username for matrix to connect to db
           databaseUsername: username
           # -- key in existingSecret with password for matrix to connect to db
