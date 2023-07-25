@@ -423,7 +423,7 @@ element:
     tls:
       enabled: true
     # -- the hostname to use for element
-    hosts: element.enby.city
+    host: element.enby.city
     annotations:
       # This annotation is required for the Nginx ingress provider. You can
       # remove it if you use a different ingress provider
