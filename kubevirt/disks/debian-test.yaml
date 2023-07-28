@@ -1,0 +1,26 @@
+apiVersion: cdi.kubevirt.io/v1beta1
+kind: DataVolume
+metadata:
+  name: jammy-pvc
+  annotations:
+    cdi.kubevirt.io/storage.bind.immediate.requested: "true"
+spec:
+  source:
+    http:
+      # certConfigMap with an empty cert is to work around this issue:
+      # https://github.com/kubevirt/containerized-data-importer/issues/2358
+      certConfigMap: empty-cert
+      url: https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img
+  pvc:
+    accessModes:
+      - ReadWriteOnce
+    resources:
+      requests:
+        storage: 5Gi
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: empty-cert
+data:
+  ca.pem: ""
