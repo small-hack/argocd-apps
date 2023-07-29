@@ -75,7 +75,7 @@ spec:
           - $values/matrix/values/values.yaml
     # our values.yaml file locally
     - repoURL: 'https://github.com/small-hack/argocd-apps.git'
-      targetRevision: upgrade-matrix
+      targetRevision: main
       ref: values
   syncPolicy:
     automated:
