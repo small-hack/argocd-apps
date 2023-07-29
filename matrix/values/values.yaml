@@ -85,7 +85,7 @@ matrix:
         nginx.ingress.kubernetes.io/configuration-snippet: |
           proxy_intercept_errors off;
         # -- required for TLS certs issued by cert-manager
-        cert-manager.io/cluster-issuer: letsencrypt
+        cert-manager.io/cluster-issuer: letsencrypt-prod
 
   # User registration settings
   registration:
@@ -351,7 +351,7 @@ synapse:
       nginx.ingress.kubernetes.io/configuration-snippet: |
         proxy_intercept_errors off;
       # -- required for TLS certs issued by cert-manager
-      cert-manager.io/cluster-issuer: letsencrypt
+      cert-manager.io/cluster-issuer: letsencrypt-prod
 
   replicaCount: 1
   resources: {}
@@ -426,7 +426,7 @@ element:
       nginx.ingress.kubernetes.io/configuration-snippet: |
         proxy_intercept_errors off;
       # -- required for TLS certs issued by cert-manager
-      cert-manager.io/cluster-issuer: letsencrypt
+      cert-manager.io/cluster-issuer: letsencrypt-prod
 
   # Organization/enterprise branding
   branding:
