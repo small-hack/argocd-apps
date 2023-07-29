@@ -1,0 +1,30 @@
+---
+# installs whole kube-prometheus-stack which includes grafana and alert manager
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: coturn-helm-chart
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+spec:
+  project: default
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: coturn
+  sources:
+    # prometheus-community helm repo
+    - repoURL: https://jessebot.github.io/coturn-chart/
+      chart: coturn
+      targetRevision: 4.1.2
+      helm:
+        valueFiles:
+        - $values/coturn/values/values.yaml
+    # our values.yaml file locally
+    - repoURL: 'https://github.com/small-hack/argocd-apps.git'
+      targetRevision: main
+      ref: values
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
