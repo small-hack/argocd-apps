@@ -15,7 +15,7 @@ spec:
     server: "https://kubernetes.default.svc"
     namespace: mastodon
   source:
-    repoURL: https://github.com/small-hack/argocd.git
+    repoURL: https://github.com/small-hack/argocd-apps.git
     path: mastodon/manifests/persistence/
   syncPolicy:
     syncOptions:
@@ -130,7 +130,7 @@ spec:
     helm:
       values: |
         replica:
-          replicaCount: 2
+          replicaCount: 1
         auth:
           # you can also specify the name of an existing Secret
           # with a key of redis-password set to the password you want
@@ -163,7 +163,7 @@ spec:
         valueFiles:
         - $values/mastodon/values.yaml
     # our values.yaml file locally
-    - repoURL: 'https://github.com/small-hack/argocd.git'
+    - repoURL: 'https://github.com/small-hack/argocd-apps.git'
       targetRevision: main
       ref: values
   destination:
@@ -190,7 +190,7 @@ spec:
 #     server: "https://kubernetes.default.svc"
 #     namespace: mastodon
 #   source:
-#     repoURL: https://github.com/small-hack/argocd.git
+#     repoURL: https://github.com/small-hack/argocd-apps.git
 #     path: mastodon/manifests/migrate-job/
 #   syncPolicy:
 #     syncOptions:

@@ -219,6 +219,16 @@ elasticsearch:
   # @ignored
   image:
     tag: 7
+  master:
+    replicaCount: 1
+    autoscaling:
+      minReplicas: 1
+  data:
+    replicaCount: 1
+  coordinating:
+    replicaCount: 1
+  ingest:
+    replicaCount: 1
 
 # https://github.com/bitnami/charts/tree/master/bitnami/postgresql#parameters
 postgresql:

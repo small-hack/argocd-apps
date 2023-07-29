@@ -9,7 +9,7 @@ metadata:
 spec:
   project: kubevirt
   source:
-    repoURL: https://github.com/small-hack/argocd.git
+    repoURL: https://github.com/small-hack/argocd-apps.git
     path: kubevirt/virtual-machines/debian12/loadbalancer/
   destination:
     server: "https://kubernetes.default.svc"
