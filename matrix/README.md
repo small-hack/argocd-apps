@@ -9,4 +9,3 @@ We're using [jessebot/matrix-chart](https://github.com/jessebot/matrix-chart), w
 |     1     | External Secrets and Persistent volumes |
 |     2     | Postgresql cluster                      |
 |     3     | Matrix                                  |
-
