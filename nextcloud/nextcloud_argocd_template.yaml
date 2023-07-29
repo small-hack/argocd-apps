@@ -67,7 +67,7 @@ spec:
     # official nextcloud helm repo
     - repoURL: 'https://nextcloud.github.io/helm'
       chart: nextcloud
-      targetRevision: 3.5.19
+      targetRevision: 3.5.20
       helm:
         valueFiles:
           - $values/nextcloud/values.yaml
