@@ -512,7 +512,7 @@ element:
 # Settings for Coturn TURN relay, used for routing voice calls
 coturn:
   # -- Set to false to disable the included deployment of Coturn
-  enabled: true
+  enabled: false
 
   certificate:
     # -- set to true to generate a TLS certificate for encrypted comms
