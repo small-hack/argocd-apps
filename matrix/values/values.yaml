@@ -433,7 +433,7 @@ element:
     # -- brand shown in email notifications
     brand: "Enby City"
     # -- Background of login splash screen
-    welcomeBackgroundUrl: "https://cloud.vleermuis.tech/apps/files_sharing/publicpreview/rqEgHpogHXQQFaH?file=/&fileId=15343&x=3023&y=1963&a=true&etag=81c9639f9f219d4ae08f5c6ed88e3079"
+    welcomeBackgroundUrl: ""
     # -- Logo shown at top of login screen
     authHeaderLogoUrl: "https://raw.githubusercontent.com/jessebot/dot_files/main/.local/share/fastfetch/logos/dogontheinternet.png"
     # -- Array of links to show at the bottom of the login screen
