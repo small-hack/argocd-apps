@@ -70,7 +70,7 @@ If you're interested in contributing, checkout our guidelines [here](./CONTRIBUT
 | App                    | Description                                                                                                                                          |
 |:-----------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------|
 | [mastodon](./mastodon) | Selfhosted social media site, includes [postgresql](https://github.com/bitnami/charts/tree/main/bitnami/postgresql), [elastic search] (for full text searching), and [redis](https://github.com/bitnami/charts/tree/main/bitnami/redis) (in memory caching) - mostly stable |
-| [matrix](./matrix)     | 🚧 UNDER CONSTRUCTION - Selfhosted chat app                                |        
+| [matrix](./matrix)     | Selfhosted chat server that plugs into a bunch of other chat apps                                |        
 
 ## Troubleshooting Tips
 
