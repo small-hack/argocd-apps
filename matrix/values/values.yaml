@@ -539,27 +539,6 @@ coturn:
   # coturn.enabled=true and existingSecret not ""
   secretKey: "coturnSharedSecret"
 
-  # -- UDP port range for TURN connections
-  ports:
-    from: 3478
-    to: 3478
-
-  service:
-    # The type of service to deploy for routing Coturn traffic. Options:
-    #   ClusterIP: Recommended for DaemonSet configurations. This will create a
-    #              standard Kubernetes service for Coturn within the cluster.
-    #              No external networking will be configured as the DaemonSet
-    #              will handle binding to each Node's host networking
-    #
-    #   NodePort:  Recommended for Deployment configurations. This will open
-    #              TURN ports on every node and route traffic on these ports to
-    #              the Coturn pods. You will need to make sure your cloud
-    #              provider supports the cluster config setting,
-    #              apiserver.service-node-port-range, as this range must contain
-    #              the ports defined above for the service to be created.
-    type: ClusterIP
-
-
 # Settings for email notifications
 mail:
   # -- disabled all email notifications by default. NOTE: If enabled, either
