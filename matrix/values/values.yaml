@@ -38,7 +38,7 @@ matrix:
   # all:    all rooms
   # invite: private msg/room created w/ private_chat or trusted_private_chat
   #         room presets
-  encryptByDefault: invite
+  encryptByDefault: all
 
   # -- Email address of the administrator
   adminEmail: "admin@social-media-for-dogs.com"
@@ -431,11 +431,11 @@ element:
   # Organization/enterprise branding
   branding:
     # -- brand shown in email notifications
-    brand: "Element"
+    brand: "Enby City"
     # -- Background of login splash screen
-    welcomeBackgroundUrl: ""
+    welcomeBackgroundUrl: "https://cloud.social-media-for-dogs.com/apps/files_sharing/publicpreview/rqEgHpogHXQQFaH?file=/&fileId=15343&x=3023&y=1963&a=true&etag=81c9639f9f219d4ae08f5c6ed88e3079"
     # -- Logo shown at top of login screen
-    authHeaderLogoUrl: ""
+    authHeaderLogoUrl: "https://raw.githubusercontent.com/jessebot/dot_files/main/.local/share/fastfetch/logos/dogontheinternet.png"
     # -- Array of links to show at the bottom of the login screen
     authFooterLinks: []
     #  - text:
