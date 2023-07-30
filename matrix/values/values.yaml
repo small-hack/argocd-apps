@@ -92,10 +92,8 @@ matrix:
     # -- Allow new users to register an account
     enabled: false
 
-    # If set, allows registration of standard or admin accounts by anyone who
-    # has the shared secret, even if registration is otherwise disabled.
-    #
-    # sharedSecret: <PRIVATE STRING>
+    existingSecret: "matrix-registration"
+    secretKey: "registrationSharedSecret"
 
     # -- Allow users to join rooms as a guest
     allowGuests: false
