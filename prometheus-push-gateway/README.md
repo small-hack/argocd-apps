@@ -5,6 +5,9 @@ It should be used only for process that run infrequently or too quickly to be sc
 
 ## Resources:
 
+Helm Chart Source:
+- https://github.com/prometheus-community/helm-charts/tree/main/charts/prometheus-pushgateway
+
 When to use the Push Gateway: 
 - https://prometheus.io/docs/practices/pushing/
 
