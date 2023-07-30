@@ -433,7 +433,7 @@ element:
     # -- brand shown in email notifications
     brand: "Enby City"
     # -- Background of login splash screen
-    welcomeBackgroundUrl: ""
+    welcomeBackgroundUrl: "https://i.imgur.com/VpFquY4.png"
     # -- Logo shown at top of login screen
     authHeaderLogoUrl: "https://raw.githubusercontent.com/jessebot/dot_files/main/.local/share/fastfetch/logos/dogontheinternet.png"
     # -- Array of links to show at the bottom of the login screen
@@ -462,17 +462,17 @@ element:
   # -- Experimental features in Element, see:
   # https://github.com/vector-im/element-web/blob/develop/docs/labs.md
   labs:
-    - feature_new_spinner
+    - feature_report_to_moderators
     - feature_pinning
-    - feature_custom_status
-    - feature_custom_tags
     - feature_state_counters
-    - feature_many_integration_managers
     - feature_mjolnir
     - feature_dm_verification
     - feature_bridge_state
-    - feature_presence_in_room_list
     - feature_custom_themes
+    - feature_jump_to_date
+    - feature_video_rooms
+    - feature_element_call_video_rooms
+    - feature_group_calls
 
   # -- Servers to show in the Explore menu (the current server is always shown)
   roomDirectoryServers:
