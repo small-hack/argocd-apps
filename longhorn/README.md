@@ -6,7 +6,7 @@ Longhorn is a lightweight, reliable and easy-to-use distributed block storage sy
 
 - Check host system for required pacakages
   ```bash
-  curl -sSfL https://raw.githubusercontent.com/longhorn/longhorn/v1.5.0/scripts/environment_check.sh | bash
+  curl -sSfL https://raw.githubusercontent.com/longhorn/longhorn/v1.5.1/scripts/environment_check.sh | bash
   ```
 
 ## Deploy

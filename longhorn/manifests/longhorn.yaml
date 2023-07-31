@@ -1,10 +1,4 @@
 ---
-# Builtin: "helm template" does not respect --create-namespace
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: longhorn-system
----
 # Source: longhorn/templates/serviceaccount.yaml
 apiVersion: v1
 kind: ServiceAccount
