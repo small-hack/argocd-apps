@@ -21,7 +21,7 @@ spec:
     syncOptions:
       - ApplyOutOfSyncOnly=true
     automated:
-      selfHeal: true
+      selfHeal: false
 
 ---
 # First sync wave because we need secrets for matrix, so it has to be
@@ -47,7 +47,7 @@ spec:
       - Replace=true
     automated:
       prune: true
-      selfHeal: true
+      selfHeal: false
 
 # we're using https://github.com/jessebot/matrix-chart
 # which is a fork of https://github.com/Arkaniad/matrix-chart
@@ -80,4 +80,4 @@ spec:
   syncPolicy:
     automated:
       prune: true
-      selfHeal: true
+      selfHeal: false

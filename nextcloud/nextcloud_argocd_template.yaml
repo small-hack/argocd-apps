@@ -21,7 +21,7 @@ spec:
     syncOptions:
       - ApplyOutOfSyncOnly=true
     automated:
-      selfHeal: true
+      selfHeal: false
 
 ---
 # First sync wave because we need secrets for nextcloud, so it has to be
@@ -47,7 +47,7 @@ spec:
       - Replace=true
     automated:
       prune: true
-      selfHeal: true
+      selfHeal: false
 
 ---
 # webapp is deployed 2nd because we need secrets and persistent volumes up 1st
@@ -80,7 +80,7 @@ spec:
       - ApplyOutOfSyncOnly=true
     automated:
       prune: true
-      selfHeal: true
+      selfHeal: false
 
 ---
 # Third wave because we need scheduled k8up (restic via k8s) k8up_backups
@@ -105,4 +105,4 @@ spec:
       - Replace=true
     automated:
       prune: true
-      selfHeal: true
+      selfHeal: false
