@@ -203,7 +203,7 @@ postgresql:
 
 # Redis chart configuration
 redis:
-  enabled: true
+  enabled: false
   replica:
     replicaCount: 1
   auth:
