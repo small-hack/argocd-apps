@@ -36,3 +36,19 @@ ref: https://github.com/external-secrets/external-secrets/issues/2041
 # setting up keycloak
 - https://argo-cd.readthedocs.io/en/stable/operator-manual/user-management/keycloak/
 - https://argo-cd.readthedocs.io/en/stable/operator-manual/user-management/#example_1
+
+# Deployment
+To deploy this, create a new argo app and select "Edit as YAML". Copy and paste this into the input field:
+```yaml
+project: default
+source:
+  repoURL: 'https://github.com/small-hack/argocd.git'
+  path: argocd/
+  targetRevision: main
+destination:
+  server: 'https://kubernetes.default.svc'
+  namespace: argocd
+syncPolicy:
+  syncOptions:
+    - ApplyOutOfSyncOnly=true
+```
