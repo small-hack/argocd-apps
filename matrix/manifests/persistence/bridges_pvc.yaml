@@ -5,7 +5,7 @@ metadata:
   namespace: matrix
   name: matrix-bridges
 spec:
-  storageClassName: longhorn
+  storageClassName: localpath
   accessModes:
     - ReadWriteMany
   resources:
