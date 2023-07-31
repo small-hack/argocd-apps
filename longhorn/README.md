@@ -10,7 +10,8 @@ Longhorn is a lightweight, reliable and easy-to-use distributed block storage sy
   ```
 
 ## Deploy
-You can copy and paste this into your edit section when you're creating a new argocd app:
+Make sure you create a longhorn project in Argo CD first, and then you can paste in this when you create a new app in argo cd and select the "Edit as YAML" button:
+
 ```yaml
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -24,7 +25,7 @@ spec:
     path: longhorn/
     repoURL: 'https://github.com/small-hack/argocd-apps.git'
     targetRevision: HEAD
-  project: default
+  project: longhorn
   syncPolicy:
     automated:
       prune: false
