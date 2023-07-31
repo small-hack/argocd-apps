@@ -6,10 +6,11 @@ Longhorn is a lightweight, reliable and easy-to-use distributed block storage sy
 
 - Check host system for required pacakages
   ```bash
-  curl -sSfL https://raw.githubusercontent.com/longhorn/longhorn/v1.5.0/scripts/environment_check.sh | bash
+  curl -sSfL https://raw.githubusercontent.com/longhorn/longhorn/v1.5.1/scripts/environment_check.sh | bash
   ```
 
 ## Deploy
+Make sure you create a longhorn project in Argo CD first, and then you can paste in this when you create a new app in argo cd and select the "Edit as YAML" button:
 
 ```yaml
 apiVersion: argoproj.io/v1alpha1
@@ -18,20 +19,17 @@ metadata:
   name: longhorn
 spec:
   destination:
-    name: ''
     namespace: longhorn-system
     server: 'https://kubernetes.default.svc'
   source:
-    path: longhorn
+    path: longhorn/
     repoURL: 'https://github.com/small-hack/argocd-apps.git'
     targetRevision: HEAD
-  sources: []
-  project: default
+  project: longhorn
   syncPolicy:
     automated:
       prune: false
       selfHeal: false
     syncOptions:
       - CreateNamespace=true
-
 ```
