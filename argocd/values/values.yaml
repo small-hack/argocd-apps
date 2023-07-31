@@ -44,8 +44,8 @@ crds:
 ## Globally shared configuration
 global:
   # -- Common labels for the all resources
-  additionalLabels: {}
-    # app: argo-cd
+  additionalLabels:
+    argocd.argoproj.io/instance: argocd-helm
 
   # -- Number of old deployment ReplicaSets to retain. The rest will be garbage collected.
   revisionHistoryLimit: 3
