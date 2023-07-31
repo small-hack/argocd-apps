@@ -3,8 +3,7 @@
 ## ref: https://hub.docker.com/r/library/nextcloud/tags/
 image:
   repository: nextcloud
-  # flavor: fpm
-  tag: "27.0.1-fpm"
+  flavor: fpm
 
 replicaCount: 1
 
