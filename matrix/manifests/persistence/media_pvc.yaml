@@ -5,7 +5,7 @@ metadata:
   namespace: matrix
   name: matrix-media
 spec:
-  storageClassName: localpath
+  storageClassName: local-path
   accessModes:
     - ReadWriteMany
   resources:

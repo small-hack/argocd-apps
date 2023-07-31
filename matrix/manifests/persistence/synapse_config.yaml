@@ -5,7 +5,7 @@ metadata:
   namespace: matrix
   name: matrix-synapse-config
 spec:
-  storageClassName: localpath
+  storageClassName: local-path
   accessModes:
     - ReadWriteMany
   resources:
