@@ -21,7 +21,7 @@ spec:
     syncOptions:
       - ApplyOutOfSyncOnly=true
     automated:
-      selfHeal: true
+      selfHeal: false
 
 ---
 # First sync wave because we need secrets for mastodon, so it has to be
@@ -47,7 +47,7 @@ spec:
       - Replace=true
     automated:
       prune: true
-      selfHeal: true
+      selfHeal: false
 
 ---
 # has to be after secrets, but before web-app
@@ -106,7 +106,7 @@ spec:
       - CreateNamespace=true
       - Replace=true
     automated:
-      selfHeal: true
+      selfHeal: false
       prune: true
 
 ---
@@ -140,7 +140,7 @@ spec:
       - CreateNamespace=true
       - Replace=true
     automated:
-      selfHeal: true
+      selfHeal: false
       prune: true
 
 ---
@@ -174,7 +174,7 @@ spec:
       - Replace=true
     automated:
       prune: true
-      selfHeal: true
+      selfHeal: false
 
 # ---
 # apiVersion: argoproj.io/v1alpha1
@@ -197,4 +197,4 @@ spec:
 #       - Replace=true
 #     automated:
 #       prune: true
-#       selfHeal: true
+#       selfHeal: false
