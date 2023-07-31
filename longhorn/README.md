@@ -10,7 +10,7 @@ Longhorn is a lightweight, reliable and easy-to-use distributed block storage sy
   ```
 
 ## Deploy
-
+You can copy and paste this into your edit section when you're creating a new argocd app:
 ```yaml
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -18,14 +18,12 @@ metadata:
   name: longhorn
 spec:
   destination:
-    name: ''
     namespace: longhorn-system
     server: 'https://kubernetes.default.svc'
   source:
-    path: longhorn
+    path: longhorn/
     repoURL: 'https://github.com/small-hack/argocd-apps.git'
     targetRevision: HEAD
-  sources: []
   project: default
   syncPolicy:
     automated:
@@ -33,5 +31,4 @@ spec:
       selfHeal: false
     syncOptions:
       - CreateNamespace=true
-
 ```
