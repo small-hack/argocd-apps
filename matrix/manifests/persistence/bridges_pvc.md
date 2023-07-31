@@ -1,3 +1,4 @@
+```yaml
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -7,7 +8,8 @@ metadata:
 spec:
   storageClassName: local-path
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   resources:
     requests:
       storage: 1Mi
+```
