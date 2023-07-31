@@ -32,27 +32,7 @@ metadata:
     app.kubernetes.io/instance: longhorn
     app.kubernetes.io/version: v1.5.1
 data:
-  default-setting.yaml: |
-    defaultSettings:
-      taintToleration: "kubevirt.io/drain:NoSchedule"
-    longhornManager:
-      tolerations:
-      - key: "kubevirt.io/drain"
-        operator: "Equal"
-        value: ""
-        effect: "NoSchedule"
-    longhornDriver:
-      tolerations:
-      - key: "kubevirt.io/drain"
-        operator: "Equal"
-        value: ""
-        effect: "NoSchedule"
-    longhornUI:
-      tolerations:
-      - key: "kubevirt.io/drain"
-        operator: "Equal"
-        value: ""
-        effect: "NoSchedule"
+  default-setting.yaml: |-
 ---
 # Source: longhorn/templates/storageclass.yaml
 apiVersion: v1
