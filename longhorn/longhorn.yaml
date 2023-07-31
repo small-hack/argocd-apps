@@ -4107,7 +4107,7 @@ spec:
     spec:
       containers:
       - name: longhorn-manager
-        image: longhornio/longhorn-manager:v1.6.0-dev
+        image: longhornio/longhorn-manager:v1.5.1
         imagePullPolicy: IfNotPresent
         securityContext:
           privileged: true
@@ -4116,17 +4116,17 @@ spec:
         - -d
         - daemon
         - --engine-image
-        - "longhornio/longhorn-engine:v1.6.0-dev"
+        - "longhornio/longhorn-engine:v1.5.1"
         - --instance-manager-image
-        - "longhornio/longhorn-instance-manager:v1.6.0-dev"
+        - "longhornio/longhorn-instance-manager:v1.5.1"
         - --share-manager-image
-        - "longhornio/longhorn-share-manager:v1.6.0-dev"
+        - "longhornio/longhorn-share-manager:v1.5.1"
         - --backing-image-manager-image
-        - "longhornio/backing-image-manager:v1.6.0-dev"
+        - "longhornio/backing-image-manager:v1.5.1"
         - --support-bundle-manager-image
         - "longhornio/support-bundle-kit:v0.0.24"
         - --manager-image
-        - "longhornio/longhorn-manager:v1.6.0-dev"
+        - "longhornio/longhorn-manager:v1.5.1"
         - --service-account
         - longhorn-service-account
         ports:
@@ -4210,18 +4210,18 @@ spec:
     spec:
       initContainers:
         - name: wait-longhorn-manager
-          image: longhornio/longhorn-manager:v1.6.0-dev
+          image: longhornio/longhorn-manager:v1.5.1
           command: ['sh', '-c', 'while [ $(curl -m 1 -s -o /dev/null -w "%{http_code}" http://longhorn-backend:9500/v1) != "200" ]; do echo waiting; sleep 2; done']
       containers:
         - name: longhorn-driver-deployer
-          image: longhornio/longhorn-manager:v1.6.0-dev
+          image: longhornio/longhorn-manager:v1.5.1
           imagePullPolicy: IfNotPresent
           command:
           - longhorn-manager
           - -d
           - deploy-driver
           - --manager-image
-          - "longhornio/longhorn-manager:v1.6.0-dev"
+          - "longhornio/longhorn-manager:v1.5.1"
           - --manager-url
           - http://longhorn-backend:9500/v1
           env:
@@ -4291,7 +4291,7 @@ spec:
               topologyKey: kubernetes.io/hostname
       containers:
       - name: longhorn-ui
-        image: longhornio/longhorn-ui:v1.6.0-dev
+        image: longhornio/longhorn-ui:v1.5.1
         imagePullPolicy: IfNotPresent
         volumeMounts:
         - name : nginx-cache
