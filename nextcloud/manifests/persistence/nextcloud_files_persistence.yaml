@@ -8,7 +8,7 @@ metadata:
   annotations:
     k8up.io/backup: "true"
 spec:
-  storageClassName: longhorn
+  storageClassName: localpath
   accessModes:
     - ReadWriteMany
   resources:
