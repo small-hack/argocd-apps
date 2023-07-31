@@ -4,9 +4,9 @@ metadata:
   name: mastodon-assets
   namespace: mastodon
 spec:
-  storageClassName: longhorn
+  storageClassName: local-path
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   resources:
     requests:
       storage: 64Gi
