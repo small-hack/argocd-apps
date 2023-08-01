@@ -119,7 +119,7 @@ configs:
 
     # -- Enable local admin user
     ## Ref: https://argo-cd.readthedocs.io/en/latest/faq/#how-to-disable-admin-user
-    admin.enabled: false
+    admin.enabled: true
 
     # -- Timeout to discover if a new manifests version got published to the repository
     timeout.reconciliation: 180s
