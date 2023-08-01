@@ -1101,7 +1101,7 @@ repoServer:
     - name: env-replacer-plugin
       command:
         - "/var/run/argocd/argocd-cmp-server"
-      image: mikefarah/yq
+      image: busybox
       securityContext:
         runAsNonRoot: true
         runAsUser: 999
@@ -1118,9 +1118,24 @@ repoServer:
         # mitigate path traversal attacks.
         - mountPath: /tmp
           name: cmp-tmp
+        # helm tools
+        - mountPath: /tools
+          name: helm-plugin-tools
 
   # -- Init containers to add to the repo server pods
-  initContainers: []
+  initContainers:
+    - name: helm-plugin-setup
+      image: busybox
+      command:
+        - sh
+        - -c
+        - |
+          wget https://get.helm.sh/helm-v3.10.3-linux-amd64.tar.gz -O - | tar xz && mv linux-amd64/helm /tools/helm && chmod +x /tools/helm
+          wget https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 -O /tools/jq && chmod +x /tools/jq
+          wget https://github.com/mikefarah/yq/releases/download/v4.30.6/yq_linux_amd64 -O /tools/yq && chmod +x /tools/yq
+      volumeMounts:
+        - mountPath: /tools
+          name: helm-plugin-tools
 
   # -- Additional volumeMounts to the repo server main container
   volumeMounts: []
@@ -1131,6 +1146,8 @@ repoServer:
       configMap:
         name: argocd-cmp-cm
     - name: cmp-tmp
+      emptyDir: {}
+    - name: helm-plugin-tools
       emptyDir: {}
 
   # -- Annotations to be added to repo server Deployment
