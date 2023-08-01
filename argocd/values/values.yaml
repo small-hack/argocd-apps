@@ -1101,7 +1101,7 @@ repoServer:
     - name: env-replacer-plugin
       command:
         - "/var/run/argocd/argocd-cmp-server"
-      image: busybox
+      image: mikefarah/yq
       securityContext:
         runAsNonRoot: true
         runAsUser: 999
