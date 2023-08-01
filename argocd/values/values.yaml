@@ -281,7 +281,7 @@ configs:
     # -- Plugin yaml files to be added to argocd-cmp-cm
     plugins:
       # --- First plugin
-      env-replacer-plugin:
+      plugin:
         init:
           command: [sh]
           args: [-c, 'echo "Initializing..."']
@@ -1111,8 +1111,8 @@ repoServer:
         - mountPath: /home/argocd/cmp-server/plugins
           name: plugins
         # Remove this volumeMount if you've chosen to bake the config file into the sidecar image.
-        - mountPath: /home/argocd/cmp-server/config/env-replacer-plugin.yaml
-          subPath: env-replacer-plugin.yaml
+        - mountPath: /home/argocd/cmp-server/config/plugin.yaml
+          subPath: plugin.yaml
           name: argocd-cmp-cm
         # Starting with v2.4, do NOT mount the same tmp volume as the repo-server container. The filesystem separation helps
         # mitigate path traversal attacks.
