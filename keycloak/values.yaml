@@ -366,7 +366,7 @@ ingress:
   ## @param ingress.servicePort Backend service port to use
   ## Default is http. Alternative is https.
   ##
-  servicePort: https
+  servicePort: http
   ## @param ingress.annotations [object] Additional annotations for the Ingress resource. To enable certificate autogeneration, place here your cert-manager annotations.
   ## Use this parameter to set the required annotations for cert-manager, see
   ## ref: https://cert-manager.io/docs/usage/ingress/#supported-annotations
