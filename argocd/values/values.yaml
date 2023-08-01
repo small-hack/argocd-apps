@@ -1107,7 +1107,7 @@ repoServer:
           wget https://github.com/mikefarah/yq/releases/download/v4.30.6/yq_linux_amd64 -O /tools/yq && chmod +x /tools/yq
           echo "we've downloaded the stuff, here's what's in /tools"
           ls -hal /tools
-          export PATH=$PATH:/tools
+          export PATH="$PATH:/tools"
           echo "here's which jq:"
           which jq
       volumeMounts:
