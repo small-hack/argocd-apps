@@ -32,6 +32,8 @@ metadata:
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "2"
+    pref.argocd.argoproj.io/default-view: "network"
+    pref.argocd.argoproj.io/default-pod-sort: "topLevelResource"
 spec:
   project: default
   destination:
