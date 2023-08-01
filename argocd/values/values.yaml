@@ -289,10 +289,19 @@ configs:
           command: [sh, -c]
           args:
             - |
-              ARGUMENTS=$(echo "$ARGOCD_APP_PARAMETERS" | /tools/jq -r '.[] | select(.name == "values-files").array | .[] | "--values=" + .')
-              PARAMETERS=$(echo "$ARGOCD_APP_PARAMETERS" | /tools/jq -r '.[] | select(.name == "hostname-params-to-replace").array | .[] | "--set=" + . + "$hostname-env-variable"')
+              ARGUMENTS=$(echo "$ARGOCD_APP_PARAMETERS" | /tools/jq -r '.[] | select(.name == "values-files").array | .[] | "--values=" + .') | true
+              HOSTNAME_PARAMS=$(echo "$ARGOCD_APP_PARAMETERS" | /tools/jq -r '.[] | select(.name == "hostname-params-to-replace").array | .[] | "--set=" + . + "$hostname-env-variable"') | true
+              PARAMETERS=$(echo "$ARGOCD_APP_PARAMETERS" | jq -r '.[] | select(.name == "helm-parameters").map | to_entries | map("\(.key)=\(.value)") | .[] | "--set=" + .') | true
 
-              echo ". $ARGUMENTS $PARAMETERS" | xargs /tools/helm template
+              yq e -o=json values.yaml | jq '{
+                name: "helm-parameters",
+                title: "Helm Parameters",
+                collectionType: "map",
+                map: [leaf_paths as $path | {"key": $path | join("."), "value": getpath($path)|tostring}] | from_entries
+              }'
+
+              echo ". $ARGUMENTS $HOSTNAME_PARAMS $PARAMETERS"
+              echo ". $ARGUMENTS $HOSTNAME_PARAMS $PARAMETERS" | xargs /tools/helm template
         discover:
           fileName: "./values.yaml"
         parameters:
