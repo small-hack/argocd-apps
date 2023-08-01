@@ -35,9 +35,6 @@ auth:
   ## @param auth.adminUser Keycloak administrator user
   ##
   adminUser: user
-  ## @param auth.adminPassword Keycloak administrator password for the new user
-  ##
-  adminPassword: ""
   ## @param auth.existingSecret Existing secret containing Keycloak admin password
   ##
   existingSecret: "keycloak-admin-credentials"
@@ -570,7 +567,7 @@ ingress:
 networkPolicy:
   ## @param networkPolicy.enabled Enable the default NetworkPolicy policy
   ##
-  enabled: false
+  enabled: true
   ## @param networkPolicy.allowExternal Don't require client label for connections
   ## The Policy model to apply. When set to false, only pods with the correct
   ## client label will have network access to the ports Keycloak is listening
@@ -599,37 +596,13 @@ serviceAccount:
   ## @param serviceAccount.create Enable the creation of a ServiceAccount for Keycloak pods
   ##
   create: true
-  ## @param serviceAccount.name Name of the created ServiceAccount
-  ## If not set and create is true, a name is generated using the fullname template
-  ##
-  name: ""
-  ## @param serviceAccount.automountServiceAccountToken Auto-mount the service account token in the pod
-  ##
-  automountServiceAccountToken: true
-  ## @param serviceAccount.annotations Additional custom annotations for the ServiceAccount
-  ##
-  annotations: {}
-  ## @param serviceAccount.extraLabels Additional labels for the ServiceAccount
-  ##
-  extraLabels: {}
+
 ## Specifies whether RBAC resources should be created
 ##
 rbac:
   ## @param rbac.create Whether to create and use RBAC resources or not
   ##
-  create: false
-  ## @param rbac.rules Custom RBAC rules
-  ## Example:
-  ## rules:
-  ##   - apiGroups:
-  ##       - ""
-  ##     resources:
-  ##       - pods
-  ##     verbs:
-  ##       - get
-  ##       - list
-  ##
-  rules: []
+  create: true
 
 ## @section Other parameters
 ##
@@ -657,12 +630,9 @@ pdb:
 autoscaling:
   enabled: false
   minReplicas: 1
-  maxReplicas: 11
+  maxReplicas: 3
   targetCPU: ""
   targetMemory: ""
-
-## @section Metrics parameters
-##
 
 ## Metrics configuration
 ##
@@ -670,7 +640,7 @@ metrics:
   ## @param metrics.enabled Enable exposing Keycloak statistics
   ## ref: https://github.com/bitnami/containers/tree/main/bitnami/keycloak#enabling-statistics
   ##
-  enabled: false
+  enabled: true
   ## Keycloak metrics service parameters
   ##
   service:
@@ -688,7 +658,7 @@ metrics:
   serviceMonitor:
     ## @param metrics.serviceMonitor.enabled Create ServiceMonitor Resource for scraping metrics using PrometheusOperator
     ##
-    enabled: false
+    enabled: true
     ## @param metrics.serviceMonitor.port Metrics service HTTP port
     ##
     port: http
@@ -983,20 +953,6 @@ postgresql:
 ## @param externalDatabase.existingSecretDatabaseKey Name of an existing secret key containing the database name
 ## @param externalDatabase.existingSecretPasswordKey Name of an existing secret key containing the database credentials
 ##
-externalDatabase:
-  host: ""
-  port: 5432
-  user: bn_keycloak
-  database: bitnami_keycloak
-  password: ""
-  existingSecret: "keycloak-postgres-credentials"
-  existingSecretHostKey: ""
-  existingSecretPortKey: ""
-  existingSecretUserKey: ""
-  existingSecretDatabaseKey: ""
-  existingSecretPasswordKey: "POSTGRES_USER_PASSWORD"
-
-## @section Keycloak Cache parameters
 
 ## Keycloak cache configuration
 ## ref: https://www.keycloak.org/server/caching
@@ -1009,14 +965,3 @@ cache:
   enabled: true
   stackName: kubernetes
   stackFile: ""
-
-## @section Keycloak Logging parameters
-
-## Keycloak logging configuration
-## ref: https://www.keycloak.org/server/logging
-## @param logging.output Alternates between the default log output format or json format
-## @param logging.level Allowed values as documented: FATAL, ERROR, WARN, INFO, DEBUG, TRACE, ALL, OFF
-##
-logging:
-  output: default
-  level: INFO
