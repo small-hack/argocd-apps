@@ -1094,6 +1094,24 @@ repoServer:
   # -- Specify postStart and preStop lifecycle hooks for your argo-repo-server container
   lifecycle: {}
 
+  # -- Init containers to add to the repo server pods
+  initContainers:
+    - name: helm-plugin-setup
+      image: busybox
+      command:
+        - sh
+        - -c
+        - |
+          wget https://get.helm.sh/helm-v3.10.3-linux-amd64.tar.gz -O - | tar xz && mv linux-amd64/helm /tools/helm && chmod +x /tools/helm
+          wget https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 -O /tools/jq && chmod +x /tools/jq
+          wget https://github.com/mikefarah/yq/releases/download/v4.30.6/yq_linux_amd64 -O /tools/yq && chmod +x /tools/yq
+          ls /tools
+          which jq
+          pwd
+      volumeMounts:
+        - mountPath: /tools
+          name: helm-plugin-tools
+
   # -- Additional containers to be added to the repo server pod
   ## Ref: https://argo-cd.readthedocs.io/en/stable/user-guide/config-management-plugins/
   ## Note: Supports use of custom Helm templates
@@ -1119,21 +1137,6 @@ repoServer:
         - mountPath: /tmp
           name: cmp-tmp
         # helm tools
-        - mountPath: /tools
-          name: helm-plugin-tools
-
-  # -- Init containers to add to the repo server pods
-  initContainers:
-    - name: helm-plugin-setup
-      image: busybox
-      command:
-        - sh
-        - -c
-        - |
-          wget https://get.helm.sh/helm-v3.10.3-linux-amd64.tar.gz -O - | tar xz && mv linux-amd64/helm /tools/helm && chmod +x /tools/helm
-          wget https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 -O /tools/jq && chmod +x /tools/jq
-          wget https://github.com/mikefarah/yq/releases/download/v4.30.6/yq_linux_amd64 -O /tools/yq && chmod +x /tools/yq
-      volumeMounts:
         - mountPath: /tools
           name: helm-plugin-tools
 
@@ -1168,58 +1171,8 @@ repoServer:
   #    cpu: 10m
   #    memory: 64Mi
 
-  # Repo server container ports
-  containerPorts:
-    # -- Repo server container port
-    server: 8081
-    # -- Metrics container port
-    metrics: 8084
-
   # -- Host Network for Repo server pods
   hostNetwork: false
-
-    # -- [DNS configuration]
-  dnsConfig: {}
-  # -- Alternative DNS policy for Repo server pods
-  dnsPolicy: "ClusterFirst"
-
-  # -- Repo server container-level security context
-  # @default -- See [values.yaml]
-  containerSecurityContext:
-    runAsNonRoot: true
-    readOnlyRootFilesystem: true
-    allowPrivilegeEscalation: false
-    seccompProfile:
-      type: RuntimeDefault
-    capabilities:
-      drop:
-        - ALL
-
-  ## Readiness and liveness probes for default backend
-  ## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
-  readinessProbe:
-    # -- Minimum consecutive failures for the [probe] to be considered failed after having succeeded
-    failureThreshold: 3
-    # -- Number of seconds after the container has started before [probe] is initiated
-    initialDelaySeconds: 10
-    # -- How often (in seconds) to perform the [probe]
-    periodSeconds: 10
-    # -- Minimum consecutive successes for the [probe] to be considered successful after having failed
-    successThreshold: 1
-    # -- Number of seconds after which the [probe] times out
-    timeoutSeconds: 1
-
-  livenessProbe:
-    # -- Minimum consecutive failures for the [probe] to be considered failed after having succeeded
-    failureThreshold: 3
-    # -- Number of seconds after the container has started before [probe] is initiated
-    initialDelaySeconds: 10
-    # -- How often (in seconds) to perform the [probe]
-    periodSeconds: 10
-    # -- Minimum consecutive successes for the [probe] to be considered successful after having failed
-    successThreshold: 1
-    # -- Number of seconds after which the [probe] times out
-    timeoutSeconds: 1
 
   # -- [Node selector]
   # @default -- `{}` (defaults to global.nodeSelector)
