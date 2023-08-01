@@ -1104,6 +1104,7 @@ repoServer:
         - |
           apt-get update && apt-get install -y --no-install-recommends wget ca-certificates
           wget https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+          chmod +x get-helm-3 && ./get-helm-3
           mv /usr/local/bin/helm /tools/helm && chmod +x /tools/helm
           wget https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 -O /tools/jq && chmod +x /tools/jq
           wget https://github.com/mikefarah/yq/releases/download/v4.34.2/yq_linux_amd64 -O /tools/yq && chmod +x /tools/yq
