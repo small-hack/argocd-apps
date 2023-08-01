@@ -6,40 +6,11 @@
 nameOverride: argocd
 # -- String to fully override `"argo-cd.fullname"`
 fullnameOverride: ""
-# -- Override the Kubernetes version, which is used to evaluate certain manifests
-kubeVersionOverride: ""
-# Override APIVersions
-# If you want to template helm charts but cannot access k8s API server
-# you can set api versions here
-apiVersionOverrides:
-  # -- String to override apiVersion of cert-manager resources rendered by this helm chart
-  certmanager: "" # cert-manager.io/v1
-  # -- String to override apiVersion of GKE resources rendered by this helm chart
-  cloudgoogle: "" # cloud.google.com/v1
-  # -- String to override apiVersion of autoscaling rendered by this helm chart
-  autoscaling: "" # autoscaling/v2
 
 # -- Create aggregated roles that extend existing cluster roles to interact with argo-cd resources
 ## Ref: https://kubernetes.io/docs/reference/access-authn-authz/rbac/#aggregated-clusterroles
 createAggregateRoles: false
-# -- Create cluster roles for cluster-wide installation.
-## Used when you manage applications in the same cluster where Argo CD runs
-createClusterRoles: true
 
-openshift:
-  # -- enables using arbitrary uid for argo repo server
-  enabled: false
-
-## Custom resource configuration
-crds:
-  # -- Install and upgrade CRDs
-  install: true
-  # -- Keep CRDs on chart uninstall
-  keep: true
-  # -- Annotations to be added to all CRDs
-  annotations: {}
-  # -- Addtional labels to be added to all CRDs
-  additionalLabels: {}
 
 ## Globally shared configuration
 global:
@@ -47,39 +18,12 @@ global:
   additionalLabels:
     argocd.argoproj.io/instance: argocd-helm
 
-  # -- Number of old deployment ReplicaSets to retain. The rest will be garbage collected.
-  revisionHistoryLimit: 3
-
-  # Default image used by all components
-  image:
-    # -- If defined, a repository applied to all Argo CD deployments
-    repository: quay.io/argoproj/argocd
-    # -- Overrides the global Argo CD image tag whose default is the chart appVersion
-    tag: ""
-    # -- If defined, a imagePullPolicy applied to all Argo CD deployments
-    imagePullPolicy: IfNotPresent
-
-  # -- Secrets with credentials to pull images from a private registry
-  imagePullSecrets: []
-
   # Default logging options used by all components
   logging:
     # -- Set the global logging format. Either: `text` or `json`
     format: text
     # -- Set the global logging level. One of: `debug`, `info`, `warn` or `error`
     level: info
-
-  # -- Annotations for the all deployed Statefulsets
-  statefulsetAnnotations: {}
-
-  # -- Annotations for the all deployed Deployments
-  deploymentAnnotations: {}
-
-  # -- Annotations for the all deployed pods
-  podAnnotations: {}
-
-  # -- Labels for the all deployed pods
-  podLabels: {}
 
   # -- Add Prometheus scrape annotations to all metrics services. This can be used as an alternative to the ServiceMonitors.
   addPrometheusAnnotations: false
@@ -100,7 +44,7 @@ global:
   # Default network policy rules used by all components
   networkPolicy:
     # -- Create NetworkPolicy objects for all components
-    create: false
+    create: true
     # -- Default deny all ingress traffic
     defaultDenyIngress: false
 
@@ -159,7 +103,7 @@ configs:
     annotations: {}
 
     # -- Argo CD's externally facing base URL (optional). Required when configuring SSO
-    url: ""
+    url: "argocd.vleermuis.tech"
 
     # -- The name of tracking label used by Argo CD for resource pruning
     # @default -- Defaults to app.kubernetes.io/instance
@@ -430,15 +374,6 @@ configs:
     #       insecure: false
     #       caData: "<base64 encoded certificate>"
 
-  # DEPRECATED - Moved to configs.ssh.annotations
-  # knownHostsAnnotations: {}
-  # DEPRECATED - Moved to configs.ssh.knownHosts
-  # knownHosts: {}
-
-  # DEPRECATED - Moved to configs.tls.annotations
-  # tlsCertsAnnotations: {}
-  # DEPRECATED - Moved to configs.tls.certificates
-  # tlsCerts: {}
 
   # -- Repository credentials to be used as Templates for other repos
   ## Creates a secret for each key/value specified below to create repository credentials
@@ -500,12 +435,6 @@ configs:
     githubSecret: ""
     # -- Shared secret for authenticating GitLab webhook events
     gitlabSecret: ""
-    # -- Shared secret for authenticating BitbucketServer webhook events
-    bitbucketServerSecret: ""
-    # -- UUID for authenticating Bitbucket webhook events
-    bitbucketUUID: ""
-    # -- Shared secret for authenticating Gogs webhook events
-    gogsSecret: ""
 
     # -- add additional secrets to be added to argocd-secret
     ## Custom secrets. Useful for injecting SSO secrets into environment variables.
@@ -514,12 +443,6 @@ configs:
     extra:
       {}
       # LDAP_PASSWORD: "mypassword"
-
-    # -- Argo TLS Data
-    # DEPRECATED - Use server.certificate or server.certificateSecret
-    # argocdServerTlsConfig:
-    #  key: ''
-    #  crt: ''
 
     # -- Bcrypt hashed admin password
     ## Argo expects the password in the secret to be bcrypt hashed. You can create this hash with
@@ -593,41 +516,6 @@ controller:
     ## Has higher precedence over `controller.pdb.minAvailable`
     maxUnavailable: ""
 
-  ## Application controller image
-  image:
-    # -- Repository to use for the application controller
-    # @default -- `""` (defaults to global.image.repository)
-    repository: ""
-    # -- Tag to use for the application controller
-    # @default -- `""` (defaults to global.image.tag)
-    tag: ""
-    # -- Image pull policy for the application controller
-    # @default -- `""` (defaults to global.image.imagePullPolicy)
-    imagePullPolicy: ""
-
-  # -- Secrets with credentials to pull images from a private registry
-  # @default -- `[]` (defaults to global.imagePullSecrets)
-  imagePullSecrets: []
-
-  # -- DEPRECATED - Application controller commandline flags
-  args: {}
-  # DEPRECATED - Use configs.params to override
-  #  # -- define the application controller `--status-processors`
-  #  statusProcessors: "20"
-  #  # -- define the application controller `--operation-processors`
-  #  operationProcessors: "10"
-  #  # -- define the application controller `--app-hard-resync`
-  #  appHardResyncPeriod: "0"
-  #  # -- define the application controller `--app-resync`
-  #  appResyncPeriod: "180"
-  #  # -- define the application controller `--self-heal-timeout-seconds`
-  #  selfHealTimeout: "5"
-  #  # -- define the application controller `--repo-server-timeout-seconds`
-  #  repoServerTimeoutSeconds: "60"
-
-  # -- Additional command line arguments to pass to application controller
-  extraArgs: []
-
   # -- Environment variables to pass to application controller
   env: []
 
@@ -695,23 +583,6 @@ controller:
 
   # -- Host Network for application controller pods
   hostNetwork: false
-
-  # -- [DNS configuration]
-  dnsConfig: {}
-  # -- Alternative DNS policy for application controller pods
-  dnsPolicy: "ClusterFirst"
-
-  # -- Application controller container-level security context
-  # @default -- See [values.yaml]
-  containerSecurityContext:
-    runAsNonRoot: true
-    readOnlyRootFilesystem: true
-    allowPrivilegeEscalation: false
-    seccompProfile:
-      type: RuntimeDefault
-    capabilities:
-      drop:
-        - ALL
 
   # Readiness probe for application controller
   ## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
@@ -2371,31 +2242,6 @@ applicationSet:
     ## Has higher precedence over `applicationSet.pdb.minAvailable`
     maxUnavailable: ""
 
-  ## ApplicationSet controller image
-  image:
-    # -- Repository to use for the ApplicationSet controller
-    # @default -- `""` (defaults to global.image.repository)
-    repository: ""
-    # -- Tag to use for the ApplicationSet controller
-    # @default -- `""` (defaults to global.image.tag)
-    tag: ""
-    # -- Image pull policy for the ApplicationSet controller
-    # @default -- `""` (defaults to global.image.imagePullPolicy)
-    imagePullPolicy: ""
-
-  # -- If defined, uses a Secret to pull an image from a private Docker registry or repository.
-  # @default -- `[]` (defaults to global.imagePullSecrets)
-  imagePullSecrets: []
-
-  # -- DEPRECATED - ApplicationSet controller command line flags
-  args: {}
-    # DEPRECATED - Use configs.params.applicationsetcontroller.policy to override
-    # -- How application is synced between the generator and the cluster
-    # policy: sync
-    # DEPRECATED - Use configs.params.applicationsetcontroller.dryrun to override
-    # -- Enable dry run mode
-    # dryRun: false
-
   # -- List of extra cli args to add
   extraArgs: []
 
@@ -2709,22 +2555,6 @@ notifications:
     ## Has higher precedence over `notifications.pdb.minAvailable`
     maxUnavailable: ""
 
-  ## Notifications controller image
-  image:
-    # -- Repository to use for the notifications controller
-    # @default -- `""` (defaults to global.image.repository)
-    repository: ""
-    # -- Tag to use for the notifications controller
-    # @default -- `""` (defaults to global.image.tag)
-    tag: ""
-    # -- Image pull policy for the notifications controller
-    # @default -- `""` (defaults to global.image.imagePullPolicy)
-    imagePullPolicy: ""
-
-  # -- Secrets with credentials to pull images from a private registry
-  # @default -- `[]` (defaults to global.imagePullSecrets)
-  imagePullSecrets: []
-
   # -- Notifications controller log format. Either `text` or `json`
   # @default -- `""` (defaults to global.logging.format)
   logFormat: ""
@@ -2745,14 +2575,6 @@ notifications:
     #     name: config-map-name
     # - secretRef:
     #     name: secret-name
-
-  # -- Additional containers to be added to the notifications controller pod
-  ## Note: Supports use of custom Helm templates
-  extraContainers: []
-
-  # -- Init containers to add to the notifications controller pod
-  ## Note: Supports use of custom Helm templates
-  initContainers: []
 
   # -- List of extra mounts to add (normally used with extraVolumes)
   extraVolumeMounts: []
