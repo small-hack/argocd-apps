@@ -54,10 +54,10 @@ data:
           - sh
           - "-c"
           - |
-            helm repo add ${ARGOCD_APP_NAME} ${ARGOCD_APP_SOURCE_REPO_URL}
-            helm repo update && curl -O ${ARGOCD_ENV_VALUES_URL}
-            helm template $ARGOCD_APP_NAME -n $ARGOCD_APP_NAMESPACE --values values.yaml ${ARGOCD_APP_NAME}/${ARGOCD_APP_NAME} |
-            argocd-vault-plugin generate -
+            env
+            #helm repo add ${ARGOCD_APP_NAME} ${ARGOCD_APP_SOURCE_REPO_URL}
+            #helm repo update && curl -O ${ARGOCD_ENV_VALUES_URL}
+            #helm template $ARGOCD_APP_NAME -n $ARGOCD_APP_NAMESPACE --values values.yaml ${ARGOCD_APP_NAME}/${ARGOCD_APP_NAME}       #argocd-vault-plugin generate -
       lockRepo: false
   avp.yaml: |
     apiVersion: argoproj.io/v1alpha1
