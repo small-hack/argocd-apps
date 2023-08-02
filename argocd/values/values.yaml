@@ -278,39 +278,6 @@ configs:
     # -- Create the argocd-cmp-cm configmap
     create: false
 
-    # -- Plugin yaml files to be added to argocd-cmp-cm
-    plugins:
-      # --- First plugin
-      plugin:
-        init:
-          command: [sh, -c]
-          args: 
-          - |
-            echo "Initializing..."
-            helm repo add $ARGOCD_APP_SOURCE_REPO_URL $ARGOCD_APP_NAME && helm repo update
-        generate:
-          command: [sh, -c]
-          args:
-            - |
-              export PATH="$PATH:/tools"
-              echo "here's app params: $ARGOCD_APP_PARAMETERS"
-              ARGUMENTS=$(echo "$ARGOCD_APP_PARAMETERS" | jq -r '.[] | select(.name == "values-files").array | .[] | "--values=" + .') | true
-
-              yq eval '.server.ingress.hosts.[0] = env(BUSINESS_HOSTNAME)' values.yaml
-
-              helm template $ARGUMENTS ARGOCD_APP_NAME
-        discover:
-          fileName: "./values.yaml"
-        parameters:
-          static:
-            - name: values-files
-              title: VALUES FILES
-              collectionType: array
-            - name: hostname-params-to-replace
-              title: HOSTNAME PARAMETERS TO REPLACE
-              collectionType: array
-
-
   # -- Repositories list to be used by applications
   ## Creates a secret for each key/value specified below to create repositories
   ## Note: the last example in the list would use a repository credential template, configured under "configs.repositoryCredentials".
