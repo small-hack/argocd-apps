@@ -1,10 +1,4 @@
 ---
-## Official nextcloud image version
-## ref: https://hub.docker.com/r/library/nextcloud/tags/
-image:
-  repository: nextcloud
-  flavor: fpm
-
 replicaCount: 1
 
 ingress:
@@ -39,13 +33,13 @@ ingress:
   tls:
     - secretName: nextcloud-tls
       hosts:
-        - cloud.social-media-for-dogs.com
+        - <path:argocd-hostname-replacer-secret#nextcloud-hostname>
   labels: {}
   path: /
   pathType: Prefix
 
 nextcloud:
-  host: cloud.social-media-for-dogs.com
+  host: <path:argocd-hostname-replacer-secret#nextcloud-hostname>
   ## Use an existing secret
   existingSecret:
     enabled: true
@@ -61,30 +55,12 @@ nextcloud:
   mail:
     enabled: true
     fromAddress: cloud
-    domain: enby.city
+    domain: <path:argocd-hostname-replacer-secret#nextcloud-hostname>
     smtp:
-      host: mail.enby.city
+      host: <path:argocd-hostname-replacer-secret#nextcloud-mail-hostname>
       secure: ssl
       port: 465
       authtype: LOGIN
-  # PHP Configuration files
-  # Will be injected in /usr/local/etc/php-fpm.d when nginx.enabled: true
-  phpConfigs: {}
-  defaultConfigs:
-    # To protect /var/www/html/config
-    .htaccess: true
-    # Redis default configuration
-    redis.config.php: true
-    # Apache configuration for rewrite urls
-    apache-pretty-urls.config.php: true
-    # Define APCu as local cache
-    apcu.config.php: true
-    # Apps directory configs
-    apps.config.php: true
-    # Used for auto configure database
-    autoconfig.php: true
-    # SMTP default configuration
-    smtp.config.php: true
   configs:
     # log levels: 0 = Debug, 1 = Info, 2 = Warning, 3 = Error, and 4 = Fatal
     logging.config.php: |-
