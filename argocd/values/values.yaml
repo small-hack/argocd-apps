@@ -417,7 +417,7 @@ dex:
 ## Redis
 redis:
   # -- Enable redis
-  enabled: true
+  enabled: false
   # -- Redis name
   name: redis
 
