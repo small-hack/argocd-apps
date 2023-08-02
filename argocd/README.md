@@ -23,22 +23,32 @@ spec:
         labels:
           app.kubernetes.io/part-of: "argocd"
       data:
-        oidc.keycloak.clientID: |-
-          {{ .username }}
         oidc.keycloak.clientSecret: |-
           {{ .password }}
 ...
 ```
 
-ref: https://github.com/external-secrets/external-secrets/issues/2041
+ref on extenral secrets labels: https://github.com/external-secrets/external-secrets/issues/2041
+
+## Argo CD Vault Plugin
+We're currently demoing the [Argo CD Vault plugin](https://argocd-vault-plugin.readthedocs.io) with the [Kubernetes Secret backend](https://argocd-vault-plugin.readthedocs.io/en/stable/backends/#kubernetes-secret). We're using the suggested manifests [here](https://github.com/argoproj-labs/argocd-vault-plugin/tree/main/manifests/cmp-sidecar) to deploy the plugin as a side car.
+
+To get started with this, before deploying this directory, you'll need the [example](./example/hostname_secret.yaml) set your hostname and applied before you start using Argo CD:
+
+```yaml
+kind: Secret
+apiVersion: v1
+metadata:
+  name: hostname-replacer-secret
+type: Opaque
+data:
+  # NOTE: this hostname key is base64 encoded
+  hostname: dmxlZXJtdWlzLnRlY2g=
+```
 
 
-# setting up keycloak
-- https://argo-cd.readthedocs.io/en/stable/operator-manual/user-management/keycloak/
-- https://argo-cd.readthedocs.io/en/stable/operator-manual/user-management/#example_1
-
-# Deployment
-To deploy this, create a new argo app and select "Edit as YAML". Copy and paste this into the input field:
+# Creating the Argo CD app
+To deploy this, create a new Argo CD app, and select "Edit as YAML". Copy and paste this into the input field:
 ```yaml
 project: default
 source:
@@ -52,3 +62,7 @@ syncPolicy:
   syncOptions:
     - ApplyOutOfSyncOnly=true
 ```
+
+# setting up keycloak
+- https://argo-cd.readthedocs.io/en/stable/operator-manual/user-management/keycloak/
+- https://argo-cd.readthedocs.io/en/stable/operator-manual/user-management/#example_1

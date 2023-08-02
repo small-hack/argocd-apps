@@ -276,15 +276,18 @@ configs:
   # Ref: https://argo-cd.readthedocs.io/en/stable/operator-manual/config-management-plugins/
   cmp:
     # -- Create the argocd-cmp-cm configmap
-    create: true
+    create: false
 
     # -- Plugin yaml files to be added to argocd-cmp-cm
     plugins:
       # --- First plugin
       plugin:
         init:
-          command: [sh]
-          args: [-c, 'echo "Initializing..."']
+          command: [sh, -c]
+          args: 
+          - |
+            echo "Initializing..."
+            helm repo add $ARGOCD_APP_SOURCE_REPO_URL $ARGOCD_APP_NAME && helm repo update
         generate:
           command: [sh, -c]
           args:
@@ -292,18 +295,10 @@ configs:
               export PATH="$PATH:/tools"
               echo "here's app params: $ARGOCD_APP_PARAMETERS"
               ARGUMENTS=$(echo "$ARGOCD_APP_PARAMETERS" | jq -r '.[] | select(.name == "values-files").array | .[] | "--values=" + .') | true
-              HOSTNAME_PARAMS=$(echo "$ARGOCD_APP_PARAMETERS" | jq -r '.[] | select(.name == "hostname-params-to-replace").array | .[] | "--set=" + . + "$hostname-env-variable"') | true
-              PARAMETERS=$(echo "$ARGOCD_APP_PARAMETERS" | jq -r '.[] | select(.name == "helm-parameters").map | to_entries | map("\(.key)=\(.value)") | .[] | "--set=" + .') | true
 
-              yq e -o=json values.yaml | jq '{
-                name: "helm-parameters",
-                title: "Helm Parameters",
-                collectionType: "map",
-                map: [leaf_paths as $path | {"key": $path | join("."), "value": getpath($path)|tostring}] | from_entries
-              }'
+              yq eval '.server.ingress.hosts.[0] = env(BUSINESS_HOSTNAME)' values.yaml
 
-              echo ". $ARGUMENTS $HOSTNAME_PARAMS $PARAMETERS"
-              echo ". $ARGUMENTS $HOSTNAME_PARAMS $PARAMETERS" | xargs helm template
+              helm template $ARGUMENTS ARGOCD_APP_NAME
         discover:
           fileName: "./values.yaml"
         parameters:
@@ -313,9 +308,6 @@ configs:
               collectionType: array
             - name: hostname-params-to-replace
               title: HOSTNAME PARAMETERS TO REPLACE
-              collectionType: array
-            - name: hostname-env-variable
-              title: HOSTNAME ENV VARIABLE
               collectionType: array
 
 
@@ -458,7 +450,7 @@ dex:
 ## Redis
 redis:
   # -- Enable redis
-  enabled: false
+  enabled: true
   # -- Redis name
   name: redis
 
@@ -1107,37 +1099,29 @@ repoServer:
 
   # -- Init containers to add to the repo server pods
   initContainers:
-    - name: helm-plugin-setup
-      image: debian:bookworm-slim
-      command:
-        - sh
-        - -c
-        - |
-          apt-get update && apt-get install -y --no-install-recommends wget ca-certificates
-          wget https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
-          chmod +x get-helm-3 && ./get-helm-3
-          mv /usr/local/bin/helm /tools/helm && chmod +x /tools/helm
-          wget https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 -O /tools/jq && chmod +x /tools/jq
-          wget https://github.com/mikefarah/yq/releases/download/v4.34.2/yq_linux_amd64 -O /tools/yq && chmod +x /tools/yq
-          echo "we've downloaded the stuff, here's what's in /tools"
-          ls -hal /tools
-          export PATH="$PATH:/tools"
-          echo "here's which jq:"
-          which jq
-          which yq
-          which helm
+    - name: download-tools
+      image: registry.access.redhat.com/ubi8
+      env:
+        - name: AVP_VERSION
+          value: 1.16.0
+      command: [sh, -c]
+      args:
+        - >-
+          curl -L https://github.com/argoproj-labs/argocd-vault-plugin/releases/download/v$(AVP_VERSION)/argocd-vault-plugin_$(AVP_VERSION)_linux_amd64 -o argocd-vault-plugin &&
+          chmod +x argocd-vault-plugin &&
+          mv argocd-vault-plugin /custom-tools/
+
       volumeMounts:
-        - mountPath: /tools
-          name: helm-plugin-tools
+        - mountPath: /custom-tools
+          name: custom-tools
 
   # -- Additional containers to be added to the repo server pod
   ## Ref: https://argo-cd.readthedocs.io/en/stable/user-guide/config-management-plugins/
   ## Note: Supports use of custom Helm templates
   extraContainers:
-    - name: env-replacer-plugin
-      command:
-        - "/var/run/argocd/argocd-cmp-server"
-      image: busybox
+    - name: avp-helm
+      command: [/var/run/argocd/argocd-cmp-server]
+      image: quay.io/argoproj/argocd:v2.7.10
       securityContext:
         runAsNonRoot: true
         runAsUser: 999
@@ -1146,17 +1130,18 @@ repoServer:
           name: var-files
         - mountPath: /home/argocd/cmp-server/plugins
           name: plugins
-        # Remove this volumeMount if you've chosen to bake the config file into the sidecar image.
-        - mountPath: /home/argocd/cmp-server/config/plugin.yaml
-          subPath: plugin.yaml
-          name: argocd-cmp-cm
-        # Starting with v2.4, do NOT mount the same tmp volume as the repo-server container. The filesystem separation helps
-        # mitigate path traversal attacks.
         - mountPath: /tmp
-          name: cmp-tmp
-        # helm tools
-        - mountPath: /tools
-          name: helm-plugin-tools
+          name: tmp
+
+        # Register plugins into sidecar
+        - mountPath: /home/argocd/cmp-server/config/plugin.yaml
+          subPath: avp-helm.yaml
+          name: cmp-plugin
+
+        # Important: Mount tools into $PATH
+        - name: custom-tools
+          subPath: argocd-vault-plugin
+          mountPath: /usr/local/bin/argocd-vault-plugin
 
   # -- Additional volumeMounts to the repo server main container
   volumeMounts: []
@@ -1166,9 +1151,10 @@ repoServer:
     - name: argocd-cmp-cm
       configMap:
         name: argocd-cmp-cm
-    - name: cmp-tmp
-      emptyDir: {}
-    - name: helm-plugin-tools
+    - name: cmp-plugin
+      configMap:
+        name: cmp-plugin
+    - name: custom-tools
       emptyDir: {}
 
   # -- Annotations to be added to repo server Deployment
