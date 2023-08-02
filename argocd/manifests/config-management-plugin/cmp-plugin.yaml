@@ -40,7 +40,7 @@ data:
         command:
           - sh
           - "-c"
-          - "helm dependency build"
+          - "helm repo update"
       # Note: this command is run _before_ any Helm templating is done, therefore the logic is to check
       # if this looks like a Helm chart
       discover:
