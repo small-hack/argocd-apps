@@ -63,18 +63,15 @@ spec:
   destination:
     server: "https://kubernetes.default.svc"
     namespace: nextcloud
-  sources:
-    # official nextcloud helm repo
-    - repoURL: 'https://nextcloud.github.io/helm'
-      chart: nextcloud
-      targetRevision: 3.5.20
-      helm:
-        valueFiles:
-          - $values/nextcloud/values.yaml
-    # our values.yaml file locally
-    - repoURL: 'https://github.com/small-hack/argocd-apps.git'
-      targetRevision: main
-      ref: values
+  source:
+    plugin:
+      name: argocd-vault-plugin-helm
+      env:
+        - remoteValuesRepoURL: https://github.com/small-hack/argocd-apps/nextcloud/values.yaml
+          valuesRevision: main
+    repoURL: 'https://nextcloud.github.io/helm'
+    targetRevision: 3.5.20
+    chart: nextcloud
   syncPolicy:
     syncOptions:
       - ApplyOutOfSyncOnly=true
