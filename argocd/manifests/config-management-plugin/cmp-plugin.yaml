@@ -40,6 +40,7 @@ data:
         command:
           - sh
           - "-c"
+          - "env"
           - "echo 'howdy, init, howdy'"
       # Note: this command is run _before_ any Helm templating is done, therefore the logic is to check
       # if this looks like a Helm chart
@@ -54,10 +55,9 @@ data:
           - sh
           - "-c"
           - |
-            env
-            #helm repo add ${ARGOCD_APP_NAME} ${ARGOCD_APP_SOURCE_REPO_URL}
-            #helm repo update && curl -O ${ARGOCD_ENV_VALUES_URL}
-            #helm template $ARGOCD_APP_NAME -n $ARGOCD_APP_NAMESPACE --values values.yaml ${ARGOCD_APP_NAME}/${ARGOCD_APP_NAME}       #argocd-vault-plugin generate -
+            helm repo add ${ARGOCD_APP_NAME} ${ARGOCD_APP_SOURCE_REPO_URL}
+            helm repo update && curl -O ${ARGOCD_ENV_VALUES_URL}
+            helm template $ARGOCD_APP_NAME -n $ARGOCD_APP_NAMESPACE --values values.yaml ${ARGOCD_APP_NAME}/${ARGOCD_APP_NAME} | argocd-vault-plugin generate -
       lockRepo: false
   avp.yaml: |
     apiVersion: argoproj.io/v1alpha1
