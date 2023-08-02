@@ -41,7 +41,6 @@ data:
           - sh
           - "-c"
           - "helm dependency build"
-
       # Note: this command is run _before_ any Helm templating is done, therefore the logic is to check
       # if this looks like a Helm chart
       discover:
@@ -49,7 +48,7 @@ data:
           command:
             - sh
             - "-c"
-            - "find . -name 'Chart.yaml' && find . -name 'values.yaml'"
+            - "find . -name 'values.yaml'"
       generate:
         # **IMPORTANT**: passing `${ARGOCD_ENV_HELM_ARGS}` effectively allows users to run arbitrary code in the Argo CD 
         # repo-server (or, if using a sidecar, in the plugin sidecar). Only use this when the users are completely trusted. If
