@@ -290,6 +290,7 @@ configs:
           args:
             - |
               export PATH="$PATH:/tools"
+              echo "here's app params: $ARGOCD_APP_PARAMETERS"
               ARGUMENTS=$(echo "$ARGOCD_APP_PARAMETERS" | jq -r '.[] | select(.name == "values-files").array | .[] | "--values=" + .') | true
               HOSTNAME_PARAMS=$(echo "$ARGOCD_APP_PARAMETERS" | jq -r '.[] | select(.name == "hostname-params-to-replace").array | .[] | "--set=" + . + "$hostname-env-variable"') | true
               PARAMETERS=$(echo "$ARGOCD_APP_PARAMETERS" | jq -r '.[] | select(.name == "helm-parameters").map | to_entries | map("\(.key)=\(.value)") | .[] | "--set=" + .') | true
