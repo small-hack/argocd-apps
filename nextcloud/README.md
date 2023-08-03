@@ -79,7 +79,45 @@ You may need to drop a table or two, requiring a psql shell and credentials. Con
 PGDATABASE="$POSTGRES_DB" PGUSER="$POSTGRES_USER" PGPASSWORD="$POSTGRES_PASSWORD" psql
 ```
 
-## Argo App
+## Argo CD Project
+```yaml
+---
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  labels:
+    env: prod
+  name: nextcloud
+  namespace: argocd
+spec:
+  clusterResourceWhitelist:
+    - group: '*'
+      kind: '*'
+  description: all nextcloud apps
+  destinations:
+    - name: in-cluster
+      namespace: nextcloud
+      server: https://kubernetes.default.svc
+    - name: '*'
+      namespace: argocd
+      server: '*'
+  namespaceResourceWhitelist:
+    - group: '*'
+      kind: '*'
+  orphanedResources: {}
+  roles:
+    - description: nextcloud admins
+      name: nextcloud
+      policies:
+        - p, proj:nextcloud:nextcloud, applications, *, nextcloud/*, allow
+  sourceRepos:
+    - registry-1.docker.io
+    - https://github.com/small-hack/vleermuis-external-secrets.git
+    - https://nextcloud.github.io/helm
+    - https://github.com/small-hack/argocd-apps.git
+```
+
+## Argo CD App
 
 ```yaml
 apiVersion: argoproj.io/v1alpha1
@@ -93,15 +131,13 @@ spec:
     server: 'https://kubernetes.default.svc'
   source:
     path: nextcloud/
-    repoURL: 'https://github.com/small-hack/argocd-apps.git'
-    targetRevision: main
+    repoURL: 'https://github.com/small-hack/argocd.git'
+    targetRevision: HEAD
   sources: []
-  project: default
+  project: nextcloud
   syncPolicy:
-    automated:
-      prune: false
-      selfHeal: false
     syncOptions:
+      - ApplyOutOfSyncOnly=true
       - CreateNamespace=true
 ```
 ---
