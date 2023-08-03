@@ -1,0 +1,11 @@
+apiVersion: mallard.io/v1beta1
+kind: ConfigMap
+metadata:
+  name: nextcloud-hostname
+spec: {}
+status:
+  # Duck-typing ignores all other aspects of the resource except 
+  # the "decisions" list
+  decisions:
+  - clusterName: in-cluster
+    nextcloudHostname: cloud.vleermuis.tech
