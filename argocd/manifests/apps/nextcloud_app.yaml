@@ -1,0 +1,19 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nextcloud
+spec:
+  destination:
+    name: ''
+    namespace: nextcloud
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: nextcloud/
+    repoURL: 'https://github.com/small-hack/argocd-apps.git'
+    targetRevision: HEAD
+  sources: []
+  project: nextcloud
+  syncPolicy:
+    syncOptions:
+      - ApplyOutOfSyncOnly=true
+      - CreateNamespace=true
