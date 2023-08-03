@@ -63,9 +63,6 @@ spec:
   goTemplate: true
   # not sure what this does
   goTemplateOptions: ["missingkey=error"]
-  destination:
-    server: "https://kubernetes.default.svc"
-    namespace: nextcloud
   # generator allows us to source specific values from an external configmap
   generators:
     - clusterDecisionResource:
@@ -76,6 +73,9 @@ spec:
       name: nextcloud-web-app
     spec:
       project: nextcloud
+      destination:
+        server: "{{.clusterName}}"
+        namespace: nextcloud
       # for multiple sources after one of the following is addressed:
       # https://github.com/argoproj/applicationset/issues/632
       # https://github.com/argoproj/argo-cd#11213
