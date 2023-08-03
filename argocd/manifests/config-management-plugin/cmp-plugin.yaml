@@ -2,6 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: cmp-plugin
+  namespace: argocd
 data:
   avp-kustomize.yaml: |
     ---
@@ -49,15 +50,18 @@ data:
           command:
             - sh
             - "-c"
-            - "find . -name 'values.yaml'"
+            - "find . -name './values.yaml'"
       generate:
         command:
           - sh
           - "-c"
           - |
-            helm repo add ${ARGOCD_APP_NAME} ${ARGOCD_APP_SOURCE_REPO_URL}
-            helm repo update && curl -O ${ARGOCD_ENV_VALUES_URL}
-            helm template $ARGOCD_APP_NAME -n $ARGOCD_APP_NAMESPACE --values values.yaml ${ARGOCD_APP_NAME}/${ARGOCD_APP_NAME} | argocd-vault-plugin generate -
+            export HELM_REPO="true"
+            helm repo add ${ARGOCD_APP_NAME} ${ARGOCD_APP_SOURCE_REPO_URL} || export HELM_REPO="false"
+            if [ $HELM_REPO == "true" ]; then
+              helm repo update && curl -O ${ARGOCD_ENV_VALUES_URL}
+              helm template $ARGOCD_APP_NAME -n $ARGOCD_APP_NAMESPACE --values values.yaml ${ARGOCD_APP_NAME}/${ARGOCD_APP_NAME} | argocd-vault-plugin generate -
+            fi
       lockRepo: false
   avp.yaml: |
     apiVersion: argoproj.io/v1alpha1
@@ -78,4 +82,3 @@ data:
           - generate
           - "."
       lockRepo: false
----
