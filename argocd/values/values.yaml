@@ -1065,64 +1065,18 @@ repoServer:
   lifecycle: {}
 
   # -- Init containers to add to the repo server pods
-  initContainers:
-    - name: download-tools
-      image: registry.access.redhat.com/ubi8
-      env:
-        - name: AVP_VERSION
-          value: 1.16.0
-      command: [sh, -c]
-      args:
-        - >-
-          curl -L https://github.com/argoproj-labs/argocd-vault-plugin/releases/download/v$(AVP_VERSION)/argocd-vault-plugin_$(AVP_VERSION)_linux_amd64 -o argocd-vault-plugin &&
-          chmod +x argocd-vault-plugin &&
-          mv argocd-vault-plugin /custom-tools/
-
-      volumeMounts:
-        - mountPath: /custom-tools
-          name: custom-tools
+  initContainers: []
 
   # -- Additional containers to be added to the repo server pod
   ## Ref: https://argo-cd.readthedocs.io/en/stable/user-guide/config-management-plugins/
   ## Note: Supports use of custom Helm templates
-  extraContainers:
-    - name: avp-helm
-      command: [/var/run/argocd/argocd-cmp-server]
-      image: quay.io/argoproj/argocd:v2.7.10
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 999
-      volumeMounts:
-        - mountPath: /var/run/argocd
-          name: var-files
-        - mountPath: /home/argocd/cmp-server/plugins
-          name: plugins
-        - mountPath: /tmp
-          name: tmp
-
-        # Register plugins into sidecar
-        - mountPath: /home/argocd/cmp-server/config/plugin.yaml
-          subPath: avp-helm.yaml
-          name: cmp-plugin
-
-        # Important: Mount tools into $PATH
-        - name: custom-tools
-          subPath: argocd-vault-plugin
-          mountPath: /usr/local/bin/argocd-vault-plugin
+  extraContainers: []
 
   # -- Additional volumeMounts to the repo server main container
   volumeMounts: []
 
   # -- Additional volumes to the repo server pod
-  volumes:
-    - name: argocd-cmp-cm
-      configMap:
-        name: argocd-cmp-cm
-    - name: cmp-plugin
-      configMap:
-        name: cmp-plugin
-    - name: custom-tools
-      emptyDir: {}
+  volumes: []
 
   # -- Annotations to be added to repo server Deployment
   deploymentAnnotations: {}
