@@ -283,7 +283,7 @@ configs:
   ## Note: the last example in the list would use a repository credential template, configured under "configs.repositoryCredentials".
   repositories:
     small-hack-argocd:
-      url: https://github.com/small-hack/argocd.git
+      url: https://github.com/small-hack/argocd-apps.git
       name: small-hack
       type: git
 
@@ -417,7 +417,7 @@ dex:
 ## Redis
 redis:
   # -- Enable redis
-  enabled: false
+  enabled: true
   # -- Redis name
   name: redis
 
