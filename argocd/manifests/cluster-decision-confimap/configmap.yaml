@@ -1,0 +1,15 @@
+# this is for the Cluster Decision Resource Generator for ApplicationSets
+# ref: https://argo-cd.readthedocs.io/en/latest/operator-manual/applicationset/Generators-Cluster-Decision-Resource/
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-hostname-configs
+data:
+  # apiVersion of the target resource
+  apiVersion: v1
+  # kind of the target resource
+  kind: ConfigMap
+  # status key name that holds the list of Argo CD clusters
+  statusListKey: decisions
+  # The key in the status list whose value is the cluster name found in Argo CD
+  matchKey: hostname
