@@ -54,7 +54,7 @@ spec:
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: nextcloud-minimal-web-app
+  name: nextcloud-web-app
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "2"
