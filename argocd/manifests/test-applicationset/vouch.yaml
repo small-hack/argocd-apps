@@ -4,12 +4,12 @@ metadata:
   name: vouch
 spec:
   generators:
-    - plugin:
-        configMapRef:
-          name: argocd-generator-plugin-cm
-        input:
-          parameters:
-            key1: "value1"
+  - plugin:
+      configMapRef:
+        name: argocd-generator-plugin-cm
+      input:
+        parameters:
+          key1: "value1"
   template:
     metadata:
       name: 'vouch'
