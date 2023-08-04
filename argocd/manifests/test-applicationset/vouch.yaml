@@ -9,10 +9,10 @@ spec:
         name: argocd-generator-plugin-cm
       input:
         parameters:
-          key1: "value1"
+          key1: value1
   template:
     metadata:
-      name: 'vouch'
+      name: vouch
     spec:
       project: default
       source:
@@ -39,4 +39,4 @@ spec:
                     - {{.vouch_hostname}}
       destination:
         server: "https://kubernetes.default.svc"
-        namespace: 'vouch'
+        namespace: vouch
