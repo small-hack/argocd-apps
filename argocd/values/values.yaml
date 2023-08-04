@@ -2,11 +2,6 @@
 ## Argo CD configuration
 ## Ref: https://github.com/argoproj/argo-cd
 
-# -- Provide a name in place of `argocd`
-nameOverride: argocd
-# -- String to fully override `"argo-cd.fullname"`
-fullnameOverride: ""
-
 # -- Create aggregated roles that extend existing cluster roles to interact with argo-cd resources
 ## Ref: https://kubernetes.io/docs/reference/access-authn-authz/rbac/#aggregated-clusterroles
 createAggregateRoles: false
@@ -14,6 +9,9 @@ createAggregateRoles: false
 
 ## Globally shared configuration
 global:
+  # temporary until the plugin generator feature is live in stable
+  image:
+    tag: "v2.8.0-rc7"
   # -- Common labels for the all resources
   additionalLabels:
     argocd.argoproj.io/instance: argocd-helm
@@ -23,17 +21,10 @@ global:
     # -- Set the global logging format. Either: `text` or `json`
     format: text
     # -- Set the global logging level. One of: `debug`, `info`, `warn` or `error`
-    level: info
+    level: debug
 
   # -- Add Prometheus scrape annotations to all metrics services. This can be used as an alternative to the ServiceMonitors.
   addPrometheusAnnotations: false
-
-  # -- Toggle and define pod-level security context.
-  # @default -- `{}` (See [values.yaml])
-  securityContext: {}
-  #  runAsUser: 999
-  #  runAsGroup: 999
-  #  fsGroup: 999
 
   # -- Mapping between IP and hostnames that will be injected as entries in the pod's hosts files
   hostAliases: []
@@ -81,13 +72,6 @@ global:
     #   topologyKey: topology.kubernetes.io/zone
     #   whenUnsatisfiable: DoNotSchedule
 
-  # -- Deployment strategy for the all deployed Deployments
-  deploymentStrategy: {}
-    # type: RollingUpdate
-    # rollingUpdate:
-    #   maxSurge: 25%
-    #   maxUnavailable: 25%
-
   # -- Environment variables to pass to all deployed Deployments
   env: []
 
@@ -127,19 +111,6 @@ configs:
     # -- Timeout to refresh application data as well as target manifests cache
     timeout.hard.reconciliation: 0s
 
-    # Dex configuration
-    # dex.config: |
-    #   connectors:
-    #     # GitHub example
-    #     - type: github
-    #       id: github
-    #       name: GitHub
-    #       config:
-    #         clientID: aabbccddeeff00112233
-    #         clientSecret: $dex.github.clientSecret # Alternatively $<some_K8S_secret>:dex.github.clientSecret
-    #         orgs:
-    #         - name: your-github-org
-
     # OIDC configuration as an alternative to dex (optional).
     # to source a secret from somewhere else:
     # https://argo-cd.readthedocs.io/en/stable/operator-manual/user-management/#example_1
@@ -157,13 +128,6 @@ configs:
     # -- Create the argocd-cmd-params-cm configmap
     # If false, it is expected the configmap will be created by something else.
     create: true
-
-    # -- Annotations to be added to the argocd-cmd-params-cm ConfigMap
-    annotations: {}
-
-    ## Generic parameters
-    # -- Open-Telemetry collector address: (e.g. "otel-collector:4317")
-    otlp.address: ''
 
     ## Controller Properties
     # -- Number of application status processors
@@ -315,18 +279,8 @@ configs:
      background: linear-gradient(to bottom, #999, #777, #333, #222, #111);
    }
 
-# -- Array of extra K8s manifests to deploy
-## Note: Supports use of custom Helm templates
-
 ## Application controller
 controller:
-  # -- Application controller name string
-  name: application-controller
-
-  # -- The number of application controller pods to run.
-  # Additional replicas will cause sharding of managed clusters across number of replicas.
-  replicas: 1
-
   ## Application controller Pod Disruption Budget
   ## Ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
   pdb:
@@ -342,18 +296,6 @@ controller:
     # -- Number of pods that are unavailable after eviction as number or percentage (eg.: 50%).
     ## Has higher precedence over `controller.pdb.minAvailable`
     maxUnavailable: ""
-
-  serviceAccount:
-    # -- Create a service account for the application controller
-    create: true
-    # -- Service account name
-    name: argocd-application-controller
-    # -- Annotations applied to created service account
-    annotations: {}
-    # -- Labels applied to created service account
-    labels: {}
-    # -- Automount API credentials for the Service Account
-    automountServiceAccountToken: true
 
   ## Application controller metrics configuration
   metrics:
@@ -418,50 +360,11 @@ dex:
 redis:
   # -- Enable redis
   enabled: true
-  # -- Redis name
-  name: redis
-
-  ## Redis Pod Disruption Budget
-  ## Ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
-  pdb:
-    # -- Deploy a [PodDisruptionBudget] for the Redis
-    enabled: false
-    # -- Labels to be added to Redis pdb
-    labels: {}
-    # -- Annotations to be added to Redis pdb
-    annotations: {}
-    # -- Number of pods that are available after eviction as number or percentage (eg.: 50%)
-    # @default -- `""` (defaults to 0 if not specified)
-    minAvailable: ""
-    # -- Number of pods that are unavailble after eviction as number or percentage (eg.: 50%).
-    ## Has higher precedence over `redis.pdb.minAvailable`
-    maxUnavailable: ""
-
-  ## Redis image
-  image:
-    # -- Redis repository
-    repository: public.ecr.aws/docker/library/redis
-    # -- Redis tag
-    tag: 7.0.12-alpine
-    # -- Redis image pull policy
-    # @default -- `""` (defaults to global.image.imagePullPolicy)
-    imagePullPolicy: ""
 
   ## Prometheus redis-exporter sidecar
   exporter:
     # -- Enable Prometheus redis-exporter sidecar
     enabled: false
-    # -- Environment variables to pass to the Redis exporter
-    env: []
-    ## Prometheus redis-exporter image
-    image:
-      # -- Repository to use for the redis-exporter
-      repository: public.ecr.aws/bitnami/redis-exporter
-      # -- Tag to use for the redis-exporter
-      tag: 1.52.0
-      # -- Image pull policy for the redis-exporter
-      # @default -- `""` (defaults to global.image.imagePullPolicy)
-      imagePullPolicy: ""
 
     # -- Redis exporter security context
     # @default -- See [values.yaml]
@@ -484,21 +387,6 @@ redis:
       #   cpu: 10m
       #   memory: 32Mi
 
-  # -- Redis pod-level security context
-  # @default -- See [values.yaml]
-  securityContext:
-    runAsNonRoot: true
-    runAsUser: 999
-    seccompProfile:
-      type: RuntimeDefault
-
-  # -- Redis container-level security context
-  # @default -- See [values.yaml]
-  containerSecurityContext:
-    allowPrivilegeEscalation: false
-    capabilities:
-      drop:
-        - ALL
 
   # -- [Node selector]
   # @default -- `{}` (defaults to global.nodeSelector)
@@ -580,12 +468,6 @@ redis:
 
 ## Server
 server:
-  # -- Argo CD server name
-  name: server
-
-  # -- The number of server pods to run
-  replicas: 1
-
   ## Argo CD server Horizontal Pod Autoscaler
   autoscaling:
     # -- Enable Horizontal Pod Autoscaler ([HPA]) for the Argo CD server
@@ -653,37 +535,6 @@ server:
   extensions:
     # -- Enable support for Argo UI extensions
     enabled: false
-
-    ## Argo UI extensions image
-    image:
-      # -- Repository to use for extensions image
-      repository: "ghcr.io/argoproj-labs/argocd-extensions"
-      # -- Tag to use for extensions image
-      tag: "v0.2.1"
-      # -- Image pull policy for extensions
-      # @default -- `""` (defaults to global.image.imagePullPolicy)
-      imagePullPolicy: ""
-
-    # -- Server UI extensions container-level security context
-    # @default -- See [values.yaml]
-    containerSecurityContext:
-      runAsNonRoot: true
-      readOnlyRootFilesystem: true
-      allowPrivilegeEscalation: false
-      seccompProfile:
-        type: RuntimeDefault
-      capabilities:
-        drop:
-          - ALL
-
-    # -- Resource limits and requests for the argocd-extensions container
-    resources: {}
-    #  limits:
-    #    cpu: 50m
-    #    memory: 128Mi
-    #  requests:
-    #    cpu: 10m
-    #    memory: 64Mi
 
   # -- Additional containers to be added to the server pod
   ## Note: Supports use of custom Helm templates
@@ -780,32 +631,6 @@ server:
       drop:
         - ALL
 
-  ## Readiness and liveness probes for default backend
-  ## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
-  readinessProbe:
-    # -- Minimum consecutive failures for the [probe] to be considered failed after having succeeded
-    failureThreshold: 3
-    # -- Number of seconds after the container has started before [probe] is initiated
-    initialDelaySeconds: 10
-    # -- How often (in seconds) to perform the [probe]
-    periodSeconds: 10
-    # -- Minimum consecutive successes for the [probe] to be considered successful after having failed
-    successThreshold: 1
-    # -- Number of seconds after which the [probe] times out
-    timeoutSeconds: 1
-
-  livenessProbe:
-    # -- Minimum consecutive failures for the [probe] to be considered failed after having succeeded
-    failureThreshold: 3
-    # -- Number of seconds after the container has started before [probe] is initiated
-    initialDelaySeconds: 10
-    # -- How often (in seconds) to perform the [probe]
-    periodSeconds: 10
-    # -- Minimum consecutive successes for the [probe] to be considered successful after having failed
-    successThreshold: 1
-    # -- Number of seconds after which the [probe] times out
-    timeoutSeconds: 1
-
   # -- Priority class for the Argo CD server pods
   # @default -- `""` (defaults to global.priorityClassName)
   priorityClassName: ""
@@ -872,18 +697,6 @@ server:
       # -- Prometheus ServiceMonitor annotations
       annotations: {}
 
-  serviceAccount:
-    # -- Create server service account
-    create: true
-    # -- Server service account name
-    name: argocd-server
-    # -- Annotations applied to created service account
-    annotations: {}
-    # -- Labels applied to created service account
-    labels: {}
-    # -- Automount API credentials for the Service Account
-    automountServiceAccountToken: true
-
   ingress:
     # -- Enable an ingress resource for the Argo CD server
     enabled: true
@@ -897,7 +710,7 @@ server:
     # -- Additional ingress labels
     labels: {}
     # -- Defines which ingress controller will implement the resource
-    ingressClassName: ""
+    # ingressClassName: "nginx"
 
     # -- List of ingress hosts
     ## Argo Ingress.
@@ -935,18 +748,6 @@ server:
     # -- Defines which ingress controller will implement the resource [gRPC-ingress]
     ingressClassName: ""
 
-    awsALB:
-      # -- Service type for the AWS ALB gRPC service
-      ## Service Type if isAWSALB is set to true
-      ## Can be of type NodePort or ClusterIP depending on which mode you are
-      ## are running. Instance mode needs type NodePort, IP mode needs type
-      ## ClusterIP
-      ## Ref: https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.2/how-it-works/#ingress-traffic
-      serviceType: NodePort
-      # -- Backend protocol version for the AWS ALB gRPC service
-      ## This tells AWS to send traffic from the ALB using HTTP2. Can use gRPC as well if you want to leverage gRPC specific features
-      backendProtocolVersion: HTTP2
-
     # -- List of ingress hosts for dedicated [gRPC-ingress]
     ## Argo Ingress.
     ## Hostnames must be provided if Ingress is enabled.
@@ -983,9 +784,6 @@ server:
 repoServer:
   # -- Repo server name
   name: repo-server
-
-  # -- The number of repo server pods to run
-  replicas: 1
 
   ## Repo server Horizontal Pod Autoscaler
   autoscaling:
@@ -1209,20 +1007,6 @@ repoServer:
     # -- List of custom rules for the Repo server's Cluster Role resource
     rules: []
 
-  ## Repo server service account
-  ## If create is set to true, make sure to uncomment the name and update the rbac section below
-  serviceAccount:
-    # -- Create repo server service account
-    create: true
-    # -- Repo server service account name
-    name: "" # "argocd-repo-server"
-    # -- Annotations applied to created service account
-    annotations: {}
-    # -- Labels applied to created service account
-    labels: {}
-    # -- Automount API credentials for the Service Account
-    automountServiceAccountToken: true
-
   # -- Repo server rbac rules
   rbac: []
   #   - apiGroups:
@@ -1238,12 +1022,6 @@ repoServer:
 applicationSet:
   # -- Enable ApplicationSet controller
   enabled: true
-
-  # -- ApplicationSet controller name string
-  name: applicationset-controller
-
-  # -- The number of ApplicationSet controller pods to run
-  replicaCount: 1
 
   ## ApplicationSet controller Pod Disruption Budget
   ## Ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
@@ -1332,40 +1110,6 @@ applicationSet:
       # -- Prometheus ServiceMonitor annotations
       annotations: {}
 
-  ## ApplicationSet service configuration
-  service:
-    # -- ApplicationSet service annotations
-    annotations: {}
-    # -- ApplicationSet service labels
-    labels: {}
-    # -- ApplicationSet service type
-    type: ClusterIP
-    # -- ApplicationSet service port
-    port: 7000
-    # -- ApplicationSet service port name
-    portName: webhook
-
-  serviceAccount:
-    # -- Create ApplicationSet controller service account
-    create: true
-    # -- ApplicationSet controller service account name
-    name: argocd-applicationset-controller
-    # -- Annotations applied to created service account
-    annotations: {}
-    # -- Labels applied to created service account
-    labels: {}
-    # -- Automount API credentials for the Service Account
-    automountServiceAccountToken: true
-
-  # -- Annotations to be added to ApplicationSet controller Deployment
-  deploymentAnnotations: {}
-
-  # -- Annotations for the ApplicationSet controller pods
-  podAnnotations: {}
-
-  # -- Labels for the ApplicationSet controller pods
-  podLabels: {}
-
   # -- Resource limits and requests for the ApplicationSet controller pods.
   resources: {}
     # limits:
@@ -1374,62 +1118,6 @@ applicationSet:
     # requests:
     #   cpu: 100m
     #   memory: 128Mi
-
-  # ApplicationSet controller container ports
-  containerPorts:
-    # -- Metrics container port
-    metrics: 8080
-    # -- Probe container port
-    probe: 8081
-    # -- Webhook container port
-    webhook: 7000
-
-  # -- [DNS configuration]
-  dnsConfig: {}
-  # -- Alternative DNS policy for ApplicationSet controller pods
-  dnsPolicy: "ClusterFirst"
-
-  # -- ApplicationSet controller container-level security context
-  # @default -- See [values.yaml]
-  containerSecurityContext:
-    runAsNonRoot: true
-    readOnlyRootFilesystem: true
-    allowPrivilegeEscalation: false
-    seccompProfile:
-      type: RuntimeDefault
-    capabilities:
-      drop:
-        - ALL
-
-  ## Probes for ApplicationSet controller (optional)
-  ## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
-  readinessProbe:
-    # -- Enable Kubernetes liveness probe for ApplicationSet controller
-    enabled: false
-    # -- Number of seconds after the container has started before [probe] is initiated
-    initialDelaySeconds: 10
-    # -- How often (in seconds) to perform the [probe]
-    periodSeconds: 10
-    # -- Number of seconds after which the [probe] times out
-    timeoutSeconds: 1
-    # -- Minimum consecutive successes for the [probe] to be considered successful after having failed
-    successThreshold: 1
-    # -- Minimum consecutive failures for the [probe] to be considered failed after having succeeded
-    failureThreshold: 3
-
-  livenessProbe:
-    # -- Enable Kubernetes liveness probe for ApplicationSet controller
-    enabled: false
-    # -- Number of seconds after the container has started before [probe] is initiated
-    initialDelaySeconds: 10
-    # -- How often (in seconds) to perform the [probe]
-    periodSeconds: 10
-    # -- Number of seconds after which the [probe] times out
-    timeoutSeconds: 1
-    # -- Minimum consecutive successes for the [probe] to be considered successful after having failed
-    successThreshold: 1
-    # -- Minimum consecutive failures for the [probe] to be considered failed after having succeeded
-    failureThreshold: 3
 
   # -- [Node selector]
   # @default -- `{}` (defaults to global.nodeSelector)
@@ -1451,13 +1139,6 @@ applicationSet:
     # - maxSkew: 1
     #   topologyKey: topology.kubernetes.io/zone
     #   whenUnsatisfiable: DoNotSchedule
-
-  # -- Deployment strategy to be added to the ApplicationSet controller Deployment
-  deploymentStrategy: {}
-    # type: RollingUpdate
-    # rollingUpdate:
-    #   maxSurge: 25%
-    #   maxUnavailable: 25%
 
   # -- Priority class for the ApplicationSet controller pods
   # @default -- `""` (defaults to global.priorityClassName)
@@ -1743,18 +1424,6 @@ notifications:
   # -- Priority class for the notifications controller pods
   # @default -- `""` (defaults to global.priorityClassName)
   priorityClassName: ""
-
-  serviceAccount:
-    # -- Create notifications controller service account
-    create: true
-    # -- Notification controller service account name
-    name: argocd-notifications-controller
-    # -- Annotations applied to created service account
-    annotations: {}
-    # -- Labels applied to created service account
-    labels: {}
-    # -- Automount API credentials for the Service Account
-    automountServiceAccountToken: true
 
   cm:
     # -- Whether helm chart creates notifications controller config map
