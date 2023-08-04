@@ -30,20 +30,14 @@ spec:
 
 ref on extenral secrets labels: https://github.com/external-secrets/external-secrets/issues/2041
 
-## Argo CD Vault Plugin
-We're currently demoing the [Argo CD Vault plugin](https://argocd-vault-plugin.readthedocs.io) with the [Kubernetes Secret backend](https://argocd-vault-plugin.readthedocs.io/en/stable/backends/#kubernetes-secret). We're using the suggested manifests [here](https://github.com/argoproj-labs/argocd-vault-plugin/tree/main/manifests/cmp-sidecar) to deploy the plugin as a side car.
+## Argo CD Plugin Generator
+This is a beta feature that we're enabling so we can pull stuff from external secrets.
 
-To get started with this, before deploying this directory, you'll need the [example](./example/hostname_secret.yaml) set your hostname and applied before you start using Argo CD:
+To enable the feature, you'll need to patch this ApplicationSet CRD:
 
-```yaml
-kind: Secret
-apiVersion: v1
-metadata:
-  name: hostname-replacer-secret
-type: Opaque
-data:
-  # NOTE: this hostname key is base64 encoded
-  hostname: dmxlZXJtdWlzLnRlY2g=
+```bash
+wget https://raw.githubusercontent.com/argoproj/argo-cd/master/manifests/crds/applicationset-crd.yaml
+kubectl apply -f applicationset-crd.yaml
 ```
 
 
