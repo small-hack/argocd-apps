@@ -46,14 +46,14 @@ class Plugin(BaseHTTPRequestHandler):
                 log.info(f"Argument recieved: {argument}")
 
             # for now, just get the vouch hostname
-            VOUCH_HOSTNAME = environ.get("VOUCH_HOSTNAME")
+            vouch_hostname = environ.get("VOUCH_HOSTNAME")
 
             # reply with just the vouch hostname
             self.reply({
                 "output": {
                     "parameters": [
                         {
-                            "VOUCH_HOSTNAME": VOUCH_HOSTNAME,
+                            "vouch_hostname": vouch_hostname,
                         }
                     ]
                 }
