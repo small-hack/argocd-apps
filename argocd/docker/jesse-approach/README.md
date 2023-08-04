@@ -1,14 +1,9 @@
 # testing
-Create a fake token:
-```bash
-echo "hufdklasbvuipab495r3fahj" > token
-```
-
-Run the image with an env var for vouch, port mappings, and the token volume:
+Run the image with an env vars for vouch/http token and port mappings:
 
 ```bash
 docker run -e "VOUCH_HOSTNAME=vouch" \
-           -v ./token:/var/run/argo/token \
+           -e "TOKEN=hufdklasbvuipab495r3fahj" \
            -p 4355:4355 \
            jessebot/argocd-env-var-generator-plugin:0.0.1
 ```
@@ -29,5 +24,5 @@ curl http://localhost:4355/api/v1/getparams.execute -H "Authorization: Bearer hu
 and it should return:
 
 ```json
-"output": {"parameters": [{"VOUCH_HOSTNAME": "vouch"}]}}
+"output": {"parameters": [{"vouch_hostname": "vouch"}]}}
 ```
