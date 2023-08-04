@@ -9,4 +9,4 @@ RUN apt-get update && \
 
 COPY python_plugin.py /python_plugin.py
 
-ENTRYPOINT [ "python", "/python_plugin.py" ]
+ENTRYPOINT ["python", "/python_plugin.py"]
