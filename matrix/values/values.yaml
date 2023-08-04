@@ -551,7 +551,7 @@ element:
     # -- registry and repository to use for element docker image
     repository: "vectorim/element-web"
     # -- tag to use for element docker image
-    tag: v1.11.37
+    tag: v1.11.38
     # -- pullPolicy to use for element image, set to Always if using latest tag
     pullPolicy: IfNotPresent
   service:
