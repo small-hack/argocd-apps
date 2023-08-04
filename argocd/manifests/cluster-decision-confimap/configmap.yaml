@@ -4,6 +4,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: decision-configmap
+  namespace: argocd
 data:
   # apiVersion of the target resource
   apiVersion: v1
