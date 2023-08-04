@@ -18,16 +18,15 @@ spec:
     spec:
       containers:
         - name: argocd-generator-plugin
-          image: jessebot/argocd-env-var-generator-plugin:0.0.2
+          image: jessebot/argocd-env-var-generator-plugin:0.1.0
           ports:
             - containerPort: 4355
+          env:
+            - name: TOKEN
+              valueFrom:
+                secretRef:
+                  name: argocd-env-var-generator-plugin
+                  key: token
           envFrom:
             - secretRef:
                 name: argocd-hostname-vars
-          volumeMounts:
-            - name: token
-              mountPath: /var/run/argo/token
-      volumes:
-        - name: token
-          secret:
-            secretName: arogocd-generator-plugin-token
