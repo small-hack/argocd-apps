@@ -3,6 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: argocd-generator-plugin
+  namespace: argocd
   labels:
     app: argocd-generator-plugin
 spec:
