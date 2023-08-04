@@ -5,11 +5,8 @@ metadata:
 spec:
   generators:
     - plugin:
-        # Specify the configMap where the plugin configuration is located.
         configMapRef:
           name: argocd-generator-plugin-cm
-        # You can pass arbitrary parameters to the plugin. `input.parameters` is a map, but values may be any type.
-        # These parameters will also be available on the generator's output under the `generator.input.parameters` key.
         input:
           parameters:
             key1: "value1"
