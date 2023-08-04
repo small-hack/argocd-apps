@@ -1,8 +1,0 @@
-apiVersion: v1
-data:
-  AVP_TYPE: kubernetessecret
-kind: Secret
-metadata:
-  name: vault-configuration
-  namespace: argocd
-type: Opaque
