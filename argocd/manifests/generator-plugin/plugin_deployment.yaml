@@ -20,3 +20,9 @@ spec:
           image: jessebot/argocd-env-var-generator-plugin:0.0.2
           ports:
             - containerPort: 4355
+          envFrom:
+            - secretRef:
+                name: hostnames-config
+          volumeMounts:
+            - name: token
+              mountPath: /var/run/argo/token
