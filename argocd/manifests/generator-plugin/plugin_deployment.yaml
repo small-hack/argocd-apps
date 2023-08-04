@@ -25,7 +25,7 @@ spec:
             - name: TOKEN
               valueFrom:
                 secretKeyRef:
-                  name: argocd-env-var-generator-plugin
+                  name: arogocd-generator-plugin-token
                   key: token
           envFrom:
             - secretRef:
