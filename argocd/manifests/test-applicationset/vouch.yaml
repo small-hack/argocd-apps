@@ -3,6 +3,8 @@ kind: ApplicationSet
 metadata:
   name: vouch
 spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
   generators:
   - plugin:
       configMapRef:
