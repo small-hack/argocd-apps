@@ -1,0 +1,22 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: argocd-generator-plugin
+  labels:
+    app: argocd-generator-plugin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: argocd-generator-plugin
+  template:
+    metadata:
+      labels:
+        app: argocd-generator-plugin
+    spec:
+      containers:
+        - name: argocd-generator-plugin
+          image: jessebot/argocd-env-var-generator-plugin:0.0.1
+          ports:
+            - containerPort: 4355
