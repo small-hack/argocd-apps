@@ -3,8 +3,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from os import environ
 import logging as log
 
-with open("/var/run/argo/token") as f:
-    plugin_token = f.read().strip()
+PLUGIN_TOKEN = environ.get("TOKEN")
 
 
 class Plugin(BaseHTTPRequestHandler):
@@ -35,7 +34,7 @@ class Plugin(BaseHTTPRequestHandler):
         self.end_headers()
 
     def do_POST(self):
-        if self.headers.get("Authorization") != "Bearer " + plugin_token:
+        if self.headers.get("Authorization") != "Bearer " + PLUGIN_TOKEN:
             self.forbidden()
 
         if self.path == '/api/v1/getparams.execute':
