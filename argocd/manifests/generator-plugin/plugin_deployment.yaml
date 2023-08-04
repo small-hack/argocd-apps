@@ -22,7 +22,7 @@ spec:
             - containerPort: 4355
           envFrom:
             - secretRef:
-                name: hostnames-config
+                name: argocd-hostnames-vars
           volumeMounts:
             - name: token
               mountPath: /var/run/argo/token
