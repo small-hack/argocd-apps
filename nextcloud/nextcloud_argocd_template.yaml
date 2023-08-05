@@ -65,16 +65,20 @@ spec:
   goTemplateOptions: ["missingkey=error"]
   # generator allows us to source specific values from an external configmap
   generators:
-    - clusterDecisionResource:
-        configMapRef: decision-configmap
-        name: nextcloud-hostname
+    - plugin:
+        configMapRef:
+          name: env-var-plugin-generator
+        input:
+          parameters:
+            env_vars: ["ARGOCD_ENV_VAR_PLUGIN_NEXTCLOUD_HOSTNAME"]
+       
   template:
     metadata:
       name: nextcloud-web-app
     spec:
       project: nextcloud
       destination:
-        server: "{{.clusterName}}"
+        server: https://kubernetes.default.svc
         namespace: nextcloud
       # for multiple sources after one of the following is addressed:
       # https://github.com/argoproj/applicationset/issues/632
@@ -132,13 +136,13 @@ spec:
             tls:
               - secretName: nextcloud-tls
                 hosts:
-                  - {{.nextcloudHostname}}
+                  - {{.ARGOCD_ENV_VAR_PLUGIN_NEXTCLOUD_HOSTNAME}}
             labels: {}
             path: /
             pathType: Prefix
 
           nextcloud:
-            host: {{.nextcloudHostname}}
+            host: {{.ARGOCD_ENV_VAR_PLUGIN_NEXTCLOUD_HOSTNAME}}
             ## Use an existing secret
             existingSecret:
               enabled: true
@@ -152,11 +156,11 @@ spec:
             # If web server is not binding default port, you can define it
             # containerPort: 8080
             mail:
-              enabled: true
+              enabled: false
               fromAddress: cloud
-              domain: <path:argocd-hostname-replacer-secret#nextcloud-hostname>
+              domain: {{.ARGOCD_ENV_VAR_PLUGIN_NEXTCLOUD_HOSTNAME}}
               smtp:
-                host: <path:argocd-hostname-replacer-secret#nextcloud-mail-hostname>
+                host: {{.ARGOCD_ENV_VAR_PLUGIN_NEXTCLOUD_HOSTNAME}}
                 secure: ssl
                 port: 465
                 authtype: LOGIN
@@ -294,10 +298,6 @@ spec:
             # cause issues with how nextcloud background jobs are executed
             schedule: "*/5 * * * *"
             annotations: {}
-            # Set curl's insecure option if you use e.g. self-signed certificates
-            curlInsecure: false
-            failedJobsHistoryLimit: 5
-            successfulJobsHistoryLimit: 2
 
             # Allow configuration of lifecycle hooks
             # kubernetes.io/docs/tasks/configure-pod-container/attach-handler-lifecycle-event/
