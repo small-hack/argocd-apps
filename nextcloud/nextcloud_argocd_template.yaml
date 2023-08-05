@@ -63,7 +63,7 @@ spec:
   generators:
     - list:
       elements:
-        - ARGOCD_ENV_VAR_PLUGIN_NEXTCLOUD_HOSTNAME: cloud.vleermuis.tech
+        - nextcloudHostname: cloud.vleermuis.tech
   template:
     metadata:
       name: nextcloud-web-app
@@ -104,9 +104,9 @@ spec:
               tls:
                 - secretName: nextcloud-tls
                   hosts:
-                    - "{{ARGOCD_ENV_VAR_PLUGIN_NEXTCLOUD_HOSTNAME}}"
+                    - "{{nextcloudHostname}}"
             nextcloud:
-              host: "{{ARGOCD_ENV_VAR_PLUGIN_NEXTCLOUD_HOSTNAME}}"
+              host: "{{nextcloudHostname}}"
               existingSecret:
                 enabled: true
                 secretName: nextcloud-admin-credentials
