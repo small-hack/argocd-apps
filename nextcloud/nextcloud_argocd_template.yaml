@@ -62,8 +62,8 @@ spec:
   # generator allows us to source specific values from an external configmap
   generators:
     - list:
-      elements:
-        - nextcloudHostname: cloud.social-media-for-dogs.com
+        elements:
+          - nextcloudHostname: cloud.social-media-for-dogs.com
   template:
     metadata:
       name: nextcloud-web-app
