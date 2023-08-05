@@ -136,13 +136,13 @@ spec:
               tls:
                 - secretName: nextcloud-tls
                   hosts:
-                    - {{.ARGOCD_ENV_VAR_PLUGIN_NEXTCLOUD_HOSTNAME}}
+                    - "{{.ARGOCD_ENV_VAR_PLUGIN_NEXTCLOUD_HOSTNAME}}"
               labels: {}
               path: /
               pathType: Prefix
 
             nextcloud:
-              host: {{.ARGOCD_ENV_VAR_PLUGIN_NEXTCLOUD_HOSTNAME}}
+              host: "{{.ARGOCD_ENV_VAR_PLUGIN_NEXTCLOUD_HOSTNAME}}"
               ## Use an existing secret
               existingSecret:
                 enabled: true
@@ -157,13 +157,6 @@ spec:
               # containerPort: 8080
               mail:
                 enabled: false
-                fromAddress: cloud
-                domain: {{.ARGOCD_ENV_VAR_PLUGIN_NEXTCLOUD_HOSTNAME}}
-                smtp:
-                  host: {{.ARGOCD_ENV_VAR_PLUGIN_NEXTCLOUD_HOSTNAME}}
-                  secure: ssl
-                  port: 465
-                  authtype: LOGIN
               configs:
                 # log levels: 0 = Debug, 1 = Info, 2 = Warning, 3 = Error, and 4 = Fatal
                 logging.config.php: |-
