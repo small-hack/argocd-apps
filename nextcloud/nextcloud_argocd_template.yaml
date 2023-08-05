@@ -110,9 +110,9 @@ spec:
               tls:
                 - secretName: nextcloud-tls
                   hosts:
-                    - "{{.ARGOCD_ENV_VAR_PLUGIN_NEXTCLOUD_HOSTNAME}}"
+                    - {{.ARGOCD_ENV_VAR_PLUGIN_NEXTCLOUD_HOSTNAME}}
             nextcloud:
-              host: "{{.ARGOCD_ENV_VAR_PLUGIN_NEXTCLOUD_HOSTNAME}}"
+              host: {{.ARGOCD_ENV_VAR_PLUGIN_NEXTCLOUD_HOSTNAME}}
               existingSecret:
                 enabled: true
                 secretName: nextcloud-admin-credentials
