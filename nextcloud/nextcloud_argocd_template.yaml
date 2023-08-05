@@ -251,12 +251,10 @@ spec:
               minPods: 1
               maxPods: 10
             metrics:
-              enabled: true
+              enabled: false
               https: true
               token: "enabled"
               timeout: 10s
-              image:
-                tag: 0.6.0
               podLabels:
                 jobLabel: nextcloud-metrics
               service:
