@@ -63,7 +63,7 @@ spec:
   generators:
     - list:
         elements:
-          - nextcloudHostname: cloud.vleermuis.tech
+          - nextcloudHostname: test.coolwebsite.com
   template:
     metadata:
       name: nextcloud-web-app
@@ -84,7 +84,7 @@ spec:
               annotations:
                 nginx.ingress.kubernetes.io/proxy-body-size: 10G
                 kubernetes.io/tls-acme: "true"
-                cert-manager.io/cluster-issuer: letsencrypt-prod
+                cert-manager.io/cluster-issuer: letsencrypt-staging
                 nginx.ingress.kubernetes.io/enable-cors: "false"
                 nginx.ingress.kubernetes.io/cors-allow-headers: "X-Forwarded-For"
                 nginx.ingress.kubernetes.io/server-snippet: |-
