@@ -61,12 +61,9 @@ metadata:
 spec:
   # generator allows us to source specific values from an external configmap
   generators:
-    - plugin:
-        configMapRef:
-          name: env-var-plugin-generator
-        input:
-          parameters:
-            env_vars: ["ARGOCD_ENV_VAR_PLUGIN_NEXTCLOUD_HOSTNAME"]
+    - list:
+      elements:
+        - ARGOCD_ENV_VAR_PLUGIN_NEXTCLOUD_HOSTNAME: cloud.social-media-for-dogs.com
   template:
     metadata:
       name: nextcloud-web-app
