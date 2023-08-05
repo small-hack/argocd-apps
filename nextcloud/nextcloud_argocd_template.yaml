@@ -62,8 +62,8 @@ spec:
   # generator allows us to source specific values from an external configmap
   generators:
     - list:
-      elements:
-        - nextcloudHostname: cloud.vleermuis.tech
+        elements:
+          - nextcloudHostname: cloud.vleermuis.tech
   template:
     metadata:
       name: nextcloud-web-app
