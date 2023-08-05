@@ -77,7 +77,7 @@ spec:
         targetRevision: 3.5.20
         chart: nextcloud
         helm:
-          valuesObject:
+          values: |
             ingress:
               enabled: true
               className: nginx
