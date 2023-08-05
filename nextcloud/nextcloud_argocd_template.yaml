@@ -59,9 +59,8 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "2"
 spec:
-  # this lets you use go templates like with helm templates
+  # lets you use go templates like with helm templates
   goTemplate: true
-  # not sure what this does
   goTemplateOptions: ["missingkey=error"]
   # generator allows us to source specific values from an external configmap
   generators:
@@ -79,25 +78,6 @@ spec:
       destination:
         server: https://kubernetes.default.svc
         namespace: nextcloud
-      # for multiple sources after one of the following is addressed:
-      # https://github.com/argoproj/applicationset/issues/632
-      # https://github.com/argoproj/argo-cd#11213
-      # https://github.com/argoproj/argo-cd#9583
-      # lets you use a values.yaml file from another a personal repo,
-      # without having to host a whole helm chart in that repo
-      #
-      # sources:
-      #   # official nextcloud repo
-      #   - repoURL: 'https://nextcloud.github.io/helm'
-      #     targetRevision: 3.5.20
-      #     chart: nextcloud
-      #     helm:
-      #       valueFiles:
-      #         - $values/nextcloud/values/values.yaml
-      #   # our custom values.yaml
-      #   - repoURL: 'https://github.com/small-hack/argocd-apps.git'
-      #     targetRevision: main
-      #     ref: values
       source:
         repoURL: 'https://nextcloud.github.io/helm'
         targetRevision: 3.5.20
@@ -127,23 +107,12 @@ spec:
                   location = /.well-known/caldav {
                     return 301 $scheme://$host/remote.php/dav/;
                   }
-
-                # location = /robots.txt {
-                #   allow all;
-                #   log_not_found off;
-                #   access_log off;
-                # }
               tls:
                 - secretName: nextcloud-tls
                   hosts:
                     - "{{.ARGOCD_ENV_VAR_PLUGIN_NEXTCLOUD_HOSTNAME}}"
-              labels: {}
-              path: /
-              pathType: Prefix
-
             nextcloud:
               host: "{{.ARGOCD_ENV_VAR_PLUGIN_NEXTCLOUD_HOSTNAME}}"
-              ## Use an existing secret
               existingSecret:
                 enabled: true
                 secretName: nextcloud-admin-credentials
@@ -153,12 +122,9 @@ spec:
                 smtpUsernameKey: smtpUsername
                 smtpPasswordKey: smtpPassword
               update: 1
-              # If web server is not binding default port, you can define it
-              # containerPort: 8080
               mail:
                 enabled: false
               configs:
-                # log levels: 0 = Debug, 1 = Info, 2 = Warning, 3 = Error, and 4 = Fatal
                 logging.config.php: |-
                   <?php
                   $CONFIG = array (
@@ -185,7 +151,6 @@ spec:
                       'OC\Preview\PDF'
                     ),
                   );
-                # adding your local ip might help on an instance on your home network
                 proxy.config.php: |-
                   <?php
                   $CONFIG = array (
@@ -195,49 +160,21 @@ spec:
                     ),
                     'forwarded_for_headers' => array('HTTP_X_FORWARDED_FOR'),
                   );
-
-              securityContext: {}
-              #   runAsUser: "33"
-              #   runAsGroup: "33"
-              #   runAsNonRoot: true
-              #   readOnlyRootFilesystem: true
-
-              podSecurityContext: {}
-              #   runAsUser: "33"
-              #   runAsGroup: "33"
-              #   runAsNonRoot: true
-              #   readOnlyRootFilesystem: true
-
             nginx:
               enabled: true
-              resources: {}
-              securityContext: {}
-              #   runAsUser: "82"
-              #   runAsGroup: "33"
-              #   runAsNonRoot: true
-              #   readOnlyRootFilesystem: true
-
-            ## ----------- DATABASE STUFF ------------- ##
             internalDatabase:
               enabled: false
-
-            ## External database configuration
             externalDatabase:
               enabled: true
-              ## Supported database engines: mysql or postgresql
               type: postgresql
               host: localhost:5432
               user: nextcloud
               database: nextcloud
-              ## Use a existing secret
               existingSecret:
                 enabled: true
                 secretName: nextcloud-pgsql-credentials
                 usernameKey: username
                 passwordKey: nextcloudPassword
-
-            ## PostgreSQL chart configuration
-            ## https://github.com/bitnami/charts/tree/master/bitnami/postgresql
             postgresql:
               enabled: true
               global:
@@ -267,11 +204,7 @@ spec:
                       GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO nextcloud;
                 persistence:
                   enabled: true
-                  # Use an existing Persistent Volume Claim (must be created ahead of time)
                   existingClaim: "nextcloud-postgresql"
-                  # storageClass: ""
-
-            # Redis chart configuration
             redis:
               enabled: false
               replica:
@@ -280,54 +213,19 @@ spec:
                 enabled: true
                 existingSecret: nextcloud-redis-credentials
                 existingSecretPasswordKey: redis_password
-
-            # Cronjob to execute Nextcloud background tasks
             cronjob:
               enabled: true
-              # Nexcloud image is used as default but only curl is needed
-              image: {}
-              # Every 5 minutes
-              # Note: Setting this to any any other value than 5 minutes might
-              # cause issues with how nextcloud background jobs are executed
-              schedule: "*/5 * * * *"
-              annotations: {}
-
-              # Allow configuration of lifecycle hooks
-              # kubernetes.io/docs/tasks/configure-pod-container/attach-handler-lifecycle-event/
-              lifecycle: {}
-              securityContext: {}
-              #   runAsUser: "33"
-              #   runAsGroup: "33"
-              #   runAsNonRoot: true
-              #   readOnlyRootFilesystem: true
-
             service:
               type: ClusterIP
               port: 8080
               loadBalancerIP: nil
               nodePort: nil
-
-            ## Enable persistence using Persistent Volume Claims
-            ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
             persistence:
-              # Nextcloud Data (/var/www/html)
               enabled: true
               existingClaim: nextcloud-files
-              # Use an additional pvc for the data dir rather than a subpath of the default
-              # Useful to store data on a different storageClass (e.g. on slower disks)
               nextcloudData:
                 enabled: false
                 subPath:
-                # existingClaim:
-
-            resources: {}
-            # limits:
-            #  cpu: 100m
-            #  memory: 128Mi
-            # requests:
-            #  cpu: 100m
-            #  memory: 128Mi
-
             livenessProbe:
               enabled: false
               initialDelaySeconds: 45
@@ -349,45 +247,26 @@ spec:
               timeoutSeconds: 5
               failureThreshold: 30
               successThreshold: 1
-
-
-            # https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/
             hpa:
               enabled: false
               cputhreshold: 60
               minPods: 1
               maxPods: 10
-
-            nodeSelector: {}
-
-            tolerations: []
-
-            affinity: {}
-
-            ## Prometheus Exporter / Metrics
             metrics:
               enabled: true
               https: true
-              # Use API token if set, otherwise fall back to password authentication
-              # https://github.com/xperimental/nextcloud-exporter#token-authentication
-              # Currently you still need to set the token manually in your nextcloud install
               token: "enabled"
               timeout: 10s
-
               image:
                 tag: 0.6.0
-
               podLabels:
                 jobLabel: nextcloud-metrics
-
               service:
                 annotations:
                   prometheus.io/scrape: "true"
                   prometheus.io/port: "9205"
                 labels:
                   jobLabel: nextcloud-metrics
-
-              ## Prometheus Operator ServiceMonitor configuration
               serviceMonitor:
                 enabled: true
                 namespace: "nextcloud"
