@@ -59,9 +59,6 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "2"
 spec:
-  # lets you use go templates like with helm templates
-  goTemplate: true
-  goTemplateOptions: ["missingkey=error"]
   # generator allows us to source specific values from an external configmap
   generators:
     - plugin:
@@ -110,9 +107,9 @@ spec:
               tls:
                 - secretName: nextcloud-tls
                   hosts:
-                    - {{.ARGOCD_ENV_VAR_PLUGIN_NEXTCLOUD_HOSTNAME}}
+                    - "{{ARGOCD_ENV_VAR_PLUGIN_NEXTCLOUD_HOSTNAME}}"
             nextcloud:
-              host: {{.ARGOCD_ENV_VAR_PLUGIN_NEXTCLOUD_HOSTNAME}}
+              host: "{{ARGOCD_ENV_VAR_PLUGIN_NEXTCLOUD_HOSTNAME}}"
               existingSecret:
                 enabled: true
                 secretName: nextcloud-admin-credentials
