@@ -61,9 +61,13 @@ metadata:
 spec:
   # generator allows us to source specific values from an external configmap
   generators:
-    - list:
-        elements:
-          - nextcloudHostname: test.coolwebsite.com
+    - plugin:
+        configMapRef:
+          name: env-var-plugin-generator
+        input:
+          parameters:
+            env_vars: ["ARGOCD_ENV_VAR_PLUGIN_NEXTCLOUD_HOSTNAME"]
+
   template:
     metadata:
       name: nextcloud-web-app
@@ -104,9 +108,9 @@ spec:
               tls:
                 - secretName: nextcloud-tls
                   hosts:
-                    - "{{nextcloudHostname}}"
+                    - "{{ARGOCD_ENV_VAR_PLUGIN_NEXTCLOUD_HOSTNAME}}"
             nextcloud:
-              host: "{{nextcloudHostname}}"
+              host: "{{ARGOCD_ENV_VAR_PLUGIN_NEXTCLOUD_HOSTNAME}}"
               existingSecret:
                 enabled: true
                 secretName: nextcloud-admin-credentials
