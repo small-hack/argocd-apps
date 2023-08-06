@@ -12,7 +12,7 @@ spec:
     server: "https://kubernetes.default.svc"
   source:
     repoURL: https://github.com/small-hack/argocd-apps.git
-    path: external-secrets-operator/bitwarden-external-secrets/deployment/
+    path: external-secrets-operator/bitwarden-provider/deployment/
   syncPolicy:
     syncOptions:
       - Replace=true
