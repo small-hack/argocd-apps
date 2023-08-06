@@ -6,19 +6,25 @@ If you're interested in contributing, checkout our guidelines [here](./CONTRIBUT
 ## All Apps
 
 * [Auth and Identity Management](#auth-and-identity-management)
+    * [🚧 Under construction](#-under-construction)
 * [Database](#database)
-* [Virtual Machines](#virtual-machines)
+* [Ingress](#ingress)
 * [File Storage and Backups](#file-storage-and-backups)
+    * [🚧 Under construction](#-under-construction-2)
 * [Monitoring](#monitoring)
-* [Security](#security-tools)
+* [Security Tools](#security-tools)
+    * [🚧 Under construction](#-under-construction-3)
 * [Social Media and chat](#social-media-and-chat)
+* [Virtual Machines](#virtual-machines)
+    * [🚧 Under construction](#-under-construction-1)
+
 
 ### Auth and Identity Management
 
 |              App             | Description                                                                                                                                                                                                                                                                                                                                       |
 |:----------------------------:|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 |    [keycloak](./keycloak)    | helm chart for [Keycloak](https://www.keycloak.org/), an Identity Access Management tool with built in OpenIDConnect for authenticating to self hosted apps                                                                                                                                                                                       |
-| [vouch-proxy](./vouch-proxy) | helm chart for [Vouch](https://github.com/vouch/vouch-proxy), an OAuth2 proxy that allows you to use ingress-nginx annotations to connect to a third party identity provider, giving you proper auth on websites that don't have auth. Currently works with the keycloak provider in this template, but also known to work with google and github |
+| [vouch-proxy](./ingress/vouch-proxy) | helm chart for [Vouch](https://github.com/vouch/vouch-proxy), an OAuth2 proxy that allows you to use ingress-nginx annotations to connect to a third party identity provider, giving you proper auth on websites that don't have auth. Currently works with the keycloak provider in this template, but also known to work with google and github |
 
 #### 🚧 Under construction
 |               App              | Description                                                                              |
@@ -33,16 +39,14 @@ If you're interested in contributing, checkout our guidelines [here](./CONTRIBUT
 | [postgres-operator](./postgres/operator) | PostgreSQL database management tool to spin up additional postgres instances, collect metrics, and create backups |
 | [postgres](./postgres/bitnami)           | Just a bitnami PostgreSQL database helm chart on k8s, in case you need that for something                         |
 
-### Virtual Machines
 
-| App                    | Description                                                                             |
-|:-----------------------|:----------------------------------------------------------------------------------------|
-| [kubevirt](./kubevirt) | [KubeVirt](https://kubevirt.io/) is a virtual machine management add-on for Kubernetes. |
+### Ingress
 
-#### 🚧 Under construction
-|                      App                     | Description                                                                       |
-|:--------------------------------------------:|:----------------------------------------------------------------------------------|
-| [Nvidia GPU Operator](./nvidia/gpu-operator) | The GPU Operator allows administrators of Kubernetes clusters to manage GPU nodes |
+|                    App                   | Description                                                                                                                                                                                                                                                                                                                                       |
+|:----------------------------------------:|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|  [cert-manager](./ingress/cert-manager)  | helm chart for [cert-manager](https://cert-manager.io), for providing TLS certificates based on nginx ingress annotations                                                                                                                                                                                                                         |
+| [ingress-nginx](./ingress/ingress-nginx) | helm chart for [ingress-nginx](https://github.com/kubernetes/ingress-nginx), an nginx ingress controller to allow external traffic to the cluster                                                                                                                                                                                                 |
+|   [vouch-proxy](./ingress/vouch-proxy)   | helm chart for [Vouch](https://github.com/vouch/vouch-proxy), an OAuth2 proxy that allows you to use ingress-nginx annotations to connect to a third party identity provider, giving you proper auth on websites that don't have auth. Currently works with the keycloak provider in this template, but also known to work with google and github |
 
 
 ### File Storage and Backups
@@ -51,6 +55,7 @@ If you're interested in contributing, checkout our guidelines [here](./CONTRIBUT
 |:-------------------------|:-----------------------------------------------------------------------------------------------------------------------------|
 | [k8up](./k8up)           | [K8up](https://k8up.io/k8up/2.7/index.html) is a k8s native backups done via restic, so you can sync your persistent volumes to external s3 compliant storage                 |
 | [nextcloud](./nextcloud) | [Nextcloud](https://nextcloud.com/) is a self hosted file storage cloud solution. Replaces something like google drive/photos/notes/meets/calendar - mostly stable    |
+
 
 #### 🚧 Under construction
 |           App          | Description                                                                                                                                  |
@@ -63,9 +68,10 @@ If you're interested in contributing, checkout our guidelines [here](./CONTRIBUT
 
 | App                                              | Description                                                                                                                                                                         |
 |:-------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [kube-prometheus-stack](./kube-prometheus-stack) | [prometheus](https://prometheus.io/docs/introduction/overview/), alertmanager, [grafana](https://grafana.com) for collecting metrics for monitoring/alerting, and dashboards/charts |
-| [loki-stack](./loki-stack)                       | [loki](https://grafana.com/oss/loki/) and [promtail](https://grafana.com/docs/loki/latest/clients/promtail/) for collecting logs in prometheus                                      |
-| [prometheus-push-gateway](./prometheus-push-gateway)  | Installs the [Prometheus Push Gateway](https://prometheus.io/docs/instrumenting/pushing/) which enables pushing metrics from jobs that would be difficult or impossible to scrape |
+| [kube-prometheus-stack](./monitoring/kube-prometheus-stack) | [prometheus](https://prometheus.io/docs/introduction/overview/), alertmanager, [grafana](https://grafana.com) for collecting metrics for monitoring/alerting, and dashboards/charts |
+| [loki-stack](./monitoring/loki-stack)                       | [loki](https://grafana.com/oss/loki/) and [promtail](https://grafana.com/docs/loki/latest/clients/promtail/) for collecting logs in prometheus                                      |
+| [prometheus-push-gateway](./monitoring/prometheus-push-gateway)  | Installs the [Prometheus Push Gateway](https://prometheus.io/docs/instrumenting/pushing/) which enables pushing metrics from jobs that would be difficult or impossible to scrape |
+
 
 ### Security Tools
 
@@ -77,8 +83,8 @@ If you're interested in contributing, checkout our guidelines [here](./CONTRIBUT
 #### 🚧 Under construction
 |               App               | Description                                                                |
 |:-------------------------------:|:---------------------------------------------------------------------------|
-| [wireguard](./wg-access-server) | A helm chart for wg-access-server which uses Wireguard®️ for a VPN          |
-|     [headscale](./headscale)    | VPN, 🏗️ there isn't an official helm chart, so we're still working on this |
+| [wireguard](./alpha/wg-access-server) | A helm chart for wg-access-server which uses Wireguard®️ for a VPN          |
+|     [headscale](./alpha/headscale)    | VPN, 🏗️ there isn't an official helm chart, so we're still working on this |
 
 
 ### Social Media and chat
@@ -88,6 +94,20 @@ If you're interested in contributing, checkout our guidelines [here](./CONTRIBUT
 | [coturn](./coturn)     | TURN/STUN server for connecting VoIP peers                               |   
 | [mastodon](./mastodon) | Selfhosted social media site, includes [postgresql](https://github.com/bitnami/charts/tree/main/bitnami/postgresql), [elastic search] (for full text searching), and [redis](https://github.com/bitnami/charts/tree/main/bitnami/redis) (in memory caching) - mostly stable |
 | [matrix](./matrix)     | Selfhosted chat server that plugs into a bunch of other chat apps                                |        
+
+
+### Virtual Machines
+
+| App                    | Description                                                                             |
+|:-----------------------|:----------------------------------------------------------------------------------------|
+| [kubevirt](./kubevirt) | [KubeVirt](https://kubevirt.io/) is a virtual machine management add-on for Kubernetes. |
+
+#### 🚧 Under construction
+|                      App                     | Description                                                                       |
+|:--------------------------------------------:|:----------------------------------------------------------------------------------|
+| [Nvidia GPU Operator](./nvidia/gpu-operator) | The GPU Operator allows administrators of Kubernetes clusters to manage GPU nodes |
+
+
 
 ## Troubleshooting Tips
 

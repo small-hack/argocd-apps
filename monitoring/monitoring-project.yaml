@@ -29,3 +29,4 @@ spec:
   sourceRepos:
     - https://prometheus-community.github.io/helm-charts
     - https://github.com/small-hack/argocd-apps.git
+    - https://github.com/grafana/helm-charts
