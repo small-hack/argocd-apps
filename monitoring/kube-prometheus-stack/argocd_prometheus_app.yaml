@@ -47,7 +47,7 @@ spec:
       helm:
         # skipCrds: true
         valueFiles:
-        - $values/kube-prometheus-stack/values/values.yaml
+        - $values/monitoring/kube-prometheus-stack/values/values.yaml
     # our values.yaml file locally
     - repoURL: 'https://github.com/small-hack/argocd-apps.git'
       targetRevision: main
