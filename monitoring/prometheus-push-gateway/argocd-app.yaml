@@ -19,7 +19,7 @@ spec:
       helm:
         # skipCrds: true
         valueFiles:
-        - $values/prometheus-push-gateway/values/values.yaml
+        - $values/monitoring/prometheus-push-gateway/values/values.yaml
     # our values.yaml file locally
     - repoURL: 'https://github.com/small-hack/argocd-apps.git'
       targetRevision: main
