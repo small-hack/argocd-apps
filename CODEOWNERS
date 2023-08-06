@@ -19,10 +19,11 @@ loki-sack @cloudymax
 longhorn @cloudymax
 mastodon @jessebot
 matrix @jessebot
+monitoring @cloudymax
 netmaker @jessebot
 oauth2-proxy @jessebot
 postgres @cloudymax
 README.md @jessebot @cloudymax
 renovate.json @jessebot
 test-app @cloudymax @jessebot
-wg-access-server @jessebot @cloudymax
+alpha/wg-access-server @jessebot @cloudymax
