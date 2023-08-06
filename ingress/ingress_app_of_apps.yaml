@@ -1,0 +1,76 @@
+
+# this is ingress-nginx - our ingress controller for allowing external traffic to the cluster
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ingress-nginx
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  project: ingress
+  source:
+    repoURL: 'https://github.com/small-hack/argocd-apps'
+    targetRevision: main
+    path: ingress/ingress-nginx/
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: ingress
+  syncPolicy:
+    syncOptions:
+      - Replace=true
+    automated:
+      prune: true
+      selfHeal: true
+
+# this is for cert-manager - our TLS certificate manager for securing HTTPS
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cert-manager
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  project: ingress
+  source:
+    repoURL: 'https://github.com/small-hack/argocd-apps'
+    targetRevision: main
+    path: ingress/cert-manager/
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: ingress
+  syncPolicy:
+    syncOptions:
+      - Replace=true
+    automated:
+      prune: true
+      selfHeal: true
+
+# this is for vouch - our oauth2 redirection provider to secure insecure apps
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: vouch
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  project: ingress
+  source:
+    repoURL: 'https://github.com/small-hack/argocd-apps'
+    targetRevision: main
+    path: ingress/vouch/
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: ingress
+  syncPolicy:
+    syncOptions:
+      - Replace=true
+    automated:
+      prune: true
+      selfHeal: true
+
