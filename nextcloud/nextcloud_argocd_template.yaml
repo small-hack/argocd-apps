@@ -66,8 +66,7 @@ spec:
           name: env-var-plugin-generator
         input:
           parameters:
-            env_vars: ["ARGOCD_ENV_VAR_PLUGIN_NEXTCLOUD_HOSTNAME"]
-
+            secret_vars: ["nextcloud_hostname"]
   template:
     metadata:
       name: nextcloud-web-app
