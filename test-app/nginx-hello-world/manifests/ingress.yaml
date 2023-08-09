@@ -11,10 +11,10 @@ metadata:
 spec:
   tls:
     - hosts:
-      - plarts.vleermuis.tech
+      - {{ .testing_hostname }}
       secretName: "letsencrypt-prod"
   rules:
-  - host: plarts.vleermuis.tech
+  - host: {{ .testing_hostname }}
     http:
       paths:
       - path: /
