@@ -22,32 +22,6 @@
 #       - ApplyOutOfSyncOnly=true
 #     automated:
 #       selfHeal: true
-# 
-# ---
-# # First sync wave because we need secrets for kyverno, so it has to be
-# # before kyverno so it has secrets for all its credentials.
-# # In a private repo right now while we figure out a custom argocd plugin
-# apiVersion: argoproj.io/v1alpha1
-# kind: Application
-# metadata:
-#   name: kyverno-external-secrets
-#   namespace: argocd
-#   annotations:
-#     argocd.argoproj.io/sync-wave: "1"
-# spec:
-#   project: default
-#   destination:
-#     server: "https://kubernetes.default.svc"
-#     namespace: kyverno
-#   source:
-#     repoURL: https://github.com/small-hack/vleermuis-external-secrets.git
-#     path: external_secrets/kyverno/
-#   syncPolicy:
-#     syncOptions:
-#       - Replace=true
-#     automated:
-#       prune: true
-#       selfHeal: true
 
 ---
 # webapp is deployed 2nd because we need secrets and persistent volumes up 1st
@@ -57,7 +31,7 @@ metadata:
   name: kyverno-minimal-web-app
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "2"
+    argocd.argoproj.io/sync-wave: "1"
 spec:
   project: default
   destination:
