@@ -22,6 +22,5 @@ spec:
   orphanedResources: {}
   sourceRepos:
     - registry-1.docker.io
-    - https://github.com/small-hack/vleermuis-external-secrets.git
     - https://github.com/small-hack/argocd-apps.git
     - https://github.com/jessebot/mastodon-helm-chart.git
