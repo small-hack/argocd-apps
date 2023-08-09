@@ -11,10 +11,10 @@ metadata:
 spec:
   tls:
     - hosts:
-      - plarts.social-media-for-dogs.com
+      - {{ .testing_hostname }}
       secretName: "letsencrypt-prod"
   rules:
-  - host: plarts.social-media-for-dogs.com
+  - host: {{ .testing_hostname }}
     http:
       paths:
       - path: /
