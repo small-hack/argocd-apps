@@ -1,0 +1,25 @@
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: wg-private-key
+spec:
+  target:
+    # Name for the secret to be created on the cluster
+    name: wg-private-key
+    deletionPolicy: Delete
+    template:
+      type: Opaque
+      data:
+        privateKey: |-
+          {{ .privateKey }}
+  data:
+    # privateKey
+    - secretKey: privateKey
+      sourceRef:
+        storeRef:
+          name: bitwarden-login
+          kind: ClusterSecretStore
+      remoteRef:
+        key: wireguard-private-key-eso
+        property: password
