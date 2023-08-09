@@ -1,6 +1,10 @@
 # External Secrets Operator
 
-External Secrets Operator is a Kubernetes operator that integrates external secret management systems like AWS Secrets Manager, HashiCorp Vault, Google Secrets Manager, Azure Key Vault, IBM Cloud Secrets Manager, and many more. 
+The [External Secrets Operator](https://github.com/vouch) (ESO) is a Kubernetes operator that integrates external secret management systems like AWS Secrets Manager, HashiCorp Vault, Google Secrets Manager, Azure Key Vault, IBM Cloud Secrets Manager, and many more.
 The operator reads information from external APIs and automatically injects the values into a Kubernetes Secret.
 
-See: https://external-secrets.io/latest/
+This app of apps deploys both ESO and the [Bitwarden ESO Provider](https://github.com/jessebot/bitwarden-eso-provider/) so that you can use Bitwarden as your remote secret store.
+
+## Sync waves
+1. ESO
+2. Bitwarden ESO provider (depends on ESO)
