@@ -11,8 +11,9 @@ spec:
     namespace: longhorn-system
     server: 'https://kubernetes.default.svc'
   source:
-    path: external_secrets/longhorn/
-    repoURL: 'https://github.com/small-hack/vleermuis-external-secrets.git'
+    # NOTE: THIS DOES NOT EXIST YET
+    path: longhorn/external_secrets/
+    repoURL: 'https://github.com/small-hack/argocd-apps.git'
     targetRevision: main
   project: longhorn
   syncPolicy:
