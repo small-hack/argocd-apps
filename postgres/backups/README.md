@@ -4,7 +4,7 @@
 
 ## Create a Postgres Database
  
- 1. Use the postgres operator to create a database via the [Web UI](https://pgops.vleermuis.tech/#/list), or [manifest](examples/operator-database.yaml).
+ 1. Use the postgres operator to create a database via the Web UI (typically something like https://pgops.example.com/#/list), or [manifest](examples/operator-database.yaml).
  
  2. Add an annotation for k8up to the database's PVC:
 
