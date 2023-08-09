@@ -26,42 +26,48 @@ spec:
 
 ---
 apiVersion: argoproj.io/v1alpha1
-kind: Application
+kind: ApplicationSet
 metadata:
-  name: vouch
+  name: vouch-app-set
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "2"
 spec:
-  project: default
-  source:
-    repoURL: 'https://vouch.github.io/helm-charts/'
-    targetRevision: 3.2.0
-    chart: vouch
-    helm:
-      values: |
-        image:
-          tag: 0.39.0
-        existingSecretName: vouch-existing-secret
-        ingress:
-          enabled: true
-          annotations:
-            kubernetes.io/ingress.class: nginx
-            cert-manager.io/cluster-issuer: letsencrypt-prod
-          paths:
-            - /
-          hosts:
-            - vouch.vleermuis.tech
-          tls:
-            - secretName: vouch-tls
+  # generator allows us to source specific values from an external k8s secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars: ["vouch_hostname"]
+  template:
+    metadata:
+      name: vouch
+    spec:
+      project: ingress
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: ingress
+      source:
+        repoURL: 'https://vouch.github.io/helm-charts/'
+        targetRevision: 3.2.0
+        chart: vouch
+        helm:
+          values: |
+            image:
+              tag: 0.39.0
+            existingSecretName: vouch-existing-secret
+            ingress:
+              enabled: true
+              annotations:
+                kubernetes.io/ingress.class: nginx
+                cert-manager.io/cluster-issuer: letsencrypt-prod
+              paths:
+                - /
               hosts:
-                - vouch.vleermuis.tech
-  destination:
-    server: "https://kubernetes.default.svc"
-    namespace: vouch
-  syncPolicy:
-    syncOptions:
-      - CreateNamespace=true
-    automated:
-      prune: true
-      selfHeal: true
+                - {{ .vouch_hostname }}
+              tls:
+                - secretName: vouch-tls
+                  hosts:
+                    - {{ .vouch_hostname }}
