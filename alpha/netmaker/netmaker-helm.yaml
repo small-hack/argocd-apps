@@ -41,7 +41,7 @@ spec:
     namespace: netmaker
   source:
     repoURL: https://github.com/small-hack/vleermuis-external-secrets.git
-    path: external_secrets/netmaker/
+    path: netmaker/manifests/external_secrets/
   syncPolicy:
     syncOptions:
       - Replace=true
