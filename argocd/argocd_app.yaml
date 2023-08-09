@@ -43,6 +43,12 @@ spec:
     repoURL: https://jessebot.github.io/argocd-appset-secret-plugin
     chart: argocd-appset-secret-plugin
     targetRevision: 0.2.0
+    helm:
+      releaseName: argocd-appset-secret-plugin
+      values: |
+        bitwarden_eso_provider:
+          auth:
+            existingSecret: "appset-secret-vars"
   syncPolicy:
     syncOptions:
       - Replace=true
