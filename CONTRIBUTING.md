@@ -21,8 +21,6 @@
 ## Future Goals
 Beyond just ensuring everything meets basic reliability and security needs, we also hope to:
 
-- Figure out a way to have variables for these templates! Right now your best bet for reuse is to clone this repo, and search and replace "vleermuis.tech" and "enby.city" with whatever your domain is. That's combersome and makes merging in changes kinda gross. We need to figure out if there's an Argo CD friendly way to have some sort of evironment variables. <-- we're working on this with applicationSets right now.
-
 - Create ArgoCD project configs/roles declaritively, as right now we manually create the projects and roles <--- this has been started
 
 - create pre-commit hooks <-- we need a good official json schema <-- we should submit ours, when it's done, to the argoCD repo!
