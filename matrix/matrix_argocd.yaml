@@ -40,8 +40,8 @@ spec:
     server: "https://kubernetes.default.svc"
     namespace: matrix
   source:
-    repoURL: https://github.com/small-hack/vleermuis-external-secrets.git
-    path: external_secrets/matrix/
+    repoURL: https://github.com/small-hack/argocd-apps.git
+    path: matrix/manifests/external_secrets/
   syncPolicy:
     syncOptions:
       - Replace=true
