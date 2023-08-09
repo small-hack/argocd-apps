@@ -12,21 +12,21 @@ prometheus:
     ingressClassName: nginx
     annotations:
       cert-manager.io/cluster-issuer: "letsencrypt-prod"
-      nginx.ingress.kubernetes.io/auth-signin: "https://***REMOVED***/login?url=$scheme://$http_host$request_uri&vouch-failcount=$auth_resp_failcount&X-Vouch-Token=$auth_resp_jwt&error=$auth_resp_err"
-      nginx.ingress.kubernetes.io/auth-url: https://***REMOVED***/validate
+      nginx.ingress.kubernetes.io/auth-signin: "https://{{ .vouch_hostname }}/login?url=$scheme://$http_host$request_uri&vouch-failcount=$auth_resp_failcount&X-Vouch-Token=$auth_resp_jwt&error=$auth_resp_err"
+      nginx.ingress.kubernetes.io/auth-url: https://{{ .vouch_hostname }}/validate
       nginx.ingress.kubernetes.io/auth-response-headers: X-Vouch-User
       nginx.ingress.kubernetes.io/auth-snippet: |
         auth_request_set $auth_resp_jwt $upstream_http_x_vouch_jwt;
         auth_request_set $auth_resp_err $upstream_http_x_vouch_err;
         auth_request_set $auth_resp_failcount $upstream_http_x_vouch_failcount;    
     hosts:
-      - prometheus.social-media-for-dogs.com
+      - prometheus.{{ .monitoring_hostname }}
     paths: 
       - /
     tls:
       - secretName: prometheus-tls
         hosts:
-        - prometheus.social-media-for-dogs.com
+        - prometheus.{{ .monitoring_hostname }}
   prometheusSpec:
     serviceMonitorSelectorNilUsesHelmValues: false
     additionalScrapeConfigsSecret:
@@ -65,27 +65,27 @@ alertmanager:
     ingressClassName: nginx
     annotations:
       cert-manager.io/cluster-issuer: "letsencrypt-prod"
-      nginx.ingress.kubernetes.io/auth-signin: "https://***REMOVED***/login?url=$scheme://$http_host$request_uri&vouch-failcount=$auth_resp_failcount&X-Vouch-Token=$auth_resp_jwt&error=$auth_resp_err"
-      nginx.ingress.kubernetes.io/auth-url: https://***REMOVED***/validate
+      nginx.ingress.kubernetes.io/auth-signin: "https://{{ .vouch_hostname }}/login?url=$scheme://$http_host$request_uri&vouch-failcount=$auth_resp_failcount&X-Vouch-Token=$auth_resp_jwt&error=$auth_resp_err"
+      nginx.ingress.kubernetes.io/auth-url: https://{{ .vouch_hostname }}/validate
       nginx.ingress.kubernetes.io/auth-response-headers: X-Vouch-User
       nginx.ingress.kubernetes.io/auth-snippet: |
         auth_request_set $auth_resp_jwt $upstream_http_x_vouch_jwt;
         auth_request_set $auth_resp_err $upstream_http_x_vouch_err;
         auth_request_set $auth_resp_failcount $upstream_http_x_vouch_failcount;
     hosts:
-      - alertmanager.social-media-for-dogs.com
+      - alertmanager.{{ .monitoring_hostname }}
     paths: 
       - /
     tls:
       - secretName: alertmanager-tls
         hosts:
-        - alertmanager.social-media-for-dogs.com
+        - alertmanager.{{ .monitoring_hostname }}
 
 grafana:
   grafana.ini:
     auth:
       disable_login_form: false
-      signout_redirect_url: "https://grafana.vleermui.tech/login/signout"
+      signout_redirect_url: "https://grafana.{{ .monitoring_hostname }}/login/signout"
     auth.proxy:
       enabled: true
       header_name: X-Vouch-User
@@ -100,8 +100,8 @@ grafana:
     ingressClassName: nginx
     annotations:
       cert-manager.io/cluster-issuer: "letsencrypt-prod"
-      nginx.ingress.kubernetes.io/auth-signin: "https://***REMOVED***/login?url=$scheme://$http_host$request_uri&vouch-failcount=$auth_resp_failcount&X-Vouch-Token=$auth_resp_jwt&error=$auth_resp_err"
-      nginx.ingress.kubernetes.io/auth-url: https://***REMOVED***/validate
+      nginx.ingress.kubernetes.io/auth-signin: "https://{{ .vouch_hostname }}/login?url=$scheme://$http_host$request_uri&vouch-failcount=$auth_resp_failcount&X-Vouch-Token=$auth_resp_jwt&error=$auth_resp_err"
+      nginx.ingress.kubernetes.io/auth-url: https://{{ .vouch_hostname }}/validate
       nginx.ingress.kubernetes.io/auth-response-headers: X-Vouch-User
       nginx.ingress.kubernetes.io/auth-snippet: |
         auth_request_set $auth_resp_jwt $upstream_http_x_vouch_jwt;
@@ -112,11 +112,11 @@ grafana:
         proxy_set_header X-User  $user;
         proxy_set_header X-Email $email;
     hosts:
-      - grafana.social-media-for-dogs.com
+      - grafana.{{ .monitoring_hostname }}
     tls:
       - secretName: grafana-tls
         hosts:
-        - grafana.social-media-for-dogs.com
+        - grafana.{{ .monitoring_hostname }}
 
 scrape_configs:
 - job_name: ingress
