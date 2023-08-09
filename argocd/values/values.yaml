@@ -9,9 +9,6 @@ createAggregateRoles: false
 
 ## Globally shared configuration
 global:
-  # temporary until the plugin generator feature is live in stable
-  image:
-    tag: "v2.8.0-rc7"
   # -- Common labels for the all resources
   additionalLabels:
     argocd.argoproj.io/instance: argocd-helm
