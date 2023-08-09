@@ -40,7 +40,7 @@ spec:
     server: "https://kubernetes.default.svc"
     namespace: netmaker
   source:
-    repoURL: https://github.com/small-hack/vleermuis-external-secrets.git
+    repoURL: https://github.com/small-hack/argocd-apps.git
     path: netmaker/manifests/external_secrets/
   syncPolicy:
     syncOptions:
