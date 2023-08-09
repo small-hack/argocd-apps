@@ -180,7 +180,7 @@ spec:
   generators:
     - plugin:
         configMapRef:
-          name: env-var-plugin-generator
+          name: secret-var-plugin-generator
         input:
           parameters:
             env_vars: ["mastodon_hostname"]
