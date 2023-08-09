@@ -87,11 +87,11 @@ ingress:
     cert-manager.io/cluster-issuer: letsencrypt-prod
   ingressClassName: "nginx"
   hosts:
-    - wg.vleermuis.tech
+    - {{ .wg_access_server_hostname }}
   tls:
     - secretName: wireguard-tls
       hosts:
-        - wg.vleermuis.tech
+        - {{ .wg_access_server_hostname }}
 
 extraVolumes: ""
 
