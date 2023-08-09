@@ -35,7 +35,7 @@ spec:
   goTemplate: true
   # not sure what this does
   goTemplateOptions: ["missingkey=error"]
-  # generator allows us to source specific values from an external configmap
+  # generator allows us to source specific values from an external k8s secret
   generators:
     - plugin:
         configMapRef:
