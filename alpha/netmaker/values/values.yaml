@@ -30,7 +30,7 @@ podAnnotations: {}
 podSecurityContext: {}
 # fsGroup: 2000
 
-baseDomain: wg.vleermuis.tech
+baseDomain: {{ .netmaker_hostname }}
 
 persistence:
   sharedData:
@@ -160,7 +160,7 @@ postgresql:
 
 oauth:
   enabled: false
-  frontendURL: dashboard.wg.vleermuis.tech
+  frontendURL: dashboard.{{ .netmaker_hostname }}
   existingSecret:
   secretKeys:
     clientID:

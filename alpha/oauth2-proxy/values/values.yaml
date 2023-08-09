@@ -157,7 +157,7 @@ ingress:
   #       port:
   #         name: use-annotation
   hosts:
-    - oauth2.vleermuis.tech
+    - {{ .oauth2_hostname }}
   labels: {}
   annotations:
     kubernetes.io/ingress.class: nginx
@@ -167,7 +167,7 @@ ingress:
     # Secrets must be manually created in the namespace.
     - secretName: oauth2-proxy-tls
       hosts:
-        - oauth2.vleermuis.tech
+        - {{ .oauth2_hostname }}
 
 resources: {}
   # limits:
