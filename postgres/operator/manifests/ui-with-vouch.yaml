@@ -1,55 +1,63 @@
+---
 # Helm Values:
 # https://github.com/zalando/postgres-operator/blob/master/charts/postgres-operator-ui/values.yaml
 apiVersion: argoproj.io/v1alpha1
-kind: Application
+kind: ApplicationSet
 metadata:
-  name: pgoperator-ui
+  name: postgres-operator-ui-app-set
+  namespace: argocd
 spec:
-  destination:
-    namespace: postgres-operator
-    server: 'https://kubernetes.default.svc'
-  source:
-    repoURL: >-
-      https://opensource.zalando.com/postgres-operator/charts/postgres-operator-ui
-    targetRevision: 1.10.0
-    chart: postgres-operator-ui
-    helm:
-      skipCrds: true
-      values: |
-        envs:
-          # IMPORTANT: While operator chart and UI chart are independent, this is the interface between
-          # UI and operator API. Insert the service name of the operator API here!
-          # appUrl: "http://localhost:8081"
-          # operatorApiUrl: "http://postgres-operator:8080"
-          # operatorClusterNameLabel: "cluster-name"
-          # resourcesVisible: "False"
-          # targetNamespace: "default"
-          teams:
-            - "team-friendship"
-        ingress:
-          enabled: true
-          ingressClassName: nginx
-          annotations:
-            cert-manager.io/cluster-issuer: "letsencrypt-prod"
-            kubernetes.io/tls-acme: "true"
-            nginx.ingress.kubernetes.io/auth-signin: "https://***REMOVED***/login?url=$scheme://$http_host$request_uri&vouch-failcount=$auth_resp_failcount&X-Vouch-Token=$auth_resp_jwt&error=$auth_resp_err"
-            nginx.ingress.kubernetes.io/auth-url: https://***REMOVED***/validate
-            nginx.ingress.kubernetes.io/auth-response-headers: X-Vouch-User
-            nginx.ingress.kubernetes.io/auth-snippet: |
-              auth_request_set $auth_resp_jwt $upstream_http_x_vouch_jwt;
-              auth_request_set $auth_resp_err $upstream_http_x_vouch_err;
-              auth_request_set $auth_resp_failcount $upstream_http_x_vouch_failcount;   
-          hosts:
-            - host: pgops.social-media-for-dogs.com
-              paths: ["/"]
-          tls:
-            - secretName: pg-operator-tls
+  # generator allows us to source specific values from an external k8s secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars: ["postgres-operator_hostname"]
+  template:
+    metadata:
+      name: postgres-operator-ui
+    spec:
+      project: postgres-operator
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: postgres-operator
+      source:
+        repoURL: >-
+          https://opensource.zalando.com/postgres-operator/charts/postgres-operator-ui
+        targetRevision: 1.10.0
+        chart: postgres-operator-ui
+        helm:
+          skipCrds: true
+          values: |
+            envs:
+              # IMPORTANT: While operator chart and UI chart are independent, this is the interface between
+              # UI and operator API. Insert the service name of the operator API here!
+              # appUrl: "http://localhost:8081"
+              # operatorApiUrl: "http://postgres-operator:8080"
+              # operatorClusterNameLabel: "cluster-name"
+              # resourcesVisible: "False"
+              # targetNamespace: "default"
+              teams:
+                - "team-friendship"
+            ingress:
+              enabled: true
+              ingressClassName: nginx
+              annotations:
+                cert-manager.io/cluster-issuer: "letsencrypt-prod"
+                kubernetes.io/tls-acme: "true"
+                nginx.ingress.kubernetes.io/auth-signin: "https://{{ .vouch_hostname }}/login?url=$scheme://$http_host$request_uri&vouch-failcount=$auth_resp_failcount&X-Vouch-Token=$auth_resp_jwt&error=$auth_resp_err"
+                nginx.ingress.kubernetes.io/auth-url: https://{{ .vouch_hostname }}/validate
+                nginx.ingress.kubernetes.io/auth-response-headers: X-Vouch-User
+                nginx.ingress.kubernetes.io/auth-snippet: |
+                  auth_request_set $auth_resp_jwt $upstream_http_x_vouch_jwt;
+                  auth_request_set $auth_resp_err $upstream_http_x_vouch_err;
+                  auth_request_set $auth_resp_failcount $upstream_http_x_vouch_failcount;   
               hosts:
-                - pgops.social-media-for-dogs.com
-  project: default
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-    syncOptions:
-      - CreateNamespace=true
+                - host: {{ .postgres-operatore_hostname }}
+                  paths: ["/"]
+              tls:
+                - secretName: pg-operator-tls
+                  hosts:
+                    - {{ .postgres-operatore_hostname }}
