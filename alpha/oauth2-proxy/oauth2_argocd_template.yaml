@@ -16,7 +16,7 @@ spec:
     namespace: oauth2-proxy
   source:
     repoURL: https://github.com/small-hack/argocd-apps.git
-    path: external_secrets/oauth2-proxy/
+    path: oauth2-proxy/external_secrets/
   syncPolicy:
     syncOptions:
       - Replace=true
