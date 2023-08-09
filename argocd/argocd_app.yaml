@@ -16,8 +16,8 @@ spec:
     server: "https://kubernetes.default.svc"
     namespace: argocd
   source:
-    repoURL: https://github.com/small-hack/vleermuis-external-secrets.git
-    path: external_secrets/argocd/
+    repoURL: https://github.com/small-hack/argocd-apps.git
+    path: argocd/manifests/external_secrets/
   syncPolicy:
     syncOptions:
       - Replace=true
