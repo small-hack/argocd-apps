@@ -58,5 +58,8 @@ syncPolicy:
 ```
 
 # setting up keycloak
+Checkout out the [README](./keycloak) in the keycloak directory relative this this one for more info on how to setup an ArgoCD client for Keycloak.
+
+This was put together from these older docs:
 - https://argo-cd.readthedocs.io/en/stable/operator-manual/user-management/keycloak/
 - https://argo-cd.readthedocs.io/en/stable/operator-manual/user-management/#example_1
