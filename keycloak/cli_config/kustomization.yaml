@@ -1,0 +1,5 @@
+configMapGenerator:
+  - name: keycloak-config
+    namespace: keycloak
+    files:
+      - config.json=config.json

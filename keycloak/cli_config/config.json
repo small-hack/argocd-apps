@@ -1,0 +1,42 @@
+{
+  "clients": [
+    {
+      "clientId": "realm-management",
+      "authorizationSettings": {
+        "allowRemoteResourceManagement": false,
+        "policyEnforcementMode": "ENFORCING",
+        "resources": [
+          {
+            "name": "idp.resource.1dcbfbe7-1cee-4d42-8c39-d8ed74b4cf22",
+            "type": "IdentityProvider",
+            "ownerManagedAccess": false,
+            "scopes": [
+              {
+                "name": "token-exchange"
+              }
+            ]
+          }
+        ],
+        "policies": [
+          {
+            "name": "token-exchange.permission.idp.1dcbfbe7-1cee-4d42-8c39-d8ed74b4cf22",
+            "type": "scope",
+            "logic": "POSITIVE",
+            "decisionStrategy": "UNANIMOUS",
+            "config": {
+              "resources": "[\"idp.resource.1dcbfbe7-1cee-4d42-8c39-d8ed74b4cf22\"]",
+              "scopes": "[\"token-exchange\"]"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "identityProviders": [
+    {
+      "alias": "my-identity-provider",
+      "providerId": "oidc",
+      "enabled": true
+    }
+  ]
+}
