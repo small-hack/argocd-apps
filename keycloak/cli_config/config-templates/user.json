@@ -1,0 +1,19 @@
+{
+  "username" : "example-user",
+  "enabled" : true,
+  "totp" : false,
+  "emailVerified" : true,
+  "firstName" : "example",
+  "lastName" : "user",
+  "email" : "example-user@example.com",
+  "disableableCredentialTypes" : [ ],
+  "requiredActions" : [ ],
+  "notBefore" : 0,
+  "access" : {
+    "manageGroupMembership" : true,
+    "view" : true,
+    "mapRoles" : true,
+    "impersonate" : true,
+    "manage" : true
+  }
+}
