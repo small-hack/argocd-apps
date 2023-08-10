@@ -20,3 +20,8 @@ keycloakConfigCli:
 ```
 
 Read more about the Bitnami helm chart's `keycloak-config-cli` params at [bitnami/keycloak/#keycloak-config-cli](https://github.com/bitnami/charts/tree/main/bitnami/keycloak/#keycloak-config-cli-parameters).
+
+Should we not be able to use the config.json with the keycloak-config-cli we can consider using the official Keycloak Admin CLI as documented here:
+https://www.keycloak.org/docs/latest/server_admin/index.html#client-operations
+
+good luck.
