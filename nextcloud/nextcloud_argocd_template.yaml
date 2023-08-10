@@ -40,8 +40,8 @@ spec:
     server: "https://kubernetes.default.svc"
     namespace: nextcloud
   source:
-    repoURL: https://github.com/small-hack/vleermuis-external-secrets.git
-    path: external_secrets/nextcloud/
+    repoURL: https://github.com/small-hack/argocd-apps.git
+    path: nextcloud/manifests/external_secrets/
   syncPolicy:
     syncOptions:
       - Replace=true
