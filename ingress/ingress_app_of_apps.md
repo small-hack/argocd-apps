@@ -25,7 +25,3 @@ spec:
       prune: true
       selfHeal: true
 ```
-
-## Sync Waves
-1. install ingress-nginx and cert-manager
-2. install vouch (depends on ingress and certs)
