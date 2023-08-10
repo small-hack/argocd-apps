@@ -25,3 +25,64 @@ Should we not be able to use the config.json with the keycloak-config-cli we can
 https://www.keycloak.org/docs/latest/server_admin/index.html#client-operations
 
 good luck.
+
+## CLI Usage
+
+```bash
+cd /opt/bitnami/keycloak
+
+export SERVER="http://localhost:8080/"
+export ADMIN_REALM="master"
+export ADMIN_USER="test"
+export ADMIN_PASSWORD="YOUR-PASSWORD-HERE"
+export NEW_REALM="example-realm"
+export NEW_CLIENT="example-client"
+export NEW_USER="user"
+export NEW_USER_PASSWORD="YOUR-PASSWORD-HERE"
+
+# Creae a new realm
+./bin/kcadm.sh create realms -s \
+  realm=$NEW_REALM \
+  -s enabled=true \
+  -o \
+  --no-config \
+  --server $SERVER \
+  --realm $ADMIN_REALM \
+  --user $ADMIN_USER \
+  --password $ADMIN_PASSWORD
+
+# create a new client
+kcadm.sh create clients -r $NEW_REALM \
+  -s clientId=$NEW_CLIENT \
+  -s enabled=true \
+  -o \
+  --no-config \
+  --server $SERVER \
+  --realm $ADMIN_REALM \
+  --user $ADMIN_USER \
+  --password $ADMIN_PASSWORD
+
+# create a new user
+kcadm.sh create users -r $NEW_REALM \
+  -s username=$NEW_USER \
+  -s enabled=true \
+  --no-config \
+  --server $SERVER \
+  --realm $ADMIN_REALM \
+  --user $ADMIN_USER \
+  --password $ADMIN_PASSWORD
+
+# set the user's password
+kcadm.sh set-password -r $NEW_REALM \
+  --username $NEW_USER \
+  --new-password $NEW_USER_PASSWORD \
+  --no-config \
+  --server $SERVER \
+  --realm $ADMIN_REALM \
+  --user $ADMIN_USER \
+  --password $ADMIN_PASSWORD
+
+```
+
+
+
