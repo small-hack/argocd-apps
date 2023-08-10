@@ -63,8 +63,8 @@ spec:
     server: "https://kubernetes.default.svc"
     namespace: mastodon
   source:
-    repoURL: https://github.com/small-hack/vleermuis-external-secrets.git
-    path: external_secrets/mastodon/
+    repoURL: https://github.com/small-hack/argocd-apps.git
+    path: mastodon/manifests/external_secrets/
   syncPolicy:
     syncOptions:
       - Replace=true
