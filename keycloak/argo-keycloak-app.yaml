@@ -36,8 +36,8 @@ spec:
     namespace: keycloak
     server: 'https://kubernetes.default.svc'
   source:
-    path: external_secrets/keycloak/
-    repoURL: 'https://github.com/small-hack/vleermuis-external-secrets.git'
+    path: keycloak/external_secrets/
+    repoURL: 'https://github.com/small-hack/argocd-apps.git'
   project: default
   syncPolicy:
     syncOptions:
