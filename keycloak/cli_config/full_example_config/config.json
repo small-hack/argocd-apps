@@ -1,7 +1,7 @@
 {
-  "id": "core",
-  "realm": "core",
-  "displayName": "core Realm",
+  "id": "moped",
+  "realm": "moped",
+  "displayName": "MOPED Realm",
   "authenticationFlows": [
     {
       "alias": "my docker auth",
@@ -117,16 +117,16 @@
       }
     ],
     "client": {
-      "core-client": [
+      "moped-client": [
         {
           "name": "my_client_role",
-          "description": "My core-client role",
+          "description": "My moped-client role",
           "composite": false,
           "clientRole": true
         },
         {
           "name": "my_second_client_role",
-          "description": "My second core-client role",
+          "description": "My second moped-client role",
           "composite": false,
           "clientRole": true
         }
@@ -152,7 +152,7 @@
         "my_realm_role"
       ],
       "clientRoles": {
-        "core-client": [
+        "moped-client": [
           "my_client_role"
         ]
       },
@@ -173,7 +173,7 @@
         "my_realm_role"
       ],
       "clientRoles": {
-        "core-client": [
+        "moped-client": [
           "my_client_role"
         ]
       },
@@ -187,17 +187,17 @@
   ],
   "clients": [
     {
-      "clientId": "auth-core-client",
-      "name": "auth-core-client",
-      "description": "Auth-core-Client",
+      "clientId": "auth-moped-client",
+      "name": "auth-moped-client",
+      "description": "Auth-Moped-Client",
       "enabled": true,
       "clientAuthenticatorType": "client-secret",
       "secret": "changed-special-client-secret",
       "redirectUris": [
-        "https://core-client.org/redirect"
+        "https://moped-client.org/redirect"
       ],
       "webOrigins": [
-        "https://core-client.org/webOrigin"
+        "https://moped-client.org/webOrigin"
       ],
       "protocolMappers": [
         {
@@ -399,9 +399,9 @@
       }
     },
     {
-      "clientId": "core-client",
-      "name": "core-client",
-      "description": "core-Client",
+      "clientId": "moped-client",
+      "name": "moped-client",
+      "description": "Moped-Client",
       "enabled": true,
       "clientAuthenticatorType": "client-secret",
       "secret": "my-special-client-secret",
@@ -838,7 +838,7 @@
         "my_realm_role"
       ],
       "clientRoles": {
-        "core-client": [
+        "moped-client": [
           "my_client_role"
         ]
       },
@@ -868,7 +868,7 @@
     {
       "name": "Group with client role",
       "clientRoles": {
-        "core-client": [
+        "moped-client": [
           "my_client_role"
         ]
       }
@@ -898,7 +898,7 @@
         {
           "name": "My SubGroup",
           "clientRoles": {
-            "core-client": [
+            "moped-client": [
               "my_second_client_role"
             ]
           }
