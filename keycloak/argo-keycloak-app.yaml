@@ -63,7 +63,7 @@ spec:
           name: secret-var-plugin-generator
         input:
           parameters:
-            secret_vars: ["keycloak_hostname"]
+            secret_vars: ["keycloak_hostname", "keycloak_realm"]
   template:
     metadata:
       name: keycloak-web-app
@@ -132,11 +132,9 @@ spec:
             ## @param args Override default container args (useful when using custom images)
             args: []
             ## @param extraEnvVars Extra environment variables to be set on Keycloak container
-            ## Example:
-            ## extraEnvVars:
-            ##   - name: FOO
-            ##     value: "bar"
-            extraEnvVars: []
+            extraEnvVars:
+              - name: KC_SPI_ADMIN_REALM
+              value: "{{ .keycloak_realm }}"
             ## @param extraEnvVarsCM Name of existing ConfigMap containing extra env vars
             extraEnvVarsCM: ""
             ## @param extraEnvVarsSecret Name of existing Secret containing extra env vars

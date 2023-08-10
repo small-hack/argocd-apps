@@ -74,7 +74,7 @@ spec:
           name: secret-var-plugin-generator
         input:
           parameters:
-            secret_vars: ["argocd_hostname", "keycloak_hostname"]
+            secret_vars: ["argocd_hostname", "keycloak_hostname", keycloak_realm]
   template:
     metadata:
       name: argocd-helm
@@ -203,7 +203,7 @@ spec:
                 # https://argo-cd.readthedocs.io/en/stable/operator-manual/user-management/#example_1
                 oidc.config: |
                   name: Keycloak
-                  issuer: https://{{ .keycloak_hostname }}/realms/master
+                  issuer: https://{{ .keycloak_hostname }}/realms/{{ .keycloak_realm }}
                   clientID: argocd
                   clientSecret: $argocd-keycloak:oidc.keycloak.clientSecret
                   requestedScopes: ["openid", "profile", "email", "groups"]
