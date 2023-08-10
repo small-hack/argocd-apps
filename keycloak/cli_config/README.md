@@ -26,6 +26,25 @@ https://www.keycloak.org/docs/latest/server_admin/index.html#client-operations
 
 good luck.
 
+## Default Realm Name
+
+- https://github.com/keycloak/keycloak/discussions/12594
+
+TLDR: you can pass an env-var to the keycloak container:
+
+```yaml
+...
+    spec:
+      containers:
+      - name: keycloak
+        image: quay.io/keycloak/keycloak
+        args: ["start-dev"]
+        env:
+        ...
+        - name: KC_SPI_ADMIN_REALM
+          value: "yourmasterrealmname"
+```
+
 ## CLI Usage
 
 ```bash
