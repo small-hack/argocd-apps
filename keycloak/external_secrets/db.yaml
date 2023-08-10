@@ -1,0 +1,46 @@
+---
+# secret for a nextcloud postgres DB
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: keycloak-postgres-credentials
+  namespace: keycloak
+spec:
+  target:
+    # Name of the kubernetes secret
+    name: keycloak-postgres-credentials
+    deletionPolicy: Delete
+    template:
+      type: Opaque
+      data:
+## @param postgresql.auth.postgresPassword Password for the "postgres" admin user. Ignored if `auth.existingSecret` with key `postgres-password` is provided
+      # Key-names within the keubernetes secret
+        password: |-
+          {{ .POSTGRES_USER_PASSWORD }}
+        postgres-password: |-
+          {{ .POSTGRES_ADMIN_PASSWORD }}
+
+  data:
+    # `secretKey` relates to the key name defined within the keubernetes secret
+    - secretKey: POSTGRES_USER_PASSWORD
+      sourceRef:
+        storeRef:
+          name: bitwarden-fields
+          kind: ClusterSecretStore
+      remoteRef:
+        # key-id of the bitwarden secret
+        key: keycloak-postgres-credentials
+        # property within the secret we want
+        property: POSTGRES_USER_PASSWORD
+
+    # `secretKey` relates to the key name defined within the keubernetes secret
+    - secretKey: POSTGRES_ADMIN_PASSWORD
+      sourceRef:
+        storeRef:
+          name: bitwarden-fields
+          kind: ClusterSecretStore
+      remoteRef:
+        # key-id of the bitwarden secret
+        key: keycloak-postgres-credentials
+        # property within the secret we want
+        property: POSTGRES_ADMIN_PASSWORD
