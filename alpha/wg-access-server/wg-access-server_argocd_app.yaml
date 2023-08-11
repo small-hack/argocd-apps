@@ -1,0 +1,84 @@
+---
+# First sync wave done in parallel with creating secrets. Must be BEFORE
+# wg-access-server so that wg-access-server persists it's data between upgrades
+# Sync policy is set to ApplyOutOfSyncOnly=true to create the volume initially
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: wg-access-server-persistence
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  project: default
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: wireguard
+  source:
+    repoURL: https://github.com/small-hack/argocd-apps.git
+    path: wg-access-server/manifests/persistence/
+  syncPolicy:
+    syncOptions:
+      - ApplyOutOfSyncOnly=true
+    automated:
+      selfHeal: true
+
+# First sync wave because we need secrets for wg-access-server, so it has to be
+# before wg-access-server so it has secrets for all its credentials.
+# In a private repo right now while we figure out a custom argocd plugin
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: wg-access-server-external-secrets
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  project: default
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: wireguard
+  source:
+    repoURL: https://github.com/small-hack/argocd-apps.git
+    path: wg-access-server/external_secrets/
+  syncPolicy:
+    syncOptions:
+      - Replace=true
+    automated:
+      prune: true
+      selfHeal: true
+
+---
+# webapp is deployed 2nd because we need secrets
+# chart: https://freifunkMUC.github.io/wg-access-server-chart/
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: wg-access-server-web-app
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  project: default
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: wireguard
+  sources:
+    # official wg-access-server helm repo
+    - repoURL: 'https://freifunkMUC.github.io/wg-access-server-chart/'
+      chart: wg-access-server
+      targetRevision: 0.12.0
+      helm:
+        valueFiles:
+          - $values/wg-access-server/values/values.yaml
+    # our values.yaml file locally
+    - repoURL: 'https://github.com/small-hack/argocd-apps.git'
+      targetRevision: main
+      ref: values
+  syncPolicy:
+    syncOptions:
+      - ApplyOutOfSyncOnly=true
+    automated:
+      prune: true
+      selfHeal: true

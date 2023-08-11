@@ -45,9 +45,9 @@ stringData:
       provider: oidc
       client_id: vouch
       client_secret: 8943hncds9aavy89hn39ncdsa89y79vh79as 
-      auth_url: https://iam.example.com/realms/master/protocol/openid-connect/auth
-      token_url: https://iam.example.com/realms/master/protocol/openid-connect/token
-      user_info_url: https://iam.example.com/realms/master/protocol/openid-connect/userinfo
+      auth_url: https://iam.example.com/realms/example-realm/protocol/openid-connect/auth
+      token_url: https://iam.example.com/realms/example-realm/protocol/openid-connect/token
+      user_info_url: https://iam.example.com/realms/example-realm/protocol/openid-connect/userinfo
       scopes:
         - openid
         - email

@@ -1,22 +1,22 @@
 ---
 # First sync wave done in parallel with creating secrets. Must be BEFORE
-# netmaker so that netmaker persists it's data between upgrades. Sync policy
+# nextcloud so that nextcloud persists it's data between upgrades. Sync policy
 # is set to ApplyOutOfSyncOnly=true to create the volume initially only.
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: netmaker-persistence
+  name: nextcloud-persistence
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "1"
 spec:
-  project: default
+  project: nextcloud
   destination:
     server: "https://kubernetes.default.svc"
-    namespace: netmaker
+    namespace: nextcloud
   source:
     repoURL: https://github.com/small-hack/argocd-apps.git
-    path: netmaker/manifests/persistence/
+    path: nextcloud/manifests/persistence/
   syncPolicy:
     syncOptions:
       - ApplyOutOfSyncOnly=true
@@ -24,24 +24,24 @@ spec:
       selfHeal: true
 
 ---
-# First sync wave because we need secrets for netmaker, so it has to be
-# before netmaker so it has secrets for all its credentials.
+# First sync wave because we need secrets for nextcloud, so it has to be
+# before nextcloud so it has secrets for all its credentials.
 # In a private repo right now while we figure out a custom argocd plugin
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: netmaker-external-secrets
+  name: nextcloud-external-secrets
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "1"
 spec:
-  project: default
+  project: nextcloud
   destination:
     server: "https://kubernetes.default.svc"
-    namespace: netmaker
+    namespace: nextcloud
   source:
     repoURL: https://github.com/small-hack/argocd-apps.git
-    path: netmaker/manifests/external_secrets/
+    path: nextcloud/manifests/external_secrets/
   syncPolicy:
     syncOptions:
       - Replace=true
@@ -50,36 +50,26 @@ spec:
       selfHeal: true
 
 ---
-# webapp is deployed 2nd because we need secrets
+# Third wave because we need scheduled k8up (restic via k8s) k8up_backups
+# after the external secrets and pvcs for nextcloud have been created
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: netmaker-web-app
+  name: nextcloud-k8up-b2-backups
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "3"
 spec:
-  project: default
+  project: nextcloud
   destination:
     server: "https://kubernetes.default.svc"
-    namespace: netmaker
-  sources:
-    # official netmaker helm repo: https://github.com/gravitl/netmaker-helm
-    # we're using a fork of this repo with fixes we need for security:
-    # https://aldiserg.github.io/netmaker-helm/
-    - repoURL: 'https://jessebot.github.io/netmaker-helm'
-      chart: netmaker
-      targetRevision: 0.8.0
-      helm:
-        valueFiles:
-          - $values/netmaker/values/values.yaml
-    # our values.yaml file locally
-    - repoURL: 'https://github.com/small-hack/argocd-apps.git'
-      targetRevision: main
-      ref: values
+    namespace: nextcloud
+  source:
+    repoURL: https://github.com/small-hack/argocd-apps.git
+    path: nextcloud/manifests/k8up_backups/
   syncPolicy:
     syncOptions:
-      - ApplyOutOfSyncOnly=true
+      - Replace=true
     automated:
       prune: true
       selfHeal: true
