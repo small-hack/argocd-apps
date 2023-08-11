@@ -21,6 +21,29 @@ zitadel:
         Webhook:
           Enabled: false
 
+    # this is for Argo CD OIDC
+    # ref: https://github.com/zitadel/zitadel-charts/discussions/116
+    # ref: https://github.com/argoproj/argo-cd/discussions/11855#discussioncomment-5586777
+    Actions:
+      groupsClaim:
+        allowedToFail: true
+        timeout: 10
+        script: |
+          function groupsClaim(ctx, api) {
+            if (ctx.v1.user.grants === undefined || ctx.v1.user.grants.count == 0) {
+              return;
+            }
+
+            let grants = [];
+            ctx.v1.user.grants.grants.forEach(claim => {
+              claim.roles.forEach(role => {
+                  grants.push(role)  
+              })
+            })
+
+            api.v1.claims.setClaim('groups', grants)
+          }
+
     ## If you want to setup ZITADEL with a service account
     ## instead of a human admin user, comment the following
     ## in by deleting each lines first hash and space
@@ -73,7 +96,6 @@ chownImage:
   pullPolicy: IfNotPresent
   tag: "3.11"
 
-imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
@@ -86,19 +108,11 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name: ""
 
-podAnnotations: {}
-
-podSecurityContext:
-  runAsNonRoot: true
-  runAsUser: 1000
-
-securityContext: {}
-
 # Additional environment variables
 # see more here: https://github.com/zitadel/zitadel/blob/main/cmd/defaults.yaml
 env:
   - name: ZITADEL_EXTERNAL_DOMAIN
-    value: zitadel.test.com
+    value: {{ .zitadel_domain }}
 
 service:
   type: ClusterIP
@@ -108,22 +122,19 @@ service:
 
 ingress:
   enabled: true
-  className: ""
-  annotations: {}
+  className: "nginx"
+  annotations:
+    kubernetes.io/tls-acme: "true"
+    cert-manager.io/cluster-issuer: letsencrypt-staging
   hosts:
-    - host: zitadel.test.com
+    - host: {{ .zitadel_domain }}
       paths:
         - path: /
           pathType: Prefix
-  tls: []
-
-resources: {}
-
-nodeSelector: {}
-
-tolerations: []
-
-affinity: {}
+  tls:
+    - secretName: zitadel-tls
+      hosts:
+        - {{ .zitadel_domain }}
 
 initJob:
   # Once ZITADEL is installed, the initJob can be disabled.
@@ -150,24 +161,6 @@ setupJob:
     repository: bitnami/kubectl
     tag: ""
 
-
-readinessProbe:
-  enabled: true
-  initialDelaySeconds: 0
-  periodSeconds: 5
-  failureThreshold: 3
-
-livenessProbe:
-  enabled: true
-  initialDelaySeconds: 0
-  periodSeconds: 5
-  failureThreshold: 3
-
-startupProbe:
-  enabled: true
-  periodSeconds: 1
-  failureThreshold: 30
-
 metrics:
   enabled: false
   serviceMonitor:
@@ -178,10 +171,3 @@ metrics:
     enabled: false
     honorLabels: false
     honorTimestamps: true
-
-pdb:
-  enabled: false
-  # these values are used for the PDB and are mutally exclusive
-  minAvailable: 1
-  # maxUnavailable: 1
-  annotations: {}
