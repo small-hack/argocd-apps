@@ -51,7 +51,7 @@ TLDR: you can pass an env-var to the keycloak container:
 cd /opt/bitnami/keycloak
 
 export SERVER="http://localhost:8080/"
-export ADMIN_REALM="master"
+export ADMIN_REALM="default-realm-name"
 export ADMIN_USER="test"
 export ADMIN_PASSWORD="YOUR-PASSWORD-HERE"
 export NEW_REALM="example-realm"
