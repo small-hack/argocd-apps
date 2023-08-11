@@ -1,5 +1,5 @@
 # NextCloud ArgoCD App of Apps
-A NextCloud k8s repo for those who want to get started quickly with nextcloud on k3s the way we use it :) This project uses the official [nextcloud helm chart](https://github.com/nextcloud/helm/tree/master/charts/nextcloud) version 3.5.15, and it uses the nextcloud:27.0.0-fpm docker image.
+A NextCloud k8s repo for those who want to get started quickly with nextcloud on k3s the way we use it :) This project uses the official [nextcloud helm chart](https://github.com/nextcloud/helm/tree/main/charts/nextcloud). See the current version in [nextcloud_argocd_appset.yaml](./nextcloud_argocd_appset.yaml).
 
 # Tech Stack
 
@@ -112,7 +112,6 @@ spec:
         - p, proj:nextcloud:nextcloud, applications, *, nextcloud/*, allow
   sourceRepos:
     - registry-1.docker.io
-    - https://github.com/small-hack/vleermuis-external-secrets.git
     - https://nextcloud.github.io/helm
     - https://github.com/small-hack/argocd-apps.git
 ```

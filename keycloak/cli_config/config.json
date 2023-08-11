@@ -1,0 +1,193 @@
+{
+  "clients": [
+    {
+      "clientId": "argocd",
+      "name": "argocd",
+      "description": "ArgoCD OIDC Client",
+      "enabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "changed-special-client-secret",
+      "rootUrl": "https://argocd.example.com",
+      "adminUrl": "https://argocd.example.com",
+      "baseUrl": "https://argocd.example.com/applications",
+      "redirectUris": [
+        "https://argocd.example.com/auth/callback"
+      ],
+      "webOrigins": [
+        "+"
+      ],
+      "consentRequired": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "publicClient": false,
+      "frontchannelLogout": true,
+      "serviceAccountsEnabled": false,
+      "protocol": "openid-connect",
+      "attributes": {
+         "oauth2.device.authorization.grant.enabled": "false",
+         "backchannel.logout.revoke.offline.tokens": "false",
+         "use.refresh.tokens": "true",
+         "oidc.ciba.grant.enabled": "false",
+         "backchannel.logout.session.required": "true",
+         "client_credentials.use_refresh_token": "false",
+         "tls.client.certificate.bound.access.tokens": "false",
+         "require.pushed.authorization.requests": "false",
+         "acr.loa.map": "{}",
+         "display.on.consent.screen": "false",
+         "token.response.type.bearer.lower-case": "false"
+      },
+      "fullScopeAllowed": true,
+      "protocolMappers": [
+        {
+          "name": "Client IP Address",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usersessionmodel-note-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.session.note": "clientAddress",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "clientAddress",
+            "jsonType.label": "String"
+          }
+        },
+        {
+          "name": "Client ID",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usersessionmodel-note-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.session.note": "client_id",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "client_id",
+            "jsonType.label": "String"
+          }
+        },
+        {
+          "name": "Client Host",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usersessionmodel-note-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.session.note": "clientHost",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "clientHost",
+            "jsonType.label": "String"
+          }
+        }
+      ],
+      "defaultClientScopes": [
+        "web-origins",
+        "acr",
+        "profile",
+        "roles",
+        "groups",
+        "email"
+      ],
+      "optionalClientScopes": [
+        "address",
+        "phone",
+        "offline_access",
+        "microprofile-jwt"
+      ],
+      "access": {
+        "view": true,
+        "configure": true,
+        "manage": true
+        }
+      },
+    {
+      "clientId": "vouch",
+      "name": "Vouch",
+      "description": "Vouch for keycloak",
+      "rootUrl": "https://vouch.vleermuis.tech",
+      "adminUrl": "https://vouch.vleermuis.tech/",
+      "baseUrl": "",
+      "surrogateAuthRequired": false,
+      "enabled": true,
+      "alwaysDisplayInConsole": false,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "8m0c9DhS9jNWskIEgF2CGTsUQGhkmpte",
+      "redirectUris": [
+        "https://oidcdebugger.com/debug",
+        "https://vouch.vleermuis.tech/auth"
+      ],
+      "webOrigins": [
+        "+"
+      ],
+      "notBefore": 0,
+      "bearerOnly": false,
+      "consentRequired": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": false,
+      "publicClient": false,
+      "frontchannelLogout": true,
+      "protocol": "openid-connect",
+      "attributes": {
+        "client.secret.creation.time": "1688805167",
+        "post.logout.redirect.uris": "+",
+        "oauth2.device.authorization.grant.enabled": "false",
+        "backchannel.logout.revoke.offline.tokens": "false",
+        "use.refresh.tokens": "true",
+        "oidc.ciba.grant.enabled": "false",
+        "backchannel.logout.session.required": "true",
+        "client_credentials.use_refresh_token": "false",
+        "tls.client.certificate.bound.access.tokens": "false",
+        "require.pushed.authorization.requests": "false",
+        "acr.loa.map": "{}",
+        "display.on.consent.screen": "false",
+        "token.response.type.bearer.lower-case": "false"
+      },
+      "authenticationFlowBindingOverrides": {},
+      "fullScopeAllowed": true,
+      "nodeReRegistrationTimeout": -1,
+      "defaultClientScopes": [
+        "web-origins",
+        "acr",
+        "profile",
+        "roles",
+        "groups",
+        "email"
+      ],
+      "optionalClientScopes": [
+        "address",
+        "phone",
+        "offline_access",
+        "microprofile-jwt"
+      ],
+      "access": {
+        "view": true,
+        "configure": true,
+        "manage": true
+      }
+    }
+    ],
+  "users": [
+    {
+      "username": "",
+      "email": "",
+      "enabled": true,
+      "firstName": "",
+      "lastName": "",
+      "realmRoles": [
+        "admin"
+      ],
+      "credentials": [
+        {
+          "type": "password",
+          "value": "myuser123"
+        }
+            ]
+        }
+    ],
+  "groups": [
+    {
+      "name": "ArgoCDAdmins"
+    }
+    ]
+}

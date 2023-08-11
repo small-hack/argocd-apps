@@ -29,6 +29,5 @@ spec:
         - p, proj:nextcloud:nextcloud, applications, *, nextcloud/*, allow
   sourceRepos:
     - registry-1.docker.io
-    - https://github.com/small-hack/vleermuis-external-secrets.git
     - https://nextcloud.github.io/helm
     - https://github.com/small-hack/argocd-apps.git

@@ -107,7 +107,7 @@ spec:
                     secretKeyRef:
                       key: password
                       name: nextcloud-admin-credentials
-                - name: NEXTCLOUD_TRUSTED_DOMAINS
-                  value: cloud.vleermuis.tech
+                # - name: NEXTCLOUD_TRUSTED_DOMAINS
+                #   value: cloud.example.com
                 - name: NEXTCLOUD_DATA_DIR
                   value: /var/www/html/data
