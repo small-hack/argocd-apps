@@ -42,7 +42,7 @@ TLDR: you can pass an env-var to the keycloak container:
         env:
         ...
         - name: KC_SPI_ADMIN_REALM
-          value: "yourmasterrealmname"
+          value: "default-realm-name"
 ```
 
 ## CLI Usage
