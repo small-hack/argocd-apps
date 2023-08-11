@@ -16,7 +16,7 @@ spec:
     # prometheus-community helm repo
     - repoURL: https://jessebot.github.io/coturn-chart/
       chart: coturn
-      targetRevision: 4.2.0
+      targetRevision: 4.2.1
       helm:
         valueFiles:
         - $values/coturn/values/values.yaml
