@@ -1,0 +1,89 @@
+{
+  "clientId" : "argocd",
+  "name" : "ArgoCD Client",
+  "description" : "ArgoCD OIDC Client",
+  "rootUrl" : "https://argocd.example.com",
+  "adminUrl" : "https://argocd.example.com",
+  "baseUrl" : "https://argocd.example.com/applications",
+  "surrogateAuthRequired" : false,
+  "enabled" : true,
+  "alwaysDisplayInConsole" : false,
+  "clientAuthenticatorType" : "client-secret",
+  "secret" : "SOME-SECRET-GOES-HERE",
+  "redirectUris" : [ "https://argocd.example.com/auth/callback" ],
+  "webOrigins" : [ "+" ],
+  "notBefore" : 0,
+  "bearerOnly" : false,
+  "consentRequired" : false,
+  "standardFlowEnabled" : true,
+  "implicitFlowEnabled" : false,
+  "directAccessGrantsEnabled" : true,
+  "serviceAccountsEnabled" : false,
+  "publicClient" : false,
+  "frontchannelLogout" : true,
+  "protocol" : "openid-connect",
+  "attributes" : {
+    "client.secret.creation.time" : "1688730017",
+    "oauth2.device.authorization.grant.enabled" : "false",
+    "backchannel.logout.revoke.offline.tokens" : "false",
+    "use.refresh.tokens" : "true",
+    "oidc.ciba.grant.enabled" : "false",
+    "backchannel.logout.session.required" : "true",
+    "client_credentials.use_refresh_token" : "false",
+    "tls.client.certificate.bound.access.tokens" : "false",
+    "require.pushed.authorization.requests" : "false",
+    "acr.loa.map" : "{}",
+    "display.on.consent.screen" : "false",
+    "token.response.type.bearer.lower-case" : "false"
+  },
+  "authenticationFlowBindingOverrides" : { },
+  "fullScopeAllowed" : true,
+  "nodeReRegistrationTimeout" : -1,
+  "protocolMappers" : [ {
+    "id" : "c4e2384d-54ec-4f67-a05b-bd20734be96b",
+    "name" : "Client IP Address",
+    "protocol" : "openid-connect",
+    "protocolMapper" : "oidc-usersessionmodel-note-mapper",
+    "consentRequired" : false,
+    "config" : {
+      "user.session.note" : "clientAddress",
+      "id.token.claim" : "true",
+      "access.token.claim" : "true",
+      "claim.name" : "clientAddress",
+      "jsonType.label" : "String"
+    }
+  }, {
+    "id" : "2784b58f-2f1c-4ac6-a483-5297121f439a",
+    "name" : "Client ID",
+    "protocol" : "openid-connect",
+    "protocolMapper" : "oidc-usersessionmodel-note-mapper",
+    "consentRequired" : false,
+    "config" : {
+      "user.session.note" : "client_id",
+      "id.token.claim" : "true",
+      "access.token.claim" : "true",
+      "claim.name" : "client_id",
+      "jsonType.label" : "String"
+    }
+  }, {
+    "id" : "ede396af-7cff-4982-a819-6ece845093d4",
+    "name" : "Client Host",
+    "protocol" : "openid-connect",
+    "protocolMapper" : "oidc-usersessionmodel-note-mapper",
+    "consentRequired" : false,
+    "config" : {
+      "user.session.note" : "clientHost",
+      "id.token.claim" : "true",
+      "access.token.claim" : "true",
+      "claim.name" : "clientHost",
+      "jsonType.label" : "String"
+    }
+  } ],
+  "defaultClientScopes" : [ "web-origins", "acr", "profile", "roles", "groups", "email" ],
+  "optionalClientScopes" : [ "address", "phone", "offline_access", "microprofile-jwt" ],
+  "access" : {
+    "view" : true,
+    "configure" : true,
+    "manage" : true
+  }
+}

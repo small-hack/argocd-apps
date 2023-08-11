@@ -1,0 +1,58 @@
+---
+# CRDs for backups
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: k8up-crd
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/k8up-io/k8up.git
+    path: config/crd/apiextensions.k8s.io/v1/
+    targetRevision: 2.7.1
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: k8up
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+      - Replace=true
+    automated:
+      prune: true
+      selfHeal: true
+
+---
+# k8up is for backups of persistent volume claims
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: k8up-helm-chart
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  project: default
+  sources:
+    # official k8up helm repo
+    - repoURL: 'https://k8up-io.github.io/k8up'
+      chart: k8up
+      targetRevision: 4.4.1
+      helm:
+        valueFiles:
+        - $values/k8up/helm_values/values.yaml
+    # our values.yaml file locally
+    - repoURL: 'https://github.com/small-hack/argocd-apps.git'
+      targetRevision: main
+      ref: values
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: k8up
+  syncPolicy:
+    syncOptions:
+      - Replace=true
+    automated:
+      prune: true
+      selfHeal: true

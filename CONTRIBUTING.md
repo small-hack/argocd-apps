@@ -18,10 +18,10 @@
 
 9. Ensure all apps have authentication enabled, and use [OIDC](https://en.wikipedia.org/wiki/OpenID) (OpenID Connect), perferably keycloak, if possible. If authentication is not possible, (e.g. the k8s dashboard) setup SSO (Single Sign On) via Vouch. On this same note, make sure you have at least one MFA option enabled if available (ideally provide both TOTP (time-based one time password)/Webauthn). If it's not possible to configure this securely entirely open source (e.g. you need to have an external secret in a private repo), include a sanitized example of how to create the external resources.
 
+10. All *Applications* should be in files called `APP-NAME_argocd_app.yaml`. All *ApplicationSets* should be in files called `APP-NAME_argocd_appset.yaml`. All external secrets should be in a directory called `external_secrets` directly inside the app directory. All other manifests should be in a directory called manifests inside the app directory. This is so that we can use the CRD json schema validation based on file name. (If you're using neovim, checkout an example of the yaml language server [here](https://github.com/jessebot/dot_files/blob/main/.config/nvim/lua/user/lsp-configs.lua#L122-L137))
+
 ## Future Goals
 Beyond just ensuring everything meets basic reliability and security needs, we also hope to:
-
-- Figure out a way to have variables for these templates! Right now your best bet for reuse is to clone this repo, and search and replace "social-media-for-dogs.com" and "enby.city" with whatever your domain is. That's combersome and makes merging in changes kinda gross. We need to figure out if there's an Argo CD friendly way to have some sort of evironment variables. <-- we're working on this with applicationSets right now.
 
 - Create ArgoCD project configs/roles declaritively, as right now we manually create the projects and roles <--- this has been started
 

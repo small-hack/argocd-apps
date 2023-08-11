@@ -31,11 +31,16 @@ kubectl exec -it keycloak-web-app-postgresql-0 -- PGDATABASE="$POSTGRES_DB" PGUS
 kubectl cp keycloak-web-app-postgresql-0:tmp/keycloak.sql keycloak.sql
 ```
 
-# If you need to troubleshoot something with the Postgres database
+# Troubleshooting
 
-## 1. Deploy `argo-postgres-app` frist
+## Debugging OIDC connections
+Try adding https://oidcdebugger.com/debug as a "Valid redirect URI" under the client settings.
 
-## 2. Connect to postgres and create the DB
+## If you need to troubleshoot something with the Postgres database
+
+1. Deploy `argo-postgres-app` frist
+
+2. Connect to postgres and create the DB
 
 Deploy the following container and attach to the shell, then install `postgresql-client`.
 
@@ -43,7 +48,7 @@ Deploy the following container and attach to the shell, then install `postgresql
 apiVersion: v1
 kind: Pod
 metadata:
-  name: mastodon-postgres-client
+  name: postgres-client
   namespace: mastodon
 spec:
   containers:
@@ -69,5 +74,4 @@ psql -U admin -d postgres -h keycloak-postgres-postgresql.keycloak.svc.cluster.l
 CREATE DATABASE keycloak;
 ```
 
-
-## 3. Deploy `argo-keycloak-app`
+3. Deploy `argo-keycloak-app`

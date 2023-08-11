@@ -8,6 +8,7 @@ diagrams @cloudymax
 external-secrets-operator @jessebot
 harbor @cloudymax
 home-assistant @jessebot
+ingress/* @cloudymax @jessebot
 k8up @jessebot
 keycloak @cloudymax @jessebot
 kube-prometheus-stack @jessebot @cloudymax
@@ -16,14 +17,13 @@ kyverno @jessebot
 LICENSE @jessebot @cloudymax
 loki-sack @cloudymax
 longhorn @cloudymax
-mailu @jessebot
 mastodon @jessebot
 matrix @jessebot
+monitoring @cloudymax
 netmaker @jessebot
 oauth2-proxy @jessebot
 postgres @cloudymax
 README.md @jessebot @cloudymax
 renovate.json @jessebot
 test-app @cloudymax @jessebot
-vouch-proxy @cloudymax @jessebot
-wg-access-server @jessebot @cloudymax
+alpha/wg-access-server @jessebot @cloudymax

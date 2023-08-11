@@ -1,0 +1,50 @@
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: oauth2-proxy-secret
+spec:
+  target:
+    # Name for the secret to be created on the cluster
+    name: oauth2-proxy-secret
+    deletionPolicy: Delete
+    template:
+      type: Opaque
+      data:
+        client-id: |-
+          {{ .clientID }}
+        client-secret: |-
+          {{ .clientSecret }}
+        cookie-secret: |-
+          {{ .cookieSecret }}
+
+  data:
+    # oauth2proxy client ID
+    - secretKey: clientID
+      sourceRef:
+        storeRef:
+          name: bitwarden-fields
+          kind: ClusterSecretStore
+      remoteRef:
+        key: oauth2-proxy-secrets
+        property: clientID
+
+    # oauth2proxy client secret
+    - secretKey: clientSecret
+      sourceRef:
+        storeRef:
+          name: bitwarden-fields
+          kind: ClusterSecretStore
+      remoteRef:
+        key: oauth2-proxy-secrets
+        property: clientSecret 
+
+    # oauth2proxy cookie secret
+    - secretKey: cookieSecret
+      sourceRef:
+        storeRef:
+          name: bitwarden-fields
+          kind: ClusterSecretStore
+      remoteRef:
+        key: oauth2-proxy-secrets
+        property: cookieSecret

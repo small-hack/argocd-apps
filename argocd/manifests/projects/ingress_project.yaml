@@ -1,0 +1,30 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: ingress
+  namespace: argocd
+spec:
+  clusterResourceWhitelist:
+    - group: '*'
+      kind: '*'
+  description: Apps required for ingress to function like ingress-nginx, cert-manager, and vouch
+  destinations:
+    - name: in-cluster
+      namespace: ingress
+      server: https://kubernetes.default.svc
+    - name: '*'
+      namespace: argocd
+      server: '*'
+    - name: '*'
+      namespace: ingress
+      server: '*'
+  namespaceResourceWhitelist:
+    - group: '*'
+      kind: '*'
+  orphanedResources: {}
+  sourceRepos:
+    - https://github.com/small-hack/argocd-apps.git
+    - https://charts.jetstack.io
+    - https://kubernetes.github.io/ingress-nginx
+    - https://vouch.github.io/helm-charts/
