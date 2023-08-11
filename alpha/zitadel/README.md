@@ -9,8 +9,12 @@ We don't know much about [Zitadel](https://github.com/zitadel/zitadel/tree/main)
 
 
 ## Helm testing locally
+
+They have an official guide for k8s deployments [here](https://zitadel.com/docs/self-hosting/deploy/kubernetes).
+
 ```bash
 helm repo add cockroachdb https://charts.cockroachdb.com/
+helm repo add zitadel https://zitadel.github.io/zitadel-charts
 helm repo update cockroachdb zitadel
 helm uninstall my-zitadel
 helm install crdb cockroachdb/cockroachdb --version 11.0.1 --set fullnameOverride=crdb
