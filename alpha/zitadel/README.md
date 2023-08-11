@@ -2,6 +2,11 @@
 
 We don't know much about [Zitadel](https://github.com/zitadel/zitadel/tree/main) yet as we just learned about it. We'll still support Keycloak for a bit, but if Zitadel is more modern and easier to configure, we'll switch. Here's their [helm chart](https://github.com/zitadel/zitadel-charts/tree/main).
 
+It's important to take a look at the [`defaults.yaml`](https://github.com/zitadel/zitadel/blob/main/cmd/defaults.yaml) to see what the default configMap will look like for zitadel.
+
+## Zitadel OIDC for Argo CD
+Check out this [Argo CD Discussions thread](https://github.com/argoproj/argo-cd/discussions/11855), and this recent [Zitadel Discussions thread](https://github.com/zitadel/zitadel-charts/discussions/116) for updates.
+
 
 ## Sync waves
 1. cockroachdb
