@@ -9,11 +9,14 @@
 #
 #  REQUIREMENTS: restic, kubectl, krew plugins: ctx, ns
 #        AUTHOR: jessebot@linux.com @jessebot on gitlab/github
-#       CREATED: 2022-09-08 09:40:29 AM
-#       UPDATED: 2022-12-15 17:28:31
-#       VERSION: v0.1.0
 #===============================================================================
-NEXTCLOUD_URL="https://cloud.vleermuis.tech"
+# example: https://cloud.example.com
+NEXTCLOUD_URL=""
+
+if [[ -z "$NEXTCLOUD_URL" ]]; then
+    echo "Please entire a NEXTCLOUD_URL to check if you're in maintanence mode yet"
+    read NEXTCLOUD_URL
+fi
 
 # pretty echo so that I don't have to remember this
 function p_echo() {

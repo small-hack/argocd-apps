@@ -1,0 +1,21 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: bitwarden-eso-provider
+  namespace: argocd
+spec:
+  project: external-secrets
+  source:
+    repoURL: 'https://jessebot.github.io/bitwarden-eso-provider'
+    targetRevision: 0.3.0
+    chart: bitwarden-eso-provider
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: external-secrets
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+    automated:
+      prune: true
+      selfHeal: true
