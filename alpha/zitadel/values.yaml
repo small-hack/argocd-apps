@@ -97,13 +97,10 @@ podSecurityContext:
 securityContext: {}
 
 # Additional environment variables
+# see more here: https://github.com/zitadel/zitadel/blob/main/cmd/defaults.yaml
 env:
-  []
-  # - name: ZITADEL_DATABASE_POSTGRES_HOST
-  #   valueFrom:
-  #     secretKeyRef:
-  #       name: postgres-pguser-postgres
-  #       key: host
+  - name: ZITADEL_EXTERNAL_DOMAIN
+    value: zitadel.test.com
 
 service:
   type: ClusterIP
@@ -112,11 +109,11 @@ service:
   annotations: {}
 
 ingress:
-  enabled: false
+  enabled: true
   className: ""
   annotations: {}
   hosts:
-    - host: localhost
+    - host: zitadel.test.com
       paths:
         - path: /
           pathType: Prefix
