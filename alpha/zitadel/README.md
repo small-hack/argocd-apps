@@ -7,6 +7,12 @@ It's important to take a look at the [`defaults.yaml`](https://github.com/zitade
 ## Zitadel OIDC for Argo CD
 Check out this [Argo CD Discussions thread](https://github.com/argoproj/argo-cd/discussions/11855), and this recent [Zitadel Discussions thread](https://github.com/zitadel/zitadel-charts/discussions/116) for updates.
 
+## Using the Zitadel API
+
+The API docs are [here](https://zitadel.com/docs/category/apis). For actions you probably want this link:
+
+https://zitadel.com/docs/category/apis/resources/mgmt/actions
+
 
 ## Sync waves
 1. cockroachdb
