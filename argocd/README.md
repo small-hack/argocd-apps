@@ -28,17 +28,7 @@ spec:
 ...
 ```
 
-ref on extenral secrets labels: https://github.com/external-secrets/external-secrets/issues/2041
-
-## Argo CD Plugin Generator
-This is a beta feature that we're enabling so we can pull stuff from external secrets.
-
-To enable the feature, you'll need to patch this ApplicationSet CRD:
-
-```bash
-wget https://raw.githubusercontent.com/argoproj/argo-cd/master/manifests/crds/applicationset-crd.yaml
-kubectl apply -f applicationset-crd.yaml
-```
+ref on external secrets labels: https://github.com/external-secrets/external-secrets/issues/2041
 
 
 # Creating the Argo CD app
