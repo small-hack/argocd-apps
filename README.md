@@ -1,38 +1,42 @@
 # Shared Argo CD templates for self hosted infra
 A collection of [Argo CD](https://argo-cd.readthedocs.io/en/stable/) templates for deploying helm apps or directories of [Kubernetes](https://kubernetes.io) (k8s) manifests as [Argo CD apps](https://argo-cd.readthedocs.io/en/stable/core_concepts/).
 
-If you're interested in contributing, checkout our guidelines [here](./CONTRIBUTING.md) 😃!
+## Core Tenants
+Here's some quick guidelines, but you if you'd like to contribute, please read the full contributing guidelines [here](./CONTRIBUTING.md) 😃!
 
-## All Apps
+- Follow a base [schema](./CONTRIBUTING.md#directory-and-filename-schemas) for all our files and directories so that we can easily make more of them faster.
 
-* [Auth and Identity Management](#auth-and-identity-management)
-    * [🚧 Under construction](#-under-construction)
+- Make secure as we go to avoid the dreaded all-at-once security pass (but we may have missed something, in which case, please let us know).
+
+- Be kind and if something doesn't work as it should, try to fix the upstream repo before introducing a good-enough fix here.
+
+- NEVER FORGET THE BACKUPS. <sub>DO YOU REMEMBER WHAT HAPPENED LAST TIME WE DIDN'T HAVE THIS RULE? 😭</sub>
+
+# All Apps
+
+* [Continuous Deployment](#continuous-deployment)
 * [Database](#database)
-* [Ingress](#ingress)
 * [File Storage and Backups](#file-storage-and-backups)
-    * [🚧 Under construction](#-under-construction-2)
+    * [🚧 Under construction](#-under-construction)
+* [Identity Providers and SSO](#identity-providers-and-sso)
+    * [🚧 Under construction](#-under-construction-1)
+* [Ingress](#ingress)
 * [Monitoring](#monitoring)
 * [Security Tools](#security-tools)
-    * [🚧 Under construction](#-under-construction-3)
+    * [🚧 Under construction](#-under-construction-2)
 * [Social Media and chat](#social-media-and-chat)
 * [Virtual Machines](#virtual-machines)
-    * [🚧 Under construction](#-under-construction-1)
+    * [🚧 Under construction](#-under-construction-3)
+* [Troubleshooting Tips](#troubleshooting-tips)
 
+## Continuous Deployment
 
-### Auth and Identity Management
-
-|              App             | Description                                                                                                                                                                                                                                                                                                                                       |
-|:----------------------------:|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-|    [keycloak](./keycloak)    | helm chart for [Keycloak](https://www.keycloak.org/), an Identity Access Management tool with built in OpenIDConnect for authenticating to self hosted apps                                                                                                                                                                                       |
-| [vouch-proxy](./ingress/vouch-proxy) | helm chart for [Vouch](https://github.com/vouch/vouch-proxy), an OAuth2 proxy that allows you to use ingress-nginx annotations to connect to a third party identity provider, giving you proper auth on websites that don't have auth. Currently works with the keycloak provider in this template, but also known to work with google and github |
-
-#### 🚧 Under construction
 |               App              | Description                                                                              |
 |:------------------------------:|:-----------------------------------------------------------------------------------------|
-| [oauth2-proxy](./oauth2-proxy) | Oauth2 proxy that works with Google, however we're testing a keycloak provider right now |
+| [argocd](./argocd) | The one, the only, [Argo CD](https://argoproj.github.io/cd/) is used for declarative continuous delivery to Kubernetes with a fully-loaded UI. This actually deploys all the other apps and manages itself too :3 |
 
 
-### Database
+## Database
 
 | App                                      | Description                                                                                                       |
 |:-----------------------------------------|:------------------------------------------------------------------------------------------------------------------|
@@ -40,54 +44,68 @@ If you're interested in contributing, checkout our guidelines [here](./CONTRIBUT
 | [postgres](./postgres/bitnami)           | Just a bitnami PostgreSQL database helm chart on k8s, in case you need that for something                         |
 
 
-### Ingress
+## File Storage and Backups
 
-|                    App                   | Description                                                                                                                                                                                                                                                                                                                                       |
-|:----------------------------------------:|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-|  [cert-manager](./ingress/cert-manager)  | helm chart for [cert-manager](https://cert-manager.io), for providing TLS certificates based on nginx ingress annotations                                                                                                                                                                                                                         |
-| [ingress-nginx](./ingress/ingress-nginx) | helm chart for [ingress-nginx](https://github.com/kubernetes/ingress-nginx), an nginx ingress controller to allow external traffic to the cluster                                                                                                                                                                                                 |
-|   [vouch-proxy](./ingress/vouch-proxy)   | helm chart for [Vouch](https://github.com/vouch/vouch-proxy), an OAuth2 proxy that allows you to use ingress-nginx annotations to connect to a third party identity provider, giving you proper auth on websites that don't have auth. Currently works with the keycloak provider in this template, but also known to work with google and github |
-
-
-### File Storage and Backups
-
-| App                      | Description                                                                                                                  |
-|:-------------------------|:-----------------------------------------------------------------------------------------------------------------------------|
-| [k8up](./k8up)           | [K8up](https://k8up.io/k8up/2.7/index.html) is a k8s native backups done via restic, so you can sync your persistent volumes to external s3 compliant storage                 |
-| [nextcloud](./nextcloud) | [Nextcloud](https://nextcloud.com/) is a self hosted file storage cloud solution. Replaces something like google drive/photos/notes/meets/calendar - mostly stable    |
+| App                      | Description                                                                                                                                                        |
+|:-------------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [k8up](./k8up)           | [K8up](https://k8up.io/k8up/2.7/index.html) is a k8s native backups done via restic, so you can sync your persistent volumes to external s3 compliant storage      |
+| [nextcloud](./nextcloud) | [Nextcloud](https://nextcloud.com/) is a self hosted file storage cloud solution. Replaces something like google drive/photos/notes/meets/calendar - mostly stable |
 
 
-#### 🚧 Under construction
+### 🚧 Under construction
 |           App          | Description                                                                                                                                  |
 |:----------------------:|:---------------------------------------------------------------------------------------------------------------------------------------------|
 |   [Harbor](./harbor)   | Container Registry and OCI artifact store with built-in vulernability scanning via Trivy                                                     |
 | [Longhorn](./longhorn) | [Longhorn](https://github.com/longhorn/longhorn) is a lightweight, reliable and easy-to-use distributed block storage system for Kubernetes. |
 
+## Identity Providers and SSO
 
-### Monitoring
-
-| App                                              | Description                                                                                                                                                                         |
-|:-------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [kube-prometheus-stack](./monitoring/kube-prometheus-stack) | [prometheus](https://prometheus.io/docs/introduction/overview/), alertmanager, [grafana](https://grafana.com) for collecting metrics for monitoring/alerting, and dashboards/charts |
-| [loki-stack](./monitoring/loki-stack)                       | [loki](https://grafana.com/oss/loki/) and [promtail](https://grafana.com/docs/loki/latest/clients/promtail/) for collecting logs in prometheus                                      |
-| [prometheus-push-gateway](./monitoring/prometheus-push-gateway)  | Installs the [Prometheus Push Gateway](https://prometheus.io/docs/instrumenting/pushing/) which enables pushing metrics from jobs that would be difficult or impossible to scrape |
+|                  App                 | Description                                                                                                                                                                                                                                                                                                                                       |
+|:------------------------------------:|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|        [keycloak](./keycloak)        | helm chart for [Keycloak](https://www.keycloak.org/), an Identity Access Management tool with built in OpenIDConnect for authenticating to self hosted apps                                                                                                                                                                                       |
+| [vouch-proxy](./ingress/vouch-proxy) | helm chart for [Vouch](https://github.com/vouch/vouch-proxy), an OAuth2 proxy that allows you to use ingress-nginx annotations to connect to a third party identity provider, giving you proper auth on websites that don't have auth. Currently works with the keycloak provider in this template, but also known to work with google and github |
 
 
-### Security Tools
+### 🚧 Under construction
+
+|               App              | Description                                                                              |
+|:------------------------------:|:-----------------------------------------------------------------------------------------|
+| [oauth2-proxy](./oauth2-proxy) | Oauth2 proxy that works with Google, however we're testing a keycloak provider right now |
+|         [zitadel](./alpha/zitadel)        | helm chart for [Zitadel](https://zitadel.com/), an Identity Access Management tool with built in OpenIDConnect for authenticating to self hosted apps. Like Keycloak, but more modern.                                                                                                                                                                                       |
+
+## Ingress
+
+|                    App                   | Description                                                                                                                                                                                                                                                                                                                                       |
+|:----------------------------------------:|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|  [cert-manager](./ingress/cert-manager)  | helm chart for [cert-manager](https://cert-manager.io), for providing TLS certificates based on nginx ingress annotations                                                                                                                                                                                                                         |
+| [ingress-nginx](./ingress/ingress-nginx) | helm chart for [ingress-nginx](https://github.com/kubernetes/ingress-nginx), an nginx ingress controller to allow external traffic to the cluster                                                                                                                                                                                                 |
+
+
+## Monitoring
+
+| App                                                             | Description                                                                                                                                                                         |
+|:----------------------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [kube-prometheus-stack](./monitoring/kube-prometheus-stack)     | [prometheus](https://prometheus.io/docs/introduction/overview/), alertmanager, [grafana](https://grafana.com) for collecting metrics for monitoring/alerting, and dashboards/charts |
+| [loki-stack](./monitoring/loki-stack)                           | [loki](https://grafana.com/oss/loki/) and [promtail](https://grafana.com/docs/loki/latest/clients/promtail/) for collecting logs in prometheus                                      |
+| [prometheus-push-gateway](./monitoring/prometheus-push-gateway) | Installs the [Prometheus Push Gateway](https://prometheus.io/docs/instrumenting/pushing/) which enables pushing metrics from jobs that would be difficult or impossible to scrape   |
+
+
+## Security Tools
 
 | App                                                        | Description                                                                                                                          |
 |:-----------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------|
 | [external-secrets-operator](./external-secrets-operator)   | ESO ([External Secrets Operator](https://external-secrets.io/latest/)) used for sourcing k8s secrets from an external provider       |
 | [bitwarden-external-secrets](./bitwarden-external-secrets) | ESO [Bitwarden](https://external-secrets.io/v0.9.1/examples/bitwarden/) SecretStore, for using secrets directly from bitwarden items |
 
-#### 🚧 Under construction
+### 🚧 Under construction
 |               App               | Description                                                                |
 |:-------------------------------:|:---------------------------------------------------------------------------|
 | [wireguard](./alpha/wg-access-server) | A helm chart for wg-access-server which uses Wireguard®️ for a VPN          |
-|     [headscale](./alpha/headscale)    | VPN, 🏗️ there isn't an official helm chart, so we're still working on this |
+|     [headscale](./alpha/headscale)    | VPN, there isn't an official helm chart, so we're still working on this |
+|     [kyverno](./alpha/kyverno)    | Kubernetes-native policy management |
 
 
-### Social Media and chat
+## Social Media and chat
 
 | App                    | Description                                                                                                                                          |
 |:-----------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -96,13 +114,13 @@ If you're interested in contributing, checkout our guidelines [here](./CONTRIBUT
 | [matrix](./matrix)     | Selfhosted chat server that plugs into a bunch of other chat apps                                |        
 
 
-### Virtual Machines
+## Virtual Machines
 
 | App                    | Description                                                                             |
 |:-----------------------|:----------------------------------------------------------------------------------------|
 | [kubevirt](./kubevirt) | [KubeVirt](https://kubevirt.io/) is a virtual machine management add-on for Kubernetes. |
 
-#### 🚧 Under construction
+### 🚧 Under construction
 |                      App                     | Description                                                                       |
 |:--------------------------------------------:|:----------------------------------------------------------------------------------|
 | [Nvidia GPU Operator](./nvidia/gpu-operator) | The GPU Operator allows administrators of Kubernetes clusters to manage GPU nodes |
