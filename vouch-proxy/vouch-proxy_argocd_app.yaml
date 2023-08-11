@@ -1,0 +1,25 @@
+---
+# First sync wave because we need secrets for vouch, so it has to be
+# before vouch so it has secrets for all its credentials.
+# In a private repo right now while we figure out a custom argocd plugin
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: vouch-external-secrets
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  project: default
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: vouch
+  source:
+    repoURL: https://github.com/small-hack/argocd-apps.git
+    path: vouch/external_secrets/
+  syncPolicy:
+    syncOptions:
+      - Replace=true
+    automated:
+      prune: true
+      selfHeal: true

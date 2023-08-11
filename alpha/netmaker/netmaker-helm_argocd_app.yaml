@@ -1,11 +1,11 @@
 ---
 # First sync wave done in parallel with creating secrets. Must be BEFORE
-# wg-access-server so that wg-access-server persists it's data between upgrades
-# Sync policy is set to ApplyOutOfSyncOnly=true to create the volume initially
+# netmaker so that netmaker persists it's data between upgrades. Sync policy
+# is set to ApplyOutOfSyncOnly=true to create the volume initially only.
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: wg-access-server-persistence
+  name: netmaker-persistence
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "1"
@@ -13,24 +13,24 @@ spec:
   project: default
   destination:
     server: "https://kubernetes.default.svc"
-    namespace: wireguard
+    namespace: netmaker
   source:
     repoURL: https://github.com/small-hack/argocd-apps.git
-    path: wg-access-server/manifests/persistence/
+    path: netmaker/manifests/persistence/
   syncPolicy:
     syncOptions:
       - ApplyOutOfSyncOnly=true
     automated:
       selfHeal: true
 
-# First sync wave because we need secrets for wg-access-server, so it has to be
-# before wg-access-server so it has secrets for all its credentials.
-# In a private repo right now while we figure out a custom argocd plugin
 ---
+# First sync wave because we need secrets for netmaker, so it has to be
+# before netmaker so it has secrets for all its credentials.
+# In a private repo right now while we figure out a custom argocd plugin
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: wg-access-server-external-secrets
+  name: netmaker-external-secrets
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "1"
@@ -38,10 +38,10 @@ spec:
   project: default
   destination:
     server: "https://kubernetes.default.svc"
-    namespace: wireguard
+    namespace: netmaker
   source:
     repoURL: https://github.com/small-hack/argocd-apps.git
-    path: wg-access-server/manifests/external_secrets/
+    path: netmaker/external_secrets/
   syncPolicy:
     syncOptions:
       - Replace=true
@@ -51,27 +51,28 @@ spec:
 
 ---
 # webapp is deployed 2nd because we need secrets
-# chart: https://freifunkMUC.github.io/wg-access-server-chart/
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: wg-access-server-web-app
+  name: netmaker-web-app
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "2"
+    argocd.argoproj.io/sync-wave: "3"
 spec:
   project: default
   destination:
     server: "https://kubernetes.default.svc"
-    namespace: wireguard
+    namespace: netmaker
   sources:
-    # official wg-access-server helm repo
-    - repoURL: 'https://freifunkMUC.github.io/wg-access-server-chart/'
-      chart: wg-access-server
-      targetRevision: 0.12.0
+    # official netmaker helm repo: https://github.com/gravitl/netmaker-helm
+    # we're using a fork of this repo with fixes we need for security:
+    # https://aldiserg.github.io/netmaker-helm/
+    - repoURL: 'https://jessebot.github.io/netmaker-helm'
+      chart: netmaker
+      targetRevision: 0.8.0
       helm:
         valueFiles:
-          - $values/wg-access-server/values/values.yaml
+          - $values/netmaker/values/values.yaml
     # our values.yaml file locally
     - repoURL: 'https://github.com/small-hack/argocd-apps.git'
       targetRevision: main
