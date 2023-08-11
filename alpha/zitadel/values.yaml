@@ -69,7 +69,13 @@ zitadel:
   # The key should be named "config-yaml".
   configSecretName:
 
-  # ZITADEL uses the masterkey for symmetric encryption.
+  # ZITADEL uses symmetric encryption.
+  # You can generate the encryption key using: 'tr -dc A-Za-z0-9 </dev/urandom | head -c 32'
+  # or reference it via a secret. the name "masterkey" is hardcoded unfortunately. 
+  # One of either the key or secret-name must be provided.
+  masterkey: ""
+  # Name of the secret which contains the key.
+  masterkeySecretName: ""
   # You can generate it for example with tr -dc A-Za-z0-9 </dev/urandom | head -c 32
   masterkey: ""
   # Reference the name of the secret that contains the masterkey. The key should be named "masterkey".
