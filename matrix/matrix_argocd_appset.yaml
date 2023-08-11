@@ -127,7 +127,7 @@ spec:
               # OpenID Connect integration. The following settings can be used to make Synapse
               # use an OpenID Connect Provider for authentication, instead of its internal
               # password database.
-              # ref: https://github.com/matrix-org/synapse/blob/master/docs/openid.md.
+              # ref: https://github.com/matrix-org/synapse/blob/develop/docs/openid.md.
               oidc_config:
                 # -- set to true to enable authorization against an OpenID Connect server
                 enabled: true
@@ -167,7 +167,7 @@ spec:
                   # -- The custom module's class. Uncomment to use a custom module.
                   # Default is 'synapse.handlers.oidc_handler.JinjaOidcMappingProvider'.
                   #
-                  # github.com/matrix-org/synapse/blob/master/docs/sso_mapping_providers.md#openid-mapping-providers
+                  # github.com/matrix-org/synapse/blob/develop/docs/sso_mapping_providers.md#openid-mapping-providers
                   # for information on implementing a custom mapping provider.
                   # example:
                   # module: mapping_provider.OidcMappingProvider
@@ -384,7 +384,7 @@ spec:
                   existingClaim: "matrix-postgresql"
 
                 # templates/postgresql/initdb-configmap.yaml
-                # ref: https://github.com/matrix-org/synapse/blob/master/docs/postgres.md
+                # ref: https://github.com/matrix-org/synapse/blob/develop/docs/postgres.md
                 initdb:
                   scriptsConfigMap: "{{ .Release.Name }}-postgresql-initdb"
 
@@ -463,7 +463,7 @@ spec:
                 component: synapse
 
               # Prometheus metrics for Synapse
-              # https://github.com/matrix-org/synapse/blob/master/docs/metrics-howto.md
+              # https://github.com/matrix-org/synapse/blob/develop/docs/metrics-howto.md
               metrics:
                 # -- Whether Synapse should capture metrics on an additional endpoint
                 enabled: true
