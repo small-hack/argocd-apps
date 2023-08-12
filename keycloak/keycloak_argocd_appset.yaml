@@ -15,7 +15,7 @@ spec:
           name: secret-var-plugin-generator
         input:
           parameters:
-            secret_vars: ["keycloak_hostname", "keycloak_realm"]
+            secret_vars: ["keycloak_hostname", "keycloak_realm", "keycloak_client"]
   template:
     metadata:
       name: keycloak-web-app
@@ -33,7 +33,7 @@ spec:
             ## ref: https://github.com/bitnami/containers/tree/main/bitnami/keycloak#admin-credentials
             auth:
               ## @param auth.adminUser Keycloak administrator user
-              adminUser: user
+              adminUser: friend
               ## @param auth.existingSecret Existing secret containing Keycloak admin password
               existingSecret: "keycloak-admin-credentials"
               ## @param auth.passwordSecretKey Key where the Keycloak admin password is being stored inside the existing secret.
@@ -82,12 +82,12 @@ spec:
                 # create a new client
                 /opt/bitnami/keycloak/kcadm.sh create clients \
                   -r {{ .keycloak_realm }} \
-                  -s clientId=$NEW_CLIENT \
+                  -s clientId={{ .keycloak_client }} \
                   -s enabled=true \
                   -o \
                   --no-config \
                   --server $SERVER \
-                  --user $ADMIN_USER \
+                  --user friend \
                   --password $ADMIN_PASSWORD
 
                 # create a new user
@@ -97,7 +97,7 @@ spec:
                   -s enabled=true \
                   --no-config \
                   --server $SERVER \
-                  --user $ADMIN_USER \
+                  --user friend \
                   --password $ADMIN_PASSWORD
 
                 # set the user's password
@@ -107,7 +107,7 @@ spec:
                   --new-password $NEW_USER_PASSWORD \
                   --no-config \
                   --server $SERVER \
-                  --user $ADMIN_USER \
+                  --user friend \
                   --password $ADMIN_PASSWORD
             ## @param initdbScriptsConfigMap ConfigMap with the initdb scripts (Note: Overrides `initdbScripts`)
             initdbScriptsConfigMap: ""
