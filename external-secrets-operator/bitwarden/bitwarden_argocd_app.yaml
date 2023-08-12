@@ -10,6 +10,11 @@ spec:
     repoURL: 'https://jessebot.github.io/bitwarden-eso-provider'
     targetRevision: 0.3.0
     chart: bitwarden-eso-provider
+    helm:
+      values: |
+        bitwarden_eso_provider:
+          auth:
+            existingSecret: bweso-login
   destination:
     server: "https://kubernetes.default.svc"
     namespace: external-secrets
