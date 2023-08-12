@@ -10,13 +10,11 @@ export NEW_USER="user"
 export NEW_USER_PASSWORD="YOUR-PASSWORD-HERE"
 
 # Creae a new realm
-/opt/bitnami/keycloak/kcadm.sh create realms -s \
-  realm=$NEW_REALM \
+/opt/bitnami/keycloak/kcadm.sh create realms -s realm=$NEW_REALM \
   -s enabled=true \
   -o \
   --no-config \
   --server $SERVER \
-  --realm $ADMIN_REALM \
   --user $ADMIN_USER \
   --password $ADMIN_PASSWORD
 
@@ -27,7 +25,6 @@ export NEW_USER_PASSWORD="YOUR-PASSWORD-HERE"
   -o \
   --no-config \
   --server $SERVER \
-  --realm $ADMIN_REALM \
   --user $ADMIN_USER \
   --password $ADMIN_PASSWORD
 
@@ -37,7 +34,6 @@ export NEW_USER_PASSWORD="YOUR-PASSWORD-HERE"
   -s enabled=true \
   --no-config \
   --server $SERVER \
-  --realm $ADMIN_REALM \
   --user $ADMIN_USER \
   --password $ADMIN_PASSWORD
 
@@ -47,6 +43,5 @@ export NEW_USER_PASSWORD="YOUR-PASSWORD-HERE"
   --new-password $NEW_USER_PASSWORD \
   --no-config \
   --server $SERVER \
-  --realm $ADMIN_REALM \
   --user $ADMIN_USER \
   --password $ADMIN_PASSWORD
