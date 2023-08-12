@@ -76,7 +76,39 @@ spec:
             ##   my_init_script.sh: |
             ##      #!/bin/bash
             ##      echo "Do something."
-            initdbScripts: {}
+            initdbScripts:
+              init_script.sh: |
+                #!/bin/bash
+                # create a new client
+                /opt/bitnami/keycloak/kcadm.sh create clients \
+                  -r {{ .keycloak_realm }} \
+                  -s clientId=$NEW_CLIENT \
+                  -s enabled=true \
+                  -o \
+                  --no-config \
+                  --server $SERVER \
+                  --user $ADMIN_USER \
+                  --password $ADMIN_PASSWORD
+
+                # create a new user
+                /opt/bitnami/keycloak/kcadm.sh create users \
+                  -r {{ .keycloak_realm }} \
+                  -s username=$NEW_USER \
+                  -s enabled=true \
+                  --no-config \
+                  --server $SERVER \
+                  --user $ADMIN_USER \
+                  --password $ADMIN_PASSWORD
+
+                # set the user's password
+                /opt/bitnami/keycloak/kcadm.sh set-password \
+                  -r {{ .keycloak_realm }} \
+                  --username $NEW_USER \
+                  --new-password $NEW_USER_PASSWORD \
+                  --no-config \
+                  --server $SERVER \
+                  --user $ADMIN_USER \
+                  --password $ADMIN_PASSWORD
             ## @param initdbScriptsConfigMap ConfigMap with the initdb scripts (Note: Overrides `initdbScripts`)
             initdbScriptsConfigMap: ""
             ## @param command Override default container command (useful when using custom images)
