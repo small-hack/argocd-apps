@@ -86,7 +86,7 @@ spec:
                   -s enabled=true \
                   -o \
                   --no-config \
-                  --server $SERVER \
+                  --server http://localhost:8080/ \
                   --user friend \
                   --password $ADMIN_PASSWORD
 
@@ -96,7 +96,7 @@ spec:
                   -s username=$NEW_USER \
                   -s enabled=true \
                   --no-config \
-                  --server $SERVER \
+                  --server http://localhost:8080/ \
                   --user friend \
                   --password $ADMIN_PASSWORD
 
@@ -106,7 +106,7 @@ spec:
                   --username $NEW_USER \
                   --new-password $NEW_USER_PASSWORD \
                   --no-config \
-                  --server $SERVER \
+                  --server http://localhost:8080/ \
                   --user friend \
                   --password $ADMIN_PASSWORD
             ## @param initdbScriptsConfigMap ConfigMap with the initdb scripts (Note: Overrides `initdbScripts`)
