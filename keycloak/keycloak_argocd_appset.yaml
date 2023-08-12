@@ -86,7 +86,7 @@ spec:
             ## @param extraEnvVars Extra environment variables to be set on Keycloak container
             extraEnvVars:
               - name: KC_SPI_ADMIN_REALM
-              value: "{{ .keycloak_realm }}"
+                value: "{{ .keycloak_realm }}"
             ## @param extraEnvVarsCM Name of existing ConfigMap containing extra env vars
             extraEnvVarsCM: ""
             ## @param extraEnvVarsSecret Name of existing Secret containing extra env vars
