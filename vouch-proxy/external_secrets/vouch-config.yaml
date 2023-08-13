@@ -11,14 +11,24 @@ spec:
     template:
       type: Opaque
       data:
-        config.yaml: |-
-          {{ .config }}
+        domains: |-
+          {{ .domains }}
+        whiteList: |-
+          {{ .whiteList }}
   data:
-    - secretKey: config
+    - secretKey: domains
       sourceRef:
         storeRef:
           name: bitwarden-fields
           kind: ClusterSecretStore
       remoteRef:
         key: vouch-config
-        property: notes
+        property: domains
+    - secretKey: whiteList
+      sourceRef:
+        storeRef:
+          name: bitwarden-fields
+          kind: ClusterSecretStore
+      remoteRef:
+        key: vouch-config
+        property: whiteList
