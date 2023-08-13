@@ -47,15 +47,19 @@ TLDR: you can pass an env-var to the keycloak container:
 
 ## CLI Usage
 
+>[!warning]
+> Keycloak cant update the default scopes of a client after it has been created, they apparantly just forgot to code that function https://github.com/keycloak/keycloak/issues/16952 - and also then never fixed it for years. Ticket is still open.
+
 ```bash
 cd /opt/bitnami/keycloak
 
 export SERVER="http://localhost:8080/"
-export ADMIN_REALM="default-realm-name"
-export ADMIN_USER="test"
-export ADMIN_PASSWORD="YOUR-PASSWORD-HERE"
+export ADMIN_REALM="master"
+export ADMIN_USER="example"
+export ADMIN_PASSWORD="Unspoiled2-Wow-Hydration-Economy"
 export NEW_REALM="example-realm"
 export NEW_CLIENT="example-client"
+export NEW_SCOPE="example-scope"
 export NEW_USER="user"
 export NEW_USER_PASSWORD="YOUR-PASSWORD-HERE"
 
@@ -70,9 +74,22 @@ export NEW_USER_PASSWORD="YOUR-PASSWORD-HERE"
   --user $ADMIN_USER \
   --password $ADMIN_PASSWORD
 
+# Create a client Scope
+./bin/kcadm.sh create -x "client-scopes" -r $NEW_REALM \
+  -s name=$NEW_SCOPE \
+  -s protocol=openid-connect \
+  -o \
+  --no-config \
+  --server $SERVER \
+  --realm $ADMIN_REALM \
+  --user $ADMIN_USER \
+  --password $ADMIN_PASSWORD
+
 # create a new client
-kcadm.sh create clients -r $NEW_REALM \
+./bin/kcadm.sh create clients -r $NEW_REALM \
   -s clientId=$NEW_CLIENT \
+  -s "defaultClientScopes=[ \"web-origins\", \"acr\", \"profile\", \"roles\", \"email\", \"$NEW_SCOPE\" ]" \
+  -s 'optionalClientScopes=[ "address", "phone", "offline_access", "microprofile-jwt" ]' \
   -s enabled=true \
   -o \
   --no-config \
@@ -80,6 +97,29 @@ kcadm.sh create clients -r $NEW_REALM \
   --realm $ADMIN_REALM \
   --user $ADMIN_USER \
   --password $ADMIN_PASSWORD
+
+# Get the clientId
+CLIENT_ID=$(./bin/kcadm.sh get clients -r $NEW_REALM \
+-q clientId=$NEW_CLIENT  \
+-F id \
+--format csv \
+--noquotes \
+--no-config \
+--server $SERVER \
+--realm $ADMIN_REALM \
+--user $ADMIN_USER \
+--password $ADMIN_PASSWORD)
+
+# Create mapper
+./bin/kcadm.sh create clients/$CLIENT_ID/protocol-mappers/models -r $NEW_REALM \
+	-s name=$NEW_SCOPE -s protocol=openid-connect \
+	-s protocolMapper=oidc-hardcoded-claim-mapper \
+	-s config="{\"claim.value\" : \"$NEW_REALM\",\"claim.name\" : \"$NEW_SCOPE\",\"jsonType.label\" : \"String\",\"access.token.claim\" : \"true\"}" \
+--no-config \
+--server $SERVER \
+--realm $ADMIN_REALM \
+--user $ADMIN_USER \
+--password $ADMIN_PASSWORD
 
 # create a new user
 kcadm.sh create users -r $NEW_REALM \
