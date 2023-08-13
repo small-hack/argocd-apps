@@ -25,12 +25,17 @@ spec:
         namespace: ingress
       source:
         repoURL: 'https://jessebot.github.io/vouch-helm-chart'
-        targetRevision: 3.3.1
+        targetRevision: 4.0.0
         chart: vouch
         helm:
           values: |
             config:
-              existingSecretName: vouch-config
+              vouch:
+                existingSecret: vouch-config
+                secretKeys:
+                  whiteList: 'allowList'
+              oauth:
+                existingSecret: vouch-oauth-config
             ingress:
               enabled: true
               annotations:
