@@ -56,12 +56,13 @@ cd /opt/bitnami/keycloak
 export SERVER="http://localhost:8080/"
 export ADMIN_REALM="master"
 export ADMIN_USER="example"
-export ADMIN_PASSWORD="Unspoiled2-Wow-Hydration-Economy"
+export ADMIN_PASSWORD=""
 export NEW_REALM="example-realm"
 export NEW_CLIENT="example-client"
 export NEW_SCOPE="example-scope"
 export NEW_USER="user"
-export NEW_USER_PASSWORD="YOUR-PASSWORD-HERE"
+export NEW_USER_PASSWORD=""
+export NEW_GROUP="example-group"
 
 # Creae a new realm
 ./bin/kcadm.sh create realms -s \
@@ -77,8 +78,17 @@ export NEW_USER_PASSWORD="YOUR-PASSWORD-HERE"
 # Create a client Scope
 ./bin/kcadm.sh create -x "client-scopes" -r $NEW_REALM \
   -s name=$NEW_SCOPE \
+  -s description="example scope" \
   -s protocol=openid-connect \
+  -s attributes='{ "include.in.token.scope" : "true", "display.on.consent.screen" : "true", "consent.screen.text" : "${emailScopeConsentText}" }' \
   -o \
+  --no-config \
+  --server $SERVER \
+  --realm $ADMIN_REALM \
+  --user $ADMIN_USER \
+  --password $ADMIN_PASSWORD
+
+./bin/kcadm.sh get "client-scopes" -r $NEW_REALM \
   --no-config \
   --server $SERVER \
   --realm $ADMIN_REALM \
@@ -110,16 +120,43 @@ CLIENT_ID=$(./bin/kcadm.sh get clients -r $NEW_REALM \
 --user $ADMIN_USER \
 --password $ADMIN_PASSWORD)
 
+# Get Scope ID
+SCOPE_ID=$(./bin/kcadm.sh get "client-scopes" -r $NEW_REALM \
+-F id,name \
+--format csv \
+--noquotes \
+--no-config \
+--server $SERVER   \
+--realm $ADMIN_REALM   \
+--user $ADMIN_USER   \
+--password $ADMIN_PASSWORD |\
+grep $NEW_SCOPE |\
+awk -F',' '{print $1}')
+
 # Create mapper
 ./bin/kcadm.sh create clients/$CLIENT_ID/protocol-mappers/models -r $NEW_REALM \
-	-s name=$NEW_SCOPE -s protocol=openid-connect \
-	-s protocolMapper=oidc-hardcoded-claim-mapper \
-	-s config="{\"claim.value\" : \"$NEW_REALM\",\"claim.name\" : \"$NEW_SCOPE\",\"jsonType.label\" : \"String\",\"access.token.claim\" : \"true\"}" \
+-s name=$NEW_SCOPE \
+-s protocol=openid-connect \
+-s protocolMapper=oidc-group-membership-mapper \
+-s consentRequired=false \
+-s config='{ "full.path" : "true", "id.token.claim" : "true", "access.token.claim" : "true", "userinfo.token.claim" : "true" }' \
 --no-config \
 --server $SERVER \
 --realm $ADMIN_REALM \
 --user $ADMIN_USER \
 --password $ADMIN_PASSWORD
+
+./bin/kcadm.sh get clients/$CLIENT_ID/protocol-mappers/models -r $NEW_REALM \
+-F id,name \
+--format csv \
+--noquotes \
+--no-config \
+--server $SERVER \
+--realm $ADMIN_REALM \
+--user $ADMIN_USER \
+--password $ADMIN_PASSWORD |\
+grep $NEW_SCOPE |\
+awk -F',' '{print $1}'
 
 # create a new user
 kcadm.sh create users -r $NEW_REALM \
@@ -140,6 +177,17 @@ kcadm.sh set-password -r $NEW_REALM \
   --realm $ADMIN_REALM \
   --user $ADMIN_USER \
   --password $ADMIN_PASSWORD
+
+# create group
+# A User and group
+./bin/kcadm.sh create groups -r $NEW_REALM \
+-s name=$
+
+export USER_ID=`./kcadm.sh create users -s username=argocduser -s enabled=true -r master -s totp=false -s emailVerified=false -s "requiredActions=[]" -i`
+./kcadm.sh update users/${USER_ID}/groups/${GROUP_ID} -r master -s realm=master -s userId=${USER_ID} -s groupId=${GROUP_ID} -n
+
+./kcadm.sh update users/${USER_ID}/reset-password -r master -s type=password -s value=argocduser -s temporary=false -n
+
 
 ```
 
