@@ -58,18 +58,18 @@ spec:
                 ## If you want to setup ZITADEL with a service account
                 ## instead of a human admin user, comment the following
                 ## in by deleting each lines first hash and space
-                # FirstInstance:
-                #   # path used for volume mounts and to write the secret
-                #   MachineKeyPath: /machinekey/zitadel-admin-sa.json
-                #   Org:
-                #     Machine:
-                #       Machine:
-                #         # Creates a service account with the name zitadel-admin-sa,
-                #         # which results in a secret 'zitadel-admin-sa' with a key 'zitadel-admin-sa.json'
-                #         Username: zitadel-admin-sa
-                #         Name: Admin
-                #       MachineKey:
-                #         Type: 1
+                FirstInstance:
+                  # path used for volume mounts and to write the secret
+                  MachineKeyPath: /machinekey/zitadel-admin-sa.json
+                  Org:
+                    Machine:
+                      Machine:
+                        # Creates a service account with the name zitadel-admin-sa,
+                        # which results in a secret 'zitadel-admin-sa' with a key 'zitadel-admin-sa.json'
+                        Username: zitadel-admin-sa
+                        Name: Admin
+                      MachineKey:
+                        Type: 1
 
               # The ZITADEL config under secretConfig is written to a Kubernetes Secret
               # See all defaults here:
@@ -80,13 +80,6 @@ spec:
               # The key should be named "config-yaml".
               configSecretName:
 
-  # ZITADEL uses symmetric encryption.
-  # You can generate the encryption key using: 'tr -dc A-Za-z0-9 </dev/urandom | head -c 32'
-  # or reference it via a secret. the name "masterkey" is hardcoded unfortunately. 
-  # One of either the key or secret-name must be provided.
-  masterkey: ""
-  # Name of the secret which contains the key.
-  masterkeySecretName: ""
               # You can generate it for example with tr -dc A-Za-z0-9 </dev/urandom | head -c 32
               masterkey: ""
               # Reference the name of the secret that contains the masterkey. The key should be named "masterkey".
