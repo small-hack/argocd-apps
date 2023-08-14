@@ -39,7 +39,7 @@ spec:
             mastodon:
               createAdmin:
                 enabled: true
-                existingSecret: mastodon-admin
+                existingSecret: mastodon-admin-credentials
                 secretKeys:
                   usernameKey: username
                   passwordKey: password
@@ -219,7 +219,10 @@ spec:
                 username: mastodon
                 # you can also specify the name of an existing Secret
                 # with a key of password set to the password you want
-                existingSecret: "mastodon-pg-user-credentials"
+                existingSecret: "mastodon-pgsql-credentials"
+                secretKeys:
+                  adminPasswordKey: postgresPassword
+                  userPasswordKey: password
 
             # https://github.com/bitnami/charts/tree/main/bitnami/redis#parameters
             redis:
