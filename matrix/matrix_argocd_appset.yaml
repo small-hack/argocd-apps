@@ -364,7 +364,7 @@ spec:
                       # -- key in existingSecret with password for matrix to connect to db
                       userPasswordKey: password
                       # -- key in existingSecret with the admin postgresql password
-                      adminPasswordKey: postgresPassword
+                      adminPasswordKey: password
 
               # primary database node config
               primary:
