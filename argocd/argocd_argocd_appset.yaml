@@ -1,62 +1,4 @@
 ---
-# First sync wave because we need secrets for argocd, so it has to be
-# before argocd so it has secrets for all its credentials.
-# In a private repo right now while we figure out a custom argocd plugin
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: argocd-external-secrets
-  namespace: argocd
-  annotations:
-    argocd.argoproj.io/sync-wave: "1"
-    pref.argocd.argoproj.io/default-view: "tree"
-spec:
-  project: argocd
-  destination:
-    server: "https://kubernetes.default.svc"
-    namespace: argocd
-  source:
-    repoURL: https://github.com/small-hack/argocd-apps.git
-    path: argocd/manifests/external_secrets/
-  syncPolicy:
-    syncOptions:
-      - Replace=true
-    automated:
-      prune: true
-      selfHeal: true
-
----
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: argocd-secrets-plugin-generator
-  namespace: argocd
-  annotations:
-    argocd.argoproj.io/sync-wave: "1"
-    pref.argocd.argoproj.io/default-view: "tree"
-spec:
-  project: argocd
-  destination:
-    server: "https://kubernetes.default.svc"
-    namespace: argocd
-  source:
-    repoURL: https://jessebot.github.io/argocd-appset-secret-plugin
-    chart: argocd-appset-secret-plugin
-    targetRevision: 0.2.0
-    helm:
-      releaseName: argocd-appset-secret-plugin
-      values: |
-        bitwarden_eso_provider:
-          auth:
-            existingSecret: "appset-secret-vars"
-  syncPolicy:
-    syncOptions:
-      - Replace=true
-    automated:
-      prune: true
-      selfHeal: true
-
----
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
@@ -74,7 +16,8 @@ spec:
           name: secret-var-plugin-generator
         input:
           parameters:
-            secret_vars: ["argocd_hostname", "keycloak_hostname", keycloak_realm]
+            secret_vars: ["argocd_hostname", "argocd_oidc_provider",
+                          "keycloak_hostname", keycloak_realm]
   template:
     metadata:
       name: argocd-helm
@@ -202,10 +145,10 @@ spec:
                 # to source a secret from somewhere else:
                 # https://argo-cd.readthedocs.io/en/stable/operator-manual/user-management/#example_1
                 oidc.config: |
-                  name: Keycloak
+                  name: {{ .argocd_oidc_provider }}
                   issuer: https://{{ .keycloak_hostname }}/realms/{{ .keycloak_realm }}
                   clientID: argocd
-                  clientSecret: $argocd-keycloak:oidc.keycloak.clientSecret
+                  clientSecret: $argocd-external-oidc:oidc.keycloak.clientSecret
                   requestedScopes: ["openid", "profile", "email", "groups"]
                   requestedIDTokenClaims: {"groups": {"essential": true}}
 
