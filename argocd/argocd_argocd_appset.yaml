@@ -16,8 +16,11 @@ spec:
           name: secret-var-plugin-generator
         input:
           parameters:
-            secret_vars: ["argocd_hostname", "argocd_oidc_provider",
-                          "keycloak_hostname", keycloak_realm]
+            secret_vars:
+              - argocd_hostname
+              - argocd_oidc_provider
+              - argocd_oidc_issuer
+              - argocd_oidc_client_id
   template:
     metadata:
       name: argocd-helm
@@ -146,9 +149,9 @@ spec:
                 # https://argo-cd.readthedocs.io/en/stable/operator-manual/user-management/#example_1
                 oidc.config: |
                   name: {{ .argocd_oidc_provider }}
-                  issuer: https://{{ .keycloak_hostname }}/realms/{{ .keycloak_realm }}
-                  clientID: argocd
-                  clientSecret: $argocd-external-oidc:oidc.keycloak.clientSecret
+                  issuer: {{ .argocd_oidc_issuer }}
+                  clientID: {{ .argocd_oidc_client_id }}
+                  clientSecret: $argocd-external-oidc:oidc.{{ .argocd_oidc_provider }}.clientSecret
                   requestedScopes: ["openid", "profile", "email", "groups"]
                   requestedIDTokenClaims: {"groups": {"essential": true}}
 
