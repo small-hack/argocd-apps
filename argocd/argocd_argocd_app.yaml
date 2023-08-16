@@ -46,9 +46,8 @@ spec:
     helm:
       releaseName: argocd-appset-secret-plugin
       values: |
-        bitwarden_eso_provider:
-          auth:
-            existingSecret: "appset-secret-vars"
+        secretVars:
+          existingSecret: "appset-secret-vars"
   syncPolicy:
     syncOptions:
       - Replace=true
