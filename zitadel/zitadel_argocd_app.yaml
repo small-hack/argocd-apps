@@ -1,12 +1,10 @@
 ---
-# First sync wave because we need secrets for argocd, so it has to be
-# before argocd so it has secrets for all its credentials.
-# In a private repo right now while we figure out a custom argocd plugin
+# First sync wave because we need secrets for zitadel before it spins up
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: argocd-external-secrets
-  namespace: argocd
+  name: zitadel-external-secrets
+  namespace: zitadel
   annotations:
     argocd.argoproj.io/sync-wave: "1"
     pref.argocd.argoproj.io/default-view: "tree"
@@ -17,7 +15,7 @@ spec:
     namespace: zitadel
   source:
     repoURL: https://github.com/small-hack/argocd-apps.git
-    path: alpha/zitadel/external_secrets/
+    path: zitadel/external_secrets/
   syncPolicy:
     syncOptions:
       - Replace=true
@@ -26,13 +24,15 @@ spec:
       selfHeal: true
 
 ---
+# CockroachDB
+# https://github.com/cockroachdb/helm-charts/tree/master/cockroachdb#configuration
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: argocd-secrets-plugin-generator
-  namespace: argocd
+  name: zitadel-cockroachdb
+  namespace: zitadel
   annotations:
-    argocd.argoproj.io/sync-wave: "1"
+    argocd.argoproj.io/sync-wave: "2"
     pref.argocd.argoproj.io/default-view: "tree"
 spec:
   project: zitadel
@@ -44,9 +44,32 @@ spec:
     chart: cockroachdb
     targetRevision: 11.1.5
     helm:
-      releaseName: argocd-appset-secret-plugin
+      releaseName: zitadel-cockroachdb
+      # for testing add the following to values:
+      # statefulset.replicas=1
+      # statefulset.replicas=1
       values: |
         fullnameOverride: crdb
+        serviceMonitor:
+          enabled: true
+        # tls:
+        #   certs:
+        #     certManagerIssuer:
+        #       group: cert-manager.io
+        #       kind: ClusterIssuer
+        #       name: letsencrypt
+        networkPolicy:
+          enabled: true
+          ingress:
+            grpc:
+              - podSelector:
+                  matchLabels:
+                    app.kubernetes.io/name: zitadel-web-app
+                    app.kubernetes.io/instance: zitadel
+            http:
+              - namespaceSelector:
+                  matchLabels:
+                    project: zitadel
   syncPolicy:
     syncOptions:
       - Replace=true
