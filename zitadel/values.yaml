@@ -118,7 +118,7 @@ serviceAccount:
 # see more here: https://github.com/zitadel/zitadel/blob/main/cmd/defaults.yaml
 env:
   - name: ZITADEL_EXTERNAL_DOMAIN
-    value: {{ .zitadel_domain }}
+    value: {{ .zitadel_hostname }}
 
 service:
   type: ClusterIP
@@ -133,14 +133,14 @@ ingress:
     kubernetes.io/tls-acme: "true"
     cert-manager.io/cluster-issuer: letsencrypt-staging
   hosts:
-    - host: {{ .zitadel_domain }}
+    - host: {{ .zitadel_hostname }}
       paths:
         - path: /
           pathType: Prefix
   tls:
     - secretName: zitadel-tls
       hosts:
-        - {{ .zitadel_domain }}
+        - {{ .zitadel_hostname }}
 
 initJob:
   # Once ZITADEL is installed, the initJob can be disabled.
