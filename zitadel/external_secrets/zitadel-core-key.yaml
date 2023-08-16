@@ -1,0 +1,29 @@
+---
+# secret zitadel core key
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: zitadel-core-key
+  namespace: zitadel
+spec:
+  target:
+    # Name of the kubernetes secret
+    name: zitadel-core-key
+    deletionPolicy: Delete
+    template:
+      type: Opaque
+      data:
+        masterkey: |-
+         {{ .coreKey }}
+
+  data:
+    - secretKey: password
+      sourceRef:
+        storeRef:
+          name: bitwarden-login
+          kind: ClusterSecretStore
+      remoteRef:
+        # key-id of the bitwarden secret
+        key: zitadel-core-key
+        # property within the bitwarden secret we want
+        property: password
