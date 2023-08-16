@@ -57,12 +57,12 @@ export SERVER="http://localhost:8080/"
 export ADMIN_REALM="master"
 export ADMIN_USER="example"
 export ADMIN_PASSWORD=""
-export NEW_REALM="example-realm"
-export NEW_CLIENT="example-client"
-export NEW_SCOPE="example-scope"
-export NEW_USER="user"
-export NEW_USER_PASSWORD=""
-export NEW_GROUP="example-group"
+export NEW_REALM="default"
+export NEW_CLIENT="argocd"
+export NEW_SCOPE="groups"
+export NEW_USER="argocd"
+export NEW_USER_PASSWORD="ChangeMe!"
+export NEW_GROUP="argocd-admins"
 
 # Creae a new realm
 ./bin/kcadm.sh create realms -s \
@@ -159,17 +159,20 @@ grep $NEW_SCOPE |\
 awk -F',' '{print $1}'
 
 # create a new user
-kcadm.sh create users -r $NEW_REALM \
+export USER_ID=$(./bin/kcadm.sh create users -r $NEW_REALM \
   -s username=$NEW_USER \
   -s enabled=true \
+  -s totp=false \
+  -s emailVerified=true \
+  -s "requiredActions=[]" -i \
   --no-config \
   --server $SERVER \
   --realm $ADMIN_REALM \
   --user $ADMIN_USER \
-  --password $ADMIN_PASSWORD
+  --password $ADMIN_PASSWORD)
 
 # set the user's password
-kcadm.sh set-password -r $NEW_REALM \
+./bin/kcadm.sh set-password -r $NEW_REALM \
   --username $NEW_USER \
   --new-password $NEW_USER_PASSWORD \
   --no-config \
@@ -179,15 +182,43 @@ kcadm.sh set-password -r $NEW_REALM \
   --password $ADMIN_PASSWORD
 
 # create group
-# A User and group
-./bin/kcadm.sh create groups -r $NEW_REALM \
--s name=$
+export GROUP_ID=$(./bin/kcadm.sh create groups -r $NEW_REALM \
+-s name=$NEW_GROUP -i \
+--no-config \
+--server $SERVER \
+--realm $ADMIN_REALM \
+--user $ADMIN_USER \
+--password $ADMIN_PASSWORD)
 
-export USER_ID=`./kcadm.sh create users -s username=argocduser -s enabled=true -r master -s totp=false -s emailVerified=false -s "requiredActions=[]" -i`
-./kcadm.sh update users/${USER_ID}/groups/${GROUP_ID} -r master -s realm=master -s userId=${USER_ID} -s groupId=${GROUP_ID} -n
+# Add User to Group
+./bin/kcadm.sh update users/$USER_ID/groups/$GROUP_ID -r $NEW_REALM \
+-s realm=$NEW_REALM \
+-s userId=$USER_ID \
+-s groupId=$GROUP_ID -n \
+--no-config \
+--server $SERVER \
+--realm $ADMIN_REALM \
+--user $ADMIN_USER \
+--password $ADMIN_PASSWORD
+
+./bin/kcadm.sh add-roles -r $NEW_REALM \
+--uid $USER_ID \
+--cid $CLIENT_ID \
+--rolename manage-realm \
+--no-config \
+--server $SERVER \
+--realm $ADMIN_REALM \
+--user $ADMIN_USER \
+--password $ADMIN_PASSWORD
+
+./bin/kcadm.sh get-roles -r $NEW_REALM \
+--no-config \
+--server $SERVER \
+--realm $ADMIN_REALM \
+--user $ADMIN_USER \
+--password $ADMIN_PASSWORD
 
 ./kcadm.sh update users/${USER_ID}/reset-password -r master -s type=password -s value=argocduser -s temporary=false -n
-
 
 ```
 
