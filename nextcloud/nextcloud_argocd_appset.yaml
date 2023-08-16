@@ -130,8 +130,8 @@ spec:
                     database: nextcloud
                     existingSecret: nextcloud-pgsql-credentials
                     secretKeys:
-                      userPasswordKey: nextcloudPassword
-                      adminPasswordKey: postgresPassword
+                      userPasswordKey: password
+                      adminPasswordKey: password
               volumePermissions:
                 enabled: true
               primary:
@@ -158,7 +158,7 @@ spec:
               auth:
                 enabled: true
                 existingSecret: nextcloud-redis-credentials
-                existingSecretPasswordKey: redis_password
+                existingSecretPasswordKey: password
             cronjob:
               enabled: true
             service:
