@@ -93,22 +93,7 @@ spec:
               # The Secret containing the client CA Certificate and key at tls.crt and tls.key needed for establishing secure database connections
               dbSslClientCrtSecret: "crdb-client-secret"
 
-            replicaCount: 2
-
-            image:
-              repository: ghcr.io/zitadel/zitadel
-              pullPolicy: IfNotPresent
-              # Overrides the image tag whose default is the chart appVersion.
-              tag: ""
-
-            chownImage:
-              repository: alpine
-              pullPolicy: IfNotPresent
-              tag: "3.11"
-
-            imagePullSecrets: []
-            nameOverride: ""
-            fullnameOverride: ""
+            replicaCount: 1
 
             serviceAccount:
               # Specifies whether a service account should be created
@@ -119,39 +104,29 @@ spec:
               # If not set and create is true, a name is generated using the fullname template
               name: ""
 
-            podAnnotations: {}
-
-            podSecurityContext:
-              runAsNonRoot: true
-              runAsUser: 1000
-
             securityContext: {}
 
             # Additional environment variables
+            # see more here: https://github.com/zitadel/zitadel/blob/main/cmd/defaults.yaml
             env:
-              []
-              # - name: ZITADEL_DATABASE_POSTGRES_HOST
-              #   valueFrom:
-              #     secretKeyRef:
-              #       name: postgres-pguser-postgres
-              #       key: host
-
-            service:
-              type: ClusterIP
-              port: 8080
-              protocol: http2
-              annotations: {}
+              - name: ZITADEL_EXTERNAL_DOMAIN
+                value: {{ .zitadel_hostname }}
 
             ingress:
-              enabled: false
-              className: ""
-              annotations: {}
+              enabled: true
+              className: "nginx"
+              annotations:
+                kubernetes.io/tls-acme: "true"
+                cert-manager.io/cluster-issuer: letsencrypt-staging
               hosts:
-                - host: localhost
+                - host: {{ .zitadel_hostname }}
                   paths:
                     - path: /
                       pathType: Prefix
-              tls: []
+              tls:
+                - secretName: zitadel-tls
+                  hosts:
+                    - {{ .zitadel_hostname }}
 
             initJob:
               # Once ZITADEL is installed, the initJob can be disabled.
