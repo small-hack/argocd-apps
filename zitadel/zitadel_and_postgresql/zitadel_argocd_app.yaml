@@ -78,7 +78,7 @@ spec:
               existingSecret: zitadel-postgres-credentials
               secretKeys:
                 userPasswordKey: password
-                adminPasswordKey: postgresPassword
+                adminPasswordKey: adminPassword
         volumePermissions:
           enabled: true
         primary:
