@@ -39,9 +39,7 @@ spec:
         helm:
           releaseName: zitadel
           values: |
-            # Default values for zitadel.
             zitadel:
-              # The ZITADEL config under configmapConfig is written to a Kubernetes ConfigMap
               # See all defaults here:
               # https://github.com/zitadel/zitadel/blob/main/cmd/defaults.yaml
               configmapConfig:
@@ -62,7 +60,7 @@ spec:
                     Webhook:
                       Enabled: false
 
-                ## If you want to setup ZITADEL with a service account
+                # setup ZITADEL with a service account
                 FirstInstance:
                   Org:
                     Machine:
@@ -74,21 +72,9 @@ spec:
                       MachineKey:
                         Type: 1
 
-              # The ZITADEL config under secretConfig is written to a Kubernetes Secret
-              # See all defaults here:
-              # https://github.com/zitadel/zitadel/blob/main/cmd/defaults.yaml
-              secretConfig:
-
-              # Reference the name of a secret that contains ZITADEL configuration.
-              # The key should be named "config-yaml".
-              configSecretName:
-
               # Reference the name of the secret that contains the masterkey. The key should be named "masterkey".
               # Note: Either zitadel.masterkey or zitadel.masterkeySecretName must be set
               masterkeySecretName: "zitadel-core-key"
-
-              # The root CA Certificate needed for establishing secure database connections
-              dbSslRootCrt: ""
 
               # The Secret containing the root CA Certificate at key ca.crt needed for establishing secure database connections
               dbSslRootCrtSecret: "zitadel-cockroachdb-ca-secret"
@@ -97,15 +83,6 @@ spec:
               dbSslClientCrtSecret: "zitadel-cockroachdb-client-secret"
 
             replicaCount: 1
-
-            serviceAccount:
-              # Specifies whether a service account should be created
-              create: true
-              # Annotations to add to the service account
-              annotations: {}
-              # The name of the service account to use.
-              # If not set and create is true, a name is generated using the fullname template
-              name: ""
 
             securityContext: {}
 
@@ -131,38 +108,7 @@ spec:
                   hosts:
                     - {{ .zitadel_hostname }}
 
-            initJob:
-              # Once ZITADEL is installed, the initJob can be disabled.
-              enabled: true
-              annotations:
-                helm.sh/hook: pre-install,pre-upgrade
-                helm.sh/hook-delete-policy: before-hook-creation
-                helm.sh/hook-weight: "1"
-              resources: {}
-              activeDeadlineSeconds: 300
-              extraContainers: []
-              podAnnotations: {}
-
-            setupJob:
-              annotations:
-                helm.sh/hook: pre-install,pre-upgrade
-                helm.sh/hook-delete-policy: before-hook-creation
-                helm.sh/hook-weight: "2"
-              resources: {}
-              activeDeadlineSeconds: 300
-              extraContainers: []
-              podAnnotations: {}
-              machinekeyWriterImage:
-                repository: bitnami/kubectl
-                tag: ""
-
             metrics:
               enabled: false
               serviceMonitor:
-                # If true, the chart creates a ServiceMonitor that is compatible with Prometheus Operator
-                # https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/api.md#monitoring.coreos.com/v1.ServiceMonitor.
-                # The Prometheus community Helm chart installs this operator
-                # https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack#kube-prometheus-stack
                 enabled: false
-                honorLabels: false
-                honorTimestamps: true
