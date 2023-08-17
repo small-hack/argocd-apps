@@ -4,7 +4,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: zitadel-external-secrets
-  namespace: zitadel
+  namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "1"
     pref.argocd.argoproj.io/default-view: "tree"
@@ -30,7 +30,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: zitadel-cockroachdb
-  namespace: zitadel
+  namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "2"
     pref.argocd.argoproj.io/default-view: "tree"
@@ -44,7 +44,6 @@ spec:
     chart: cockroachdb
     targetRevision: 11.1.5
     helm:
-      releaseName: zitadel-cockroachdb
       # for testing add the following to values:
       # statefulset.replicas=1
       # statefulset.replicas=1
