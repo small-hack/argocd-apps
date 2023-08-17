@@ -92,6 +92,16 @@ spec:
             env:
               - name: ZITADEL_EXTERNAL_DOMAIN
                 value: {{ .zitadel_hostname }}
+              # - name: ZITADEL_DATABASE_COCKROACH_USER_PASSWORD
+              #   valueFrom:
+              #   secretKeyRef:
+              #     name:
+              #     key:
+              # - name: ZITADEL_DATABASE_COCKROACH_ADMIN_PASSWORD
+              #   valueFrom:
+              #   secretKeyRef:
+              #     name:
+              #     key:
 
             ingress:
               enabled: true
