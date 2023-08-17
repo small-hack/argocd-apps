@@ -5,7 +5,7 @@ metadata:
   name: bitwarden-eso-provider
   namespace: argocd
 spec:
-  project: external-secrets
+  project: external-secrets-operator
   source:
     repoURL: 'https://jessebot.github.io/bitwarden-eso-provider'
     targetRevision: 0.3.0
