@@ -45,7 +45,7 @@ spec:
     chart: cockroachdb
     targetRevision: 11.1.5
     helm:
-      # for testing add the following to values:
+      # for testing cert-manager, add the following to values below:
       # tls:
       #   certs:
       #     certManagerIssuer:
@@ -62,6 +62,14 @@ spec:
             argocd.argoproj.io/hook: Sync
           annotations:
             argocd.argoproj.io/hook: Sync
+        provisioning:
+          enabled: true
+          users:
+            - name: zitadel
+          databases:
+            - name: zitadel
+              owners:
+                - zitadel
         # networkPolicy:
         #   enabled: true
         #   ingress:
