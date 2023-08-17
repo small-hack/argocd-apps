@@ -1,3 +1,5 @@
+This doesn't work yet, because the address_pool can still be a list and argocd go templates can't accept objects yet, only strings.
+```yaml
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
@@ -31,3 +33,4 @@ spec:
         repoURL: 'https://github.com/small-hack/argocd-apps'
         targetRevision: main
         path: metallb/crds/
+```
