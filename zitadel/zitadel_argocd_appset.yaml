@@ -20,7 +20,7 @@ spec:
             secret_vars: ["zitadel_hostname"]
   template:
     metadata:
-      name: zitadel-helm
+      name: zitadel-web-app
     spec:
       project: zitadel
       destination:
