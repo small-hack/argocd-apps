@@ -9,6 +9,7 @@ metadata:
     pref.argocd.argoproj.io/default-view: "network"
     pref.argocd.argoproj.io/default-pod-sort: "topLevelResource"
 spec:
+  goTemplate: true
   # generator allows us to source specific values from an external k8s secret
   generators:
     - plugin:
