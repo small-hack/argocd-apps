@@ -62,8 +62,6 @@ spec:
             argocd.argoproj.io/hook: Sync
           annotations:
             argocd.argoproj.io/hook: Sync
-        serviceMonitor:
-          enabled: true
         # networkPolicy:
         #   enabled: true
         #   ingress:
