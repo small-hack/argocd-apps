@@ -66,6 +66,8 @@ spec:
           enabled: true
           users:
             - name: zitadel
+              # this sets password to NULL which forces cert auth which should prevent password authentication
+              # ref: https://www.cockroachlabs.com/docs/stable/create-user#prevent-a-user-from-using-password-authentication
               password:
           databases:
             - name: zitadel
