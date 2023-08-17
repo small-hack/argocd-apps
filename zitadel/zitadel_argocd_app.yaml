@@ -76,7 +76,7 @@ spec:
         #             project: zitadel
   syncPolicy:
     syncOptions:
-      - Replace=true
+      - ApplyOutOfSyncOnly=true
     automated:
       prune: true
       selfHeal: true
