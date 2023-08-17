@@ -14,10 +14,10 @@ spec:
       type: Opaque
       data:
         masterkey: |-
-         {{ .coreKey }}
+         {{ .password }}
 
   data:
-    - secretKey: coreKey
+    - secretKey: password
       sourceRef:
         storeRef:
           name: bitwarden-login
