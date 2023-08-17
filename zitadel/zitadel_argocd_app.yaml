@@ -66,6 +66,7 @@ spec:
           enabled: true
           users:
             - name: zitadel
+              password:
           databases:
             - name: zitadel
               owners:
