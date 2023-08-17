@@ -47,8 +47,8 @@ spec:
       # for testing add the following to values:
       # statefulset.replicas=1
       # statefulset.replicas=1
+      releaseName: crdb
       values: |
-        fullnameOverride: crdb
         serviceMonitor:
           enabled: true
         # tls:
