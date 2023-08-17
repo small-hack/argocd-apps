@@ -44,31 +44,31 @@ spec:
     repoURL: https://charts.cockroachdb.com/
     chart: cockroachdb
     targetRevision: 11.1.5
-    helm:
-      # for testing add the following to values:
-      # statefulset:
-      #   replicas: 1
-      # tls:
-      #   certs:
-      #     certManagerIssuer:
-      #       group: cert-manager.io
-      #       kind: ClusterIssuer
-      #       name: letsencrypt
-      values: |
-        serviceMonitor:
-          enabled: true
-        networkPolicy:
-          enabled: true
-          ingress:
-            grpc:
-              - podSelector:
-                  matchLabels:
-                    app.kubernetes.io/name: zitadel-web-app
-                    app.kubernetes.io/instance: zitadel
-            http:
-              - namespaceSelector:
-                  matchLabels:
-                    project: zitadel
+    # helm:
+    #   # for testing add the following to values:
+    #   # statefulset:
+    #   #   replicas: 1
+    #   # tls:
+    #   #   certs:
+    #   #     certManagerIssuer:
+    #   #       group: cert-manager.io
+    #   #       kind: ClusterIssuer
+    #   #       name: letsencrypt
+    #   values: |
+    #     serviceMonitor:
+    #       enabled: true
+    #     networkPolicy:
+    #       enabled: true
+    #       ingress:
+    #         grpc:
+    #           - podSelector:
+    #               matchLabels:
+    #                 app.kubernetes.io/name: zitadel-web-app
+    #                 app.kubernetes.io/instance: zitadel
+    #         http:
+    #           - namespaceSelector:
+    #               matchLabels:
+    #                 project: zitadel
   syncPolicy:
     syncOptions:
       - Replace=true
