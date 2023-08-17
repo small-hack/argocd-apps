@@ -88,13 +88,6 @@ export NEW_GROUP="argocd-admins"
   --user $ADMIN_USER \
   --password $ADMIN_PASSWORD
 
-./bin/kcadm.sh get "client-scopes" -r $NEW_REALM \
-  --no-config \
-  --server $SERVER \
-  --realm $ADMIN_REALM \
-  --user $ADMIN_USER \
-  --password $ADMIN_PASSWORD
-
 # create a new client
 ./bin/kcadm.sh create clients -r $NEW_REALM \
   -s clientId=$NEW_CLIENT \
@@ -146,18 +139,6 @@ awk -F',' '{print $1}')
 --user $ADMIN_USER \
 --password $ADMIN_PASSWORD
 
-./bin/kcadm.sh get clients/$CLIENT_ID/protocol-mappers/models -r $NEW_REALM \
--F id,name \
---format csv \
---noquotes \
---no-config \
---server $SERVER \
---realm $ADMIN_REALM \
---user $ADMIN_USER \
---password $ADMIN_PASSWORD |\
-grep $NEW_SCOPE |\
-awk -F',' '{print $1}'
-
 # create a new user
 export USER_ID=$(./bin/kcadm.sh create users -r $NEW_REALM \
   -s username=$NEW_USER \
@@ -201,6 +182,7 @@ export GROUP_ID=$(./bin/kcadm.sh create groups -r $NEW_REALM \
 --user $ADMIN_USER \
 --password $ADMIN_PASSWORD
 
+# Add roles (W.i.P
 ./bin/kcadm.sh add-roles -r $NEW_REALM \
 --uid $USER_ID \
 --cid $CLIENT_ID \
@@ -210,16 +192,6 @@ export GROUP_ID=$(./bin/kcadm.sh create groups -r $NEW_REALM \
 --realm $ADMIN_REALM \
 --user $ADMIN_USER \
 --password $ADMIN_PASSWORD
-
-./bin/kcadm.sh get-roles -r $NEW_REALM \
---no-config \
---server $SERVER \
---realm $ADMIN_REALM \
---user $ADMIN_USER \
---password $ADMIN_PASSWORD
-
-./kcadm.sh update users/${USER_ID}/reset-password -r master -s type=password -s value=argocduser -s temporary=false -n
-
 ```
 
 
