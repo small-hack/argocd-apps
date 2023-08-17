@@ -63,6 +63,11 @@ spec:
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: zitadel
+  syncPolicy:
+    syncOptions:
+      - ApplyOutOfSyncOnly=true
+    automated:
+      selfHeal: true
   source:
     chart: postgresql
     repoURL: 'https://charts.bitnami.com/bitnami'
