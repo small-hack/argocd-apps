@@ -45,19 +45,18 @@ spec:
     chart: cockroachdb
     targetRevision: 11.1.5
     helm:
+      # for testing add the following to values:
+      # statefulset:
+      #   replicas: 1
+      # tls:
+      #   certs:
+      #     certManagerIssuer:
+      #       group: cert-manager.io
+      #       kind: ClusterIssuer
+      #       name: letsencrypt
       values: |
-        # for testing add the following to values:
-        statefulset:
-          replicas: 1
-        # for monitoring
         serviceMonitor:
           enabled: true
-        # tls:
-        #   certs:
-        #     certManagerIssuer:
-        #       group: cert-manager.io
-        #       kind: ClusterIssuer
-        #       name: letsencrypt
         networkPolicy:
           enabled: true
           ingress:
