@@ -12,9 +12,9 @@ metadata:
   #  app: multi-file-writer
 spec:
   # Optional:
-  storageClassName: longhorn
+  storageClassName: local-path
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   resources:
     requests:
       # Must be sufficient to hold your data
