@@ -25,29 +25,3 @@ For Actions (needed for Argo CD and Zitadel to work nicely) you probably want th
 ## Helm testing locally
 
 Zitadel has an official guide for k8s deployments [here](https://zitadel.com/docs/self-hosting/deploy/kubernetes).
-
-```bash
-helm repo add cockroachdb https://charts.cockroachdb.com/
-helm repo add zitadel https://zitadel.github.io/zitadel-charts
-helm repo update cockroachdb zitadel
-
-# Install CockroachDB
-helm install crdb cockroachdb/cockroachdb \
-  --set fullnameOverride=crdb \
-  --set single-node=true \
-  --set statefulset.replicas=1
-
-# Install ZITADEL
-helm install my-zitadel zitadel/zitadel \
-  --set zitadel.masterkey="MasterkeyNeedsToHave32Characters" \
-  --set zitadel.configmapConfig.ExternalSecure=false \
-  --set zitadel.configmapConfig.TLS.Enabled=false \
-  --set zitadel.secretConfig.Database.cockroach.User.Password="a-zitadel-db-user-password" \
-  --set replicaCount=1 \
-  --set zitadel.configmapConfig.FirstInstance.Org.Machine.Machine.Username="zitadel-admin-sa" \
-  --set zitadel.configmapConfig.FirstInstance.Org.Machine.Machine.Name="Admin" \
-  --set zitadel.configmapConfig.FirstInstance.Org.Machine.MachineKey.Type=1
-
-# Make ZITADEL locally accessible
-kubectl port-forward svc/my-zitadel 8080
-```
