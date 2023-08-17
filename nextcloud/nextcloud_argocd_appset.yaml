@@ -8,6 +8,7 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "2"
 spec:
+  goTemplate: true
   # generator allows us to source specific values from an external k8s secret
   generators:
     - plugin:
@@ -56,9 +57,9 @@ spec:
               tls:
                 - secretName: nextcloud-tls
                   hosts:
-                    - "{{ARGOCD_ENV_VAR_PLUGIN_NEXTCLOUD_HOSTNAME}}"
+                    - "{{ .nextcloud_hostname }}"
             nextcloud:
-              host: "{{ARGOCD_ENV_VAR_PLUGIN_NEXTCLOUD_HOSTNAME}}"
+              host: "{{ .nextcloud_hostname }}"
               existingSecret:
                 enabled: true
                 secretName: nextcloud-admin-credentials
