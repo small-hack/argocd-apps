@@ -15,7 +15,7 @@ spec:
   source:
     repoURL: https://jessebot.github.io/argocd-appset-secret-plugin
     chart: argocd-appset-secret-plugin
-    targetRevision: 0.2.2
+    targetRevision: 0.2.3
     helm:
       releaseName: argocd-appset-secret-plugin
       values: |
