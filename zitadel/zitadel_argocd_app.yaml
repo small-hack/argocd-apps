@@ -16,6 +16,7 @@ spec:
   source:
     repoURL: https://github.com/small-hack/argocd-apps.git
     path: zitadel/external_secrets/
+    targetRevision: main
   syncPolicy:
     syncOptions:
       - Replace=true
@@ -44,11 +45,11 @@ spec:
     chart: cockroachdb
     targetRevision: 11.1.5
     helm:
-      # for testing add the following to values:
-      # statefulset.replicas=1
-      # statefulset.replicas=1
-      releaseName: crdb
       values: |
+        # for testing add the following to values:
+        statefulset:
+          replicas: 1
+        # for monitoring
         serviceMonitor:
           enabled: true
         # tls:
