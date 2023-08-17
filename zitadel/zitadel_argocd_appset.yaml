@@ -47,7 +47,7 @@ spec:
               configmapConfig:
                 Database:
                   cockroach:
-                    Host: "crdb-public"
+                    Host: "zitadel-cockroachdb-public"
                     User:
                       SSL:
                         Mode: "verify-full"
@@ -91,10 +91,10 @@ spec:
               dbSslRootCrt: ""
 
               # The Secret containing the root CA Certificate at key ca.crt needed for establishing secure database connections
-              dbSslRootCrtSecret: "crdb-ca-secret"
+              dbSslRootCrtSecret: "zitadel-cockroachdb-ca-secret"
 
               # The Secret containing the client CA Certificate and key at tls.crt and tls.key needed for establishing secure database connections
-              dbSslClientCrtSecret: "crdb-client-secret"
+              dbSslClientCrtSecret: "zitadel-cockroachdb-client-secret"
 
             replicaCount: 1
 
