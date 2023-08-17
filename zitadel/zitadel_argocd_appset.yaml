@@ -47,9 +47,11 @@ spec:
                   cockroach:
                     Host: "zitadel-cockroachdb-public"
                     User:
+                      Username: zitadel
                       SSL:
                         Mode: "verify-full"
                     Admin:
+                      Username: root
                       SSL:
                         Mode: "verify-full"
 
