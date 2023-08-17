@@ -95,13 +95,13 @@ spec:
               # - name: ZITADEL_DATABASE_COCKROACH_USER_PASSWORD
               #   valueFrom:
               #   secretKeyRef:
-              #     name:
-              #     key:
+              #     name: zitadel-db-credentials
+              #     key: password
               # - name: ZITADEL_DATABASE_COCKROACH_ADMIN_PASSWORD
               #   valueFrom:
               #   secretKeyRef:
-              #     name:
-              #     key:
+              #     name: zitadel-db-credentials
+              #     key: adminPassword
 
             ingress:
               enabled: true
