@@ -17,7 +17,7 @@ spec:
          {{ .coreKey }}
 
   data:
-    - secretKey: password
+    - secretKey: coreKey
       sourceRef:
         storeRef:
           name: bitwarden-login
