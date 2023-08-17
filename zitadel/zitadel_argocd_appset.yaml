@@ -26,6 +26,12 @@ spec:
       destination:
         server: https://kubernetes.default.svc
         namespace: zitadel
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
+          selfHeal: true
       source:
         repoURL: https://zitadel.github.io/zitadel-charts
         chart: zitadel
