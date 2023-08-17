@@ -45,13 +45,6 @@ spec:
     chart: cockroachdb
     targetRevision: 11.1.5
     helm:
-      # for testing cert-manager, add the following to values below:
-      # tls:
-      #   certs:
-      #     certManagerIssuer:
-      #       group: cert-manager.io
-      #       kind: ClusterIssuer
-      #       name: letsencrypt
       values: |
         conf:
           singe-node: true
