@@ -7,13 +7,15 @@ Here's their [helm chart](https://github.com/zitadel/zitadel-charts/tree/main) t
 It's important to take a look at the [`defaults.yaml`](https://github.com/zitadel/zitadel/blob/main/cmd/defaults.yaml) to see what the default `ConfigMap` will look like for Zitadel.
 
 ## Sync waves
-1. External Secrets for both cockroachdb and zitadel
-   - includes cockroachdb secrets
-   - includes Zitadel `masterkey`
-2. cockroachdb helm chart
+
+1. External Secrets for both postgres and zitadel
+   - postgres password secrets
+   - Zitadel `masterkey` secret
+2. postgres helm chart
 3. zitadel helm chart
 
 ## Zitadel OIDC for Argo CD SSO
+
 Check out this [PR](https://github.com/argoproj/argo-cd/pull/15029)
 
 ## Using the Zitadel API

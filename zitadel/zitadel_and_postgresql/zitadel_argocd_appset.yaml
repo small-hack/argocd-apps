@@ -43,16 +43,6 @@ spec:
               # See all defaults here:
               # https://github.com/zitadel/zitadel/blob/main/cmd/defaults.yaml
               configmapConfig:
-                Database:
-                  cockroach:
-                    Host: "zitadel-cockroachdb-public"
-                    User:
-                      SSL:
-                        Mode: "verify-full"
-                    Admin:
-                      SSL:
-                        Mode: "verify-full"
-
                 Machine:
                   Identification:
                     Hostname:
@@ -72,15 +62,16 @@ spec:
                       MachineKey:
                         Type: 1
 
-              # Reference the name of the secret that contains the masterkey. The key should be named "masterkey".
+              # Reference the name of the secret that contains the masterkey.
+              # The key should be named "masterkey".
               # Note: Either zitadel.masterkey or zitadel.masterkeySecretName must be set
               masterkeySecretName: "zitadel-core-key"
 
               # The Secret containing the root CA Certificate at key ca.crt needed for establishing secure database connections
-              dbSslRootCrtSecret: "zitadel-cockroachdb-ca-secret"
+              dbSslRootCrtSecret: "zitadel-postgres-crt"
 
               # The Secret containing the client CA Certificate and key at tls.crt and tls.key needed for establishing secure database connections
-              dbSslClientCrtSecret: "zitadel-cockroachdb-client-secret"
+              dbSslClientCrtSecret: "zitadel-postgres-crt"
 
             replicaCount: 1
 
@@ -91,6 +82,30 @@ spec:
             env:
               - name: ZITADEL_EXTERNAL_DOMAIN
                 value: {{ .zitadel_hostname }}
+              - name: ZITADEL_DATABASE_POSTGRES_HOST
+                value: zitadel-postgres.zitadel.svc.cluster.local
+              - name: ZITADEL_DATABASE_POSTGRES_PORT
+                value: 5432
+              - name: ZITADEL_DATABASE_POSTGRES_USER_USERNAME
+                valueFrom:
+                  secretKeyRef:
+                    name: zitadel-postgres-credentials
+                    key: username
+              - name: ZITADEL_DATABASE_POSTGRES_USER_PASSWORD
+                valueFrom:
+                  secretKeyRef:
+                    name: zitadel-postgres-credentials
+                    key: password
+              - name: ZITADEL_DATABASE_POSTGRES_ADMIN_USERNAME
+                valueFrom:
+                  secretKeyRef:
+                    name: zitadel-postgres-credentials
+                    key: postgresUsername
+              - name: ZITADEL_DATABASE_POSTGRES_ADMIN_PASSWORD
+                valueFrom:
+                  secretKeyRef:
+                    name: zitadel-postgres-credentials
+                    key: postgresPassword
 
             ingress:
               enabled: true
