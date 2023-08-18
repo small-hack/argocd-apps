@@ -5,8 +5,6 @@ kind: ApplicationSet
 metadata:
   name: infisical-web-app-set
   namespace: argocd
-  annotations:
-    argocd.argoproj.io/sync-wave: "2"
 spec:
   goTemplate: true
   # generator allows us to source specific values from an external k8s secret
@@ -16,84 +14,12 @@ spec:
           name: secret-var-plugin-generator
         input:
           parameters:
-            secret_vars: ["nextcloud_hostname"]
+            secret_vars: ["infisical_hostname"]
   template:
     metadata:
-      name: infisical
+      name: infisical-web-app
     spec:
       project: infisical
-      source:
-        # Actual source code: https://github.com/Infisical/infisical/tree/main/helm-charts/infisical
-        repoURL: 'https://dl.cloudsmith.io/public/infisical/helm-charts/helm/charts/'
-        chart: infisical
-        # published versions: https://cloudsmith.io/~infisical/repos/helm-charts/packages/detail/helm/infisical/#versions
-        targetRevision: 0.2.1
-        helm:
-          values: |
-            ## Documentation : https://infisical.com/docs/self-hosting/deployments/kubernetes
-            frontend:
-              ## @param frontend.replicaCount Backend replica count
-              replicaCount: 1
-              ## @param frontend.kubeSecretRef Backend secret resource reference name 
-              # (containing required [frontend configuration variables](https://infisical.com/docs/self-hosting/configuration/envars))
-              kubeSecretRef: ""
-
-            ## Doc: https://infisical.com/docs/self-hosting/configuration/envars
-            frontendEnvironmentVariables:
-              ## @param frontendEnvironmentVariables.SITE_URL Absolute URL including the protocol (e.g. https://app.infisical.com)
-              SITE_URL: {{ .infisical_hostname }}
-
-            ## @section Infisical backend parameters
-            ## Doc: https://infisical.com/docs/self-hosting/deployments/kubernetes
-            backend:
-              ## @param backend.replicaCount Backend replica count
-              replicaCount: 1
-              ## @param backend.kubeSecretRef Backend secret resource reference name
-              # (containing required [backend configuration variables](https://infisical.com/docs/self-hosting/configuration/envars))
-              kubeSecretRef: "infisical-credentials"
-
-            ## Backend variables configuration
-            ## Documentation : https://infisical.com/docs/self-hosting/configuration/envars
-            backendEnvironmentVariables:
-              SITE_URL: {{ .infisical_hostname }}
-              ## @param backendEnvironmentVariables.INVITE_ONLY_SIGNUP To disable account creation from the login page (invites only)
-              INVITE_ONLY_SIGNUP: true
-
-            ## @section MongoDB(&reg;) parameters
-            ## Documentation : https://github.com/bitnami/charts/blob/main/bitnami/mongodb/values.yaml
-            mongodb:
-              image:
-                repository: bitnami/mongodb
-                tag: "6.0.4-debian-11-r0"
-              ## Infisical MongoDB custom authentication
-              auth:
-                ## @param mongodb.auth.enabled Enable custom authentication
-                enabled: true
-                ## @param mongodb.auth.usernames Custom usernames list ([special characters warning](https://www.mongodb.com/docs/manual/reference/connection-string/#standard-connection-string-format))
-                usernames:
-                  - "infisical"
-                ## @param auth.existingSecret Existing secret with MongoDB(&reg;) credentials (keys: `mongodb-passwords`, `mongodb-root-password`, `mongodb-metrics-password`, `mongodb-replica-set-key`)
-                ## NOTE: When it's set the previous parameters are ignored.
-                existingSecret: ""
-              ## MongoDB persistence configuration
-              persistence:
-                ## @param mongodb.persistence.enabled Enable database persistence
-                enabled: true
-                ## @param mongodb.persistence.existingClaim Existing persistent volume claim name
-                existingClaim: ""
-
-            ingress:
-              enabled: true
-              ingressClassName: nginx
-              annotations:
-                cert-manager.io/issuer: letsencrypt-staging
-              ## @param ingress.hostName Ingress hostname (your custom domain name, e.g. `infisical.example.org`)
-              hostName: {{ .infisical_hostname }}
-              ## @param ingress.tls Ingress TLS hosts (matching above hostName)
-              tls:
-                - secretName: letsencrypt-staging
-                  hosts:
-                    - {{ .infisical_hostname }}
       destination:
         server: "https://kubernetes.default.svc"
         namespace: infisical
@@ -103,3 +29,30 @@ spec:
         automated:
           prune: true
           selfHeal: true
+      source:
+        # Actual source code: https://github.com/Infisical/infisical/tree/main/helm-charts/infisical
+        repoURL: 'https://dl.cloudsmith.io/public/infisical/helm-charts/helm/charts/'
+        chart: infisical
+        # versions: https://cloudsmith.io/~infisical/repos/helm-charts/packages/detail/helm/infisical/#versions
+        targetRevision: 0.2.1
+        helm:
+          ## Documentation : https://infisical.com/docs/self-hosting/deployments/kubernetes
+          values: |
+            frontend:
+              replicaCount: 1
+
+            backend:
+              replicaCount: 1
+              ## Doc: https://infisical.com/docs/self-hosting/configuration/envars
+              kubeSecretRef: "infisical-backend-secrets"
+
+            ingress:
+              enabled: true
+              ingressClassName: nginx
+              annotations:
+                cert-manager.io/cluster-issuer: letsencrypt-staging
+              hostName: {{ .infisical_hostname }}
+              tls:
+                - secretName: infisical-tls
+                  hosts:
+                    - {{ .infisical_hostname }}
