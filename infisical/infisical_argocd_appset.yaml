@@ -48,6 +48,9 @@ spec:
               ## Doc: https://infisical.com/docs/self-hosting/configuration/envars
               kubeSecretRef: "infisical-backend-secrets"
 
+            mongodb:
+              enabled: false
+
             ingress:
               enabled: true
               ingressClassName: nginx
