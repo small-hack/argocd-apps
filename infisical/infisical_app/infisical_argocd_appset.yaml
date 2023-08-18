@@ -18,6 +18,8 @@ spec:
   template:
     metadata:
       name: infisical-web-app
+      annotations:
+        argocd.argoproj.io/sync-wave: "3"
     spec:
       project: infisical
       destination:
@@ -45,6 +47,9 @@ spec:
               replicaCount: 1
               ## Doc: https://infisical.com/docs/self-hosting/configuration/envars
               kubeSecretRef: "infisical-backend-secrets"
+
+            mongodb:
+              enabled: false
 
             ingress:
               enabled: true
