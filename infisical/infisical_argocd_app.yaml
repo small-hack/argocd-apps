@@ -50,7 +50,7 @@ spec:
             - "infisical"
           ## Existing secret with MongoDB credentials
           # keys: mongodb-passwords, mongodb-root-password, mongodb-metrics-password, mongodb-replica-set-key
-          existingSecret: "infisical-mongodb-credentials"
+          existingSecret: "infisical-mongo-credentials"
         persistence:
           enabled: true
           existingClaim: ""
