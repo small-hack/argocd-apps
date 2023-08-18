@@ -2,8 +2,36 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
+  name: infisical-secrets-operator
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  project: infisical
+  source:
+    # Actual source code: https://github.com/Infisical/infisical/tree/main/helm-charts/secrets-operator
+    repoURL: 'https://dl.cloudsmith.io/public/infisical/helm-charts/helm/charts/'
+    chart: secrets-operator
+    # published versions: https://cloudsmith.io/~infisical/repos/helm-charts/packages/detail/helm/secrets-operator/#versions
+    targetRevision: 0.2.0
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: infisical
+  syncPolicy:
+    syncOptions:
+     - ApplyOutOfSyncOnly=true
+    automated:
+      prune: true
+      selfHeal: true
+
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
   name: mongodb
   namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
 spec:
   project: infisical
   source:
@@ -13,21 +41,18 @@ spec:
     helm:
       # Docs: https://github.com/bitnami/charts/blob/main/bitnami/mongodb/values.yaml
       values: |
-        ## Infisical MongoDB custom authentication
         auth:
           ## @param mongodb.auth.enabled Enable custom authentication
           enabled: true
-          ## @param mongodb.auth.usernames Custom usernames list ([special characters warning](https://www.mongodb.com/docs/manual/reference/connection-string/#standard-connection-string-format))
           usernames:
+            - "infisical"
+          databases:
             - "infisical"
           ## Existing secret with MongoDB credentials
           # keys: mongodb-passwords, mongodb-root-password, mongodb-metrics-password, mongodb-replica-set-key
           existingSecret: "infisical-mongodb-credentials"
-        ## MongoDB persistence configuration
         persistence:
-          ## @param mongodb.persistence.enabled Enable database persistence
           enabled: true
-          ## @param mongodb.persistence.existingClaim Existing persistent volume claim name
           existingClaim: ""
   destination:
     server: "https://kubernetes.default.svc"
