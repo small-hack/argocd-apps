@@ -36,10 +36,9 @@ spec:
         # versions: https://cloudsmith.io/~infisical/repos/helm-charts/packages/detail/helm/infisical/#versions
         targetRevision: 0.2.1
         helm:
+          ## Documentation : https://infisical.com/docs/self-hosting/deployments/kubernetes
           values: |
-            ## Documentation : https://infisical.com/docs/self-hosting/deployments/kubernetes
             frontend:
-              ## @param frontend.replicaCount Backend replica count
               replicaCount: 1
               ## @param frontend.kubeSecretRef Backend secret resource reference name 
               # (containing required [frontend configuration variables](https://infisical.com/docs/self-hosting/configuration/envars))
@@ -50,10 +49,8 @@ spec:
               ## @param frontendEnvironmentVariables.SITE_URL Absolute URL including the protocol (e.g. https://app.infisical.com)
               SITE_URL: {{ .infisical_hostname }}
 
-            ## @section Infisical backend parameters
             ## Doc: https://infisical.com/docs/self-hosting/deployments/kubernetes
             backend:
-              ## @param backend.replicaCount Backend replica count
               replicaCount: 1
               ## @param backend.kubeSecretRef Backend secret resource reference name
               # (containing required [backend configuration variables](https://infisical.com/docs/self-hosting/configuration/envars))
@@ -81,7 +78,7 @@ spec:
                   - "infisical"
                 ## @param auth.existingSecret Existing secret with MongoDB(&reg;) credentials (keys: `mongodb-passwords`, `mongodb-root-password`, `mongodb-metrics-password`, `mongodb-replica-set-key`)
                 ## NOTE: When it's set the previous parameters are ignored.
-                existingSecret: ""
+                # existingSecret: ""
               ## MongoDB persistence configuration
               persistence:
                 ## @param mongodb.persistence.enabled Enable database persistence
