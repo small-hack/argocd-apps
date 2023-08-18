@@ -17,7 +17,7 @@ spec:
             secret_vars: ["infisical_hostname"]
   template:
     metadata:
-      name: infisical
+      name: infisical-web-app
     spec:
       project: infisical
       destination:
