@@ -5,8 +5,6 @@ kind: ApplicationSet
 metadata:
   name: infisical-web-app-set
   namespace: argocd
-  annotations:
-    argocd.argoproj.io/sync-wave: "2"
 spec:
   goTemplate: true
   # generator allows us to source specific values from an external k8s secret
@@ -22,11 +20,20 @@ spec:
       name: infisical
     spec:
       project: infisical
+      destination:
+        server: "https://kubernetes.default.svc"
+        namespace: infisical
+      syncPolicy:
+        syncOptions:
+         - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
+          selfHeal: true
       source:
         # Actual source code: https://github.com/Infisical/infisical/tree/main/helm-charts/infisical
         repoURL: 'https://dl.cloudsmith.io/public/infisical/helm-charts/helm/charts/'
         chart: infisical
-        # published versions: https://cloudsmith.io/~infisical/repos/helm-charts/packages/detail/helm/infisical/#versions
+        # versions: https://cloudsmith.io/~infisical/repos/helm-charts/packages/detail/helm/infisical/#versions
         targetRevision: 0.2.1
         helm:
           values: |
@@ -94,12 +101,3 @@ spec:
                 - secretName: letsencrypt-staging
                   hosts:
                     - {{ .infisical_hostname }}
-      destination:
-        server: "https://kubernetes.default.svc"
-        namespace: infisical
-      syncPolicy:
-        syncOptions:
-         - ApplyOutOfSyncOnly=true
-        automated:
-          prune: true
-          selfHeal: true
