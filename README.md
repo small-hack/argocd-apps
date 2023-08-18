@@ -96,6 +96,7 @@ Here's some quick guidelines, but you if you'd like to contribute, please read t
 |:-----------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------|
 | [external-secrets-operator](./external-secrets-operator)   | ESO ([External Secrets Operator](https://external-secrets.io/latest/)) used for sourcing k8s secrets from an external provider       |
 | [bitwarden-external-secrets](./bitwarden-external-secrets) | ESO [Bitwarden](https://external-secrets.io/v0.9.1/examples/bitwarden/) SecretStore, for using secrets directly from bitwarden items |
+| [infisical](./infisical) | [Infisical](https://infisical.com/docs/integrations/platforms/kubernetes) is an open source secrets management solution and it has a k8s secrets operator. |
 
 ### 🚧 Under construction
 |               App               | Description                                                                |
