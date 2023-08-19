@@ -11,7 +11,7 @@ spec:
   source:
     chart: gpu-operator
     repoURL: https://helm.ngc.nvidia.com/nvidia
-    targetRevision: 22.9.2
+    targetRevision: 23.6.0
     helm:
       skipCrds: false
       values: |
