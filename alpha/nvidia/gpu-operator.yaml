@@ -1,0 +1,33 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nvidia-gpu-operator
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  project: default
+  source:
+    chart: gpu-operator
+    repoURL: https://helm.ngc.nvidia.com/nvidia
+    targetRevision: 22.9.2
+    helm:
+      skipCrds: false
+      values: |
+        cdi: 
+          enabled: "true"
+          default: "false"
+        driver:
+          enabled: "true"
+        toolkit:
+          enabled: "true"
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: gpu-operator
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+    automated:
+      prune: true
+      selfHeal: true
