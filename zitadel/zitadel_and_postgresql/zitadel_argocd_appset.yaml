@@ -67,12 +67,6 @@ spec:
               # Note: Either zitadel.masterkey or zitadel.masterkeySecretName must be set
               masterkeySecretName: "zitadel-core-key"
 
-              # The Secret containing the root CA Certificate at key ca.crt needed for establishing secure database connections
-              dbSslRootCrtSecret: "zitadel-postgres-crt"
-
-              # The Secret containing the client CA Certificate and key at tls.crt and tls.key needed for establishing secure database connections
-              dbSslClientCrtSecret: "zitadel-postgres-crt"
-
             replicaCount: 1
 
             securityContext: {}
