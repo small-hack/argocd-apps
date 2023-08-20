@@ -95,12 +95,12 @@ spec:
                 valueFrom:
                   secretKeyRef:
                     name: zitadel-db-credentials
-                    key: postgresUsername
+                    key: adminUser
               - name: ZITADEL_DATABASE_POSTGRES_ADMIN_PASSWORD
                 valueFrom:
                   secretKeyRef:
                     name: zitadel-db-credentials
-                    key: postgresPassword
+                    key: adminPassword
 
             ingress:
               enabled: true
