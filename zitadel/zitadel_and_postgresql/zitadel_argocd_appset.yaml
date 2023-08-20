@@ -81,6 +81,10 @@ spec:
                 value: zitadel-postgres.zitadel.svc.cluster.local
               - name: ZITADEL_DATABASE_POSTGRES_PORT
                 value: "5432"
+              - name: ZITADEL_DATABASE_POSTGRES_USER_SSL_MODE
+                value: "disable"
+              - name: ZITADEL_DATABASE_POSTGRES_ADMIN_SSL_MODE
+                value: "disable"
               - name: ZITADEL_DATABASE_POSTGRES_USER_USERNAME
                 valueFrom:
                   secretKeyRef:
