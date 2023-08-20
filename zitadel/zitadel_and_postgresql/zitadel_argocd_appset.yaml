@@ -57,7 +57,13 @@ spec:
                         Mode: disable
                 TLS:
                   Enabled: false
-                ExternalSecure: false
+
+                # specifies if ZITADEL is exposed externally through TLS
+                # this must be set to true even if TLS is not enabled on ZITADEL itself
+                # but TLS traffic is terminated on a reverse proxy
+                # !!! Changing this after initial setup breaks your system !!!
+                ExternalSecure: true
+                ExternalPort: 443
 
                 Machine:
                   Identification:
