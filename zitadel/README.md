@@ -28,3 +28,24 @@ For Actions (needed for Argo CD and Zitadel to work nicely) you probably want th
 ## Helm testing locally
 
 Zitadel has an official guide for k8s deployments [here](https://zitadel.com/docs/self-hosting/deploy/kubernetes).
+
+## TODO
+Find a graceful way to setup SMTP or not. Here's the configuration parameters that would need to be set:
+
+```yaml
+DefaultInstance:
+  # this configuration sets the default email configuration
+  SMTPConfiguration:
+    # Configuration of the host
+    SMTP:
+      # must include the port, like smtp.mailtrap.io:2525. IPv6 is also supported, like [2001:db8::1]:2525
+      Host: # ZITADEL_DEFAULTINSTANCE_SMTPCONFIGURATION_SMTP_HOST
+      User: # ZITADEL_DEFAULTINSTANCE_SMTPCONFIGURATION_SMTP_USER
+      Password: # ZITADEL_DEFAULTINSTANCE_SMTPCONFIGURATION_SMTP_PASSWORD
+    TLS: # ZITADEL_DEFAULTINSTANCE_SMTPCONFIGURATION_SMTP_SSL
+    # If the host of the sender is different from ExternalDomain set DefaultInstance.DomainPolicy.SMTPSenderAddressMatchesInstanceDomain to false
+    From: # ZITADEL_DEFAULTINSTANCE_SMTPCONFIGURATION_SMTP_FROM
+    FromName: # ZITADEL_DEFAULTINSTANCE_SMTPCONFIGURATION_SMTP_FROMNAME
+  DomainPolicy:
+    SMTPSenderAddressMatchesInstanceDomain: false
+```
