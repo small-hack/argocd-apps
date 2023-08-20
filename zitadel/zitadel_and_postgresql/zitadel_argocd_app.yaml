@@ -96,12 +96,13 @@ spec:
             local all all trust
             host all all 127.0.0.1/32 md5
             host all zitadel 10.0.0.0/8 md5
-          initdb:
-            scripts:
-              my_init_script.sql: |
-                ALTER DATABASE zitadel OWNER TO zitadel;
-                GRANT ALL PRIVILEGES ON DATABASE zitadel TO zitadel;
-                GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO zitadel;
+            host all postgres 10.0.0.0/8 md5
+          #initdb:
+          #  scripts:
+          #    my_init_script.sql: |
+          #      ALTER DATABASE zitadel OWNER TO zitadel;
+          #      GRANT ALL PRIVILEGES ON DATABASE zitadel TO zitadel;
+          #      GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO zitadel;
           persistence:
             enabled: true
             # Use an existing Persistent Volume Claim (must be created ahead of time)
