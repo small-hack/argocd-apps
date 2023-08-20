@@ -47,6 +47,10 @@ spec:
               # See all defaults here:
               # https://github.com/zitadel/zitadel/blob/main/cmd/defaults.yaml
               configmapConfig:
+                DefaultInstance:
+                  LoginPolicy:
+                    # disables registration
+                    AllowRegister: false
                 Database:
                   postgres:
                     Host: zitadel-postgres
@@ -59,10 +63,12 @@ spec:
                       SSL:
                         Mode: disable
                 TLS:
+                  # off until https://github.com/zitadel/zitadel-charts/pull/108
+                  # or a similar easy fix would be merged
                   Enabled: false
 
-                # specifies if ZITADEL is exposed externally through TLS
-                # this must be set to true even if TLS is not enabled on ZITADEL itself
+                # specifies if ZITADEL is exposed externally through TLS this
+                # must be set to true even if TLS is not enabled on ZITADEL itself
                 # but TLS traffic is terminated on a reverse proxy
                 # !!! Changing this after initial setup breaks your system !!!
                 ExternalSecure: true
@@ -144,12 +150,12 @@ spec:
 
             readinessProbe:
               enabled: true
-              initialDelaySeconds: 15
-              periodSeconds: 10
+              initialDelaySeconds: 20
+              periodSeconds: 15
               failureThreshold: 6
 
             livenessProbe:
               enabled: true
-              initialDelaySeconds: 15
-              periodSeconds: 10
+              initialDelaySeconds: 20
+              periodSeconds: 15
               failureThreshold: 6
