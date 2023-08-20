@@ -95,7 +95,7 @@ spec:
             # Additional environment variables
             # see more here: https://github.com/zitadel/zitadel/blob/main/cmd/defaults.yaml
             env:
-              - name: ZITADEL_EXTERNAL_DOMAIN
+              - name: ZITADEL_EXTERNALDOMAIN
                 value: {{ .zitadel_hostname }}
               - name: ZITADEL_DATABASE_POSTGRES_USER_USERNAME
                 valueFrom:
