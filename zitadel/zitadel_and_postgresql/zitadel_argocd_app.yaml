@@ -81,7 +81,7 @@ spec:
           postgresql:
             auth:
               username: zitadel
-              database: zitadel
+              # database: zitadel
               existingSecret: zitadel-db-credentials
               secretKeys:
                 userPasswordKey: password
