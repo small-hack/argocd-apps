@@ -74,7 +74,9 @@ spec:
     targetRevision: 12.8.2
     helm:
       skipCrds: true
+      releaseName: zitadel-postgres
       values: |
+        fullnameOverride: zitadel-postgres
         global:
           postgresql:
             auth:
