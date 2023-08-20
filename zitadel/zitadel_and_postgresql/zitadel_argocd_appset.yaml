@@ -40,6 +40,9 @@ spec:
           releaseName: zitadel
           # https://github.com/zitadel/zitadel-charts/blob/main/charts/zitadel/values.yaml
           values: |
+            image:
+              # Overrides the image tag whose default is the chart appVersion to the latest version as kept up to date by renovateBot
+              tag: "v2.33.0"
             zitadel:
               # See all defaults here:
               # https://github.com/zitadel/zitadel/blob/main/cmd/defaults.yaml
