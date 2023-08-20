@@ -15,6 +15,18 @@ This ArgoCD app of apps is designed to be pretty locked down to allow you to use
 2. postgres or cockraochdb helm chart
 3. zitadel helm chart with ONLY a service account and registration DISABLED
 
+## Usage
+
+To deploy Zitadel and postgresql:
+```bash
+argocd app create zitadel --upsert --repo https://github.com/small-hack/argocd-apps --path zitadel/zitadel_and_postgresql --sync-policy automated --self-heal --auto-prune --dest-namespace zitadel --dest-server https://kubernetes.default.svc
+```
+
+To deploy Zitadel and cockraochdb:
+```bash
+argocd app create zitadel --upsert --repo https://github.com/small-hack/argocd-apps --path zitadel/zitadel_and_cockroachdb --sync-policy automated --self-heal --auto-prune --dest-namespace zitadel --dest-server https://kubernetes.default.svc
+```
+
 ## Zitadel OIDC for logging into Argo CD with Zitadel as the SSO
 
 Check out this [PR](https://github.com/argoproj/argo-cd/pull/15029)
