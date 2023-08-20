@@ -78,7 +78,7 @@ spec:
               - name: ZITADEL_EXTERNAL_DOMAIN
                 value: {{ .zitadel_hostname }}
               - name: ZITADEL_DATABASE_POSTGRES_HOST
-                value: zitadel-postgres.zitadel.svc.cluster.local
+                value: zitadel-postgres
               - name: ZITADEL_DATABASE_POSTGRES_PORT
                 value: "5432"
               - name: ZITADEL_DATABASE_POSTGRES_USER_SSL_MODE
