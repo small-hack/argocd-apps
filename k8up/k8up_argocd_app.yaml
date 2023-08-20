@@ -8,7 +8,7 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "1"
 spec:
-  project: default
+  project: k8up
   source:
     repoURL: https://github.com/k8up-io/k8up.git
     path: config/crd/apiextensions.k8s.io/v1/
@@ -34,7 +34,7 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "2"
 spec:
-  project: default
+  project: k8up
   sources:
     # official k8up helm repo
     - repoURL: 'https://k8up-io.github.io/k8up'
