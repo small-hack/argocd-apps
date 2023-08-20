@@ -132,3 +132,15 @@ spec:
               enabled: false
               serviceMonitor:
                 enabled: false
+
+            readinessProbe:
+              enabled: true
+              initialDelaySeconds: 15
+              periodSeconds: 10
+              failureThreshold: 6
+
+            livenessProbe:
+              enabled: true
+              initialDelaySeconds: 15
+              periodSeconds: 10
+              failureThreshold: 6
