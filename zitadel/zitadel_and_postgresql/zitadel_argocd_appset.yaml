@@ -38,11 +38,22 @@ spec:
         targetRevision: 5.0.0
         helm:
           releaseName: zitadel
-          values: |
+          values:
             zitadel:
               # See all defaults here:
               # https://github.com/zitadel/zitadel/blob/main/cmd/defaults.yaml
               configmapConfig:
+                Database:
+                  postgres:
+                    Host: zitadel-postgres
+                    Port: 5432
+                    Database: zitadel
+                    User:
+                      SSL:
+                        Mode: disable
+                    Admin:
+                      SSL:
+                        Mode: disable
                 Machine:
                   Identification:
                     Hostname:
@@ -77,14 +88,14 @@ spec:
             env:
               - name: ZITADEL_EXTERNAL_DOMAIN
                 value: {{ .zitadel_hostname }}
-              - name: ZITADEL_DATABASE_POSTGRES_HOST
-                value: zitadel-postgres
-              - name: ZITADEL_DATABASE_POSTGRES_PORT
-                value: "5432"
-              - name: ZITADEL_DATABASE_POSTGRES_USER_SSL_MODE
-                value: "disable"
-              - name: ZITADEL_DATABASE_POSTGRES_ADMIN_SSL_MODE
-                value: "disable"
+              # - name: ZITADEL_DATABASE_POSTGRES_HOST
+              #   value: zitadel-postgres
+              # - name: ZITADEL_DATABASE_POSTGRES_PORT
+              #   value: "5432"
+              # - name: ZITADEL_DATABASE_POSTGRES_USER_SSL_MODE
+              #   value: "disable"
+              # - name: ZITADEL_DATABASE_POSTGRES_ADMIN_SSL_MODE
+              #   value: "disable"
               - name: ZITADEL_DATABASE_POSTGRES_USER_USERNAME
                 valueFrom:
                   secretKeyRef:
