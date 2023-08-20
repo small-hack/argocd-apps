@@ -1,6 +1,6 @@
 # An Argo CD App for Zitadel
 
-[Zitadel](https://github.com/zitadel/zitadel/tree/main) and it's community have been really nice, so we'll be supporting some Argo CD apps here in favor of depracting Keycloak support down the line eventually. Here's the [Zitadel helm chart](https://github.com/zitadel/zitadel-charts/tree/main) that we're deploying here.
+[ZITADEL](https://github.com/zitadel/zitadel/tree/main) is an identity management and provider application similar to Keycloak. It helps you manage your users acrross apps and acts as your OIDC provider. It's community have been really nice, so we'll be supporting some Argo CD apps here in favor of depracting Keycloak support down the line eventually. Here's the [Zitadel helm chart](https://github.com/zitadel/zitadel-charts/tree/main) that we're deploying here.
 
 It's important to take a look at the [`defaults.yaml`](https://github.com/zitadel/zitadel/blob/main/cmd/defaults.yaml) to see what the default `ConfigMap` will look like for Zitadel.
 
