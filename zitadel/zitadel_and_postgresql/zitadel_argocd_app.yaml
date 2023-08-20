@@ -106,4 +106,4 @@ spec:
           persistence:
             enabled: true
             # Use an existing Persistent Volume Claim (must be created ahead of time)
-            existingClaim: "zitadel-postgres"
+            existingClaim: "zitadel-database"
