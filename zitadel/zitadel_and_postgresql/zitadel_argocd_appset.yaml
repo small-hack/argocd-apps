@@ -61,10 +61,11 @@ spec:
                         Name: Admin
                       MachineKey:
                         Type: 1
-
+              # these must be set as is until https://github.com/zitadel/zitadel-charts/issues/113 is resolved
+              dbSslRootCrtSecret:
+              dbSslClientCrtSecret:
               # Reference the name of the secret that contains the masterkey.
               # The key should be named "masterkey".
-              # Note: Either zitadel.masterkey or zitadel.masterkeySecretName must be set
               masterkeySecretName: "zitadel-core-key"
 
             replicaCount: 1
