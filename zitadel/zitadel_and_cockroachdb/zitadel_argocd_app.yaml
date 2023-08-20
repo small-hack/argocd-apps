@@ -67,6 +67,26 @@ spec:
             - name: zitadel
               owners:
                 - zitadel
+        tls:
+          enabled: false
+          tlsSecret: true
+          selfSigner:
+            enabled: false
+          certManagerIssuer:
+            group: cert-manager.io
+            kind: ClusterIssuer
+            name: letsencrypt-staging
+            # Make it false when you are providing your own CA issuer
+            isSelfSignedIssuer: false
+            # Duration of Client certificates in hours
+            clientCertDuration: 672h
+            # Expiry window of client certificates means a window before actual expiry in which client certs should be rotated.
+            clientCertExpiryWindow: 48h
+            # Duration of node certificates in hours
+            nodeCertDuration: 8760h
+            # Expiry window of node certificates means a window before actual expiry in which node certs should be rotated.
+            nodeCertExpiryWindow: 168h
+
         # networkPolicy:
         #   enabled: true
         #   ingress:
