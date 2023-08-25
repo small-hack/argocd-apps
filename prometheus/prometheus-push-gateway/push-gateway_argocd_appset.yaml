@@ -19,7 +19,7 @@ spec:
     metadata:
       name: prometheus-pushgateway
     spec:
-      project: monitoring
+      project: prometheus
       destination:
         server: https://kubernetes.default.svc
         namespace: monitoring

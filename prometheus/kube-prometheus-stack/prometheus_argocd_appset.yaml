@@ -20,7 +20,7 @@ spec:
     metadata:
       name: kube-prometheus-stack-helm
     spec:
-      project: monitoring
+      project: prometheus
       destination:
         server: https://kubernetes.default.svc
         namespace: monitoring
