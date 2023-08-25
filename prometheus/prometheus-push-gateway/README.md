@@ -37,7 +37,7 @@ spec:
     repoURL: 'https://github.com/small-hack/argocd-apps.git'
     targetRevision: HEAD
   sources: []
-  project: monitoring
+  project: prometheus
   syncPolicy:
     automated:
       prune: true

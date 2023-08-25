@@ -9,11 +9,11 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "1"
 spec:
-  project: monitoring
+  project: prometheus
   source:
     repoURL: 'https://github.com/small-hack/argocd-apps'
     targetRevision: main
-    path: monitoring/kube-prometheus-stack/
+    path: prometheus/kube-prometheus-stack/
   destination:
     server: "https://kubernetes.default.svc"
     namespace: monitoring
@@ -34,11 +34,11 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "2"
 spec:
-  project: monitoring
+  project: prometheus
   source:
     repoURL: 'https://github.com/small-hack/argocd-apps'
     targetRevision: main
-    path: monitoring/prometheus-push-gateway/
+    path: prometheus/prometheus-push-gateway/
   destination:
     server: "https://kubernetes.default.svc"
     namespace: monitoring
@@ -59,11 +59,11 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "2"
 spec:
-  project: monitoring
+  project: prometheus
   source:
     repoURL: 'https://github.com/small-hack/argocd-apps'
     targetRevision: main
-    path: monitoring/loki-stack/
+    path: prometheus/loki-stack/
   destination:
     server: "https://kubernetes.default.svc"
     namespace: monitoring

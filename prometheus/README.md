@@ -16,11 +16,11 @@ metadata:
   name: monitoring-app-of-apps
   namespace: argocd
 spec:
-  project: monitoring
+  project: prometheus
   source:
     repoURL: 'https://github.com/small-hack/argocd-apps'
     targetRevision: main
-    path: monitoring/
+    path: prometheus/
   destination:
     server: "https://kubernetes.default.svc"
     namespace: monitoring
