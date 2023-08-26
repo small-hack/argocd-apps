@@ -1,0 +1,7 @@
+apiVersion: v2
+version: 0.0.1
+name: cluster-issuers
+appVersion: 0.0.1
+maintainers:
+  - name: jessebot
+    url: https://github.com/jessebot
