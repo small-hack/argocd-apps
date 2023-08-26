@@ -24,7 +24,7 @@ spec:
       project: default
       source:
         repoURL: https://github.com/small-hack/argocd-apps.git
-        path: cert-manager/cluster-issuers/
+        path: ingress/cert-manager/cluster-issuers/
       destination:
         server: "https://kubernetes.default.svc"
         namespace: ingress
