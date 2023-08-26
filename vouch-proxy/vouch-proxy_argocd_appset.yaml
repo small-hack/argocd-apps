@@ -18,7 +18,7 @@ spec:
             secret_vars: ["vouch_hostname"]
   template:
     metadata:
-      name: vouch
+      name: vouch-helm
     spec:
       project: ingress
       destination:
