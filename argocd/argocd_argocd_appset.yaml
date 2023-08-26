@@ -1069,22 +1069,6 @@ spec:
                 ## Has higher precedence over `applicationSet.pdb.minAvailable`
                 maxUnavailable: ""
 
-              # -- List of extra cli args to add
-              extraArgs: []
-
-              # -- Environment variables to pass to the ApplicationSet controller
-              extraEnv: []
-                # - name: "MY_VAR"
-                #   value: "value"
-
-              # -- envFrom to pass to the ApplicationSet controller
-              # @default -- `[]` (See [values.yaml])
-              extraEnvFrom: []
-                # - configMapRef:
-                #     name: config-map-name
-                # - secretRef:
-                #     name: secret-name
-
               # -- Additional containers to be added to the ApplicationSet controller pod
               ## Note: Supports use of custom Helm templates
               extraContainers: []
@@ -1103,42 +1087,9 @@ spec:
               metrics:
                 # -- Deploy metrics service
                 enabled: false
-                service:
-                  # -- Metrics service type
-                  type: ClusterIP
-                  # -- Metrics service clusterIP. `None` makes a "headless service" (no virtual IP)
-                  clusterIP: ""
-                  # -- Metrics service annotations
-                  annotations: {}
-                  # -- Metrics service labels
-                  labels: {}
-                  # -- Metrics service port
-                  servicePort: 8080
-                  # -- Metrics service port name
-                  portName: http-metrics
                 serviceMonitor:
                   # -- Enable a prometheus ServiceMonitor
                   enabled: false
-                  # -- Prometheus ServiceMonitor interval
-                  interval: 30s
-                  # -- Prometheus [RelabelConfigs] to apply to samples before scraping
-                  relabelings: []
-                  # -- Prometheus [MetricRelabelConfigs] to apply to samples before ingestion
-                  metricRelabelings: []
-                  # -- Prometheus ServiceMonitor selector
-                  selector: {}
-                    # prometheus: kube-prometheus
-
-                  # -- Prometheus ServiceMonitor scheme
-                  scheme: ""
-                  # -- Prometheus ServiceMonitor tlsConfig
-                  tlsConfig: {}
-                  # -- Prometheus ServiceMonitor namespace
-                  namespace: ""  # monitoring
-                  # -- Prometheus ServiceMonitor labels
-                  additionalLabels: {}
-                  # -- Prometheus ServiceMonitor annotations
-                  annotations: {}
 
               # -- Resource limits and requests for the ApplicationSet controller pods.
               resources: {}
@@ -1173,51 +1124,6 @@ spec:
               # -- Priority class for the ApplicationSet controller pods
               # @default -- `""` (defaults to global.priorityClassName)
               priorityClassName: ""
-
-              ## Webhook for the Git Generator
-              ## Ref: https://argocd-applicationset.readthedocs.io/en/master/Generators-Git/#webhook-configuration)
-              webhook:
-                ingress:
-                  # -- Enable an ingress resource for Webhooks
-                  enabled: false
-                  # -- Additional ingress annotations
-                  annotations: {}
-                  # -- Additional ingress labels
-                  labels: {}
-                  # -- Defines which ingress ApplicationSet controller will implement the resource
-                  ingressClassName: ""
-
-                  # -- List of ingress hosts
-                  ## Hostnames must be provided if Ingress is enabled.
-                  ## Secrets must be manually created in the namespace
-                  hosts: []
-                    # - argocd-applicationset.example.com
-
-                  # -- List of ingress paths
-                  paths:
-                    - /api/webhook
-                  # -- Ingress path type. One of `Exact`, `Prefix` or `ImplementationSpecific`
-                  pathType: Prefix
-                  # -- Additional ingress paths
-                  extraPaths: []
-                    # - path: /*
-                    #   backend:
-                    #     serviceName: ssl-redirect
-                    #     servicePort: use-annotation
-                    ## for Kubernetes >=1.19 (when "networking.k8s.io/v1" is used)
-                    # - path: /*
-                    #   pathType: Prefix
-                    #   backend:
-                    #     service:
-                    #       name: ssl-redirect
-                    #       port:
-                    #         name: use-annotation
-
-                  # -- Ingress TLS configuration
-                  tls: []
-                    # - secretName: argocd-applicationset-tls
-                    #   hosts:
-                    #     - argocd-applicationset.example.com
 
               # TLS certificate configuration via cert-manager
               ## Ref: https://argo-cd.readthedocs.io/en/stable/operator-manual/tls/#tls-configuration
@@ -1292,54 +1198,11 @@ spec:
               # @default -- `""` (defaults to global.logging.level)
               logLevel: ""
 
-              # -- Extra arguments to provide to the notifications controller
-              extraArgs: []
-
-              # -- Additional container environment variables
-              extraEnv: []
-
-              # -- envFrom to pass to the notifications controller
-              # @default -- `[]` (See [values.yaml])
-              extraEnvFrom: []
-                # - configMapRef:
-                #     name: config-map-name
-                # - secretRef:
-                #     name: secret-name
-
-              # -- List of extra mounts to add (normally used with extraVolumes)
-              extraVolumeMounts: []
-
-              # -- List of extra volumes to add
-              extraVolumes: []
-
               # -- Define user-defined context
               ## For more information: https://argocd-notifications.readthedocs.io/en/stable/templates/#defining-user-defined-context
               context: {}
                 # region: east
                 # environmentName: staging
-
-              secret:
-                # -- Whether helm chart creates notifications controller secret
-                create: true
-
-                # -- key:value pairs of annotations to be added to the secret
-                annotations: {}
-
-                # -- Generic key:value pairs to be inserted into the secret
-                ## Can be used for templates, notification services etc. Some examples given below.
-                ## For more information: https://argocd-notifications.readthedocs.io/en/stable/services/overview/
-                items: {}
-                  # slack-token:
-                  #   # For more information: https://argocd-notifications.readthedocs.io/en/stable/services/slack/
-
-                  # grafana-apiKey:
-                  #   # For more information: https://argocd-notifications.readthedocs.io/en/stable/services/grafana/
-
-                  # webhooks-github-token:
-
-                  # email-username:
-                  # email-password:
-                    # For more information: https://argocd-notifications.readthedocs.io/en/stable/services/email/
 
               metrics:
                 # -- Enables prometheus metrics server
@@ -1360,40 +1223,6 @@ spec:
                 serviceMonitor:
                   # -- Enable a prometheus ServiceMonitor
                   enabled: false
-                  # -- Prometheus ServiceMonitor selector
-                  selector: {}
-                    # prometheus: kube-prometheus
-                  # -- Prometheus ServiceMonitor labels
-                  additionalLabels: {}
-                  # -- Prometheus ServiceMonitor annotations
-                  annotations: {}
-                  # namespace: monitoring
-                  # interval: 30s
-                  # scrapeTimeout: 10s
-                  # -- Prometheus ServiceMonitor scheme
-                  scheme: ""
-                  # -- Prometheus ServiceMonitor tlsConfig
-                  tlsConfig: {}
-                  # -- Prometheus [RelabelConfigs] to apply to samples before scraping
-                  relabelings: []
-                  # -- Prometheus [MetricRelabelConfigs] to apply to samples before ingestion
-                  metricRelabelings: []
-
-              # -- Configures notification services such as slack, email or custom webhook
-              # @default -- See [values.yaml]
-              ## For more information: https://argocd-notifications.readthedocs.io/en/stable/services/overview/
-              notifiers: {}
-                # service.slack: |
-                #   token: $slack-token
-
-              # -- Annotations to be applied to the notifications controller Deployment
-              deploymentAnnotations: {}
-
-              # -- Annotations to be applied to the notifications controller Pods
-              podAnnotations: {}
-
-              # -- Labels to be applied to the notifications controller Pods
-              podLabels: {}
 
               # -- Resource limits and requests for the notifications controller
               resources: {}
@@ -1443,9 +1272,6 @@ spec:
               ## Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints/
               ## If labelSelector is left out, it will default to the labelSelector configuration of the deployment
               topologySpreadConstraints: []
-                # - maxSkew: 1
-                #   topologyKey: topology.kubernetes.io/zone
-                #   whenUnsatisfiable: DoNotSchedule
 
               # -- Deployment strategy to be added to the notifications controller Deployment
               deploymentStrategy:
