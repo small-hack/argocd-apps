@@ -30,6 +30,13 @@ spec:
       destination:
         server: https://kubernetes.default.svc
         namespace: argocd
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+          - Retry=true
+        automated:
+          prune: true
+          selfHeal: true
       source:
         repoURL: https://argoproj.github.io/argo-helm
         chart: argo-cd
