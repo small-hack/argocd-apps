@@ -18,10 +18,10 @@ spec:
         input:
           parameters:
             secret_vars:
-              - argocd_hostname
-              - argocd_oidc_provider
-              - argocd_oidc_issuer
-              - argocd_oidc_client_id
+              - argo_cd_hostname
+              - argo_cd_oidc_provider
+              - argo_cd_oidc_issuer
+              - argo_cd_oidc_client_id
   template:
     metadata:
       name: argocd-helm
