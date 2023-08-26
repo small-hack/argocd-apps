@@ -24,6 +24,12 @@ spec:
       destination:
         server: https://kubernetes.default.svc
         namespace: ingress
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
+          selfHeal: true
       source:
         repoURL: 'https://jessebot.github.io/vouch-helm-chart'
         targetRevision: 4.0.0
