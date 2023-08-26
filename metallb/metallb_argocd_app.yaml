@@ -9,7 +9,7 @@ metadata:
 spec:
   project: metallb
   source:
-    repoURL: 'https://github.com/metallb/metallb'
+    repoURL: 'https://github.com/metallb/metallb.git'
     targetRevision: v0.13.10
     path: config/manifests/
   destination:
