@@ -36,12 +36,9 @@ spec:
         helm:
           releaseName: argo-cd
           values: |
-            ## Argo CD configuration - Ref: https://github.com/argoproj/argo-cd
-
             # -- Create aggregated roles that extend existing cluster roles to interact with argo-cd resources
             ## Ref: https://kubernetes.io/docs/reference/access-authn-authz/rbac/#aggregated-clusterroles
             createAggregateRoles: false
-
 
             ## Globally shared configuration
             global:
@@ -151,7 +148,7 @@ spec:
                   name: {{ .argocd_oidc_provider }}
                   issuer: {{ .argocd_oidc_issuer }}
                   clientID: {{ .argocd_oidc_client_id }}
-                  clientSecret: $argocd-external-oidc:oidc.{{ .argocd_oidc_provider }}.clientSecret
+                  clientSecret: $argocd-oidc-credentials:oidc.clientSecret
                   requestedScopes: ["openid", "profile", "email", "groups"]
                   requestedIDTokenClaims: {"groups": {"essential": true}}
 
