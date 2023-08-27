@@ -21,6 +21,11 @@ spec:
       name: kube-prometheus-stack-helm
     spec:
       project: prometheus
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+        automated:
+          selfHeal: true
       destination:
         server: https://kubernetes.default.svc
         namespace: prometheus
