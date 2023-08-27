@@ -11,19 +11,25 @@ spec:
     template:
       type: Opaque
       data:
+        jwtSecret: |-
+          {{ .jwtSecret }}
         domains: |-
           {{ .domains }}
         allowList: |-
           {{ .allowList }}
   data:
+    # key of this struct to reference in spec.target.template.data
     - secretKey: domains
       sourceRef:
         storeRef:
           name: bitwarden-fields
           kind: ClusterSecretStore
       remoteRef:
+        # name of the item in bitwarden
         key: vouch-config
+        # name of the custom field in the bitwarden item
         property: domains
+
     - secretKey: allowList
       sourceRef:
         storeRef:
@@ -32,3 +38,12 @@ spec:
       remoteRef:
         key: vouch-config
         property: allowList
+
+    - secretKey: jwtSecret
+      sourceRef:
+        storeRef:
+          name: bitwarden-fields
+          kind: ClusterSecretStore
+      remoteRef:
+        key: vouch-config
+        property: jwtSecret
