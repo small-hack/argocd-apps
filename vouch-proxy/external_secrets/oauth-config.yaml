@@ -23,6 +23,8 @@ spec:
           {{ .userInfoUrl }}
         callbackUrls: |-
           {{ .callbackUrls }}
+        preferredDomain: |-
+          {{ .preferredDomain }}
   data:
     - secretKey: username
       sourceRef:
@@ -32,6 +34,7 @@ spec:
       remoteRef:
         key: vouch-oauth-config
         property: username
+
     - secretKey: password
       sourceRef:
         storeRef:
@@ -40,6 +43,7 @@ spec:
       remoteRef:
         key: vouch-oauth-config
         property: password
+
     - secretKey: authUrl
       sourceRef:
         storeRef:
@@ -48,6 +52,7 @@ spec:
       remoteRef:
         key: vouch-oauth-config
         property: authUrl
+
     - secretKey: tokenUrl
       sourceRef:
         storeRef:
@@ -56,6 +61,7 @@ spec:
       remoteRef:
         key: vouch-oauth-config
         property: tokenUrl
+
     - secretKey: userInfoUrl
       sourceRef:
         storeRef:
@@ -64,6 +70,7 @@ spec:
       remoteRef:
         key: vouch-oauth-config
         property: userInfoUrl
+
     - secretKey: callbackUrls
       sourceRef:
         storeRef:
@@ -72,3 +79,12 @@ spec:
       remoteRef:
         key: vouch-oauth-config
         property: callbackUrls
+
+    - secretKey: preferredDomain
+      sourceRef:
+        storeRef:
+          name: bitwarden-fields
+          kind: ClusterSecretStore
+      remoteRef:
+        key: vouch-oauth-config
+        property: preferredDomain
