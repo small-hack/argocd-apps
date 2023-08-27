@@ -10,17 +10,17 @@ spec:
   project: prometheus
   destination:
     name: in-cluster
-    namespace: monitoring
+    namespace: prometheus
   source:
     repoURL: https://github.com/prometheus-community/helm-charts.git
     path: charts/kube-prometheus-stack/charts/crds/crds/
-    targetRevision: kube-prometheus-stack-48.1.2
+    targetRevision: kube-prometheus-stack-48.3.6
     directory:
       recurse: true
   syncPolicy:
     syncOptions:
       - CreateNamespace=true
-      - Replace=true
+      - ApplyOutOfSyncOnly=true
     automated:
       selfHeal: true
       prune: true
