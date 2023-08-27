@@ -16,10 +16,10 @@ spec:
     path: prometheus/kube-prometheus-stack/
   destination:
     server: "https://kubernetes.default.svc"
-    namespace: monitoring
+    namespace: prometheus
   syncPolicy:
     syncOptions:
-      - Replace=true
+      - ApplyOutOfSyncOnly=true
     automated:
       prune: true
       selfHeal: true
@@ -41,10 +41,10 @@ spec:
     path: prometheus/prometheus-push-gateway/
   destination:
     server: "https://kubernetes.default.svc"
-    namespace: monitoring
+    namespace: prometheus
   syncPolicy:
     syncOptions:
-      - Replace=true
+      - ApplyOutOfSyncOnly=true
     automated:
       prune: true
       selfHeal: true
@@ -66,10 +66,10 @@ spec:
     path: prometheus/loki-stack/
   destination:
     server: "https://kubernetes.default.svc"
-    namespace: monitoring
+    namespace: prometheus
   syncPolicy:
     syncOptions:
-      - Replace=true
+      - ApplyOutOfSyncOnly=true
     automated:
       prune: true
       selfHeal: true
