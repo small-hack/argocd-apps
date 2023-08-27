@@ -18,6 +18,8 @@ spec:
           parameters:
             secret_vars:
               - prometheus_hostname
+              - prometheus_alert_manager_hostname
+              - prometheus_grafana_hostname
               - vouch_hostname
   template:
     metadata:
@@ -61,13 +63,13 @@ spec:
                     auth_request_set $auth_resp_err $upstream_http_x_vouch_err;
                     auth_request_set $auth_resp_failcount $upstream_http_x_vouch_failcount;    
                 hosts:
-                  - prometheus.{{ .prometheus_hostname }}
+                  - {{ .prometheus_hostname }}
                 paths: 
                   - /
                 tls:
                   - secretName: prometheus-tls
                     hosts:
-                    - prometheus.{{ .prometheus_hostname }}
+                    - {{ .prometheus_hostname }}
               prometheusSpec:
                 serviceMonitorSelectorNilUsesHelmValues: false
                 additionalScrapeConfigsSecret:
@@ -114,19 +116,19 @@ spec:
                     auth_request_set $auth_resp_err $upstream_http_x_vouch_err;
                     auth_request_set $auth_resp_failcount $upstream_http_x_vouch_failcount;
                 hosts:
-                  - alertmanager.{{ .prometheus_hostname }}
+                  - {{ .prometheus_alert_manager_hostname }}
                 paths: 
                   - /
                 tls:
                   - secretName: alertmanager-tls
                     hosts:
-                    - alertmanager.{{ .prometheus_hostname }}
+                    - {{ .prometheus_alert_manager_hostname }}
 
             grafana:
               grafana.ini:
                 auth:
                   disable_login_form: false
-                  signout_redirect_url: "https://grafana.{{ .prometheus_hostname }}/login/signout"
+                  signout_redirect_url: "https://{{ .prometheus_grafana_hostname }}/login/signout"
                 auth.proxy:
                   enabled: true
                   header_name: X-Vouch-User
@@ -153,11 +155,11 @@ spec:
                     proxy_set_header X-User  $user;
                     proxy_set_header X-Email $email;
                 hosts:
-                  - grafana.{{ .prometheus_hostname }}
+                  - {{ .prometheus_grafana_hostname }}
                 tls:
                   - secretName: grafana-tls
                     hosts:
-                    - grafana.{{ .prometheus_hostname }}
+                    - {{ .prometheus_grafana_hostname }}
 
             scrape_configs:
             - job_name: ingress
