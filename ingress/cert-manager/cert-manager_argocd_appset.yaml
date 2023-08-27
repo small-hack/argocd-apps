@@ -27,7 +27,7 @@ spec:
         path: ingress/cert-manager/cluster-issuers/
         helm:
           values: |
-            email: {{ .cert_manager_email }}
+            email: {{ .cert-manager_email }}
       destination:
         server: "https://kubernetes.default.svc"
         namespace: ingress
