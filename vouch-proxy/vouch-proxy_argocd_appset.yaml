@@ -42,6 +42,7 @@ spec:
                 secretKeys:
                   whiteList: 'allowList'
               oauth:
+                provider: oidc
                 existingSecret: vouch-oauth-config
             ingress:
               enabled: true
