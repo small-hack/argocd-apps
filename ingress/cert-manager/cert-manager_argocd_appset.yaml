@@ -13,7 +13,7 @@ spec:
           name: secret-var-plugin-generator
         input:
           parameters:
-            secret_vars: ["cert-manager_email"]
+            secret_vars: ["cert_manager_email"]
   template:
     metadata:
       name: cluster-issuers
@@ -27,7 +27,7 @@ spec:
         path: ingress/cert-manager/cluster-issuers/
         helm:
           values: |
-            email: {{ .cert-manager_email }}
+            email: {{ .cert_manager_email }}
       destination:
         server: "https://kubernetes.default.svc"
         namespace: ingress
