@@ -47,6 +47,8 @@ spec:
       values: |
         secretVars:
           existingSecret: "appset-secret-vars"
+        token:
+          existingSecret: "appset-secret-token"
   syncPolicy:
     syncOptions:
       - ApplyOutOfSyncOnly=true
