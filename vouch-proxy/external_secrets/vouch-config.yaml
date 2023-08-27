@@ -31,4 +31,4 @@ spec:
           kind: ClusterSecretStore
       remoteRef:
         key: vouch-config
-        property: whiteList
+        property: allowList
