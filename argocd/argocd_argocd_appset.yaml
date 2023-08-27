@@ -153,9 +153,9 @@ spec:
                 # to source a secret from somewhere else:
                 # https://argo-cd.readthedocs.io/en/stable/operator-manual/user-management/#example_1
                 oidc.config: |
-                  name: {{ .argocd_oidc_provider }}
-                  issuer: {{ .argocd_oidc_issuer }}
-                  clientID: {{ .argocd_oidc_client_id }}
+                  name: {{ .argo_cd_oidc_provider }}
+                  issuer: {{ .argo_cd_oidc_issuer }}
+                  clientID: {{ .argo_cd_oidc_client_id }}
                   clientSecret: $argocd-oidc-credentials:oidc.clientSecret
                   requestedScopes: ["openid", "profile", "email", "groups"]
                   requestedIDTokenClaims: {"groups": {"essential": true}}
@@ -755,7 +755,7 @@ spec:
                 ## Hostnames must be provided if Ingress is enabled.
                 ## Secrets must be manually created in the namespace
                 hosts:
-                  - {{ .argocd_hostname }}
+                  - {{ .argo_cd_hostname }}
 
                 # -- List of ingress paths
                 paths:
@@ -767,7 +767,7 @@ spec:
                 tls:
                   - secretName: argocd-secret
                     hosts:
-                      - {{ .argocd_hostname }}
+                      - {{ .argo_cd_hostname }}
 
                 # -- Uses `server.service.servicePortHttps` instead `server.service.servicePortHttp`
                 https: true
