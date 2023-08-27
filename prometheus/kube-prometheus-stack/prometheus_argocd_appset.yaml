@@ -15,7 +15,9 @@ spec:
           name: secret-var-plugin-generator
         input:
           parameters:
-            secret_vars: ["prometheus_hostname"]
+            secret_vars:
+              - prometheus_hostname
+              - vouch_hostname
   template:
     metadata:
       name: kube-prometheus-stack-helm
