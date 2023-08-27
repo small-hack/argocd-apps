@@ -58,17 +58,10 @@ spec:
               logging:
                 # -- Set the global logging format. Either: `text` or `json`
                 format: text
-                # -- Set the global logging level. One of: `debug`, `info`, `warn` or `error`
                 level: debug
 
               # -- Add Prometheus scrape annotations to all metrics services. This can be used as an alternative to the ServiceMonitors.
               addPrometheusAnnotations: false
-
-              # -- Mapping between IP and hostnames that will be injected as entries in the pod's hosts files
-              hostAliases: []
-              # - ip: 10.20.30.40
-              #   hostnames:
-              #   - git.myhostname
 
               # Default network policy rules used by all components
               networkPolicy:
@@ -76,15 +69,6 @@ spec:
                 create: true
                 # -- Default deny all ingress traffic
                 defaultDenyIngress: false
-
-              # -- Default priority class for all components
-              priorityClassName: ""
-
-              # -- Default node selector for all components
-              nodeSelector: {}
-
-              # -- Default tolerations for all components
-              tolerations: []
 
               # Default affinity preset for all components
               affinity:
@@ -110,9 +94,6 @@ spec:
                 #   topologyKey: topology.kubernetes.io/zone
                 #   whenUnsatisfiable: DoNotSchedule
 
-              # -- Environment variables to pass to all deployed Deployments
-              env: []
-
             ## Argo Configs
             configs:
               # General Argo CD configuration
@@ -120,9 +101,6 @@ spec:
               cm:
                 # -- Create the argocd-cm configmap for [declarative setup]
                 create: true
-
-                # -- Annotations to be added to argocd-cm configmap
-                annotations: {}
 
                 # -- Argo CD's externally facing base URL (optional). Required when configuring SSO
                 url: ""
@@ -167,16 +145,6 @@ spec:
                 # If false, it is expected the configmap will be created by something else.
                 create: true
 
-                ## Controller Properties
-                # -- Number of application status processors
-                controller.status.processors: 20
-                # -- Number of application operation processors
-                controller.operation.processors: 10
-                # -- Specifies timeout between application self heal attempts
-                controller.self.heal.timeout.seconds: 5
-                # -- Repo server RPC call timeout seconds.
-                controller.repo.server.timeout.seconds: 60
-
                 ## Server properties
                 # -- Run server without TLS
                 server.insecure: false
@@ -210,9 +178,6 @@ spec:
                 # If false, it is expected the configmap will be created by something else.
                 # Argo CD will not work if there is no configmap created with the name above.
                 create: true
-
-                # -- Annotations to be added to argocd-rbac-cm configmap
-                annotations: {}
 
                 # -- The name of the default role which Argo CD will falls back to, when authorizing API requests (optional).
                 # If omitted or empty, users may be still be able to login, but will see no apps, projects, etc...
@@ -294,11 +259,6 @@ spec:
               secret:
                 # -- Create the argocd-secret
                 createSecret: true
-
-                # -- Shared secret for authenticating GitHub webhook events
-                githubSecret: ""
-                # -- Shared secret for authenticating GitLab webhook events
-                gitlabSecret: ""
 
                 # -- add additional secrets to be added to argocd-secret
                 ## Custom secrets. Useful for injecting SSO secrets into environment variables.
@@ -1231,76 +1191,3 @@ spec:
                 serviceMonitor:
                   # -- Enable a prometheus ServiceMonitor
                   enabled: false
-
-              # -- Resource limits and requests for the notifications controller
-              resources: {}
-                # limits:
-                #   cpu: 100m
-                #   memory: 128Mi
-                # requests:
-                #   cpu: 100m
-                #   memory: 128Mi
-
-              # Notification controller container ports
-              containerPorts:
-                # -- Metrics container port
-                metrics: 9001
-
-              # -- [DNS configuration]
-              dnsConfig: {}
-              # -- Alternative DNS policy for notifications controller Pods
-              dnsPolicy: "ClusterFirst"
-
-              # -- Notification controller container-level security Context
-              # @default -- See [values.yaml]
-              containerSecurityContext:
-                runAsNonRoot: true
-                readOnlyRootFilesystem: true
-                allowPrivilegeEscalation: false
-                seccompProfile:
-                  type: RuntimeDefault
-                capabilities:
-                  drop:
-                    - ALL
-
-              # -- [Node selector]
-              # @default -- `{}` (defaults to global.nodeSelector)
-              nodeSelector: {}
-
-              # -- [Tolerations] for use with node taints
-              # @default -- `[]` (defaults to global.tolerations)
-              tolerations: []
-
-              # -- Assign custom [affinity] rules
-              # @default -- `{}` (defaults to global.affinity preset)
-              affinity: {}
-
-              # -- Assign custom [TopologySpreadConstraints] rules to the application controller
-              # @default -- `[]` (defaults to global.topologySpreadConstraints)
-              ## Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints/
-              ## If labelSelector is left out, it will default to the labelSelector configuration of the deployment
-              topologySpreadConstraints: []
-
-              # -- Deployment strategy to be added to the notifications controller Deployment
-              deploymentStrategy:
-                type: Recreate
-
-              # -- Priority class for the notifications controller pods
-              # @default -- `""` (defaults to global.priorityClassName)
-              priorityClassName: ""
-
-              cm:
-                # -- Whether helm chart creates notifications controller config map
-                create: true
-
-              # -- Contains centrally managed global application subscriptions
-              ## For more information: https://argocd-notifications.readthedocs.io/en/stable/subscriptions/
-              subscriptions: []
-
-              # -- The notification template is used to generate the notification content
-              ## For more information: https://argocd-notifications.readthedocs.io/en/stable/templates/
-              templates: {}
-
-              # -- The trigger defines the condition when the notification should be sent
-              ## For more information: https://argocd-notifications.readthedocs.io/en/stable/triggers/
-              triggers: {}
