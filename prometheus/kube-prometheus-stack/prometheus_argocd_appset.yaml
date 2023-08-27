@@ -23,7 +23,7 @@ spec:
       project: prometheus
       destination:
         server: https://kubernetes.default.svc
-        namespace: monitoring
+        namespace: prometheus
       source:
         repoURL: https://prometheus-community.github.io/helm-charts
         chart: kube-prometheus-stack
