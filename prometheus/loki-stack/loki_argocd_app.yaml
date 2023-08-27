@@ -10,7 +10,7 @@ spec:
   project: default
   destination:
     server: "https://kubernetes.default.svc"
-    namespace: monitoring
+    namespace: prometheus
   source:
     repoURL: 'https://github.com/grafana/helm-charts'
     path: charts/loki-stack
@@ -27,7 +27,7 @@ spec:
               index_gateway_client:
                 # only applicable if using microservices where index-gateways are independently deployed.
                 # This example is using kubernetes-style naming.
-                server_address: dns:///index-gateway.monitoring.svc.cluster.local:9095
+                server_address: dns:///index-gateway.prometheus.svc.cluster.local:9095
               shared_store: gcs
         promtail:
           enabled: true

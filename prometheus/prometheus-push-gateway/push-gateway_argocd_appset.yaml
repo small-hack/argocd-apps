@@ -22,7 +22,7 @@ spec:
       project: prometheus
       destination:
         server: https://kubernetes.default.svc
-        namespace: monitoring
+        namespace: prometheus
       source:
         repoURL: https://prometheus-community.github.io/helm-charts
         chart: prometheus-pushgateway
@@ -103,7 +103,7 @@ spec:
               #     - -https-address=:9092
               #     - -upstream=http://localhost:9091
               #     - -skip-auth-regex=^/metrics
-              #     - -openshift-delegate-urls={"/":{"group":"monitoring.coreos.com","resource":"prometheuses","verb":"get"}}
+              #     - -openshift-delegate-urls={"/":{"group":"prometheus.coreos.com","resource":"prometheuses","verb":"get"}}
               #   image: openshift/oauth-proxy:v1.1.0
               #   ports:
               #       - containerPort: 9092
@@ -237,7 +237,7 @@ spec:
             # Enable this if you're using https://github.com/coreos/prometheus-operator
             serviceMonitor:
               enabled: true
-              namespace: monitoring
+              namespace: prometheus
 
               # telemetryPath: HTTP resource path from which to fetch metrics.
               # Telemetry path, default /metrics, has to be prefixed accordingly if pushgateway sets a route prefix at start-up.
