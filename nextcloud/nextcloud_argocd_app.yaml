@@ -41,7 +41,7 @@ spec:
     namespace: nextcloud
   source:
     repoURL: https://github.com/small-hack/argocd-apps.git
-    path: nextcloud/manifests/external_secrets/
+    path: nextcloud/external_secrets/
   syncPolicy:
     syncOptions:
       - Replace=true
