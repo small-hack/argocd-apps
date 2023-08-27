@@ -13,8 +13,8 @@ spec:
       data:
         domains: |-
           {{ .domains }}
-        whiteList: |-
-          {{ .whiteList }}
+        allowList: |-
+          {{ .allowList }}
   data:
     - secretKey: domains
       sourceRef:
@@ -24,7 +24,7 @@ spec:
       remoteRef:
         key: vouch-config
         property: domains
-    - secretKey: whiteList
+    - secretKey: allowList
       sourceRef:
         storeRef:
           name: bitwarden-fields
