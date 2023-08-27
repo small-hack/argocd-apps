@@ -131,8 +131,8 @@ spec:
                     database: nextcloud
                     existingSecret: nextcloud-pgsql-credentials
                     secretKeys:
-                      userPasswordKey: password
-                      adminPasswordKey: password
+                      userPasswordKey: nextcloudPassword
+                      adminPasswordKey: postgresPassword
               volumePermissions:
                 enabled: true
               primary:
