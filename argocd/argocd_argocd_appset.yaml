@@ -279,6 +279,9 @@ spec:
                .applications-list__title {
                  color: #eae9ff;
                }
+               .applications-list__entry--health-Healthy {
+                 background-color: #6bd939;
+               }
                .status-bar__segment {
                  background-color: #6bd939 !important;
                }
@@ -298,7 +301,7 @@ spec:
                  background-color: #6eb3ec;
                }
                .a {
-                 color: #43d3ff;
+                 color: #43d3ff !important;
                }
                .applications-list__view-type i.selected {
                  color: #557fc1;
