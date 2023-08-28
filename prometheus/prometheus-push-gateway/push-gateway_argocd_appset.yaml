@@ -14,12 +14,18 @@ spec:
           name: secret-var-plugin-generator
         input:
           parameters:
-            secret_vars: ["prometheus_hostname"]
+            secret_vars:
+              - prometheus_hostname
   template:
     metadata:
       name: prometheus-pushgateway
     spec:
       project: prometheus
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+        automated:
+          selfHeal: true
       destination:
         server: https://kubernetes.default.svc
         namespace: prometheus
