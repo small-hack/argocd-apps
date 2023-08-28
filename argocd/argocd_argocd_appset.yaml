@@ -268,7 +268,7 @@ spec:
                  background-color: #2a2933;
                }
                .theme-dark .cd-layout {
-                 background: linear-gradient(to bottom, #414868, #232336, #323232);
+                 background-color: #2a2933;
                  color: #c0caf5;
                }
                .applications-tiles .argo-table-list__row {
@@ -286,13 +286,16 @@ spec:
                  border: 2px solid #434557;
                }
                .theme-dark .top-bar {
-                 background: #30304a;
+                 background: linear-gradient(to bottom, #414868, #232336, #323232);
                  color: #c0caf5;
                  border-bottom: 1px solid #394055;
                }
                .argo-button--base {
                  color: #18324d;
                  background-color: #6eb3ec;
+               }
+               .a {
+                 color: #43d3ff;
                }
 
             ## Application controller
