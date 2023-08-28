@@ -259,7 +259,6 @@ spec:
               ## Ref: https://argo-cd.readthedocs.io/en/stable/operator-manual/custom-styles/
               # adding spacechalk-like colors :)
               styles: |
-               /* side menu */
                .sidebar {
                  background: linear-gradient(to bottom, #414868, #232336);
                  color: #c0caf5;
@@ -268,35 +267,29 @@ spec:
                . input autocomplete__input {
                  background-color: #2a2933;
                }
-               /* the main area with the all the app tiles * /
                .theme-dark .cd-layout {
                  background: linear-gradient(to bottom, #414868, #232336, #323232);
                  color: #c0caf5;
                }
-               /* individual application tiles */
                .applications-tiles .argo-table-list__row {
                  background: linear-gradient(to bottom, #414868, #232336);
                  color: #c0caf5;
                  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
                }
-               /* just the title of the application tiles */
                .applications-list__title {
                  color: #eae9ff;
                }
-               /* make status bar healthy color match tile healthy color */ 
                .status-bar__segment {
                  background-color: #6bd939;
                }
                .status-bar {
                  border: 2px solid #434557;
                }
-               /* header bar when theme is set to dark */
                .theme-dark .top-bar {
                  background: #30304a;
                  color: #c0caf5;
                  border-bottom: 1px solid #394055;
                }
-               /* all buttons */
                .argo-button--base {
                  color: #18324d;
                  background-color: #6eb3ec;
