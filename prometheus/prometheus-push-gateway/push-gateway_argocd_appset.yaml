@@ -15,7 +15,7 @@ spec:
         input:
           parameters:
             secret_vars:
-              - prometheus_hostname
+              - prometheus_push_gateway_hostname
   template:
     metadata:
       name: prometheus-pushgateway
@@ -194,11 +194,11 @@ spec:
                   auth_request_set $auth_resp_err $upstream_http_x_vouch_err;
                   auth_request_set $auth_resp_failcount $upstream_http_x_vouch_failcount;  
               hosts:
-                - pushgateway.{{ .prometheus_hostname }}
+                - {{ .prometheus_push_gateway_hostname }}
               tls:
                 - secretName: pushgateway-tls
                   hosts:
-                    - pushgateway.{{ .prometheus_hostname }}
+                    - {{ .prometheus_push_gateway_hostname }}
 
             tolerations: []
               # - effect: NoSchedule
