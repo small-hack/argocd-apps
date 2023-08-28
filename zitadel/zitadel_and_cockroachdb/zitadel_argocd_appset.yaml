@@ -17,7 +17,9 @@ spec:
           name: secret-var-plugin-generator
         input:
           parameters:
-            secret_vars: ["zitadel_hostname"]
+            secret_vars:
+              - zitadel_hostname
+              - global_cluster_issuer
   template:
     metadata:
       name: zitadel-web-app
@@ -129,7 +131,7 @@ spec:
               className: "nginx"
               annotations:
                 kubernetes.io/tls-acme: "true"
-                cert-manager.io/cluster-issuer: letsencrypt-staging
+                cert-manager.io/cluster-issuer: {{ .global_cluster_issuer }}
               hosts:
                 - host: {{ .zitadel_hostname }}
                   paths:
