@@ -258,9 +258,13 @@ spec:
               # setting will automatically mount the provided CSS and reference it in the argo configuration.
               # @default -- `""` (See [values.yaml])
               ## Ref: https://argo-cd.readthedocs.io/en/stable/operator-manual/custom-styles/
+              # adding spacechalk-like colors :)
               styles: |
-               .nav-bar {
-                 background: linear-gradient(to bottom, #999, #777, #333, #222, #111);
+               .sidebar {
+                 background: linear-gradient(to bottom, #414868, #232336);
+               }
+               .body {
+                 color: #232336;
                }
 
             ## Application controller
