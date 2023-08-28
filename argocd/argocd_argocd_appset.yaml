@@ -23,6 +23,7 @@ spec:
               - argo_cd_oidc_provider
               - argo_cd_oidc_issuer
               - argo_cd_oidc_client_id
+              - argo_cd_oidc_logout_url
   template:
     metadata:
       name: argocd-helm
@@ -44,7 +45,7 @@ spec:
         targetRevision: 5.43.8
         helm:
           releaseName: argo-cd
-          values: |
+          valuesObject:
             # -- Create aggregated roles that extend existing cluster roles to interact with argo-cd resources
             ## Ref: https://kubernetes.io/docs/reference/access-authn-authz/rbac/#aggregated-clusterroles
             createAggregateRoles: false
@@ -124,13 +125,19 @@ spec:
                 # OIDC configuration as an alternative to dex (optional).
                 # to source a secret from somewhere else:
                 # https://argo-cd.readthedocs.io/en/stable/operator-manual/user-management/#example_1
+                # this is needed for keycloack under oidc.config
+                # requestedIDTokenClaims: {"groups": {"essential": true}}
                 oidc.config: |
                   name: {{ .argo_cd_oidc_provider }}
                   issuer: {{ .argo_cd_oidc_issuer }}
                   clientID: {{ .argo_cd_oidc_client_id }}
                   clientSecret: $argocd-oidc-credentials:oidc.clientSecret
-                  requestedScopes: ["openid", "profile", "email", "groups"]
-                  requestedIDTokenClaims: {"groups": {"essential": true}}
+                  requestedScopes:
+                    - openid
+                    - profile
+                    - email
+                    - groups
+                  logoutURL: {{ .argo_cd_oidc_logout_url }}
 
                 # this is temporary during testing
                 # ref: https://argo-cd.readthedocs.io/en/stable/operator-manual/user-management/#skipping-certificate-verification-on-oidc-provider-connections
@@ -171,8 +178,6 @@ spec:
                 policy.default: ''
 
                 # -- File containing user-defined policies and role definitions.
-                # @default -- `''` (See [values.yaml])
-                # policy.csv: ''
                 # Policy rules are in the form:
                 #  p, subject, resource, action, object, effect
                 # Role definitions and bindings are in the form:
