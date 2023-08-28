@@ -20,6 +20,7 @@ spec:
               - keycloak_default_realm
               - keycloak_client
               - keycloak_admin_user
+              - global_cluster_issuer
   template:
     metadata:
       name: keycloak-web-app
@@ -179,7 +180,7 @@ spec:
               ##   kubernetes.io/ingress.class: nginx
               ##   cert-manager.io/cluster-issuer: cluster-issuer-name
               annotations:
-                 cert-manager.io/cluster-issuer: "letsencrypt-prod"
+                 cert-manager.io/cluster-issuer: "{{ .global_cluster_issuer }}"
               ## @param ingress.labels Additional labels for the Ingress resource.
               ## e.g:
               ## labels:

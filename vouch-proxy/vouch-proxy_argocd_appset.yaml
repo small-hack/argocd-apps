@@ -15,7 +15,9 @@ spec:
           name: secret-var-plugin-generator
         input:
           parameters:
-            secret_vars: ["vouch_hostname"]
+            secret_vars:
+              - vouch_hostname
+              - global_cluster_issuer
   template:
     metadata:
       name: vouch-helm
@@ -48,7 +50,7 @@ spec:
               enabled: true
               annotations:
                 kubernetes.io/ingress.class: nginx
-                cert-manager.io/cluster-issuer: letsencrypt-prod
+                cert-manager.io/cluster-issuer: {{ .global_cluster_issuer }}
               paths:
                 - /
               hosts:

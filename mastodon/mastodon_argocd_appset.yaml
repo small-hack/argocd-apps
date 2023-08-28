@@ -15,7 +15,9 @@ spec:
           name: secret-var-plugin-generator
         input:
           parameters:
-            env_vars: ["mastodon_hostname"]
+            env_vars:
+              - mastodon_hostname
+              - global_cluster_issuer
   template:
     metadata:
       name: mastodon-web-app
@@ -171,7 +173,7 @@ spec:
               enabled: true
               annotations:
                 kubernetes.io/tls-acme: "true"
-                cert-manager.io/cluster-issuer: "letsencrypt-prod"
+                cert-manager.io/cluster-issuer: "{{ .global_cluster_issuer }}"
                 # ensure that NGINX's upload size matches Mastodon's
                 nginx.ingress.kubernetes.io/proxy-body-size: 40m
               # -- you can specify the ingressClassName if it differs from the default
