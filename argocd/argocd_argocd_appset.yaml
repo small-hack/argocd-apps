@@ -261,9 +261,11 @@ spec:
               styles: |
                .sidebar {
                  background: linear-gradient(to bottom, #414868, #232336);
+                 color: #c0caf5;
                }
-               .body {
-                 color: #232336;
+               .cd-layout {
+                 background: linear-gradient(to bottom, #414868, #232336);
+                 color: #c0caf5;
                }
 
             ## Application controller
