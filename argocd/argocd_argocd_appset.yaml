@@ -266,8 +266,8 @@ spec:
                  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
                }
                /* the main area with the all the app tiles * /
-               .cd-layout {
-                 background: linear-gradient(to bottom, #414868, #232336);
+               .theme-dark .cd-layout {
+                 background: linear-gradient(to bottom, #414868, #232336, #323232);
                  color: #c0caf5;
                }
                /* individual application tiles */
