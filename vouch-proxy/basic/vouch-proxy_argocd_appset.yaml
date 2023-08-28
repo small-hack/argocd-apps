@@ -25,7 +25,7 @@ spec:
         namespace: ingress
       source:
         repoURL: 'https://jessebot.github.io/vouch-helm-chart'
-        targetRevision: 4.0.0
+        targetRevision: 4.0.1
         chart: vouch
         helm:
           values: |
