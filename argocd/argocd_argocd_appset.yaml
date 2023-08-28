@@ -79,13 +79,6 @@ spec:
                 nodeAffinity:
                   # -- Default node affinity rules. Either: `none`, `soft` or `hard`
                   type: hard
-                  # -- Default match expressions for node affinity
-                  matchExpressions: []
-                    # - key: topology.kubernetes.io/zone
-                    #   operator: In
-                    #   values:
-                    #    - antarctica-east1
-                    #    - antarctica-west1
 
               # -- Default [TopologySpreadConstraints] rules for all components
               ## Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints/
@@ -139,6 +132,10 @@ spec:
                   requestedScopes: ["openid", "profile", "email", "groups"]
                   requestedIDTokenClaims: {"groups": {"essential": true}}
 
+                # this is temporary during testing
+                # ref: https://argo-cd.readthedocs.io/en/stable/operator-manual/user-management/#skipping-certificate-verification-on-oidc-provider-connections
+                oidc.tls.insecure.skip.verify: true
+
               # Argo CD configuration parameters
               ## Ref: https://github.com/argoproj/argo-cd/blob/master/docs/operator-manual/argocd-cmd-params-cm.yaml
               params:
@@ -160,9 +157,6 @@ spec:
                 # -- Enables use of the Progressive Syncs capability
                 applicationsetcontroller.enable.progressive.syncs: false
 
-                # this is temporary during testing
-                # ref: https://argo-cd.readthedocs.io/en/stable/operator-manual/user-management/#skipping-certificate-verification-on-oidc-provider-connections
-                oidc.tls.insecure.skip.verify: true
 
               # Argo CD RBAC policy configuration
               ## Ref: https://github.com/argoproj/argo-cd/blob/master/docs/operator-manual/rbac.md
