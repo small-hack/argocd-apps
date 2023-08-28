@@ -283,10 +283,6 @@ spec:
                .applications-list__title {
                  color: #eae9ff;
                }
-               /* healthy application tiles */
-               .applications-list__entry--health-Healthy {
-                 border-left-color: #6bd939;
-               }
                /* make status bar healthy color match tile healthy color */ 
                .status-bar__segment {
                  background-color: #6bd939;
