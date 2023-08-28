@@ -269,6 +269,13 @@ spec:
                  color: #c0caf5;
                }
                .applications-tiles .argo-table-list__row {
+                 background: linear-gradient(to bottom, #414868, #232336);
+                 color: #c0caf5;
+                 box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+               }
+               .top-bar {
+                 background: #232336
+                 color: #c0caf5;
                  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
                }
 
