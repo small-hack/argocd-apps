@@ -284,10 +284,18 @@ spec:
                .applications-list__entry--health-Healthy {
                  border-left-color: #6bd939;
                }
+               /* make status bar healthy color match tile healthy color */ 
+               .status-bar__segment {
+                 background-color: #6bd939;
+               }
+               .status-bar {
+                 border: 2px solid #434557;
+               }
                /* header bar when theme is set to dark */
                .theme-dark .top-bar {
-                 background: #232336;
+                 background: #30304a;
                  color: #c0caf5;
+                 border-bottom: 1px solid #394055;
                }
                /* all buttons */
                .argo-button--base {
