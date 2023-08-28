@@ -46,6 +46,8 @@ spec:
     targetRevision: 11.1.5
     helm:
       values: |
+        configmapConfig:
+          ExternalPort: 443
         conf:
           singe-node: true
         statefulset:
