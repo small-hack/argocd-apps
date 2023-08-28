@@ -256,7 +256,6 @@ spec:
 
               # -- Define custom [CSS styles] for your argo instance.
               # setting will automatically mount the provided CSS and reference it in the argo configuration.
-              # @default -- `""` (See [values.yaml])
               ## Ref: https://argo-cd.readthedocs.io/en/stable/operator-manual/custom-styles/
               # adding spacechalk-like colors :)
               styles: |
