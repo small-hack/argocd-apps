@@ -45,7 +45,7 @@ spec:
         targetRevision: 5.43.8
         helm:
           releaseName: argo-cd
-          valuesObject:
+          values: |
             # -- Create aggregated roles that extend existing cluster roles to interact with argo-cd resources
             ## Ref: https://kubernetes.io/docs/reference/access-authn-authz/rbac/#aggregated-clusterroles
             createAggregateRoles: false
