@@ -286,9 +286,12 @@ spec:
                  border: 2px solid #434557;
                }
                .theme-dark .top-bar {
-                 background-color: #232336;
+                 background-color: #414568ba;
                  color: #c0caf5;
                  border-bottom: 1px solid #394055;
+               }
+               .theme-dark .top-bar__title {
+                 color: #6da3c4;
                }
                .argo-button--base {
                  color: #18324d;
@@ -296,6 +299,9 @@ spec:
                }
                .a {
                  color: #43d3ff;
+               }
+               .applications-list__view-type i.selected {
+                 color: #557fc1;
                }
 
             ## Application controller
