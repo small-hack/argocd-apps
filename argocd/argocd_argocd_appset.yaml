@@ -273,11 +273,15 @@ spec:
                  color: #c0caf5;
                  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
                }
+               .applications-list__title {
+                 color: #eae9ff;
+               }
                .top-bar {
-                 background: #232336
+                 background: #232336;
                  color: #c0caf5;
                  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
                }
+
 
             ## Application controller
             controller:
