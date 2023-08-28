@@ -280,13 +280,13 @@ spec:
                  color: #eae9ff;
                }
                .status-bar__segment {
-                 background-color: #6bd939;
+                 background-color: #6bd939 !important;
                }
                .status-bar {
                  border: 2px solid #434557;
                }
                .theme-dark .top-bar {
-                 background: linear-gradient(to bottom, #414868, #232336, #323232);
+                 background-color: #232336;
                  color: #c0caf5;
                  border-bottom: 1px solid #394055;
                }
