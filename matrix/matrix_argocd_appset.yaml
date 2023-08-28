@@ -15,7 +15,10 @@ spec:
           name: secret-var-plugin-generator
         input:
           parameters:
-            secret_vars: ["matrix_hostname", "matrix_admin_email"]
+            secret_vars:
+              - matrix_hostname
+              - matrix_admin_email
+              - global_cluster_issuer
   template:
     metadata:
       name: matrix-web-app
@@ -99,7 +102,7 @@ spec:
                     nginx.ingress.kubernetes.io/configuration-snippet: |
                       proxy_intercept_errors off;
                     # -- required for TLS certs issued by cert-manager
-                    cert-manager.io/cluster-issuer: letsencrypt-prod
+                    cert-manager.io/cluster-issuer: {{ .global_cluster_issuer }}
 
               # User registration settings
               registration:
@@ -421,7 +424,7 @@ spec:
                   nginx.ingress.kubernetes.io/configuration-snippet: |
                     proxy_intercept_errors off;
                   # -- required for TLS certs issued by cert-manager
-                  cert-manager.io/cluster-issuer: letsencrypt-prod
+                  cert-manager.io/cluster-issuer: {{ .global_cluster_issuer }}
 
               replicaCount: 1
               resources: {}
@@ -496,7 +499,7 @@ spec:
                   nginx.ingress.kubernetes.io/configuration-snippet: |
                     proxy_intercept_errors off;
                   # -- required for TLS certs issued by cert-manager
-                  cert-manager.io/cluster-issuer: letsencrypt-prod
+                  cert-manager.io/cluster-issuer: {{ .global_cluster_issuer }}
 
               # Organization/enterprise branding
               branding:
@@ -589,7 +592,7 @@ spec:
                 # -- hostname for TLS cert
                 host: turn.{{ .matrix_hostname }}
                 # -- cert-manager cert Issuer or ClusterIssuer to use
-                issuerName: "letsencrypt-staging"
+                issuerName: "{{ .global_cluster_issuer }}"
 
               # -- URIs of the Coturn servers. If deploying Coturn with this chart, include
               # the public IPs of each node in your cluster (or a DNS round-robin hostname)

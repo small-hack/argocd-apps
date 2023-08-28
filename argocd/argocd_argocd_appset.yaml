@@ -24,6 +24,7 @@ spec:
               - argo_cd_oidc_issuer
               - argo_cd_oidc_client_id
               - argo_cd_oidc_logout_url
+              - global_cluster_issuer
   template:
     metadata:
       name: argocd-helm
@@ -564,7 +565,7 @@ spec:
                 # -- Additional ingress annotations
                 # kubernetes.io/ingress.class: nginx
                 annotations:
-                  cert-manager.io/cluster-issuer: letsencrypt-prod
+                  cert-manager.io/cluster-issuer: {{ .global_cluster_issuer }}
                   kubernetes.io/tls-acme: true
                   nginx.ingress.kubernetes.io/backend-protocol: HTTPS
                   nginx.ingress.kubernetes.io/ssl-passthrough: true

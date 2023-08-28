@@ -14,7 +14,9 @@ spec:
           name: secret-var-plugin-generator
         input:
           parameters:
-            secret_vars: ["infisical_hostname"]
+            secret_vars:
+              - infisical_hostname
+              - global_cluster_issuer
   template:
     metadata:
       name: infisical-web-app
@@ -55,7 +57,7 @@ spec:
               enabled: true
               ingressClassName: nginx
               annotations:
-                cert-manager.io/cluster-issuer: letsencrypt-staging
+                cert-manager.io/cluster-issuer: {{ .global_cluster_issuer }}
               hostName: {{ .infisical_hostname }}
               tls:
                 - secretName: infisical-tls

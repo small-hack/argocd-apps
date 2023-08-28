@@ -15,7 +15,10 @@ spec:
           name: secret-var-plugin-generator
         input:
           parameters:
-            secret_vars: ["harbor_hostname", "vouch_hostname"]
+            secret_vars:
+              - global_cluster_issuer
+              - harbor_hostname
+              - vouch_hostname
   template:
     metadata:
       name: harbor-web-app
@@ -74,7 +77,7 @@ spec:
                 annotations:
                   # note different ingress controllers may require a different ssl-redirect annotation
                   # for Envoy, use ingress.kubernetes.io/force-ssl-redirect: "true" and remove the nginx lines below
-                  cert-manager.io/cluster-issuer: "letsencrypt-prod"
+                  cert-manager.io/cluster-issuer: "{{ .global_cluster_issuer }}"
                   nginx.ingress.kubernetes.io/auth-signin: "https://{{ .vouch_hostname }}/login?url=$scheme://$http_host$request_uri&vouch-failcount=$auth_resp_failcount&X-Vouch-Token=$auth_resp_jwt&error=$auth_resp_err"
                   nginx.ingress.kubernetes.io/auth-url: https://{{ .vouch_hostname }}/validate
                   nginx.ingress.kubernetes.io/auth-response-headers: X-Vouch-User
