@@ -18,6 +18,7 @@ spec:
         input:
           parameters:
             secret_vars:
+              # - cluster_issuer
               - argo_cd_hostname
               - argo_cd_oidc_provider
               - argo_cd_oidc_issuer
@@ -148,18 +149,6 @@ spec:
                 ## Server properties
                 # -- Run server without TLS
                 server.insecure: false
-                # -- Value for base href in index.html. Used if Argo CD is running behind reverse proxy under subpath different from /
-                server.basehref: /
-                # -- Used if Argo CD is running behind reverse proxy under subpath different from /
-                server.rootpath: ''
-                # -- Directory path that contains additional static assets
-                server.staticassets: /shared/app
-                # -- Disable Argo CD RBAC for user authentication
-                server.disable.auth: false
-                # -- Enable GZIP compression
-                server.enable.gzip: false
-                # -- Set X-Frame-Options header in HTTP responses to value. To disable, set to "".
-                server.x.frame.options: sameorigin
 
                 ## Repo-server properties
                 # -- Limit on number of concurrent manifests generate requests. Any value less the 1 means no limit.
@@ -170,6 +159,10 @@ spec:
                 applicationsetcontroller.policy: sync
                 # -- Enables use of the Progressive Syncs capability
                 applicationsetcontroller.enable.progressive.syncs: false
+
+                # this is temporary during testing
+                # ref: https://argo-cd.readthedocs.io/en/stable/operator-manual/user-management/#skipping-certificate-verification-on-oidc-provider-connections
+                oidc.tls.insecure.skip.verify: true
 
               # Argo CD RBAC policy configuration
               ## Ref: https://github.com/argoproj/argo-cd/blob/master/docs/operator-manual/rbac.md
@@ -196,7 +189,6 @@ spec:
                 #   p, role:org-admin, repositories, *, *, allow
                 #   p, role:org-admin, logs, get, *, allow
                 #   p, role:org-admin, exec, create, */*, allow
-                #   g, your-github-org:your-team, role:org-admin
                 policy.csv: |
                   g, argocd_administrators, role:admin
                   g, argocd_users, role:readonly
@@ -240,12 +232,6 @@ spec:
                   gitlab.com ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCsj2bNKTBSpIYDEGk9KxsGh3mySTRgMtXL583qmBpzeQ+jqCMRgBqB98u3z++J1sKlXHWfM9dyhSevkMwSbhoR8XIq/U0tCNyokEi/ueaBMCvbcTHhO7FcwzY92WK4Yt0aGROY5qX2UKSeOvuP4D6TPqKF1onrSzH9bx9XUf2lEdWT/ia1NEKjunUqu1xOB/StKDHMoX4/OKyIzuS0q/T1zOATthvasJFoPrAjkohTyaDUz2LN5JoH839hViyEG82yB+MjcFV5MU3N1l1QL3cVUCh93xSaua1N85qivl+siMkPGbO5xR/En4iEY6K2XPASUEMaieWVNTRCtJ4S8H+9
 
 
-              # ConfigMap for Config Management Plugins
-              # Ref: https://argo-cd.readthedocs.io/en/stable/operator-manual/config-management-plugins/
-              cmp:
-                # -- Create the argocd-cmp-cm configmap
-                create: false
-
               # -- Repositories list to be used by applications
               ## Creates a secret for each key/value specified below to create repositories
               ## Note: the last example in the list would use a repository credential template, configured under "configs.repositoryCredentials".
@@ -265,9 +251,8 @@ spec:
                 ## Custom secrets. Useful for injecting SSO secrets into environment variables.
                 ## Ref: https://argo-cd.readthedocs.io/en/stable/operator-manual/user-management/#sensitive-data-and-sso-client-secrets
                 ## Note that all values must be non-empty.
-                extra:
-                  {}
-                  # LDAP_PASSWORD: "mypassword"
+                extra: {}
+                # LDAP_PASSWORD: "mypassword"
 
               # -- Define custom [CSS styles] for your argo instance.
               # setting will automatically mount the provided CSS and reference it in the argo configuration.
@@ -360,33 +345,6 @@ spec:
               # -- Enable redis
               enabled: true
 
-              ## Prometheus redis-exporter sidecar
-              exporter:
-                # -- Enable Prometheus redis-exporter sidecar
-                enabled: false
-
-                # -- Redis exporter security context
-                # @default -- See [values.yaml]
-                containerSecurityContext:
-                  runAsNonRoot: true
-                  readOnlyRootFilesystem: true
-                  allowPrivilegeEscalation: false
-                  seccompProfile:
-                    type: RuntimeDefault
-                  capabilities:
-                    drop:
-                      - ALL
-
-                # -- Resource limits and requests for redis-exporter sidecar
-                resources: {}
-                  # limits:
-                  #   cpu: 50m
-                  #   memory: 64Mi
-                  # requests:
-                  #   cpu: 10m
-                  #   memory: 32Mi
-
-
               # -- [Node selector]
               # @default -- `{}` (defaults to global.nodeSelector)
               nodeSelector: {}
@@ -440,26 +398,6 @@ spec:
                 serviceMonitor:
                   # -- Enable a prometheus ServiceMonitor
                   enabled: false
-                  # -- Interval at which metrics should be scraped
-                  interval: 30s
-                  # -- Prometheus [RelabelConfigs] to apply to samples before scraping
-                  relabelings: []
-                  # -- Prometheus [MetricRelabelConfigs] to apply to samples before ingestion
-                  metricRelabelings: []
-                  # -- Prometheus ServiceMonitor selector
-                  selector: {}
-                    # prometheus: kube-prometheus
-
-                  # -- Prometheus ServiceMonitor scheme
-                  scheme: ""
-                  # -- Prometheus ServiceMonitor tlsConfig
-                  tlsConfig: {}
-                  # -- Prometheus ServiceMonitor namespace
-                  namespace: "" # "monitoring"
-                  # -- Prometheus ServiceMonitor labels
-                  additionalLabels: {}
-                  # -- Prometheus ServiceMonitor annotations
-                  annotations: {}
 
             # This key configures Redis-HA subchart and when enabled (redis-ha.enabled=true)
             # the custom redis deployment is omitted
@@ -534,65 +472,6 @@ spec:
               extensions:
                 # -- Enable support for Argo UI extensions
                 enabled: false
-
-              # -- Additional containers to be added to the server pod
-              ## Note: Supports use of custom Helm templates
-              extraContainers: []
-              # - name: my-sidecar
-              #   image: nginx:latest
-              # - name: lemonldap-ng-controller
-              #   image: lemonldapng/lemonldap-ng-controller:0.2.0
-              #   args:
-              #     - /lemonldap-ng-controller
-              #     - --alsologtostderr
-              #     - --configmap=$(POD_NAMESPACE)/lemonldap-ng-configuration
-              #   env:
-              #     - name: POD_NAME
-              #       valueFrom:
-              #         fieldRef:
-              #           fieldPath: metadata.name
-              #     - name: POD_NAMESPACE
-              #       valueFrom:
-              #         fieldRef:
-              #           fieldPath: metadata.namespace
-              #   volumeMounts:
-              #   - name: copy-portal-skins
-              #     mountPath: /srv/var/lib/lemonldap-ng/portal/skins
-
-              # -- Init containers to add to the server pod
-              ## If your target Kubernetes cluster(s) require a custom credential (exec) plugin
-              ## you could use this (and the same in the application controller pod) to provide such executable
-              ## Ref: https://kubernetes.io/docs/reference/access-authn-authz/authentication/#client-go-credential-plugins
-              initContainers: []
-              #  - name: download-tools
-              #    image: alpine:3
-              #    command: [sh, -c]
-              #    args:
-              #      - wget -qO kubelogin.zip https://github.com/Azure/kubelogin/releases/download/v0.0.25/kubelogin-linux-amd64.zip &&
-              #        unzip kubelogin.zip && mv bin/linux_amd64/kubelogin /custom-tools/
-              #    volumeMounts:
-              #      - mountPath: /custom-tools
-              #        name: custom-tools
-
-              # -- Additional volumeMounts to the server main container
-              volumeMounts: []
-              #  - mountPath: /usr/local/bin/kubelogin
-              #    name: custom-tools
-              #    subPath: kubelogin
-
-              # -- Additional volumes to the server pod
-              volumes: []
-              #  - name: custom-tools
-              #    emptyDir: {}
-
-              # -- Annotations to be added to server Deployment
-              deploymentAnnotations: {}
-
-              # -- Annotations to be added to server pods
-              podAnnotations: {}
-
-              # -- Labels to be added to server pods
-              podLabels: {}
 
               # -- Resource limits and requests for the Argo CD server
               resources: {}
@@ -675,54 +554,27 @@ spec:
                 serviceMonitor:
                   # -- Enable a prometheus ServiceMonitor
                   enabled: false
-                  # -- Prometheus ServiceMonitor interval
-                  interval: 30s
-                  # -- Prometheus [RelabelConfigs] to apply to samples before scraping
-                  relabelings: []
-                  # -- Prometheus [MetricRelabelConfigs] to apply to samples before ingestion
-                  metricRelabelings: []
-                  # -- Prometheus ServiceMonitor selector
-                  selector: {}
-                    # prometheus: kube-prometheus
-
-                  # -- Prometheus ServiceMonitor scheme
-                  scheme: ""
                   # -- Prometheus ServiceMonitor tlsConfig
                   tlsConfig: {}
                   # -- Prometheus ServiceMonitor namespace
                   namespace: ""  # monitoring
-                  # -- Prometheus ServiceMonitor labels
-                  additionalLabels: {}
-                  # -- Prometheus ServiceMonitor annotations
-                  annotations: {}
 
               ingress:
                 # -- Enable an ingress resource for the Argo CD server
                 enabled: true
                 # -- Additional ingress annotations
+                # kubernetes.io/ingress.class: nginx
                 annotations:
                   cert-manager.io/cluster-issuer: letsencrypt-prod
-                  kubernetes.io/ingress.class: nginx
                   kubernetes.io/tls-acme: true
                   nginx.ingress.kubernetes.io/backend-protocol: HTTPS
                   nginx.ingress.kubernetes.io/ssl-passthrough: true
-                # -- Additional ingress labels
-                labels: {}
                 # -- Defines which ingress controller will implement the resource
-                # ingressClassName: "nginx"
+                ingressClassName: "nginx"
 
-                # -- List of ingress hosts
-                ## Argo Ingress.
-                ## Hostnames must be provided if Ingress is enabled.
-                ## Secrets must be manually created in the namespace
+                # List of ingress hosts
                 hosts:
                   - {{ .argo_cd_hostname }}
-
-                # -- List of ingress paths
-                paths:
-                  - /
-                # -- Ingress path type. One of `Exact`, `Prefix` or `ImplementationSpecific`
-                pathType: Prefix
 
                 # -- Ingress TLS configuration
                 tls:
@@ -760,15 +612,6 @@ spec:
                   - /
                 # -- Ingress path type for dedicated [gRPC-ingress]. One of `Exact`, `Prefix` or `ImplementationSpecific`
                 pathType: Prefix
-                # -- Additional ingress paths for dedicated [gRPC-ingress]
-                extraPaths: []
-                  # - path: /*
-                  #   pathType: Prefix
-                  #   backend:
-                  #     service:
-                  #       name: ssl-redirect
-                  #       port:
-                  #         name: use-annotation
 
                 # -- Ingress TLS configuration for dedicated [gRPC-ingress]
                 tls: []
@@ -827,18 +670,6 @@ spec:
                 # -- Number of pods that are unavailable after eviction as number or percentage (eg.: 50%).
                 ## Has higher precedence over `repoServer.pdb.minAvailable`
                 maxUnavailable: ""
-
-              ## Repo server image
-              image:
-                # -- Repository to use for the repo server
-                # @default -- `""` (defaults to global.image.repository)
-                repository: ""
-                # -- Tag to use for the repo server
-                # @default -- `""` (defaults to global.image.tag)
-                tag: ""
-                # -- Image pull policy for the repo server
-                # @default -- `""` (defaults to global.image.imagePullPolicy)
-                imagePullPolicy: ""
 
               # -- Secrets with credentials to pull images from a private registry
               # @default -- `[]` (defaults to global.imagePullSecrets)
@@ -945,17 +776,6 @@ spec:
                 # -- Certificate data. Must contain SANs of Repo service (ie: argocd-repo-server, argocd-repo-server.argo-cd.svc)
                 crt: ''
 
-              ## Repo server service configuration
-              service:
-                # -- Repo server service annotations
-                annotations: {}
-                # -- Repo server service labels
-                labels: {}
-                # -- Repo server service port
-                port: 8081
-                # -- Repo server service port name
-                portName: https-repo-server
-
               ## Repo server metrics service configuration
               metrics:
                 # -- Deploy metrics service
@@ -976,18 +796,6 @@ spec:
                 serviceMonitor:
                   # -- Enable a prometheus ServiceMonitor
                   enabled: false
-                  # -- Prometheus ServiceMonitor interval
-                  interval: 30s
-                  # -- Prometheus [RelabelConfigs] to apply to samples before scraping
-                  relabelings: []
-                  # -- Prometheus [MetricRelabelConfigs] to apply to samples before ingestion
-                  metricRelabelings: []
-                  # -- Prometheus ServiceMonitor selector
-                  selector: {}
-                    # prometheus: kube-prometheus
-
-                  # -- Prometheus ServiceMonitor scheme
-                  scheme: ""
                   # -- Prometheus ServiceMonitor tlsConfig
                   tlsConfig: {}
                   # -- Prometheus ServiceMonitor namespace
@@ -1102,7 +910,7 @@ spec:
                 # -- The name of the Secret that will be automatically created and managed by this Certificate resource
                 secretName: argocd-application-controller-tls
                 # -- Certificate primary domain (commonName)
-                domain: argocd.example.com
+                domain: {{ .argo_cd_hostname }}
                 # -- Certificate Subject Alternate Names (SANs)
                 additionalHosts: []
                 # -- The requested 'duration' (i.e. lifetime) of the certificate.
