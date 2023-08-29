@@ -306,6 +306,20 @@ spec:
                .applications-list__view-type i.selected {
                  color: #557fc1;
                }
+               .theme-dark .application-resource-tree__node {
+                 background-color: #4e5e84;
+                 color: #d2c4c4;
+               }
+               .application-resource-tree__node-kind-icon--big {
+                  background: #506297;
+                  border: 4px solid #91b1db;
+               }
+               .application-resource-tree__node {
+                  box-shadow: 1px 1px 1px #7bc0f0;
+               }
+               .application-resource-tree__node-kind {
+                  color: #dbeffd;
+               }
 
             ## Application controller
             controller:
