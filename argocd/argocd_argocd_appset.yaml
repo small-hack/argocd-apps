@@ -404,6 +404,9 @@ spec:
                a {
                   color: #59efff;
                }
+               .monaco-editor {
+                  background-color: #1e1d20;
+               }
 
             ## Application controller
             controller:
