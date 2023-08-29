@@ -318,6 +318,9 @@ spec:
                   background: #506297;
                   border: 4px solid #91b1db;
                }
+               .application-resource-tree__node-kind-icon {
+                  color: #bdc8d0;
+               }
                .application-resource-tree__node {
                   box-shadow: 1px 1px 1px #7bc0f0;
                }
