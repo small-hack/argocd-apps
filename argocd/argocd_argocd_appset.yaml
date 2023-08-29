@@ -376,7 +376,7 @@ spec:
                   color: #495763;
                }
                .theme-dark .application-status-panel {
-                  background-color: #414d68;
+                  background-color: #404767;
                   color: #dee6eb;
                   box-shadow: rgba(0, 0, 0, 0.45) 0px 25px 20px -20px;
                }
