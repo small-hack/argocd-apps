@@ -331,7 +331,10 @@ spec:
                .application-resource-tree__node-kind {
                   color: #dbeffd;
                }
-               i.fa-heart i.fa-check-circle {
+               i.fa-heart {
+                  color: #6bd939 !important;
+               }
+               i.fa-check-circle {
                   color: #6bd939 !important;
                }
                i.fa-star {
@@ -341,7 +344,13 @@ spec:
                   color: rgb(255, 119, 221) !important;
                }
                i.fa-ghost {
-                  color: rgb(255, 119, 221) !important;
+                  color: #fdcd36 !important;
+               }
+               i.fa-pause-circle {
+                  color: #fffc44 !important;
+               }
+               i.fa-arrow-alt-circle-up {
+                  color: #fffc44 !important;
                }
                .sidebar__nav-item--active i {
                   color: #9cd1ff;
