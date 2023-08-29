@@ -334,6 +334,18 @@ spec:
                i.fa-heart i.fa-check-circle {
                   color: #6bd939 !important;
                }
+               i.fa-star {
+                  color: #fffc44 !important;
+               }
+               i.fa-heart-broken {
+                  color: rgb(255, 119, 221) !important;
+               }
+               i.fa-ghost {
+                  color: rgb(255, 119, 221) !important;
+               }
+               .sidebar__nav-item--active i {
+                  color: #9cd1ff;
+               }
                .application-status-panel__item-value--Succeeded a {
                   color: #6bd939 !important;
                }
