@@ -320,6 +320,19 @@ spec:
                .application-resource-tree__node-kind {
                   color: #dbeffd;
                }
+               .fa .fa-heart {
+                  color: #6bd939 !important;
+               }
+               .application-details .graph-options-panel {
+                  background-color: #435173;
+               }
+               .application-details .graph-options-panel a {
+                  color: #b9e2fd;
+               }
+               .application-details .graph-options-panel .zoom-value {
+                  background-color: #a0d0ee;
+                  color: #495763;
+               }
 
             ## Application controller
             controller:
