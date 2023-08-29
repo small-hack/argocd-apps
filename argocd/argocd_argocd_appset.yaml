@@ -297,12 +297,16 @@ spec:
                  color: #6da3c4;
                }
                .argo-button--base {
-                 color: #18324d;
+                 color: #1e374f;
                  background-color: #6eb3ec;
+                 margin: 4px;
                }
                .argo-button--base.disabled, .argo-button--base[disabled] {
                   color: #3a454d;
                   background-color: #82a0b5;
+               }
+               .filter__header .argo-button {
+                  background: #6eb3ec;
                }
                .a {
                  color: #43d3ff !important;
