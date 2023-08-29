@@ -331,6 +331,10 @@ spec:
                .application-resource-tree__node-kind {
                   color: #dbeffd;
                }
+               .application-resource-tree__node .application-resource-tree__node--application {
+                  width: 290px important!;
+                  height: 57px important!;
+               }
                i.fa-heart {
                   color: #6bd939 !important;
                }
@@ -351,6 +355,9 @@ spec:
                }
                i.fa-arrow-alt-circle-up {
                   color: #fffc44 !important;
+               }
+               i.fa-external-link-alt {
+                  color: #5bc2ff;
                }
                .sidebar__nav-item--active i {
                   color: #9cd1ff;
