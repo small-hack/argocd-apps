@@ -280,7 +280,7 @@ spec:
                  color: #eae9ff;
                }
                .applications-list__entry--health-Healthy {
-                 background-color: #6bd939;
+                 border-left-color: #6bd939 !important;
                }
                .status-bar__segment {
                  background-color: #6bd939 !important;
