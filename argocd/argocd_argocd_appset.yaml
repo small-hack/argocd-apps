@@ -300,6 +300,10 @@ spec:
                  color: #18324d;
                  background-color: #6eb3ec;
                }
+               .argo-button--base.disabled, .argo-button--base[disabled] {
+                  color: #3a454d;
+                  background-color: #82a0b5;
+               }
                .a {
                  color: #43d3ff !important;
                }
@@ -332,6 +336,10 @@ spec:
                .application-details .graph-options-panel .zoom-value {
                   background-color: #a0d0ee;
                   color: #495763;
+               }
+               .theme-dark .application-status-panel {
+                  background-color: #414d68;
+                  color: #dee6eb;
                }
 
             ## Application controller
