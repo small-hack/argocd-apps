@@ -392,6 +392,17 @@ spec:
                   background-color: #4e5e84;
                   color: #eff3f5;
                }
+               .theme-dark .settings-overview__redirect-panel {
+                  background-color: #404767;
+                  color: #fff;
+                  box-shadow: rgba(0, 0, 0, 0.45) 0px 25px 20px -20px;
+               }
+               .settings-overview__redirect-panel__title {
+                  color: #54cfff;
+               }
+               a {
+                  color: #59efff;
+               }
 
             ## Application controller
             controller:
