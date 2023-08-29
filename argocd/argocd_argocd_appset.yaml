@@ -327,10 +327,7 @@ spec:
                .application-resource-tree__node-kind {
                   color: #dbeffd;
                }
-               i {
-                  color: #6bd939 !important;
-               }
-               .fa .fa-heart {
+               i.fa-heart {
                   color: #6bd939 !important;
                }
                .application-details .graph-options-panel {
