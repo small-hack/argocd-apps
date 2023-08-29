@@ -327,7 +327,10 @@ spec:
                .application-resource-tree__node-kind {
                   color: #dbeffd;
                }
-               i .fa .fa-heart {
+               i {
+                  color: #6bd939 !important;
+               }
+               .fa .fa-heart {
                   color: #6bd939 !important;
                }
                .application-details .graph-options-panel {
@@ -344,6 +347,18 @@ spec:
                   background-color: #414d68;
                   color: #dee6eb;
                   box-shadow: rgba(0, 0, 0, 0.45) 0px 25px 20px -20px;
+               }
+               .application-details__resource-icon {
+                  color: #cce0f0;
+               }
+               .theme-dark .argo-table-list__row {
+                  background: #4e5e84;
+                  color: #dee6eb;
+                  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+               }
+               .theme-dark .white-box {
+                  background-color: #4e5e84;
+                  color: #eff3f5;
                }
 
             ## Application controller
