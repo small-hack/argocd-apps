@@ -327,7 +327,10 @@ spec:
                .application-resource-tree__node-kind {
                   color: #dbeffd;
                }
-               i.fa-heart {
+               i.fa-heart i.fa-check-circle {
+                  color: #6bd939 !important;
+               }
+               .application-status-panel__item-value--Succeeded a {
                   color: #6bd939 !important;
                }
                .application-details .graph-options-panel {
