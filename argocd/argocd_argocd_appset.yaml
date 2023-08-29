@@ -317,6 +317,10 @@ spec:
                .theme-dark .application-resource-tree__node {
                  background-color: #4e5e84;
                  color: #d2c4c4;
+                 box-shadow: 1px 1px 1px #7bc0f0;
+               }
+               .theme-dark .application-resource-tree__node {
+                 color: #dbeffd;
                }
                .application-resource-tree__node-kind-icon--big {
                   background: #506297;
@@ -324,9 +328,6 @@ spec:
                }
                .application-resource-tree__node-kind-icon {
                   color: #bdc8d0;
-               }
-               .application-resource-tree__node {
-                  box-shadow: 1px 1px 1px #7bc0f0;
                }
                .application-resource-tree__node-kind {
                   color: #dbeffd;
