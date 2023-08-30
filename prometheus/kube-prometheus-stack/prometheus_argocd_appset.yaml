@@ -3,7 +3,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: kube-prometheus-stack-app-set
+  name: prometheus-appset
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "2"
