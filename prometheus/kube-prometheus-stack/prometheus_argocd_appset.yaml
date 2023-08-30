@@ -24,7 +24,7 @@ spec:
               - global_cluster_issuer
   template:
     metadata:
-      name: kube-prometheus-stack-helm
+      name: prometheus-stack-helm-chart
     spec:
       project: prometheus
       syncPolicy:
@@ -41,7 +41,8 @@ spec:
         targetRevision: 49.2.0
         helm:
           values: |
-            fullnameOverride: "prometheus"
+            nameOverride: prometheus
+            fullnameOverride: prometheus
             global:
               evaluation_interval: 5s
               scrape_interval: 5s
