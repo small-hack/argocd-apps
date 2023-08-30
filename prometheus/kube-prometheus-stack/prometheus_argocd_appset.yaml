@@ -41,7 +41,7 @@ spec:
         targetRevision: 49.2.0
         helm:
           values: |
-            # Default values for kube-prometheus-stack.
+            fullnameOverride: "prometheus"
             global:
               evaluation_interval: 5s
               scrape_interval: 5s
