@@ -264,8 +264,9 @@ spec:
                  color: #c0caf5;
                  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
                }
-               .input .autocomplete__input {
-                 background-color: #2a2933;
+               .input-container .input {
+                  background-color: #1a1b1c !important;
+                  color: #fff;
                }
                .theme-dark .cd-layout {
                  background-color: #2a2933;
@@ -404,8 +405,11 @@ spec:
                a {
                   color: #59efff;
                }
-               .monaco-editor {
-                  background-color: #1e1d20;
+               .monaco-editor .margin {
+                  background-color: #232336;
+               }
+               .monaco-editor, .monaco-editor-background, .monaco-editor .inputarea.ime-input {
+                  background-color: #232336;
                }
 
             ## Application controller
