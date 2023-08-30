@@ -99,7 +99,7 @@ spec:
                 create: true
 
                 # -- Argo CD's externally facing base URL (optional). Required when configuring SSO
-                url: "{{ .argo_cd_hostname }}"
+            url: "https://{{ .argo_cd_hostname }}"
 
                 # -- The name of tracking label used by Argo CD for resource pruning
                 # @default -- Defaults to app.kubernetes.io/instance
