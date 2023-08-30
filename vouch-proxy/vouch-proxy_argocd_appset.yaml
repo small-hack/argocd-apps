@@ -34,7 +34,7 @@ spec:
           selfHeal: true
       source:
         repoURL: 'https://jessebot.github.io/vouch-helm-chart'
-        targetRevision: 4.1.1
+        targetRevision: 4.1.2
         chart: vouch
         helm:
           values: |
