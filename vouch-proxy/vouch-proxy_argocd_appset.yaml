@@ -46,6 +46,10 @@ spec:
               oauth:
                 provider: oidc
                 existingSecret: vouch-oauth-config
+                scopes:
+                  - openid
+                  - email
+                  - profile
             ingress:
               enabled: true
               annotations:
