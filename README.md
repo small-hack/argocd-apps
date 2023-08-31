@@ -67,7 +67,7 @@ Here's some quick guidelines, but you if you'd like to contribute, please read t
 |:------------------------------------:|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 |        [keycloak](./keycloak)        | helm chart for [Keycloak](https://www.keycloak.org/), an Identity Access Management tool with built in OpenIDConnect for authenticating to self hosted apps                                                                                                                                                                                       |
 | [vouch-proxy](./ingress/vouch-proxy) | helm chart for [Vouch](https://github.com/vouch/vouch-proxy), an OAuth2 proxy that allows you to use ingress-nginx annotations to connect to a third party identity provider, giving you proper auth on websites that don't have auth. Currently works with the keycloak provider in this template, but also known to work with google and github |
-|      [zitadel](./alpha/zitadel)      | helm chart for [Zitadel](https://zitadel.com/), an Identity Access Management tool with built in OpenIDConnect for authenticating to self hosted apps. Like Keycloak, but more modern.                                                                                                                                                            |
+|      [zitadel](./zitadel)      | helm chart for [Zitadel](https://zitadel.com/), an Identity Access Management tool with built in OpenIDConnect for authenticating to self hosted apps. Recommended over keycloak.|
 
 
 ### 🚧 Under construction
@@ -88,9 +88,9 @@ Here's some quick guidelines, but you if you'd like to contribute, please read t
 
 | App                                                             | Description                                                                                                                                                                         |
 |:----------------------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [kube-prometheus-stack](./monitoring/kube-prometheus-stack)     | [prometheus](https://prometheus.io/docs/introduction/overview/), alertmanager, [grafana](https://grafana.com) for collecting metrics for monitoring/alerting, and dashboards/charts |
-| [loki-stack](./monitoring/loki-stack)                           | [loki](https://grafana.com/oss/loki/) and [promtail](https://grafana.com/docs/loki/latest/clients/promtail/) for collecting logs in prometheus                                      |
-| [prometheus-push-gateway](./monitoring/prometheus-push-gateway) | Installs the [Prometheus Push Gateway](https://prometheus.io/docs/instrumenting/pushing/) which enables pushing metrics from jobs that would be difficult or impossible to scrape   |
+| [kube-prometheus-stack](./prometheus/prometheus_argocd_appset.yaml)     | [prometheus](https://prometheus.io/docs/introduction/overview/), alertmanager, [grafana](https://grafana.com) for collecting metrics for monitoring/alerting, and dashboards/charts |
+| [loki-stack](./prometheus/loki_argocd_app.yaml)                           | [loki](https://grafana.com/oss/loki/) and [promtail](https://grafana.com/docs/loki/latest/clients/promtail/) for collecting logs in prometheus                                      |
+| [prometheus-push-gateway](./prometheus/push-gateway_argocd_appset.yaml) | Installs the [Prometheus Push Gateway](https://prometheus.io/docs/instrumenting/pushing/) which enables pushing metrics from jobs that would be difficult or impossible to scrape   |
 
 
 ## Networking
