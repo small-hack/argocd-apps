@@ -4,6 +4,9 @@ The [External Secrets Operator](https://github.com/vouch) (ESO) is a Kubernetes 
 
 This Argo CD app of apps deploys both ESO and the [Bitwarden ESO Provider](https://github.com/jessebot/bitwarden-eso-provider/) so that you can use Bitwarden as your remote secret store.
 
+<img src="./screenshots/eso.png">
+<img src="./screenshots/bweso.png">
+
 ## Sync waves
 1. ESO
 2. Bitwarden ESO provider (depends on ESO)
