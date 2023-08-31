@@ -287,12 +287,9 @@ spec:
                .status-bar__segment {
                  background-color: #6bd939 !important;
                }
-              .sidebar__logo__character img {
-                  content: url("https://user-images.githubusercontent.com/2389292/264780538-edd66839-7781-4775-869c-00711128d8d6.png");
-               }
                .sidebar__logo__character {
                   width: 60px;
-                  content: url(https://user-images.githubusercontent.com/2389292/264784405-1e7e5902-d48f-440d-98f4-44028f4bd90e.png);
+                  content: url("https://user-images.githubusercontent.com/2389292/264784405-1e7e5902-d48f-440d-98f4-44028f4bd90e.png");
                }
                .status-bar {
                  border: 2px solid #434557;
