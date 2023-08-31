@@ -3,15 +3,15 @@
   "extends": [
     "config:base"
   ],
+  "argocd": {
+    "fileMatch": ["\\.yaml$"]
+  },
   "packageRules": [
     { 
-      "matchPackagePatterns": ["*"],
+      "matchManagers": ["argocd"]
       "matchUpdateTypes": ["patch"],
       "matchCurrentVersion": "!/^0/",
       "automerge": true
     }
-  ],
-  "argocd": {
-    "fileMatch": ["\\.yaml$"]
-  }
+  ]
 }
