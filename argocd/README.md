@@ -1,4 +1,4 @@
-# ArgoCD ArgoCD app
+# Argo CD app
 ArgoCD app for ArgoCD so that ArgoCD can manage itself, ArgoCD 🧡
 
 <img src="./argocd_app.png">
