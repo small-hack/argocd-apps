@@ -58,7 +58,7 @@ https://blog.ediri.io/kube-prometheus-stack-and-argocd-23-how-to-remove-a-workar
     ```bash
     helm upgrade ingress-nginx ingress-nginx \
     --repo https://kubernetes.github.io/ingress-nginx \
-    --namespace ingress-nginx \
+    --namespace ingress \
     --set controller.metrics.enabled=true \
     --set-string controller.podAnnotations."prometheus\.io/scrape"="true" \
     --set-string controller.podAnnotations."prometheus\.io/port"="10254"
