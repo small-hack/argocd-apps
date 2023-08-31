@@ -22,12 +22,15 @@ Here's some quick guidelines, but you if you'd like to contribute, please read t
     * [🚧 Under construction](#-under-construction-1)
 * [Ingress](#ingress)
 * [Monitoring](#monitoring)
-* [Security Tools](#security-tools)
+* [Networking](#networking)
     * [🚧 Under construction](#-under-construction-2)
+* [Security](#security)
+* [Secrets Management](#secrets-management)
 * [Social Media and chat](#social-media-and-chat)
 * [Virtual Machines](#virtual-machines)
     * [🚧 Under construction](#-under-construction-3)
 * [Troubleshooting Tips](#troubleshooting-tips)
+
 
 ## Continuous Deployment
 
@@ -90,20 +93,33 @@ Here's some quick guidelines, but you if you'd like to contribute, please read t
 | [prometheus-push-gateway](./monitoring/prometheus-push-gateway) | Installs the [Prometheus Push Gateway](https://prometheus.io/docs/instrumenting/pushing/) which enables pushing metrics from jobs that would be difficult or impossible to scrape   |
 
 
-## Security Tools
+## Networking
 
-| App                                                        | Description                                                                                                                          |
-|:-----------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------|
-| [external-secrets-operator](./external-secrets-operator)   | ESO ([External Secrets Operator](https://external-secrets.io/latest/)) used for sourcing k8s secrets from an external provider       |
-| [bitwarden-external-secrets](./bitwarden-external-secrets) | ESO [Bitwarden](https://external-secrets.io/v0.9.1/examples/bitwarden/) SecretStore, for using secrets directly from bitwarden items |
-| [infisical](./infisical) | [Infisical](https://infisical.com/docs/integrations/platforms/kubernetes) is an open source secrets management solution and it has a k8s secrets operator. |
+|         App          | Description                                                       |
+|:--------------------:|:------------------------------------------------------------------|
+| [metallb](./metallb) | A helm chart for [metallb](https://metallb.universe.tf/) which will let you manager your own ip address pool for use with ingress |
 
 ### 🚧 Under construction
 |               App               | Description                                                                |
 |:-------------------------------:|:---------------------------------------------------------------------------|
 | [wireguard](./alpha/wg-access-server) | A helm chart for wg-access-server which uses Wireguard®️ for a VPN          |
 |     [headscale](./alpha/headscale)    | VPN, there isn't an official helm chart, so we're still working on this |
-|     [kyverno](./alpha/kyverno)    | Kubernetes-native policy management |
+
+
+## Security
+
+| App                        | Description                         |
+|:---------------------------|:------------------------------------|
+| [kyverno](./alpha/kyverno) | Kubernetes-native policy management |
+
+
+## Secrets Management
+
+| App                                                        | Description                                                                                                                          |
+|:-----------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------|
+| [external-secrets-operator](./external-secrets-operator)   | ESO ([External Secrets Operator](https://external-secrets.io/latest/)) used for sourcing k8s secrets from an external provider       |
+| [bitwarden-external-secrets](./bitwarden-external-secrets) | ESO [Bitwarden](https://external-secrets.io/v0.9.1/examples/bitwarden/) SecretStore, for using secrets directly from bitwarden items |
+| [infisical](./infisical) | [Infisical](https://infisical.com/docs/integrations/platforms/kubernetes) is an open source secrets management solution and it has a k8s secrets operator. |
 
 
 ## Social Media and chat
