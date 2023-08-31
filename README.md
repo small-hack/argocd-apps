@@ -1,5 +1,6 @@
 # Shared Argo CD templates for self hosted infra
-A collection of [Argo CD](https://argo-cd.readthedocs.io/en/stable/) templates for deploying helm apps or directories of [Kubernetes](https://kubernetes.io) (k8s) manifests as [Argo CD apps](https://argo-cd.readthedocs.io/en/stable/core_concepts/).
+
+A collection of <a href="https://argo-cd.readthedocs.io/en/stable/">Argo CD</a> templates for deploying helm apps or directories of <a href="https://kubernetes.io">Kubernetes</a> (k8s) manifests as <a href="https://argo-cd.readthedocs.io/en/stable/core_concepts/">Argo CD apps</a>
 
 https://github.com/small-hack/argocd-apps/assets/2389292/464159c4-5932-49d7-a7c8-5b82b9e89a6b
 
@@ -164,3 +165,6 @@ Here's some quick guidelines, but you if you'd like to contribute, please read t
   ```bash
   kubectl patch <CLASS>/<NAME>-p '{"metadata":{"finalizers":[]}}' --type=merge -n <NAMESPACE>
   ```
+
+## Art
+<img src="https://github.com/small-hack/argocd-apps/assets/2389292/edd66839-7781-4775-869c-00711128d8d6" width="250">
