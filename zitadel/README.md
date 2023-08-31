@@ -6,6 +6,10 @@ It's important to take a look at the [`defaults.yaml`](https://github.com/zitade
 
 This ArgoCD app of apps is designed to be pretty locked down to allow you to use **only** a default service account (that also can't log in through the UI) to do all the heavy lifting with terraform, pulumi, or your own self service script. We support both [cockroachdb](./zitadel_and_cockroachdb) _and_ [postgresql](./zitadel_and_postgresql) as the database backends.
 
+<img src="./screenshots/zitadel_app_of_apps.png">
+<img src="./screenshots/zitadel_web_appset.png">
+<img src="./screenshots/zitadel_postgresql.png">
+
 ## Sync waves
 
 1. External Secrets for both your database (cockroachdb or postgresql) and zitadel
