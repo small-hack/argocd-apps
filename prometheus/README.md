@@ -53,7 +53,9 @@ https://blog.ediri.io/kube-prometheus-stack-and-argocd-23-how-to-remove-a-workar
 
 ## Enable Nginx Ingress metrics
 
-- Patch the Nginx Ingress controller to enable the metrics exporter 
+- [Reccommeneded Ingress Metrics dashboard](https://grafana.com/grafana/dashboards/14314-kubernetes-nginx-ingress-controller-nextgen-devops-nirvana/)
+
+1. Patch the Nginx Ingress controller to enable the metrics exporter 
 
     ```bash
     helm upgrade ingress-nginx ingress-nginx \
@@ -63,9 +65,8 @@ https://blog.ediri.io/kube-prometheus-stack-and-argocd-23-how-to-remove-a-workar
     --set-string controller.podAnnotations."prometheus\.io/scrape"="true" \
     --set-string controller.podAnnotations."prometheus\.io/port"="10254"
     ```
-## Adding additional scrape targets
-
-1. Create a yaml file containing your prometheus scrape configs
+    
+2. Create a yaml file containing your prometheus scrape configs, for example:
 
       ```yaml
       - job_name: "nginx-ingress"
@@ -79,7 +80,7 @@ https://blog.ediri.io/kube-prometheus-stack-and-argocd-23-how-to-remove-a-workar
         - targets: ["nvidia-dcgm-exporter.default.svc.cluster.local:9400"]
       ```
   
-2. Convert the file to a secret. Name of secret must match what is set in the helm `values.yaml`
+3. Convert the file to a secret. Name of secret must match what is set in the helm `values.yaml`
   
       ```bash
       wget https://raw.githubusercontent.com/small-hack/argocd-apps/main/prometheus/scrape-targets.yaml
