@@ -51,6 +51,8 @@ spec:
             ## Ref: https://kubernetes.io/docs/reference/access-authn-authz/rbac/#aggregated-clusterroles
             createAggregateRoles: false
 
+            fullnameOverride: argo-cd
+
             ## Globally shared configuration
             global:
               # -- Common labels for the all resources
