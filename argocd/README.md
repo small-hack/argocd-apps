@@ -1,10 +1,18 @@
 # Argo CD app
 ArgoCD app for ArgoCD so that ArgoCD can manage itself, ArgoCD 🧡
 
-<img src="./screenshots/argocd_app.png">
-<img src="./screenshots/argo_ingress.png">
+<img alt="argocd app of apps" src="./screenshots/argocd_app.png">
+
+Example of argocd appset secret-plugin:
+<img width="1284" alt="argocd app for argocd-appset-secret-plugin" src="https://github.com/small-hack/argocd-apps/assets/2389292/1213310e-a1df-4346-a202-078b2d40ebbf">
+
+argocd ingress example:
+<img alt="argocd helm chart ingress" src="./screenshots/argo_ingress.png">
 
 ## external secrets
+
+<img width="949" alt="argocd app for external secrets" src="https://github.com/small-hack/argocd-apps/assets/2389292/f750a2fb-8aff-42ef-bac6-7f815c22eb75">
+
 When creating external secrets for argocd, don't forget to set `spec.target.template.metadata.labels` like:
 
 ```yaml
