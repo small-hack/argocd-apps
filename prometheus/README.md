@@ -82,8 +82,12 @@ https://blog.ediri.io/kube-prometheus-stack-and-argocd-23-how-to-remove-a-workar
 2. Convert the file to a secret. Name of secret must match what is set in the helm `values.yaml`
   
       ```bash
-      kubectl create secret generic additional-scrape-configs --from-file=prometheus-additional.yaml \
+      wget https://raw.githubusercontent.com/small-hack/argocd-apps/main/prometheus/scrape-targets.yaml
+      
+      kubectl create secret generic additional-scrape-configs --from-file=scrape-targets.yaml \
       --dry-run=client -oyaml > additional-scrape-configs.yaml
+
+      kubectl apply -f additional-scrape-configs.yaml -n prometheus
       ```
 
 # Prometheus Push Gateway
