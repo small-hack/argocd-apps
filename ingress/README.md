@@ -1,5 +1,8 @@
 # Ingress Argo CD App of Apps
 
+<img src="./screenshots/ingress-nginx-namespace.png">
+<img src="./screenshots/ingress-nginx.png">
+
 To apply this, select "Create New App" in your Argo CD interface and select "Edit as YAML", then paste the following in:
 
 ```yaml
