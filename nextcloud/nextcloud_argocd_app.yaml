@@ -16,7 +16,7 @@ spec:
     namespace: nextcloud
   source:
     repoURL: https://github.com/small-hack/argocd-apps.git
-    path: nextcloud/manifests/persistence/
+    path: nextcloud/persistence/
   syncPolicy:
     syncOptions:
       - ApplyOutOfSyncOnly=true
@@ -66,7 +66,7 @@ spec:
     namespace: nextcloud
   source:
     repoURL: https://github.com/small-hack/argocd-apps.git
-    path: nextcloud/manifests/k8up_backups/
+    path: nextcloud/k8up_backups/
   syncPolicy:
     syncOptions:
       - Replace=true
