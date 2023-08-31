@@ -55,7 +55,7 @@ Here's some quick guidelines, but you if you'd like to contribute, please read t
 | [nextcloud](./nextcloud) | [Nextcloud](https://nextcloud.com/) is a self hosted file storage cloud solution. Replaces something like google drive/photos/notes/meets/calendar - mostly stable |
 
 
-### 🚧 Under construction
+#### 🚧 Under construction
 |           App          | Description                                                                                                                                  |
 |:----------------------:|:---------------------------------------------------------------------------------------------------------------------------------------------|
 |   [Harbor](./harbor)   | Container Registry and OCI artifact store with built-in vulernability scanning via Trivy                                                     |
@@ -70,7 +70,7 @@ Here's some quick guidelines, but you if you'd like to contribute, please read t
 |      [zitadel](./zitadel)      | helm chart for [Zitadel](https://zitadel.com/), an Identity Access Management tool with built in OpenIDConnect for authenticating to self hosted apps. Recommended over keycloak.|
 
 
-### 🚧 Under construction
+#### 🚧 Under construction
 
 |               App              | Description                                                                              |
 |:------------------------------:|:-----------------------------------------------------------------------------------------|
@@ -99,7 +99,7 @@ Here's some quick guidelines, but you if you'd like to contribute, please read t
 |:--------------------:|:------------------------------------------------------------------|
 | [metallb](./metallb) | A helm chart for [metallb](https://metallb.universe.tf/) which will let you manager your own ip address pool for use with ingress |
 
-### 🚧 Under construction
+#### 🚧 Under construction
 |               App               | Description                                                                |
 |:-------------------------------:|:---------------------------------------------------------------------------|
 | [wireguard](./alpha/wg-access-server) | A helm chart for wg-access-server which uses Wireguard®️ for a VPN          |
@@ -137,7 +137,7 @@ Here's some quick guidelines, but you if you'd like to contribute, please read t
 |:-----------------------|:----------------------------------------------------------------------------------------|
 | [kubevirt](./kubevirt) | [KubeVirt](https://kubevirt.io/) is a virtual machine management add-on for Kubernetes. |
 
-### 🚧 Under construction
+#### 🚧 Under construction
 |                      App                     | Description                                                                       |
 |:--------------------------------------------:|:----------------------------------------------------------------------------------|
 | [Nvidia GPU Operator](./nvidia/gpu-operator) | The GPU Operator allows administrators of Kubernetes clusters to manage GPU nodes |
