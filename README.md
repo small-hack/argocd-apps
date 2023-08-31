@@ -167,4 +167,5 @@ Here's some quick guidelines, but you if you'd like to contribute, please read t
   ```
 
 ## Art
-<img src="https://github.com/small-hack/argocd-apps/assets/2389292/edd66839-7781-4775-869c-00711128d8d6" width="250">
+
+<img src="https://github.com/small-hack/argocd-apps/assets/2389292/1e7e5902-d48f-440d-98f4-44028f4bd90e" width="250">
