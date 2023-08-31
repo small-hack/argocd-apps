@@ -1,7 +1,8 @@
 # Argo CD app
 ArgoCD app for ArgoCD so that ArgoCD can manage itself, ArgoCD 🧡
 
-<img src="./argocd_app.png">
+<img src="./screenshots/argocd_app.png">
+<img src="./screenshots/argo_ingress.png">
 
 ## external secrets
 When creating external secrets for argocd, don't forget to set `spec.target.template.metadata.labels` like:
