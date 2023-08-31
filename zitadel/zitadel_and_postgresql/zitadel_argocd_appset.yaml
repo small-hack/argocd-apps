@@ -147,9 +147,9 @@ spec:
                     - {{ .zitadel_hostname }}
 
             metrics:
-              enabled: false
+              enabled: true
               serviceMonitor:
-                enabled: false
+                enabled: true
 
             readinessProbe:
               enabled: true
