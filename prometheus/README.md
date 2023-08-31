@@ -4,6 +4,9 @@ This doesn't seem like a big deal, but trust me, it is very much a pain to do ma
 
 This app utilizes the argocd appset secrets plugin.
 
+<img src="./screenshots/prometheus-app-of-apps.png">
+<img src="./screenshots/prometheus_stack_network.png">
+
 ## Sync Waves
 1. Kube Prometheus Stack Custom Resource Definitions
 2. Kube Prometheus Stack helm chart:
