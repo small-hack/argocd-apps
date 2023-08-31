@@ -5,7 +5,7 @@ metadata:
   name: prometheus-pushgateway-app-set
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "2"
+    argocd.argoproj.io/sync-wave: "3"
 spec:
   # generator allows us to source specific values from an external secret
   generators:
@@ -15,6 +15,7 @@ spec:
         input:
           parameters:
             secret_vars:
+              - vouch_hostname
               - prometheus_push_gateway_hostname
   template:
     metadata:
@@ -34,14 +35,8 @@ spec:
         chart: prometheus-pushgateway
         targetRevision: 2.4.0
         helm:
+          releaseName: push-gateway
           values: |
-            # Default values for prometheus-pushgateway.
-            # This is a YAML-formatted file.
-            # Declare variables to be passed into your templates.
-
-            # Provide a name in place of prometheus-pushgateway for `app:` labels
-            nameOverride: ""
-
             # Provide a name to substitute for the full names of resources
             fullnameOverride: ""
 
@@ -342,14 +337,6 @@ spec:
               ## Useful if the volume's root directory is not empty
               ##
               subPath: ""
-
-            extraVolumes: []
-              # - name: extra
-              #   emptyDir: {}
-            extraVolumeMounts: []
-              # - name: extra
-              #   mountPath: /usr/share/extras
-              #   readOnly: true
 
             # Configuration for clusters with restrictive network policies in place:
             # - allowAll allows access to the PushGateway from any namespace
