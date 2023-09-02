@@ -33,6 +33,8 @@ spec:
         chart: nextcloud
         helm:
           values: |
+            image:
+              flavor: fpm
             ingress:
               enabled: true
               className: nginx
