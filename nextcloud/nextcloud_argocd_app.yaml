@@ -26,7 +26,6 @@ spec:
 ---
 # First sync wave because we need secrets for nextcloud, so it has to be
 # before nextcloud so it has secrets for all its credentials.
-# In a private repo right now while we figure out a custom argocd plugin
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -66,10 +65,10 @@ spec:
     namespace: nextcloud
   source:
     repoURL: https://github.com/small-hack/argocd-apps.git
-    path: nextcloud/k8up_backups/
+    path: nextcloud/backups/
   syncPolicy:
     syncOptions:
-      - Replace=true
+      - ApplyOutOfSyncOnly=true
     automated:
       prune: true
       selfHeal: true
