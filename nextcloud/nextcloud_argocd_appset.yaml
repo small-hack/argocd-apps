@@ -61,7 +61,7 @@ spec:
                   hosts:
                     - "{{ .nextcloud_hostname }}"
             nextcloud:
-              host: "{{ .nextcloud_hostname }}"
+              host: {{ .nextcloud_hostname }}
               existingSecret:
                 enabled: true
                 secretName: nextcloud-admin-credentials
