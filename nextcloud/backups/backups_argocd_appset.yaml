@@ -1,0 +1,70 @@
+---
+# webapp is deployed 2nd because we need secrets and persistent volumes up 1st
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: nextcloud-web-app-set
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  goTemplate: true
+  # generator allows us to source specific values from an external k8s secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - nextcloud_hostname
+  template:
+    metadata:
+      name: nextcloud-web-app
+    spec:
+      project: nextcloud
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: nextcloud
+      source:
+        repoURL: 'https://github.com/small-hack/argocd-apps.git'
+        targetRevision: nextcloud/backups/helm/
+        helm:
+          values: |
+            backup_name: "nightly-backup"
+
+            backup_type: {{ .nextcloud_backup_type }}
+
+            s3:
+              bucket: {{ .nextcloud_bucket }}
+              endpoint: {{ .nextcloud_endpoint }}
+              accessKeyIDSecretRef:
+                name: 'nextcloud-backups'
+                key: accessId
+              secretAccessKeySecretRef:
+                name: 'nextcloud-backups'
+                key: accessKey
+
+            # -- secret for your restic repo
+            repoPasswordSecretRef:
+              name: 'nextcloud-backups'
+              key: password
+
+            # -- url to push to for prometheus gateway
+            prometheus_url: http://prometheus-prometheus.prometheus:9091/
+
+            # -- user to run the backups as
+            podSecurityContext:
+              runAsUser: 0
+
+            # -- schedules for backups, checks, and prunes
+            schedules:
+              backup: '10 2 * * *'
+              check: '30 2 * * *'
+              prune: '35 2 * * *'
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
+          selfHeal: true
