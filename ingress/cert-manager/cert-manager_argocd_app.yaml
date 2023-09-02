@@ -11,7 +11,7 @@ spec:
   source:
     repoURL: 'https://charts.jetstack.io'
     chart: cert-manager
-    targetRevision: 1.12.3
+    targetRevision: v1.12.4
   destination:
     server: "https://kubernetes.default.svc"
     namespace: ingress
