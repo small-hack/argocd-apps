@@ -23,7 +23,7 @@ spec:
           name: nextcloud-nginx-config
       containers:
         - name: nextcloud
-          image: nextcloud:27.0.0-fpm
+          image: nextcloud:27.0.1-fpm
           imagePullPolicy: IfNotPresent
           command:
             - /bin/bash
