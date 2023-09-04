@@ -2,7 +2,7 @@
 apiVersion: k8up.io/v1
 kind: Backup
 metadata:
-  name: root-backup-nextcloud-b2
+  name: root-backup-nextcloud-s3
   namespace: nextcloud
 spec:
   promURL: http://prometheus-helm-chart-kube-prometheus.monitoring:9091/
