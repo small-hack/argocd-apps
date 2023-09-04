@@ -124,7 +124,7 @@ spec:
               existingSecret:
                 enabled: true
                 secretName: nextcloud-pgsql-credentials
-                usernameKey: username
+                usernameKey: nextcloudUsername
                 passwordKey: nextcloudPassword
             postgresql:
               enabled: true
