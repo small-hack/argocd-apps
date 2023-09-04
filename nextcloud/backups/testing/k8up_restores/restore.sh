@@ -35,7 +35,7 @@ NEXTCLOUD_POD=$(kubectl get pods -l app.kubernetes.io/name=nextcloud -o custom-c
 POSTGRES_POD=$(kubectl get pods -l app.kubernetes.io/name=postgresql -o custom-columns=NAME:.metadata.name | tail -n 1)
 
 p_echo "󰆼 grabing only the most recent postgres pod snapshot"
-postgres_snapshot=$(restic snapshots --latest 1 | grep sql)
+postgres_snapshot=$(restic snapshots --latest 1 | grep '\.sql')
 POSTGRES_SNAPSHOT_ID=$(echo $postgres_snapshot | awk '{print $1}')
 echo "POSTGRES_SNAPSHOT_ID is $POSTGRES_SNAPSHOT_ID"
 POSTGRES_SNAPSHOT_FILE=$(echo $postgres_snapshot | awk '{print $5}' | awk -F '/' '{print $2}')
