@@ -43,10 +43,7 @@ spec:
           releaseName: push-gateway
           values: |
             # Provide a name to substitute for the full names of resources
-            fullnameOverride: ""
-
-            # Provide a namespace to substitude for the namespace on resources
-            namespaceOverride: ""
+            fullnameOverride: "push-gateway"
 
             image:
               repository: quay.io/prometheus/pushgateway
