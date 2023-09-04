@@ -19,7 +19,7 @@ spec:
       key: resticRepoPassword
     s3:
       endpoint: s3.eu-central-003.backblazeb2.com
-      bucket: testing-backups-nextcloud-backup
+      bucket: testing-ncloud-backups-september
       accessKeyIDSecretRef:
         name: nextcloud-backups-credentials
         key: applicationKeyId
