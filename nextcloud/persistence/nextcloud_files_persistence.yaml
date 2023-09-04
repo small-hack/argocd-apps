@@ -5,6 +5,8 @@ kind: PersistentVolumeClaim
 metadata:
   namespace: nextcloud
   name: nextcloud-files
+  annotations:
+    k8up.io/backup: 'true'
 spec:
   storageClassName: local-path
   accessModes:
