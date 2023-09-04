@@ -13,15 +13,14 @@ spec:
   successfulJobsHistoryLimit: 10
   backend:
     repoPasswordSecretRef:
-      name: k8up-restic-b2-repo-pw-nextcloud
-      key: password
+      name: nextcloud-backups-credentials
+      key: resticRepoPassword
     s3:
       endpoint: s3.eu-central-003.backblazeb2.com
-      bucket: k3s-nextcloud
+      bucket: testing-ncloud-backups-september
       accessKeyIDSecretRef:
-        name: k8up-b2-creds-nextcloud
-        key: application-key-id
+        name: nextcloud-backups-credentials
+        key: applicationKeyId
       secretAccessKeySecretRef:
-        name: k8up-b2-creds-nextcloud
-        key: application-key
-```
+        name: nextcloud-backups-credentials
+        key: applicationKey

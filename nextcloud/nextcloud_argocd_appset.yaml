@@ -34,7 +34,7 @@ spec:
         helm:
           values: |
             image:
-              flavor: fpm
+              tag: nextcloud:27.0.1-fpm
             ingress:
               enabled: true
               className: nginx
