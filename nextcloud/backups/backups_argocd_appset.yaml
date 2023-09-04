@@ -65,7 +65,7 @@ spec:
               key: resticRepoPassword
 
             # -- url to push to for prometheus gateway
-            prometheus_url: http://prometheus-prometheus.prometheus:9091/
+            prometheus_url: http://push-gateway.prometheus:9091/
 
             # -- user to run the backups as
             podSecurityContext:
