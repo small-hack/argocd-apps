@@ -4,7 +4,7 @@ Untested.
 apiVersion: k8up.io/v1
 kind: Backup
 metadata:
-  name: www-data-backup-nextcloud-b2
+  name: www-data-backup-nextcloud-s3
   namespace: nextcloud
 spec:
   podSecurityContext:
