@@ -31,7 +31,7 @@ spec:
           #   - name: nextcloud-maintanence-perm-fix
           containers:
             - name: nextcloud-maintanence
-              image: nextcloud:27.0.0-fpm
+              image: nextcloud:27.0.1-fpm
               imagePullPolicy: IfNotPresent
               command:
                 - /bin/bash
