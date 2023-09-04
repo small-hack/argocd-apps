@@ -18,9 +18,10 @@ spec:
           parameters:
             secret_vars:
               - nextcloud_hostname
+              - nextcloud_backup_type
+              - nextcloud_backup_local_mount_path
               - nextcloud_backup_s3_bucket
               - nextcloud_backup_s3_endpoint
-              - nextcloud_backup_type
   template:
     metadata:
       name: nextcloud-scheduled-backups
@@ -47,6 +48,9 @@ spec:
               secretAccessKeySecretRef:
                 name: 'nextcloud-backups'
                 key: accessKey
+
+            local:
+              mountPath: {{ .nextcloud_backup_local_mount_path }}
 
             # -- secret for your restic repo
             repoPasswordSecretRef:
