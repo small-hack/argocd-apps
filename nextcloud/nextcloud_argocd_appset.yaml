@@ -69,7 +69,7 @@ spec:
                 secretName: nextcloud-admin-credentials
                 usernameKey: username
                 passwordKey: password
-                tokenKey: serverinfo_token
+                tokenKey: serverInfoToken
                 smtpUsernameKey: smtpUsername
                 smtpPasswordKey: smtpPassword
               update: 1
