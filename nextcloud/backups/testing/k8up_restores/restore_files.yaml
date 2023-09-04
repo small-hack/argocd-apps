@@ -15,14 +15,14 @@ spec:
       claimName: nextcloud-files
   backend:
     repoPasswordSecretRef:
-      name: k8up-restic-b2-repo-pw-nextcloud
-      key: password
+      name: nextcloud-backups-credentials
+      key: resticRepoPassword
     s3:
       endpoint: s3.eu-central-003.backblazeb2.com
-      bucket: vmt-ncloud
+      bucket: testing-backups-nextcloud-backup
       accessKeyIDSecretRef:
-        name: k8up-b2-creds-nextcloud
+        name: nextcloud-backups-credentials
         key: applicationKeyId
       secretAccessKeySecretRef:
-        name: k8up-b2-creds-nextcloud
+        name: nextcloud-backups-credentials
         key: applicationKey
