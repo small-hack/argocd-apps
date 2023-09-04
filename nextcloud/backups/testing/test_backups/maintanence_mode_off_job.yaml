@@ -5,6 +5,7 @@ metadata:
   name: nextcloud-maintanence-mode-off
   namespace: nextcloud
 spec:
+  ttlSecondsAfterFinished: 300
   template:
     spec:
       restartPolicy: OnFailure
