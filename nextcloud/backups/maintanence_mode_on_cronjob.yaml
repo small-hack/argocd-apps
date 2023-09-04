@@ -7,6 +7,8 @@ metadata:
 spec:
   # daily at 2:00AM Central Europe Time
   schedule: "0 2 * * *"
+  successfulJobsHistoryLimit: 0
+  failedJobsHistoryLimit: 3
   jobTemplate:
     spec:
       template:
