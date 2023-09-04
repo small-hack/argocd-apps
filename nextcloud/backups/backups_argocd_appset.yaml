@@ -18,6 +18,9 @@ spec:
           parameters:
             secret_vars:
               - nextcloud_hostname
+              - nextcloud_backup_s3_bucket
+              - nextcloud_backup_s3_endpoint
+              - nextcloud_backup_type
   template:
     metadata:
       name: nextcloud-scheduled-backups
@@ -36,8 +39,8 @@ spec:
             backup_type: {{ .nextcloud_backup_type }}
 
             s3:
-              bucket: {{ .nextcloud_bucket }}
-              endpoint: {{ .nextcloud_endpoint }}
+              bucket: {{ .nextcloud_backup_s3_bucket }}
+              endpoint: {{ .nextcloud_backup_s3_endpoint }}
               accessKeyIDSecretRef:
                 name: 'nextcloud-backups'
                 key: accessId
