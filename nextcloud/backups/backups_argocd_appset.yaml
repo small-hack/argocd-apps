@@ -3,7 +3,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: nextcloud-web-app-set
+  name: scheduled-backups-app-set
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "2"
@@ -20,7 +20,7 @@ spec:
               - nextcloud_hostname
   template:
     metadata:
-      name: nextcloud-web-app
+      name: nextcloud-scheduled-backups
     spec:
       project: nextcloud
       destination:
