@@ -18,8 +18,8 @@ spec:
           parameters:
             secret_vars:
               - nextcloud_hostname
-              - nextcloud_backup_type
-              - nextcloud_backup_local_mount_path
+              - nextcloud_backup_method
+              - nextcloud_backup_mount_path
               - nextcloud_backup_s3_bucket
               - nextcloud_backup_s3_endpoint
   template:
@@ -44,25 +44,25 @@ spec:
           values: |
             backup_name: "nightly-backup"
 
-            backup_type: {{ .nextcloud_backup_type }}
+            backup_type: {{ .nextcloud_backup_method }}
 
             s3:
               bucket: {{ .nextcloud_backup_s3_bucket }}
               endpoint: {{ .nextcloud_backup_s3_endpoint }}
               accessKeyIDSecretRef:
-                name: 'nextcloud-backups'
-                key: accessId
+                name: 'nextcloud-backups-credentails'
+                key: applicationKeyId
               secretAccessKeySecretRef:
-                name: 'nextcloud-backups'
-                key: accessKey
+                name: 'nextcloud-backups-credentials'
+                key: applicationKey
 
             local:
-              mountPath: {{ .nextcloud_backup_local_mount_path }}
+              mountPath: {{ .nextcloud_backup_mount_path }}
 
             # -- secret for your restic repo
             repoPasswordSecretRef:
-              name: 'nextcloud-backups'
-              key: password
+              name: 'nextcloud-backups-credentials'
+              key: resticRepoPassword
 
             # -- url to push to for prometheus gateway
             prometheus_url: http://prometheus-prometheus.prometheus:9091/
