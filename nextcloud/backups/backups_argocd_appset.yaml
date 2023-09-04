@@ -30,9 +30,16 @@ spec:
       destination:
         server: https://kubernetes.default.svc
         namespace: nextcloud
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
+          selfHeal: true
       source:
         repoURL: 'https://github.com/small-hack/argocd-apps.git'
-        targetRevision: nextcloud/backups/helm/
+        path: nextcloud/backups/helm/
+        targetRevision: main
         helm:
           values: |
             backup_name: "nightly-backup"
@@ -69,9 +76,3 @@ spec:
               backup: '10 2 * * *'
               check: '30 2 * * *'
               prune: '35 2 * * *'
-      syncPolicy:
-        syncOptions:
-          - ApplyOutOfSyncOnly=true
-        automated:
-          prune: true
-          selfHeal: true
