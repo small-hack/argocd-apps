@@ -11,24 +11,30 @@ spec:
     s3:
       bucket: testing-ncloud-backups-september
       endpoint: s3.eu-central-003.backblazeb2.com
+      accessKeyIDSecretRef:
+        name: nextcloud-backups-credentials
+        key: applicationKeyId
+      secretAccessKeySecretRef:
+        name: nextcloud-backups-credentials
+        key: applicationKey
   backup:
     failedJobsHistoryLimit: 10
     podSecurityContext:
       runAsUser: 0
     promURL: http://push-gateway.prometheus:9091/
     resources: {}
-    schedule: 40 15 * * *
+    schedule: 56 13 * * *
     successfulJobsHistoryLimit: 2
   check:
     promURL: http://push-gateway.prometheus:9091/
     resources: {}
-    schedule: 45 15 * * *
+    schedule: 58 13 * * *
   failedJobsHistoryLimit: 10
   prune:
     resources: {}
     retention:
       keepDaily: 7
       keepWeekly: 8
-    schedule: 46 15 * * *
+    schedule: 59 13 * * *
   resourceRequirementsTemplate: {}
   successfulJobsHistoryLimit: 10
