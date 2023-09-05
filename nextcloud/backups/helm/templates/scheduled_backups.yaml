@@ -5,8 +5,6 @@ metadata:
   name: {{ .Values.backup_name }}
   namespace: {{ .Release.namespace }}
 spec:
-  failedJobsHistoryLimit: 10
-  successfulJobsHistoryLimit: 10
   backend:
     repoPasswordSecretRef:
       name: {{ .Values.repoPasswordSecretRef.name }}
