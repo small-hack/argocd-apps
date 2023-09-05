@@ -17,10 +17,7 @@ spec:
       destination:
         server: https://kubernetes.default.svc
         namespace: k8tz
-      generators:
-        - plugin:
-            configMapRef:
-              name: secret-var-plugin-generator
+      generators: []
       source:
         repoURL: 'k8tz https://k8tz.github.io/k8tz/'
         targetRevision: 0.13.1
