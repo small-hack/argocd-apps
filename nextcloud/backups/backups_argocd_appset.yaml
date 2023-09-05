@@ -50,10 +50,10 @@ spec:
               bucket: {{ .nextcloud_backup_s3_bucket }}
               endpoint: {{ .nextcloud_backup_s3_endpoint }}
               accessKeyIDSecretRef:
-                name: 'nextcloud-backups-credentails'
+                name: nextcloud-backups-credentials
                 key: applicationKeyId
               secretAccessKeySecretRef:
-                name: 'nextcloud-backups-credentials'
+                name: nextcloud-backups-credentials
                 key: applicationKey
 
             local:
