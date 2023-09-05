@@ -34,10 +34,9 @@ You should be able to just set argo to use this repo. There's an example templat
     apiVersion: argoproj.io/v1alpha1
     kind: Application
     metadata:
-      name: k8tz-appset-app
+      name: k8tz-argo-app
     spec:
       destination:
-        name: k8tz
         namespace: k8tz
         server: 'https://kubernetes.default.svc'
       source:
