@@ -13,7 +13,7 @@ spec:
     server: https://kubernetes.default.svc
     namespace: k8tz
   source:
-    repoURL: 'k8tz https://k8tz.github.io/k8tz/'
+    repoURL: 'https://k8tz.github.io/k8tz/'
     targetRevision: 0.13.1
     chart: k8tz
     helm:
