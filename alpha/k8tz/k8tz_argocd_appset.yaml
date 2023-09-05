@@ -1,0 +1,100 @@
+---
+# webapp is deployed 2nd because we need secrets and persistent volumes up 1st
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: k8tz-app-set
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  goTemplate: true
+  template:
+    metadata:
+      name: k8tz
+    spec:
+      project: default
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: k8tz
+      source:
+        repoURL: 'k8tz https://k8tz.github.io/k8tz/'
+        targetRevision: 0.13.1
+        chart: k8tz
+        helm:
+          values: |
+            # Default values for k8tz.
+            
+            kind: Deployment
+            replicaCount: 1
+            
+            namespace: k8tz
+            injectionStrategy: initContainer
+            timezone: CEST
+            injectAll: true
+            cronJobTimeZone: false  
+            # requires kubernetes >=1.24.0-beta.0 with 'CronJobTimeZone' 
+            # feature gate enabled (alpha)
+            verbose: false
+            
+            # Labels to apply to all resources
+            labels: {}
+            
+            webhook:
+              failurePolicy: Fail
+            
+              certManager:
+                enabled: false
+                secretTemplate: {}
+                duration: 2160h
+                renewBefore: 720h
+                issuerRef:
+                  name: selfsigned
+                  kind: ClusterIssuer
+            
+              crtPEM: |
+            
+              keyPEM: |
+            
+              caBundle: |
+            
+            image:
+              repository: quay.io/k8tz/k8tz
+              pullPolicy: IfNotPresent
+              # Overrides the image tag whose default is the chart appVersion.
+              tag: ""
+            
+            imagePullSecrets: []
+            nameOverride: ""
+            fullnameOverride: ""
+            
+            serviceAccount:
+              # Annotations to add to the service account
+              annotations: {}
+              # The name of the service account to use.
+              # If empty, a name is generated using the fullname template
+              name: ""
+            
+            podAnnotations: {}
+            
+            podSecurityContext: {}
+            
+            securityContext: {}
+            
+            service:
+              type: ClusterIP
+              port: 443
+            
+            resources: {}
+            
+            nodeSelector: {}
+            
+            tolerations: []
+            
+            affinity: {}
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
+          selfHeal: true
