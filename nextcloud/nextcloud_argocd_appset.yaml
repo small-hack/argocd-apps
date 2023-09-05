@@ -128,7 +128,8 @@ spec:
                 passwordKey: nextcloudPassword
             postgresql:
               enabled: true
-              fullnameOverride: nextcloud-postgresql
+              # we can't use fullnameOverride till https://github.com/nextcloud/helm/pull/442 is merged
+              # fullnameOverride: nextcloud-postgresql
               global:
                 postgresql:
                   auth:
