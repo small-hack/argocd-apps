@@ -1,0 +1,74 @@
+---
+# k8up is for backups of persistent volume claims
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: k8up-helm-app-set
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  goTemplate: true
+  # generator allows us to source specific values from an external k8s secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - k8up_timezone
+  template:
+    metadata:
+      name: k8up-helm-release
+    spec:
+      project: k8up
+      destination:
+        server: "https://kubernetes.default.svc"
+        namespace: k8up
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
+          selfHeal: true
+      source:
+        # official k8up helm repo
+        repoURL: 'https://k8up-io.github.io/k8up'
+        chart: k8up
+        targetRevision: 4.4.1
+        helm:
+          values: |
+            k8up:
+              # -- Specifies the timezone K8up is using for scheduling.
+              # Empty value defaults to the timezone in which Kubernetes is deployed.
+              # Accepts `tz database` compatible entries, e.g. `Europe/Zurich`
+              timezone: {{ .k8up_timezone }}
+
+            metrics:
+              service:
+                port: 8080
+                type: ClusterIP
+                # -- Service node port of the metrics endpoint, requires `metrics.service.type=NodePort`
+                nodePort: 0
+
+              serviceMonitor:
+                # -- Whether to enable ServiceMonitor manifests for
+                # [Prometheus Operator][prometheus-operator]
+                enabled: true
+                # -- Scrape interval to collect metrics
+                scrapeInterval: 15s
+                # -- If the object should be installed in a different namespace than operator
+                namespace: ""
+                # -- Add labels to the ServiceMonitor object
+                additionalLabels: {}
+
+            resources:
+              limits:
+                # -- Memory limit of K8up operator. See [supported units][resource-units].
+                memory: 256Mi
+              requests:
+                # -- CPU request of K8up operator. See [supported units][resource-units].
+                cpu: 20m
+                # -- Memory request of K8up operator. See [supported units][resource-units].
+                memory: 128Mi
