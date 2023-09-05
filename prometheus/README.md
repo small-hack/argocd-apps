@@ -1,11 +1,13 @@
-# Monitoring Stack App of Apps
+# Prometheus Stack App of Apps
 Everything you need for a fully functioning monitoring stack managed by renovatebot and Argo CD.
 This doesn't seem like a big deal, but trust me, it is very much a pain to do manually.
 
 This app utilizes the [ApplicationSet Secret Plugin Generator](https://github.com/jessebot/argocd-appset-secret-plugin) so follow the directions there if you haven't already, so that Argo CD can populate the appropriate templated values in the ApplicationSet.
 
-<img src="./screenshots/prometheus-app-of-apps.png">
-<img src="./screenshots/prometheus_stack_network.png">
+<img src="./screenshots/prometheus-app-of-apps.png" alt="chart of the full app of apps including all of the apps featured under the Sync Waves section below">
+
+#### Netflow
+<img src="./screenshots/prometheus_stack_network.png" alt="chart of the netflow for this app of apps">
 
 ## Sync Waves
 1. Kube Prometheus Stack Custom Resource Definitions
