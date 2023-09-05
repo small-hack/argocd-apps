@@ -25,9 +25,9 @@ spec:
         
         namespace: k8tz
         injectionStrategy: initContainer
-        timezone: CEST
+        timezone: Europe/Amsterdam
         injectAll: false
-        cronJobTimeZone: false
+        cronJobTimeZone: true
         # requires kubernetes >=1.24.0-beta.0 with 'CronJobTimeZone' 
         # feature gate enabled (alpha)
         verbose: false
