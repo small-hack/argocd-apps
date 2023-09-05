@@ -2,7 +2,7 @@
 Everything you need for a fully functioning monitoring stack managed by renovatebot and Argo CD.
 This doesn't seem like a big deal, but trust me, it is very much a pain to do manually.
 
-This app utilizes the argocd appset secrets plugin.
+This app utilizes the [ApplicationSet Secret Plugin Generator](https://github.com/jessebot/argocd-appset-secret-plugin) so follow the directions there if you haven't already, so that Argo CD can populate the appropriate templated values in the ApplicationSet.
 
 <img src="./screenshots/prometheus-app-of-apps.png">
 <img src="./screenshots/prometheus_stack_network.png">
@@ -125,3 +125,6 @@ like Prometheus, but for logs
 - It does not index the contents of the logs, but rather a set of labels for each log stream.
 
 See: https://github.com/grafana/loki
+
+### Coming soon
+ Soon you'll also be able to use [smol-k8s-lab](https://github.com/small-hack/smol-k8s-lab) to deploy this.
