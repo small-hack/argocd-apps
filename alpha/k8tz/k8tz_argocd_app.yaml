@@ -27,7 +27,7 @@ spec:
         injectionStrategy: initContainer
         timezone: CEST
         injectAll: true
-        cronJobTimeZone: false  
+        cronJobTimeZone: true  
         # requires kubernetes >=1.24.0-beta.0 with 'CronJobTimeZone' 
         # feature gate enabled (alpha)
         verbose: false
