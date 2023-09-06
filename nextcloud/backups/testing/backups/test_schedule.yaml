@@ -18,7 +18,7 @@ spec:
         name: nextcloud-backups-credentials
         key: applicationKey
   backup:
-    failedJobsHistoryLimit: 10
+    failedJobsHistoryLimit: 5
     podSecurityContext:
       runAsUser: 0
     promURL: http://push-gateway.prometheus:9091/
