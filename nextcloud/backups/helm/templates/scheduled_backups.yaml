@@ -12,11 +12,11 @@ spec:
     s3:
       endpoint: {{ .Values.s3.endpoint }}
       bucket: {{ .Values.s3.bucket }}
-      accountIDSecretRef:
+      accessKeyIDSecretRef:
         name: {{ .Values.s3.accessKeyIDSecretRef.name }}
         key: {{ .Values.s3.accessKeyIDSecretRef.key }}
         optional: {{ .Values.s3.accessKeyIDSecretRef.optional }}
-      accountKeySecretRef:
+      secretAccessKeySecretRef:
         name: {{ .Values.s3.secretAccessKeySecretRef.name }}
         key: {{ .Values.s3.secretAccessKeySecretRef.key }}
         optional: {{ .Values.s3.secretAccessKeySecretRef.optional }}
@@ -28,7 +28,7 @@ spec:
   # Backup nightly at 2:10 AM (Central Europe Time)
   backup:
     schedule: {{ .Values.schedules.backup }}
-    failedJobsHistoryLimit: 10
+    failedJobsHistoryLimit: 5
     successfulJobsHistoryLimit: 2
     promURL: {{ .Values.prometheus_url }}
     {{- if .Values.podSecurityContext }}
