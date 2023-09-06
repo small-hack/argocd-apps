@@ -2,11 +2,11 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: maintanence-mode-on
+  name: test-maintanence-mode-off
   namespace: nextcloud
 spec:
-  # daily at 2:00AM Central Europe Time
-  schedule: "0 2 * * *"
+  # daily at 3AM Central Europe Time
+  schedule: "0 3 * * *"
   successfulJobsHistoryLimit: 0
   failedJobsHistoryLimit: 3
   jobTemplate:
@@ -36,7 +36,7 @@ spec:
               command:
                 - /bin/bash
                 - -c
-                - su -s /bin/bash www-data -c "php occ files:scan --all && php occ maintenance:mode --on"
+                - su -s /bin/bash www-data -c "php occ maintenance:mode --off"
               volumeMounts:
                 - mountPath: /var/www/
                   name: nextcloud-main

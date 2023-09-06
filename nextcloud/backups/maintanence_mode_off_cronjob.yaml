@@ -2,7 +2,7 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: nextcloud-maintanence-mode-off
+  name: maintanence-mode-off
   namespace: nextcloud
 spec:
   # daily at 3AM Central Europe Time
