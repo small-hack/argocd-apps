@@ -23,18 +23,16 @@ spec:
       runAsUser: 0
     promURL: http://push-gateway.prometheus:9091/
     resources: {}
-    schedule: 31 16 * * *
+    schedule: 0 10 * * *
     successfulJobsHistoryLimit: 2
   check:
     promURL: http://push-gateway.prometheus:9091/
     resources: {}
-    schedule: 33 14 * * *
-  failedJobsHistoryLimit: 10
+    schedule: 2 10 * * *
   prune:
     resources: {}
     retention:
       keepDaily: 7
       keepWeekly: 8
-    schedule: 34 14 * * *
+    schedule: 4 10 * * *
   resourceRequirementsTemplate: {}
-  successfulJobsHistoryLimit: 10
