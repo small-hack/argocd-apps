@@ -2,11 +2,11 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: maintanence-mode-on
+  name: test-maintanence-mode-on
   namespace: nextcloud
 spec:
   # daily at 2:00AM Central Europe Time
-  schedule: "0 2 * * *"
+  schedule: "26 8 * * *"
   successfulJobsHistoryLimit: 0
   failedJobsHistoryLimit: 3
   jobTemplate:
