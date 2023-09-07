@@ -61,11 +61,8 @@ spec:
               # Default logging options used by all components
               logging:
                 # -- Set the global logging format. Either: `text` or `json`
-                format: text
+                format: json
                 level: debug
-
-              # -- Add Prometheus scrape annotations to all metrics services. This can be used as an alternative to the ServiceMonitors.
-              addPrometheusAnnotations: false
 
               # Default network policy rules used by all components
               networkPolicy:
@@ -107,7 +104,7 @@ spec:
                 application.instanceLabelKey: argocd.argoproj.io/instance
 
                 # -- Enable logs RBAC enforcement
-                ## Ref: https://argo-cd.readthedocs.io/en/latest/operator-manual/upgrading/2.3-2.4/#enable-logs-rbac-enforcement
+                # argo-cd.readthedocs.io/en/latest/operator-manual/upgrading/2.3-2.4/#enable-logs-rbac-enforcement
                 server.rbac.log.enforce.enable: false
 
                 # -- Enable exec feature in Argo UI
@@ -150,19 +147,15 @@ spec:
               ## Ref: https://github.com/argoproj/argo-cd/blob/master/docs/operator-manual/argocd-cmd-params-cm.yaml
               params:
                 # -- Create the argocd-cmd-params-cm configmap
-                # If false, it is expected the configmap will be created by something else.
                 create: true
-
-                ## Server properties
-                # -- Run server without TLS
+                ## Server properties -- Run server without TLS
                 server.insecure: false
-
-                ## Repo-server properties
-                # -- Limit on number of concurrent manifests generate requests. Any value less the 1 means no limit.
+                ## Repo-server properties -- Limit on number of concurrent
+                #  manifests generate requests. 0 means no limit.
                 reposerver.parallelism.limit: 0
-
                 ## ApplicationSet Properties
-                # -- Modify how application is synced between the generator and the cluster. One of: `sync`, `create-only`, `create-update`, `create-delete`
+                # -- Modify how application is synced b/w the generator and cluster
+                # One of: `sync`, `create-only`, `create-update`, `create-delete`
                 applicationsetcontroller.policy: sync
                 # -- Enables use of the Progressive Syncs capability
                 applicationsetcontroller.enable.progressive.syncs: false
@@ -177,7 +170,7 @@ spec:
                 create: true
 
                 # -- The name of the default role which Argo CD will falls back to, when authorizing API requests (optional).
-                # If omitted or empty, users may be still be able to login, but will see no apps, projects, etc...
+                # If omitted/empty, users may be still be able to login, but won't see apps, projects, etc...
                 policy.default: ''
 
                 # -- File containing user-defined policies and role definitions.
@@ -420,31 +413,18 @@ spec:
                .row.popup-container__header.popup-container__header__normal {
                     background-color: #404767 !important;
                }
-               .row.popup-overlay .popup-container__body {
+               .row.popup-container__body {
                   background-color: #4e5e84 !important;
                }
-               .row.popup-overlay .popup-container__footer {
+               .row.popup-container__footer {
                     background-color: #4e5e84 !important;
+               }
+               .button.argo-button--base-o:nth-child(1) {
+                    background-color: #ffffff;
                }
 
             ## Application controller
             controller:
-              ## Application controller Pod Disruption Budget
-              ## Ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
-              pdb:
-                # -- Deploy a [PodDisruptionBudget] for the application controller
-                enabled: false
-                # -- Labels to be added to application controller pdb
-                labels: {}
-                # -- Annotations to be added to application controller pdb
-                annotations: {}
-                # -- Number of pods that are available after eviction as number or percentage (eg.: 50%)
-                # @default -- `""` (defaults to 0 if not specified)
-                minAvailable: ""
-                # -- Number of pods that are unavailable after eviction as number or percentage (eg.: 50%).
-                ## Has higher precedence over `controller.pdb.minAvailable`
-                maxUnavailable: ""
-
               ## Application controller metrics configuration
               metrics:
                 # -- Deploy metrics service
@@ -494,78 +474,35 @@ spec:
               ## Enable this and set the rules: to whatever custom rules you want for the Cluster Role resource.
               ## Defaults to off
               clusterRoleRules:
-                # -- Enable custom rules for the application controller's ClusterRole resource
                 enabled: false
                 # -- List of custom rules for the application controller's ClusterRole resource
                 rules: []
 
             ## Dex
             dex:
-              # -- Enable dex
               enabled: false
 
             ## Redis
             redis:
               # -- Enable redis
               enabled: true
-
-              # -- [Node selector]
-              # @default -- `{}` (defaults to global.nodeSelector)
-              nodeSelector: {}
-
-              # -- [Tolerations] for use with node taints
-              # @default -- `[]` (defaults to global.tolerations)
-              tolerations: []
-
-              # -- Assign custom [affinity] rules to the deployment
-              # @default -- `{}` (defaults to global.affinity preset)
-              affinity: {}
-
-              # -- Assign custom [TopologySpreadConstraints] rules to redis
-              # @default -- `[]` (defaults to global.topologySpreadConstraints)
-              ## Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints/
-              ## If labelSelector is left out, it will default to the labelSelector configuration of the deployment
-              topologySpreadConstraints: []
-                # - maxSkew: 1
-                #   topologyKey: topology.kubernetes.io/zone
-                #   whenUnsatisfiable: DoNotSchedule
-
               serviceAccount:
                 # -- Create a service account for the redis pod
                 create: false
-                # -- Service account name for redis pod
-                name: ""
-                # -- Annotations applied to created service account
-                annotations: {}
                 # -- Automount API credentials for the Service Account
                 automountServiceAccountToken: false
-
               metrics:
-                # -- Deploy metrics service
+                # -- Deploy redis metrics service
                 enabled: false
-
                 # Redis metrics service configuration
                 service:
-                  # -- Metrics service type
-                  type: ClusterIP
-                  # -- Metrics service clusterIP. `None` makes a "headless service" (no virtual IP)
-                  clusterIP: None
-                  # -- Metrics service annotations
-                  annotations: {}
-                  # -- Metrics service labels
-                  labels: {}
                   # -- Metrics service port
                   servicePort: 9121
                   # -- Metrics service port name
                   portName: http-metrics
-
                 serviceMonitor:
                   # -- Enable a prometheus ServiceMonitor
                   enabled: false
-
-            # This key configures Redis-HA subchart and when enabled (redis-ha.enabled=true)
-            # the custom redis deployment is omitted
-            # Check the redis-ha chart for more properties
 
             ## Server
             server:
@@ -613,23 +550,6 @@ spec:
                 ## Has higher precedence over `server.pdb.minAvailable`
                 maxUnavailable: ""
 
-              # -- Additional command line arguments to pass to Argo CD server
-              extraArgs: []
-
-              # -- Environment variables to pass to Argo CD server
-              env: []
-
-              # -- envFrom to pass to Argo CD server
-              # @default -- `[]` (See [values.yaml])
-              envFrom: []
-              # - configMapRef:
-              #     name: config-map-name
-              # - secretRef:
-              #     name: secret-name
-
-              # -- Specify postStart and preStop lifecycle hooks for your argo-cd-server container
-              lifecycle: {}
-
               ## Argo UI extensions
               ## This function in tech preview stage, do expect instability or breaking changes in newer versions.
               ## Ref: https://github.com/argoproj-labs/argocd-extensions
@@ -653,100 +573,41 @@ spec:
                 # -- Metrics container port
                 metrics: 8083
 
-              # -- Host Network for Server pods
-              hostNetwork: false
-
-              # -- [DNS configuration]
-              dnsConfig: {}
-              # -- Alternative DNS policy for Server pods
-              dnsPolicy: "ClusterFirst"
-
-              # -- Server container-level security context
-              # @default -- See [values.yaml]
-              containerSecurityContext:
-                runAsNonRoot: true
-                readOnlyRootFilesystem: true
-                allowPrivilegeEscalation: false
-                seccompProfile:
-                  type: RuntimeDefault
-                capabilities:
-                  drop:
-                    - ALL
-
-              # -- Priority class for the Argo CD server pods
-              # @default -- `""` (defaults to global.priorityClassName)
-              priorityClassName: ""
-
-              # -- [Node selector]
-              # @default -- `{}` (defaults to global.nodeSelector)
-              nodeSelector: {}
-
-              # -- [Tolerations] for use with node taints
-              # @default -- `[]` (defaults to global.tolerations)
-              tolerations: []
-
-              # -- Assign custom [affinity] rules to the deployment
-              # @default -- `{}` (defaults to global.affinity preset)
-              affinity: {}
-
-              # -- Assign custom [TopologySpreadConstraints] rules to the Argo CD server
-              # @default -- `[]` (defaults to global.topologySpreadConstraints)
-              ## Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints/
-              ## If labelSelector is left out, it will default to the labelSelector configuration of the deployment
-              topologySpreadConstraints: []
-                # - maxSkew: 1
-                #   topologyKey: topology.kubernetes.io/zone
-                #   whenUnsatisfiable: DoNotSchedule
-
               ## Server metrics service configuration
               metrics:
                 # -- Deploy metrics service
-                enabled: false
+                enabled: true
                 service:
                   # -- Metrics service type
                   type: ClusterIP
-                  # -- Metrics service clusterIP. `None` makes a "headless service" (no virtual IP)
-                  clusterIP: ""
-                  # -- Metrics service annotations
-                  annotations: {}
-                  # -- Metrics service labels
-                  labels: {}
                   # -- Metrics service port
                   servicePort: 8083
                   # -- Metrics service port name
                   portName: http-metrics
                 serviceMonitor:
                   # -- Enable a prometheus ServiceMonitor
-                  enabled: false
+                  enabled: true
                   # -- Prometheus ServiceMonitor tlsConfig
                   tlsConfig: {}
                   # -- Prometheus ServiceMonitor namespace
-                  namespace: ""  # monitoring
+                  namespace: "prometheus"
 
               ingress:
-                # -- Enable an ingress resource for the Argo CD server
+                # Enable an ingress resource for the Argo CD server
                 enabled: true
-                # -- Additional ingress annotations
-                # kubernetes.io/ingress.class: nginx
+                ingressClassName: "nginx"
                 annotations:
                   cert-manager.io/cluster-issuer: {{ .global_cluster_issuer }}
                   kubernetes.io/tls-acme: true
                   nginx.ingress.kubernetes.io/backend-protocol: HTTPS
                   nginx.ingress.kubernetes.io/ssl-passthrough: true
-                # -- Defines which ingress controller will implement the resource
-                ingressClassName: "nginx"
-
-                # List of ingress hosts
                 hosts:
                   - {{ .argo_cd_hostname }}
-
-                # -- Ingress TLS configuration
                 tls:
                   - secretName: argocd-secret
                     hosts:
                       - {{ .argo_cd_hostname }}
-
-                # -- Uses `server.service.servicePortHttps` instead `server.service.servicePortHttp`
+                # Uses `server.service.servicePortHttps` instead `server.service.servicePortHttp`
                 https: true
 
               # dedicated ingress for gRPC as documented at
@@ -754,37 +615,28 @@ spec:
               ingressGrpc:
                 # -- Enable an ingress resource for the Argo CD server for dedicated [gRPC-ingress]
                 enabled: false
-                # -- Setup up gRPC ingress to work with an AWS ALB
-                isAWSALB: false
                 # -- Additional ingress annotations for dedicated [gRPC-ingress]
-                annotations: {}
-                # -- Additional ingress labels for dedicated [gRPC-ingress]
-                labels: {}
+                annotations:
+                  cert-manager.io/cluster-issuer: {{ .global_cluster_issuer }}
                 # -- Defines which ingress controller will implement the resource [gRPC-ingress]
-                ingressClassName: ""
-
+                ingressClassName: "nginx"
                 # -- List of ingress hosts for dedicated [gRPC-ingress]
-                ## Argo Ingress.
                 ## Hostnames must be provided if Ingress is enabled.
                 ## Secrets must be manually created in the namespace
-                ##
-                hosts: []
-                  # - argocd.example.com
-
+                hosts:
+                  - {{ .argo_cd_hostname }}
                 # -- List of ingress paths for dedicated [gRPC-ingress]
                 paths:
                   - /
                 # -- Ingress path type for dedicated [gRPC-ingress]. One of `Exact`, `Prefix` or `ImplementationSpecific`
                 pathType: Prefix
-
                 # -- Ingress TLS configuration for dedicated [gRPC-ingress]
-                tls: []
-                  # - secretName: your-certificate-name
-                  #   hosts:
-                  #     - argocd.example.com
-
+                tls:
+                  - secretName: argocd-grpc-secret
+                    hosts:
+                      - grpc-{{ .argo_cd_hostname }}
                 # -- Uses `server.service.servicePortHttps` instead `server.service.servicePortHttp`
-                https: false
+                https: true
 
             ## Repo Server
             repoServer:
@@ -819,66 +671,6 @@ spec:
                   #     value: 2
                   #     periodSeconds: 60
 
-              ## Repo server Pod Disruption Budget
-              ## Ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
-              pdb:
-                # -- Deploy a [PodDisruptionBudget] for the repo server
-                enabled: false
-                # -- Labels to be added to repo server pdb
-                labels: {}
-                # -- Annotations to be added to repo server pdb
-                annotations: {}
-                # -- Number of pods that are available after eviction as number or percentage (eg.: 50%)
-                # @default -- `""` (defaults to 0 if not specified)
-                minAvailable: ""
-                # -- Number of pods that are unavailable after eviction as number or percentage (eg.: 50%).
-                ## Has higher precedence over `repoServer.pdb.minAvailable`
-                maxUnavailable: ""
-
-              # -- Secrets with credentials to pull images from a private registry
-              # @default -- `[]` (defaults to global.imagePullSecrets)
-              imagePullSecrets: []
-
-              # -- Additional command line arguments to pass to repo server
-              extraArgs: []
-
-              # -- Environment variables to pass to repo server
-              env: []
-
-              # -- envFrom to pass to repo server
-              # @default -- `[]` (See [values.yaml])
-              envFrom: []
-              # - configMapRef:
-              #     name: config-map-name
-              # - secretRef:
-              #     name: secret-name
-
-              # -- Specify postStart and preStop lifecycle hooks for your argo-repo-server container
-              lifecycle: {}
-
-              # -- Init containers to add to the repo server pods
-              initContainers: []
-
-              # -- Additional containers to be added to the repo server pod
-              ## Ref: https://argo-cd.readthedocs.io/en/stable/user-guide/config-management-plugins/
-              ## Note: Supports use of custom Helm templates
-              extraContainers: []
-
-              # -- Additional volumeMounts to the repo server main container
-              volumeMounts: []
-
-              # -- Additional volumes to the repo server pod
-              volumes: []
-
-              # -- Annotations to be added to repo server Deployment
-              deploymentAnnotations: {}
-
-              # -- Annotations to be added to repo server pods
-              podAnnotations: {}
-
-              # -- Labels to be added to repo server pods
-              podLabels: {}
-
               # -- Resource limits and requests for the repo server pods
               resources: {}
               #  limits:
@@ -887,41 +679,6 @@ spec:
               #  requests:
               #    cpu: 10m
               #    memory: 64Mi
-
-              # -- Host Network for Repo server pods
-              hostNetwork: false
-
-              # -- [Node selector]
-              # @default -- `{}` (defaults to global.nodeSelector)
-              nodeSelector: {}
-
-              # -- [Tolerations] for use with node taints
-              # @default -- `[]` (defaults to global.tolerations)
-              tolerations: []
-
-              # -- Assign custom [affinity] rules to the deployment
-              # @default -- `{}` (defaults to global.affinity preset)
-              affinity: {}
-
-              # -- Assign custom [TopologySpreadConstraints] rules to the repo server
-              # @default -- `[]` (defaults to global.topologySpreadConstraints)
-              ## Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints/
-              ## If labelSelector is left out, it will default to the labelSelector configuration of the deployment
-              topologySpreadConstraints: []
-                # - maxSkew: 1
-                #   topologyKey: topology.kubernetes.io/zone
-                #   whenUnsatisfiable: DoNotSchedule
-
-              # -- Deployment strategy to be added to the repo server Deployment
-              deploymentStrategy: {}
-                # type: RollingUpdate
-                # rollingUpdate:
-                #   maxSurge: 25%
-                #   maxUnavailable: 25%
-
-              # -- Priority class for the repo server pods
-              # @default -- `""` (defaults to global.priorityClassName)
-              priorityClassName: ""
 
               # TLS certificate configuration via Secret
               ## Ref: https://argo-cd.readthedocs.io/en/stable/operator-manual/tls/#configuring-tls-to-argocd-repo-server
@@ -947,12 +704,6 @@ spec:
                 service:
                   # -- Metrics service type
                   type: ClusterIP
-                  # -- Metrics service clusterIP. `None` makes a "headless service" (no virtual IP)
-                  clusterIP: ""
-                  # -- Metrics service annotations
-                  annotations: {}
-                  # -- Metrics service labels
-                  labels: {}
                   # -- Metrics service port
                   servicePort: 8084
                   # -- Metrics service port name
@@ -964,10 +715,6 @@ spec:
                   tlsConfig: {}
                   # -- Prometheus ServiceMonitor namespace
                   namespace: "" # "monitoring"
-                  # -- Prometheus ServiceMonitor labels
-                  additionalLabels: {}
-                  # -- Prometheus ServiceMonitor annotations
-                  annotations: {}
 
               ## Enable Custom Rules for the Repo server's Cluster Role resource
               ## Enable this and set the rules: to whatever custom rules you want for the Cluster Role resource.
@@ -994,36 +741,6 @@ spec:
               # -- Enable ApplicationSet controller
               enabled: true
 
-              ## ApplicationSet controller Pod Disruption Budget
-              ## Ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
-              pdb:
-                # -- Deploy a [PodDisruptionBudget] for the ApplicationSet controller
-                enabled: false
-                # -- Labels to be added to ApplicationSet controller pdb
-                labels: {}
-                # -- Annotations to be added to ApplicationSet controller pdb
-                annotations: {}
-                # -- Number of pods that are available after eviction as number or percentage (eg.: 50%)
-                # @default -- `""` (defaults to 0 if not specified)
-                minAvailable: ""
-                # -- Number of pods that are unavailable after eviction as number or percentage (eg.: 50%).
-                ## Has higher precedence over `applicationSet.pdb.minAvailable`
-                maxUnavailable: ""
-
-              # -- Additional containers to be added to the ApplicationSet controller pod
-              ## Note: Supports use of custom Helm templates
-              extraContainers: []
-
-              # -- Init containers to add to the ApplicationSet controller pod
-              ## Note: Supports use of custom Helm templates
-              initContainers: []
-
-              # -- List of extra mounts to add (normally used with extraVolumes)
-              extraVolumeMounts: []
-
-              # -- List of extra volumes to add
-              extraVolumes: []
-
               ## Metrics service configuration
               metrics:
                 # -- Deploy metrics service
@@ -1040,31 +757,6 @@ spec:
                 # requests:
                 #   cpu: 100m
                 #   memory: 128Mi
-
-              # -- [Node selector]
-              # @default -- `{}` (defaults to global.nodeSelector)
-              nodeSelector: {}
-
-              # -- [Tolerations] for use with node taints
-              # @default -- `[]` (defaults to global.tolerations)
-              tolerations: []
-
-              # -- Assign custom [affinity] rules
-              # @default -- `{}` (defaults to global.affinity preset)
-              affinity: {}
-
-              # -- Assign custom [TopologySpreadConstraints] rules to the ApplicationSet controller
-              # @default -- `[]` (defaults to global.topologySpreadConstraints)
-              ## Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints/
-              ## If labelSelector is left out, it will default to the labelSelector configuration of the deployment
-              topologySpreadConstraints: []
-                # - maxSkew: 1
-                #   topologyKey: topology.kubernetes.io/zone
-                #   whenUnsatisfiable: DoNotSchedule
-
-              # -- Priority class for the ApplicationSet controller pods
-              # @default -- `""` (defaults to global.priorityClassName)
-              priorityClassName: ""
 
               # TLS certificate configuration via cert-manager
               ## Ref: https://argo-cd.readthedocs.io/en/stable/operator-manual/tls/#tls-configuration
@@ -1109,38 +801,14 @@ spec:
             notifications:
               # -- Enable notifications controller
               enabled: true
-
               # -- Notifications controller name string
               name: notifications-controller
 
               # -- Argo CD dashboard url; used in place of {{.context.argocdUrl}} in templates
               argocdUrl:
 
-              ## Notifications controller Pod Disruption Budget
-              ## Ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
-              pdb:
-                # -- Deploy a [PodDisruptionBudget] for the notifications controller
-                enabled: false
-                # -- Labels to be added to notifications controller pdb
-                labels: {}
-                # -- Annotations to be added to notifications controller pdb
-                annotations: {}
-                # -- Number of pods that are available after eviction as number or percentage (eg.: 50%)
-                # @default -- `""` (defaults to 0 if not specified)
-                minAvailable: ""
-                # -- Number of pods that are unavailable after eviction as number or percentage (eg.: 50%).
-                ## Has higher precedence over `notifications.pdb.minAvailable`
-                maxUnavailable: ""
-
-              # -- Notifications controller log format. Either `text` or `json`
-              # @default -- `""` (defaults to global.logging.format)
-              logFormat: ""
-              # -- Notifications controller log level. One of: `debug`, `info`, `warn`, `error`
-              # @default -- `""` (defaults to global.logging.level)
-              logLevel: ""
-
               # -- Define user-defined context
-              ## For more information: https://argocd-notifications.readthedocs.io/en/stable/templates/#defining-user-defined-context
+              # ref: https://argocd-notifications.readthedocs.io/en/stable/templates/#defining-user-defined-context
               context: {}
                 # region: east
                 # environmentName: staging
@@ -1151,14 +819,6 @@ spec:
                 # -- Metrics port
                 port: 9001
                 service:
-                  # -- Metrics service type
-                  type: ClusterIP
-                  # -- Metrics service clusterIP. `None` makes a "headless service" (no virtual IP)
-                  clusterIP: ""
-                  # -- Metrics service annotations
-                  annotations: {}
-                  # -- Metrics service labels
-                  labels: {}
                   # -- Metrics service port name
                   portName: http-metrics
                 serviceMonitor:
