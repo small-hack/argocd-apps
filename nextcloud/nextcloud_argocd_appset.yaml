@@ -38,7 +38,7 @@ spec:
         targetRevision: 3.5.20
         chart: nextcloud
         helm:
-          values: |
+          valuesObject:
             image:
               tag: 27.0.1-fpm
             ingress:
