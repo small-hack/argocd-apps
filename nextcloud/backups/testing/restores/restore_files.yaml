@@ -5,6 +5,8 @@ metadata:
   name: nextcloud-files
   namespace: nextcloud
 spec:
+  failedJobHistoryLimit: 5
+  successfulJobHistoryLimit: 1
   podSecurityContext:
     # change to 33 for www-data
     runAsUser: 0
