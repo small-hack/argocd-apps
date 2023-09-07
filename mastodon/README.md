@@ -1,10 +1,9 @@
-# Mastodon ArgoCD Template
-Mastodon is social networking that's not for sale: https://joinmastodon.org/
+# Mastodon Argo CD Application(Set)s Templates
+[Mastodon](https://joinmastodon.org/) is social networking that's not for sale.
 
 We create in the manifests and helm chart in this sync wave order:
-- all required PVCs, and Secrets
-- Postgresql stateful set
-- mastodon web app (including elastic search and redis)
+- Postgresql PVC, and All External Secrets
+- Mastodon Web Appset (including elastic search and redis)
 
 ## Creating Mastodon Secrets
 This template relies on you already having created secrets using the below method and then creating those as k8s secrets.
