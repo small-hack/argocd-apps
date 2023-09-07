@@ -1,51 +1,11 @@
-# -- Internal settings used with `helm template` to generate install manifest
-# @ignored
-templating:
-  enabled: false
-  debug: false
-  version: ~
-
-# -- (string) Override the name of the chart
-nameOverride: ~
-
 # -- (string) Override the expanded name of the chart
 fullnameOverride: ~
-
-# -- (string) Override the namespace the chart deploys to
-namespaceOverride: ~
-
-upgrade:
-  # -- Upgrading from v2 to v3 is not allowed by default, set this to true once changes have been reviewed.
-  fromV2: false
-
-apiVersionOverride:
-  # -- (string) Override api version used to create `PodDisruptionBudget`` resources.
-  # When not specified the chart will check if `policy/v1/PodDisruptionBudget` is available to
-  # determine the api version automatically.
-  podDisruptionBudget: ~
-
-# CRDs configuration
-crds:
-
-  # -- Whether to have Helm install the Kyverno CRDs, if the CRDs are not installed by Helm, they must be added before policies can be created
-  install: true
-
-  # -- Additional CRDs annotations
-  annotations: {}
-    # argocd.argoproj.io/sync-options: Replace=true
-    # strategy.spinnaker.io/replace: 'true'
 
 # Configuration
 config:
 
   # -- Create the configmap.
   create: true
-
-  # -- (string) The configmap name (required if `create` is `false`).
-  name: ~
-
-  # -- Additional annotations to add to the configmap.
-  annotations: {}
 
   # -- Enable registry mutation for container images. Enabled by default.
   enableDefaultRegistryMutation: true
@@ -241,22 +201,6 @@ metricsConfig:
   # -- (string) Rate at which metrics should reset so as to clean up the memory footprint of kyverno metrics, if you might be expecting high memory footprint of Kyverno's metrics. Default: 0, no refresh of metrics
   metricsRefreshInterval: ~
     # metricsRefreshInterval: 24h
-
-# -- Image pull secrets for image verification policies, this will define the `--imagePullSecrets` argument
-imagePullSecrets: {}
-  # regcred:
-  #   registry: foo.example.com
-  #   username: foobar
-  #   password: secret
-  # regcred2:
-  #   registry: bar.example.com
-  #   username: barbaz
-  #   password: secret2
-
-# -- Existing Image pull secrets for image verification policies, this will define the `--imagePullSecrets` argument
-existingImagePullSecrets: []
-  # - test-registry
-  # - other-test-registry
 
 # Tests configuration
 test:
@@ -1484,37 +1428,6 @@ reportsController:
                   - reports-controller
           topologyKey: kubernetes.io/hostname
 
-  # -- Pod affinity constraints.
-  podAffinity: {}
-
-  # -- Node affinity constraints.
-  nodeAffinity: {}
-
-  # -- Topology spread constraints.
-  topologySpreadConstraints: []
-
-  # -- Security context for the pod
-  podSecurityContext: {}
-
-  # -- Security context for the containers
-  securityContext:
-    runAsNonRoot: true
-    privileged: false
-    allowPrivilegeEscalation: false
-    readOnlyRootFilesystem: true
-    capabilities:
-      drop:
-        - ALL
-    seccompProfile:
-      type: RuntimeDefault
-
-  podDisruptionBudget:
-    # -- Configures the minimum available pods for disruptions.
-    # Cannot be used if `maxUnavailable` is set.
-    minAvailable: 1
-    # -- Configures the maximum unavailable pods for disruptions.
-    # Cannot be used if `minAvailable` is set.
-    maxUnavailable:
 
   # -- A writable volume to use for the TUF root initialization.
   tufRootMountPath: /.sigstore
