@@ -2,7 +2,7 @@
 Mastodon is social networking that's not for sale: https://joinmastodon.org/
 
 We create in the manifests and helm chart in this sync wave order:
-- all required PVCs, and Secrets (secrets are external secrets in a private repo)
+- all required PVCs, and Secrets
 - Postgresql stateful set
 - mastodon web app (including elastic search and redis)
 
