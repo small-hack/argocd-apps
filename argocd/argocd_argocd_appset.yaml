@@ -411,10 +411,19 @@ spec:
                   color: #59efff;
                }
                .monaco-editor .margin {
-                  background-color: #232336;
+                  background-color: #232336 !important;
                }
                .monaco-editor, .monaco-editor-background, .monaco-editor .inputarea.ime-input {
-                  background-color: #232336;
+                  background-color: #232336 !important;
+               }
+               .popup-overlay .popup-container__header__normal {
+                    background-color: #404767;
+               }
+               .popup-overlay .popup-container__body {
+                  background-color: #4e5e84;
+               }
+               .popup-overlay .popup-container__footer {
+                    background-color: #4e5e84;
                }
 
             ## Application controller
