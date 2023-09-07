@@ -399,6 +399,8 @@ spec:
             apache:
               ## Enable Apache chart
               enabled: true
+              fullnameOverride: mastodon-apache
+              vhostsConfigMap: "mastodon-apache-mastodon-vhost"
               ingress:
                 enabled: true
                 hostname: {{ .mastodon_hostname }}
