@@ -1,3 +1,6 @@
+Old from self hosted mastodon chart before moving to bitnami:
+
+```yaml
 ---
 apiVersion: external-secrets.io/v1beta1
 kind: ExternalSecret
@@ -70,3 +73,4 @@ spec:
         key: mastodon-secrets
         # property within the secret we want
         property: VAPID_PUBLIC_KEY
+```
