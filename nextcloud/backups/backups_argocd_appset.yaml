@@ -35,7 +35,6 @@ spec:
           - ApplyOutOfSyncOnly=true
         automated:
           prune: true
-          selfHeal: true
       source:
         repoURL: 'https://github.com/small-hack/argocd-apps.git'
         path: nextcloud/backups/helm/
