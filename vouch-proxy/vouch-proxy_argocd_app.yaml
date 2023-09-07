@@ -1,7 +1,6 @@
 ---
 # First sync wave because we need secrets for vouch, so it has to be
 # before vouch so it has secrets for all its credentials.
-# In a private repo right now while we figure out a custom argocd plugin
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
