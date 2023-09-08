@@ -103,10 +103,22 @@ Here's some quick guidelines, but you if you'd like to contribute, please read t
 | [metallb](./metallb) | A helm chart for [metallb](https://metallb.universe.tf/) which will let you manager your own ip address pool for use with ingress |
 
 #### 🚧 Under construction
+
 |               App               | Description                                                                |
-|:-------------------------------:|:---------------------------------------------------------------------------|
+|:-------------------------------------:|:---------------------------------------------------------------------------|
+| [cilium](./alpha/cilium)              | A helm chart for cilium, for transparently securing network connectivity/loadbalancing b/w app workloads such as app containers or processes |
 | [wireguard](./alpha/wg-access-server) | A helm chart for wg-access-server which uses Wireguard®️ for a VPN          |
-|     [headscale](./alpha/headscale)    | VPN, there isn't an official helm chart, so we're still working on this |
+|     [headscale](./alpha/headscale)    | VPN, there isn't an official helm chart, so we're still working on this    |
+
+
+## Other
+Other useful tools that don't fit neatly into any one category.
+
+#### 🚧 Under construction
+
+|         App          | Description                                                       |
+|:--------------------:|:------------------------------------------------------------------|
+| [k8tz](./alpha/k8tz) | A helm chart for k8tz, to inject timezone info into cronjob pods  |
 
 
 ## Security
