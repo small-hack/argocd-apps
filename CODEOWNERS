@@ -1,29 +1,35 @@
 .github/* @jessebot
-argocd @jessebot @cloudymax
-artifactory @cloudymax
-bitwarden-external-secrets @cloudymax
-cluster-issuers @cloudymax
-CONTRIBUTING.md @jessebot
-diagrams @cloudymax
-external-secrets-operator @jessebot
-harbor @cloudymax
-home-assistant @jessebot
+
+alpha/artifactory/* @cloudymax
+alpha/cilium/* @jessebot @cloudymax
+alpha/diagrams/* @cloudymax
+alpha/home-assistant/* @jessebot
+alpha/k8tz/* @cloudymax
+alpha/kepler/* @jessebot
+alpha/longhorn/* @cloudymax
+alhpa/netmaker/* @jessebot
+alpha/oauth2-proxy/* @jessebot
+alpha/wg-access-server/* @jessebot @cloudymax
+
+argocd/* @jessebot
+coturn/* @cloudymax
+external-secrets-operator/* @cloudymax @jessebot
+harbor/* @cloudymax
 ingress/* @cloudymax @jessebot
-k8up @jessebot
-keycloak @cloudymax @jessebot
-kube-prometheus-stack @jessebot @cloudymax
-kubevirt @cloudymax
-kyverno @jessebot
-LICENSE @jessebot @cloudymax
-loki-sack @cloudymax
-longhorn @cloudymax
-mastodon @jessebot
-matrix @jessebot
-monitoring @cloudymax
-netmaker @jessebot
-oauth2-proxy @jessebot
-postgres @cloudymax
-README.md @jessebot @cloudymax
+k8up/* @jessebot
+keycloak/* @cloudymax @jessebot
+kubevirt/* @cloudymax
+kyverno/* @jessebot
+mastodon/* @jessebot
+metallb/* @cloudymax @jessebot
+matrix/* @jessebot
+nextcloud/* @jessebot
+postgres/* @cloudymax
+prometheus/* @cloudymax
+test-app/* @cloudymax
+vouch-proxy/* @cloudymax @jessebot
+
 renovate.json @jessebot
-test-app @cloudymax @jessebot
-alpha/wg-access-server @jessebot @cloudymax
+CONTRIBUTING.md @jessebot @cloudymax
+LICENSE @jessebot @cloudymax
+README.md @jessebot @cloudymax
