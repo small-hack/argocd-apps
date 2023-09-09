@@ -1,0 +1,68 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: minio-operator-app-set
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  goTemplate: true
+  # generator allows us to source specific values from an external k8s secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - minio_hostname
+  template:
+    metadata:
+      name: minio-operator
+      annotations:
+        argocd.argoproj.io/sync-wave: "1"
+    spec:
+      project: minio
+      destination:
+        server: "https://kubernetes.default.svc"
+        namespace: minio
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
+          selfHeal: true
+      source:
+        # official minio helm repo
+        repoURL: 'https://operator.min.io/'
+        chart: minio-operator
+        targetRevision: 5.0.8
+        helm:
+          releaseName: minio-operator
+          values: |
+            console:
+              replicaCount: 1
+              resources:
+                requests:
+                  cpu: 0.25
+                  memory: 512Mi
+              securityContext:
+                runAsUser: 1000
+                runAsNonRoot: true
+              containerSecurityContext:
+                runAsUser: 1000
+                runAsNonRoot: true
+              ingress:
+                enabled: true
+                ingressClassName: "nginx"
+                annotations:
+                  # nginx.ingress.kubernetes.io/proxy-body-size: 10G
+                  cert-manager.io/cluster-issuer: {{ .global_cluster_issuer }}
+                tls:
+                  - secretName: minio-tls
+                    hosts:
+                      - "{{ .minio_hostname}}"
+                host: {{ .minio_hostname }}
+                path: /
+                pathType: Prefix
