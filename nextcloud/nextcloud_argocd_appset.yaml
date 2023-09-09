@@ -40,7 +40,7 @@ spec:
         helm:
           values: |
             image:
-              tag: 27.0.1-fpm
+              tag: 27.0.2-fpm
             ingress:
               enabled: true
               className: nginx
