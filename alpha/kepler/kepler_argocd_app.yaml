@@ -1,0 +1,90 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kepler-app
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  project: default
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kepler
+  source:
+    repoURL: 'https://sustainable-computing-io.github.io/kepler-helm-chart'
+    targetRevision: 0.5.0
+    chart: kepler
+    helm:
+      values: |
+        # -- Replaces the name of the chart in the Chart.yaml file
+        nameOverride: ""
+        # -- Replaces the generated name
+        fullnameOverride: ""
+
+        image:
+          # -- Repository to pull the image from
+          repository: "quay.io/sustainable_computing_io/kepler"
+          # -- Image tag, if empty it will get it from the chart's appVersion
+          tag: ""
+          # -- Pull policy
+          pullPolicy: Always
+
+        # -- Privileges and access control settings for a Pod (all containers in a pod)
+        podSecurityContext: {}
+          # fsGroup: 2000
+
+        # -- Privileges and access control settings for a container
+        securityContext:
+          privileged: true
+
+        # -- Node selection constraint
+        nodeSelector:
+          kubernetes.io/os: linux
+
+        # -- Toleration for taints
+        tolerations:
+          - effect: NoSchedule
+            key: node-role.kubernetes.io/control-plane
+
+        # -- CPU/MEM resources
+        resources: {}
+
+        # -- Extra environment variables
+        extraEnvVars:
+          KEPLER_LOG_LEVEL: "1"
+          ENABLE_GPU: "true"
+          ENABLE_EBPF_CGROUPID: "true"
+          EXPOSE_IRQ_COUNTER_METRICS: "true"
+          EXPOSE_KUBELET_METRICS: "true"
+          ENABLE_PROCESS_METRICS: "true"
+          CPU_ARCH_OVERRIDE: ""
+          CGROUP_METRICS: "*"
+          # REDFISH_PROBE_INTERVAL_IN_SECONDS: "60"
+          # REDFISH_SKIP_SSL_VERIFY: "true"
+
+        canMount:
+          usrSrc: true  # /usr/src may not available, ie GKE
+
+        serviceMonitor:
+          enabled: false
+          namespace: ""
+          interval: 30s
+          scrapeTimeout: 5s
+          labels: {}
+
+        redfish:
+          enabled: false
+          name: redfish
+          labels: {}
+          annotations: {}
+          fileContent: |-
+            your_kubelet_node1_name,redfish_username,redfish_password,https://node1_redfish_ip_or_hostname
+            your_kubelet_node2_name,redfish_username,redfish_password,https://node2_redfish_ip_or_hostname
+
+  syncPolicy:
+    syncOptions:
+      - ApplyOutOfSyncOnly=true
+    automated:
+      prune: true
+      selfHeal: true
