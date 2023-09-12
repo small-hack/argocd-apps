@@ -42,6 +42,9 @@ spec:
           values: |
             operator:
               replicas: 1
+            encryption:
+              enabled: true
+              type: wireguard
             hubble:
               ui:
                 enabled: true
