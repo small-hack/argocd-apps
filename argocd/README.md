@@ -3,11 +3,19 @@ ArgoCD app for ArgoCD so that ArgoCD can manage itself, ArgoCD 🧡
 
 <img alt="argocd app of apps" src="./screenshots/argocd_app.png">
 
-Example of argocd appset secret-plugin:
+<details>
+  <summary>Example screenshot of Argo CD ingress</summary>
+
+<img alt="argocd helm chart ingress" src="./screenshots/argo_ingress.png">
+
+</details>
+
+<details>
+  <summary>Example screenshot of Argo CD AppSet secret-plugin</summary>
+
 <img width="1284" alt="argocd app for argocd-appset-secret-plugin" src="https://github.com/small-hack/argocd-apps/assets/2389292/1213310e-a1df-4346-a202-078b2d40ebbf">
 
-argocd ingress example:
-<img alt="argocd helm chart ingress" src="./screenshots/argo_ingress.png">
+</details>
 
 ## external secrets
 
