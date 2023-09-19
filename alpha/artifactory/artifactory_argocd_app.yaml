@@ -10,7 +10,7 @@ spec:
   source:
     path: ''
     repoURL: 'https://charts.jfrog.io'
-    targetRevision: 107.68.7
+    targetRevision: 107.68.8
     chart: artifactory-oss
     helm:
       parameters:
