@@ -28,7 +28,7 @@ spec:
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: argocd-secrets-plugin-generator
+  name: appset-secrets-plugin
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "1"
@@ -39,11 +39,11 @@ spec:
     server: "https://kubernetes.default.svc"
     namespace: argocd
   source:
-    repoURL: https://jessebot.github.io/argocd-appset-secret-plugin
-    chart: argocd-appset-secret-plugin
-    targetRevision: 0.4.0
+    repoURL: https://small-hack.github.io/appset-secret-plugin
+    chart: appset-secret-plugin
+    targetRevision: 0.5.0
     helm:
-      releaseName: argocd-appset-secret-plugin
+      releaseName: appset-secret-plugin
       values: |
         secretVars:
           existingSecret: "appset-secret-vars"
