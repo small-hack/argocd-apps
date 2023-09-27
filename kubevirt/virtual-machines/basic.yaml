@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: vm0
+spec:
+  destination:
+    name: ''
+    namespace: vm0
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: ''
+    repoURL: 'https://cloudymax.github.io/kubevirt-charts/'
+    targetRevision: 0.1.4
+    chart: kubevirt-vm
+  sources: []
+  project: default
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
