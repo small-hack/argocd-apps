@@ -13,7 +13,7 @@ spec:
     targetRevision: 0.1.8
     chart: kubevirt-vm
     helm:
-      values: >
+      values: |
         virtualMachine:
           name: vm0
           namespace: vm0
