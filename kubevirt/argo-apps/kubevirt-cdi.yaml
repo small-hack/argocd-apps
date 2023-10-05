@@ -8,20 +8,84 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: kubevirt-cdi
-  namespace: argocd
-  annotations:
-    argocd.argoproj.io/sync-wave: "4"
 spec:
-  project: kubevirt
-  source:
-    repoURL: https://github.com/small-hack/argocd-apps.git
-    path: kubevirt/cdi/
   destination:
-    server: "https://kubernetes.default.svc"
-    namespace: kubevirt
+    name: ''
+    namespace: cdi
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: ''
+    repoURL: 'https://cloudymax.github.io/kubevirt-charts/'
+    targetRevision: 0.1.1
+    chart: kubevirt-cdi
+    helm: 
+      values: |
+        replicaCount: 1
+        
+        image:
+          repository: quay.io/kubevirt/cdi-operator
+          pullPolicy: IfNotPresent
+          tag: ""
+        
+        serviceAccount:
+          create: true
+          annotations: {}
+          name: "kubevirt-cdi-service-account"
+        
+        securityContext:
+          capabilities:
+            drop:
+            - ALL
+          runAsNonRoot: true
+          allowPrivilegeEscalation: false
+          seccompProfile:
+            type: RuntimeDefault
+        
+        service:
+          type: ClusterIP
+          port: 8080
+          name: metrics
+          protocol: TCP
+        
+        uploadProxy:
+          type: ClusterIP
+          port: 443
+          targetPort: 8443
+          protocol: TCP
+        
+        ingress:
+          enabled: false
+       
+        resources:
+          requests:
+            cpu: 10m
+            memory: 150Mi
+        
+        nodeSelector:
+          kubernetes.io/os: linux
+        
+        tolerations:
+        - key: CriticalAddonsOnly
+          operator: Exists
+        
+        affinity: {}
+        
+        cdi:
+          featureGates:
+          - HonorWaitForFirstConsumer
+          resources:
+            limits:
+              cpu: "4"
+              memory: 4Gi
+            requests:
+              cpu: "1"
+              memory: 250Mi
+  sources: []
+  project: default
   syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false
     syncOptions:
       - CreateNamespace=true
-    automated:
-      prune: true
-      selfHeal: true
+
