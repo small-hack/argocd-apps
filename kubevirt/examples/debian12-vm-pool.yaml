@@ -14,177 +14,36 @@ spec:
     chart: kubevirt-vm
     helm:
       values: >
-        ##########################
-
-        # Virtual Machine settings
-
         virtualMachine:
-          # -- name of the virtualMachine or virtualMachinePool object
           name: vm0
-
-          # -- namespace to deploy
           namespace: vm0
-
-          # -- One of 'Always' `RerunOnFailure` `Manual` `Halted`
           runStrategy: "RerunOnFailure"
-
           features:
-            # -- Enable KVM acceleration
             kvmEnabled: true
-
-            # Enable ACPI platform event device
             acpiEnabled: true
-
-            # Enable System Management Mode (required for secureboot)
             smmEnabled: true
-
-            # -- Enable EFI bios
             efiEnabled: true
-
-            # -- Make pod network interface the default for the VM
             autoattachPodInterface: true
-
-            # -- Attach a serial console device
             autoattachSerialConsole: true
-
-            # -- Attach a basic graphics device for VNC access
             autoattachGraphicsDevice: true
-
           machine:
-            # -- QEMU virtual-machine type
             machineType: "q35"
-
-            # -- Pass all CPU features and capabilities to Guest
             cpuPassthrough: false
-
-            # -- Number of Virtual cores to pass to the Guest
             vCores: 2
-
-            # -- Pin QEMU process to specific physical cores
-            # Requires `--cpu-manager-policy` enabled in kubelet
             pinCores: false
-
-            # -- Enable the use of Hyperthreading on Intel CPUs. Disable on AMD CPUs.
             hyperThreadingEnabled: false
-
-            # -- Amount of RAM to pass to the Guest
             memory: 2Gi
-
-          # -- GPUs to pass to guest, requires that the GPUs are pre-configured in the
-            # kubevirt custom resource.
           gpus: []
-          #  - name: gpu0
-          #      device: a343049c-e890-4ebf-ad06-8fcd3c214606
-
-        #########################
-
-        # Create a Virtual Machine Pool
-
-        # Vm pools should be used with ephemeral disks or containerdisks
-
-        # otherwise they would all fight over the same PVC
-
         virtualMachinePool:
           enabled: true
           size: 3
-
-        #############################
-
-        # -- List of disks to create for the VM, Will be used to create
-        Datavolumes or PVCs.
-
         disks:
-
-        #############################
-
-        # Cloud-init no-cloud example
-
-        # hold your user-data file
-
-        # Must be the first boot device
-
         - name: cloudinitvolume
           type: cdrom
           bus: sata
           readonly: true
           bootorder: 1
           pv-enable: false
-
-        #################################################
-
-        # DataVolume disk with URL source example
-
-        #################################################
-
-        #- name: harddrive
-
-        #
-
-        #  # -- Disk type: disk, cdrom, filesystem, or lun
-
-        #  type: disk
-
-        #
-
-        #  # -- Bus type: sata or virtio
-
-        #  bus: virtio
-
-        #
-
-        #  # -- Sets disk position in boot order, lower numbers are checked
-        earlier
-
-        #  bootorder: 2
-
-        #
-
-        #  # -- Set disk to be Read-only
-
-        #  readonly: false
-
-        #
-
-        #  # -- Size of disk in GB
-
-        #  pvsize: 32G
-
-        #
-
-        #  # -- Storage class to use for the pvc
-
-        #  pvstorageClass: local-path
-
-        #
-
-        #  # -- Access mode for the PVC
-
-        #  pvaccessMode: ReadWriteOnce
-
-        #
-
-        #  # -- source type of the disk image. One of `url`, `pvc`
-
-        #  source: url
-
-        #
-
-        #  # -- URL of cloud-image
-
-        #  url:
-        "https://cloud.debian.org/images/cloud/bookworm/daily/latest/debian-12-generic-amd64-daily.qcow2"
-
-
-        #########################################################
-
-        # Ephemeral disk example
-
-        # no persistance, these are deleted after the VM exists
-
-        # requires an existing PVC as a backing file
-
-        #########################################################
-
         - name: harddrive
           type: disk
           bus: virtio
@@ -192,140 +51,7 @@ spec:
           readonly: false
           pvc: debian12
           ephemeral: true
-
-
-        ########################################################
-
-        # DataVolume disk with existing PVC source example
-
-        ########################################################
-
-        #- name: harddrive
-
-        #  type: disk
-
-        #  bus: virtio
-
-        #  bootorder: 2
-
-        #  readonly: false
-
-        #  pvsize: 32G
-
-        #  pvstorageClass: local-path
-
-        #  pvaccessMode: ReadWriteOnce
-
-        #  source: pvc
-
-        #  pvcnamespace: default
-
-        #  pvcname: debian12
-
-
-        ##########################################################
-
-        # ISO live-image example
-
-        ##########################################################
-
-        #- name: iso
-
-        #  type: cdrom
-
-        #  bus: sata
-
-        #  bootorder: 1
-
-        #  readonly: true
-
-        #  pvsize: 8G
-
-        #  pvstorageClass: local-path
-
-        #  pvaccessMode: ReadWriteOnce
-
-        #  source: "https://www.itechtics.com/?dl_id=173"
-
-
-        ##########################################################
-
-        # Empty PVC as disk example
-
-        ##########################################################
-
-        #- name: harddrive
-
-        #  type: disk
-
-        #  bus: virtio
-
-        #  bootorder: 2
-
-        #  readonly: false
-
-        #  pvsize: 32G
-
-        #  pvstorageClass: local-path
-
-        #  pvaccessMode: ReadWriteOnce
-
-
-        ##########################################################
-
-        # Container Disk Example
-
-        ##########################################################
-
-        #- name: virtio-drivers
-
-        #  type: cdrom
-
-        #  bus: sata
-
-        #  bootorder: 3
-
-        #  readonly: true
-
-        #  image: "quay.io/kubevirt/virtio-container-disk:v1.0.0-rc.1-amd64"
-
-
-        ###########################################################
-
-        # Local Disk example
-
-        # Not working, will have to open a ticket
-
-        # disks need to be owned by 107:messagebus
-
-        # disks cannot be mounted, file systems unidentifiable
-
-        ###########################################################
-
-        #- name: localfile
-
-        #  type: hostDisk
-
-        #  # -- Enter a capacity amount to create a new disk
-
-        #  # otherwise expects an existing disk
-
-        #  capacity: 500G
-
-        #  path: /mnt/raid1/hdd2.img
-
-
-
-        # -- Service objects are used to expose the VM to the outside world.
-          # Just like int he cloud each VM starts off isolated and will need
-          # to be exposed via a LoadBalancer, NodePort, or ClusterIp service.
-
         service:
-
-        #########################
-
-        # NodePort Example
-
         - name: vm0-service
           type: NodePort
           externalTrafficPolicy: Cluster
@@ -340,51 +66,16 @@ spec:
               targetPort: 5900
               protocol: TCP
               nodePort: 30005
-        #########################
-
-        # LaodBalancer Example
-
-        #- name: vm0-lb
-
-        #  type: LoadBalancer
-
-        #  externalTrafficPolicy: Cluster
-
-        #  ports:
-
-        #    - name: vnc
-
-        #      port: 5900
-
-        #      targetPort: 5900
-
-        #      protocol: TCP
-
-
-        # -- Provide a path to an existing cloud-init file
-
-        # will be genrated from values below if no file specified
-
         cloudinitPath:
-
-
-        # -- Values used to generate a cloud-init user-data file
-
-        # Not all modules yet supported
-
         cloudinit:
-          # -- Set hostname of VM
           hostname: scrapmetal
           disable_root: false
           network:
             config: disabled
-          # -- provide a wireguard config
           wireguard: []
-          # -- Create Groups
           groups:
             - docker
             - kvm
-          # -- Create users
           users:
             - name: friend
               groups: users, admin, sudo
@@ -392,32 +83,18 @@ spec:
               shell: /bin/bash
               lock_passwd: false
               passwd: "$6$rounds=4096$saltsaltlettuce$Lp/FV.2oOgew7GbM6Nr8KMGMBn7iFM0x9ZwLqtx9Y4QJmKvfcnS.2zx4MKmymCPQGpHS7gqYOiqWjvdCIV2uN."
-              # -- import ssh public-keys from github or lanchpad (doesnt work on Debian12)
               ssh_import_id: []
-              # -- manually add a ssh public-key
               ssh_authorized_keys: []
           ca_certs: []
-          # -- Commands to run early in boot process
           boot_cmd: []
-          # -- base64 encode content of written files
           write_as_b64: false
-          # -- list of files to embed in the user-data
-          write_files:
-            - apt-sources-list:
-              # -- Destination to write file on boot
-              path: /etc/apt/sources.list
-              # -- Permissions to assign the file
-              permissions: "0644"
-              # -- path to the source file for helm to read
-              content: apt-sources.list
-          # -- Update apt package cache
+          write_files: []
           package_update: true
-          # -- Perform apt package upgrade
           package_upgrade: false
-          # -- apt packages to install
-          packages: []
-          # -- commands to run in final step
-          runcmd: []
+          packages:
+            - ssh-import-id
+          runcmd:
+           - sudo -u friend -i ssh-import-id-gh cloudymax
   sources: []
   project: default
   syncPolicy:
