@@ -2,25 +2,7 @@
 
 Kubevirt wraps QEMU and provides a Kubernetes-Native way to deploy virtual machines as code.
 
-- Virtual Machines are defined as yaml in the `virtual-machines` directory
-- Disk images are stores as PVCs and are defined in the `disks` directory
-
-## Installing the Operator and CRDs
-
-Following: https://kubevirt.io/quickstart_cloud/
-
-> You can manually download assets by checking the releases links: https://github.com/kubevirt/kubevirt/releases/
-
-- Installing the cli from source
-
-  ```bash
-  VERSION=$(kubectl get kubevirt.kubevirt.io/kubevirt -n kubevirt -o=jsonpath="{.status.observedKubeVirtVersion}")
-  ARCH=$(uname -s | tr A-Z a-z)-$(uname -m | sed 's/x86_64/amd64/') || windows-amd64.exe
-  echo ${ARCH}
-  curl -L -o virtctl https://github.com/kubevirt/kubevirt/releases/download/${VERSION}/virtctl-${VERSION}-${ARCH}
-  chmod +x virtctl
-  sudo install virtctl /usr/local/bin
-  ```
+## Check host features
 
 - Install libvirt-clients
 
@@ -38,27 +20,53 @@ Following: https://kubevirt.io/quickstart_cloud/
   QEMU: Checking if device /dev/vhost-net exists                             : PASS
   QEMU: Checking if device /dev/net/tun exists                               : PASS
   ```
- 
+
+## Install virtctl
+
+- Install from github
+
+    ```bash
+    export VERSION=v0.41.0
+    wget https://github.com/kubevirt/kubevirt/releases/download/${VERSION}/virtctl-${VERSION}-linux-amd64
+    ```
+
 - Install as a krew plugin
 
   ```bash
   kubectl krew install virt
   ```
 
-- Enable nested virtualization if desired
+## Software Emulation / Nested virtualization
+
+Enable nested virtualization if desired
 
   ```bash
   kubectl -n kubevirt patch kubevirt kubevirt \
     --type=merge \
     --patch '{"spec":{"configuration":{"developerConfiguration":{"useEmulation":true}}}}'
   ```
-- Find latest CDI asset versions
+## Uninstalling
 
-  ```bash
-  export VERSION=$(basename $(curl -s -w %{redirect_url} https://github.com/kubevirt/containerized-data-importer/releases/latest))
-  wget https://github.com/kubevirt/containerized-data-importer/releases/download/$VERSION/cdi-operator.yaml
-  wget https://github.com/kubevirt/containerized-data-importer/releases/download/$VERSION/cdi-cr.yaml
-  ```
+```bash
+export RELEASE=v0.17.0
+
+# --wait=true should anyway be default
+kubectl delete -n kubevirt kubevirt kubevirt --wait=true 
+
+# this needs to be deleted to avoid stuck terminating namespaces
+kubectl delete apiservices v1.subresources.kubevirt.io 
+
+# not blocking but would be left over
+kubectl delete mutatingwebhookconfigurations virt-api-mutator 
+
+# not blocking but would be left over
+kubectl delete validatingwebhookconfigurations virt-operator-validator 
+
+# not blocking but would be left over
+kubectl delete validatingwebhookconfigurations virt-api-validator 
+
+kubectl delete -f https://github.com/kubevirt/kubevirt/releases/download/${RELEASE}/kubevirt-operator.yaml --wait=false
+```
 
 ## Using the CDI to manage images
 
