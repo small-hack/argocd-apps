@@ -1,0 +1,41 @@
+# Standard machines: Num Cores == (GB RAM)/2  
+---
+apiVersion: instancetype.kubevirt.io/v1alpha2
+kind: VirtualMachineClusterInstancetype
+metadata:
+  name: standard-micro
+spec:
+  cpu:
+    guest: 1
+  memory:
+    guest: 2Gi
+---
+apiVersion: instancetype.kubevirt.io/v1alpha2
+kind: VirtualMachineClusterInstancetype
+metadata:
+  name: standard-small
+spec:
+  cpu:
+    guest: 2
+  memory:
+    guest: 4Gi
+---
+apiVersion: instancetype.kubevirt.io/v1alpha2
+kind: VirtualMachineClusterInstancetype
+metadata:
+  name: standard-medium
+spec:
+  cpu:
+    guest: 4
+  memory:
+    guest: 8Gi
+---
+apiVersion: instancetype.kubevirt.io/v1alpha2
+kind: VirtualMachineClusterInstancetype
+metadata:
+  name: standard-large
+spec:
+  cpu:
+    guest: 8
+  memory:
+    guest: 16Gi
