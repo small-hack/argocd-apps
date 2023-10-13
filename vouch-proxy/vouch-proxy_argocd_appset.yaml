@@ -22,7 +22,7 @@ spec:
     metadata:
       name: vouch-helm
     spec:
-      project: ingress
+      project: ingress-nginx
       destination:
         server: https://kubernetes.default.svc
         namespace: ingress
