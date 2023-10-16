@@ -13,7 +13,7 @@ export IMAGE_URL="https://cloud.debian.org/images/cloud/bookworm/daily/latest/de
 export IMAGE_PATH=debian-12-generic-amd64-daily.qcow2
 export VOLUME_TYPE=pvc
 export SIZE=120Gi
-export PROXY_ADDRESS=$(kubectl get svc cdi-uploadproxy-loadbalancer -n cdi -o json | jq --raw-output '.spec.clusterIP')
+export PROXY_ADDRESS=$(kubectl get svc cdi-uploadproxy -n cdi -o json | jq --raw-output '.spec.clusterIP')
 # $(kubectl get svc cdi-uploadproxy -n cdi -o json | jq --raw-output 
 
 time wget -O $IMAGE_PATH $IMAGE_URL && \
@@ -38,7 +38,7 @@ export IMAGE_URL="https://cloud-images.ubuntu.com/focal/current/focal-server-clo
 export IMAGE_PATH=focal-server-cloudimg-amd64.img
 export VOLUME_TYPE=pvc
 export SIZE=120Gi
-export PROXY_ADDRESS=$(kubectl get svc cdi-uploadproxy-loadbalancer -n cdi -o json | jq --raw-output '.spec.clusterIP')
+export PROXY_ADDRESS=$(kubectl get svc cdi-uploadproxy -n cdi -o json | jq --raw-output '.spec.clusterIP')
 # $(kubectl get svc cdi-uploadproxy -n cdi -o json | jq --raw-output 
 
 time wget -O $IMAGE_PATH $IMAGE_URL && \
@@ -63,7 +63,7 @@ export IMAGE_URL="https://cloud-images.ubuntu.com/jammy/current/jammy-server-clo
 export IMAGE_PATH=jammy-server-cloudimg-amd64.img
 export VOLUME_TYPE=pvc
 export SIZE=120Gi
-export PROXY_ADDRESS=$(kubectl get svc cdi-uploadproxy-loadbalancer -n cdi -o json | jq --raw-output '.spec.clusterIP')
+export PROXY_ADDRESS=$(kubectl get svc cdi-uploadproxy -n cdi -o json | jq --raw-output '.spec.clusterIP')
 # $(kubectl get svc cdi-uploadproxy -n cdi -o json | jq --raw-output 
 
 time wget -O $IMAGE_PATH $IMAGE_URL &&
@@ -88,7 +88,7 @@ export IMAGE_URL="https://cloud-images.ubuntu.com/lunar/current/lunar-server-clo
 export IMAGE_PATH=lunar-server-cloudimg-amd64.img
 export VOLUME_TYPE=pvc
 export SIZE=120Gi
-export PROXY_ADDRESS=$(kubectl get svc cdi-uploadproxy-loadbalancer -n cdi -o json | jq --raw-output '.spec.clusterIP')
+export PROXY_ADDRESS=$(kubectl get svc cdi-uploadproxy -n cdi -o json | jq --raw-output '.spec.clusterIP')
 # $(kubectl get svc cdi-uploadproxy -n cdi -o json | jq --raw-output 
 
 time wget -O $IMAGE_PATH $IMAGE_URL && \
@@ -113,7 +113,7 @@ export IMAGE_URL="https://www.itechtics.com/?dl_id=173"
 export IMAGE_PATH="Win10_22H2_EnglishInternational_x64.iso"
 export VOLUME_TYPE="pvc"
 export SIZE="8Gi"
-export PROXY_ADDRESS=$(kubectl get svc cdi-uploadproxy-loadbalancer -n cdi -o json | jq --raw-output '.spec.clusterIP')
+export PROXY_ADDRESS=$(kubectl get svc cdi-uploadproxy -n cdi -o json | jq --raw-output '.spec.clusterIP')
 # $(kubectl get svc cdi-uploadproxy -n cdi -o json | jq --raw-output 
 
 time wget -O $IMAGE_PATH $IMAGE_URL && \
@@ -138,7 +138,7 @@ export IMAGE_URL="https://www.itechtics.com/?dl_id=168"
 export IMAGE_PATH="Win11_22H2_English_x64.iso"
 export VOLUME_TYPE="pvc"
 export SIZE="8Gi"
-export PROXY_ADDRESS=$(kubectl get svc cdi-uploadproxy-loadbalancer -n cdi -o json | jq --raw-output '.spec.clusterIP')
+export PROXY_ADDRESS=$(kubectl get svc cdi-uploadproxy -n cdi -o json | jq --raw-output '.spec.clusterIP')
 # $(kubectl get svc cdi-uploadproxy -n cdi -o json | jq --raw-output 
 
 time wget -O $IMAGE_PATH $IMAGE_URL && \
@@ -163,7 +163,7 @@ export IMAGE_URL="https://cdimage.debian.org/debian-cd/current/amd64/iso-dvd/deb
 export IMAGE_PATH="debian-12.0.0-amd64-DVD-1.iso"
 export VOLUME_TYPE="pvc"
 export SIZE="8Gi"
-export PROXY_ADDRESS=$(kubectl get svc cdi-uploadproxy-loadbalancer -n cdi -o json | jq --raw-output '.spec.clusterIP')
+export PROXY_ADDRESS=$(kubectl get svc cdi-uploadproxy -n cdi -o json | jq --raw-output '.spec.clusterIP')
 # $(kubectl get svc cdi-uploadproxy -n cdi -o json | jq --raw-output 
 
 time wget -O $IMAGE_PATH $IMAGE_URL && \
