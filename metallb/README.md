@@ -3,7 +3,6 @@ Installs [metallb](https://github.com/metallb/metallb/) and configures your ip p
 
 ## Sync Waves
 1. metallb controller and custom resource definitions
-2. IPAddressPool and L2Advertisement for your broadcasting your selected IPs
 
 ## To Deploy
 you can paste this in the "Edit as YAML" section when creating a new Argo CD app:
