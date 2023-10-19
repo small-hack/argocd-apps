@@ -68,7 +68,6 @@ Here's some quick guidelines, but you if you'd like to contribute, please read t
 
 |                  App                 | Description                                                                                                                                                                                                                                                                                                                                       |
 |:------------------------------------:|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-|        [keycloak](./keycloak)        | helm chart for [Keycloak](https://www.keycloak.org/), an Identity Access Management tool with built in OpenIDConnect for authenticating to self hosted apps                                                                                                                                                                                       |
 | [vouch-proxy](./ingress/vouch-proxy) | helm chart for [Vouch](https://github.com/vouch/vouch-proxy), an OAuth2 proxy that allows you to use ingress-nginx annotations to connect to a third party identity provider, giving you proper auth on websites that don't have auth. Currently works with the keycloak provider in this template, but also known to work with google and github |
 |      [zitadel](./zitadel)      | helm chart for [Zitadel](https://zitadel.com/), an Identity Access Management tool with built in OpenIDConnect for authenticating to self hosted apps. Recommended over keycloak.|
 
@@ -77,6 +76,7 @@ Here's some quick guidelines, but you if you'd like to contribute, please read t
 
 |               App              | Description                                                                              |
 |:------------------------------:|:-----------------------------------------------------------------------------------------|
+| [keycloak](./alpha/keycloak)   | helm chart for [Keycloak](https://www.keycloak.org/), an Identity Access Management tool with built in OpenIDConnect for authenticating to self hosted apps  |
 | [oauth2-proxy](./oauth2-proxy) | Oauth2 proxy that works with Google, however we're testing a keycloak provider right now |
 
 ## Ingress
