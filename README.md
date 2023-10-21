@@ -68,7 +68,7 @@ Here's some quick guidelines, but you if you'd like to contribute, please read t
 
 |                  App                 | Description                                                                                                                                                                                                                                                                                                                                       |
 |:------------------------------------:|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [vouch-proxy](./ingress/vouch-proxy) | helm chart for [Vouch](https://github.com/vouch/vouch-proxy), an OAuth2 proxy that allows you to use ingress-nginx annotations to connect to a third party identity provider, giving you proper auth on websites that don't have auth. Currently works with the keycloak provider in this template, but also known to work with google and github |
+| [vouch-proxy](./vouch-proxy) | helm chart for [Vouch](https://github.com/vouch/vouch-proxy), an OAuth2 proxy that allows you to use ingress-nginx annotations to connect to a third party identity provider, giving you proper auth on websites that don't have auth. Currently works with the keycloak provider in this template, but also known to work with google and github |
 |      [zitadel](./zitadel)      | helm chart for [Zitadel](https://zitadel.com/), an Identity Access Management tool with built in OpenIDConnect for authenticating to self hosted apps. Recommended over keycloak.|
 
 
@@ -83,8 +83,8 @@ Here's some quick guidelines, but you if you'd like to contribute, please read t
 
 |                    App                   | Description                                                                                                                                       |
 |:----------------------------------------:|:--------------------------------------------------------------------------------------------------------------------------------------------------|
-|  [cert-manager](./ingress/cert-manager)  | helm chart for [cert-manager](https://cert-manager.io), for providing TLS certificates based on nginx ingress annotations                         |
-| [ingress-nginx](./ingress/ingress-nginx) | helm chart for [ingress-nginx](https://github.com/kubernetes/ingress-nginx), an nginx ingress controller to allow external traffic to the cluster |
+|  [cert-manager](./cert-manager)  | helm chart for [cert-manager](https://cert-manager.io), for providing TLS certificates based on nginx ingress annotations                         |
+| [ingress-nginx](./ingress-nginx) | helm chart for [ingress-nginx](https://github.com/kubernetes/ingress-nginx), an nginx ingress controller to allow external traffic to the cluster |
 
 
 ## Monitoring
