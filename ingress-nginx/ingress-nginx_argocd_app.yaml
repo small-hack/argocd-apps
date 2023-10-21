@@ -14,7 +14,7 @@ spec:
       releaseName: 'ingress-nginx'
   destination:
     server: "https://kubernetes.default.svc"
-    namespace: ingress
+    namespace: ingress-nginx
   syncPolicy:
     syncOptions:
       - ApplyOutOfSyncOnly=true
