@@ -1,3 +1,6 @@
+Previously on trying to create an appset for cert manager 😅:
+
+```yaml
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
@@ -37,3 +40,4 @@ spec:
         automated:
           prune: true
           selfHeal: true
+```
