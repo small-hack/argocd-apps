@@ -1,0 +1,79 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: k8tz-helm-app-set
+  namespace: argocd
+spec:
+  goTemplate: true
+  # generator allows us to source specific values from an external k8s secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - global_timezone
+  template:
+    metadata:
+      name: k8tz-helm-release
+    spec:
+      project: k8tz
+      destination:
+        server: "https://kubernetes.default.svc"
+        namespace: k8tz
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
+          selfHeal: true
+      source:
+        # official k8tz helm repo
+        repoURL: 'https://k8tz.github.io/k8tz/'
+        targetRevision: 0.13.1
+        chart: k8tz
+        helm:
+          values: |
+            # Default values for k8tz.
+            
+            kind: Deployment
+            replicaCount: 1
+            
+            namespace: k8tz
+            injectionStrategy: initContainer
+            timezone: {{ .global_timezone }}
+            injectAll: false
+            cronJobTimeZone: true
+            # requires kubernetes >=1.24.0-beta.0 with 'CronJobTimeZone' 
+            # feature gate enabled (alpha)
+            verbose: false
+            
+            # Labels to apply to all resources
+            labels: {}
+            
+            webhook:
+              failurePolicy: Fail
+            
+              certManager:
+                enabled: false
+                secretTemplate: {}
+                duration: 2160h
+                renewBefore: 720h
+                issuerRef:
+                  name: selfsigned
+                  kind: ClusterIssuer
+            
+            nameOverride: ""
+            fullnameOverride: ""
+            
+            podSecurityContext: {}
+            
+            securityContext: {}
+            
+            service:
+              type: ClusterIP
+              port: 443
+            
+            resources: {}
