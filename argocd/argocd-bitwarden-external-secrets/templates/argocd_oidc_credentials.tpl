@@ -15,9 +15,9 @@ spec:
           app.kubernetes.io/part-of: "argocd"
       data:
         oidc.clientID: |-
-          {{ .username }}
+          "{{ `{{ .username }}` }}"
         oidc.clientSecret: |-
-          {{ .password }}
+          "{{ `{{ .password }}` }}"
 
   data:
     # oidc client ID
@@ -27,7 +27,7 @@ spec:
           name: bitwarden-login
           kind: ClusterSecretStore
       remoteRef:
-        key: argocd-oidc
+        key: {{ .Values.bitwardenItemID }}
         property: username
 
     # oidc client secret
@@ -37,5 +37,5 @@ spec:
           name: bitwarden-login
           kind: ClusterSecretStore
       remoteRef:
-        key: argocd-oidc
+        key: {{ .Values.bitwardenItemID }}
         property: password
