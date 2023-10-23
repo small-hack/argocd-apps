@@ -1,4 +1,4 @@
----
+{{- if eq .Values.useExternalSecrets "true" }}
 apiVersion: external-secrets.io/v1beta1
 kind: ExternalSecret
 metadata:
@@ -39,3 +39,4 @@ spec:
       remoteRef:
         key: {{ .Values.bitwardenItemID }}
         property: password
+{{- end }}

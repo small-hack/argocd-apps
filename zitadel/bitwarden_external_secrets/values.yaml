@@ -1,2 +1,6 @@
+## if this is not set to "true", we will not actually deploy any templates
+## MUST be a string, NOT a boolean
+useExternalSecrets: "true"
+
 bitwardenCoreItemID: ""
 bitwardenDBItemID: ""

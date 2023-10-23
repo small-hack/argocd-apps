@@ -1,4 +1,4 @@
----
+{{- if eq .Values.useExternalSecrets "true" }}
 # secret zitadel core key
 apiVersion: external-secrets.io/v1beta1
 kind: ExternalSecret
@@ -27,3 +27,4 @@ spec:
         key: {{ .Values.bitwardenCoreItemID }}
         # property within the bitwarden secret we want
         property: password
+{{- end }}
