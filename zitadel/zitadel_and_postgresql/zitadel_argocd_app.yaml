@@ -70,7 +70,7 @@ spec:
             local all all trust
             host all all 127.0.0.1/32 md5
             host all zitadel 10.0.0.0/8 md5
-            host all postgres 10.0.0.0/8 trust
+            host all postgres 10.0.0.0/8 md5
           #initdb:
           #  scripts:
           #    my_init_script.sql: |
