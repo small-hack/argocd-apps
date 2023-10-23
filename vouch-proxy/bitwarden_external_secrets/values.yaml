@@ -1,3 +1,4 @@
+useExternalSecrets: "true"
+
 vouchOauthConfigBitwardenID: ""
 vouchConfigBitwardenID: ""
-useExternalSecrets: "true"
