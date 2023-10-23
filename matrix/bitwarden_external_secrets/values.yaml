@@ -4,4 +4,5 @@ useExternalSecrets: "true"
 
 postgresqlCredentialsBitwardenID: ""
 oidcCredentialsBitwardenID: ""
+smtpCredentialsBitwardenID: ""
 registrationBitwardenID: ""
