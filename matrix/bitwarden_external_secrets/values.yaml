@@ -2,5 +2,6 @@
 ## MUST be a string, NOT a boolean
 useExternalSecrets: "true"
 
-postgresqlAdminBitwardenID: ""
-postgresqlMatrixBitwardenID: ""
+postgresqlCredentialsBitwardenID: ""
+oidcCredentialsBitwardenID: ""
+registrationBitwardenID: ""
