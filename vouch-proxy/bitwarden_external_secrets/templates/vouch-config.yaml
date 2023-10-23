@@ -12,11 +12,11 @@ spec:
       type: Opaque
       data:
         jwtSecret: |-
-          {{ .jwtSecret }}
+          {{ `{{ .jwtSecret }}` }}
         domains: |-
-          {{ .domains }}
+          {{ `{{ .domains }}` }}
         allowList: |-
-          {{ .allowList }}
+          {{ `{{ .allowList }}` }}
   data:
     # key of this struct to reference in spec.target.template.data
     - secretKey: domains
@@ -26,7 +26,7 @@ spec:
           kind: ClusterSecretStore
       remoteRef:
         # name of the item in bitwarden
-        key: vouch-config
+        key: {{ .Values.vouchConfigBitwardenID }}
         # name of the custom field in the bitwarden item
         property: domains
 
@@ -36,7 +36,7 @@ spec:
           name: bitwarden-fields
           kind: ClusterSecretStore
       remoteRef:
-        key: vouch-config
+        key: {{ .Values.vouchConfigBitwardenID }}
         property: allowList
 
     - secretKey: jwtSecret
@@ -45,5 +45,5 @@ spec:
           name: bitwarden-fields
           kind: ClusterSecretStore
       remoteRef:
-        key: vouch-config
+        key: {{ .Values.vouchConfigBitwardenID }}
         property: jwtSecret

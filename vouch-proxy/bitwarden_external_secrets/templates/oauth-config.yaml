@@ -12,21 +12,21 @@ spec:
       type: Opaque
       data:
         clientId: |-
-          {{ .username }}
+          {{ `{{ .username }}` }}
         clientSecret: |-
-          {{ .password }}
+          {{ `{{ .password }}` }}
         authUrl: |-
-          {{ .authUrl }}
+          {{ `{{ .authUrl }}` }}
         tokenUrl: |-
-          {{ .tokenUrl }}
+          {{ `{{ .tokenUrl }}` }}
         userInfoUrl: |-
-          {{ .userInfoUrl }}
+          {{ `{{ .userInfoUrl }}` }}
         endSessionEndpoint: |-
-          {{ .endSessionEndpoint }}
+          {{ `{{ .endSessionEndpoint }}` }}
         callbackUrls: |-
-          {{ .callbackUrls }}
+          {{ `{{ .callbackUrls }}` }}
         preferredDomain: |-
-          {{ .preferredDomain }}
+          {{ `{{ .preferredDomain }}` }}
   data:
     - secretKey: username
       sourceRef:
@@ -34,7 +34,7 @@ spec:
           name: bitwarden-login
           kind: ClusterSecretStore
       remoteRef:
-        key: vouch-oauth-config
+        key: {{ .Values.vouchOauthConfigBitwardenID }}
         property: username
 
     - secretKey: password
@@ -43,7 +43,7 @@ spec:
           name: bitwarden-login
           kind: ClusterSecretStore
       remoteRef:
-        key: vouch-oauth-config
+        key: {{ .Values.vouchOauthConfigBitwardenID }}
         property: password
 
     - secretKey: authUrl
@@ -52,7 +52,7 @@ spec:
           name: bitwarden-fields
           kind: ClusterSecretStore
       remoteRef:
-        key: vouch-oauth-config
+        key: {{ .Values.vouchOauthConfigBitwardenID }}
         property: authUrl
 
     - secretKey: tokenUrl
@@ -61,7 +61,7 @@ spec:
           name: bitwarden-fields
           kind: ClusterSecretStore
       remoteRef:
-        key: vouch-oauth-config
+        key: {{ .Values.vouchOauthConfigBitwardenID }}
         property: tokenUrl
 
     - secretKey: userInfoUrl
@@ -70,7 +70,7 @@ spec:
           name: bitwarden-fields
           kind: ClusterSecretStore
       remoteRef:
-        key: vouch-oauth-config
+        key: {{ .Values.vouchOauthConfigBitwardenID }}
         property: userInfoUrl
 
     - secretKey: callbackUrls
@@ -79,7 +79,7 @@ spec:
           name: bitwarden-fields
           kind: ClusterSecretStore
       remoteRef:
-        key: vouch-oauth-config
+        key: {{ .Values.vouchOauthConfigBitwardenID }}
         property: callbackUrls
 
     - secretKey: endSessionEndpoint
@@ -88,7 +88,7 @@ spec:
           name: bitwarden-fields
           kind: ClusterSecretStore
       remoteRef:
-        key: vouch-oauth-config
+        key: {{ .Values.vouchOauthConfigBitwardenID }}
         property: endSessionEndpoint
 
     - secretKey: preferredDomain
@@ -97,5 +97,5 @@ spec:
           name: bitwarden-fields
           kind: ClusterSecretStore
       remoteRef:
-        key: vouch-oauth-config
+        key: {{ .Values.vouchOauthConfigBitwardenID }}
         property: preferredDomain
