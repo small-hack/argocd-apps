@@ -17,6 +17,7 @@ spec:
           parameters:
             secret_vars:
               - minio_hostname
+              - global_cluster_issuer
   template:
     metadata:
       name: minio-operator
