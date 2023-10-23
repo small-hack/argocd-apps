@@ -12,11 +12,11 @@ spec:
       type: Opaque
       data:
         issuer: |-
-          {{ .issuer }}
+          {{ `{{ .issuer }}` }}
         client_id: |-
-          {{ .username }}
+          {{ `{{ .username }}` }}
         client_secret: |-
-          {{ .password }}
+          {{ `{{ .password }}` }}
   data:
     # keycloak client Issuer
     - secretKey: issuer

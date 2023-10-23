@@ -13,7 +13,7 @@ spec:
       type: Opaque
       data:
         registrationSharedSecret: |-
-          {{ .sharedSecret }}
+          {{ `{{ .sharedSecret }}` }}
   data:
     - secretKey: sharedSecret
       sourceRef:

@@ -22,28 +22,3 @@ spec:
       - ApplyOutOfSyncOnly=true
     automated:
       selfHeal: false
-
----
-# First sync wave because we need secrets for matrix, so it has to be
-# before matrix so it has secrets for all its credentials.
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: matrix-external-secrets
-  namespace: argocd
-  annotations:
-    argocd.argoproj.io/sync-wave: "1"
-spec:
-  project: matrix
-  destination:
-    server: "https://kubernetes.default.svc"
-    namespace: matrix
-  source:
-    repoURL: https://github.com/small-hack/argocd-apps.git
-    path: matrix/external_secrets/
-  syncPolicy:
-    syncOptions:
-      - Replace=true
-    automated:
-      prune: true
-      selfHeal: false
