@@ -15,9 +15,9 @@ spec:
           app.kubernetes.io/part-of: "argocd"
       data:
         oidc.clientID: |-
-          "{{ `{{ .username }}` }}"
+          {{ `{{ .username }}` }}
         oidc.clientSecret: |-
-          "{{ `{{ .password }}` }}"
+          {{ `{{ .password }}` }}
 
   data:
     # oidc client ID
