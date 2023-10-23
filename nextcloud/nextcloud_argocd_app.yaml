@@ -41,6 +41,7 @@ spec:
   source:
     repoURL: https://github.com/small-hack/argocd-apps.git
     path: nextcloud/backups/
+    targetRevision: eso-helm-chart-test
   syncPolicy:
     syncOptions:
       - ApplyOutOfSyncOnly=true
