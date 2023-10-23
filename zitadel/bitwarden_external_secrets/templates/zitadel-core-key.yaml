@@ -14,7 +14,7 @@ spec:
       type: Opaque
       data:
         masterkey: |-
-         "{{ `{{ .password }}` }}"
+         {{ `{{ .password }}` }}
 
   data:
     - secretKey: password
