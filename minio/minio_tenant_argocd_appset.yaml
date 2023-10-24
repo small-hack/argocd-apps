@@ -112,7 +112,7 @@ spec:
               ## Mount path where PV will be mounted inside container(s).
               # pool metrics to be read by Prometheus
               metrics:
-                enabled: false
+                enabled: true
                 port: 9000
                 protocol: http
               certificate:
@@ -130,10 +130,11 @@ spec:
               ## MinIO features to enable or disable in the MinIO Tenant
               ## https://github.com/minio/operator/blob/master/docs/tenant_crd.adoc#features
               features:
-                bucketDNS: false
+                bucketDNS: true
                 domains:
-                  Minio: {{ .minio_api_hostname }}
-                  Console: {{ .minio_user_console_hostname }}
+                  minio: 
+                  - {{ .minio_api_hostname }}
+                  console: {{ .minio_user_console_hostname }}
                 enableSFTP: false
               ## List of bucket definitions to create during tenant provisioning.
               ## Example:
