@@ -1,3 +1,4 @@
+```yaml
 ---
 # webapp is deployed 2nd because we need secrets and persistent volumes up 1st
 apiVersion: argoproj.io/v1alpha1
@@ -43,3 +44,4 @@ spec:
           values: |
             tenant_name: {{ .minio_tenant_name }}
             hostname: {{ .minio_user_console_hostname }}
+```
