@@ -18,6 +18,7 @@ spec:
             secret_vars:
               - minio_api_hostname
               - minio_user_console_hostname
+              - minio_tenant_name
               - global_cluster_issuer
   template:
     metadata:
@@ -42,25 +43,19 @@ spec:
           releaseName: minio-tenant
           values: |
             ## Secret with default environment variable configurations to be used by MinIO Tenant.
-            ## Not recommended for production deployments! Create the secret manually instead.
             secrets:
-              name: myminio-env-configuration
-              # MinIO root user and password
-              accessKey: minio
-              secretKey: minio123
-              ## Set the value for existingSecret to use a pre created secret and dont create default one
-              existingSecret: random-env-configuration
+              existingSecret: default-tenant-env-config
             ## MinIO Tenant Definition
             tenant:
               # Tenant name
-              name: myminio
+              name: {{ .minio_tenant_name }}
               image:
                 repository: quay.io/minio/minio
                 tag: RELEASE.2023-09-04T19-57-37Z
               ## Secret name that contains additional environment variable configurations.
               ## The secret is expected to have a key named config.env containing environment variables exports.
               configuration:
-                name: myminio-env-configuration
+                name: default-tenant-env-config
               ## Specification for MinIO Pool(s) in this Tenant.
               pools:
                 ## Servers specifies the number of MinIO Tenant Pods / Servers in this pool.
