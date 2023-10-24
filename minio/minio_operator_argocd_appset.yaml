@@ -16,7 +16,7 @@ spec:
         input:
           parameters:
             secret_vars:
-              - minio_hostname
+              - minio_admin_console_hostname
               - global_cluster_issuer
   template:
     metadata:
@@ -63,7 +63,7 @@ spec:
                 tls:
                   - secretName: minio-tls
                     hosts:
-                      - "{{ .minio_hostname}}"
-                host: {{ .minio_hostname }}
+                      - "{{ .minio_admin_console_hostname }}"
+                host: {{ .minio_admin_console_hostname }}
                 path: /
                 pathType: Prefix

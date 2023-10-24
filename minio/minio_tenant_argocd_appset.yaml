@@ -16,7 +16,8 @@ spec:
         input:
           parameters:
             secret_vars:
-              - minio_hostname
+              - minio_api_hostname
+              - minio_user_console_hostname
               - global_cluster_issuer
   template:
     metadata:
@@ -48,7 +49,7 @@ spec:
               accessKey: minio
               secretKey: minio123
               ## Set the value for existingSecret to use a pre created secret and dont create default one
-              # existingSecret: random-env-configuration
+              existingSecret: random-env-configuration
             ## MinIO Tenant Definition
             tenant:
               # Tenant name
@@ -184,15 +185,26 @@ spec:
               env: [ ]
 
             ingress:
+              # user api
               api:
-                enabled: false
+                enabled: true
                 ingressClassName: "nginx"
-                annotations: { }
-                tls: [ ]
-                host: minio.local
+                annotations:
+                  cert-manager.io/cluster-issuer: {{ .global_cluster_issuer }}
+                tls:
+                  - secretName: minio-api-tls
+                    hosts:
+                      - "{{ .minio_api_hostname}}"
+                host: {{ .minio_api_hostname }}
+
+              # user console
               console:
-                enabled: false
+                enabled: true
                 ingressClassName: "nginx"
-                annotations: { }
-                tls: [ ]
-                host: minio-console.local
+                annotations:
+                  cert-manager.io/cluster-issuer: {{ .global_cluster_issuer }}
+                tls:
+                  - secretName: minio-user-console-tls
+                    hosts:
+                      - "{{ .minio_user_console_hostname }}"
+                host: {{ .minio_user_console_hostname }}
