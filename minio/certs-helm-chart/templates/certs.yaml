@@ -21,6 +21,6 @@ spec:
     - "*.minio.svc.cluster.local"
     - "*.{{ .Values.tenant_name }}.svc.cluster.local"
     - "*.{{ .Values.tenant_name }}-hl.svc.cluster.local"
-  secretName: tenant-certmanager-tls
+  secretName: {{ .Values.tenant_name }}-pods-tls
   issuerRef:
     name: tenant-certmanager-issuer
