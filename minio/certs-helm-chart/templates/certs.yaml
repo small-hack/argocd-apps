@@ -1,10 +1,9 @@
-# taken directly from the example here:
-# https://github.com/minio/operator/blob/master/examples/kustomization/tenant-certmanager/certificates.yaml
 ---
+# ref: https://github.com/minio/operator/blob/master/examples/kustomization/tenant-certmanager/certificates.yaml
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: {{ .Values.tenant_name }}-pod-certs
+  name: "{{ .Values.tenant_name }}-pod-certs"
   namespace: minio
 spec:
   # If you see "Empty issuer DN not allowed in X509Certificates"
@@ -16,11 +15,14 @@ spec:
   # subject:
   #   organizations:
   #     - jetstack
-  commonName: buildstars.online
+  commonName: minio.buildstars.online
   dnsNames:
-    - "*.minio.svc.cluster.local"
-    - "*.{{ .Values.tenant_name }}.svc.cluster.local"
-    - "*.{{ .Values.tenant_name }}-hl.svc.cluster.local"
+    = "minio"
+    - "minio-hl"
+    - "minio-hl.minio.svc.cluster.local"
+    - "minio.minio.svc.cluster.local"
+    - "{{ .Values.tenant_name }}.minio.svc.cluster.local"
+    - "{{ .Values.tenant_name }}-hl.minio.svc.cluster.local"
   secretName: {{ .Values.tenant_name }}-pods-tls
   issuerRef:
     name: tenant-certmanager-issuer
