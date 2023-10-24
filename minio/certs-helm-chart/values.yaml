@@ -1,1 +1,5 @@
+# -- name of the tenant to create certs for
 tenant_name: ""
+
+# -- hostname of the minio console api we think
+hostname: ""

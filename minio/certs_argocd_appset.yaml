@@ -18,6 +18,9 @@ spec:
           parameters:
             secret_vars:
               - minio_tenant_name
+              - minio_api_hostname
+              - minio_user_console_hostname
+              
   template:
     metadata:
       name: minio-pod-certs
@@ -39,3 +42,4 @@ spec:
           releaseName: minio-pod-certs
           values: |
             tenant_name: {{ .minio_tenant_name }}
+            hostname: {{ .minio_user_console_hostname }}

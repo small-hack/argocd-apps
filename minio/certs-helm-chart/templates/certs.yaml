@@ -15,9 +15,9 @@ spec:
   # subject:
   #   organizations:
   #     - jetstack
-  commonName: minio.buildstars.online
+  commonName: {{ .Values.hostname }}
   dnsNames:
-    - "minio"
+    - "{{ .Values.hostname }}"
     - "minio-hl"
     - "minio-hl.minio.svc.cluster.local"
     - "minio.minio.svc.cluster.local"
