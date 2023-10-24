@@ -166,7 +166,7 @@ spec:
                 - name: MINIO_DOMAIN
                   value: "{{ .minio_api_hostname }}"
                 - name: MINIO_BROWSER_REDIRECT_URL
-                  value: "https://{{ .minio_user_console_hostname }}/login"
+                  value: "https://{{ .minio_user_console_hostname }}"
                 - name: MINIO_SERVER_URL
                   value: "https://{{ .minio_api_hostname }}"
                 - name: MINIO_BROWSER
