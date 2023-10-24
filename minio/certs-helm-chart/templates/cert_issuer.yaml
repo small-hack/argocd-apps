@@ -1,0 +1,10 @@
+# taken directly from the example here:
+# https://github.com/minio/operator/blob/master/examples/kustomization/tenant-certmanager/certificates.yaml
+
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: tenant-certmanager-issuer
+  namespace: minio
+spec:
+  selfSigned: { }
