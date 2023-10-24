@@ -125,7 +125,8 @@ spec:
                    type: cert-manager.io/v1
                  - name: minio-user-console-tls
                    type: cert-manager.io/v1
-                 - name: tenant-certmanager-pod-certs
+                 - name: {{ .minio_tenant_name }}-pod-certs
+                   type: cert-manager.io/v1
               ## MinIO features to enable or disable in the MinIO Tenant
               ## https://github.com/minio/operator/blob/master/docs/tenant_crd.adoc#features
               features:
