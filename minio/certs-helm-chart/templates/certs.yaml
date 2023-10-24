@@ -13,10 +13,10 @@ spec:
   # This specially if your other apps can't trust MinIO cert issued by cert-manager
   # Example
   #
-  # subject:
-  #   organizations:
-  #     - jetstack
-  # commonName: example.com
+  subject:
+    organizations:
+      - jetstack
+  commonName: minio.buildstars.online
   dnsNames:
     - "*.{{ .Values.tenant_name }}.svc.cluster.local"
     - "*.{{ .Values.tenant_name }}-hl.svc.cluster.local"
