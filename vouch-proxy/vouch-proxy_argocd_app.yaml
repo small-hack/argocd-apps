@@ -12,7 +12,7 @@ spec:
   project: default
   destination:
     server: "https://kubernetes.default.svc"
-    namespace: ingress
+    namespace: vouch
   source:
     repoURL: https://github.com/small-hack/argocd-apps.git
     path: vouch-proxy/external_secrets/

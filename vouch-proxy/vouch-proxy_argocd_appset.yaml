@@ -22,10 +22,10 @@ spec:
     metadata:
       name: vouch-helm
     spec:
-      project: ingress-nginx
+      project: vouch
       destination:
         server: https://kubernetes.default.svc
-        namespace: ingress
+        namespace: vouch
       syncPolicy:
         syncOptions:
           - ApplyOutOfSyncOnly=true
