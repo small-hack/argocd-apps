@@ -141,6 +141,10 @@ spec:
                 #   - name: {{ .minio_tenant_tenant_name }}-pods-tls
                 #    type: cert-manager.io/v1
 
+                ## This field is used only when "requestAutoCert" is set to true. Use this field to set CommonName
+                ## for the auto-generated certificate. Internal DNS name for the pod will be used if CommonName is
+                ## not provided. DNS name format is *.minio.default.svc.cluster.local
+                certConfig: { }
               ## MinIO features to enable or disable in the MinIO Tenant
               ## https://github.com/minio/operator/blob/master/docs/tenant_crd.adoc#features
               features:
