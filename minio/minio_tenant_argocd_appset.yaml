@@ -179,6 +179,8 @@ spec:
                   value: "https://{{ .minio_user_console_hostname }}"
                 - name: MINIO_SERVER_URL
                   value: "https://{{ .minio_api_hostname }}"
+                - name: MINIO_BROWSER
+                  value: "on"
 
             ingress:
               # user api
