@@ -191,6 +191,8 @@ spec:
                     hosts:
                       - "{{ .minio_api_hostname}}"
                 host: {{ .minio_api_hostname }}
+                path: /
+                pathType: Prefix
 
               # user console
               console:
@@ -203,3 +205,5 @@ spec:
                     hosts:
                       - "{{ .minio_user_console_hostname }}"
                 host: {{ .minio_user_console_hostname }}
+                path: /
+                pathType: Prefix
