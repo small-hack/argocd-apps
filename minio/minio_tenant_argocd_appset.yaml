@@ -127,15 +127,13 @@ spec:
                 ## Enable automatic Kubernetes based certificate generation and signing as explained in
                 ## https://kubernetes.io/docs/tasks/tls/managing-tls-in-a-cluster
                 requestAutoCert: false
-                ## This field is used only when "requestAutoCert" is set to true. Use this field to set CommonName
-                ## for the auto-generated certificate. Internal DNS name for the pod will be used if CommonName is
-                ## not provided. DNS name format is *.minio.default.svc.cluster.local
-                certConfig: { }
               ## MinIO features to enable or disable in the MinIO Tenant
               ## https://github.com/minio/operator/blob/master/docs/tenant_crd.adoc#features
               features:
                 bucketDNS: false
-                domains: { }
+                domains:
+                  Minio: {{ .minio_api_hostname }}
+                  Console: {{ .minio_user_console_hostname }}
                 enableSFTP: false
               ## List of bucket definitions to create during tenant provisioning.
               ## Example:
