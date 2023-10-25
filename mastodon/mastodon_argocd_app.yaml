@@ -33,7 +33,7 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "1"
 spec:
-  project: default
+  project: mastodon
   destination:
     server: "https://kubernetes.default.svc"
     namespace: mastodon
@@ -58,7 +58,7 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "1"
 spec:
-  project: default
+  project: mastodon
   destination:
     server: "https://kubernetes.default.svc"
     namespace: mastodon
@@ -82,7 +82,7 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "2"
 spec:
-  project: default
+  project: mastodon
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: mastodon
@@ -142,7 +142,7 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "2"
 spec:
-  project: default
+  project: mastodon
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: mastodon
