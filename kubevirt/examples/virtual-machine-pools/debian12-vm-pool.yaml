@@ -10,7 +10,7 @@ spec:
   source:
     path: ''
     repoURL: 'https://cloudymax.github.io/kubevirt-charts/'
-    targetRevision: 0.1.8
+    targetRevision: 0.1.9
     chart: kubevirt-vm
     helm:
       values: |
