@@ -1,0 +1,9 @@
+# User external secrets true/false
+useExternalSecrets: "true"
+
+s3CredentialsBitwardenID: ""
+adminCredentialsBitwardenID: ""
+pgsqlCredentialsBitwardenID: ""
+redisCredentialsBitwardenID: ""
+mastodonSecretsBitwardenID: ""
+smtpCredentialsBitwardenID: ""
