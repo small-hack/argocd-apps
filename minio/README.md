@@ -6,6 +6,12 @@ Operator helm chart: https://github.com/minio/operator/tree/master/helm/operator
 
 Tenant helm chart: https://github.com/minio/operator/tree/master/helm/tenant
 
+## Remaining Tasks
+
+- OIDC via Zitadel
+- figure out encryption
+- test bucket and user creation via the cli/python sdk
+
 ## Notes
 
 ### tenant API is not accessible
