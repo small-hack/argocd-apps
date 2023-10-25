@@ -32,7 +32,7 @@ spec:
         targetRevision: 4.4.0
         chart: mastodon
         helm:
-          values: |
+          valuesObject:
             image:
               repository: ghcr.io/mastodon/mastodon
               # https://github.com/mastodon/mastodon/pkgs/container/mastodon
@@ -74,10 +74,11 @@ spec:
                   accessMode: ReadWriteMany
                   existingClaim: mastodon-system
               s3:
-                enabled: false
+                enabled: true
                 # -- you can also specify the name of an existing Secret
                 # with keys AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY
-                existingSecret: ""
+                existingSecret: "mastodon-s3-credentials"
+                # I don't know what this is
                 permission: ""
                 # -- If you have a caching proxy, enter its base URL here.
                 # alias_host: ""
