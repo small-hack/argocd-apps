@@ -152,7 +152,8 @@ spec:
               podManagementPolicy: Parallel
               ## exposeServices defines the exposure of the MinIO object storage and Console services.
               ## service is exposed as a loadbalancer in k8s service.
-              exposeServices: { }
+              exposeServices:
+                minio: true
               # kubernetes service account associated with a specific tenant
               # https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
               serviceAccountName: "{{ .minio_tenant_name }}"
