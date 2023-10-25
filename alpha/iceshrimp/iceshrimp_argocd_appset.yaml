@@ -1,0 +1,41 @@
+---
+# webapp is deployed 2nd because we need secrets and persistent volumes up 1st
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: iceshrimp-web-app-set
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  goTemplate: true
+  # generator allows us to source specific values from an external k8s secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - iceshrimp_hostname
+              - global_cluster_issuer
+  template:
+    metadata:
+      name: iceshrimp-web-app
+    spec:
+      project: iceshrimp
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: iceshrimp
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
+          selfHeal: true
+      source:
+        repoURL: 'https://iceshrimp.github.io/helm'
+        targetRevision: 3.5.20
+        chart: iceshrimp
+        helm:
+          values: |
