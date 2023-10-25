@@ -6,7 +6,6 @@
     { 
       "matchManagers": ["argocd"],
       "matchUpdateTypes": ["patch"],
-      "matchCurrentVersion": "!/^0/",
       "automerge": true
     }
   ]
