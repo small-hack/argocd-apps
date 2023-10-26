@@ -32,7 +32,7 @@ spec:
         targetRevision: 4.4.5
         chart: mastodon
         helm:
-          valuesObject:
+          values: |
             image:
               repository: ghcr.io/mastodon/mastodon
               # https://github.com/mastodon/mastodon/pkgs/container/mastodon
