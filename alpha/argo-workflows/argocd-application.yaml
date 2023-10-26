@@ -1,0 +1,31 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argo-wrkflows-argo-app
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  project: default
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: argo
+  sources:
+    # official helm repo
+    - repoURL: 'https://argoproj.github.io/argo-helm/'
+      chart: argo-workflows
+      targetRevision: 0.33.1
+      helm:
+        valueFiles:
+        - $values/alpha/argo-workflows/values.yaml
+    # our values.yaml file locally
+    - repoURL: 'https://github.com/small-hack/argocd-apps.git'
+      targetRevision: main
+      ref: values
+  syncPolicy:
+    syncOptions:
+      - ApplyOutOfSyncOnly=true
+    automated:
+      prune: true
+      selfHeal: true
