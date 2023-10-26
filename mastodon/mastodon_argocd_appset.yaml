@@ -29,7 +29,7 @@ spec:
       source:
         # forked from: https://github.com/mastodon/chart/tree/main
         repoURL: 'https://jessebot.github.io/mastodon-helm-chart'
-        targetRevision: 4.4.0
+        targetRevision: 4.4.1
         chart: mastodon
         helm:
           values: |
@@ -139,17 +139,13 @@ spec:
                 delivery_method: smtp
                 domain: {{ .mastodon_hostname }}
                 enable_starttls: 'auto'
-                from_address: toots@{{ .mastodon_hostname }}
+                from_address: "toots@{{ .mastodon_hostname }}"
                 return_path:
                 openssl_verify_mode: peer
                 port: 587
-                reply_to:
-                server: mail.{{ .mastodon_hostname }}
+                reply_to: "no-reply@{{ .mastodon_hostname }}"
                 tls: true
-                # login:
-                # password:
-                # -- Instead of defining login/password above, you can specify the name of an existing secret here. Login and
-                # password must be located in keys named `login` and `password` respectively.
+                # keys must be named `server`, `login`, `password`
                 existingSecret: mastodon-smtp-credentials
               streaming:
                 port: 4000
