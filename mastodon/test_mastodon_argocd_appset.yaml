@@ -1,0 +1,186 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: mastodon-app-set
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+spec:
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            env_vars:
+              - mastodon_hostname
+              - global_cluster_issuer
+  template:
+    metadata:
+      name: mastodon-web-app
+    spec:
+      project: mastodon
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: mastodon
+      source:
+        repoURL: 'https://jessebot.github.io/mastodon-helm-chart'
+        targetRevision: 4.4.1
+        chart: mastodon
+        helm:
+          values: |
+            image:
+              repository: ghcr.io/mastodon/mastodon
+              pullPolicy: IfNotPresent
+
+            mastodon:
+              createAdmin:
+                enabled: true
+                existingSecret: mastodon-admin-credentials
+                secretKeys:
+                  usernameKey: username
+                  passwordKey: password
+                  emailKey: email
+              cron:
+                removeMedia:
+                  enabled: true
+                  schedule: "0 0 * * 0"
+              locale: en
+              local_domain: {{ .mastodon_hostname }}
+              web_domain: null
+              singleUserMode: false
+              authorizedFetch: false
+              limitedFederationMode: false
+              persistence:
+                assets:
+                  accessMode: ReadWriteMany
+                  existingClaim: mastodon-assets
+                system:
+                  accessMode: ReadWriteMany
+                  existingClaim: mastodon-system
+              s3:
+                enabled: true
+                existingSecret: "mastodon-s3-credentials"
+                permission: ""
+              secrets:
+                existingSecret: "mastodon-server-credentials"
+                secretKeys:
+                  s3AccessKeyID: ACCESS_KEY_ID
+                  s3AccessKey: SECRET_ACCESS_KEY
+                  s3Bucket: BUCKET
+                  s3Endpoint: ENDPOINT
+                  s3Region: ""
+              sidekiq:
+                workers:
+                - name: all-queues
+                  concurrency: 25
+                  queues:
+                    - default,8
+                    - push,6
+                    - ingress,4
+                    - mailers,2
+                    - pull
+                    - scheduler
+              smtp:
+                auth_method: login
+                ca_file: /etc/ssl/certs/ca-certificates.crt
+                delivery_method: smtp
+                domain: {{ .mastodon_hostname }}
+                enable_starttls: 'auto'
+                from_address: "toots@{{ .mastodon_hostname }}"
+                openssl_verify_mode: peer
+                port: 587
+                reply_to: "no-reply@{{ .mastodon_hostname }}"
+                tls: true
+                existingSecret: mastodon-smtp-credentials
+              streaming:
+                port: 4000
+                workers: 1
+                base_url: null
+                replicas: 1
+              web:
+                port: 3000
+                replicas: 1
+                minThreads: "5"
+                maxThreads: "5"
+                workers: "2"
+                persistentTimeout: "20"
+
+              metrics:
+                statsd:
+                  address: ""
+
+              preparedStatements: true
+
+            ingress:
+              enabled: true
+              annotations:
+                kubernetes.io/tls-acme: "true"
+                cert-manager.io/cluster-issuer: "{{ .global_cluster_issuer }}"
+                nginx.ingress.kubernetes.io/proxy-body-size: 40m
+              ingressClassName: nginx
+              hosts:
+                - host: {{ .mastodon_hostname }}
+                  paths:
+                    - path: '/'
+              tls:
+                - secretName: mastodon-tls
+                  hosts:
+                    - {{ .mastodon_hostname }}
+
+            elasticsearch:
+              enabled: true
+              image:
+                tag: 7
+              master:
+                replicaCount: 1
+                autoscaling:
+                  minReplicas: 1
+              data:
+                replicaCount: 1
+              coordinating:
+                replicaCount: 1
+              ingest:
+                replicaCount: 1
+
+            postgresql:
+              enabled: false
+              postgresqlHostname: mastodon-postgres-postgresql.mastodon.svc.cluster.local
+              postgresqlPort: 5432
+              auth:
+                database: mastodon
+                username: mastodon
+                existingSecret: "mastodon-pgsql-credentials"
+                secretKeys:
+                  adminPasswordKey: postgresPassword
+                  userPasswordKey: password
+
+            redis:
+              enabled: false
+              hostname: "mastodon-redis-master"
+              port: 6379
+              auth:
+                existingSecret: "mastodon-redis-credentials"
+
+            service:
+              type: ClusterIP
+              port: 80
+
+            externalAuth:
+              oidc:
+                enabled: false
+              oauth_global:
+                omniauth_only: false
+
+            podSecurityContext:
+              runAsUser: 991
+              runAsGroup: 991
+              fsGroup: 991
+
+            securityContext: {}
+
+            serviceAccount:
+              create: true
+              annotations: {}
+              name: ""
