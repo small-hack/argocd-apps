@@ -29,7 +29,7 @@ spec:
       source:
         # forked from: https://github.com/mastodon/chart/tree/main
         repoURL: 'https://jessebot.github.io/mastodon-helm-chart'
-        targetRevision: 4.4.3
+        targetRevision: 4.4.4
         chart: mastodon
         helm:
           values: |
