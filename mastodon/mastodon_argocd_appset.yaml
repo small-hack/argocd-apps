@@ -32,7 +32,7 @@ spec:
         targetRevision: 4.4.5
         chart: mastodon
         helm:
-          values: |
+          valuesObject:
             image:
               repository: ghcr.io/mastodon/mastodon
               # https://github.com/mastodon/mastodon/pkgs/container/mastodon
@@ -113,12 +113,12 @@ spec:
                 auth_method: login
                 ca_file: /etc/ssl/certs/ca-certificates.crt
                 delivery_method: smtp
-                domain: "{{ .mastodon_hostname }}"
+                domain: {{ .mastodon_hostname }}
                 enable_starttls: 'auto'
-                from_address: "toots@{{ .mastodon_hostname }}"
+                from_address: toots@{{ .mastodon_hostname }}
                 openssl_verify_mode: peer
                 port: 587
-                reply_to: "no-reply@{{ .mastodon_hostname }}"
+                reply_to: no-reply@{{ .mastodon_hostname }}
                 tls: true
                 # keys must be named `server`, `login`, `password`
                 existingSecret: mastodon-smtp-credentials
@@ -154,19 +154,19 @@ spec:
               enabled: true
               annotations:
                 kubernetes.io/tls-acme: "true"
-                cert-manager.io/cluster-issuer: "{{ .global_cluster_issuer }}"
+                cert-manager.io/cluster-issuer: {{ .global_cluster_issuer }}
                 # ensure that NGINX's upload size matches Mastodon's
                 nginx.ingress.kubernetes.io/proxy-body-size: 40m
               # -- you can specify the ingressClassName if it differs from the default
               ingressClassName: nginx
               hosts:
-                - host: "{{ .mastodon_hostname }}"
+                - host: {{ .mastodon_hostname }}
                   paths:
                     - path: '/'
               tls:
                 - secretName: mastodon-tls
                   hosts:
-                    - "{{ .mastodon_hostname }}"
+                    - {{ .mastodon_hostname }}
 
             # https://github.com/bitnami/charts/tree/main/bitnami/elasticsearch#parameters
             elasticsearch:
