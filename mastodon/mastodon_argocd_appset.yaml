@@ -55,7 +55,7 @@ spec:
                   schedule: "0 0 * * 0"
               # -- available locales: https://github.com/mastodon/mastodon/blob/main/config/application.rb#L71
               locale: en
-              local_domain: "{{ .mastodon_hostname }}"
+              local_domain: {{ .mastodon_hostname }}
               # -- Use of WEB_DOMAIN requires careful consideration: https://docs.joinmastodon.org/admin/config/#federation
               # You must redirect the path LOCAL_DOMAIN/.well-known/ to WEB_DOMAIN/.well-known/ as described
               # Example: mastodon.example.com
