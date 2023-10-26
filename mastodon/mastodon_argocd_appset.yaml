@@ -283,8 +283,7 @@ spec:
                 omniauth_only: false
 
             # -- https://github.com/mastodon/mastodon/blob/main/Dockerfile#L75
-            # if you manually change the UID/GID environment variables, ensure these values
-            # match:
+            # if you manually change the UID/GID environment variables, ensure these values match:
             podSecurityContext:
               runAsUser: 991
               runAsGroup: 991
