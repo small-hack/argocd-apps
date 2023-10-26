@@ -47,32 +47,6 @@ spec:
       selfHeal: false
 
 ---
-# First sync wave because we need secrets for mastodon, so it has to be
-# before mastodon so it has secrets for all its credentials.
-# In a private repo right now while we figure out a custom argocd plugin
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: mastodon-external-secrets
-  namespace: argocd
-  annotations:
-    argocd.argoproj.io/sync-wave: "1"
-spec:
-  project: mastodon
-  destination:
-    server: "https://kubernetes.default.svc"
-    namespace: mastodon
-  source:
-    repoURL: https://github.com/small-hack/argocd-apps.git
-    path: mastodon/external_secrets/
-  syncPolicy:
-    syncOptions:
-      - Replace=true
-    automated:
-      prune: true
-      selfHeal: false
-
----
 # has to be after secrets, but before web-app
 apiVersion: argoproj.io/v1alpha1
 kind: Application
