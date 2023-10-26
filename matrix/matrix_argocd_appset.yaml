@@ -17,6 +17,8 @@ spec:
           parameters:
             secret_vars:
               - matrix_hostname
+              - matrix_s3_bucket
+              - matrix_s3_endpoint
               - matrix_admin_email
               - global_cluster_issuer
   template:
@@ -304,6 +306,14 @@ spec:
                 # -- The log level for the synapse server
                 synapseLogLevel: WARNING
 
+            s3:
+              enabled: true
+              bucket: {{ .matrix_s3_bucket }}
+              endpoint: {{ .matrix_s3_endpoint }}
+              existingSecret: matrix-s3-credentials
+              secretKeys:
+                accessKey: "S3_ACCESS_KEY"
+                secretKey: "S3_SECRET_KEY"
             # Persistent volumes configuration
             volumes:
               # Uploaded attachments/multimedia

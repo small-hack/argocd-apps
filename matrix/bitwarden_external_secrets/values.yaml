@@ -2,6 +2,7 @@
 ## MUST be a string, NOT a boolean
 useExternalSecrets: "true"
 
+s3CredentialsBitwardenID: ""
 postgresqlCredentialsBitwardenID: ""
 oidcCredentialsBitwardenID: ""
 smtpCredentialsBitwardenID: ""
