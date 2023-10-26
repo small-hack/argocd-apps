@@ -301,7 +301,3 @@ spec:
               # -- The name of the service account to use.
               # If not set and create is true, a name is generated using the fullname template
               name: ""
-
-            # If set to true, an annotation with the current chart release number will be added to all mastodon pods. This will
-            # cause all pods to be recreated every `helm upgrade` regardless of whether their config or spec changes.
-            revisionPodAnnotation: true
