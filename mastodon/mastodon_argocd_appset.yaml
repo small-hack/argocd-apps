@@ -193,7 +193,7 @@ spec:
                   hosts:
                     - {{ .mastodon_hostname }}
 
-            # -- https://github.com/bitnami/charts/tree/main/bitnami/elasticsearch#parameters
+            # https://github.com/bitnami/charts/tree/main/bitnami/elasticsearch#parameters
             elasticsearch:
               # `false` will disable full-text search
               # if you enable ES after the initial install, you will need to manually run
