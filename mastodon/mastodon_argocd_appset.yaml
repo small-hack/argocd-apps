@@ -55,7 +55,7 @@ spec:
                   schedule: "0 0 * * 0"
               # -- available locales: https://github.com/mastodon/mastodon/blob/main/config/application.rb#L71
               locale: en
-              local_domain: {{ .mastodon_hostname }}
+              local_domain: "{{ .mastodon_hostname }}"
               # -- Use of WEB_DOMAIN requires careful consideration: https://docs.joinmastodon.org/admin/config/#federation
               # You must redirect the path LOCAL_DOMAIN/.well-known/ to WEB_DOMAIN/.well-known/ as described
               # Example: mastodon.example.com
@@ -119,7 +119,7 @@ spec:
                 auth_method: login
                 ca_file: /etc/ssl/certs/ca-certificates.crt
                 delivery_method: smtp
-                domain: {{ .mastodon_hostname }}
+                domain: "{{ .mastodon_hostname }}"
                 enable_starttls: 'auto'
                 from_address: "toots@{{ .mastodon_hostname }}"
                 openssl_verify_mode: peer
@@ -166,13 +166,13 @@ spec:
               # -- you can specify the ingressClassName if it differs from the default
               ingressClassName: nginx
               hosts:
-                - host: {{ .mastodon_hostname }}
+                - host: "{{ .mastodon_hostname }}"
                   paths:
                     - path: '/'
               tls:
                 - secretName: mastodon-tls
                   hosts:
-                    - {{ .mastodon_hostname }}
+                    - "{{ .mastodon_hostname }}"
 
             # https://github.com/bitnami/charts/tree/main/bitnami/elasticsearch#parameters
             elasticsearch:
