@@ -61,9 +61,9 @@ spec:
     server: 'https://kubernetes.default.svc'
     namespace: mastodon
   source:
-    chart: postgresql
-    repoURL: 'https://charts.bitnami.com/bitnami'
-    targetRevision: 12.6.9
+    repoURL: 'registry-1.docker.io'
+    chart: bitnamicharts/postgresql
+    targetRevision: 13.1.5
     helm:
       skipCrds: true
       values: |
@@ -121,8 +121,8 @@ spec:
     server: 'https://kubernetes.default.svc'
     namespace: mastodon
   source:
-    chart: redis
-    repoURL: 'https://charts.bitnami.com/bitnami'
+    repoURL: 'registry-1.docker.io'
+    chart: bitnamicharts/redis
     targetRevision: 18.1.6
     helm:
       values: |
