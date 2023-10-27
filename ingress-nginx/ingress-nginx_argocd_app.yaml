@@ -12,6 +12,9 @@ spec:
     targetRevision: 4.8.3
     helm:
       releaseName: 'ingress-nginx'
+      values:
+        controller:
+          allowSnippetAnnotations: true
   destination:
     server: "https://kubernetes.default.svc"
     namespace: ingress-nginx
