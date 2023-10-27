@@ -12,7 +12,7 @@ spec:
     targetRevision: 4.8.3
     helm:
       releaseName: 'ingress-nginx'
-      values:
+      values: |
         controller:
           allowSnippetAnnotations: true
   destination:
