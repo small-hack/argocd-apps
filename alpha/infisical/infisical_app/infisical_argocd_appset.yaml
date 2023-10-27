@@ -36,7 +36,7 @@ spec:
         repoURL: 'https://dl.cloudsmith.io/public/infisical/helm-charts/helm/charts/'
         chart: infisical
         # versions: https://cloudsmith.io/~infisical/repos/helm-charts/packages/detail/helm/infisical/#versions
-        targetRevision: 0.4.1
+        targetRevision: 0.4.2
         helm:
           ## Documentation : https://infisical.com/docs/self-hosting/deployments/kubernetes
           values: |
