@@ -72,7 +72,7 @@ spec:
             auth:
               username: mastodon
               database: mastodon
-              existingSecret: mastodon-pg-user-credentials
+              existingSecret: mastodon-pgsql-credentials
               secretKeys:
                 userPasswordKey: password
                 adminPasswordKey: postgresPassword
