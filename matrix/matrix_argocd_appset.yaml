@@ -643,4 +643,3 @@ spec:
             networkPolicies:
               # -- whether to enable kubernetes network policies or not
               enabled: true
->>>>>>> e336caa (clean up matrix hardcoded domains)
