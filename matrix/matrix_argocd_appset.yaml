@@ -149,7 +149,7 @@ spec:
                 scopes: ["openid", "profile"]
 
                 # -- existing secret to use for the OIDC config
-                existingSecret: "synapse-oidc"
+                existingSecret: synapse-oidc
 
                 # keys in an existing secret to use for oidc config
                 secretKeys:
