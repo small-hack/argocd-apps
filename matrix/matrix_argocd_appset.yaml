@@ -19,6 +19,7 @@ spec:
           parameters:
             secret_vars:
               - matrix_hostname
+              - matrix_element_hostname
               - matrix_s3_bucket
               - matrix_s3_endpoint
               - matrix_admin_email
@@ -97,7 +98,7 @@ spec:
                   enabled: true
                   tls:
                     enabled: true
-                  host: matrix-fed.{{ .matrix_hostname }}
+                  host: {{ .matrix_hostname }}
                   annotations:
                     # -- required for the Nginx ingress provider. You can remove it if you
                     # use a different ingress provider
@@ -424,7 +425,7 @@ spec:
 
               ingress:
                 enabled: true
-                host: matrix.{{ .matrix_hostname }}
+                host: {{ .matrix_hostname }}
                 tls:
                   enabled: true
                 annotations:
@@ -501,7 +502,7 @@ spec:
                 tls:
                   enabled: true
                 # -- the hostname to use for element
-                host: element.{{ .matrix_hostname }}
+                host: {{ .matrix_hostname }}
                 annotations:
                   # This annotation is required for the Nginx ingress provider. You can
                   # remove it if you use a different ingress provider
@@ -599,7 +600,7 @@ spec:
                 # -- set to true to generate a TLS certificate for encrypted comms
                 enabled: true
                 # -- hostname for TLS cert
-                host: turn.{{ .matrix_hostname }}
+                host: {{ .matrix_hostname }}
                 # -- cert-manager cert Issuer or ClusterIssuer to use
                 issuerName: "{{ .global_cluster_issuer }}"
 
