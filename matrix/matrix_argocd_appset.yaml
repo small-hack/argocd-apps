@@ -168,15 +168,6 @@ spec:
                 # An external module can be provided here as a custom solution to mapping
                 # attributes returned from a OIDC provider onto a matrix user.
                 user_mapping_provider:
-                  # -- The custom module's class. Uncomment to use a custom module.
-                  # Default is 'synapse.handlers.oidc_handler.JinjaOidcMappingProvider'.
-                  #
-                  # github.com/matrix-org/synapse/blob/develop/docs/sso_mapping_providers.md#openid-mapping-providers
-                  # for information on implementing a custom mapping provider.
-                  # example:
-                  # module: mapping_provider.OidcMappingProvider
-                  module: mapping_provider.OidcMappingProvider
-
                   # Custom configuration values for the module. This section will be passed as
                   # a Python dictionary to the user mapping provider module's `parse_config`
                   # method.
@@ -188,6 +179,8 @@ spec:
                     # -- name of the claim containing a unique identifier for user. Defaults
                     # to `sub`, which OpenID Connect compliant providers should provide.
                     subject_claim: "sub"
+                    localpart_template: {{ `{{ user.preffered_username }}` }}
+                    display_name_template: {{ `{{ user.name }}` }}
 
               # Settings for the URL preview crawler
               urlPreviews:
