@@ -179,8 +179,8 @@ spec:
                     # -- name of the claim containing a unique identifier for user. Defaults
                     # to `sub`, which OpenID Connect compliant providers should provide.
                     subject_claim: "sub"
-                    localpart_template: {{ `{{ user.preffered_username }}` }}
-                    display_name_template: {{ `{{ user.name }}` }}
+                    localpart_template: {{ `"{{ user.preffered_username }}"` }}
+                    display_name_template: {{ `"{{ user.name }}"` }}
 
               # Settings for the URL preview crawler
               urlPreviews:
