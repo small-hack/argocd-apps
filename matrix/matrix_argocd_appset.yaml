@@ -18,6 +18,8 @@ spec:
           parameters:
             secret_vars:
               - matrix_hostname
+              - matrix_element_hostname
+              - matrix_federation_hostname
               - matrix_admin_email
               - global_cluster_issuer
   template:
@@ -94,7 +96,7 @@ spec:
                   enabled: true
                   tls:
                     enabled: true
-                  host: matrix-fed.{{ .matrix_hostname }}
+                  host: {{ .matrix_federation_hostname }}
                   annotations:
                     # -- required for the Nginx ingress provider. You can remove it if you
                     # use a different ingress provider
@@ -491,7 +493,7 @@ spec:
                 tls:
                   enabled: true
                 # -- the hostname to use for element
-                host: element.{{ .matrix_hostname }}
+                host: {{ .matrix_element_hostname }}
                 annotations:
                   # This annotation is required for the Nginx ingress provider. You can
                   # remove it if you use a different ingress provider
