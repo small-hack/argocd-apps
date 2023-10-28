@@ -36,6 +36,7 @@ spec:
         chart: matrix
         helm:
           values: |
+            fullnameOverride: matrix-stack
             # Runtime configuration for Synapse and settings related to the Matrix protocol
             matrix:
               # -- Domain name of the server
@@ -389,7 +390,7 @@ spec:
                 # templates/postgresql/initdb-configmap.yaml
                 # ref: https://github.com/matrix-org/synapse/blob/develop/docs/postgres.md
                 initdb:
-                  scriptsConfigMap: "{{ .Release.Name }}-postgresql-initdb"
+                  scriptsConfigMap: "matrix-stack-postgresql-initdb"
 
                 podSecurityContext:
                   enabled: true
