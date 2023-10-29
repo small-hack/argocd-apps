@@ -128,61 +128,48 @@ spec:
                 # -- Whether to allow token based registration
                 requiresToken: false
 
-              # OpenID Connect integration. The following settings can be used to make Synapse
-              # use an OpenID Connect Provider for authentication, instead of its internal
-              # password database.
               # ref: https://github.com/matrix-org/synapse/blob/develop/docs/openid.md.
-              oidc_config:
+              oidc:
                 # -- set to true to enable authorization against an OpenID Connect server
                 enabled: true
-
-                # -- set to false to disable use of the OIDC discovery mechanism to
-                # discover endpoints.
-                discover: true
-
-                # -- auth method to use when exchanging the token. Valid values are:
-                # 'client_secret_basic' (default), 'client_secret_post' and 'none'.
-                client_auth_method: client_secret_post
-
-                # -- list of scopes to request. should normally include the "openid" scope.
-                # Defaults to ["openid"].
-                scopes:
-                  - "openid"
-                  - "profile"
-
                 # -- existing secret to use for the OIDC config
                 existingSecret: "synapse-oidc"
-
-                # keys in an existing secret to use for oidc config
+                # keys in an existing secret for oidc config
                 secretKeys:
-                  # -- key in secret with the issuer
                   issuer: "issuer"
-                  # -- key in secret with the client_id
                   client_id: "client_id"
-                  # -- key in secret with the client_secret
                   client_secret: "client_secret"
 
-                # set to true to skip metadata verification. Defaults to false. Use this if
-                # you are connecting to a provider that is not OpenID Connect compliant.
-                # Avoid this in production.
-                skip_verification: false
-
-                # An external module can be provided here as a custom solution to mapping
-                # attributes returned from a OIDC provider onto a matrix user.
-                user_mapping_provider:
-                  # Custom configuration values for the module. This section will be passed as
-                  # a Python dictionary to the user mapping provider module's `parse_config`
-                  # method.
-                  #
-                  # The examples below are intended for the default provider: they should be
-                  # changed if using a custom provider.
-                  #
-                  config:
-                    # -- name of the claim containing a unique identifier for user. Defaults
-                    # to `sub`, which OpenID Connect compliant providers should provide.
-                    subject_claim: "sub"
-                    localpart_template: {{ `"{{ user.preffered_username }}"` }}
-                    display_name_template: {{ `"{{ user.name }}"` }}
+                providers:
+                  - idp_id: "zitadel"
+                    idp_name: "My zitadel server"
+                    # discover: true
+                    # auth method when exchanging the token. Valid values are:
+                    # 'client_secret_basic' (default), 'client_secret_post' and 'none'.
+                    # client_auth_method: client_secret_post
+                    scopes:
+                      - "openid"
+                      - "profile"
+                    # set to true to skip metadata verification. Defaults to false. Use this if
+                    # you are connecting to a provider that is not OpenID Connect compliant.
+                    # Avoid this in production.
+                    # skip_verification: false
+                    # An external module can be provided here as a custom solution to mapping
+                    # attributes returned from a OIDC provider onto a matrix user.
+                    user_mapping_provider:
+                      # Custom configuration values for the module. This section will be passed as
+                      # a Python dictionary to the user mapping provider module's `parse_config`
+                      # method.
+                      #
+                      # The examples below are intended for the default provider: they should be
+                      # changed if using a custom provider.
+                      #
+                      config:
+                        # -- name of the claim containing a unique identifier for user. Defaults
+                        # to `sub`, which OpenID Connect compliant providers should provide.
+                        subject_claim: "sub"
+                        localpart_template: {{ `"{{ user.preffered_username }}"` }}
+                        display_name_template: {{ `"{{ user.name }}"` }}
 
               # Settings for the URL preview crawler
               urlPreviews:
