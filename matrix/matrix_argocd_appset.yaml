@@ -398,7 +398,7 @@ spec:
 
               ingress:
                 enabled: true
-                host: matrix.{{ .matrix_hostname }}
+                host: {{ .matrix_hostname }}
                 tls:
                   enabled: true
                 annotations:
