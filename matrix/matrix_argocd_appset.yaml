@@ -526,13 +526,13 @@ spec:
 
             # Settings for email notifications
             mail:
-              # -- disabled all email notifications by default. NOTE: If enabled, either
-              # enable the Exim relay or configure an external mail server below
               enabled: true
-
+              # disable exim relay
+              relay:
+                enabled: false
               # External mail server
               external:
-                # -- External mail server port one of: INSECURE: 25, SSL: 465, STARTTLS: 587
+                # INSECURE: 25, SSL: 465, STARTTLS: 587
                 port: 587
                 requireTransportSecurity: true
                 existingSecret: "matrix-smtp-credentials"
