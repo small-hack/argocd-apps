@@ -151,7 +151,7 @@ spec:
                     # skip_verification: false
                     user_mapping_provider:
                       config:
-                        localpart_template: {{ `"{{ user.preffered_username }}"` }}
+                        localpart_template: {{ `"{{ user.preferred_username }}"` }}
                         display_name_template: {{ `"{{ user.name }}"` }}
 
               # Settings for the URL preview crawler
