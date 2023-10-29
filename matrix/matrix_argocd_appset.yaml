@@ -21,6 +21,8 @@ spec:
               - matrix_element_hostname
               - matrix_federation_hostname
               - matrix_admin_email
+              - matrix_idp_id
+              - matrix_idp_name
               - global_cluster_issuer
   template:
     metadata:
@@ -141,8 +143,8 @@ spec:
                   client_secret: "client_secret"
 
                 providers:
-                  - idp_id: "zitadel"
-                    idp_name: "My zitadel server"
+                  - idp_id: {{ .matrix_idp_id }}
+                    idp_name: {{ .matrix_idp_name }}
                     # discover: true
                     # auth method when exchanging the token. Valid values are:
                     # 'client_secret_basic' (default), 'client_secret_post' and 'none'.
