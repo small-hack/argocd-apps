@@ -130,13 +130,10 @@ spec:
                 # -- Whether to allow token based registration
                 requiresToken: false
 
-              # ref: https://github.com/matrix-org/synapse/blob/develop/docs/openid.md.
+              # ref: https://github.com/matrix-org/synapse/blob/develop/docs/openid.md
               oidc:
-                # -- set to true to enable authorization against an OpenID Connect server
                 enabled: true
-                # -- existing secret to use for the OIDC config
                 existingSecret: "synapse-oidc"
-                # keys in an existing secret for oidc config
                 secretKeys:
                   issuer: "issuer"
                   client_id: "client_id"
@@ -146,26 +143,13 @@ spec:
                   - idp_id: {{ .matrix_idp_id }}
                     idp_name: {{ .matrix_idp_name }}
                     # discover: true
-                    # auth method when exchanging the token. Valid values are:
-                    # 'client_secret_basic' (default), 'client_secret_post' and 'none'.
+                    # options: client_secret_basic (default), client_secret_post, 'none'
                     # client_auth_method: client_secret_post
                     scopes:
                       - "openid"
                       - "profile"
-                    # set to true to skip metadata verification. Defaults to false. Use this if
-                    # you are connecting to a provider that is not OpenID Connect compliant.
-                    # Avoid this in production.
                     # skip_verification: false
-                    # An external module can be provided here as a custom solution to mapping
-                    # attributes returned from a OIDC provider onto a matrix user.
                     user_mapping_provider:
-                      # Custom configuration values for the module. This section will be passed as
-                      # a Python dictionary to the user mapping provider module's `parse_config`
-                      # method.
-                      #
-                      # The examples below are intended for the default provider: they should be
-                      # changed if using a custom provider.
-                      #
                       config:
                         localpart_template: {{ `"{{ user.preffered_username }}"` }}
                         display_name_template: {{ `"{{ user.name }}"` }}
