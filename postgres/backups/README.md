@@ -4,10 +4,12 @@
 ## Connecting to postgres
 
  1. deploy maintenance container into the same namespace as postgres
+ 
  2. install dnsutils and postgres client
-  ```bash
-  sudo apt install dnsutils postgresql-client
-  ```
+    ```bash
+    sudo apt install dnsutils postgresql-client
+    ```
+ 
  3. run nslookup on the name of the service
     ```bash
     nslookup web-app-postgresql
@@ -16,12 +18,14 @@
     Name:   web-app-postgresql.nextcloud.svc.cluster.local    
     Address: 10.43.142.53
     ```
+ 
  5. connect to postgres using the full DNS name
     ```bash
     export FULL_DNS_NAME=$(nslookup web-app-postgresql |grep Name: |awk '{print $2}')
     
     psql -h $FULL_DNS_NAME -p 5432 -U <username> -W
     ```
+
 6. Enter password from bitwarden
    
 ## Create a Postgres Database
