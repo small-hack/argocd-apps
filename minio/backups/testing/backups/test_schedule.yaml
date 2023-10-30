@@ -1,0 +1,38 @@
+apiVersion: k8up.io/v1
+kind: Schedule
+metadata:
+  name: daily-test-backup
+  namespace: minio
+spec:
+  backend:
+    repoPasswordSecretRef:
+      key: resticRepoPassword
+      name: minio-backups-credentials
+    s3:
+      bucket: testing-minio-backups
+      endpoint: s3.eu-central-003.backblazeb2.com
+      accessKeyIDSecretRef:
+        name: minio-backups-credentials
+        key: applicationKeyId
+      secretAccessKeySecretRef:
+        name: minio-backups-credentials
+        key: applicationKey
+  backup:
+    failedJobsHistoryLimit: 5
+    podSecurityContext:
+      runAsUser: 0
+    promURL: http://push-gateway.prometheus:9091/
+    resources: {}
+    schedule: 0 10 * * *
+    successfulJobsHistoryLimit: 2
+  check:
+    promURL: http://push-gateway.prometheus:9091/
+    resources: {}
+    schedule: 2 10 * * *
+  prune:
+    resources: {}
+    retention:
+      keepDaily: 7
+      keepWeekly: 8
+    schedule: 4 10 * * *
+  resourceRequirementsTemplate: {}
