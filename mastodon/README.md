@@ -1,10 +1,12 @@
 # Mastodon ArgoCD Template
 Mastodon is social networking that's not for sale: https://joinmastodon.org/
 
-We create the manifests and helm chart in this sync wave order:
+In the `./mastodon_app_of_apps/` directory we create the manifests and helm chart in this sync wave order:
 - all required PVCs, and Secrets (secrets are external secrets in a private repo)
 - Postgresql stateful set
-- mastodon web app (including elastic search and redis)
+- Mastodon web app (including elastic search and redis)
+
+You can optionally also use [directory recursion](https://argo-cd.readthedocs.io/en/stable/user-guide/directory/#enabling-recursive-resource-detection) with your Mastodon app of apps, to use the MinIO operator to create an isolated tenant for S3 storage.
 
 This helm chart was retired for a bit till it became clear that there was no other immediate alternative, so now it's back 🤷
 
@@ -20,7 +22,7 @@ docker run --rm -e "OTP_SECRET=$OTP_SECRET" \
     -it tootsuite/mastodon:latest bin/rake mastodon:webpush:generate_vapid_key 
 ```
 
-## Connect to postgres with worker container
+## Connect to PostgreSQL with worker container
 Deploy the following container and attach to the shell, then run:
 
 ```yaml
