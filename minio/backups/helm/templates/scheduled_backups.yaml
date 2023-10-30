@@ -1,0 +1,47 @@
+apiVersion: k8up.io/v1
+kind: Schedule
+metadata:
+  name: {{ .Values.backup_name }}
+  namespace: {{ .Release.namespace }}
+spec:
+  backend:
+    repoPasswordSecretRef:
+      name: {{ .Values.repoPasswordSecretRef.name }}
+      key: {{ .Values.repoPasswordSecretRef.key }}
+    {{- if eq .Values.backup_type "s3" }}
+    s3:
+      endpoint: {{ .Values.s3.endpoint }}
+      bucket: {{ .Values.s3.bucket }}
+      accessKeyIDSecretRef:
+        name: {{ .Values.s3.accessKeyIDSecretRef.name }}
+        key: {{ .Values.s3.accessKeyIDSecretRef.key }}
+        optional: {{ .Values.s3.accessKeyIDSecretRef.optional }}
+      secretAccessKeySecretRef:
+        name: {{ .Values.s3.secretAccessKeySecretRef.name }}
+        key: {{ .Values.s3.secretAccessKeySecretRef.key }}
+        optional: {{ .Values.s3.secretAccessKeySecretRef.optional }}
+    {{- end }}
+    {{- if eq .Values.backup_type "local" }}
+    local:
+      mountPath: {{ .Values.local.mountPath }}
+    {{- end }}
+  # Backup nightly at 2:10 AM (Central Europe Time)
+  backup:
+    schedule: {{ .Values.schedules.backup }}
+    failedJobsHistoryLimit: 5
+    successfulJobsHistoryLimit: 2
+    promURL: {{ .Values.prometheus_url }}
+    {{- if .Values.podSecurityContext }}
+    podSecurityContext:
+      runAsUser: {{ .Values.podSecurityContext.runAsUser }}
+    {{- end }}
+  # verify the backups are ok
+  check:
+    schedule: {{ .Values.schedules.check }}
+    promURL: {{ .Values.prometheus_url }}
+  # delete old backups
+  prune:
+    schedule: {{ .Values.schedules.prune }}
+    retention:
+      keepDaily: 7
+      keepWeekly: 8
