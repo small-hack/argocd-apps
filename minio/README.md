@@ -1,16 +1,14 @@
 # MinIO Operator (and optional Tenant) Argo CD Applications
 
-We default deploy the operator (admin) console and a tenant console/api 
+We default deploy the operator (admin) console and (optionally, if you use directory recursion) a tenant console/api 
 
 Operator helm chart: https://github.com/minio/operator/tree/master/helm/operator
 
-Tenant helm chart: https://github.com/minio/operator/tree/master/helm/tenant
+Optional Tenant helm chart: https://github.com/minio/operator/tree/master/helm/tenant
 
 ## Remaining Tasks
 
-- OIDC via Zitadel
 - figure out encryption
-- test bucket and user creation via the cli/python sdk
 
 ## Notes
 
