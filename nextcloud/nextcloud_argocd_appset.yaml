@@ -39,6 +39,8 @@ spec:
         chart: nextcloud
         helm:
           values: |
+            image:
+              tag: 27-fpm
             ingress:
               enabled: true
               className: nginx
