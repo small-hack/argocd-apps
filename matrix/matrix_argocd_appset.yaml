@@ -32,7 +32,7 @@ spec:
         # which is a fork of https://github.com/Arkaniad/matrix-chart
         # which is a fork of https://github.com/typokign/matrix-chart
         repoURL: 'https://jessebot.github.io/matrix-chart'
-        targetRevision: 4.5.1
+        targetRevision: 4.7.1
         chart: matrix
         helm:
           values: |
