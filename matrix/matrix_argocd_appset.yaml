@@ -28,10 +28,7 @@ spec:
         server: https://kubernetes.default.svc
         namespace: matrix
       source:
-        # we're using https://github.com/jessebot/matrix-chart
-        # which is a fork of https://github.com/Arkaniad/matrix-chart
-        # which is a fork of https://github.com/typokign/matrix-chart
-        repoURL: 'https://jessebot.github.io/matrix-chart'
+        repoURL: 'https://small-hack.github.io/matrix-chart'
         targetRevision: 4.7.1
         chart: matrix
         helm:
