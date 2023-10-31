@@ -65,3 +65,47 @@ DefaultInstance:
   DomainPolicy:
     SMTPSenderAddressMatchesInstanceDomain: false
 ```
+
+## Writing an action to send a groupsClaim
+
+```js
+function groupsClaim(ctx, api) {
+  if (ctx.v1.user.grants === undefined || ctx.v1.user.grants.count == 0) {
+    return;
+  }
+
+  let grants = [];
+  ctx.v1.user.grants.grants.forEach(claim => {
+    claim.roles.forEach(role => {
+      grants.push(role)
+    })
+  })
+
+  api.v1.claims.setClaim('groups', grants)
+}
+```
+
+## Writing an action to send a claim in an OIDC response
+
+Here's an example action script that we've called nextcloudAdminClaim. It iterates through the user's roles and if one of them is `nextcloud_admins` it sends a claim it calls `nextcloud_admin` back with a true value, else it sends back false.
+
+```js
+function nextcloudAdminClaim(ctx, api) {
+
+  if (ctx.v1.user.grants === undefined || ctx.v1.user.grants.count == 0) {
+    return;
+  }
+
+  ctx.v1.user.grants.grants.forEach(claim => {
+    if (claim.roles.includes('nextcloud_admins') {
+        api.v1.claims.setClaim('nextcloud_admin', true)
+        return;
+        }
+
+    if (claim.roles.includes('nextcloud_users') {
+        api.v1.claims.setClaim('nextcloud_admin', false)
+        return;
+        }
+    }
+}
+```
