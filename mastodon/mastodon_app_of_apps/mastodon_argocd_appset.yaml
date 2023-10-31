@@ -30,8 +30,8 @@ spec:
         namespace: mastodon
       source:
         # forked from: https://github.com/mastodon/chart/tree/main
-        repoURL: 'https://jessebot.github.io/mastodon-helm-chart'
-        targetRevision: 4.4.5
+        repoURL: 'https://small-hack.github.io/mastodon-helm-chart'
+        targetRevision: 4.7.0
         chart: mastodon
         helm:
           values: |
