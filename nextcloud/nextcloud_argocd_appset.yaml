@@ -39,8 +39,6 @@ spec:
         chart: nextcloud
         helm:
           values: |
-            image:
-              tag: 27.0.1-fpm
             ingress:
               enabled: true
               className: nginx
@@ -117,6 +115,121 @@ spec:
                     ),
                     'forwarded_for_headers' => array('HTTP_X_FORWARDED_FOR'),
                   );
+                oidc.config.php: |-
+                  <?php
+                  $CONFIG = array (
+                    // Some Nextcloud options that might make sense here
+                    'allow_user_to_change_display_name' => true,
+                    'lost_password_link' => 'disabled',
+
+                    // URL of provider. All other URLs are auto-discovered from .well-known
+                    'oidc_login_provider_url' => '{{ .zitadel_hostname }}',
+
+                    // Client ID and secret registered with the provider
+                    'oidc_login_client_id' => 'REPLACE_CLIENT_ID',
+                    'oidc_login_client_secret' => 'REPLACE_CLIENT_SECRET',
+
+                    // Automatically redirect the login page to the provider
+                    'oidc_login_auto_redirect' => false,
+
+                    // Redirect to this page after logging out the user
+                    'oidc_login_logout_url' => '{{ .nextcloud_hostname }}',
+
+                    // If set to true the user will be redirected to the
+                    // logout endpoint of the OIDC provider after logout
+                    // in Nextcloud. After successfull logout the OIDC
+                    // provider will redirect back to 'oidc_login_logout_url' (MUST be set).
+                    'oidc_login_end_session_redirect' => false,
+
+                    // Login button text
+                    'oidc_login_button_text' => 'Log in with ZITADEL',
+
+                    // Hide the NextCloud password change form.
+                    'oidc_login_hide_password_form' => false,
+
+                    // Use ID Token instead of UserInfo
+                    'oidc_login_use_id_token' => false,
+
+                    // Attribute map for OIDC response. 
+                    'oidc_login_attributes' => array (
+                        'id' => 'preferred_username',
+                        'name' => 'name',
+                        'mail' => 'email',
+                        'login_filter' => 'groups',
+                        'photoURL' => 'picture',
+                        'is_admin' => 'is_nextcloud_admin',
+                    ),
+
+                    // Allow only users in configured value(s) to access Nextcloud. In case the user
+                    // is not assigned to this value (read from oidc_login_attributes) the login
+                    // will not be allowed for this user.
+                    //
+                    // Must be specified as an array of values (e.g. roles) that are allowed to
+                    // access Nextcloud. e.g. 'oidc_login_filter_allowed_values' => array('role1', 'role2')
+                    'oidc_login_filter_allowed_values' => array('nextcloud_admins', 'nexcloud_users'),
+
+                    // Set OpenID Connect scope
+                    'oidc_login_scope' => 'openid profile email',
+
+                    // Run in LDAP proxy mode
+                    // In this mode, instead of creating users of its own, OIDC login
+                    // will get the existing user from an LDAP database and only
+                    // perform authentication with OIDC. All user data will be derived
+                    // from the LDAP database instead of the OIDC user response
+                    //
+                    // The `id` attribute in `oidc_login_attributes` must return the
+                    // "Internal Username" (see expert settings in LDAP integration)
+                    'oidc_login_proxy_ldap' => false,
+
+                    // Disable creation of users new to Nextcloud from OIDC login.
+                    // A user may be known to the IdP but not (yet) known to Nextcloud.
+                    // This setting controls what to do in this case.
+                    // - 'true' (default): if the user authenticates to the IdP but is not known to Nextcloud,
+                    //     then they will be returned to the login screen and not allowed entry;
+                    // - 'false': if the user authenticates but is not yet known to Nextcloud,
+                    //     then the user will be automatically created; note that with this setting,
+                    //     you will be allowing (or relying on) a third-party (the IdP) to create new users
+                    'oidc_login_disable_registration' => false,
+
+                    // Fallback to direct login if login from OIDC fails
+                    // Note that no error message will be displayed if enabled
+                    'oidc_login_redir_fallback' => false,
+
+                    // If you get your groups from the oidc_login_attributes, you might want
+                    // to create them if they are not already existing, Default is `false`.
+                    'oidc_create_groups' => false,
+
+                    // Enable use of WebDAV via OIDC bearer token.
+                    'oidc_login_webdav_enabled' => false,
+
+                    // Enable authentication with user/password for DAV clients that do not
+                    // support token authentication (e.g. DAVx⁵)
+                    'oidc_login_password_authentication' => true,
+
+                    // The time in seconds used to cache public keys from provider.
+                    // The default value is 1 day.
+                    'oidc_login_public_key_caching_time' => 86400,
+
+                    // The time in seconds used to cache the OIDC well-known configuration from the provider.
+                    // The default value is 1 day.
+                    'oidc_login_well_known_caching_time' => 86400,
+
+                    // If true, nextcloud will download user avatars on login.
+                    // This may lead to security issues as the server does not control
+                    // which URLs will be requested. Use with care.
+                    'oidc_login_update_avatar' => false,
+
+                    // If true, the default Nextcloud proxy won't be used to make internals OIDC call.
+                    // The default is false.
+                    'oidc_login_skip_proxy' => false,
+
+                    // Code challenge method for PKCE flow.
+                    // Possible values are:
+                    //	- 'S256'
+                    //	- 'plain'
+                    // The default value is empty, which won't apply the PKCE flow.
+                    'oidc_login_code_challenge_method' => 'S256',
+                    );
             nginx:
               enabled: true
             internalDatabase:
