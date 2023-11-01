@@ -168,7 +168,6 @@ spec:
                             'key' => getenv('NEXTCLOUD_S3_USER'),
                             'secret' => getenv('NEXTCLOUD_S3_PASSWORD'),
                             'port' => 9000,
-                            // required for some non-Amazon S3 implementations
                             'use_path_style' => true,
                       ]
                     ]
@@ -312,7 +311,7 @@ spec:
                   enabled: true
                   existingClaim: "nextcloud-postgresql"
             redis:
-              enabled: true
+              enabled: false
               replica:
                 replicaCount: 3
               auth:
