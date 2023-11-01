@@ -18,6 +18,7 @@ spec:
           parameters:
             secret_vars:
               - nextcloud_hostname
+              - zitadel_hostname
               - global_cluster_issuer
   template:
     metadata:
@@ -38,9 +39,9 @@ spec:
         targetRevision: 4.3.6
         chart: nextcloud
         helm:
-          values: |
+          valuesObject:
             image:
-              tag: 27-fpm
+              flavor: fpm
             ingress:
               enabled: true
               className: nginx
@@ -81,6 +82,17 @@ spec:
               update: 1
               mail:
                 enabled: false
+              extraEnv:
+                - name: "NC_oidc_login_client_id"
+                  valueFrom:
+                    secretKeyRef:
+                      name: nextcloud-oidc-credentials
+                      key: client_id
+                - name: "NC_oidc_login_client_secret"
+                  valueFrom:
+                    secretKeyRef:
+                      name: nextcloud-oidc-credentials
+                      key: client_secret
               configs:
                 logging.config.php: |-
                   <?php
@@ -128,8 +140,8 @@ spec:
                     'oidc_login_provider_url' => '{{ .zitadel_hostname }}',
 
                     // Client ID and secret registered with the provider
-                    'oidc_login_client_id' => 'REPLACE_CLIENT_ID',
-                    'oidc_login_client_secret' => 'REPLACE_CLIENT_SECRET',
+                    // 'oidc_login_client_id' => 'REPLACE_CLIENT_ID',
+                    // 'oidc_login_client_secret' => 'REPLACE_CLIENT_SECRET',
 
                     // Automatically redirect the login page to the provider
                     'oidc_login_auto_redirect' => false,
@@ -159,7 +171,7 @@ spec:
                         'mail' => 'email',
                         'login_filter' => 'groups',
                         'photoURL' => 'picture',
-                        'is_admin' => 'is_nextcloud_admin',
+                        'is_admin' => 'nextcloud_admin',
                     ),
 
                     // Allow only users in configured value(s) to access Nextcloud. In case the user
