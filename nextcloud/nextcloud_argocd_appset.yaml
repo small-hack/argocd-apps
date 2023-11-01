@@ -39,7 +39,7 @@ spec:
         targetRevision: 4.3.6
         chart: nextcloud
         helm:
-          valuesObject:
+          values: |
             image:
               flavor: fpm
             ingress:
