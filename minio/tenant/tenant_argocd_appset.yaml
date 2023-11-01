@@ -135,8 +135,8 @@ spec:
                 bucketDNS: false
                 domains:
                   minio:
-                    - {{ .minio_api_hostname }}
-                  console: {{ .minio_user_console_hostname }}
+            - https://{{ .minio_api_hostname }}
+            console: https://{{ .minio_user_console_hostname }}
                 enableSFTP: false
               ## List of bucket definitions to create during tenant provisioning.
               ## Example:
