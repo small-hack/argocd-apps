@@ -25,26 +25,26 @@ spec:
 
 # Third wave because we need scheduled k8up (restic via k8s) k8up_backups
 # after the external secrets and pvcs for nextcloud have been created
----
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: nextcloud-k8up-backups
-  namespace: argocd
-  annotations:
-    argocd.argoproj.io/sync-wave: "3"
-spec:
-  project: nextcloud
-  destination:
-    server: "https://kubernetes.default.svc"
-    namespace: nextcloud
-  source:
-    repoURL: https://github.com/small-hack/argocd-apps.git
-    path: nextcloud/backups/
-    targetRevision: eso-helm-chart-test
-  syncPolicy:
-    syncOptions:
-      - ApplyOutOfSyncOnly=true
-    automated:
-      prune: true
-      selfHeal: true
+# ---
+# apiVersion: argoproj.io/v1alpha1
+# kind: Application
+# metadata:
+#   name: nextcloud-k8up-backups
+#   namespace: argocd
+#   annotations:
+#     argocd.argoproj.io/sync-wave: "3"
+# spec:
+#   project: nextcloud
+#   destination:
+#     server: "https://kubernetes.default.svc"
+#     namespace: nextcloud
+#   source:
+#     repoURL: https://github.com/small-hack/argocd-apps.git
+#     path: nextcloud/backups/
+#     targetRevision: eso-helm-chart-test
+#   syncPolicy:
+#     syncOptions:
+#       - ApplyOutOfSyncOnly=true
+#     automated:
+#       prune: true
+#       selfHeal: true
