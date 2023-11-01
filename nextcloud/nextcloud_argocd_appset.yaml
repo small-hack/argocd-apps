@@ -102,22 +102,22 @@ spec:
                   valueFrom:
                     secretKeyRef:
                       name: nextcloud-s3-credentials
-                      key: s3_hostname
+                      key: S3_HOSTNAME
                 - name: "NEXTCLOUD_S3_BUCKET"
                   valueFrom:
                     secretKeyRef:
                       name: nextcloud-s3-credentials
-                      key: s3_bucket
+                      key: S3_BUCKET
                 - name: "NEXTCLOUD_S3_USER"
                   valueFrom:
                     secretKeyRef:
                       name: nextcloud-s3-credentials
-                      key: s3_user
+                      key: S3_USER
                 - name: "NEXTCLOUD_S3_PASSWORD"
                   valueFrom:
                     secretKeyRef:
                       name: nextcloud-s3-credentials
-                      key: s3_password
+                      key: S3_PASSWORD
 
               phpConfigs:
                 www.conf: |-
