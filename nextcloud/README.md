@@ -178,6 +178,10 @@ kubectl exec -n nextcloud $YOUR_NEXTCLOUD_POD -c nextcloud -- su -s /bin/sh www-
 On the zitadel side, setup a code type application with basic auth as you normally would, but set the redirect URL to be:
 `yournextclouddomain.com/apps/oidc_login/oidc`
 
+![nexcloud_oidc zitadel app screenshot showing response type code, application type web, auth method basic, grant types authorization code, and refresh token unchecked](https://github.com/small-hack/argocd-apps/assets/2389292/ed53cfb3-be71-4a35-ab21-57cf178bd76e)
+
+![nextcloud_oidc zitadel app redirect_urls screenshot showing redirect settings with a redirect URI called https://yournextclouddomain.com/apps/oidc_login/oidc and a post logout uri showing https://yournextclouddomain.com](https://github.com/small-hack/argocd-apps/assets/2389292/6b8a4ed7-665f-481c-9299-16e0333a4987)
+
 Since Nextcloud can technically take any string type config.php variable from an env var, you can use environment variables to pass in secret info such as the Zitadel endpoint, client ID, and client secret. Here's examples of how we do this via the helm chart from an existing Kubernetes Secret:
 
 ```yaml
