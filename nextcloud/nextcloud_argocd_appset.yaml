@@ -104,11 +104,13 @@ spec:
                 - name: php-fpm-config
                   configMap:
                     name: php-fpm-config
+                    items:
+                      - key: "www.conf"
+                        path: "www.conf"
 
               extraVolumeMounts:
                 - name: php-fpm-config
                   mountPath: "/usr/local/etc/php-fpm.d"
-                  subPath: "www.conf"
 
               configs:
                 logging.config.php: |-
