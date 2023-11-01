@@ -309,7 +309,7 @@ spec:
                       GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO nextcloud;
                 persistence:
                   enabled: true
-                  existingClaim: "nextcloud-postgresql"
+                  # existingClaim: "nextcloud-postgresql"
             redis:
               enabled: false
               replica:
