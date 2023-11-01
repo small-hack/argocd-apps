@@ -83,6 +83,11 @@ spec:
               mail:
                 enabled: false
               extraEnv:
+                - name: "NC_oidc_login_provider_url"
+                  valueFrom:
+                    secretKeyRef:
+                      name: nextcloud-oidc-credentials
+                      key: issuer
                 - name: "NC_oidc_login_client_id"
                   valueFrom:
                     secretKeyRef:
@@ -93,6 +98,7 @@ spec:
                     secretKeyRef:
                       name: nextcloud-oidc-credentials
                       key: client_secret
+
               configs:
                 logging.config.php: |-
                   <?php
@@ -136,9 +142,6 @@ spec:
                     'allow_user_to_change_display_name' => true,
                     'lost_password_link' => 'disabled',
 
-                    // URL of provider. All other URLs are auto-discovered from .well-known
-                    'oidc_login_provider_url' => '{{ .zitadel_hostname }}',
-
                     // Automatically redirect the login page to the provider
                     'oidc_login_auto_redirect' => false,
 
@@ -171,7 +174,7 @@ spec:
                     // Allow only users in configured value(s) to access Nextcloud. In case the user
                     // is not assigned to this value (read from oidc_login_attributes) the login
                     // will not be allowed for this user.
-                    'oidc_login_filter_allowed_values' => array('nextcloud_admins', 'nexcloud_users'),
+                    'oidc_login_filter_allowed_values' => array('nextcloud_admins', 'nextcloud_users'),
 
                     // Set OpenID Connect scope
                     'oidc_login_scope' => 'openid profile email',
@@ -181,12 +184,6 @@ spec:
 
                     // Disable creation of users new to Nextcloud from OIDC login.
                     // A user may be known to the IdP but not (yet) known to Nextcloud.
-                    // This setting controls what to do in this case.
-                    // - 'true' (default): if the user authenticates to the IdP but is not known to Nextcloud,
-                    //     then they will be returned to the login screen and not allowed entry;
-                    // - 'false': if the user authenticates but is not yet known to Nextcloud,
-                    //     then the user will be automatically created; note that with this setting,
-                    //     you will be allowing (or relying on) a third-party (the IdP) to create new users
                     'oidc_login_disable_registration' => false,
 
                     // Fallback to direct login if login from OIDC fails
