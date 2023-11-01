@@ -279,7 +279,7 @@ spec:
             redis:
               enabled: true
               replica:
-                replicaCount: 1
+                replicaCount: 3
               auth:
                 enabled: true
                 existingSecret: nextcloud-redis-credentials
