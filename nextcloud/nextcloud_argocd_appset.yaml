@@ -28,11 +28,11 @@ spec:
         server: https://kubernetes.default.svc
         namespace: nextcloud
       syncPolicy:
-        syncOptions:
-          - ApplyOutOfSyncOnly=true
+        #syncOptions:
+        #  - ApplyOutOfSyncOnly=true
         automated:
-          prune: true
-          selfHeal: true
+          prune: false
+          selfHeal: false
       source:
         repoURL: 'https://nextcloud.github.io/helm'
         targetRevision: 4.3.6
