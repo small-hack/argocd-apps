@@ -143,11 +143,11 @@ spec:
 
 # Known issues
 
-## Video Tumbnails
+## Video Thumbnails
 
 By default videos won't get thumbnails. 
 
-Requires installing smbclient and ffmpeg into the web-app container, then edit a file to trigger the thumbnail generation, be patient though it takes a minute or so.
+Requires installing `smbclient` and `ffmpeg` into the web-app container, then edit a file to trigger the thumbnail generation, be patient though it takes a minute or so.
 
 See: https://help.nextcloud.com/t/show-thumbnails-for-videos/71251/14
 
@@ -167,12 +167,121 @@ The maps app can sometimes have an issue where it won't enable. You need to dele
 ```
 Then it seems to allow an update and enable via the console 🤷 See [issue#1069](https://github.com/nextcloud/maps/issues/1069).
 
+## OIDC SSO via Zitadel
+We found the best luck using the [OpenID Connect Login app](https://github.com/pulsejet/nextcloud-oidc-login)
 
-## TODO/Bugs to fix
-Still Under construction, so we're working out a few kinks.
-- overall infosec overhaul and threatmodel <-- active task
-- make prometheus work??? - on pause till security is under wraps
-- install default apps to [directory listed here](https://github.com/nextcloud/docker/blob/8cfb0e50ef8a42ee366d1413df969ac801cac30c/24/fpm/config/apps.config.php)... :thinking: but we might be able to just have those mounted on their own volume, and that volume could be public, which would be nice
+Since Nextcloud can technically take any string type config.php variable from an env var, you can use environment variables to pass in secret info such as the Zitadel endpoint, client ID, and client secret. Here's examples of how we do this via the helm chart from an existing Kubernetes Secret:
+
+```yaml
+nextcloud:
+  extraEnv:
+    - name: "NC_oidc_login_provider_url"
+      valueFrom:
+        secretKeyRef:
+          name: nextcloud-oidc-credentials
+          key: issuer
+
+    - name: "NC_oidc_login_client_id"
+      valueFrom:
+        secretKeyRef:
+          name: nextcloud-oidc-credentials
+          key: client_id
+
+    - name: "NC_oidc_login_client_secret"
+      valueFrom:
+        secretKeyRef:
+          name: nextcloud-oidc-credentials
+          key: client_secret
+```
+
+The above variables are from a Kubernetes Secret called `nextcloud-oidc-credentials` with keys called `issuer`, `client_id`, and `client_secret`.
+
+Here's the PHP config file we dropped into the Nextcloud config directory via the helm chart since it doesn't contain any secret info:
+
+```php
+<?php
+$CONFIG = array (
+  // Some Nextcloud options that might make sense here
+  'allow_user_to_change_display_name' => true,
+  'lost_password_link' => 'disabled',
+
+  // Automatically redirect the login page to the provider
+  'oidc_login_auto_redirect' => false,
+
+  // Redirect to this page after logging out the user
+  'oidc_login_logout_url' => '{{ .nextcloud_hostname }}',
+
+  // If set to true the user will be redirected to the
+  // logout endpoint of the OIDC provider after logout
+  'oidc_login_end_session_redirect' => false,
+
+  // Login button text
+  'oidc_login_button_text' => 'Log in with ZITADEL',
+
+  // Hide the NextCloud password change form.
+  'oidc_login_hide_password_form' => false,
+
+  // Use ID Token instead of UserInfo
+  'oidc_login_use_id_token' => false,
+
+  // Attribute map for OIDC response. 
+  'oidc_login_attributes' => array (
+      'id' => 'preferred_username',
+      'name' => 'name',
+      'mail' => 'email',
+      'login_filter' => 'groups',
+      'photoURL' => 'picture',
+      'is_admin' => 'groups_nextcloud_admins',
+  ),
+
+  // Allow only users in configured value(s) to access Nextcloud. In this instance, 
+  // we only allow users that have either the nextcloud_admins or nextcloud_users roles. 
+  // all other users are denied
+  'oidc_login_filter_allowed_values' => array('nextcloud_admins', 'nextcloud_users'),
+
+  // Set OpenID Connect scope
+  'oidc_login_scope' => 'openid profile email',
+
+  // Run in LDAP proxy mode
+  'oidc_login_proxy_ldap' => false,
+
+  // Disable creation of users new to Nextcloud from OIDC login
+  // if a user is known to the IdP but not (yet) known to Nextcloud.
+  'oidc_login_disable_registration' => false,
+
+  // Fallback to direct login if login from OIDC fails
+  // Note that no error message will be displayed if enabled
+  'oidc_login_redir_fallback' => false,
+
+  // If you get your groups from the oidc_login_attributes, you might want
+  // to create them if they are not already existing, Default is `false`.
+  'oidc_create_groups' => false,
+
+  // Enable use of WebDAV via OIDC bearer token.
+  'oidc_login_webdav_enabled' => false,
+
+  // Enable authentication with user/password for DAV clients that do not
+  // support token authentication (e.g. DAVx⁵)
+  'oidc_login_password_authentication' => true,
+
+  // The time in seconds used to cache public keys from provider.
+  // The default value is 1 day.
+  'oidc_login_public_key_caching_time' => 86400,
+
+  // The time in seconds used to cache the OIDC well-known configuration from the provider.
+  // The default value is 1 day.
+  'oidc_login_well_known_caching_time' => 86400,
+
+  // If true, nextcloud will download user avatars on login.
+  // This may lead to security issues as the server does not control
+  // which URLs will be requested. Use with care.
+  'oidc_login_update_avatar' => false,
+
+  // Code challenge method for PKCE flow.
+  'oidc_login_code_challenge_method' => 'S256',
+  );
+```
+
 
 <!-- link references -->
 [Debian]: https://www.debian.org/
