@@ -327,7 +327,7 @@ spec:
               nodePort: nil
             persistence:
               enabled: true
-              existingClaim: nextcloud-files
+              # existingClaim: nextcloud-files
               nextcloudData:
                 enabled: false
                 subPath:
