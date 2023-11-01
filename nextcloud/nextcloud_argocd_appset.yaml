@@ -334,14 +334,14 @@ spec:
                 subPath:
             livenessProbe:
               enabled: false
-              initialDelaySeconds: 45
+              initialDelaySeconds: 30
               periodSeconds: 15
               timeoutSeconds: 5
               failureThreshold: 3
               successThreshold: 1
             readinessProbe:
               enabled: true
-              initialDelaySeconds: 45
+              initialDelaySeconds: 30
               periodSeconds: 15
               timeoutSeconds: 5
               failureThreshold: 3
