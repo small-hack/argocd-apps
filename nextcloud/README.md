@@ -141,7 +141,7 @@ spec:
 ```
 ---
 
-# Known issues
+# Known issues and Tips
 
 ## Video Thumbnails
 
