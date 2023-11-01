@@ -308,7 +308,7 @@ spec:
                       GRANT ALL PRIVILEGES ON DATABASE nextcloud TO nextcloud;
                       GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO nextcloud;
                 persistence:
-                  enabled: true
+                  enabled: false
                   # existingClaim: "nextcloud-postgresql"
             redis:
               enabled: false
@@ -326,7 +326,7 @@ spec:
               loadBalancerIP: nil
               nodePort: nil
             persistence:
-              enabled: true
+              enabled: false
               # existingClaim: nextcloud-files
               nextcloudData:
                 enabled: false
