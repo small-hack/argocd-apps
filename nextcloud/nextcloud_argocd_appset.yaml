@@ -265,7 +265,7 @@ spec:
                   enabled: true
                   existingClaim: "nextcloud-postgresql"
             redis:
-              enabled: false
+              enabled: true
               replica:
                 replicaCount: 1
               auth:
