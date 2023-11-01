@@ -18,7 +18,6 @@ spec:
           parameters:
             secret_vars:
               - nextcloud_hostname
-              - zitadel_hostname
               - global_cluster_issuer
   template:
     metadata:
@@ -168,7 +167,9 @@ spec:
                             'hostname' => getenv('NEXTCLOUD_S3_HOSTNAME'),
                             'key' => getenv('NEXTCLOUD_S3_USER'),
                             'secret' => getenv('NEXTCLOUD_S3_PASSWORD'),
-                            'port' => 9000
+                            'port' => 9000,
+                            // required for some non-Amazon S3 implementations
+                            'use_path_style' => true,
                       ]
                     ]
                   );
