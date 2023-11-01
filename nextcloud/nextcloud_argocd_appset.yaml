@@ -99,6 +99,17 @@ spec:
                       name: nextcloud-oidc-credentials
                       key: client_secret
 
+              # we use this to reset the php fpm config values
+              extraVolumes:
+                - name: php-fpm-config
+                  configMap:
+                    name: php-fpm-config
+
+              extraVolumeMounts:
+                - name: php-fpm-config
+                  mountPath: "/usr/local/etc/php-fpm.d"
+                  subPath: "www.conf"
+
               configs:
                 logging.config.php: |-
                   <?php
