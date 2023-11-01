@@ -271,7 +271,7 @@ spec:
               auth:
                 enabled: true
                 existingSecret: nextcloud-redis-credentials
-                existingSecretPasswordKey: password
+                existingSecretPasswordKey: redis_password
             cronjob:
               enabled: true
             service:
