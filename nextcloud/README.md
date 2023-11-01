@@ -168,7 +168,15 @@ The maps app can sometimes have an issue where it won't enable. You need to dele
 Then it seems to allow an update and enable via the console 🤷 See [issue#1069](https://github.com/nextcloud/maps/issues/1069).
 
 ## OIDC SSO via Zitadel
-We found the best luck using the [OpenID Connect Login app](https://github.com/pulsejet/nextcloud-oidc-login)
+We found the best luck using the [OpenID Connect Login app](https://github.com/pulsejet/nextcloud-oidc-login).
+
+You can install it with the following occ command via your nextcloud pod:
+```bash
+kubectl exec -n nextcloud $YOUR_NEXTCLOUD_POD -c nextcloud -- su -s /bin/sh www-data -c "php occ app:install oidc_login"
+```
+
+On the zitadel side, setup a code type application with basic auth as you normally would, but set the redirect URL to be:
+`yournextclouddomain.com/apps/oidc_login/oidc`
 
 Since Nextcloud can technically take any string type config.php variable from an env var, you can use environment variables to pass in secret info such as the Zitadel endpoint, client ID, and client secret. Here's examples of how we do this via the helm chart from an existing Kubernetes Secret:
 
@@ -209,6 +217,8 @@ $CONFIG = array (
   'oidc_login_auto_redirect' => false,
 
   // Redirect to this page after logging out the user
+  // we are using gotemplating in the Argo CD ApplicationSet for this one, 
+  // but you could easily fill in your nextcloud hostname in plain text here
   'oidc_login_logout_url' => '{{ .nextcloud_hostname }}',
 
   // If set to true the user will be redirected to the
@@ -225,6 +235,8 @@ $CONFIG = array (
   'oidc_login_use_id_token' => false,
 
   // Attribute map for OIDC response. 
+  // NOTE: the is_admin key uses the nextcloud_admins group membership 
+  //       to determine if the user should be added to the admin group
   'oidc_login_attributes' => array (
       'id' => 'preferred_username',
       'name' => 'name',
