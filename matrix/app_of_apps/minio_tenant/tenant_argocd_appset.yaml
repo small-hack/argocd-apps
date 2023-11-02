@@ -2,10 +2,10 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: nextcloud-minio-tenant-app-set
+  name: matrix-minio-tenant-app-set
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "2"
+    argocd.argoproj.io/sync-wave: "1"
 spec:
   goTemplate: true
   # generator allows us to source specific values from an external k8s secret
@@ -16,16 +16,16 @@ spec:
         input:
           parameters:
             secret_vars:
-              - nextcloud_s3_endpoint
+              - matrix_s3_endpoint
               - global_cluster_issuer
   template:
     metadata:
-      name: nextcloud-minio-tenant
+      name: matrix-minio-tenant
     spec:
-      project: nextcloud
+      project: matrix
       destination:
         server: "https://kubernetes.default.svc"
-        namespace: nextcloud
+        namespace: matrix
       syncPolicy:
         syncOptions:
           - ApplyOutOfSyncOnly=true
@@ -38,7 +38,7 @@ spec:
         chart: tenant
         targetRevision: 5.0.10
         helm:
-          releaseName: nextcloud-minio-tenant
+          releaseName: matrix-minio-tenant
           values: |
             ## Secret with default environment variable configurations to be used by MinIO Tenant.
             secrets:
@@ -47,7 +47,7 @@ spec:
             ## MinIO Tenant Definition
             tenant:
               # Tenant name
-              name: nextcloud-tenant
+              name: matrix-tenant
 
               ## Secret name that contains additional environment variable configurations.
               ## The secret is expected to have a key named config.env containing environment variables exports.
@@ -129,7 +129,7 @@ spec:
                 #     type: cert-manager.io/v1
                 #   - name: minio-user-console-tls
                 #     type: cert-manager.io/v1
-                #   - name: nextcloud-minio-pods-tls
+                #   - name: matrix-minio-pods-tls
                 #    type: cert-manager.io/v1
 
               ## MinIO features to enable or disable in the MinIO Tenant
@@ -139,14 +139,14 @@ spec:
 
                 domains:
                   minio:
-                  - https://{{ .nextcloud_s3_endpoint }}
+                  - https://{{ .matrix_s3_endpoint }}
 
                 enableSFTP: false
 
               ## List of bucket definitions to create during tenant provisioning.
               buckets:
-                - name: nextcloud
-                - name: nextcloud-postgresql
+                - name: matrix
+                - name: matrix-postgresql
 
               ## PodManagement policy for MinIO Tenant Pods. Can be "OrderedReady" or "Parallel"
               ## Refer https://kubernetes.io/docs/tutorials/stateful-application/basic-stateful-set/#pod-management-policy
@@ -160,7 +160,7 @@ spec:
 
               # kubernetes service account associated with a specific tenant
               # https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
-              serviceAccountName: "nextcloud-minio-tenant"
+              serviceAccountName: "matrix-minio-tenant"
 
               # Tenant scrape configuration will be added to prometheus managed by the prometheus-operator.
               prometheusOperator: false
@@ -176,10 +176,10 @@ spec:
               # stolen from https://github.com/minio/operator/blob/master/examples/kustomization/tenant-letsencrypt/tenant.yaml
               env:
                 - name: MINIO_DOMAIN
-                  value: "{{ .nextcloud_s3_endpoint }}"
+                  value: "{{ .matrix_s3_endpoint }}"
 
                 - name: MINIO_SERVER_URL
-                  value: "https://{{ .nextcloud_s3_endpoint }}"
+                  value: "https://{{ .matrix_s3_endpoint }}"
 
             ingress:
 
@@ -190,9 +190,9 @@ spec:
                 annotations:
                   cert-manager.io/cluster-issuer: {{ .global_cluster_issuer }}
                 tls:
-                  - secretName: nextcloud-minio-api-tls
+                  - secretName: matrix-minio-api-tls
                     hosts:
-                      - "{{ .nextcloud_s3_endpoint}}"
+                      - "{{ .matrix_s3_endpoint}}"
                 host: {{ .minio_api_hostname }}
                 path: /
                 pathType: Prefix
