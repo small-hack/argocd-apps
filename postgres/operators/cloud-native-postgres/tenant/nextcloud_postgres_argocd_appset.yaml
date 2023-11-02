@@ -2,7 +2,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: mastodon-postgres-tenant-app-set
+  name: nextcloud-postgres-tenant-app-set
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "2"
@@ -16,15 +16,15 @@ spec:
         input:
           parameters:
             secret_vars: 
-              - "mastodon-minio-credentials-postgres"
+              - "nextcloud-minio-credentials-postgres"
   template:
     metadata:
-      name: mastodon-postgres-tenant
+      name: nextcloud-postgres-tenant
     spec:
-      project: mastodon
+      project: nextcloud
       destination:
         server: "https://kubernetes.default.svc"
-        namespace: mastodon
+        namespace: nextcloud
       syncPolicy:
         syncOptions:
           - ApplyOutOfSyncOnly=true
@@ -37,22 +37,22 @@ spec:
         chart: cnpg-tenant
         targetRevision: 0.0.1
         helm:
-          releaseName: mastodon-postgres-tenant
+          releaseName: nextcloud-postgres-tenant
           values: |
-            name: "mastodon-postgres"
+            name: "nextcloud-postgres"
             instances: 3
             backup:
               destinationPath: "backups"
               retentionPolicy: "30d"
               s3Credentials:
                 accessKeyId:
-                  name: {{ .mastodon-minio-credentials-postgres }}
+                  name: {{ .nextcloud-minio-credentials-postgres }}
                   key : "ACCESS_KEY_ID"
                 secretAccessKey:
-                  name: {{ .mastodon-minio-credentials-postgres }}
+                  name: {{ .nextcloud-minio-credentials-postgres }}
                   key : "ACCESS_SECRET_KEY"
             scheduledBackup:
-              name: mastodon-pg-backup
+              name: nextcloud-pg-backup
               spec:
                 schedule: "0 0 0 * * *" 
                 backupOwnerReference: self
