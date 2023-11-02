@@ -131,6 +131,24 @@ spec:
                       name: nextcloud-s3-credentials
                       key: S3_PASSWORD
 
+              extraVolumes:
+                - name: secret-volume-postgres-root-ca
+                  secret:
+                    secretName: nextcloud-postgres-root-ca
+                    defaultMode: 0600
+
+                - name: secret-volume-nextcloud-postgres
+                  secret:
+                    secretName: nextcloud-postgres
+                    defaultMode: 0600
+
+              extraVolumemounts:
+                - name: secret-volume-postgres-root-ca
+                  mountPath: /etc/secrets/ca
+
+                - name: secret-volume-nextcloud-postgres
+                  mountPath: /etc/secrets/app
+
               phpConfigs:
                 www.conf: |-
                   [www]
@@ -286,11 +304,10 @@ spec:
 
             internalDatabase:
               enabled: false
-
             externalDatabase:
               enabled: true
               type: postgresql
-              host: "nextcloud-postgresql:5432;sslmode=verify-full;sslrootcert=/etc/ssl/cert.pem;sslcert=/etc/ssl/client-cert.crt;sslkey=/etc/ssl/client-cert.key"
+              host: "nextcloud-postgresql-rw:5432;sslmode=verify-full;sslrootcert=/etc/secrets/cert.pem;sslcert=/etc/secrets/client-cert.crt;sslkey=/etc/secret/client-cert.key"
               user: nextcloud
               database: nextcloud
               existingSecret:
@@ -313,17 +330,20 @@ spec:
 
             cronjob:
               enabled: true
+
             service:
               type: ClusterIP
               port: 8080
               loadBalancerIP: nil
               nodePort: nil
+
             persistence:
               enabled: false
               # existingClaim: nextcloud-files
               nextcloudData:
                 enabled: false
                 subPath:
+
             livenessProbe:
               enabled: false
               initialDelaySeconds: 30
@@ -350,6 +370,7 @@ spec:
               cputhreshold: 60
               minPods: 1
               maxPods: 10
+
             metrics:
               enabled: false
               https: true
@@ -357,14 +378,17 @@ spec:
               timeout: 10s
               podLabels:
                 jobLabel: nextcloud-metrics
+
               service:
                 annotations:
                   prometheus.io/scrape: "true"
                   prometheus.io/port: "9205"
                 labels:
                   jobLabel: nextcloud-metrics
+
               serviceMonitor:
                 enabled: true
                 namespace: "nextcloud"
+
             rbac:
               enabled: true
