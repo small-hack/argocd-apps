@@ -146,6 +146,7 @@ spec:
               ## List of bucket definitions to create during tenant provisioning.
               buckets:
                 - name: nextcloud
+                - name: nextcloud-postgresql
 
               ## PodManagement policy for MinIO Tenant Pods. Can be "OrderedReady" or "Parallel"
               ## Refer https://kubernetes.io/docs/tutorials/stateful-application/basic-stateful-set/#pod-management-policy

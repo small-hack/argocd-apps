@@ -1,0 +1,25 @@
+---
+# First sync wave done in parallel with creating secrets. Must be BEFORE
+# nextcloud so that nextcloud persists it's data between upgrades. Sync policy
+# is set to ApplyOutOfSyncOnly=true to create the volume initially only.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nextcloud-maintanence-mode-cronjobs
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  project: nextcloud
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: nextcloud
+  source:
+    repoURL: https://github.com/small-hack/argocd-apps.git
+    path: nextcloud/maintanence_mode_cronjobs/
+    targetRevision: eso-helm-chart-test
+  syncPolicy:
+    syncOptions:
+      - ApplyOutOfSyncOnly=true
+    automated:
+      selfHeal: true
