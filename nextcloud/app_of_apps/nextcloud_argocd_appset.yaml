@@ -6,7 +6,7 @@ metadata:
   name: nextcloud-web-app-set
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "2"
+    argocd.argoproj.io/sync-wave: "3"
 spec:
   goTemplate: true
   # generator allows us to source specific values from an external k8s secret
@@ -41,6 +41,7 @@ spec:
           values: |
             image:
               flavor: fpm
+
             ingress:
               enabled: true
               className: nginx
@@ -68,6 +69,7 @@ spec:
                 - secretName: nextcloud-tls
                   hosts:
                     - "{{ .nextcloud_hostname }}"
+
             nextcloud:
               host: {{ .nextcloud_hostname }}
               existingSecret:
@@ -78,40 +80,51 @@ spec:
                 tokenKey: serverInfoToken
                 smtpUsernameKey: smtpUsername
                 smtpPasswordKey: smtpPassword
+
+              # update to the latest version of nextcloud
               update: 1
+
+              # for sending notifications
               mail:
-                enabled: false
+                enabled: true
+
               extraEnv:
                 - name: "NC_oidc_login_provider_url"
                   valueFrom:
                     secretKeyRef:
                       name: nextcloud-oidc-credentials
                       key: issuer
+
                 - name: "NC_oidc_login_client_id"
                   valueFrom:
                     secretKeyRef:
                       name: nextcloud-oidc-credentials
                       key: client_id
+
                 - name: "NC_oidc_login_client_secret"
                   valueFrom:
                     secretKeyRef:
                       name: nextcloud-oidc-credentials
                       key: client_secret
+
                 - name: "NEXTCLOUD_S3_HOSTNAME"
                   valueFrom:
                     secretKeyRef:
                       name: nextcloud-s3-credentials
                       key: S3_HOSTNAME
+
                 - name: "NEXTCLOUD_S3_BUCKET"
                   valueFrom:
                     secretKeyRef:
                       name: nextcloud-s3-credentials
                       key: S3_BUCKET
+
                 - name: "NEXTCLOUD_S3_USER"
                   valueFrom:
                     secretKeyRef:
                       name: nextcloud-s3-credentials
                       key: S3_USER
+
                 - name: "NEXTCLOUD_S3_PASSWORD"
                   valueFrom:
                     secretKeyRef:
@@ -139,6 +152,7 @@ spec:
                     'loglevel' => 1,
                     'logdateformat' => 'F d, Y H:i:s'
                     );
+
                 video_previews.config.php: |-
                   <?php
                   $CONFIG = array (
@@ -157,21 +171,23 @@ spec:
                       'OC\Preview\PDF'
                     ),
                   );
-                # object_store.config.php: |-
-                #   <?php
-                #   $CONFIG = array (
-                #     'objectstore' => [
-                #       'class' => '\\OC\\Files\\ObjectStore\\S3',
-                #       'arguments' => [
-                #             'bucket' => getenv('NEXTCLOUD_S3_BUCKET'),
-                #             'hostname' => getenv('NEXTCLOUD_S3_HOSTNAME'),
-                #             'key' => getenv('NEXTCLOUD_S3_USER'),
-                #             'secret' => getenv('NEXTCLOUD_S3_PASSWORD'),
-                #             'port' => 9000,
-                #             'use_path_style' => true,
-                #       ]
-                #     ]
-                #   );
+
+                object_store.config.php: |-
+                  <?php
+                  $CONFIG = array (
+                    'objectstore' => [
+                      'class' => '\\OC\\Files\\ObjectStore\\S3',
+                      'arguments' => [
+                            'bucket' => getenv('NEXTCLOUD_S3_BUCKET'),
+                            'hostname' => getenv('NEXTCLOUD_S3_HOSTNAME'),
+                            'key' => getenv('NEXTCLOUD_S3_USER'),
+                            'secret' => getenv('NEXTCLOUD_S3_PASSWORD'),
+                            'port' => 9000,
+                            'use_path_style' => true,
+                      ]
+                    ]
+                  );
+
                 proxy.config.php: |-
                   <?php
                   $CONFIG = array (
@@ -181,6 +197,7 @@ spec:
                     ),
                     'forwarded_for_headers' => array('HTTP_X_FORWARDED_FOR'),
                   );
+
                 oidc.config.php: |-
                   <?php
                   $CONFIG = array (
@@ -263,14 +280,17 @@ spec:
                     // Code challenge method for PKCE flow.
                     'oidc_login_code_challenge_method' => 'S256',
                     );
+
             nginx:
               enabled: true
+
             internalDatabase:
               enabled: false
+
             externalDatabase:
               enabled: true
               type: postgresql
-              host: localhost:5432
+              host: "nextcloud-postgresql:5432;sslmode=verify-full;sslrootcert=/etc/ssl/cert.pem;sslcert=/etc/ssl/client-cert.crt;sslkey=/etc/ssl/client-cert.key"
               user: nextcloud
               database: nextcloud
               existingSecret:
@@ -278,38 +298,10 @@ spec:
                 secretName: nextcloud-pgsql-credentials
                 usernameKey: nextcloudUsername
                 passwordKey: nextcloudPassword
+
             postgresql:
-              enabled: true
-              # we can't use fullnameOverride till https://github.com/nextcloud/helm/pull/442 is merged
-              # fullnameOverride: nextcloud-postgresql
-              global:
-                postgresql:
-                  auth:
-                    username: nextcloud
-                    database: nextcloud
-                    existingSecret: nextcloud-pgsql-credentials
-                    secretKeys:
-                      userPasswordKey: nextcloudPassword
-                      adminPasswordKey: postgresPassword
-              volumePermissions:
-                enabled: true
-              primary:
-                podAnnotations:
-                  k8up.io/backupcommand: "sh -c 'PGDATABASE=\"$POSTGRES_DB\" PGUSER=\"$POSTGRES_USER\" PGPASSWORD=\"$POSTGRES_PASSWORD\" pg_dump --clean'"
-                  k8up.io/file-extension: .sql
-                pgHbaConfiguration: |-
-                  local all all trust
-                  host all all 127.0.0.1/32 md5
-                  host all nextcloud 10.0.0.0/8 md5
-                initdb:
-                  scripts:
-                    my_init_script.sql: |
-                      ALTER DATABASE nextcloud OWNER TO nextcloud;
-                      GRANT ALL PRIVILEGES ON DATABASE nextcloud TO nextcloud;
-                      GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO nextcloud;
-                persistence:
-                  enabled: false
-                  # existingClaim: "nextcloud-postgresql"
+              enabled: false
+
             redis:
               enabled: false
               replica:
@@ -318,6 +310,7 @@ spec:
                 enabled: true
                 existingSecret: nextcloud-redis-credentials
                 existingSecretPasswordKey: redis_password
+
             cronjob:
               enabled: true
             service:

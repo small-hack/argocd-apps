@@ -8,7 +8,7 @@ metadata:
   name: nextcloud-maintanence-mode-cronjobs
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "1"
+    argocd.argoproj.io/sync-wave: "4"
 spec:
   project: nextcloud
   destination:

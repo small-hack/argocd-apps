@@ -40,8 +40,11 @@ argocd app create nextcloud -f nextcloud_argocd_template.yaml
 ```
 
 ## Tips
-Check out the admin manual:
-https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/occ_command.html#scan
+
+`occ` is the Nextcloud admin CLI. It can only be run on the system running Nextcloud, so in this case that would the pod in the deployment that gets deployed via the helm chart that our Argo CD ApplicationSet .
+
+Check out the Nextcloud `occ` [docs](https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/occ_command.html#scan) for more info.
+
 
 ### Backups
 Make sure that you follow this process for backups:
@@ -51,7 +54,7 @@ Make sure that you follow this process for backups:
    kubectl exec $NEXTCLOUD_POD -- su -s /bin/bash www-data -c "php occ files:scan --all"
    ```
 
-2. Put nextcloud into maintanence mode:
+2. Put nextcloud into maintenance mode:
    ```bash
    kubectl exec $NEXTCLOUD_POD -- su -s /bin/bash www-data -c "php occ maintenance:mode --on"
    ```
@@ -59,21 +62,23 @@ Make sure that you follow this process for backups:
 3. Run the backup:
    You can run `kubectl apply -f root_backup.yaml` with [root_backup.yaml](./manifests/k8up_backups/root_backup.yaml)
 
-4. Take nextcloud out of maintanence mode:
+4. Take nextcloud out of maintenance mode:
    ```bash
    kubectl exec $NEXTCLOUD_POD -- su -s /bin/bash www-data -c "php occ maintenance:mode --off"
    ```
 
 #### Manual backups
-Just in case you need to do a manual postgresql backup:
+
+Just in case you need to do a manual PostgreSQL database backup:
 ```bash
 PGDATABASE="$POSTGRES_DB" PGUSER="$POSTGRES_USER" PGPASSWORD="$POSTGRES_PASSWORD" pg_dump --clean
 ```
 
 ### Restoring from backups
+
 In the case of restores, please refer to the doc, [`manifests/restores/README.md`](./manifests/k8s_restores/README.md).
 
-You may need to drop a table or two, requiring a psql shell and credentials. Connect to the postgresql pod and run:
+You may need to drop a table or two, requiring a `psql` shell and credentials. Connect to the PostgreSQL pod and run:
 
 ```bash
 PGDATABASE="$POSTGRES_DB" PGUSER="$POSTGRES_USER" PGPASSWORD="$POSTGRES_PASSWORD" psql
