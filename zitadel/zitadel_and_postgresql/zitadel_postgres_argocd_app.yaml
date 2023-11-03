@@ -18,8 +18,8 @@ spec:
     automated:
       selfHeal: true
   source:
-    chart: postgresql
-    repoURL: 'https://charts.bitnami.com/bitnami'
+    repoURL: 'registry-1.docker.io'
+    chart: bitnamicharts/postgresql
     targetRevision: 13.2.0
     helm:
       skipCrds: true
