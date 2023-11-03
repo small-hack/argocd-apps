@@ -22,7 +22,7 @@ spec:
               - global_cluster_issuer
   template:
     metadata:
-      name: minio-tenant
+      name: "{{ .minio_tenant_tenant_name }}"
     spec:
       project: minio
       destination:
@@ -40,7 +40,7 @@ spec:
         chart: tenant
         targetRevision: 5.0.10
         helm:
-          releaseName: minio-tenant
+          releaseName: "{{ .minio_tenant_tenant_name }}"
           values: |
             ## Secret with default environment variable configurations to be used by MinIO Tenant.
             secrets:
