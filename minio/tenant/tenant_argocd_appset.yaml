@@ -16,9 +16,9 @@ spec:
         input:
           parameters:
             secret_vars:
-              - minio_api_hostname
-              - minio_user_console_hostname
-              - minio_tenant_name
+              - minio_tenant_api_hostname
+              - minio_tenant_user_console_hostname
+              - minio_tenant_tenant_name
               - global_cluster_issuer
   template:
     metadata:
@@ -49,7 +49,7 @@ spec:
             ## MinIO Tenant Definition
             tenant:
               # Tenant name
-              name: {{ .minio_tenant_name }}
+              name: {{ .minio_tenant_tenant_name }}
 
               image:
                 repository: quay.io/minio/minio
@@ -138,7 +138,7 @@ spec:
                 #     type: cert-manager.io/v1
                 #   - name: minio-user-console-tls
                 #     type: cert-manager.io/v1
-                #   - name: {{ .minio_tenant_name }}-pods-tls
+                #   - name: {{ .minio_tenant_tenant_name }}-pods-tls
                 #    type: cert-manager.io/v1
 
               ## MinIO features to enable or disable in the MinIO Tenant
@@ -148,8 +148,8 @@ spec:
 
                 domains:
                   minio:
-                  - https://{{ .minio_api_hostname }}
-                  console: https://{{ .minio_user_console_hostname }}
+                  - https://{{ .minio_tenant_api_hostname }}
+                  console: https://{{ .minio_tenant_user_console_hostname }}
 
                 enableSFTP: false
 
@@ -175,7 +175,7 @@ spec:
 
               # kubernetes service account associated with a specific tenant
               # https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
-              serviceAccountName: "{{ .minio_tenant_name }}"
+              serviceAccountName: "{{ .minio_tenant_tenant_name }}"
 
               # Tenant scrape configuration will be added to prometheus managed by the prometheus-operator.
               prometheusOperator: false
@@ -191,13 +191,13 @@ spec:
               # stolen from https://github.com/minio/operator/blob/master/examples/kustomization/tenant-letsencrypt/tenant.yaml
               env:
                 - name: MINIO_DOMAIN
-                  value: "{{ .minio_api_hostname }}"
+                  value: "{{ .minio_tenant_api_hostname }}"
 
                 - name: MINIO_BROWSER_REDIRECT_URL
-                  value: "https://{{ .minio_user_console_hostname }}/oauth_callback"
+                  value: "https://{{ .minio_tenant_user_console_hostname }}/oauth_callback"
 
                 - name: MINIO_SERVER_URL
-                  value: "https://{{ .minio_api_hostname }}"
+                  value: "https://{{ .minio_tenant_api_hostname }}"
 
                 - name: MINIO_BROWSER
                   value: "on"
@@ -213,8 +213,8 @@ spec:
                 tls:
                   - secretName: minio-api-tls
                     hosts:
-                      - "{{ .minio_api_hostname}}"
-                host: {{ .minio_api_hostname }}
+                      - "{{ .minio_tenant_api_hostname}}"
+                host: {{ .minio_tenant_api_hostname }}
                 path: /
                 pathType: Prefix
 
@@ -227,7 +227,7 @@ spec:
                 tls:
                   - secretName: minio-user-console-tls
                     hosts:
-                      - {{ .minio_user_console_hostname }}
-                host: {{ .minio_user_console_hostname }}
+                      - {{ .minio_tenant_user_console_hostname }}
+                host: {{ .minio_tenant_user_console_hostname }}
                 path: /
                 pathType: Prefix
