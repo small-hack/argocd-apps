@@ -1,10 +1,10 @@
-# MinIO Operator (and optional Tenant) Argo CD Applications
+# MinIO Operator and Tenant Argo CD Applications
 
 We default deploy the operator (admin) console and (optionally, if you use directory recursion) a tenant console/api 
 
 Operator helm chart: https://github.com/minio/operator/tree/master/helm/operator
+Tenant helm chart: https://github.com/minio/operator/tree/master/helm/tenant
 
-Optional Tenant helm chart: https://github.com/minio/operator/tree/master/helm/tenant
 
 ## Remaining Tasks
 
@@ -52,7 +52,7 @@ from os import makedirs
 from minio import Minio, MinioAdmin
 
 
-class BetterMinio:
+class minioWrapper:
     """ 
     a wrapper around the two seperate Minio and MinioAdmin clients to create
     users and buckets with basic policies
@@ -144,7 +144,7 @@ secret_key = "minio123"
 minio_api_hostname = "https://minio-api.example.com"
 
 # example usage
-client = BetterMinio('minio-root', minio_api_hostname, access_key, secret_key)
+client = minioWrapper('minio-root', minio_api_hostname, access_key, secret_key)
 
 # this creates a bucket and accompanying policy for a given user
 client.create_bucket('my-new-bucket', 'my-cool-user')
