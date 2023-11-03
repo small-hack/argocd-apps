@@ -16,7 +16,7 @@ spec:
         input:
           parameters:
             secret_vars:
-              - minio_admin_console_hostname
+              - minio_operator_admin_console_hostname
               - global_cluster_issuer
   template:
     metadata:
