@@ -131,6 +131,12 @@ spec:
                       name: nextcloud-s3-credentials
                       key: S3_PASSWORD
 
+                - name: "NEXTCLOUD_S3_ENCYRPTION_KEY"
+                  valueFrom:
+                    secretKeyRef:
+                      name: nextcloud-s3-credentials
+                      key: S3_ENCRYPTION_KEY
+
               extraVolumes:
                 - name: secret-volume-postgres-root-ca
                   secret:
@@ -201,7 +207,11 @@ spec:
                             'key' => getenv('NEXTCLOUD_S3_USER'),
                             'secret' => getenv('NEXTCLOUD_S3_PASSWORD'),
                             'port' => 9000,
+                            'use_ssl' => true,
                             'use_path_style' => true,
+                            'autocreate' => true,
+                            'verify_bucket_exists' => true,
+                            'sse_c_key' => getenv('NEXTCLOUD_ENCRYPTION_KEY')
                       ]
                     ]
                   );
