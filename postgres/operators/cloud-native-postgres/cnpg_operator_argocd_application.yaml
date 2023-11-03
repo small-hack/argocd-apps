@@ -1,31 +1,15 @@
 ---
 apiVersion: argoproj.io/v1alpha1
-kind: ApplicationSet
+kind: Application
 metadata:
   name: cnpg-operator-app-set
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "1"
 spec:
-  goTemplate: true
-  generators: []
-  # generator allows us to source specific values from an external k8s secret
-  template:
-    metadata:
-      name: cnpg-operator
-      annotations:
-        argocd.argoproj.io/sync-wave: "1"
-    spec:
-      project: postgres
-      destination:
-        server: "https://kubernetes.default.svc"
-        namespace: cnpg-system
-      syncPolicy:
-        syncOptions:
-          - ApplyOutOfSyncOnly=true
-        automated:
-          prune: true
-          selfHeal: true
+  destination:
+    namespace: cnpg-system
+    server: 'https://kubernetes.default.svc'
       source:
         # official minio helm repo
         repoURL: 'https://cloudnative-pg.github.io/charts'
@@ -37,4 +21,9 @@ spec:
             monitoring:
             # -- Specifies whether the monitoring should be enabled. Requires Prometheus Operator CRDs.
               podMonitorEnabled: true
-
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
+          selfHeal: true
