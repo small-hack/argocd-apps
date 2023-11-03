@@ -29,7 +29,7 @@ spec:
         namespace: harbor
       source:
         repoURL: 'https://helm.goharbor.io'
-        targetRevision: 1.13.0
+        targetRevision: 1.13.1
         chart: harbor
         helm:
           values: |
