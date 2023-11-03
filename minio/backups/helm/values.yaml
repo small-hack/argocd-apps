@@ -1,0 +1,47 @@
+backup_name: ""
+
+# -- can be set to 's3' or 'local'
+backup_type: "s3"
+
+s3:
+  # -- s3 bucket to backup to
+  bucket: ''
+  # -- s3 endpoint to backup to
+  endpoint: ''
+  # secret info to use for your s3 accessKeyId
+  accessKeyIDSecretRef:
+    # -- name of the secret to use
+    name: ''
+    # -- key in the secret to use for access key id
+    key: ''
+    optional: false
+  # secret info to use for your s3 secretAccessKey
+  secretAccessKeySecretRef:
+    # -- name of the secret to use
+    name: ''
+    # -- key in the secret to use for secret access key
+    key: ''
+    optional: false
+
+local:
+  mountPath: ''
+
+# -- secret for your restic repo
+repoPasswordSecretRef:
+  # -- name of the secret to use
+  name: ''
+  # -- key in secret to use for repo password
+  key: ''
+
+# -- url to push to for prometheus gateway
+prometheus_url: ''
+
+# -- user to run the backups as
+podSecurityContext:
+  runAsUser: 0
+
+# -- schedules for backups, checks, and prunes
+schedules:
+  backup: ''
+  check: ''
+  prune: ''
