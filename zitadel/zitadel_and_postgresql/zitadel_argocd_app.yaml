@@ -10,74 +10,16 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "1"
 spec:
-  project: default
+  project: zitadel
   destination:
     server: "https://kubernetes.default.svc"
     namespace: zitadel
   source:
     repoURL: https://github.com/small-hack/argocd-apps.git
     path: zitadel/manifests/persistence/
+    targetRevision: eso-helm-chart-test
   syncPolicy:
     syncOptions:
       - ApplyOutOfSyncOnly=true
     automated:
       selfHeal: false
-
----
-# second sync is postgresql for zitadel
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: zitadel-postgres
-  namespace: argocd
-  annotations:
-    argocd.argoproj.io/sync-wave: "2"
-spec:
-  project: default
-  destination:
-    server: 'https://kubernetes.default.svc'
-    namespace: zitadel
-  syncPolicy:
-    syncOptions:
-      - ApplyOutOfSyncOnly=true
-    automated:
-      selfHeal: true
-  source:
-    chart: postgresql
-    repoURL: 'https://charts.bitnami.com/bitnami'
-    targetRevision: 13.2.3
-    helm:
-      skipCrds: true
-      releaseName: zitadel-postgres
-      values: |
-        fullnameOverride: zitadel-postgres
-        global:
-          postgresql:
-            auth:
-              username: zitadel
-              # database: zitadel
-              existingSecret: zitadel-db-credentials
-              secretKeys:
-                userPasswordKey: password
-                adminPasswordKey: adminPassword
-        volumePermissions:
-          enabled: true
-        primary:
-          podAnnotations:
-            k8up.io/backupcommand: "sh -c 'PGDATABASE=\"$POSTGRES_DB\" PGUSER=\"$POSTGRES_USER\" PGPASSWORD=\"$POSTGRES_PASSWORD\" pg_dump --clean'"
-            k8up.io/file-extension: .sql
-          pgHbaConfiguration: |-
-            local all all trust
-            host all all 127.0.0.1/32 md5
-            host all zitadel 10.0.0.0/8 md5
-            host all postgres 10.0.0.0/8 md5
-          #initdb:
-          #  scripts:
-          #    my_init_script.sql: |
-          #      ALTER DATABASE zitadel OWNER TO zitadel;
-          #      GRANT ALL PRIVILEGES ON DATABASE zitadel TO zitadel;
-          #      GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO zitadel;
-          persistence:
-            enabled: true
-            # Use an existing Persistent Volume Claim (must be created ahead of time)
-            existingClaim: "zitadel-database"

@@ -1,0 +1,49 @@
+---
+# second sync is postgresql for zitadel
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: zitadel-postgres
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  project: zitadel
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: zitadel
+  syncPolicy:
+    syncOptions:
+      - ApplyOutOfSyncOnly=true
+    automated:
+      selfHeal: true
+  source:
+    chart: postgresql
+    repoURL: 'https://charts.bitnami.com/bitnami'
+    targetRevision: 12.8.2
+    helm:
+      skipCrds: true
+      releaseName: zitadel-postgres
+      values: |
+        fullnameOverride: zitadel-postgres
+        global:
+          postgresql:
+            auth:
+              username: zitadel
+              # database: zitadel
+              existingSecret: zitadel-db-credentials
+              secretKeys:
+                userPasswordKey: password
+                adminPasswordKey: adminPassword
+        volumePermissions:
+          enabled: true
+        primary:
+          pgHbaConfiguration: |-
+            local all all trust
+            host all all 127.0.0.1/32 md5
+            host all zitadel 10.0.0.0/8 md5
+            host all postgres 10.0.0.0/8 md5
+          persistence:
+            enabled: true
+            # Use an existing Persistent Volume Claim (must be created ahead of time)
+            existingClaim: "zitadel-database"
