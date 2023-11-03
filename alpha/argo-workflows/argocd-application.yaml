@@ -2,7 +2,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: argo-wrkflows-argo-app
+  name: argo-workflows-argo-app
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "2"
