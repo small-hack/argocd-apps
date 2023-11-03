@@ -63,7 +63,7 @@ spec:
                 tls:
                   - secretName: minio-tls
                     hosts:
-                      - "{{ .minio_admin_console_hostname }}"
-                host: {{ .minio_admin_console_hostname }}
+                      - "{{ .minio_operator_admin_console_hostname }}"
+                host: {{ .minio_operator_admin_console_hostname }}
                 path: /
                 pathType: Prefix
