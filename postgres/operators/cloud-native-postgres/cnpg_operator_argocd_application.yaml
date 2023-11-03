@@ -2,7 +2,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: cnpg-operator-app-set
+  name: cnpg-operator-application
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "1"
