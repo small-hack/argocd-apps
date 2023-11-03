@@ -49,6 +49,8 @@ spec:
               initdb:
                 database: nextcloud
                 owner: nextcloud
+                secret:
+                  name: nextcloud-pgsql-credentials
                 postInitSQL:
                   - GRANT ALL PRIVILEGES ON DATABASE nextcloud TO nextcloud;
                   - GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO nextcloud;
