@@ -1,0 +1,77 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: mastodon-postgres-tenant-app-set
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  goTemplate: true
+  # generator allows us to source specific values from an external k8s secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars: 
+              - mastodon-minio-credentials-postgres
+  template:
+    metadata:
+      name: mastodon-postgres-tenant
+    spec:
+      project: mastodon
+      destination:
+        server: "https://kubernetes.default.svc"
+        namespace: mastodon
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
+          selfHeal: true
+      source:
+        # official minio helm repo
+        repoURL: https://small-hack.github.io/cloudnative-pg-tenant-chart/
+        chart: cnpg-tenant
+        targetRevision: 0.0.2
+        helm:
+          releaseName: mastodon-postgres-tenant
+          valuesObject:
+            name: "mastodon-postgres"
+            instances: 3
+            bootstrap:
+              initdb:
+                database: mastodon
+                owner: mastodon
+                postInitSQL:
+                  - GRANT ALL PRIVILEGES ON DATABASE mastodon TO mastodon;
+                  - GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO mastodon;
+
+            backup:
+              destinationPath: "backups"
+              retentionPolicy: "30d"
+              s3Credentials:
+                accessKeyId:
+                  name: {{ .mastodon-minio-credentials-postgres }}
+                  key : "ACCESS_KEY_ID"
+                secretAccessKey:
+                  name: {{ .mastodon-minio-credentials-postgres }}
+                  key : "ACCESS_SECRET_KEY"
+
+            scheduledBackup:
+              name: mastodon-pg-backup
+              spec:
+                schedule: "0 0 0 * * *" 
+                backupOwnerReference: self
+                cluster:
+                  name: pg-backup
+
+            monitoring:
+              enablePodMonitor: true
+
+            postgresql:
+              pg_hba: 
+                - hostnossl all all 0.0.0.0/0 reject
+                - hostssl all all 0.0.0.0/0 cert clientcert=verify-full            
