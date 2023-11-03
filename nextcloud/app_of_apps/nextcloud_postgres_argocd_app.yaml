@@ -1,0 +1,63 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nextcloud-postgres-tenant
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  project: nextcloud
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: nextcloud
+  syncPolicy:
+    syncOptions:
+      - ApplyOutOfSyncOnly=true
+    automated:
+      prune: true
+      selfHeal: true
+  source:
+    # official minio helm repo
+    repoURL: https://small-hack.github.io/cloudnative-pg-tenant-chart/
+    chart: cnpg-tenant
+    targetRevision: 0.0.3
+    helm:
+      releaseName: nextcloud-postgres-tenant
+      valuesObject:
+        name: nextcloud-postgres
+        instances: 3
+        bootstrap:
+          initdb:
+            database: nextcloud
+            owner: nextcloud
+            postInitSQL:
+              - GRANT ALL PRIVILEGES ON DATABASE nextcloud TO nextcloud;
+              - GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO nextcloud;
+
+        backup:
+          destinationPath: "backups"
+          retentionPolicy: "30d"
+          s3Credentials:
+            accessKeyId:
+              name: nextcloud-s3-credentials
+              key : "S3_USER"
+            secretAccessKey:
+              name: nextcloud-s3-credentials
+              key : "S3_PASSWORD"
+
+        scheduledBackup:
+          name: nextcloud-pg-backup
+          spec:
+            schedule: "0 0 0 * * *" 
+            backupOwnerReference: self
+            cluster:
+              name: pg-backup
+
+        monitoring:
+          enablePodMonitor: true
+
+        postgresql:
+          pg_hba: 
+            - hostnossl all all 0.0.0.0/0 reject
+            - hostssl all all 0.0.0.0/0 cert clientcert=verify-full            
