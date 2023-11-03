@@ -1,0 +1,281 @@
+# -- Create clusterroles that extend existing clusterroles to interact with argo-cd crds
+## Ref: https://kubernetes.io/docs/reference/access-authn-authz/rbac/#aggregated-clusterroles
+createAggregateRoles: true
+
+# -- Restrict Argo to operate only in a single namespace (the namespace of the
+# Helm release) by apply Roles and RoleBindings instead of the Cluster
+# equivalents, and start workflow-controller with the --namespaced flag. Use it
+# in clusters with strict access policy.
+singleNamespace: false
+
+controller:
+  metricsConfig:
+    # -- Enables prometheus metrics server
+    enabled: false
+    # -- Path is the path where metrics are emitted. Must start with a "/".
+    path: /metrics
+    # -- Port is the port where metrics are emitted
+    port: 9090
+    # -- How often custom metrics are cleared from memory
+    metricsTTL: ""
+    # -- Flag that instructs prometheus to ignore metric emission errors.
+    ignoreErrors: false
+    # --  Flag that use a self-signed cert for TLS
+    secure: false
+    # -- Container metrics port name
+    portName: metrics
+    # -- Service metrics port
+    servicePort: 8080
+    # -- Service metrics port name
+    servicePortName: metrics
+    # -- ServiceMonitor relabel configs to apply to samples before scraping
+    ## Ref: https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/api.md#relabelconfig
+  persistence: {}
+  # connectionPool:
+  #   maxIdleConns: 100
+  #   maxOpenConns: 0
+  # # save the entire workflow into etcd and DB
+  # nodeStatusOffLoad: false
+  # # enable archiving of old workflows
+  # archive: false
+  # postgresql:
+  #   host: localhost
+  #   port: 5432
+  #   database: postgres
+  #   tableName: argo_workflows
+  #   # the database secrets must be in the same namespace of the controller
+  #   userNameSecret:
+  #     name: argo-postgres-config
+  #     key: username
+  #   passwordSecret:
+  #     name: argo-postgres-config
+  #     key: password
+
+  # -- Number of workflow workers
+  workflowWorkers: # 32
+  # -- Restricts the Workflows that the controller will process.
+  # Only valid for 2.9+
+  workflowRestrictions: {}
+    # templateReferencing: Strict|Secure
+
+  # telemetryConfig controls the path and port for prometheus telemetry. Telemetry is enabled and emitted in the same endpoint
+  # as metrics by default, but can be overridden using this config.
+  telemetryConfig:
+    # -- Enables prometheus telemetry server
+    enabled: false
+    # -- telemetry path
+    path: /telemetry
+    # -- telemetry container port
+    port: 8081
+    # -- How often custom metrics are cleared from memory
+    metricsTTL: ""
+    # -- Flag that instructs prometheus to ignore metric emission errors.
+    ignoreErrors: false
+    # --  Flag that use a self-signed cert for TLS
+    secure: false
+    # -- telemetry service port
+    servicePort: 8081
+    # -- telemetry service port name
+    servicePortName: telemetry
+  serviceMonitor:
+    # -- Enable a prometheus ServiceMonitor
+    enabled: false
+    # -- Prometheus ServiceMonitor labels
+    additionalLabels: {}
+    # -- Prometheus ServiceMonitor namespace
+    namespace: "" # "monitoring"
+  serviceAccount:
+    # -- Create a service account for the controller
+    create: true
+    # -- Service account name
+    name: ""
+    # -- Labels applied to created service account
+    labels: {}
+    # -- Annotations applied to created service account
+    annotations: {}
+
+  # -- Workflow controller name string
+  name: workflow-controller
+
+  # -- Specify all namespaces where this workflow controller instance will manage
+  # workflows. This controls where the service account and RBAC resources will
+  # be created. Only valid when singleNamespace is false.
+  workflowNamespaces:
+    - default
+
+  instanceID:
+    # -- Configures the controller to filter workflow submissions
+    # to only those which have a matching instanceID attribute.
+    ## NOTE: If `instanceID.enabled` is set to `true` then either `instanceID.userReleaseName`
+    ## or `instanceID.explicitID` must be defined.
+    enabled: false
+    # -- Use ReleaseName as instanceID
+    useReleaseName: false
+    # useReleaseName: true
+
+    # -- Use a custom instanceID
+    explicitID: ""
+    # explicitID: unique-argo-controller-identifier
+
+  logging:
+    # -- Set the logging level (one of: `debug`, `info`, `warn`, `error`)
+    level: info
+    # -- Set the glog logging level
+    globallevel: "0"
+    # -- Set the logging format (one of: `text`, `json`)
+    format: "text"
+
+  # -- Service type of the controller Service
+  serviceType: ClusterIP
+  # -- Annotations to be applied to the controller Service
+  serviceAnnotations: {}
+  # -- Optional labels to add to the controller Service
+  serviceLabels: {}
+  # -- Source ranges to allow access to service from. Only applies to service type `LoadBalancer`
+  loadBalancerSourceRanges: []
+
+  pdb:
+    # -- Configure [Pod Disruption Budget] for the controller pods
+    enabled: false
+    # minAvailable: 1
+    # maxUnavailable: 1
+
+  # -- [Node selector]
+  nodeSelector:
+    kubernetes.io/os: linux
+  # -- [Tolerations] for use with node taints
+  tolerations: []
+  # -- Assign custom [affinity] rules
+  affinity: {}
+
+  # -- Workflow retention by number of workflows
+  retentionPolicy: {}
+  #  completed: 10
+  #  failed: 3
+  #  errored: 3
+
+  nodeEvents:
+    # -- Enable to emit events on node completion.
+    ## This can take up a lot of space in k8s (typically etcd) resulting in errors when trying to create new events:
+    ## "Unable to create audit event: etcdserver: mvcc: database space exceeded"
+    enabled: true
+
+  # -- Configure when workflow controller runs in a different k8s cluster with the workflow workloads,
+  # or needs to communicate with the k8s apiserver using an out-of-cluster kubeconfig secret.
+  # @default -- `{}` (See [values.yaml])
+  kubeConfig: {}
+    # # name of the kubeconfig secret, may not be empty when kubeConfig specified
+    # secretName: kubeconfig-secret
+    # # key of the kubeconfig secret, may not be empty when kubeConfig specified
+    # secretKey: kubeconfig
+    # # mounting path of the kubeconfig secret, default to /kube/config
+    # mountPath: /kubeconfig/mount/path
+    # # volume name when mounting the secret, default to kubeconfig
+    # volumeName: kube-config-volume
+
+
+server:
+  # -- Deploy the Argo Server
+  enabled: false
+
+# -- Use static credentials for S3 (eg. when not using AWS IRSA)
+useStaticCredentials: true
+artifactRepository:
+  # -- Archive the main container logs as an artifact
+  archiveLogs: false
+  # -- Store artifact in a S3-compliant object store
+  # @default -- See [values.yaml]
+  s3: {}
+    # # Note the `key` attribute is not the actual secret, it's the PATH to
+    # # the contents in the associated secret, as defined by the `name` attribute.
+    # accessKeySecret:
+    #   name: "{{ .Release.Name }}-minio"
+    #   key: accesskey
+    # secretKeySecret:
+    #   name: "{{ .Release.Name }}-minio"
+    #   key: secretkey
+    # # insecure will disable TLS. Primarily used for minio installs not configured with TLS
+    # insecure: false
+    # bucket:
+    # endpoint:
+    # region:
+    # roleARN:
+    # useSDKCreds: true
+    # encryptionOptions:
+    #    enableEncryption: true
+  # -- Store artifact in a GCS object store
+  # @default -- `{}` (See [values.yaml])
+
+# -- The section of custom artifact repository.
+# Utilize a custom artifact repository that is not one of the current base ones (s3, gcs, azure)
+customArtifactRepository: {}
+# artifactory:
+#   repoUrl: https://artifactory.example.com/raw
+#   usernameSecret:
+#     name: artifactory-creds
+#     key: username
+#   passwordSecret:
+#     name: artifactory-creds
+#     key: password
+
+# -- The section of [artifact repository ref](https://argoproj.github.io/argo-workflows/artifact-repository-ref/).
+# Each map key is the name of configmap
+# @default -- `{}` (See [values.yaml])
+artifactRepositoryRef: {}
+  # # -- 1st ConfigMap
+  # # If you want to use this config map by default, name it "artifact-repositories".
+  # # Otherwise, you can provide a reference to a
+  # # different config map in `artifactRepositoryRef.configMap`.
+  # artifact-repositories:
+  #   # -- v3.0 and after - if you want to use a specific key, put that key into this annotation.
+  #   annotations:
+  #     workflows.argoproj.io/default-artifact-repository: default-v1-s3-artifact-repository
+  #   # 1st data of configmap. See above artifactRepository or customArtifactRepository.
+  #   default-v1-s3-artifact-repository:
+  #     archiveLogs: false
+  #     s3:
+  #       bucket: my-bucket
+  #       endpoint: minio:9000
+  #       insecure: true
+  #       accessKeySecret:
+  #         name: my-minio-cred
+  #         key: accesskey
+  #       secretKeySecret:
+  #         name: my-minio-cred
+  #         key: secretkey
+  #    # 2nd data
+  #    oss-artifact-repository:
+  #      archiveLogs: false
+  #      oss:
+  #        endpoint: http://oss-cn-zhangjiakou-internal.aliyuncs.com
+  #        bucket: $mybucket
+  #        # accessKeySecret and secretKeySecret are secret selectors.
+  #        # It references the k8s secret named 'bucket-workflow-artifect-credentials'.
+  #        # This secret is expected to have have the keys 'accessKey'
+  #        # and 'secretKey', containing the base64 encoded credentials
+  #        # to the bucket.
+  #        accessKeySecret:
+  #          name: $mybucket-credentials
+  #          key: accessKey
+  #        secretKeySecret:
+  #          name: $mybucket-credentials
+  #          key: secretKey
+  # # 2nd ConfigMap
+  # another-artifact-repositories:
+  #   annotations:
+  #     workflows.argoproj.io/default-artifact-repository: gcs
+  #   gcs:
+  #     bucket: my-bucket
+  #     keyFormat: prefix/in/bucket/{{workflow.name}}/{{pod.name}}
+  #     serviceAccountKeySecret:
+  #       name: my-gcs-credentials
+  #       key: serviceAccountKey
+
+emissary:
+  # -- The command/args for each image on workflow, needed when the command is not specified and the emissary executor is used.
+  ## See more: https://argoproj.github.io/argo-workflows/workflow-executors/#emissary-emissary
+  images: []
+  #  argoproj/argosay:v2:
+  #    cmd: [/argosay]
+  #  docker/whalesay:latest:
+  #    cmd: [/bin/bash]
