@@ -51,36 +51,36 @@ spec:
                 owner: nextcloud
                 secret:
                   name: nextcloud-pgsql-credentials
-                postInitSQL:
-                  - GRANT ALL PRIVILEGES ON DATABASE nextcloud TO nextcloud;
-                  - GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO nextcloud;
+            #   postInitSQL:
+            #    - GRANT ALL PRIVILEGES ON DATABASE nextcloud TO nextcloud;
+            #    - GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO nextcloud;
 
-            backup:
-              # barman is a utility for backing up postgres to s3
-              barmanObjectStore:
-                destinationPath: "s3://nextcloud-postgres"
-                endpointURL: "https://{{ .nextcloud_s3_endpoint }}"
-                retentionPolicy: "30d"
-                s3Credentials:
-                  accessKeyId:
-                    name: nextcloud-s3-credentials
-                    key : "S3_USER"
-                  secretAccessKey:
-                    name: nextcloud-s3-credentials
-                    key : "S3_PASSWORD"
+            # backup:
+            #   # barman is a utility for backing up postgres to s3
+            #   barmanObjectStore:
+            #     destinationPath: "s3://nextcloud-postgres"
+            #     endpointURL: "https://{{ .nextcloud_s3_endpoint }}"
+            #     retentionPolicy: "30d"
+            #     s3Credentials:
+            #       accessKeyId:
+            #         name: nextcloud-s3-credentials
+            #         key : "S3_USER"
+            #       secretAccessKey:
+            #         name: nextcloud-s3-credentials
+            #         key : "S3_PASSWORD"
 
-            scheduledBackup:
-              name: nextcloud-pg-backup
-              spec:
-                schedule: "0 0 0 * * *" 
-                backupOwnerReference: self
-                cluster:
-                  name: pg-backup
+            # scheduledBackup:
+            #   name: nextcloud-pg-backup
+            #   spec:
+            #     schedule: "0 0 0 * * *" 
+            #     backupOwnerReference: self
+            #     cluster:
+            #       name: pg-backup
 
-            monitoring:
-              enablePodMonitor: true
+            # monitoring:
+            #  enablePodMonitor: true
 
-            postgresql:
-              pg_hba: 
-                - hostnossl all all 0.0.0.0/0 reject
-                - hostssl all all 0.0.0.0/0 cert clientcert=verify-full            
+            # postgresql:
+            #   pg_hba: 
+            #     - hostnossl all all 0.0.0.0/0 reject
+            #     - hostssl all all 0.0.0.0/0 cert clientcert=verify-full            

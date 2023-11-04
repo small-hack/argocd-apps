@@ -139,22 +139,14 @@ spec:
                       key: S3_ENCRYPTION_KEY
 
               extraVolumes:
-                - name: secret-volume-postgres-root-ca
+                - name: secret-volume-postgres-certs
                   secret:
-                    secretName: nextcloud-postgres-root-ca
-                    defaultMode: 0600
-
-                - name: secret-volume-nextcloud-postgres
-                  secret:
-                    secretName: nextcloud-postgres
+                    secretName: nextcloud-postgres-server-cert
                     defaultMode: 0600
 
               extraVolumemounts:
                 - name: secret-volume-postgres-root-ca
-                  mountPath: /etc/secrets/ca
-
-                - name: secret-volume-nextcloud-postgres
-                  mountPath: /etc/secrets/app
+                  mountPath: /etc/secrets
 
               phpConfigs:
                 www.conf: |-
@@ -318,7 +310,7 @@ spec:
             externalDatabase:
               enabled: true
               type: postgresql
-              host: "nextcloud-postgresql-rw.nextcloud.svc:5432;sslmode=verify-full;sslrootcert=/etc/secrets/cert.pem;sslcert=/etc/secrets/client-cert.crt;sslkey=/etc/secret/client-cert.key"
+              host: "nextcloud-postgresql-rw.nextcloud.svc:5432;sslmode=verify-full;sslrootcert=/etc/secrets/ca.crt;sslcert=/etc/secrets/tls.crt;sslkey=/etc/secret/tls.key"
               database: nextcloud
               existingSecret:
                 enabled: true
