@@ -68,6 +68,12 @@ spec:
                     name: nextcloud-s3-credentials
                     key : "S3_PASSWORD"
               retentionPolicy: "30d"
+            
+            certificates:
+              serverTLSSecret: nextcloud-postgres-server-cert
+              serverCASecret: nextcloud-postgres-server-cert
+              clientCASecret: nextcloud-postgres-client-cert
+              replicationTLSSecret: nextcloud-postgres-client-cert
 
             scheduledBackup:
               name: nextcloud-pg-backup
