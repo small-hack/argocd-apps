@@ -315,6 +315,7 @@ spec:
 
             internalDatabase:
               enabled: false
+
             externalDatabase:
               enabled: true
               type: postgresql
