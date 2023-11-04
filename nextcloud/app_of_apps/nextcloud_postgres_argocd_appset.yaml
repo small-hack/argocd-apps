@@ -80,7 +80,7 @@ spec:
             # monitoring:
             #  enablePodMonitor: true
 
-            # postgresql:
-            #   pg_hba: 
-            #     - hostnossl all all 0.0.0.0/0 reject
-            #     - hostssl all all 0.0.0.0/0 cert clientcert=verify-full            
+            postgresql:
+              pg_hba: 
+                - hostnossl all all 0.0.0.0/0 reject
+                - hostssl all all 0.0.0.0/0 cert clientcert=verify-full            
