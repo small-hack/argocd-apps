@@ -318,13 +318,12 @@ spec:
               enabled: true
               type: postgresql
               host: "nextcloud-postgresql-rw:5432;sslmode=verify-full;sslrootcert=/etc/secrets/cert.pem;sslcert=/etc/secrets/client-cert.crt;sslkey=/etc/secret/client-cert.key"
-              user: nextcloud
               database: nextcloud
               existingSecret:
                 enabled: true
                 secretName: nextcloud-pgsql-credentials
-                usernameKey: nextcloudUsername
-                passwordKey: nextcloudPassword
+                usernameKey: username
+                passwordKey: password
 
             postgresql:
               enabled: false
