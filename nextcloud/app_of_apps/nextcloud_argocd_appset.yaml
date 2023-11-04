@@ -149,7 +149,7 @@ spec:
                     secretName: nextcloud-postgres-client-cert
                     defaultMode: 0600
 
-              extraVolumemounts:
+              extraVolumeMounts:
                 - name: postgres-ca
                   mountPath: /etc/secrets/ca
 
