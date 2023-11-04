@@ -318,7 +318,7 @@ spec:
             externalDatabase:
               enabled: true
               type: postgresql
-              host: "nextcloud-postgresql-rw.nextcloud.svc:5432;sslmode=verify-full;sslrootcert=/etc/secrets/ca/ca.crt;sslcert=/etc/secrets/tls.crt;sslkey=/etc/secret/tls.key"
+              host: "nextcloud-postgres-rw.nextcloud.svc:5432;sslmode=verify-full;sslrootcert=/etc/secrets/ca/ca.crt;sslcert=/etc/secrets/tls.crt;sslkey=/etc/secret/tls.key"
               database: nextcloud
               existingSecret:
                 enabled: true
