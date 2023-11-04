@@ -80,6 +80,7 @@ spec:
                 tokenKey: serverInfoToken
                 smtpUsernameKey: smtpUsername
                 smtpPasswordKey: smtpPassword
+                smtpHostKey: smtpHost
 
               # update to the latest version of nextcloud
               update: 1
