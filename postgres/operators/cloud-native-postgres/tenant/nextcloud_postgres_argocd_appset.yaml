@@ -35,7 +35,7 @@ spec:
         # official minio helm repo
         repoURL: https://small-hack.github.io/cloudnative-pg-tenant-chart/
         chart: cnpg-tenant
-        targetRevision: 0.0.9
+        targetRevision: 0.1.0
         helm:
           releaseName: nextcloud-postgres-tenant
           values: |
