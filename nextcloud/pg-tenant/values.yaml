@@ -46,14 +46,16 @@ bootstrap:
 #       name: pg-backup
 
 certificates:
+  # -- set generate to false to use existing certs
+  generate: true
   # -- name of existing Kubernetes Secret for the postgresql server TLS cert
-  serverTLSSecret: my-postgres-server-cert
+  serverTLSSecret: ""
   # -- name of existing Kubernetes Secret for the postgresql server Certificate Authority cert
-  serverCASecret: my-postgres-server-cert
+  serverCASecret: ""
   # -- name of existing Kubernetes Secret for the postgresql client Certificate Authority cert
-  clientCASecret: my-postgres-client-cert
+  clientCASecret: ""
   # -- name of existing Kubernetes Secret for the postgresql client TLS cert
-  replicationTLSSecret: my-postgres-client-cert
+  replicationTLSSecret: ""
 
 monitoring:
   # -- enable monitoring via Prometheus

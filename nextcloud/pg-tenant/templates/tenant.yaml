@@ -25,7 +25,13 @@ spec:
     {{- toYaml . | nindent 4 }}
   {{- end }}
   {{- end }}
-  {{- if .Values.certificates }}
+  {{- if .Values.certificates.generate }}
+  certificates:
+    serverTLSSecret: "{{ .Values.name }}-server-cert"
+    serverCASecret: "{{ .Values.name }}-server-cert"
+    clientCASecret: "{{ .Values.name }}-client-cert"
+    replicationTLSSecret: "{{ .Values.name }}-client-cert"
+  {{- else }}
   {{- with .Values.certificates }}
   certificates:
     {{- toYaml . | nindent 4 }}

@@ -1,3 +1,4 @@
+{{- if .Values.certificates.generate }}
 ---
 apiVersion: cert-manager.io/v1
 kind: Issuer
@@ -6,34 +7,10 @@ metadata:
 spec:
   selfSigned: {}
 ---
-apiVersion: cert-manager.io/v1
-kind: Certificate
-metadata:
-  name: "{{ .Values.name }}-server-ca"
-spec:
-  isCA: true
-  commonName: "{{ .Values.name }}-selfsigned-server-ca"
-  secretName: "{{ .Values.name }}-server-ca-key-pair"
-  privateKey:
-    algorithm: ECDSA
-    size: 256
-  issuerRef:
-    name: "{{ .Values.name }}-selfsigned-issuer"
-    kind: Issuer
-    group: cert-manager.io
----
-apiVersion: cert-manager.io/v1
-kind: Issuer
-metadata:
-  name: "{{ .Values.name }}-server-ca-issuer"
-spec:
-  ca:
-    secretName: "{{ .Values.name }}-server-ca-key-pair"
----
 apiVersion: v1
 kind: Secret
 metadata:
-  name: "{{ .Values.name }}-server-secret"
+  name: "{{ .Values.name }}-server-cert"
   labels:
     cnpg.io/reload: ""
 ---
@@ -46,18 +23,17 @@ spec:
   usages:
     - server auth
   dnsNames:
-    - "{{ .Values.name }}-lb.internal.mydomain.net"
     - "{{ .Values.name }}-rw"
-    - "{{ .Values.name }}-rw.default"
-    - "{{ .Values.name }}-rw.default.svc"
+    - "{{ .Values.name }}-rw.{{ .Release.Namespace }}"
+    - "{{ .Values.name }}-rw.{{ .Release.Namespace }}.svc"
     - "{{ .Values.name }}-r"
-    - "{{ .Values.name }}-r.default"
-    - "{{ .Values.name }}-r.default.svc"
+    - "{{ .Values.name }}-r.{{ .Release.Namespace }}"
+    - "{{ .Values.name }}-r.{{ .Release.Namespace }}.svc"
     - "{{ .Values.name }}-ro"
-    - "{{ .Values.name }}-ro.default"
-    - "{{ .Values.name }}-ro.default.svc"
+    - "{{ .Values.name }}-ro.{{ .Release.Namespace }}"
+    - "{{ .Values.name }}-ro.{{ .Release.Namespace }}.svc"
   issuerRef:
-    name: "{{ .Values.name }}-server-ca-issuer"
+    name: "{{ .Values.name }}-selfsigned-issuer"
     kind: Issuer
     group: cert-manager.io
-
+{{- end }}
