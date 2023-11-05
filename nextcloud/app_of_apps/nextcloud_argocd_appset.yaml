@@ -141,7 +141,7 @@ spec:
               extraVolumes:
                 - name: postgres-ca
                   secret:
-                    secretName: nextcloud-postgres-ca
+                    secretName: nextcloud-postgres-server-ca-key-pair
                     defaultMode: 0600
 
                 - name: postgres-client-certs
