@@ -154,7 +154,7 @@ spec:
                   mountPath: /etc/secrets/ca
 
                 - name: postgres-client-certs
-                  mountPath: /etc/secrets
+                  mountPath: /etc/secrets/nextcloud
 
               phpConfigs:
                 www.conf: |-
@@ -319,7 +319,7 @@ spec:
             externalDatabase:
               enabled: true
               type: postgresql
-              host: "nextcloud-postgres-rw.nextcloud.svc:5432;sslmode=verify-full;sslrootcert=/etc/secrets/ca/ca.crt;sslcert=/etc/secrets/tls.crt;sslkey=/etc/secrets/tls.key"
+              host: "nextcloud-postgres-rw.nextcloud.svc:5432;sslmode=verify-full;sslrootcert=/etc/secrets/ca/ca.crt;sslcert=/etc/secrets/nextcloud/tls.crt;sslkey=/etc/secrets/nextcloud/tls.key"
               database: nextcloud
               existingSecret:
                 enabled: true
