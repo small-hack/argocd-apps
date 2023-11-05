@@ -1,0 +1,33 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: {{ .Values.name }}
+spec:
+  instances: {{ .Values.instances}}
+  {{- if .Values.backup }}
+  {{- with .Values.backup }}
+  backup:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- end }}
+  monitoring:
+    enablePodMonitor: {{ .Values.monitoring.enablePodMonitor }}
+  {{- with .Values.postgresql }}
+  postgresql:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  storage:
+    size: {{ .Values.storage.size }}
+  {{- if .Values.bootstrap }}
+  {{- with .Values.bootstrap }}
+  bootstrap:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- end }}
+  {{- if .Values.certificates }}
+  {{- with .Values.certificates }}
+  certificates:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- end }}

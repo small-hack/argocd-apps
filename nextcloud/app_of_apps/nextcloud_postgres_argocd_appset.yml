@@ -36,15 +36,15 @@ spec:
           prune: true
           selfHeal: true
       source:
-        # official minio helm repo
-        repoURL: https://small-hack.github.io/cloudnative-pg-tenant-chart
-        chart: cnpg-tenant
-        targetRevision: 0.0.9
+        repoURL: 'https://github.com/small-hack/argocd-apps.git'
+        path: nextcloud/pg-tenant/
+        targetRevision: eso-helm-chart-test
         helm:
           releaseName: nextcloud-postgres-tenant
           values: |
             name: nextcloud-postgres
             instances: 3
+
             bootstrap:
               initdb:
                 database: nextcloud

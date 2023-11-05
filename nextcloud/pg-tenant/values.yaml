@@ -1,0 +1,70 @@
+name: "cnpg"
+
+instances: 3
+
+superuserSecret:
+  name: superuser-secret
+
+bootstrap:
+  initdb:
+    # -- initial database to create
+    database: app
+    # -- owner of the initial database that is created above
+    owner: app
+    # secret:
+    #   name: app-secret
+    # -- list of SQL commands to run as part of the init scripts
+    # example init command:
+    #  - CREATE ROLE friend
+    postInitSQL: []
+
+# backup:
+#   # -- how long to keep backups for
+#   retentionPolicy: "30d"
+#   barmanObjectStore:
+#     destinationPath: "backups"
+#     s3Credentials:
+#       accessKeyId:
+#         # -- existing Kubernetes Secret to use for S3 access key ID
+#         name: "aws-creds"
+#         # -- key in Kubernetes Secret to use for S3 access key ID
+#         key: "ACCESS_KEY_ID"
+#       secretAccessKey:
+#         # -- existing Kubernetes Secret to use for S3 secret key
+#         name: "aws-creds"
+#         # -- key in Kubernetes Secret to use for S3 secret key
+#         key: "ACCESS_SECRET_KEY"
+# 
+# scheduledBackup:
+#   # -- name to use for your scheduled backup job
+#   name: example-backup
+#   spec:
+#     # -- crontab style schedule to run the backups
+#     schedule: "0 0 0 * * *"
+#     backupOwnerReference: self
+#     cluster:
+#       name: pg-backup
+
+certificates:
+  # -- name of existing Kubernetes Secret for the postgresql server TLS cert
+  serverTLSSecret: my-postgres-server-cert
+  # -- name of existing Kubernetes Secret for the postgresql server Certificate Authority cert
+  serverCASecret: my-postgres-server-cert
+  # -- name of existing Kubernetes Secret for the postgresql client Certificate Authority cert
+  clientCASecret: my-postgres-client-cert
+  # -- name of existing Kubernetes Secret for the postgresql client TLS cert
+  replicationTLSSecret: my-postgres-client-cert
+
+monitoring:
+  # -- enable monitoring via Prometheus
+  enablePodMonitor: false
+
+postgresql:
+  # -- records for the pg_hba.conf file. ref: https://www.postgresql.org/docs/current/auth-pg-hba-conf.html
+  pg_hba:
+    - hostnossl all all 0.0.0.0/0 reject
+    - hostssl all all 0.0.0.0/0 cert clientcert=verify-full
+
+storage:
+  # -- how much storage to allocate to the postgresql cluster
+  size: 1Gi
