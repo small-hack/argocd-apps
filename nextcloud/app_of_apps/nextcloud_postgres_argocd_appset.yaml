@@ -71,8 +71,8 @@ spec:
             
             certificates:
               serverTLSSecret: nextcloud-postgres-server-cert
-              serverCASecret: nextcloud-postgres-server-cert
-              clientCASecret: nextcloud-postgres-client-cert
+              serverCASecret: nextcloud-postgres-server-ca-key-pair
+              clientCASecret: nextcloud-postgres-client-ca-key-pair
               replicationTLSSecret: nextcloud-postgres-client-cert
 
             scheduledBackup:
@@ -89,4 +89,4 @@ spec:
             postgresql:
               pg_hba: 
                 - hostnossl all all 0.0.0.0/0 reject
-                - hostssl all all 0.0.0.0/0 cert clientcert=verify-full            
+                - hostssl all all 0.0.0.0/0 cert clientcert=verify-full
