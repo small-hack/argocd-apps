@@ -37,12 +37,26 @@ metadata:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
+  name: "{{ .Values.name }}-streaming-client-cert"
+spec:
+  secretName: "{{ .Values.name }}-streaming-client-cert"
+  usages:
+    - client auth
+  commonName: streaming_replica
+  issuerRef:
+    name: "{{ .Values.name }}-client-ca-issuer"
+    kind: Issuer
+    group: cert-manager.io
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
   name: "{{ .Values.name }}-client-cert"
 spec:
   secretName: "{{ .Values.name }}-client-cert"
   usages:
     - client auth
-  commonName: streaming_replica
+  commonName: nextcloud
   issuerRef:
     name: "{{ .Values.name }}-client-ca-issuer"
     kind: Issuer
