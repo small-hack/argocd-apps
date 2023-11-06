@@ -82,9 +82,6 @@ spec:
                 smtpPasswordKey: smtpPassword
                 smtpHostKey: smtpHost
 
-              securityContext:
-                runAsGroup: 82
-
               # update to the latest version of nextcloud
               update: 1
 
