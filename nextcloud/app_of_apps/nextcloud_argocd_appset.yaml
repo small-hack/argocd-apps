@@ -152,11 +152,11 @@ spec:
               extraVolumes:
                 - name: postgres-ca
                   secret:
-                    secretName: nextcloud-postgres-ca
+                    secretName: nextcloud-postgres-server-ca-key-pair
 
                 - name: postgres-client-certs
                   secret:
-                    secretName: nextcloud-postgres-server
+                    secretName: nextcloud-postgres-nextcloud-cert
 
               extraVolumeMounts:
                 - name: postgres-ca
