@@ -36,9 +36,6 @@ spec:
           prune: true
           selfHeal: true
       source:
-        # repoURL: 'https://github.com/small-hack/argocd-apps.git'
-        # path: nextcloud/pg-tenant/
-        # targetRevision: eso-helm-chart-test
         repoURL: https://small-hack.github.io/cloudnative-pg-tenant-chart
         chart: cnpg-cluster
         targetRevision: 0.3.0
@@ -54,9 +51,9 @@ spec:
                 owner: nextcloud
                 secret:
                   name: nextcloud-pgsql-credentials
-            #   postInitSQL:
-            #    - GRANT ALL PRIVILEGES ON DATABASE nextcloud TO nextcloud;
-            #    - GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO nextcloud;
+                # postInitSQL:
+                #  - GRANT ALL PRIVILEGES ON DATABASE nextcloud TO nextcloud;
+                #  - GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO nextcloud;
 
             backup:
               # barman is a utility for backing up postgres to s3
@@ -91,8 +88,8 @@ spec:
                 cluster:
                   name: pg-backup
 
-            # monitoring:
-            #  enablePodMonitor: true
+            monitoring:
+              enablePodMonitor: false
 
             postgresql:
               pg_hba: 
