@@ -141,10 +141,10 @@ spec:
                       key: S3_ENCRYPTION_KEY
 
                 - name: "PGSSLCERT"
-                  value: /etc/secrets/nextcloud/tls.key
+                  value: /etc/secrets/nextcloud/tls.crt
 
                 - name: "PGSSLKEY"
-                  value: /etc/secrets/nextcloud/tls.crt
+                  value: /etc/secrets/nextcloud/tls.key
 
                 - name: "PGSSLROOTCERT"
                   value: /etc/secrets/ca/ca.crt
