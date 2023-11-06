@@ -191,6 +191,7 @@ spec:
                 ingressClassName: "nginx"
                 annotations:
                   cert-manager.io/cluster-issuer: {{ .global_cluster_issuer }}
+                  nginx.ingress.kubernetes.io/proxy-body-size: 64M
                 tls:
                   - secretName: nextcloud-minio-api-tls
                     hosts:
