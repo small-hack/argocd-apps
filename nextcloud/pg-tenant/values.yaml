@@ -11,51 +11,64 @@ bootstrap:
     database: app
     # -- owner of the initial database that is created above
     owner: app
-    # secret:
-    #   name: app-secret
-    # -- list of SQL commands to run as part of the init scripts
-    # example init command:
+    secret:
+      name: app-secret
+    # list of SQL commands to run as part of the init scripts, example:
+    # postInitSQL:
     #  - CREATE ROLE friend
-    postInitSQL: []
 
-# backup:
-#   # -- how long to keep backups for
-#   retentionPolicy: "30d"
-#   barmanObjectStore:
-#     destinationPath: "backups"
-#     s3Credentials:
-#       accessKeyId:
-#         # -- existing Kubernetes Secret to use for S3 access key ID
-#         name: "aws-creds"
-#         # -- key in Kubernetes Secret to use for S3 access key ID
-#         key: "ACCESS_KEY_ID"
-#       secretAccessKey:
-#         # -- existing Kubernetes Secret to use for S3 secret key
-#         name: "aws-creds"
-#         # -- key in Kubernetes Secret to use for S3 secret key
-#         key: "ACCESS_SECRET_KEY"
-# 
-# scheduledBackup:
-#   # -- name to use for your scheduled backup job
-#   name: example-backup
-#   spec:
-#     # -- crontab style schedule to run the backups
-#     schedule: "0 0 0 * * *"
-#     backupOwnerReference: self
-#     cluster:
-#       name: pg-backup
+backup:
+  # -- how long to keep backups for
+  retentionPolicy: "30d"
+  barmanObjectStore:
+    destinationPath: "backups"
+    s3Credentials:
+      accessKeyId:
+        # -- existing Kubernetes Secret to use for S3 access key ID
+        name: "aws-creds"
+        # -- key in Kubernetes Secret to use for S3 access key ID
+        key: "ACCESS_KEY_ID"
+      secretAccessKey:
+        # -- existing Kubernetes Secret to use for S3 secret key
+        name: "aws-creds"
+        # -- key in Kubernetes Secret to use for S3 secret key
+        key: "ACCESS_SECRET_KEY"
+
+scheduledBackup:
+  # -- name to use for your scheduled backup job
+  name: example-backup
+  spec:
+    # -- crontab style schedule to run the backups
+    schedule: "0 0 0 * * *"
+    backupOwnerReference: self
+    cluster:
+      name: pg-backup
 
 certificates:
-  # -- set generate to false to use existing certs
-  generate: true
-  # -- name of existing Kubernetes Secret for the postgresql server TLS cert
-  serverTLSSecret: ""
-  # -- name of existing Kubernetes Secret for the postgresql server Certificate Authority cert
-  serverCASecret: ""
-  # -- name of existing Kubernetes Secret for the postgresql client Certificate Authority cert
-  clientCASecret: ""
-  # -- name of existing Kubernetes Secret for the postgresql client TLS cert
-  replicationTLSSecret: ""
+  server:
+    # -- enable using server certificates
+    enabled: false
+    # -- generate server certs using cert-manager. if true the following
+    # are ignored: certificates.serverTLSSecret, certificates.serverCASecret
+    generate: false
+    # -- name of existing Kubernetes Secret for the postgresql server TLS cert,
+    # ignored if certificates.generate is true
+    serverTLSSecret: ""
+    # -- name of existing Kubernetes Secret for the postgresql server Certificate
+    # Authority cert, ignored if certificates.generate is true
+    serverCASecret: ""
+  client:
+    # -- enable using client certificates
+    enabled: false
+    # -- generate client certs using cert-manager. if true the following are
+    # ignored: certificates.clientCASecret, certificates.replicationTLSSecret
+    generate: false
+    # -- name of existing Kubernetes Secret for the postgresql client Certificate
+    # Authority cert, ignored if certificates.generate is true
+    clientCASecret: ""
+    # -- name of existing Kubernetes Secret for the postgresql replication TLS
+    # cert ignored if certificates.generate is true
+    replicationTLSSecret: ""
 
 monitoring:
   # -- enable monitoring via Prometheus

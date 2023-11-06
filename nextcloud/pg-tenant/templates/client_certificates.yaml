@@ -1,11 +1,28 @@
-{{- if .Values.certificates.generate }}
+{{- if and .Values.certificates.client.enabled .Values.certificates.client.generate }}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: "{{ .Values.name }}-client-ca"
+spec:
+  isCA: true
+  commonName: "{{ .Values.name }}-selfsigned-client-ca"
+  secretName: "{{ .Values.name }}-client-ca-key-pair"
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+  issuerRef:
+    name: "{{ .Values.name }}-selfsigned-issuer"
+    kind: Issuer
+    group: cert-manager.io
 ---
 apiVersion: cert-manager.io/v1
 kind: Issuer
 metadata:
-  name: "{{ .Values.name }}-client-issuer"
+  name: "{{ .Values.name }}-client-ca-issuer"
 spec:
-  selfSigned: {}
+  ca:
+    secretName: "{{ .Values.name }}-client-ca-key-pair"
 ---
 apiVersion: v1
 kind: Secret
@@ -19,10 +36,12 @@ kind: Certificate
 metadata:
   name: "{{ .Values.name }}-client-cert"
 spec:
-  commonName: "{{ .Values.name }}"
   secretName: "{{ .Values.name }}-client-cert"
+  usages:
+    - client auth
+  commonName: streaming_replica
   issuerRef:
-    name: "{{ .Values.name }}-client-issuer"
+    name: "{{ .Values.name }}-client-ca-issuer"
     kind: Issuer
     group: cert-manager.io
 {{- end }}
