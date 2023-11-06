@@ -194,8 +194,8 @@ spec:
                 tls:
                   - secretName: nextcloud-minio-api-tls
                     hosts:
-                      - "{{ .nextcloud_s3_endpoint}}"
-                host: {{ .minio_api_hostname }}
+                      - "{{ .nextcloud_s3_endpoint }}"
+                host: {{ .nextcloud_s3_endpoint }}
                 path: /
                 pathType: Prefix
 
