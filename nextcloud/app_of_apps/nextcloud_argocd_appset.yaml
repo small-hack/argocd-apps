@@ -84,6 +84,7 @@ spec:
 
               podSecurityContext:
                 fsgroup: 33
+                runAsUser: 33
                 runAsNonRoot: true
 
               # update to the latest version of nextcloud
