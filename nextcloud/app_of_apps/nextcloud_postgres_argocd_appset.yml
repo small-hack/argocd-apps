@@ -76,6 +76,7 @@ spec:
               server:
                 generate: false
               client:
+                enabled: true
                 generate: true
 
             scheduledBackup:
