@@ -3,7 +3,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: nextcloud-postgres-tenant-app-set
+  name: nextcloud-postgres-app-set
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "2"
@@ -20,7 +20,7 @@ spec:
               - nextcloud_s3_endpoint
   template:
     metadata:
-      name: nextcloud-postgres-tenant
+      name: nextcloud-postgres-cluster
       namespace: nextcloud
       annotations:
         argocd.argoproj.io/sync-wave: "2"
@@ -40,7 +40,7 @@ spec:
         chart: cnpg-cluster
         targetRevision: 0.3.0
         helm:
-          releaseName: nextcloud-postgres-tenant
+          releaseName: nextcloud-postgres-cluster
           values: |
             name: nextcloud-postgres
             instances: 3
