@@ -36,12 +36,12 @@ spec:
           prune: true
           selfHeal: true
       source:
-        repoURL: 'https://github.com/small-hack/argocd-apps.git'
-        path: nextcloud/pg-tenant/
-        targetRevision: eso-helm-chart-test
-        # repoURL: https://small-hack.github.io/cloudnative-pg-tenant-chart
-        # chart: cnpg-cluster
-        # targetRevision: 0.2.0
+        # repoURL: 'https://github.com/small-hack/argocd-apps.git'
+        # path: nextcloud/pg-tenant/
+        # targetRevision: eso-helm-chart-test
+        repoURL: https://small-hack.github.io/cloudnative-pg-tenant-chart
+        chart: cnpg-cluster
+        targetRevision: 0.3.0
         helm:
           releaseName: nextcloud-postgres-tenant
           values: |
@@ -74,10 +74,14 @@ spec:
             
             certificates:
               server:
-                generate: false
+                enabled: true
+                generate: true
               client:
                 enabled: true
                 generate: true
+              user:
+                enabled: true
+                username: nextcloud
 
             scheduledBackup:
               name: nextcloud-pg-backup
