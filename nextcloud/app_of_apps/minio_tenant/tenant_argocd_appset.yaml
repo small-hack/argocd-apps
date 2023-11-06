@@ -145,8 +145,8 @@ spec:
 
               ## List of bucket definitions to create during tenant provisioning.
               buckets:
-                - name: nextcloud
-                  objectLock: false
+              # - name: nextcloud
+              #   objectLock: false
                 - name: nextcloud-postgresql
                   objectLock: false
 
