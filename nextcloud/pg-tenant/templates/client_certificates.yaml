@@ -9,8 +9,11 @@ spec:
   commonName: "{{ .Values.name }}-selfsigned-client-ca"
   secretName: "{{ .Values.name }}-client-ca-key-pair"
   privateKey:
-    algorithm: ECDSA
-    size: 256
+    # algorithm: ECDSA
+    # size: 256
+    algorithm: RSA
+    encoding: PKCS1
+    size: 2048
   issuerRef:
     name: "{{ .Values.name }}-selfsigned-issuer"
     kind: Issuer
