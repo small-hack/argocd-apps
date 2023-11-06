@@ -40,7 +40,7 @@ spec:
         helm:
           values: |
             image:
-              flavor: fpm
+              flavor: fpm-alpine
 
             ingress:
               enabled: true
