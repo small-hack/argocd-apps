@@ -76,7 +76,7 @@ spec:
               server:
                 generate: false
               client:
-                generate: false
+                generate: true
 
             scheduledBackup:
               name: nextcloud-pg-backup
