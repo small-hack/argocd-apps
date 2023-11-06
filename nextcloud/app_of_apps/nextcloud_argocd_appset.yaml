@@ -82,8 +82,6 @@ spec:
                 smtpPasswordKey: smtpPassword
                 smtpHostKey: smtpHost
 
-              securityContext:
-                runAsGroup: 33
               podSecurityContext:
                 fsgroup: 33
                 runAsGroup: 33
