@@ -368,22 +368,22 @@ spec:
 
             livenessProbe:
               enabled: false
-              initialDelaySeconds: 30
-              periodSeconds: 15
+              initialDelaySeconds: 300
+              periodSeconds: 30
               timeoutSeconds: 5
               failureThreshold: 3
               successThreshold: 1
             readinessProbe:
               enabled: true
-              initialDelaySeconds: 30
-              periodSeconds: 15
+              initialDelaySeconds: 300
+              periodSeconds: 30
               timeoutSeconds: 5
               failureThreshold: 3
               successThreshold: 1
             startupProbe:
               enabled: false
-              initialDelaySeconds: 30
-              periodSeconds: 10
+              initialDelaySeconds: 300
+              periodSeconds: 30
               timeoutSeconds: 5
               failureThreshold: 30
               successThreshold: 1
