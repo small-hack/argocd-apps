@@ -86,6 +86,7 @@ spec:
                 runAsGroup: 33
               podSecurityContext:
                 fsgroup: 33
+                runAsGroup: 33
 
               # update to the latest version of nextcloud
               update: 1
