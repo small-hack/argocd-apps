@@ -82,6 +82,9 @@ spec:
                 smtpPasswordKey: smtpPassword
                 smtpHostKey: smtpHost
 
+              podSecurityContext:
+                fsgroup: 33
+
               # update to the latest version of nextcloud
               update: 1
 
