@@ -40,8 +40,8 @@ spec:
         # path: nextcloud/pg-tenant/
         # targetRevision: eso-helm-chart-test
         repoURL: https://small-hack.github.io/cloudnative-pg-tenant-chart
-        chart: cnpg-tenant
-        targetRevision: 0.1.0
+        chart: cnpg-cluster
+        targetRevision: 0.2.0
         helm:
           releaseName: nextcloud-postgres-tenant
           values: |
@@ -73,7 +73,10 @@ spec:
               retentionPolicy: "30d"
             
             certificates:
-              generate: true
+              server:
+                generate: false
+              client:
+                generate: false
 
             scheduledBackup:
               name: nextcloud-pg-backup
