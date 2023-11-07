@@ -15,6 +15,7 @@ spec:
           parameters:
             secret_vars:
               - nextcloud_s3_endpoint
+              - nextcloud_s3_region
               - global_cluster_issuer
   template:
     metadata:
@@ -147,7 +148,7 @@ spec:
               buckets:
                 - name: nextcloud
                   objectLock: false
-                  region: eu-west-1
+                  region: {{ .nextcloud_s3_region }}
                 - name: nextcloud-postgresql
                   objectLock: false
 

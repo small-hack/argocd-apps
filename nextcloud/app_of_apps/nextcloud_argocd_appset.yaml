@@ -16,6 +16,7 @@ spec:
           parameters:
             secret_vars:
               - nextcloud_hostname
+              - nextcloud_s3_region
               - global_cluster_issuer
   template:
     metadata:
@@ -218,6 +219,7 @@ spec:
                             'hostname' => getenv('NEXTCLOUD_S3_HOSTNAME'),
                             'key' => getenv('NEXTCLOUD_S3_USER'),
                             'secret' => getenv('NEXTCLOUD_S3_PASSWORD'),
+                            'region' => {{ .nextcloud_s3_region }},
                             'port' => 443,
                             'use_ssl' => true,
                             'use_path_style' => true,
