@@ -136,16 +136,16 @@ spec:
                       key: S3_PASSWORD
 
                 - name: "OBJECTSTORE_S3_PORT"
-                  value: 443
+                  value: "443"
 
                 - name: "OBJECTSTORE_S3_SSL"
-                  value: true
+                  value: "true"
 
                 - name: "OBJECTSTORE_S3_REGION"
                   value: {{ .nextcloud_s3_region }}
 
                 - name: "OBJECTSTORE_S3_USEPATH_STYLE"
-                  value: true
+                  value: "true"
 
                 #- name: "OBJECTSTORE_S3_ENCYRPTION_KEY"
                 #- name: "NEXTCLOUD_S3_ENCYRPTION_KEY"
