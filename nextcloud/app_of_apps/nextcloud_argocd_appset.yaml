@@ -148,7 +148,6 @@ spec:
                   value: "true"
 
                 #- name: "OBJECTSTORE_S3_ENCYRPTION_KEY"
-                #- name: "NEXTCLOUD_S3_ENCYRPTION_KEY"
                 #  valueFrom:
                 #    secretKeyRef:
                 #      name: nextcloud-s3-credentials
@@ -203,7 +202,7 @@ spec:
                     'logdateformat' => 'F d, Y H:i:s'
                     );
 
-                video_previews.config.php: |-
+                previews.config.php: |-
                   <?php
                   $CONFIG = array (
                     'enable_previews' => true,
@@ -222,26 +221,26 @@ spec:
                     ),
                   );
 
-                # object_store.config.php: |-
-                #<?php
-                # $CONFIG = array (
-                #   'objectstore' => [
-                #     'class' => '\\OC\\Files\\ObjectStore\\S3',
-                #     'arguments' => [
-                #           'bucket' => getenv('NEXTCLOUD_S3_BUCKET'),
-                #           'hostname' => getenv('NEXTCLOUD_S3_HOSTNAME'),
-                #           'key' => getenv('NEXTCLOUD_S3_USER'),
-                #           'secret' => getenv('NEXTCLOUD_S3_PASSWORD'),
-                #           'region' => {{ .nextcloud_s3_region }},
-                #           'port' => 443,
-                #           'use_ssl' => true,
-                #           'use_path_style' => true,
-                #           'autocreate' => false,
-                #           'verify_bucket_exists' => false,
-                #           'sse_c_key' => getenv('NEXTCLOUD_ENCRYPTION_KEY')
-                #     ]
-                #   ]
-                # );
+                # 'sse_c_key' => getenv('OBJECTSTORE_S3_ENCYRPTION_KEY')
+                s3.config.php: |-
+                  <?php
+                  $CONFIG = array (
+                    'objectstore' => [
+                      'class' => '\\OC\\Files\\ObjectStore\\S3',
+                      'arguments' => [
+                            'bucket' => getenv('OBJECTSTORE_S3_BUCKET'),
+                            'hostname' => getenv('OBJECTSTORE_S3_HOST'),
+                            'key' => getenv('OBJECTSTORE_S3_KEY'),
+                            'secret' => getenv('OBJECTSTORE_S3_SECRET'),
+                            'region' => getenv('OBJECTSTORE_S3_REGION'),
+                            'port' => getenv('OBJECTSTORE_S3_PORT'),
+                            'use_ssl' => true,
+                            'use_path_style' => true,
+                            'autocreate' => false,
+                            'verify_bucket_exists' => false,
+                      ]
+                    ]
+                  );
 
                 proxy.config.php: |-
                   <?php
