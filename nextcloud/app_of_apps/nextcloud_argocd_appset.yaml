@@ -111,35 +111,48 @@ spec:
                       key: client_secret
 
                 # s3 parameters
-                - name: "NEXTCLOUD_S3_HOSTNAME"
+                - name: "OBJECTSTORE_S3_HOST"
                   valueFrom:
                     secretKeyRef:
                       name: nextcloud-s3-credentials
                       key: S3_HOSTNAME
 
-                - name: "NEXTCLOUD_S3_BUCKET"
+                - name: "OBJECTSTORE_S3_BUCKET"
                   valueFrom:
                     secretKeyRef:
                       name: nextcloud-s3-credentials
                       key: S3_BUCKET
 
-                - name: "NEXTCLOUD_S3_USER"
+                - name: "OBJECTSTORE_S3_KEY"
                   valueFrom:
                     secretKeyRef:
                       name: nextcloud-s3-credentials
                       key: S3_USER
 
-                - name: "NEXTCLOUD_S3_PASSWORD"
+                - name: "OBJECTSTORE_S3_SECRET"
                   valueFrom:
                     secretKeyRef:
                       name: nextcloud-s3-credentials
                       key: S3_PASSWORD
 
-                - name: "NEXTCLOUD_S3_ENCYRPTION_KEY"
-                  valueFrom:
-                    secretKeyRef:
-                      name: nextcloud-s3-credentials
-                      key: S3_ENCRYPTION_KEY
+                - name: "OBJECTSTORE_S3_PORT"
+                  value: 443
+
+                - name: "OBJECTSTORE_S3_SSL"
+                  value: true
+
+                - name: "OBJECTSTORE_S3_REGION"
+                  value: {{ .nextcloud_s3_region }}
+
+                - name: "OBJECTSTORE_S3_USEPATH_STYLE"
+                  value: true
+
+                #- name: "OBJECTSTORE_S3_ENCYRPTION_KEY"
+                #- name: "NEXTCLOUD_S3_ENCYRPTION_KEY"
+                #  valueFrom:
+                #    secretKeyRef:
+                #      name: nextcloud-s3-credentials
+                #      key: S3_ENCRYPTION_KEY
 
                 - name: "PGSSLCERT"
                   value: /etc/secrets/nextcloud/tls.crt
@@ -209,26 +222,26 @@ spec:
                     ),
                   );
 
-                object_store.config.php: |-
-                 <?php
-                  $CONFIG = array (
-                    'objectstore' => [
-                      'class' => '\\OC\\Files\\ObjectStore\\S3',
-                      'arguments' => [
-                            'bucket' => getenv('NEXTCLOUD_S3_BUCKET'),
-                            'hostname' => getenv('NEXTCLOUD_S3_HOSTNAME'),
-                            'key' => getenv('NEXTCLOUD_S3_USER'),
-                            'secret' => getenv('NEXTCLOUD_S3_PASSWORD'),
-                            'region' => {{ .nextcloud_s3_region }},
-                            'port' => 443,
-                            'use_ssl' => true,
-                            'use_path_style' => true,
-                            'autocreate' => false,
-                            'verify_bucket_exists' => false,
-                            'sse_c_key' => getenv('NEXTCLOUD_ENCRYPTION_KEY')
-                      ]
-                    ]
-                  );
+                # object_store.config.php: |-
+                #<?php
+                # $CONFIG = array (
+                #   'objectstore' => [
+                #     'class' => '\\OC\\Files\\ObjectStore\\S3',
+                #     'arguments' => [
+                #           'bucket' => getenv('NEXTCLOUD_S3_BUCKET'),
+                #           'hostname' => getenv('NEXTCLOUD_S3_HOSTNAME'),
+                #           'key' => getenv('NEXTCLOUD_S3_USER'),
+                #           'secret' => getenv('NEXTCLOUD_S3_PASSWORD'),
+                #           'region' => {{ .nextcloud_s3_region }},
+                #           'port' => 443,
+                #           'use_ssl' => true,
+                #           'use_path_style' => true,
+                #           'autocreate' => false,
+                #           'verify_bucket_exists' => false,
+                #           'sse_c_key' => getenv('NEXTCLOUD_ENCRYPTION_KEY')
+                #     ]
+                #   ]
+                # );
 
                 proxy.config.php: |-
                   <?php
