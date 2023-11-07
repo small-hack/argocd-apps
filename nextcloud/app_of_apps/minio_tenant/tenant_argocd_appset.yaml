@@ -4,8 +4,6 @@ kind: ApplicationSet
 metadata:
   name: nextcloud-minio-tenant-app-set
   namespace: argocd
-  annotations:
-    argocd.argoproj.io/sync-wave: "2"
 spec:
   goTemplate: true
   # generator allows us to source specific values from an external k8s secret
@@ -21,6 +19,8 @@ spec:
   template:
     metadata:
       name: nextcloud-minio-tenant
+      annotations:
+        argocd.argoproj.io/sync-wave: "2"
     spec:
       project: nextcloud
       destination:
@@ -145,8 +145,9 @@ spec:
 
               ## List of bucket definitions to create during tenant provisioning.
               buckets:
-              # - name: nextcloud
-              #   objectLock: false
+                - name: nextcloud
+                  objectLock: false
+                  region: eu-west-1
                 - name: nextcloud-postgresql
                   objectLock: false
 
