@@ -307,9 +307,10 @@ spec:
               # If disabled, make sure PostgreSQL is available at the hostname below and
               # credentials are configured under postgresql.global.postgresql.auth
               enabled: false
-              volumePermissions:
-                # -- Enable init container that changes the owner and group of the PVC
-                enabled: true
+              sslmode: verify-full
+              sslrootcert: /etc/secrets/ca/ca.crt
+              sslcert: /etc/secrets/matrix/tls.crt
+              sslkey: /etc/secrets/matrix/tls.key
               global:
                 postgresql:
                   # global.postgresql.auth overrides postgresql.auth
