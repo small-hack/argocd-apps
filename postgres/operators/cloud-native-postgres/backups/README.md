@@ -6,215 +6,209 @@
 
 1. Download the k3s installer
 
-  ```bash
-  curl -sfL https://get.k3s.io > k3s-install.sh
-  ```
+    ```bash
+    curl -sfL https://get.k3s.io > k3s-install.sh
+    ```
 
 2. install k3s
 
-  ```bash
-  bash k3s-install.sh --disable=traefik
-  ```
+    ```bash
+    bash k3s-install.sh --disable=traefik
+    ```
 
 3. Wait for node to be ready
 
-  ```bash
-  sudo k3s kubectl get node
-  NAME   STATUS   ROLES                  AGE   VERSION
-  vm0    Ready    control-plane,master   1m   v1.27.4+k3s1
-  ```
+    ```bash
+    sudo k3s kubectl get node
+    NAME   STATUS   ROLES                  AGE   VERSION
+    vm0    Ready    control-plane,master   1m   v1.27.4+k3s1
+    ```
 
 4. Make an accessible version of the kubeconfig
 
-  ```bash
-  mkdir -p ~/.config/kube
+    ```bash
+    mkdir -p ~/.config/kube
 
-  sudo cp /etc/rancher/k3s/k3s.yaml ~/.config/kube/config
+    sudo cp /etc/rancher/k3s/k3s.yaml ~/.config/kube/config
 
-  sudo chown $USER:$USER ~/.config/kube/config
+    sudo chown $USER:$USER ~/.config/kube/config
 
-  export KUBECONFIG=~/.config/kube/config
-
-  ```
+    export KUBECONFIG=~/.config/kube/config
+    ```
 
 ### Setup CNPG + CertManager
 
 5. Install CNPG Operator
 
-  ```bash
-  helm repo add cnpg https://cloudnative-pg.github.io/charts
-  helm upgrade --install cnpg \
-    --namespace cnpg-system \
-    --create-namespace \
-    cnpg/cloudnative-pg \
-    --version 0.19.0
-  ```
-
+    ```bash
+    helm repo add cnpg https://cloudnative-pg.github.io/charts
+    helm upgrade --install cnpg \
+      --namespace cnpg-system \
+      --create-namespace \
+      cnpg/cloudnative-pg \
+      --version 0.19.0
+    ```
 
 6. Install CertManager
 
-  ```bash
-  helm repo add jetstack https://charts.jetstack.io
-  helm repo update
+    ```bash
+    helm repo add jetstack https://charts.jetstack.io
+    helm repo update
 
-  kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.2/cert-manager.crds.yaml
+    kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.2/cert-manager.crds.yaml
 
-  helm install cert-manager jetstack/cert-manager \
-  --namespace cert-manager \
-  --create-namespace \
-  --version v1.13.2
-  ```
+    helm install cert-manager jetstack/cert-manager \
+    --namespace cert-manager \
+    --create-namespace \
+    --version v1.13.2
+    ```
 
 7. Create an example values.yaml for the postgres cluster
 
-  ```bash
-  cat << EOF > test-values.yaml
-  name: "cnpg"
-  instances: 1
-  superuserSecret:
-    name: null
-  bootstrap:
-    initdb:
-      database: app
-      owner: app
-      secret:
-        name: null
-  certificates:
-    server:
+    ```bash
+    cat << EOF > test-values.yaml
+    name: "cnpg"
+    instances: 1
+    superuserSecret:
+      name: null
+    bootstrap:
+      initdb:
+        database: app
+        owner: app
+        secret:
+          name: null
+    certificates:
+      server:
+        enabled: true
+        generate: true
+        serverTLSSecret: ""
+        serverCASecret: ""
+      client:
+        enabled: true
+        generate: true
+        clientCASecret: ""
+        replicationTLSSecret: ""
+      user:
+        enabled: true
+        username: "app"
+    monitoring:
+      enablePodMonitor: false
+    postgresql:
+      pg_hba:
+        - hostnossl all all 0.0.0.0/0 reject
+        - hostssl all all 0.0.0.0/0 cert clientcert=verify-full
+    storage:
+      size: 1Gi
+    testApp:
       enabled: true
-      generate: true
-      serverTLSSecret: ""
-      serverCASecret: ""
-    client:
-      enabled: true
-      generate: true
-      clientCASecret: ""
-      replicationTLSSecret: ""
-    user:
-      enabled: true
-      username: "app"
-  monitoring:
-    enablePodMonitor: false
-  postgresql:
-    pg_hba:
-      - hostnossl all all 0.0.0.0/0 reject
-      - hostssl all all 0.0.0.0/0 cert clientcert=verify-full
-  storage:
-    size: 1Gi
-  testApp:
-    enabled: true
-  EOF          
-  ```
+    EOF          
+    ```
 
 8. Create the postgres cluster
 
-  ```bash
-  helm repo add cnpg-cluster https://small-hack.github.io/cloudnative-pg-tenant-chart
-  helm repo update
+    ```bash
+    helm repo add cnpg-cluster https://small-hack.github.io/cloudnative-pg-tenant-chart
+    helm repo update
 
-  helm install cnpg-cluster cnpg-cluster/cnpg-cluster \
-    --values test-values.yaml
-  ```
+    helm install cnpg-cluster cnpg-cluster/cnpg-cluster \
+      --values test-values.yaml
+    ```
 
 ### Setup Minio
 
-- install the MinIO client
+1. install the MinIO client
 
-  Docs: https://min.io/docs/minio/linux/reference/minio-mc.html
+    Docs: https://min.io/docs/minio/linux/reference/minio-mc.html
 
-  ```bash
-  mkdir -p $HOME/minio-binaries
+    ```bash
+    mkdir -p $HOME/minio-binaries
 
-  wget https://dl.min.io/client/mc/release/linux-amd64/mc -O $HOME/minio-binaries/mc
+    wget https://dl.min.io/client/mc/release/linux-amd64/mc -O $HOME/minio-binaries/mc
 
-  chmod +x $HOME/minio-binaries/mc
+    chmod +x $HOME/minio-binaries/mc
 
-  export PATH=$PATH:$HOME/minio-binaries/
-  ```
-
-
-- Download minio helm chart
-
-  ```bash
-  helm repo add minio https://charts.min.io/
-  ```
+    export PATH=$PATH:$HOME/minio-binaries/
+    ```
 
 
-- Deploy Minio via Helm
+2. Download minio helm chart
 
-  ```bash
-  echo "Enter User Name : " && \
-  read USERNAME && \
-  echo "Enter User Password : " && \
-  read PASSWORD && \
-  helm install \
-    --set resources.requests.memory=512Mi \
-    --set replicas=1 \
-    --set persistence.size=32Gi \
-    --set mode=standalone \
-    --set rootUser=$USERNAME,rootPassword=$PASSWORD \
-    --set consoleService.type=LoadBalancer \
-    --set consoleService.port=80 \
-    --set service.type=NodePort \
-    --generate-name minio/minio
-  ```
+    ```bash
+    helm repo add minio https://charts.min.io/
+    ```
 
-- Get the LoadBalancer's External-IP address
 
-  ```console
-  friend@vm0:~$ kubectl get svc
-  NAME                       TYPE           CLUSTER-IP      EXTERNAL-IP      PORT(S)          AGE
-  kubernetes                 ClusterIP      10.43.0.1       <none>           443/TCP          6h31m
-  minio-1697277405           NodePort       10.43.124.40    <none>           9000:32000/TCP   6h31m
-  minio-1697277405-console   LoadBalancer   10.43.116.107   192.168.50.160   80:31179/TCP     6h31m
-  ```
+3. Deploy Minio via Helm
 
-- Set an alias for your server:
+    ```bash
+    echo "Enter User Name : " && \
+    read USERNAME && \
+    echo "Enter User Password : " && \
+    read PASSWORD && \
+    helm install \
+      --set resources.requests.memory=512Mi \
+      --set replicas=1 \
+      --set persistence.size=32Gi \
+      --set mode=standalone \
+      --set rootUser=$USERNAME,rootPassword=$PASSWORD \
+      --set consoleService.type=LoadBalancer \
+      --set consoleService.port=80 \
+      --set service.type=NodePort \
+      --generate-name minio/minio
+    ```
 
-  ```bash
-  mc alias set myminio http://$LOADBALANCER_IP:32000 $USERNAME $PASSWORD
-  ```
+4. Get the LoadBalancer's External-IP address
 
-- Test the connection:
+    ```console
+    friend@vm0:~$ kubectl get svc
+    NAME                       TYPE           CLUSTER-IP      EXTERNAL-IP      PORT(S)          AGE
+    kubernetes                 ClusterIP      10.43.0.1       <none>           443/TCP          6h31m
+    minio-1697277405           NodePort       10.43.124.40    <none>           9000:32000/TCP   6h31m
+    minio-1697277405-console   LoadBalancer   10.43.116.107   192.168.50.160   80:31179/TCP     6h31m
+    ```
 
-  ```bash
-  mc admin info myminio
-  ```
+5. Set an alias for your server:
 
-- Create a postgres user
+    ```bash
+    mc alias set myminio http://$LOADBALANCER_IP:32000 $USERNAME $PASSWORD
+    ```
 
-  Create the new user:
+6. Test the connection:
 
-  ```bash
-  mc admin user add myminio postgres
-  ```
+    ```bash
+    mc admin info myminio
+    ```
 
-  Enter a password when prompted:
+7. Create a postgres user
 
-  ```console
-  Enter Secret Key:
-  Added user `gameci` successfully.
-  ```
+    ```bash
+    mc admin user add myminio postgres
+    ```
 
-- Create an Access Key
+    Enter a password when prompted:
 
-  Create an access key for the GameCI user, we will use this as credentials for our cicd runner.
+    ```console
+    Enter Secret Key:
+    Added user `postgres` successfully.
+    ```
 
-  ```bash
-  mc admin user svcacct add myminio gameci
-  ```
+8. Create an Access Key
 
-- Create the backups storage bucket
+    ```bash
+    mc admin user svcacct add myminio postgres
+    ```
 
-  ```bash
-  mc mb myminio/artifacts --with-versioning
-  ```
+9. Create the backups storage bucket
 
-- Grant postgres account access
+    ```bash
+    mc mb myminio/backups --with-versioning
+    ```
 
-  ```bash
-  mc admin policy attach myminio readwrite --user postgres
-  ```
+10. Grant postgres account access
+
+    ```bash
+    mc admin policy attach myminio readwrite --user postgres
+    ```
 
 ## Add Demo Data to postgres
 
