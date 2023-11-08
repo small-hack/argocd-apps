@@ -1,0 +1,95 @@
+---
+# webapp is deployed 2nd because we need secrets and persistent volumes up 1st
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: matrix-postgres-app-set
+  namespace: argocd
+spec:
+  goTemplate: true
+  # generator allows us to source specific values from an external k8s secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - matrix_s3_endpoint
+  template:
+    metadata:
+      name: matrix-postgres-cluster
+      namespace: matrix
+      annotations:
+        argocd.argoproj.io/sync-wave: "2"
+    spec:
+      project: matrix
+      destination:
+        server: "https://kubernetes.default.svc"
+        namespace: matrix
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
+          selfHeal: true
+      source:
+        repoURL: https://small-hack.github.io/cloudnative-pg-tenant-chart
+        chart: cnpg-cluster
+        targetRevision: 0.3.0
+        helm:
+          releaseName: matrix-postgres-cluster
+          values: |
+            name: matrix-postgres
+            instances: 3
+
+            bootstrap:
+              initdb:
+                database: matrix
+                owner: matrix
+                secret:
+                  name: matrix-pgsql-credentials
+                # postInitSQL:
+                #  - GRANT ALL PRIVILEGES ON DATABASE matrix TO matrix;
+                #  - GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO matrix;
+
+            backup:
+              # barman is a utility for backing up postgres to s3
+              barmanObjectStore:
+                destinationPath: "s3://matrix-postgresql"
+                endpointURL: "https://{{ .matrix_s3_endpoint }}"
+                s3Credentials:
+                  accessKeyId:
+                    name: matrix-s3-credentials
+                    key : "S3_ACCESS_KEY"
+                  secretAccessKey:
+                    name: matrix-s3-credentials
+                    key : "S3_SECRET_KEY"
+              retentionPolicy: "30d"
+            
+            certificates:
+              server:
+                enabled: true
+                generate: true
+              client:
+                enabled: true
+                generate: true
+              user:
+                enabled: true
+                username: matrix
+
+            scheduledBackup:
+              name: matrix-pg-backup
+              spec:
+                schedule: "0 0 0 * * *" 
+                backupOwnerReference: self
+                cluster:
+                  name: pg-backup
+
+            monitoring:
+              enablePodMonitor: false
+
+            postgresql:
+              pg_hba: 
+                - hostnossl all all 0.0.0.0/0 reject
+                - hostssl all all 0.0.0.0/0 cert clientcert=verify-full

@@ -5,8 +5,6 @@ kind: ApplicationSet
 metadata:
   name: matrix-web-app-set
   namespace: argocd
-  annotations:
-    argocd.argoproj.io/sync-wave: "2"
 spec:
   goTemplate: true
   # generator allows us to source specific values from an external k8s secret
@@ -23,10 +21,14 @@ spec:
               - matrix_admin_email
               - matrix_idp_id
               - matrix_idp_name
+              - matrix_s3_bucket
+              - matrix_s3_endpoint
               - global_cluster_issuer
   template:
     metadata:
       name: matrix-web-app
+      annotations:
+        argocd.argoproj.io/sync-wave: "3"
     spec:
       project: matrix
       destination:
@@ -39,6 +41,7 @@ spec:
         helm:
           values: |
             fullnameOverride: matrix-stack
+
             # Runtime configuration for Synapse and settings related to the Matrix protocol
             matrix:
               # -- Domain name of the server
@@ -262,6 +265,32 @@ spec:
                 # -- The log level for the synapse server
                 synapseLogLevel: WARNING
 
+            s3:
+              # -- enable s3 storage via https://github.com/matrix-org/synapse-s3-storage-provider
+              enabled: true
+              # -- your s3 endpoint
+              endpoint: {{ .matrix_s3_endpoint }}
+              # -- name of the bucket to use
+              bucket: {{ .matrix_s3_bucket }}
+              # -- use credentials from an existing kubernetes secret
+              existingSecret: "matrix-s3-credentials"
+              # these are the keys within the existing k8s secret to use for s3 credentials
+              secretKeys:
+                # -- key in existing secret fo the S3 key
+                accessKey: "S3_ACCESS_KEY"
+                # -- key in existing secret fo the S3 secret
+                secretKey: "S3_SECRET_KEY"
+              cronjob:
+                # -- enable a regular cleanup k8s cronjob to automatically backup everything
+                # to your s3 bucket for you and delete it from local disk ref:
+                # https://github.com/matrix-org/synapse-s3-storage-provider/tree/main#regular-cleanup-job
+                enabled: false
+                # -- cron schedule to run the k8s cronjob. Defaults to every day at midnight
+                schedule: "0 0 * * *"
+                # -- this is the age of files you'd like to clean up, defaults files not used
+                # within two months (2m)
+                file_age: 2m
+
             # Persistent volumes configuration
             volumes:
               media:
@@ -271,14 +300,13 @@ spec:
               synapseConfig:
                 existingClaim: "matrix-synapse-config"
 
-
             # PostgreSQL Database configuration, for more options:
             # https://github.com/bitnami/charts/tree/main/bitnami/postgresql
             postgresql:
               # -- Whether to deploy the stable/postgresql chart with this chart.
               # If disabled, make sure PostgreSQL is available at the hostname below and
               # credentials are configured under postgresql.global.postgresql.auth
-              enabled: true
+              enabled: false
               volumePermissions:
                 # -- Enable init container that changes the owner and group of the PVC
                 enabled: true
@@ -286,10 +314,7 @@ spec:
                 postgresql:
                   # global.postgresql.auth overrides postgresql.auth
                   auth:
-                    # database credentials to use if you don't use an existingSecret
-                    # -- username of matrix postgres user
                     username: matrix
-                    # -- which port to use to connect to your database server
                     port: 5432
 
                     # -- Name of existing secret to use for PostgreSQL credentials
