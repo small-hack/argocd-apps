@@ -367,10 +367,25 @@
          "Xeon Platinum 8370C"  | 32    | 64      | 2021        | 0
         ```
  
+## Restore from backup
+
+If you used the test-values.yaml provided, then your cluster is backing up once per minute.
+
+- Check for backups
+
+    ```bash
+    mc ls myminio/backups/cnpg/base/
+    mc ls myminio/backups/cnpg/wals/
+    kubectl get backups
+    ```
+
+- uninstall postgres
  
- 
- 
- 
+    ```bash
+    helm uninstall cnpg-cluster
+    ```
+-
+
  
  
  
