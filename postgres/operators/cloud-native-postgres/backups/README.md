@@ -1,18 +1,22 @@
 # CNPG Operator Backup and Restore Procedure
 
-- Download the k3s installer
+## Set up a demo cluster
+
+### Setup Kubernetes
+
+1. Download the k3s installer
 
   ```bash
   curl -sfL https://get.k3s.io > k3s-install.sh
   ```
 
-- install k3s
+2. install k3s
 
   ```bash
   bash k3s-install.sh --disable=traefik
   ```
 
-- Wait for node to be ready
+3. Wait for node to be ready
 
   ```bash
   sudo k3s kubectl get node
@@ -20,7 +24,7 @@
   vm0    Ready    control-plane,master   1m   v1.27.4+k3s1
   ```
 
-- Make an accessible version of the kubeconfig
+4. Make an accessible version of the kubeconfig
 
   ```bash
   mkdir -p ~/.config/kube
@@ -33,7 +37,9 @@
 
   ```
 
-- Install CNPG Operator
+### Setup CNPG + CertManager
+
+5. Install CNPG Operator
 
   ```bash
   helm repo add cnpg https://cloudnative-pg.github.io/charts
@@ -45,7 +51,7 @@
   ```
 
 
-- install CertManager
+6. Install CertManager
 
   ```bash
   helm repo add jetstack https://charts.jetstack.io
@@ -59,7 +65,7 @@
   --version v1.13.2
   ```
 
-- create an example values.yaml for the postgres cluster
+7. Create an example values.yaml for the postgres cluster
 
   ```bash
   cat << EOF > test-values.yaml
@@ -100,7 +106,7 @@
   EOF          
   ```
 
-- create the postgres cluster
+8. Create the postgres cluster
 
   ```bash
   helm repo add cnpg-cluster https://small-hack.github.io/cloudnative-pg-tenant-chart
@@ -110,20 +116,122 @@
     --values test-values.yaml
   ```
 
-- get the user's `tls.key`, `tls.crt`, and `ca.crt` from secrets
+### Setup Minio
+
+- install the MinIO client
+
+  Docs: https://min.io/docs/minio/linux/reference/minio-mc.html
+
+  ```bash
+  mkdir -p $HOME/minio-binaries
+
+  wget https://dl.min.io/client/mc/release/linux-amd64/mc -O $HOME/minio-binaries/mc
+
+  chmod +x $HOME/minio-binaries/mc
+
+  export PATH=$PATH:$HOME/minio-binaries/
+  ```
+
+
+- Download minio helm chart
+
+  ```bash
+  helm repo add minio https://charts.min.io/
+  ```
+
+
+- Deploy Minio via Helm
+
+  ```bash
+  echo "Enter User Name : " && \
+  read USERNAME && \
+  echo "Enter User Password : " && \
+  read PASSWORD && \
+  helm install \
+    --set resources.requests.memory=512Mi \
+    --set replicas=1 \
+    --set persistence.size=32Gi \
+    --set mode=standalone \
+    --set rootUser=$USERNAME,rootPassword=$PASSWORD \
+    --set consoleService.type=LoadBalancer \
+    --set consoleService.port=80 \
+    --set service.type=NodePort \
+    --generate-name minio/minio
+  ```
+
+- Get the LoadBalancer's External-IP address
+
+  ```console
+  friend@vm0:~$ kubectl get svc
+  NAME                       TYPE           CLUSTER-IP      EXTERNAL-IP      PORT(S)          AGE
+  kubernetes                 ClusterIP      10.43.0.1       <none>           443/TCP          6h31m
+  minio-1697277405           NodePort       10.43.124.40    <none>           9000:32000/TCP   6h31m
+  minio-1697277405-console   LoadBalancer   10.43.116.107   192.168.50.160   80:31179/TCP     6h31m
+  ```
+
+- Set an alias for your server:
+
+  ```bash
+  mc alias set myminio http://$LOADBALANCER_IP:32000 $USERNAME $PASSWORD
+  ```
+
+- Test the connection:
+
+  ```bash
+  mc admin info myminio
+  ```
+
+- Create a postgres user
+
+  Create the new user:
+
+  ```bash
+  mc admin user add myminio postgres
+  ```
+
+  Enter a password when prompted:
+
+  ```console
+  Enter Secret Key:
+  Added user `gameci` successfully.
+  ```
+
+- Create an Access Key
+
+  Create an access key for the GameCI user, we will use this as credentials for our cicd runner.
+
+  ```bash
+  mc admin user svcacct add myminio gameci
+  ```
+
+- Create the backups storage bucket
+
+  ```bash
+  mc mb myminio/artifacts --with-versioning
+  ```
+
+- Grant postgres account access
+
+  ```bash
+  mc admin policy attach myminio readwrite --user postgres
+  ```
+
+## Add Demo Data to postgres
+
+1. get the user's `tls.key`, `tls.crt`, and `ca.crt` from secrets
 
   ```bash
   kubectl get secrets cnpg-app-cert -o yaml |yq '.data."tls.key"' |base64 -d > tls.key
   kubectl get secrets cnpg-app-cert -o yaml |yq '.data."tls.crt"' |base64 -d > tls.crt
   ```
 
-- get the servers `ca.crt` from secrets
+2. get the servers `ca.crt` from secrets
 
   ```bash
   kubectl get secrets cnpg-server-cert -o yaml |yq '.data."ca.crt"' |base64 -d > ca.crt
   ```
 
-- expose postgres with a service:
+3. expose postgres with a service:
 
   ```bash
   apiVersion: v1
@@ -143,13 +251,13 @@
       role: primary
   ```
 
-- connect to postgres:
+4. connect to postgres:
 
   ```bash
    psql 'sslkey=./tls.key sslcert=./tls.crt sslrootcert=./ca.crt host=<HostIP> port=30000 dbname=app user=app'
   ```
 
-- create a table for the demo data:
+5. create a table for the demo data:
 
   ```bash
   psql 'sslkey=./tls.key 
@@ -161,7 +269,7 @@
         user=app' -c 'CREATE TABLE processors (data JSONB);'
   ```
 
-- use script populate the table
+6. use script populate the table
 
   ```bash
   #!/bin/bash
@@ -179,7 +287,7 @@
   done
   ```
 
-- make a test query
+7. make a test query
 
   ```bash
   psql 'sslkey=./tls.key 
@@ -194,4 +302,26 @@
                             data -> 'release_date' AS releaseDate 
                             FROM processors
                             ORDER BY releaseDate DESC;"
+  ```
+
+- Expected Output:
+  ```console
+              cpu           | cores | threads | releasedate
+  ------------------------+-------+---------+-------------
+                          |       |         |
+   "EPYC 7763v"           | 64    | 128     | 2021
+   "Xeon Platinum 8375C"  | 32    | 64      | 2021
+   "Xeon Gold 6338"       | 32    | 64      | 2021
+   "EPYC 7713"            | 64    | 128     | 2021
+   "Xeon E-2378G"         | 8     | 16      | 2021
+   "Xeon Platinum 8370C"  | 32    | 64      | 2021
+   "Xeon Platinum 8259CL" | 24    | 48      | 2020
+   "Xeon E-2288G"         | 8     | 16      | 2019
+   "EPYC 7402P"           | 24    | 48      | 2019
+   "Xeon Platinum 8175M"  | 24    | 48      | 2018
+   "Xeon Platinum 8173M"  | 28    | 56      | 2017
+   "Xeon E5-2690V4"       | 14    | 28      | 2016
+   "Xeon 2696v4"          | 22    | 44      | 2016
+   "Xeon 2696v3"          | 18    | 36      | 2014
+   "Xeon 2696v3"          | 12    | 24      | 2013
   ```
