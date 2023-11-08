@@ -4,8 +4,6 @@ kind: ApplicationSet
 metadata:
   name: matrix-minio-tenant-app-set
   namespace: argocd
-  annotations:
-    argocd.argoproj.io/sync-wave: "1"
 spec:
   goTemplate: true
   # generator allows us to source specific values from an external k8s secret
@@ -17,10 +15,13 @@ spec:
           parameters:
             secret_vars:
               - matrix_s3_endpoint
+              - matrix_s3_region
               - global_cluster_issuer
   template:
     metadata:
       name: matrix-minio-tenant
+      annotations:
+        argocd.argoproj.io/sync-wave: "2"
     spec:
       project: matrix
       destination:
@@ -146,7 +147,10 @@ spec:
               ## List of bucket definitions to create during tenant provisioning.
               buckets:
                 - name: matrix
+                  objectLock: false
+                  region: {{ .matrix_s3_region }}
                 - name: matrix-postgresql
+                  objectLock: false
 
               ## PodManagement policy for MinIO Tenant Pods. Can be "OrderedReady" or "Parallel"
               ## Refer https://kubernetes.io/docs/tutorials/stateful-application/basic-stateful-set/#pod-management-policy
@@ -189,11 +193,12 @@ spec:
                 ingressClassName: "nginx"
                 annotations:
                   cert-manager.io/cluster-issuer: {{ .global_cluster_issuer }}
+                  nginx.ingress.kubernetes.io/proxy-body-size: 64M
                 tls:
                   - secretName: matrix-minio-api-tls
                     hosts:
-                      - "{{ .matrix_s3_endpoint}}"
-                host: {{ .minio_api_hostname }}
+                      - "{{ .matrix_s3_endpoint }}"
+                host: {{ .matrix_s3_endpoint }}
                 path: /
                 pathType: Prefix
 
