@@ -36,84 +36,6 @@
     export KUBECONFIG=~/.config/kube/config
     ```
 
-### Setup CNPG + CertManager
-
-5. Install CNPG Operator
-
-    ```bash
-    helm repo add cnpg https://cloudnative-pg.github.io/charts
-    helm upgrade --install cnpg \
-      --namespace cnpg-system \
-      --create-namespace \
-      cnpg/cloudnative-pg \
-      --version 0.19.0
-    ```
-
-6. Install CertManager
-
-    ```bash
-    helm repo add jetstack https://charts.jetstack.io
-    helm repo update
-
-    kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.2/cert-manager.crds.yaml
-
-    helm install cert-manager jetstack/cert-manager \
-    --namespace cert-manager \
-    --create-namespace \
-    --version v1.13.2
-    ```
-
-7. Create an example values.yaml for the postgres cluster
-
-    ```bash
-    cat << EOF > test-values.yaml
-    name: "cnpg"
-    instances: 1
-    superuserSecret:
-      name: null
-    bootstrap:
-      initdb:
-        database: app
-        owner: app
-        secret:
-          name: null
-    certificates:
-      server:
-        enabled: true
-        generate: true
-        serverTLSSecret: ""
-        serverCASecret: ""
-      client:
-        enabled: true
-        generate: true
-        clientCASecret: ""
-        replicationTLSSecret: ""
-      user:
-        enabled: true
-        username: "app"
-    monitoring:
-      enablePodMonitor: false
-    postgresql:
-      pg_hba:
-        - hostnossl all all 0.0.0.0/0 reject
-        - hostssl all all 0.0.0.0/0 cert clientcert=verify-full
-    storage:
-      size: 1Gi
-    testApp:
-      enabled: true
-    EOF          
-    ```
-
-8. Create the postgres cluster
-
-    ```bash
-    helm repo add cnpg-cluster https://small-hack.github.io/cloudnative-pg-tenant-chart
-    helm repo update
-
-    helm install cnpg-cluster cnpg-cluster/cnpg-cluster \
-      --values test-values.yaml
-    ```
-
 ### Setup Minio
 
 1. install the MinIO client
@@ -208,6 +130,102 @@
 
     ```bash
     mc admin policy attach myminio readwrite --user postgres
+    ```
+
+### Setup CNPG + CertManager
+
+1. Install CNPG Operator
+
+    ```bash
+    helm repo add cnpg https://cloudnative-pg.github.io/charts
+    helm upgrade --install cnpg \
+      --namespace cnpg-system \
+      --create-namespace \
+      cnpg/cloudnative-pg \
+      --version 0.19.0
+    ```
+
+2. Install CertManager
+
+    ```bash
+    helm repo add jetstack https://charts.jetstack.io
+    helm repo update
+
+    kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.2/cert-manager.crds.yaml
+
+    helm install cert-manager jetstack/cert-manager \
+    --namespace cert-manager \
+    --create-namespace \
+    --version v1.13.2
+    ```
+
+3. Create an example values.yaml for the postgres cluster
+
+    ```bash
+    cat << EOF > test-values.yaml
+    name: "cnpg"
+    instances: 1
+    superuserSecret:
+      name: null
+    bootstrap:
+      initdb:
+        database: app
+        owner: app
+        secret:
+          name: null
+    certificates:
+      server:
+        enabled: true
+        generate: true
+        serverTLSSecret: ""
+        serverCASecret: ""
+      client:
+        enabled: true
+        generate: true
+        clientCASecret: ""
+        replicationTLSSecret: ""
+      user:
+        enabled: true
+        username: "app"
+      backup:
+        retentionPolicy: "30d"
+        barmanObjectStore:
+          destinationPath: "backups"
+          s3Credentials:
+            accessKeyId:
+              name: "aws-creds"
+              key: "ACCESS_KEY_ID"
+            secretAccessKey:
+              name: "aws-creds"
+              key: "ACCESS_SECRET_KEY"
+      scheduledBackup:
+        name: example-backup
+        spec:
+          schedule: "0 0 0 * * *"
+          backupOwnerReference: self
+          cluster:
+            name: pg-backup
+    monitoring:
+      enablePodMonitor: false
+    postgresql:
+      pg_hba:
+        - hostnossl all all 0.0.0.0/0 reject
+        - hostssl all all 0.0.0.0/0 cert clientcert=verify-full
+    storage:
+      size: 1Gi
+    testApp:
+      enabled: true
+    EOF          
+    ```
+
+4. Create the postgres cluster
+
+    ```bash
+    helm repo add cnpg-cluster https://small-hack.github.io/cloudnative-pg-tenant-chart
+    helm repo update
+
+    helm install cnpg-cluster cnpg-cluster/cnpg-cluster \
+      --values test-values.yaml
     ```
 
 ## Add Demo Data to postgres
