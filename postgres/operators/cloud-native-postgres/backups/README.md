@@ -161,16 +161,37 @@
         user=app' -c 'CREATE TABLE processors (data JSONB);'
   ```
 
-- add some data
+- use script populate the table
 
   ```bash
-  data=$(/bin/cat demo-data.json)
+  #!/bin/bash
+  COUNT=$(jq length demo-data.json)
+  for (( i=0; i<$COUNT; i++ ))
+  do
+      JSON=$(jq ".[$i]" demo-data.json)
+      psql 'sslkey=./tls.key
+        sslcert=./tls.crt
+        sslrootcert=./ca.crt
+        host=192.168.50.161
+        port=30000
+        dbname=app
+        user=app' -c "INSERT INTO processors VALUES ('$JSON');"
+  done
+  ```
 
+- make a test query
+
+  ```bash
   psql 'sslkey=./tls.key 
-        sslcert=./tls.crt 
-        sslrootcert=./ca.crt 
-        host=192.168.50.161 
-        port=30000 
-        dbname=app 
-        user=app' -c 'INSERT INTO processors VALUES ($data);'
+       sslcert=./tls.crt 
+       sslrootcert=./ca.crt 
+       host=192.168.50.161 
+       port=30000 
+       dbname=app 
+       user=app' -c "SELECT data -> 'cpu_name' AS cpu,
+                            data -> 'cpu_cores' AS cores,
+                            data -> 'cpu_threads' AS threads,
+                            data -> 'release_date' AS releaseDate 
+                            FROM processors
+                            ORDER BY releaseDate DESC;"
   ```
