@@ -2,7 +2,7 @@
 
 The [External Secrets Operator](https://external-secrets.io/latest/) (ESO) is a Kubernetes operator that integrates external secret management systems like AWS Secrets Manager, HashiCorp Vault, Google Secrets Manager, Azure Key Vault, IBM Cloud Secrets Manager, and many more. The operator reads information from external APIs and automatically injects the values into a Kubernetes Secret.
 
-This Argo CD app of apps deploys both ESO and the [Bitwarden ESO Provider](https://github.com/jessebot/bitwarden-eso-provider/) so that you can use Bitwarden as your remote secret store.
+This Argo CD app of apps deploys both ESO and the [Bitwarden ESO Provider](https://github.com/small-hack/bitwarden-eso-provider/) so that you can use Bitwarden as your remote secret store.
 
 <img src="./screenshots/eso.png">
 <img src="./screenshots/bweso.png">
