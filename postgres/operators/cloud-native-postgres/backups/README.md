@@ -120,13 +120,36 @@
     mc admin user svcacct add myminio postgres
     ```
 
-9. Create the backups storage bucket
+9. base64 encode the Access Key and Secret Key    
+    
+    ```bash
+    export ACCESS_KEY_ID=$(echo -n "" | base64)
+
+    export ACCESS_SECRET_KEY=$(echo -n "" |base64)
+    ```
+    
+10. use the following templates to create your secrets.
+  
+    ```bash
+    /bin/cat << EOF > access_key.yaml
+    apiVersion: v1
+    kind: Secret
+    metadata:
+      name: minio-credentials
+    type: Opaque
+    data:
+      "ACCESS_KEY_ID": "$ACCESS_KEY_ID"
+      "ACCESS_SECRET_KEY": "$ACCESS_SECRET_KEY"
+    EOF
+    ```
+
+11. Create the backups storage bucket
 
     ```bash
     mc mb myminio/backups --with-versioning
     ```
 
-10. Grant postgres account access
+12. Grant postgres account access
 
     ```bash
     mc admin policy attach myminio readwrite --user postgres
@@ -190,21 +213,22 @@
       backup:
         retentionPolicy: "30d"
         barmanObjectStore:
-          destinationPath: "backups"
+          destinationPath: "s3://backups"
+          endpointURL: "http://192.168.50.161:32000"
           s3Credentials:
             accessKeyId:
-              name: "aws-creds"
+              name: "minio-credentials"
               key: "ACCESS_KEY_ID"
             secretAccessKey:
-              name: "aws-creds"
+              name: "minio-credentials"
               key: "ACCESS_SECRET_KEY"
       scheduledBackup:
-        name: example-backup
+        name: cnpg-backup
         spec:
-          schedule: "0 0 0 * * *"
+          schedule: "0 * * * * *"
           backupOwnerReference: self
           cluster:
-            name: pg-backup
+            name: cnpg
     monitoring:
       enablePodMonitor: false
     postgresql:
@@ -224,116 +248,139 @@
     helm repo add cnpg-cluster https://small-hack.github.io/cloudnative-pg-tenant-chart
     helm repo update
 
-    helm install cnpg-cluster cnpg-cluster/cnpg-cluster \
-      --values test-values.yaml
+    helm install cnpg-cluster cnpg-cluster/cnpg-cluster --values test-values.yaml
     ```
 
 ## Add Demo Data to postgres
 
-1. get the user's `tls.key`, `tls.crt`, and `ca.crt` from secrets
+1. Get the user's `tls.key`, `tls.crt`, and `ca.crt` from secrets
 
-  ```bash
-  kubectl get secrets cnpg-app-cert -o yaml |yq '.data."tls.key"' |base64 -d > tls.key
-  kubectl get secrets cnpg-app-cert -o yaml |yq '.data."tls.crt"' |base64 -d > tls.crt
-  ```
+    ```bash
+    kubectl get secrets cnpg-app-cert -o yaml |yq '.data."tls.key"' |base64 -d > tls.key
+    chmod 600 tls.key
+    kubectl get secrets cnpg-app-cert -o yaml |yq '.data."tls.crt"' |base64 -d > tls.crt
+    chmod 600 tls.crt
+    ```
 
-2. get the servers `ca.crt` from secrets
+2. Get the servers `ca.crt` from secrets
 
-  ```bash
-  kubectl get secrets cnpg-server-cert -o yaml |yq '.data."ca.crt"' |base64 -d > ca.crt
-  ```
+    ```bash
+    kubectl get secrets cnpg-server-cert -o yaml |yq '.data."ca.crt"' |base64 -d > ca.crt
+    chmod 600 ca.crt
+    ```
 
-3. expose postgres with a service:
+3. Expose postgres with a service:
 
-  ```bash
-  apiVersion: v1
-  kind: Service
-  metadata:
-    name: cnpg-service
-    labels:
-      cnpg.io/cluster: cnpg
-  spec:
-    type: NodePort
-    ports:
-    - port: 5432
-      nodePort: 30000
-      protocol: TCP
-    selector:
-      cnpg.io/cluster: cnpg
-      role: primary
-  ```
+    ```bash
+    /bin/cat << EOF > service.yaml
+    apiVersion: v1
+    kind: Service
+    metadata:
+      name: cnpg-service
+      labels:
+        cnpg.io/cluster: cnpg
+    spec:
+      type: NodePort
+      ports:
+      - port: 5432
+        nodePort: 30000
+        protocol: TCP
+      selector:
+        cnpg.io/cluster: cnpg
+        role: primary
+    EOF
 
-4. connect to postgres:
+    kubectl apply -f service.yaml
+    ```
 
-  ```bash
-   psql 'sslkey=./tls.key sslcert=./tls.crt sslrootcert=./ca.crt host=<HostIP> port=30000 dbname=app user=app'
-  ```
+4. Create a table for the demo data:
 
-5. create a table for the demo data:
+    ```bash
+    psql 'sslkey=./tls.key 
+          sslcert=./tls.crt 
+          sslrootcert=./ca.crt 
+          host=192.168.50.161 
+          port=30000 
+          dbname=app 
+          user=app' -c 'CREATE TABLE processors (data JSONB);'
+    ```
 
-  ```bash
-  psql 'sslkey=./tls.key 
-        sslcert=./tls.crt 
-        sslrootcert=./ca.crt 
-        host=192.168.50.161 
-        port=30000 
-        dbname=app 
-        user=app' -c 'CREATE TABLE processors (data JSONB);'
-  ```
+5. Use script to populate the table
 
-6. use script populate the table
+    ```bash
+    /bin/cat << EOF > populate.sh 
+    #!/bin/bash
+    COUNT=$(jq length demo-data.json)
+    for (( i=0; i<$COUNT; i++ ))
+    do
+        JSON=$(jq ".[$i]" demo-data.json)
+        psql 'sslkey=./tls.key
+          sslcert=./tls.crt
+          sslrootcert=./ca.crt
+          host=192.168.50.161
+          port=30000
+          dbname=app
+          user=app' -c "INSERT INTO processors VALUES ('$JSON');"
+    done
+    EOF
 
-  ```bash
-  #!/bin/bash
-  COUNT=$(jq length demo-data.json)
-  for (( i=0; i<$COUNT; i++ ))
-  do
-      JSON=$(jq ".[$i]" demo-data.json)
-      psql 'sslkey=./tls.key
-        sslcert=./tls.crt
-        sslrootcert=./ca.crt
-        host=192.168.50.161
-        port=30000
-        dbname=app
-        user=app' -c "INSERT INTO processors VALUES ('$JSON');"
-  done
-  ```
+    bash populate.sh
+    ```
 
-7. make a test query
+6. Make a test query
 
-  ```bash
-  psql 'sslkey=./tls.key 
-       sslcert=./tls.crt 
-       sslrootcert=./ca.crt 
-       host=192.168.50.161 
-       port=30000 
-       dbname=app 
-       user=app' -c "SELECT data -> 'cpu_name' AS cpu,
-                            data -> 'cpu_cores' AS cores,
-                            data -> 'cpu_threads' AS threads,
-                            data -> 'release_date' AS releaseDate 
-                            FROM processors
-                            ORDER BY releaseDate DESC;"
-  ```
+    ```bash
+    psql 'sslkey=./tls.key 
+         sslcert=./tls.crt 
+         sslrootcert=./ca.crt 
+         host=192.168.50.161 
+         port=30000 
+         dbname=app 
+         user=app' -c "SELECT data -> 'cpu_name' AS Cpu,
+                              data -> 'cpu_cores' AS Cores,
+                              data -> 'cpu_threads' AS Threads,
+                              data -> 'release_date' AS ReleaseDate,
+                              data -> 'cpumarkSingleThread' AS SingleCorePerf
+                              FROM processors
+                              ORDER BY SingleCorePerf DESC;"
+    ```
 
-- Expected Output:
-  ```console
-              cpu           | cores | threads | releasedate
-  ------------------------+-------+---------+-------------
-                          |       |         |
-   "EPYC 7763v"           | 64    | 128     | 2021
-   "Xeon Platinum 8375C"  | 32    | 64      | 2021
-   "Xeon Gold 6338"       | 32    | 64      | 2021
-   "EPYC 7713"            | 64    | 128     | 2021
-   "Xeon E-2378G"         | 8     | 16      | 2021
-   "Xeon Platinum 8370C"  | 32    | 64      | 2021
-   "Xeon Platinum 8259CL" | 24    | 48      | 2020
-   "Xeon E-2288G"         | 8     | 16      | 2019
-   "EPYC 7402P"           | 24    | 48      | 2019
-   "Xeon Platinum 8175M"  | 24    | 48      | 2018
-   "Xeon Platinum 8173M"  | 28    | 56      | 2017
-   "Xeon E5-2690V4"       | 14    | 28      | 2016
-   "Xeon 2696v4"          | 22    | 44      | 2016
-   "Xeon 2696v3"          | 18    | 36      | 2014
-   "Xeon 2696v3"          | 12    | 24      | 2013
-  ```
+    - Expected Output:
+     
+        ```console
+                      cpu           | cores | threads | releasedate | singlecoreperf
+        ------------------------+-------+---------+-------------+----------------
+         "Xeon E-2378G"         | 8     | 16      | 2021        | 3477
+         "Xeon E-2288G"         | 8     | 16      | 2019        | 2783
+         "EPYC 7713"            | 64    | 128     | 2021        | 2721
+         "EPYC 7763v"           | 64    | 128     | 2021        | 2576
+         "Xeon Gold 6338"       | 32    | 64      | 2021        | 2446
+         "Xeon Platinum 8375C"  | 32    | 64      | 2021        | 2439
+         "Xeon 2696v4"          | 22    | 44      | 2016        | 2179
+         "Xeon 2696v3"          | 18    | 36      | 2014        | 2145
+         "Xeon E5-2690V4"       | 14    | 28      | 2016        | 2066
+         "Xeon Platinum 8173M"  | 28    | 56      | 2017        | 2003
+         "EPYC 7402P"           | 24    | 48      | 2019        | 1947
+         "Xeon Platinum 8175M"  | 24    | 48      | 2018        | 1796
+         "Xeon Platinum 8259CL" | 24    | 48      | 2020        | 1781
+         "Xeon 2696v3"          | 12    | 24      | 2013        | 1698
+         "Xeon Platinum 8370C"  | 32    | 64      | 2021        | 0
+        ```
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
