@@ -246,7 +246,7 @@
 4. Create the postgres cluster
 
     ```bash
-    helm repo add cnpg-cluster https://small-hack.github.io/cloudnative-pg-tenant-chart
+    helm repo add cnpg-cluster https://small-hack.github.io/cloudnative-pg-cluster-chart
     helm repo update
 
     helm install cnpg-cluster cnpg-cluster/cnpg-cluster --values test-values.yaml
