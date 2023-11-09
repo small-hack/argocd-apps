@@ -421,7 +421,11 @@ spec:
                   mountPath: /etc/secrets/ca
 
                 - name: postgres-client-certs
-                  mountPath: /etc/secrets/matrix
+                  mountPath: /etc/secrets/matrix 
+
+              extraEnv:
+                - name: PIP_CACHE_DIR
+                  value: /tmp
 
             # Element client configuration. see: https://element.io/
             element:
