@@ -66,7 +66,8 @@
     echo "Enter User Name : " && \
     read USERNAME && \
     echo "Enter User Password : " && \
-    read PASSWORD && \
+    read PASSWORD
+
     helm install \
       --set resources.requests.memory=512Mi \
       --set replicas=1 \
@@ -185,7 +186,7 @@
 3. Create an example values.yaml for the postgres cluster
 
     ```bash
-    cat << EOF > test-values.yaml
+    /bin/cat << EOF > test-values.yaml
     name: "cnpg"
     instances: 1
     superuserSecret:
@@ -371,24 +372,123 @@
 
 If you used the test-values.yaml provided, then your cluster is backing up once per minute.
 
-- Check for backups
+1. Check for backups
 
     ```bash
     mc ls myminio/backups/cnpg/base/
     mc ls myminio/backups/cnpg/wals/
-    kubectl get backups
     ```
 
-- uninstall postgres
+2. uninstall postgres
  
     ```bash
     helm uninstall cnpg-cluster
     ```
--
 
+3. Create a values file that targets your backups
+
+    ```bash
+    /bin/cat << EOF > restore-values.yaml
+    name: "cnpg"
+    instances: 1
+    backup: []
+    bootstrap:
+      initdb: []
+      recovery:
+        source: cnpg
+    certificates:
+      server:
+        enabled: true
+        generate: true
+        serverTLSSecret: ""
+        serverCASecret: ""
+      client:
+        enabled: true
+        generate: true
+        clientCASecret: ""
+        replicationTLSSecret: ""
+      user:
+        enabled: true
+        username: "app"
+    externalClusters:
+      - name: cnpg
+        barmanObjectStore:
+          destinationPath: "s3://backups/"
+          endpointURL: "http://192.168.50.161:32000"
+          s3Credentials:
+            accessKeyId:
+              name: "minio-credentials"
+              key: "ACCESS_KEY_ID"
+            secretAccessKey:
+              name: "minio-credentials"
+              key: "ACCESS_SECRET_KEY"
+          wal:
+            maxParallel: 8
+    monitoring:
+      enablePodMonitor: false
+    storage:
+      size: 1Gi
+    testApp:
+      enabled: false
+    EOF          
+    ```
+
+4. Re-install postgres
+
+    ```bash
+    helm install cnpg-cluster cnpg-cluster/cnpg-cluster --values restore-values.yaml
+    ```
+
+5. Get the new certificates and keys
+
+    ```bash
+    kubectl get secrets cnpg-app-cert -o yaml |yq '.data."tls.key"' |base64 -d > tls.key
+    chmod 600 tls.key
+    kubectl get secrets cnpg-app-cert -o yaml |yq '.data."tls.crt"' |base64 -d > tls.crt
+    chmod 600 tls.crt
+    kubectl get secrets cnpg-server-cert -o yaml |yq '.data."ca.crt"' |base64 -d > ca.crt
+    chmod 600 ca.crt
+    ```
  
- 
- 
+6. verify that your data is restored
+
+    ```bash
+    psql 'sslkey=./tls.key 
+         sslcert=./tls.crt 
+         sslrootcert=./ca.crt 
+         host=192.168.50.161 
+         port=30000 
+         dbname=app 
+         user=app' -c "SELECT data -> 'cpu_name' AS Cpu,
+                              data -> 'cpu_cores' AS Cores,
+                              data -> 'cpu_threads' AS Threads,
+                              data -> 'release_date' AS ReleaseDate,
+                              data -> 'cpumarkSingleThread' AS SingleCorePerf
+                              FROM processors
+                              ORDER BY SingleCorePerf DESC;"
+    ```
+
+    - Expected Output:
+     
+        ```console
+                      cpu           | cores | threads | releasedate | singlecoreperf
+        ------------------------+-------+---------+-------------+----------------
+         "Xeon E-2378G"         | 8     | 16      | 2021        | 3477
+         "Xeon E-2288G"         | 8     | 16      | 2019        | 2783
+         "EPYC 7713"            | 64    | 128     | 2021        | 2721
+         "EPYC 7763v"           | 64    | 128     | 2021        | 2576
+         "Xeon Gold 6338"       | 32    | 64      | 2021        | 2446
+         "Xeon Platinum 8375C"  | 32    | 64      | 2021        | 2439
+         "Xeon 2696v4"          | 22    | 44      | 2016        | 2179
+         "Xeon 2696v3"          | 18    | 36      | 2014        | 2145
+         "Xeon E5-2690V4"       | 14    | 28      | 2016        | 2066
+         "Xeon Platinum 8173M"  | 28    | 56      | 2017        | 2003
+         "EPYC 7402P"           | 24    | 48      | 2019        | 1947
+         "Xeon Platinum 8175M"  | 24    | 48      | 2018        | 1796
+         "Xeon Platinum 8259CL" | 24    | 48      | 2020        | 1781
+         "Xeon 2696v3"          | 12    | 24      | 2013        | 1698
+         "Xeon Platinum 8370C"  | 32    | 64      | 2021        | 0
+        ```
  
  
  
