@@ -22,6 +22,7 @@ spec:
               - matrix_idp_id
               - matrix_idp_name
               - matrix_s3_bucket
+              - matrix_s3_region
               - matrix_s3_endpoint
               - global_cluster_issuer
   template:
@@ -268,24 +269,18 @@ spec:
             s3:
               # -- enable s3 storage via https://github.com/matrix-org/synapse-s3-storage-provider
               enabled: true
-              # -- your s3 endpoint
               endpoint: {{ .matrix_s3_endpoint }}
-              # -- name of the bucket to use
               bucket: {{ .matrix_s3_bucket }}
-              # -- use credentials from an existing kubernetes secret
+              region: {{ .matrix_s3_region }}
               existingSecret: "matrix-s3-credentials"
-              # these are the keys within the existing k8s secret to use for s3 credentials
               secretKeys:
-                # -- key in existing secret fo the S3 key
                 accessKey: "S3_ACCESS_KEY"
-                # -- key in existing secret fo the S3 secret
                 secretKey: "S3_SECRET_KEY"
               cronjob:
                 # -- enable a regular cleanup k8s cronjob to automatically backup everything
                 # to your s3 bucket for you and delete it from local disk ref:
                 # https://github.com/matrix-org/synapse-s3-storage-provider/tree/main#regular-cleanup-job
                 enabled: false
-                # -- cron schedule to run the k8s cronjob. Defaults to every day at midnight
                 schedule: "0 0 * * *"
                 # -- this is the age of files you'd like to clean up, defaults files not used
                 # within two months (2m)
