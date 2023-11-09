@@ -211,25 +211,25 @@
       user:
         enabled: true
         username: "app"
-      backup:
-        retentionPolicy: "30d"
-        barmanObjectStore:
-          destinationPath: "s3://backups"
-          endpointURL: "http://192.168.50.161:32000"
-          s3Credentials:
-            accessKeyId:
-              name: "minio-credentials"
-              key: "ACCESS_KEY_ID"
-            secretAccessKey:
-              name: "minio-credentials"
-              key: "ACCESS_SECRET_KEY"
-      scheduledBackup:
-        name: cnpg-backup
-        spec:
-          schedule: "0 * * * * *"
-          backupOwnerReference: self
-          cluster:
-            name: cnpg
+    backup:
+      retentionPolicy: "30d"
+      barmanObjectStore:
+        destinationPath: "s3://backups"
+        endpointURL: "http://192.168.50.161:32000"
+        s3Credentials:
+          accessKeyId:
+            name: "minio-credentials"
+            key: "ACCESS_KEY_ID"
+          secretAccessKey:
+            name: "minio-credentials"
+            key: "ACCESS_SECRET_KEY"
+    scheduledBackup:
+      name: cnpg-backup
+      spec:
+        schedule: "0 * * * * *"
+        backupOwnerReference: self
+        cluster:
+          name: cnpg
     monitoring:
       enablePodMonitor: false
     postgresql:
