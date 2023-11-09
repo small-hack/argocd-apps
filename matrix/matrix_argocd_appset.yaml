@@ -29,7 +29,7 @@ spec:
         namespace: matrix
       source:
         repoURL: 'https://small-hack.github.io/matrix-chart'
-        targetRevision: 6.2.0
+        targetRevision: 6.2.1
         chart: matrix
         helm:
           values: |
