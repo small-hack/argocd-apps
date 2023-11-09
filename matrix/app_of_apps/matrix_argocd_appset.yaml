@@ -300,65 +300,32 @@ spec:
               synapseConfig:
                 existingClaim: "matrix-synapse-config"
 
-            # PostgreSQL Database configuration, for more options:
-            # https://github.com/bitnami/charts/tree/main/bitnami/postgresql
-            postgresql:
-              # -- Whether to deploy the stable/postgresql chart with this chart.
-              # If disabled, make sure PostgreSQL is available at the hostname below and
-              # credentials are configured under postgresql.global.postgresql.auth
-              enabled: false
+            externalDatabase:
+              enabled: true
               sslmode: verify-full
               sslrootcert: /etc/secrets/ca/ca.crt
               sslcert: /etc/secrets/matrix/tls.crt
               sslkey: /etc/secrets/matrix/tls.key
-              global:
-                postgresql:
-                  # global.postgresql.auth overrides postgresql.auth
-                  auth:
-                    username: matrix
-                    port: 5432
+              port: 5432
+              # -- Name of existing secret to use for PostgreSQL credentials
+              existingSecret: "matrix-pgsql-credentials"
+              # secretKeys to grab from existingSecret
+              # if postgresql.existingSecret is provided, the following are ignored
+              # postgresql.password/username/hostname/database/port
+              secretKeys:
+                # -- key in existingSecret with hostname of the database
+                databaseHostname: hostname
+                # -- key in existingSecret with username for matrix to connect to db
+                databaseUsername: username
+                # -- key in existingSecret with password for matrix to connect to db
+                userPasswordKey: password
+                # -- key in existingSecret with the admin postgresql password
+                adminPasswordKey: password
 
-                    # -- Name of existing secret to use for PostgreSQL credentials
-                    existingSecret: "matrix-pgsql-credentials"
-                    # secretKeys to grab from existingSecret
-                    # if postgresql.existingSecret is provided, the following are ignored
-                    # postgresql.password/username/hostname/database/port
-                    secretKeys:
-                      # -- key in existingSecret with hostname of the database
-                      databaseHostname: hostname
-                      # -- key in existingSecret with username for matrix to connect to db
-                      databaseUsername: username
-                      # -- key in existingSecret with password for matrix to connect to db
-                      userPasswordKey: password
-                      # -- key in existingSecret with the admin postgresql password
-                      adminPasswordKey: password
-
-              # primary database node config
-              primary:
-                podAnnotations:
-                  k8up.io/backupcommand: "sh -c 'PGDATABASE=\"$POSTGRES_DB\" PGUSER=\"$POSTGRES_USER\" PGPASSWORD=\"$POSTGRES_PASSWORD\" pg_dump --clean'"
-                  k8up.io/file-extension: .sql
-                pgHbaConfiguration: |-
-                  local all all trust
-                  host all all 127.0.0.1/32 md5
-                  host all matrix 10.0.0.0/8 md5
-                # -- persistent volume claim configuration for postgresql to persist data
-                persistence:
-                  # -- Enable PostgreSQL Primary data persistence using PVC
-                  enabled: true
-                  # -- size of postgresql volume claim
-                  size: 8Gi
-                  existingClaim: "matrix-postgresql"
-
-                # templates/postgresql/initdb-configmap.yaml
-                # ref: https://github.com/matrix-org/synapse/blob/develop/docs/postgres.md
-                initdb:
-                  scriptsConfigMap: "matrix-stack-postgresql-initdb"
-
-                podSecurityContext:
-                  enabled: true
-                  runAsUser: 1000
-                  fsGroup: 1000
+            # PostgreSQL Database configuration, for more options:
+            # https://github.com/bitnami/charts/tree/main/bitnami/postgresql
+            postgresql:
+              enabled: false
 
             # Synapse Kubernetes resource settings
             synapse:
@@ -438,10 +405,23 @@ spec:
                 port: 9092
                 annotations: true
 
-              extraVolumes: []
+              extraVolumes:
+                - name: postgres-ca
+                  secret:
+                    secretName: matrix-postgres-server-ca-key-pair
+                    defaultMode: 0640
 
+                - name: postgres-client-certs
+                  secret:
+                    secretName: matrix-postgres-matrix-cert
+                    defaultMode: 0640
 
-              extraVolumeMounts: []
+              extraVolumeMounts:
+                - name: postgres-ca
+                  mountPath: /etc/secrets/ca
+
+                - name: postgres-client-certs
+                  mountPath: /etc/secrets/matrix
 
             # Element client configuration. see: https://element.io/
             element:
