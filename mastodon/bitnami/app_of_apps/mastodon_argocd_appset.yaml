@@ -41,16 +41,9 @@ spec:
         targetRevision: 3.2.2
         helm:
           releaseName: "mastodon"
-          values: |
+          valuesObject:
             ## String to fully override common.names.fullname
             fullnameOverride: "mastodon"
-
-            ## [string] Default config for Mastodon in the form of environment variables
-            defaultConfig: |
-              LOCAL_DOMAIN: {{ .mastodon_hostname }}
-
-            defaultSecret: |
-              DB_USER: mastodon
 
             # name of an existing Secret with your extra config for Mastodon
             extraConfigExistingSecret: "mastodon-server-credentials"
@@ -74,6 +67,8 @@ spec:
             ## webDomain, this value should be set to the URL at which your instance is hosted
             localDomain: {{ .mastodon_hostname }}
 
+            adminUser: {{ .mastodon_admin_user }}
+
             smtp:
               port: 587
               ## From address for sent emails
@@ -85,13 +80,14 @@ spec:
               delivery_method: smtp
               ca_file: /etc/ssl/certs/ca-certificates.crt
               ## OpenSSL verify mode, maybe this should be peer?
-              openssl_verify_mode: peer
+              openssl_verify_mode: none
               enable_starttls_auto: true
               tls: true
               auth_method: login
               existingSecret: "mastodon-smtp-credentials"
               existingSecretLoginKey: "login"
               existingSecretPasswordKey: "password"
+              existingSecretServerKey: "server"
 
             ## @section Mastodon Web Parameters
             web:
@@ -104,88 +100,28 @@ spec:
 
               # Array with extra env variables to add to Mastodon web nodes
               extraEnvVars:
-                # - name: LOCAL_DOMAIN
-                #   value: {{ .mastodon_hostname }}
-                - name: DEFAULT_LOCALE
-                  value: en
-                - name: MASTODON_ADMIN_PASSWORD
-                  valueFrom:
-                    secretKeyRef:
-                      name: mastodon-admin-credentials
-                      key: password
-                - name: MASTODON_ADMIN_USERNAME
-                  valueFrom:
-                    secretKeyRef:
-                      name: mastodon-admin-credentials
-                      key: username
-                - name: MASTODON_ADMIN_EMAIL
-                  valueFrom:
-                    secretKeyRef:
-                      name: mastodon-admin-credentials
-                      key: email
-                - name: SMTP_SERVER
-                  valueFrom:
-                    secretKeyRef:
-                      name: mastodon-smtp-credentials
-                      key: host
-                - name: SMTP_PORT
-                  value: 587
-                - name: SMTP_FROM_ADDRESS
-                  value: "toots@{{ .mastodon_hostname }}"
-                - name: SMTP_DOMAIN
-                  value: {{ .mastodon_hostname }}
-                - name: SMTP_REPLY_TO
-                  value: "noreply@{{ .mastodon_hostname }}"
-                - name: SMTP_DELIVERY_METHOD
-                  value: "smtp"
-                - name: SMTP_CA_FILE
-                  value: "/etc/ssl/certs/ca-certificates.crt"
-                - name: SMTP_OPENSSL_VERIFY_MODE
-                  value: "none"
-                - name: SMTP_ENABLE_STARTTLS_AUTO
-                  value: "true"
-                - name: SMTP_TLS
-                  value: "true"
-                - name: SMTP_AUTH_METHOD
-                  value: "login"
-                - name: DB_NAME
-                  value: mastodon
-                - name: DB_HOST
-                  value: mastodon-postgres
-                - name: DB_PORT
-                  value: 5432
-                - name: S3_ENABLED
-                  value: "true"
-                - name: S3_HOSTNAME
-                  value: "minio-mastodon"
-                - name: S3_ENDPOINT
-                  value: "https://minio-mastodon:443"
-                - name: S3_BUCKET
-                  value: "s3storage"
-                - name: S3_REGION
-                  value: "us-east-1"
-                - name: S3_ALIAS_HOST
-                  value: "{{ .mastodon_hostname }}/s3storage"
-                - name: S3_PROTOCOL
-                  value: "https"
-                - name: ES_ENABLED
-                  value: "true"
-                - name: ES_HOST
-                  value: "mastodon-elastic-search"
-                - name: ES_PORT
-                  value: "9200"
-                - name: LOCAL_HTTPS
-                  value: "true"
-                - name: STREAMING_API_BASE_URL
-                  value: "wss://{{ .mastodon_hostname }}"
-                - name: REDIS_HOST
-                  value: "mastodon-redis-master"
-                - name: REDIS_PORT
-                  value: "6379"
-                - name: RAILS_ENV
-                  value: "production"
-                - name: NODE_ENV
-                  value: "production"
+                - name: "PGSSLCERT"
+                  value: /etc/secrets/mastodon/tls.crt
+                - name: "PGSSLKEY"
+                  value: /etc/secrets/mastodon/tls.key
+                - name: "PGSSLROOTCERT"
+                  value: /etc/secrets/ca/ca.crt
+
+              extraVolumes:
+                - name: postgres-ca
+                  secret:
+                    secretName: mastodon-postgres-server-ca-key-pair
+                    defaultMode: 0440
+                - name: postgres-client-certs
+                  secret:
+                    secretName: mastodon-postgres-mastodon-cert
+                    defaultMode: 0440
+
+              extraVolumeMounts:
+                - name: postgres-ca
+                  mountPath: /etc/secrets/ca
+                - name: postgres-client-certs
+                  mountPath: /etc/secrets/mastodon
 
             ## @section Mastodon Sidekiq Parameters
             sidekiq:
@@ -198,6 +134,30 @@ spec:
                 limits: {}
                 requests: {}
 
+              extraEnvVars:
+                - name: "PGSSLCERT"
+                  value: /etc/secrets/mastodon/tls.crt
+                - name: "PGSSLKEY"
+                  value: /etc/secrets/mastodon/tls.key
+                - name: "PGSSLROOTCERT"
+                  value: /etc/secrets/ca/ca.crt
+
+              extraVolumes:
+                - name: postgres-ca
+                  secret:
+                    secretName: mastodon-postgres-server-ca-key-pair
+                    defaultMode: 0440
+                - name: postgres-client-certs
+                  secret:
+                    secretName: mastodon-postgres-mastodon-cert
+                    defaultMode: 0440
+
+              extraVolumeMounts:
+                - name: postgres-ca
+                  mountPath: /etc/secrets/ca
+                - name: postgres-client-certs
+                  mountPath: /etc/secrets/mastodon
+
             ## @section Mastodon Streaming Parameters
             streaming:
               ## Number of Mastodon streaming replicas to deploy
@@ -208,6 +168,30 @@ spec:
               resources:
                 limits: {}
                 requests: {}
+
+              extraEnvVars:
+                - name: "PGSSLCERT"
+                  value: /etc/secrets/mastodon/tls.crt
+                - name: "PGSSLKEY"
+                  value: /etc/secrets/mastodon/tls.key
+                - name: "PGSSLROOTCERT"
+                  value: /etc/secrets/ca/ca.crt
+
+              extraVolumes:
+                - name: postgres-ca
+                  secret:
+                    secretName: mastodon-postgres-server-ca-key-pair
+                    defaultMode: 0440
+                - name: postgres-client-certs
+                  secret:
+                    secretName: mastodon-postgres-mastodon-cert
+                    defaultMode: 0440
+
+              extraVolumeMounts:
+                - name: postgres-ca
+                  mountPath: /etc/secrets/ca
+                - name: postgres-client-certs
+                  mountPath: /etc/secrets/mastodon
 
             ## @section Mastodon Media Management Cronjob Parameters
             tootctlMediaManagement:
@@ -256,13 +240,29 @@ spec:
               createAdmin: true
               ## set backoff limit of the job
               backoffLimit: 10
-              ## Array containing extra env vars to configure the Mastodon init job
-              extraEnvVars: []
+              extraEnvVars:
+                # use ssl for db work
+                - name: "PGSSLCERT"
+                  value: /etc/secrets/mastodon/tls.crt
+                - name: "PGSSLKEY"
+                  value: /etc/secrets/mastodon/tls.key
+                - name: "PGSSLROOTCERT"
+                  value: /etc/secrets/ca/ca.crt
+
               ## ConfigMap containing extra env vars to configure the Mastodon init job
               extraEnvVarsCM: ""
               ## Secret containing extra env vars to configure the Mastodon init job (in case of sensitive data)
-              extraEnvVarsSecret: ""
-              ## Array of extra volume mounts to be added to the Mastodon Container (evaluated as template). Normally used with `extraVolumes`.
+              extraEnvVarsSecret: "mastodon-admin-credentials"
+              extraVolumes:
+                - name: postgres-ca
+                  secret:
+                    secretName: mastodon-postgres-server-ca-key-pair
+                    defaultMode: 0440
+                - name: postgres-client-certs
+                  secret:
+                    secretName: mastodon-postgres-mastodon-cert
+                    defaultMode: 0440
+
               extraVolumeMounts:
                 - name: postgres-ca
                   mountPath: /etc/secrets/ca
@@ -314,6 +314,13 @@ spec:
               ## Name of a secret containing redis credentials
               existingSecret: "mastodon-redis-credentials"
 
+            externalDatabase:
+              host: mastodon-postgres-rw.mastodon.svc
+              port: 5432
+              user: mastodon
+              database: mastodon
+              existingSecret: "mastodon-psql-credentials"
+              existingSecretPasswordKey: "password"
 
             ## ref: https://github.com/bitnami/charts/blob/main/bitnami/postgresql/values.yaml
             postgresql:
