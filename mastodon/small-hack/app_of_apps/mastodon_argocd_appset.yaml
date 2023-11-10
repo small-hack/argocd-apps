@@ -79,12 +79,12 @@ spec:
                 - name: postgres-ca
                   secret:
                     secretName: mastodon-postgres-server-ca-key-pair
-                    defaultMode: 0640
+                    defaultMode: 0440
 
                 - name: postgres-client-certs
                   secret:
                     secretName: mastodon-postgres-mastodon-cert
-                    defaultMode: 0640
+                    defaultMode: 0440
 
               extraVolumeMounts:
                 - name: postgres-ca
