@@ -212,7 +212,7 @@ spec:
               sslmode: "verify-full"
               sslcert: "/etc/secrets/mastodon/tls.crt"
               sslkey: "/etc/secrets/mastodon/tls.key"
-              sslrootcert: "/etc/secrets/ca/tls.crt"
+              sslrootcert: "/etc/secrets/ca/ca.crt"
 
             # https://github.com/bitnami/charts/tree/main/bitnami/postgresql#parameters
             postgresql:
