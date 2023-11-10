@@ -65,7 +65,7 @@ spec:
             forceHttpsS3Protocol: true
 
             ## Set Mastodon's STREAMING_API_BASE_URL to use secure websocket (wss:// instead of ws://)
-            useSecureWebSocket: false
+            useSecureWebSocket: true
 
             ## Set this instance to advertise itself to the fediverse using HTTPS. should always be true.
             local_https: true
@@ -75,36 +75,26 @@ spec:
             localDomain: {{ .mastodon_hostname }}
 
             smtp:
-              ## SMTP port
               port: 587
               ## From address for sent emails
               from_address: "toots@{{ .mastodon_hostname }}"
               ## SMTP domain
-              domain: {{ .mastodon_hostname }}
+              domain: {{ .mastodon_smtp_hostname }}
               ## Reply-To value for sent emails
               reply_to: "noreply@{{ .mastodon_hostname }}"
-              ## SMTP delivery method
               delivery_method: smtp
-              ## SMTP CA file location
               ca_file: /etc/ssl/certs/ca-certificates.crt
               ## OpenSSL verify mode, maybe this should be peer?
-              openssl_verify_mode: none
-              ## smtp.enable_starttls_auto Automatically enable StartTLS
+              openssl_verify_mode: peer
               enable_starttls_auto: true
-              ## smtp.tls SMTP TLS
               tls: true
-              ## SMTP auth method (set to "none" to disable auth) default: plain
               auth_method: login
-              ## Name of an existing secret resource containing the SMTP
               existingSecret: "mastodon-smtp-credentials"
-              ## Name of the key for the SMTP login credential
-              existingSecretLoginKey: "username"
-              ## Name of the key for the SMTP password credential
+              existingSecretLoginKey: "login"
               existingSecretPasswordKey: "password"
 
             ## @section Mastodon Web Parameters
             web:
-              ## Number of Mastodon web replicas to deploy
               replicaCount: 1
               ## Mastodon web resource requests and limits
               ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -273,7 +263,12 @@ spec:
               ## Secret containing extra env vars to configure the Mastodon init job (in case of sensitive data)
               extraEnvVarsSecret: ""
               ## Array of extra volume mounts to be added to the Mastodon Container (evaluated as template). Normally used with `extraVolumes`.
-              extraVolumeMounts: []
+              extraVolumeMounts:
+                - name: postgres-ca
+                  mountPath: /etc/secrets/ca
+
+                - name: postgres-client-certs
+                  mountPath: /etc/secrets/mastodon
               ## Container resource requests and limits
               ## ref: https://kubernetes.io/docs/user-guide/compute-resources/
               resources:
@@ -290,19 +285,6 @@ spec:
             ## ref: https://kubernetes.io/docs/user-guide/persistent-volumes/
             persistence:
               enabled: false
-              ## persistence.mountPath Path to mount the volume at.
-              mountPath: /bitnami/mastodon
-              ## name of an existing PVC to use for persistence
-              existingClaim: ""
-              ## Selector to match an existing Persistent Volume for mastodon data PVC
-              ## If set, the PVC can't have a PV dynamically provisioned for it
-              ## E.g.
-              ## selector:
-              ##   matchLabels:
-              ##     app: my-app
-              selector: {}
-              ## Custom PVC data source
-              dataSource: {}
 
             ## 'volumePermissions' init container parameters
             ## Changes owner/group of PV mount point to runAsUser:fsGroup values
@@ -314,14 +296,14 @@ spec:
 
             ## @section External S3 parameters
             externalS3:
-              host: ""
+              host: {{ .mastodon_s3_endpoint }}
               port: 443
-              existingSecret: ""
-              existingSecretAccessKeyIDKey: "root-user"
-              existingSecretKeySecretKey: "root-password"
+              existingSecret: mastodon-s3-credentials
+              existingSecretAccessKeyIDKey: "S3_USER"
+              existingSecretKeySecretKey: "S3_PASSWORD"
               protocol: "https"
               bucket: "mastodon"
-              region: ""
+              region: "eu-west-1"
 
             ## ref: https://github.com/bitnami/charts/blob/main/bitnami/redis/values.yaml
             redis:
@@ -335,57 +317,12 @@ spec:
 
             ## ref: https://github.com/bitnami/charts/blob/main/bitnami/postgresql/values.yaml
             postgresql:
-              enabled: true
-              auth:
-                username: mastodon
-                database: mastodon
-                existingSecret: "mastodon-pgsql-credentials"
-                secretKeys:
-                  adminPasswordKey: postgresPassword
-                  userPasswordKey: password
-              volumePermissions:
-                enabled: true
-              primary:
-                podAnnotations:
-                  k8up.io/backupcommand: "sh -c 'PGDATABASE=\"$POSTGRES_DB\" PGUSER=\"$POSTGRES_USER\" PGPASSWORD=\"$POSTGRES_PASSWORD\" pg_dump --clean'"
-                  k8up.io/file-extension: .sql
-                persistence:
-                  enabled: true
-                  existingClaim: "mastodon-postgres"
+              enabled: false
 
             ## MinIO chart installation to be used as an objstore for Mastodon
             # ref: https://github.com/bitnami/charts/tree/main/bitnami/minio
             minio:
-              enabled: true
-              fullnameOverride: minio-mastodon
-              ## MinIO authentication parameters
-              auth:
-                ## MinIO root username
-                rootUser: admin
-                ## Name of an existing secret containing the MinIO credentials
-                existingSecret: "mastodon-minio-credentials"
-
-              ## Comma, semi-colon or space separated list of MinIO buckets to create
-              defaultBuckets: "s3storage"
-              persistence:
-                enabled: true
-                # Name of an existing PVC to use for minio (only in `standalone` mode)
-                existingClaim: "mastodon-minio"
-              # Init containers parameters:
-              # Enable init container to change owner/group of PV(s) mountpoint to `runAsUser:fsGroup`
-              volumePermissions:
-                enabled: true
-
-              provisioning:
-                ## Enable/disable MinIO provisioning job
-                enabled: true
-                ## Extra commands to run on MinIO provisioning job:
-                #  We need to allow downloads in order for the UI to work
-                extraCommands: ["mc anonymous set download provisioning/s3storage"]
-
-              ## Enable/disable MinIO TLS support
-              tls:
-                enabled: false
+              enabled: false
 
             ## @section Elasticsearch chart configuration
             ## https://github.com/bitnami/charts/blob/main/bitnami/elasticsearch/values.yaml
