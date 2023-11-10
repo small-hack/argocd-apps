@@ -1,0 +1,100 @@
+---
+# webapp is deployed 2nd because we need secrets and persistent volumes up 1st
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: zitadel-postgres-app-set
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  goTemplate: true
+  # generator allows us to source specific values from an external k8s secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - zitadel_s3_endpoint
+  template:
+    metadata:
+      name: zitadel-postgres-cluster
+      namespace: zitadel
+      annotations:
+        argocd.argoproj.io/sync-wave: "2"
+    spec:
+      project: zitadel
+      destination:
+        server: "https://kubernetes.default.svc"
+        namespace: zitadel
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
+          selfHeal: true
+      source:
+        repoURL: https://small-hack.github.io/cloudnative-pg-tenant-chart
+        chart: cnpg-cluster
+        targetRevision: 0.3.0
+        helm:
+          releaseName: zitadel-postgres-cluster
+          values: |
+            name: zitadel-postgres
+            instances: 3
+
+            bootstrap:
+              initdb:
+                database: zitadel
+                owner: zitadel
+                # secretKeys:
+                #      userPasswordKey: password
+                #      adminPasswordKey: adminPassword
+                secret:
+                  name: zitadel-db-credentials
+                # postInitSQL:
+                #  - GRANT ALL PRIVILEGES ON DATABASE zitadel TO zitadel;
+                #  - GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO zitadel;
+
+            backup:
+              # barman is a utility for backing up postgres to s3
+              barmanObjectStore:
+                destinationPath: "s3://zitadel-postgresql"
+                endpointURL: "https://{{ .zitadel_s3_endpoint }}"
+                s3Credentials:
+                  accessKeyId:
+                    name: zitadel-s3-credentials
+                    key : "S3_USER"
+                  secretAccessKey:
+                    name: zitadel-s3-credentials
+                    key : "S3_PASSWORD"
+              retentionPolicy: "30d"
+            
+            certificates:
+              server:
+                enabled: true
+                generate: true
+              client:
+                enabled: true
+                generate: true
+              user:
+                enabled: true
+                username: zitadel
+
+            scheduledBackup:
+              name: zitadel-pg-backup
+              spec:
+                schedule: "0 0 0 * * *" 
+                backupOwnerReference: self
+                cluster:
+                  name: pg-backup
+
+            monitoring:
+              enablePodMonitor: false
+
+            postgresql:
+              pg_hba: 
+                - hostnossl all all 0.0.0.0/0 reject
+                - hostssl all all 0.0.0.0/0 cert clientcert=verify-full
