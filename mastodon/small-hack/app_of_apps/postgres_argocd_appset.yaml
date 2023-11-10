@@ -49,8 +49,6 @@ spec:
               initdb:
                 database: mastodon
                 owner: mastodon
-                secret:
-                  name: mastodon-pgsql-credentials
                 # postInitSQL:
                 #  - GRANT ALL PRIVILEGES ON DATABASE mastodon TO mastodon;
                 #  - GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO mastodon;
