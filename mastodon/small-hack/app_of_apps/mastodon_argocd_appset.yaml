@@ -204,7 +204,7 @@ spec:
 
             externalDatabase:
               enabled: true
-              hostname: mastodon-postgresql-rw.mastodon.svc
+              hostname: mastodon-postgres-rw.mastodon.svc
               port: "5432"
               database: mastodon
               user: mastodon
