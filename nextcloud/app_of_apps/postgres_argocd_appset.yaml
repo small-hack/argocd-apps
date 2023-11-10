@@ -36,9 +36,9 @@ spec:
           prune: true
           selfHeal: true
       source:
-        repoURL: https://small-hack.github.io/cloudnative-pg-tenant-chart
+        repoURL: https://small-hack.github.io/cloudnative-pg-cluster-chart
         chart: cnpg-cluster
-        targetRevision: 0.3.0
+        targetRevision: 0.3.7
         helm:
           releaseName: nextcloud-postgres-cluster
           values: |
