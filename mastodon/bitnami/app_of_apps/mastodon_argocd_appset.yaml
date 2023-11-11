@@ -36,7 +36,7 @@ spec:
           prune: true
           selfHeal: true
       source:
-        repoURL: https://github.com/jessebot/charts.git
+        repoURL: https://github.com/jessebot/charts
         path: bitnami/mastodon/
         targetRevision: fix-init-job-extra-volumes
         # can't be enabled till this is fixed: https://github.com/bitnami/charts/pull/20901
