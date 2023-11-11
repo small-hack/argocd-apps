@@ -1,9 +1,12 @@
 # Mastodon Argo CD Application(Set)s Templates
 [Mastodon](https://joinmastodon.org/) is social networking that's not for sale.
 
+NOTE: This chart is still now working due to [#20901](https://github.com/bitnami/charts/pull/20901) not being merged, and the issues [#20904](https://github.com/bitnami/charts/issues/20904) and [#20902](https://github.com/bitnami/charts/issues/20902). After those are fixed, we'll take another stab at making the bitnami chart work.
+
 We create in the manifests and helm chart in this sync wave order:
-- Postgresql PVC, and All External Secrets
-- Mastodon Web Appset (including elastic search and redis)
+- All External Secrets
+- postgresql, redis, elasticsearch
+- Mastodon Web Appset
 
 ## Creating Mastodon Secrets
 This template relies on you already having created secrets using the below method and then creating those as k8s secrets.
