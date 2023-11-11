@@ -5,8 +5,6 @@ kind: ApplicationSet
 metadata:
   name: mastodon-app-set
   namespace: argocd
-  annotations:
-    argocd.argoproj.io/sync-wave: "2"
 spec:
   goTemplate: true
   # generator allows us to source specific values from an external k8s secret
@@ -25,7 +23,7 @@ spec:
     metadata:
       name: mastodon-web-app
       annotations:
-        argocd.argoproj.io/sync-wave: "2"
+        argocd.argoproj.io/sync-wave: "3"
     spec:
       project: mastodon
       destination:
