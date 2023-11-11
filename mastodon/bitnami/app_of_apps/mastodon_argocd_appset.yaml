@@ -17,8 +17,10 @@ spec:
         input:
           parameters:
             env_vars:
-              - mastodon_hostname
               - global_cluster_issuer
+              - mastodon_hostname
+              - mastodon_s3_endpoint
+
   template:
     metadata:
       name: mastodon-web-app
@@ -67,14 +69,14 @@ spec:
             ## webDomain, this value should be set to the URL at which your instance is hosted
             localDomain: {{ .mastodon_hostname }}
 
-            adminUser: {{ .mastodon_admin_user }}
+            # adminUser: ""
 
             smtp:
               port: 587
               ## From address for sent emails
               from_address: "toots@{{ .mastodon_hostname }}"
               ## SMTP domain
-              domain: {{ .mastodon_smtp_hostname }}
+              domain: {{ .mastodon_hostname }}
               ## Reply-To value for sent emails
               reply_to: "noreply@{{ .mastodon_hostname }}"
               delivery_method: smtp
