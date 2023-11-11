@@ -314,8 +314,9 @@ spec:
               fullnameOverride: mastodon-redis
               ## Set Redis architecture
               architecture: standalone
-              ## Name of a secret containing redis credentials
-              existingSecret: "mastodon-redis-credentials"
+              auth:
+                ## Name of a secret containing redis credentials
+                existingSecret: "mastodon-redis-credentials"
 
             externalDatabase:
               host: mastodon-postgres-rw.mastodon.svc
