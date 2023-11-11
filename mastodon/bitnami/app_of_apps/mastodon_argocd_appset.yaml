@@ -36,9 +36,13 @@ spec:
           prune: true
           selfHeal: true
       source:
-        repoURL: registry-1.docker.io
-        chart: bitnamicharts/mastodon
-        targetRevision: 3.2.2
+        repoURL: https://github.com/jessebot/charts.git
+        path: bitnami/mastodon/
+        targetRevision: fix-init-job-extra-volumes
+        # can't be enabled till this is fixed: https://github.com/bitnami/charts/pull/20901
+        # repoURL: registry-1.docker.io
+        # chart: bitnamicharts/mastodon
+        # targetRevision: 3.2.3
         helm:
           releaseName: "mastodon"
           values: |
