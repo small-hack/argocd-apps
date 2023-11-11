@@ -41,7 +41,7 @@ spec:
         targetRevision: 3.2.2
         helm:
           releaseName: "mastodon"
-          valuesObject:
+          values: |
             ## String to fully override common.names.fullname
             fullnameOverride: "mastodon"
 
