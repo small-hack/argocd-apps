@@ -514,9 +514,60 @@ If you used the test-values.yaml provided, then your cluster is backing up once 
          "Xeon Platinum 8370C"  | 32    | 64      | 2021        | 0
         ```
  
- 
- 
- 
+ ## Backup Minio to offsite
+
+ 1. Create a secret containing your external S3 credentials
+
+    ```bash
+    export ACCESS_KEY_ID=$(echo -n "" | base64)
+    
+    export ACCESS_SECRET_KEY=$(echo -n "" |base64)
+    ```
+    
+    ```bash
+    /bin/cat << EOF > backblaze.yaml
+    apiVersion: v1
+    kind: Secret
+    metadata:
+      name: backblaze-credentials
+    type: Opaque
+    data:
+      "ACCESS_KEY_ID": "$ACCESS_KEY_ID"
+      "ACCESS_SECRET_KEY": "$ACCESS_SECRET_KEY"
+    EOF
+
+    kubectl apply -f backblaze.yaml
+    ```
+
+ 2. Create a secret containing a random password for restic
+
+    ```bash
+    export RESTIC_PASS=$(openssl rand -base64 32)
+    ```
+    
+    ```bash
+    /bin/cat << EOF > restic.yaml
+    apiVersion: v1
+    kind: Secret
+    metadata:
+      name: restic-repo
+    type: Opaque
+    data:
+      "password": "$RESTIC_PASS"
+    EOF
+    ```
+
+    ```bash
+    kubectl apply -f restic.yaml
+    ```
+  
+ 3. Install k8up
+
+    ```bash
+    repo add k8up-io https://k8up-io.github.io/k8up
+    kubectl apply -f https://github.com/k8up-io/k8up/releases/download/k8up-4.4.3/k8up-crd.yaml
+    install k8up k8up-io/k8up
+    ```
  
  
  
