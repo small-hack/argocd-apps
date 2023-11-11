@@ -67,16 +67,33 @@
     read USERNAME && \
     echo "Enter User Password : " && \
     read PASSWORD
+    ```
 
+    ```bash
+    /bin/cat << EOF > minio-values.yaml
+    mode: standalone
+    rootUser: "$USERNAME"
+    rootPassword: "$PASSWORD"
+    replicas: 1
+    persistence:
+      enabled: true
+      annotations:
+        "k8up.io/backup": "true"
+      size: 5Gi
+    service:
+      type: NodePort
+    consoleService:
+      type: LoadBalancer
+      port: "80"
+    resources:
+      requests:
+        memory: 512Mi
+    EOF
+    ```
+    
+    ```bash
     helm install \
-      --set resources.requests.memory=512Mi \
-      --set replicas=1 \
-      --set persistence.size=32Gi \
-      --set mode=standalone \
-      --set rootUser=$USERNAME,rootPassword=$PASSWORD \
-      --set consoleService.type=LoadBalancer \
-      --set consoleService.port=80 \
-      --set service.type=NodePort \
+      --values minio-values.yaml \
       --generate-name minio/minio
     ```
 
