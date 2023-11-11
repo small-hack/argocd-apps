@@ -50,7 +50,7 @@ spec:
             fullnameOverride: "mastodon"
 
             # name of an existing Secret with your extra config for Mastodon
-            existingSecret: "mastodon-server-credentials"
+            existingSecret: "mastodon-server-secrets"
 
             ## Enable the search engine (uses Elasticsearch under the hood)
             enableSearches: true
