@@ -249,10 +249,9 @@ spec:
                 - name: "PGSSLROOTCERT"
                   value: /etc/secrets/ca/ca.crt
 
-              ## ConfigMap containing extra env vars to configure the Mastodon init job
               extraEnvVarsCM: ""
-              ## Secret containing extra env vars to configure the Mastodon init job (in case of sensitive data)
               extraEnvVarsSecret: "mastodon-admin-credentials"
+
               extraVolumes:
                 - name: postgres-ca
                   secret:
@@ -266,9 +265,9 @@ spec:
               extraVolumeMounts:
                 - name: postgres-ca
                   mountPath: /etc/secrets/ca
-
                 - name: postgres-client-certs
                   mountPath: /etc/secrets/mastodon
+
               ## Container resource requests and limits
               ## ref: https://kubernetes.io/docs/user-guide/compute-resources/
               resources:
