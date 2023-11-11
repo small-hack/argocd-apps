@@ -97,7 +97,7 @@
       --generate-name minio/minio
     ```
 
-4. Get the LoadBalancer's External-IP address
+4. Get the LoadBalancer's External-IP address and export it
 
     ```console
     friend@vm0:~$ kubectl get svc
@@ -105,6 +105,10 @@
     kubernetes                 ClusterIP      10.43.0.1       <none>           443/TCP          6h31m
     minio-1697277405           NodePort       10.43.124.40    <none>           9000:32000/TCP   6h31m
     minio-1697277405-console   LoadBalancer   10.43.116.107   192.168.50.160   80:31179/TCP     6h31m
+    ```
+
+    ```bash
+    export LOADBALANCER_IP="192.168.50.160"
     ```
 
 5. Set an alias for your server:
@@ -159,6 +163,8 @@
       "ACCESS_KEY_ID": "$ACCESS_KEY_ID"
       "ACCESS_SECRET_KEY": "$ACCESS_SECRET_KEY"
     EOF
+
+    kubectl apply -f access_key.yaml
     ```
 
 11. Create the backups storage bucket
@@ -206,8 +212,6 @@
     /bin/cat << EOF > test-values.yaml
     name: "cnpg"
     instances: 1
-    superuserSecret:
-      name: null
     bootstrap:
       initdb:
         database: app
@@ -232,7 +236,7 @@
       retentionPolicy: "30d"
       barmanObjectStore:
         destinationPath: "s3://backups"
-        endpointURL: "http://192.168.50.161:32000"
+        endpointURL: "http://$LOADBALANCER_IP:32000"
         s3Credentials:
           accessKeyId:
             name: "minio-credentials"
@@ -251,13 +255,12 @@
       enablePodMonitor: false
     postgresql:
       pg_hba:
-        - hostnossl all all 0.0.0.0/0 reject
-        - hostssl all all 0.0.0.0/0 cert clientcert=verify-full
+        - hostssl all all all cert
     storage:
       size: 1Gi
     testApp:
       enabled: true
-    EOF          
+    EOF
     ```
 
 4. Create the postgres cluster
@@ -317,28 +320,32 @@
     psql 'sslkey=./tls.key 
           sslcert=./tls.crt 
           sslrootcert=./ca.crt 
-          host=192.168.50.161 
+          host=$LOADBALANCER_IP
           port=30000 
           dbname=app 
           user=app' -c 'CREATE TABLE processors (data JSONB);'
     ```
 
-5. Use script to populate the table
+5. Download demo data and use script to populate the table
 
     ```bash
-    /bin/cat << EOF > populate.sh 
+    wget https://raw.githubusercontent.com/small-hack/argocd-apps/main/postgres/operators/cloud-native-postgres/backups/demo-data.json
+
+    /bin/cat << 'EOF' > populate.sh 
     #!/bin/bash
+    
     COUNT=$(jq length demo-data.json)
+
     for (( i=0; i<$COUNT; i++ ))
     do
         JSON=$(jq ".[$i]" demo-data.json)
-        psql 'sslkey=./tls.key
+        psql "sslkey=./tls.key
           sslcert=./tls.crt
           sslrootcert=./ca.crt
-          host=192.168.50.161
+          host=$LOADBALANCER_IP
           port=30000
           dbname=app
-          user=app' -c "INSERT INTO processors VALUES ('$JSON');"
+          user=app" -c "INSERT INTO processors VALUES ('$JSON');"
     done
     EOF
 
@@ -348,13 +355,13 @@
 6. Make a test query
 
     ```bash
-    psql 'sslkey=./tls.key 
+    psql "sslkey=./tls.key 
          sslcert=./tls.crt 
          sslrootcert=./ca.crt 
-         host=192.168.50.161 
+         host=$LOADBALANCER_IP 
          port=30000 
          dbname=app 
-         user=app' -c "SELECT data -> 'cpu_name' AS Cpu,
+         user=app" -c "SELECT data -> 'cpu_name' AS Cpu,
                               data -> 'cpu_cores' AS Cores,
                               data -> 'cpu_threads' AS Threads,
                               data -> 'release_date' AS ReleaseDate,
@@ -431,7 +438,7 @@ If you used the test-values.yaml provided, then your cluster is backing up once 
       - name: cnpg
         barmanObjectStore:
           destinationPath: "s3://backups/"
-          endpointURL: "http://192.168.50.161:32000"
+          endpointURL: "http://$LOADBALANCER_IP:32000"
           s3Credentials:
             accessKeyId:
               name: "minio-credentials"
@@ -470,13 +477,13 @@ If you used the test-values.yaml provided, then your cluster is backing up once 
 6. verify that your data is restored
 
     ```bash
-    psql 'sslkey=./tls.key 
+    psql "sslkey=./tls.key 
          sslcert=./tls.crt 
          sslrootcert=./ca.crt 
-         host=192.168.50.161 
+         host=$LOADBALANCER_IP
          port=30000 
          dbname=app 
-         user=app' -c "SELECT data -> 'cpu_name' AS Cpu,
+         user=app" -c "SELECT data -> 'cpu_name' AS Cpu,
                               data -> 'cpu_cores' AS Cores,
                               data -> 'cpu_threads' AS Threads,
                               data -> 'release_date' AS ReleaseDate,
