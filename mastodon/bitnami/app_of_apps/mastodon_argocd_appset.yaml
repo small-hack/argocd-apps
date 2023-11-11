@@ -16,7 +16,7 @@ spec:
           name: secret-var-plugin-generator
         input:
           parameters:
-            env_vars:
+            secret_vars:
               - global_cluster_issuer
               - mastodon_hostname
               - mastodon_s3_endpoint
