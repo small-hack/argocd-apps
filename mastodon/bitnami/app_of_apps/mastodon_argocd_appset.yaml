@@ -317,6 +317,7 @@ spec:
               auth:
                 ## Name of a secret containing redis credentials
                 existingSecret: "mastodon-redis-credentials"
+                existingSecretPasswordKey: "redis-password"
 
             externalDatabase:
               host: mastodon-postgres-rw.mastodon.svc
