@@ -335,13 +335,14 @@ spec:
             minio:
               enabled: false
 
-            ## @section Elasticsearch chart configuration
-            ## https://github.com/bitnami/charts/blob/main/bitnami/elasticsearch/values.yaml
             elasticsearch:
-              ## Whether to deploy a elasticsearch server to use as Mastodon's search engine
-              ## To use an external server set this to false and configure the externalElasticsearch parameters
-              enabled: true
-              fullnameOverride: mastodon-elastic-search
+              enabled: false
+
+            externalElasticsearch:
+              host: mastodon-elasticsearch
+              port: 9200
+              existingSecret: "mastodon-elasticsearch-credentials"
+              existingSecretPasswordKey: "elasticsearch-password"
 
             ## @section Apache chart configuration
             ## https://github.com/bitnami/charts/blob/main/bitnami/apache/values.yaml
