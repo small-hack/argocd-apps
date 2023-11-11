@@ -308,16 +308,15 @@ spec:
               bucket: "mastodon"
               region: "eu-west-1"
 
+            externalRedis:
+              host: "mastodon-redis-master"
+              port: 6379
+              existingSecret: "mastodon-redis-credentials"
+              existingSecretPasswordKey: "redis-password"
+
             ## ref: https://github.com/bitnami/charts/blob/main/bitnami/redis/values.yaml
             redis:
-              enabled: true
-              fullnameOverride: mastodon-redis
-              ## Set Redis architecture
-              architecture: standalone
-              auth:
-                ## Name of a secret containing redis credentials
-                existingSecret: "mastodon-redis-credentials"
-                existingSecretPasswordKey: "redis-password"
+              enabled: false
 
             externalDatabase:
               host: mastodon-postgres-rw.mastodon.svc
