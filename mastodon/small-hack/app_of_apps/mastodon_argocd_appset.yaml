@@ -19,6 +19,7 @@ spec:
           parameters:
             secret_vars:
               - mastodon_hostname
+              - mastodon_s3_endpoint
               - global_cluster_issuer
   template:
     metadata:
@@ -96,6 +97,7 @@ spec:
               s3:
                 enabled: true
                 existingSecret: "mastodon-s3-credentials"
+                hostname: {{ .mastodon_s3_endpoint }}
                 secretKeys:
                   s3AccessKeyID: S3_USER
                   s3AccessKey: S3_PASSWORD
@@ -182,6 +184,7 @@ spec:
                   hosts:
                     - {{ .mastodon_hostname }}
 
+
             # https://github.com/bitnami/charts/tree/main/bitnami/elasticsearch#parameters
             elasticsearch:
               # `false` will disable full-text search
@@ -189,8 +192,6 @@ spec:
               # RAILS_ENV=production bundle exec rake chewy:sync
               # (https://docs.joinmastodon.org/admin/optional/elasticsearch/)
               enabled: true
-              image:
-                tag: 7
               master:
                 replicaCount: 1
                 autoscaling:
