@@ -14,8 +14,8 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
 4. [Seed Postgres with sample data](#seed-postgres-with-sample-data)
 5. [Configure scheduled backups of Minio to B2](#configure-scheduled-backups-of-minio-to-b2)
 6. [Restore Minio from B2 backups](#restore-minio-from-b2-backups)
-7. [Restore CNPG from Minio Backups](restore-cnpg-from-minio-backups)
-8. [Major Version Upgrades](major-version-upgrades)
+7. [Restore CNPG from Minio Backups](#restore-cnpg-from-minio-backups)
+8. [Major Version Upgrades](#major-version-upgrades)
 
 ## Requirements
 
