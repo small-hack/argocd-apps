@@ -9,7 +9,6 @@ data:
   setup.sh: |
     #!/bin/bash
     echo "hello, does this work?" && \
-    which mc && \
     mc -v && \
     env && \
     mc admin info local && \
