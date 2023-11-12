@@ -1,6 +1,6 @@
 # Mino/Postgres Backups, Recovery, and Major-Upgrades
 
-This guide will walk you through the full deployment, backup, and recovery process for a local Minio deployment and postgres cluster using k8up and Backblaze B2.
+This guide will walk you through the full deployment, backup, and recovery process for a local Minio deployment and postgres cluster using k8up and Backblaze B2. For the purposes of this demo, backups are set to run every minute. Plain-text passwords are also used for convenience - do NOT do that in production.
 
 Recommended reading: [S3 as the universal infrastructure backend](https://medium.com/innovationendeavors/s3-as-the-universal-infrastructure-backend-a104a8cc6991) - Davis Treybig
 
@@ -125,44 +125,44 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
 
     - Set a username and password for the initial user
    
-    ```bash
-    echo "Enter User Name : " && \
-    read USERNAME && \
-    echo "Enter User Password : " && \
-    read PASSWORD
-    ```
+      ```bash
+      echo "Enter User Name : " && \
+      read USERNAME && \
+      echo "Enter User Password : " && \
+      read PASSWORD
+      ```
 
     - Create a helm values file
    
-    ```bash
-    /bin/cat << EOF > minio-values.yaml
-    mode: standalone
-    rootUser: "$USERNAME"
-    rootPassword: "$PASSWORD"
-    replicas: 1
-    persistence:
-      enabled: true
-      annotations:
-        "k8up.io/backup": "true"
-      size: 5Gi
-    service:
-      type: NodePort
-    consoleService:
-      type: LoadBalancer
-      port: "80"
-    resources:
-      requests:
-        memory: 512Mi
-    EOF
-    ```
+      ```bash
+      /bin/cat << EOF > minio-values.yaml
+      mode: standalone
+      rootUser: "$USERNAME"
+      rootPassword: "$PASSWORD"
+      replicas: 1
+      persistence:
+        enabled: true
+        annotations:
+          "k8up.io/backup": "true"
+        size: 5Gi
+      service:
+        type: NodePort
+      consoleService:
+        type: LoadBalancer
+        port: "80"
+      resources:
+        requests:
+          memory: 512Mi
+      EOF
+      ```
 
     - Install Minio
     
-    ```bash
-    helm install \
-      --values minio-values.yaml \
-      --generate-name minio/minio
-    ```
+      ```bash
+      helm install \
+        --values minio-values.yaml \
+        --generate-name minio/minio
+      ```
 
 5. Get the LoadBalancer's External-IP address and export it
 
@@ -175,7 +175,7 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
     ```
 
     ```bash
-    export LOADBALANCER_IP="192.168.50.160"
+    export LOADBALANCER_IP="<your-LB-IP-here>"
     ```
 
 6. Set an alias for your server:
@@ -190,7 +190,7 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
     mc admin info myminio
     ```
 
-8. Create a postgres user
+8. Create a Postgres user
 
     ```bash
     mc admin user add myminio postgres
@@ -240,15 +240,15 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
     mc mb myminio/backups --with-versioning
     ```
 
-13. Grant postgres account access
+13. Grant Postgres account access
 
     ```bash
     mc admin policy attach myminio readwrite --user postgres
     ```
 
-## Deploy postgres cluster
+## Deploy Postgres cluster
 
-1. Create an example values.yaml for the postgres cluster
+1. Create an example values.yaml for the Postgres cluster
 
     ```bash
     /bin/cat << EOF > test-values.yaml
@@ -305,13 +305,13 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
     EOF
     ```
 
-4. Create the postgres cluster
+4. Create the Postgres cluster
 
     ```bash
     helm install cnpg-cluster cnpg-cluster/cnpg-cluster --values test-values.yaml
     ```
 
-## Seed postgres with sample data
+## Seed Postgres with sample data
 
 1. Get the user's `tls.key`, `tls.crt`, and `ca.crt` from secrets
 
@@ -329,7 +329,7 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
     chmod 600 ca.crt
     ```
 
-3. Expose postgres with a service:
+3. Expose Postgres with a service:
 
     ```bash
     /bin/cat << EOF > service.yaml
@@ -367,31 +367,41 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
 
 5. Download demo data and use script to populate the table
 
-    ```bash
-    wget https://raw.githubusercontent.com/small-hack/argocd-apps/main/postgres/operators/cloud-native-postgres/backups/demo-data.json
+    - Grab a copy of the demo data
+   
+      ```bash
+      wget https://raw.githubusercontent.com/small-hack/argocd-apps/main/postgres/operators/cloud-native-postgres/backups/demo-data.json
+      ```
 
-    /bin/cat << 'EOF' > populate.sh 
-    #!/bin/bash
+    - Create a script to add the demo data to your table
     
-    COUNT=$(jq length demo-data.json)
+      ```
+      /bin/cat << 'EOF' > populate.sh 
+      #!/bin/bash
+      
+      COUNT=$(jq length demo-data.json)
 
-    for (( i=0; i<$COUNT; i++ ))
-    do
-        JSON=$(jq ".[$i]" demo-data.json)
-        psql "sslkey=./tls.key
-          sslcert=./tls.crt
-          sslrootcert=./ca.crt
-          host=$LOADBALANCER_IP
-          port=30000
-          dbname=app
-          user=app" -c "INSERT INTO processors VALUES ('$JSON');"
-    done
-    EOF
+      for (( i=0; i<$COUNT; i++ ))
+      do
+          JSON=$(jq ".[$i]" demo-data.json)
+          psql "sslkey=./tls.key
+            sslcert=./tls.crt
+            sslrootcert=./ca.crt
+            host=$LOADBALANCER_IP
+            port=30000
+            dbname=app
+            user=app" -c "INSERT INTO processors VALUES ('$JSON');"
+      done
+      EOF
+      ```
+    
+    - Run the script
 
-    bash populate.sh
-    ```
+      ```bash  
+      bash populate.sh
+      ```
 
-6. Make a test query
+6. Perform a test query against the DB
 
     ```bash
     psql "sslkey=./tls.key 
@@ -409,27 +419,26 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
                               ORDER BY SingleCorePerf DESC;"
     ```
 
-    - Expected Output:
-     
-        ```console
-                      cpu           | cores | threads | releasedate | singlecoreperf
-        ------------------------+-------+---------+-------------+----------------
-         "Xeon E-2378G"         | 8     | 16      | 2021        | 3477
-         "Xeon E-2288G"         | 8     | 16      | 2019        | 2783
-         "EPYC 7713"            | 64    | 128     | 2021        | 2721
-         "EPYC 7763v"           | 64    | 128     | 2021        | 2576
-         "Xeon Gold 6338"       | 32    | 64      | 2021        | 2446
-         "Xeon Platinum 8375C"  | 32    | 64      | 2021        | 2439
-         "Xeon 2696v4"          | 22    | 44      | 2016        | 2179
-         "Xeon 2696v3"          | 18    | 36      | 2014        | 2145
-         "Xeon E5-2690V4"       | 14    | 28      | 2016        | 2066
-         "Xeon Platinum 8173M"  | 28    | 56      | 2017        | 2003
-         "EPYC 7402P"           | 24    | 48      | 2019        | 1947
-         "Xeon Platinum 8175M"  | 24    | 48      | 2018        | 1796
-         "Xeon Platinum 8259CL" | 24    | 48      | 2020        | 1781
-         "Xeon 2696v3"          | 12    | 24      | 2013        | 1698
-         "Xeon Platinum 8370C"  | 32    | 64      | 2021        | 0
-        ```
+    > Expected Output:
+    ```console
+                  cpu           | cores | threads | releasedate | singlecoreperf
+    ------------------------+-------+---------+-------------+----------------
+     "Xeon E-2378G"         | 8     | 16      | 2021        | 3477
+     "Xeon E-2288G"         | 8     | 16      | 2019        | 2783
+     "EPYC 7713"            | 64    | 128     | 2021        | 2721
+     "EPYC 7763v"           | 64    | 128     | 2021        | 2576
+     "Xeon Gold 6338"       | 32    | 64      | 2021        | 2446
+     "Xeon Platinum 8375C"  | 32    | 64      | 2021        | 2439
+     "Xeon 2696v4"          | 22    | 44      | 2016        | 2179
+     "Xeon 2696v3"          | 18    | 36      | 2014        | 2145
+     "Xeon E5-2690V4"       | 14    | 28      | 2016        | 2066
+     "Xeon Platinum 8173M"  | 28    | 56      | 2017        | 2003
+     "EPYC 7402P"           | 24    | 48      | 2019        | 1947
+     "Xeon Platinum 8175M"  | 24    | 48      | 2018        | 1796
+     "Xeon Platinum 8259CL" | 24    | 48      | 2020        | 1781
+     "Xeon 2696v3"          | 12    | 24      | 2013        | 1698
+     "Xeon Platinum 8370C"  | 32    | 64      | 2021        | 0
+    ```
  
  ## Configure scheduled backups of Minio to B2
 
