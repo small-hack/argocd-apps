@@ -9,13 +9,13 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
 ## Outline
 
 1. [K3s Cluster creation](#k3s-cluster-creation)
-2. Minio instance and user setup
-3. Deploy Postgres cluster
-4. Seed Postgres with sample data
-5. Configure scheduled backups of Minio to B2
-6. Restore Minio from B2 backups
-7. Restore CNPG from Minio Backups
-8. Major Version Upgrades
+2. [Minio instance and user setup](#minio-instance-and-user-setup)
+3. [Deploy Postgres cluster](#deploy-postgres-cluster)
+4. [Seed Postgres with sample data](#seed-postgres-with-sample-data)
+5. [Configure scheduled backups of Minio to B2](#configure-scheduled-backups-of-minio-to-b2)
+6. [Restore Minio from B2 backups](#restore-minio-from-b2-backups)
+7. [Restore CNPG from Minio Backups](restore-cnpg-from-minio-backups)
+8. [Major Version Upgrades](major-version-upgrades)
 
 ## Requirements
 
@@ -101,7 +101,8 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
     helm install k8up k8up-io/k8up
     ```
 
-## Minio instance and user setup
+
+<h2 id="minio-instance-and-user-setup">Minio instance and user setup</h2>
 
 1. install the MinIO client
 
@@ -248,7 +249,7 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
     mc admin policy attach myminio readwrite --user postgres
     ```
 
-## Deploy Postgres cluster
+<h2 id="deploy-postgres-cluster">Deploy Postgres cluster</h2>
 
 1. Create an example values.yaml for the Postgres cluster
 
@@ -313,7 +314,8 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
     helm install cnpg-cluster cnpg-cluster/cnpg-cluster --values test-values.yaml
     ```
 
-## Seed Postgres with sample data
+
+<h2 id="seed-postgres-with-sample-data">Seed Postgres with sample data</h2>
 
 1. Get the user's `tls.key`, `tls.crt`, and `ca.crt` from secrets
 
@@ -448,8 +450,8 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
     >  "Xeon 2696v3"          | 12    | 24      | 2013        | 1698
     >  "Xeon Platinum 8370C"  | 32    | 64      | 2021        | 0
     > ```
- 
- ## Configure scheduled backups of Minio to B2
+
+ <h2 id="configure-scheduled-backups-of-minio-to-b2">Configure scheduled backups of Minio to B2</h2>
 
  1. Create a secret containing your external S3 credentials
 
@@ -563,7 +565,7 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
     kubectl apply -f backup.yaml
     ```
 
-## Restore Minio from B2 backups
+<h2 id="restore-minio-from-b2-backups">Restore Minio from B2 backups</h2>
 
 1. Uninstall minio and postgres and delete your scheduled backup
 
@@ -670,7 +672,7 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
     kubectl apply -f s3-to-pvc.yaml
     ```
 
-## Restore CNPG from Minio Backups
+<h2 id="restore-cnpg-from-minio-backups">Restore CNPG from Minio Backups</h2>
 
 1. Create a values file that targets your Minio instance for backups
 
@@ -794,7 +796,7 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
    helm upgrade -f restore-values.yaml cnpg-cluster cnpg-cluster/cnpg-cluster
    ```
 
-## Major Version Upgrades
+<h2 id="major-version-upgrades">Major Version Upgrades</h2>
 
 
  
