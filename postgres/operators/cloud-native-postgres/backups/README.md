@@ -799,4 +799,102 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
 <h2 id="major-version-upgrades">Major Version Upgrades</h2>
 
 
- 
+1. Create a manifest to bootstrap a new cluster from a backup.
+
+```bash
+cat << EOF > upgrade.yaml
+    name: "cnpg"
+    instances: 1
+    imageName: ghcr.io/cloudnative-pg/postgresql:16.0
+    bootstrap:
+      initdb:
+        database: app
+        owner: app
+        secret:
+          name: null
+    certificates:
+      server:
+        enabled: true
+        generate: true
+        serverTLSSecret: ""
+        serverCASecret: ""
+      client:
+        enabled: true
+        generate: true
+        clientCASecret: ""
+        replicationTLSSecret: ""
+      user:
+        enabled: true
+        username: "app"
+    backup:
+      retentionPolicy: "30d"
+      barmanObjectStore:
+        destinationPath: "s3://backups"
+        endpointURL: "http://85.10.207.26:32000"
+        s3Credentials:
+          accessKeyId:
+            name: "minio-credentials"
+            key: "ACCESS_KEY_ID"
+          secretAccessKey:
+            name: "minio-credentials"
+            key: "ACCESS_SECRET_KEY"
+    scheduledBackup:
+      name: cnpg-backup
+      spec:
+        schedule: "0 * * * * *"
+        backupOwnerReference: self
+        cluster:
+          name: cnpg
+    externalClusters:
+      - name: cnpg
+        barmanObjectStore:
+          destinationPath: "s3://backups/"
+          endpointURL: "http://85.10.207.26:32000"
+          s3Credentials:
+            accessKeyId:
+              name: "minio-credentials"
+              key: "ACCESS_KEY_ID"
+            secretAccessKey:
+              name: "minio-credentials"
+              key: "ACCESS_SECRET_KEY"
+          wal:
+            maxParallel: 8
+    monitoring:
+      enablePodMonitor: false
+    storage:
+      size: 1Gi
+    testApp:
+      enabled: false
+EOF
+```
+
+2. Validate you have both `WAL` and `Base` backups
+
+   Checking minio storage:
+   
+   ```bash
+   mc ls myminio/backups/cnpg/base/20231112T162600/
+   [2023-11-12 17:26:06 CET] 1.3KiB STANDARD backup.info
+   [2023-11-12 17:26:06 CET]  31MiB STANDARD data.tar
+   ```
+
+   ```bash
+   mc ls myminio/backups/cnpg/wals/0000000100000000/
+   [2023-11-12 17:25:03 CET]  16MiB STANDARD 000000010000000000000001
+   [2023-11-12 17:25:31 CET]  16MiB STANDARD 000000010000000000000002
+   [2023-11-12 17:25:33 CET]  16MiB STANDARD 000000010000000000000003
+   [2023-11-12 17:25:33 CET]   348B STANDARD 000000010000000000000003.00000028.backup
+   [2023-11-12 17:26:00 CET]  16MiB STANDARD 000000010000000000000004
+   [2023-11-12 17:26:05 CET]  16MiB STANDARD 000000010000000000000005
+   [2023-11-12 17:26:05 CET]   348B STANDARD 000000010000000000000005.00000028.backup
+   [2023-11-12 17:26:24 CET]  16MiB STANDARD 000000010000000000000006
+   ```
+
+   
+2. Uninstall your current postgres deployment
+
+3. Deploy a new postgres cluster on the latest version using a backup as a source
+
+   ```bash
+   helm install cnpg-cluster cnpg-cluster/cnpg-cluster --values upgrade.yaml
+   ```
