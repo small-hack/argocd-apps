@@ -19,7 +19,6 @@ spec:
             secret_vars:
               - zitadel_hostname
               - global_cluster_issuer
-
   template:
     metadata:
       name: zitadel-web-app
@@ -95,6 +94,7 @@ spec:
                         Name: Admin
                       MachineKey:
                         Type: 1
+
               # Reference the name of the secret that contains the masterkey.
               # The key should be named "masterkey".
               masterkeySecretName: "zitadel-core-key"
