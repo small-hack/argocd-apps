@@ -10,10 +10,10 @@ data:
     mc admin policy create local onlyPostgres /start-config/db-user-policy.json
 
     # attach new policy to minio zitadel postgres user
-    mc admin policy attach local onlyPostgres --user zitadel-postgresql-16
+    mc admin policy attach local onlyPostgres --user zitadel-postgresql
 
     # detach consoleAdmin policy (default assigned)
-    mc admin policy detach local consoleAdmin --user zitadel-postgresql-16
+    mc admin policy detach local consoleAdmin --user zitadel-postgresql
 
   db-user-policy.json: |
     {
