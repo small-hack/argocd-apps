@@ -331,6 +331,8 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
 
 3. Expose Postgres with a service:
 
+  - Create a manifest for the service
+
     ```bash
     /bin/cat << EOF > service.yaml
     apiVersion: v1
@@ -349,7 +351,11 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
         cnpg.io/cluster: cnpg
         role: primary
     EOF
+    ```
 
+  - Create the service:
+
+    ```bash
     kubectl apply -f service.yaml
     ```
 
@@ -419,75 +425,82 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
                               ORDER BY SingleCorePerf DESC;"
     ```
 
-    > Expected Output:
-    ```console
-                  cpu           | cores | threads | releasedate | singlecoreperf
-    ------------------------+-------+---------+-------------+----------------
-     "Xeon E-2378G"         | 8     | 16      | 2021        | 3477
-     "Xeon E-2288G"         | 8     | 16      | 2019        | 2783
-     "EPYC 7713"            | 64    | 128     | 2021        | 2721
-     "EPYC 7763v"           | 64    | 128     | 2021        | 2576
-     "Xeon Gold 6338"       | 32    | 64      | 2021        | 2446
-     "Xeon Platinum 8375C"  | 32    | 64      | 2021        | 2439
-     "Xeon 2696v4"          | 22    | 44      | 2016        | 2179
-     "Xeon 2696v3"          | 18    | 36      | 2014        | 2145
-     "Xeon E5-2690V4"       | 14    | 28      | 2016        | 2066
-     "Xeon Platinum 8173M"  | 28    | 56      | 2017        | 2003
-     "EPYC 7402P"           | 24    | 48      | 2019        | 1947
-     "Xeon Platinum 8175M"  | 24    | 48      | 2018        | 1796
-     "Xeon Platinum 8259CL" | 24    | 48      | 2020        | 1781
-     "Xeon 2696v3"          | 12    | 24      | 2013        | 1698
-     "Xeon Platinum 8370C"  | 32    | 64      | 2021        | 0
-    ```
+    Expected Output:
+    
+    > ```console
+    >               cpu           | cores | threads | releasedate | singlecoreperf
+    > ------------------------+-------+---------+-------------+----------------
+    >  "Xeon E-2378G"         | 8     | 16      | 2021        | 3477
+    >  "Xeon E-2288G"         | 8     | 16      | 2019        | 2783
+    >  "EPYC 7713"            | 64    | 128     | 2021        | 2721
+    >  "EPYC 7763v"           | 64    | 128     | 2021        | 2576
+    >  "Xeon Gold 6338"       | 32    | 64      | 2021        | 2446
+    >  "Xeon Platinum 8375C"  | 32    | 64      | 2021        | 2439
+    >  "Xeon 2696v4"          | 22    | 44      | 2016        | 2179
+    >  "Xeon 2696v3"          | 18    | 36      | 2014        | 2145
+    >  "Xeon E5-2690V4"       | 14    | 28      | 2016        | 2066
+    >  "Xeon Platinum 8173M"  | 28    | 56      | 2017        | 2003
+    >  "EPYC 7402P"           | 24    | 48      | 2019        | 1947
+    >  "Xeon Platinum 8175M"  | 24    | 48      | 2018        | 1796
+    >  "Xeon Platinum 8259CL" | 24    | 48      | 2020        | 1781
+    >  "Xeon 2696v3"          | 12    | 24      | 2013        | 1698
+    >  "Xeon Platinum 8370C"  | 32    | 64      | 2021        | 0
+    > ```
  
  ## Configure scheduled backups of Minio to B2
 
  1. Create a secret containing your external S3 credentials
 
-    ```bash
-    export ACCESS_KEY_ID=$(echo -n "" | base64)
+    - You will need to get these from your provider:
     
-    export ACCESS_SECRET_KEY=$(echo -n "" |base64)
-    ```
-    
-    ```bash
-    /bin/cat << EOF > backblaze.yaml
-    apiVersion: v1
-    kind: Secret
-    metadata:
-      name: backblaze-credentials
-    type: Opaque
-    data:
-      "ACCESS_KEY_ID": "$ACCESS_KEY_ID"
-      "ACCESS_SECRET_KEY": "$ACCESS_SECRET_KEY"
-    EOF
+      ```bash
+      export ACCESS_KEY_ID=$(echo -n "" | base64)
+      
+      export ACCESS_SECRET_KEY=$(echo -n "" |base64)
+      ```
+      
+      ```bash
+      /bin/cat << EOF > backblaze.yaml
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: backblaze-credentials
+      type: Opaque
+      data:
+        "ACCESS_KEY_ID": "$ACCESS_KEY_ID"
+        "ACCESS_SECRET_KEY": "$ACCESS_SECRET_KEY"
+      EOF
 
-    kubectl apply -f backblaze.yaml
-    ```
+      kubectl apply -f backblaze.yaml
+      ```
 
- 2. Create a second secret with different keys to support the K8up CLI
+    - Create a second secret with different keys to support the K8up CLI if you plan to use it.
 
-    ```bash
-    /bin/cat << EOF > k8up.yaml
-    apiVersion: v1
-    kind: Secret
-    metadata:
-      name: k8up-credentials
-    type: Opaque
-    data:
-      "username": "$ACCESS_KEY_ID"
-      "password": "$ACCESS_SECRET_KEY"
-    EOF
+      ```bash
+      /bin/cat << EOF > k8up.yaml
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: k8up-credentials
+      type: Opaque
+      data:
+        "username": "$ACCESS_KEY_ID"
+        "password": "$ACCESS_SECRET_KEY"
+      EOF
 
-    kubectl apply -f k8up.yaml
-    ```
+      kubectl apply -f k8up.yaml
+      ```
  
- 3. Create a secret containing a random password for restic
+ 2. Create a secret containing a random password for restic
 
+  - Generate a password and base64 encode it.
+    
     ```bash
     export RESTIC_PASS=$(openssl rand -base64 32)
     ```
     
+  - Create a secret manifest
+
     ```bash
     /bin/cat << EOF > restic.yaml
     apiVersion: v1
@@ -499,47 +512,54 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
       "password": "$RESTIC_PASS"
     EOF
     ```
+  - Create the secret
 
     ```bash
     kubectl apply -f restic.yaml
     ```
 
-3. Create a scheduled backup
+3. Create a scheduled backups
 
-```bash
-cat << EOF > backup.yaml
-apiVersion: k8up.io/v1
-kind: Schedule
-metadata:
-  name: schedule-backups
-spec:
-  backend:
-    repoPasswordSecretRef:
-      name: restic-repo
-      key: password
-    s3:
-      endpoint: "s3.us-west-004.backblazeb2.com"
-      bucket: "buildstars-minio-backup"
-      accessKeyIDSecretRef:
-        name: backblaze-credentials
-        key: ACCESS_KEY_ID
-      secretAccessKeySecretRef:
-        name: backblaze-credentials
-        key: ACCESS_SECRET_KEY
-  backup:
-    schedule: '* * * * *'
-    keepJobs: 4
-  check:
-    schedule: '0 1 * * 1'
-  prune:
-    schedule: '0 1 * * 0'
-    retention:
-      keepLast: 5
-      keepDaily: 14
-EOF
+  - Create a manifest for the backup 
 
-kubectl apply -f backup.yaml
-```
+    ```bash
+    cat << EOF > backup.yaml
+    apiVersion: k8up.io/v1
+    kind: Schedule
+    metadata:
+      name: schedule-backups
+    spec:
+      backend:
+        repoPasswordSecretRef:
+          name: restic-repo
+          key: password
+        s3:
+          endpoint: "s3.us-west-004.backblazeb2.com"
+          bucket: "buildstars-minio-backup"
+          accessKeyIDSecretRef:
+            name: backblaze-credentials
+            key: ACCESS_KEY_ID
+          secretAccessKeySecretRef:
+            name: backblaze-credentials
+            key: ACCESS_SECRET_KEY
+      backup:
+        schedule: '* * * * *'
+        keepJobs: 4
+      check:
+        schedule: '0 1 * * 1'
+      prune:
+        schedule: '0 1 * * 0'
+        retention:
+          keepLast: 5
+          keepDaily: 14
+    EOF
+    ```
+
+  - Create the backup
+
+    ```bash
+    kubectl apply -f backup.yaml
+    ```
 
 ## Restore Minio from B2 backups
 
@@ -547,29 +567,37 @@ kubectl apply -f backup.yaml
 
    ```bash
    helm uninstall cnpg-cluster
+   
    helm uninstall minio-<some number>
+   
    kubectl delete -f backup.yaml 
    ```
 
 2. Create a PVC to hold our restored data
 
-```bash
-/bin/cat << EOF > pvc.yaml
-kind: PersistentVolumeClaim
-apiVersion: v1
-metadata:
-  name: backup-restore
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      # Must be sufficient to hold your data
-      storage: 5Gi
-EOF
+  - Create a manifest for the PVC
 
-kubectl apply -f pvc.yaml
-```
+    ```bash
+    /bin/cat << EOF > pvc.yaml
+    kind: PersistentVolumeClaim
+    apiVersion: v1
+    metadata:
+      name: backup-restore
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          # Must be sufficient to hold your data
+          storage: 5Gi
+    EOF
+    ```
+  
+  - Create the PVC
+
+    ```bash
+    kubectl apply -f pvc.yaml
+    ```
 
 3. Find your desired snapshot to restore
 
@@ -584,7 +612,11 @@ kubectl apply -f pvc.yaml
     2 snapshots
     ```
 
-4. Use the k8up CLI or a declarative setup to restore data to the PVC. Minio requies you to run the restore as user `1000`
+4. Use the K8up CLI or a declarative setup to restore data to the PVC. 
+
+    > Minio requires you to run the restore as user `1000`
+
+  - Example of restoring from S3 to a PVC using the K8up CLI. 
 
     ```bash
     k8up cli restore \
@@ -599,37 +631,42 @@ kubectl apply -f pvc.yaml
       --claimName backup-restore \
       --runAsUser 1000
     ```
+    
+  - Example manifest for a S3-to-PVC restore job 
 
-```bash
-/bin/cat << EOF > s3-to-pvc.yaml
-apiVersion: k8up.io/v1
-kind: Restore
-metadata:
-  name: restore-from-b2
-spec:
-  restoreMethod:
-    folder:
-      claimName: backup-restore
-  podSecurityContext:
-    runAsUser: 1000
-  snapshot: b17c7bb1
-  backend:
-    repoPasswordSecretRef:
-      name: restic-repo
-      key: password
-    s3:
-      endpoint: s3.us-west-004.backblazeb2.com
-      bucket: buildstars-minio-backup
-      accessKeyIDSecretRef:
-        name: backblaze-credentials
-        key: ACCESS_KEY_ID
-      secretAccessKeySecretRef:
-        name: backblaze-credentials
-        key: ACCESS_SECRET_KEY
-EOF
+    ```bash
+    /bin/cat << EOF > s3-to-pvc.yaml
+    apiVersion: k8up.io/v1
+    kind: Restore
+    metadata:
+      name: restore-from-b2
+    spec:
+      restoreMethod:
+        folder:
+          claimName: backup-restore
+      podSecurityContext:
+        runAsUser: 1000
+      snapshot: b17c7bb1
+      backend:
+        repoPasswordSecretRef:
+          name: restic-repo
+          key: password
+        s3:
+          endpoint: s3.us-west-004.backblazeb2.com
+          bucket: buildstars-minio-backup
+          accessKeyIDSecretRef:
+            name: backblaze-credentials
+            key: ACCESS_KEY_ID
+          secretAccessKeySecretRef:
+            name: backblaze-credentials
+            key: ACCESS_SECRET_KEY
+    EOF
+    ```
 
-kubectl apply -f s3-to-pvc.yaml
-```
+  - Apply manifest
+    ```bash
+    kubectl apply -f s3-to-pvc.yaml
+    ```
 
 ## Restore CNPG from Minio Backups
 
@@ -701,13 +738,13 @@ kubectl apply -f s3-to-pvc.yaml
     EOF
     ```
 
-4. Re-install postgres
+4. Re-install Postgres
 
     ```bash
     helm install cnpg-cluster cnpg-cluster/cnpg-cluster --values restore-values.yaml
     ```
 
-5. verify that your data is restored
+5. Verify that your data is restored
 
     ```bash
     psql "sslkey=./tls.key 
@@ -725,27 +762,27 @@ kubectl apply -f s3-to-pvc.yaml
                               ORDER BY SingleCorePerf DESC;"
     ```
 
-    - Expected Output:
+    Expected Output:
      
-        ```console
-                      cpu           | cores | threads | releasedate | singlecoreperf
-        ------------------------+-------+---------+-------------+----------------
-         "Xeon E-2378G"         | 8     | 16      | 2021        | 3477
-         "Xeon E-2288G"         | 8     | 16      | 2019        | 2783
-         "EPYC 7713"            | 64    | 128     | 2021        | 2721
-         "EPYC 7763v"           | 64    | 128     | 2021        | 2576
-         "Xeon Gold 6338"       | 32    | 64      | 2021        | 2446
-         "Xeon Platinum 8375C"  | 32    | 64      | 2021        | 2439
-         "Xeon 2696v4"          | 22    | 44      | 2016        | 2179
-         "Xeon 2696v3"          | 18    | 36      | 2014        | 2145
-         "Xeon E5-2690V4"       | 14    | 28      | 2016        | 2066
-         "Xeon Platinum 8173M"  | 28    | 56      | 2017        | 2003
-         "EPYC 7402P"           | 24    | 48      | 2019        | 1947
-         "Xeon Platinum 8175M"  | 24    | 48      | 2018        | 1796
-         "Xeon Platinum 8259CL" | 24    | 48      | 2020        | 1781
-         "Xeon 2696v3"          | 12    | 24      | 2013        | 1698
-         "Xeon Platinum 8370C"  | 32    | 64      | 2021        | 0
-        ```
+    > ```console
+    >           cpu           | cores | threads | releasedate | singlecoreperf
+    > ------------------------+-------+---------+-------------+----------------
+    >  "Xeon E-2378G"         | 8     | 16      | 2021        | 3477
+    >  "Xeon E-2288G"         | 8     | 16      | 2019        | 2783
+    >  "EPYC 7713"            | 64    | 128     | 2021        | 2721
+    >  "EPYC 7763v"           | 64    | 128     | 2021        | 2576
+    >  "Xeon Gold 6338"       | 32    | 64      | 2021        | 2446
+    >  "Xeon Platinum 8375C"  | 32    | 64      | 2021        | 2439
+    >  "Xeon 2696v4"          | 22    | 44      | 2016        | 2179
+    >  "Xeon 2696v3"          | 18    | 36      | 2014        | 2145
+    >  "Xeon E5-2690V4"       | 14    | 28      | 2016        | 2066
+    >  "Xeon Platinum 8173M"  | 28    | 56      | 2017        | 2003
+    >  "EPYC 7402P"           | 24    | 48      | 2019        | 1947
+    >  "Xeon Platinum 8175M"  | 24    | 48      | 2018        | 1796
+    >  "Xeon Platinum 8259CL" | 24    | 48      | 2020        | 1781
+    >  "Xeon 2696v3"          | 12    | 24      | 2013        | 1698
+    >  "Xeon Platinum 8370C"  | 32    | 64      | 2021        | 0
+    > ```
 
 6. Re-enable backups
 
