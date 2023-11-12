@@ -572,7 +572,7 @@ kubectl apply -f pvc.yaml
     2 snapshots
     ```
 
-4. Use the k8up CLI to restore data to the PVC or use a declarative setup
+4. Use the k8up CLI or a declarative setup to restore data to the PVC. Minio requies you to run the restore as user `1000`
 
     ```bash
     k8up cli restore \
@@ -598,6 +598,8 @@ spec:
   restoreMethod:
     folder:
       claimName: backup-restore
+  podSecurityContext:
+    runAsUser: 1000
   snapshot: b17c7bb1
   backend:
     repoPasswordSecretRef:
@@ -617,81 +619,18 @@ EOF
 kubectl apply -f s3-to-pvc.yaml
 ```
 
-5. copy data back to Minio
+## Restore CNPG from Minio Backups
 
-```bash
-/home/friend/minio-binaries/mc cp -r /var/lib/rancher/k3s/storage/pvc-877bf833-2f0d-466e-b524-53ffeb55815e_default_backup-restore/backups/cnpg myminio/backups/
-```
+1. Create a values file that targets your Minio instance for backups
 
-4. Create a s3 to s3 restore
-
-   - Only creates a single compressed archive, dont use for minio backups. 
-
-```bash
-/bin/cat << EOF > s3-to-s3.yaml
-apiVersion: k8up.io/v1
-kind: Restore
-metadata:
-  name: restore-from-b2
-spec:
-  restoreMethod:
-    s3:
-      endpoint: $LOADBALANCER_IP32000
-      bucket: backups
-      accessKeyIDSecretRef:
-        name: minio-credentials
-        key: ACCESS_KEY_ID
-      secretAccessKeySecretRef:
-        name: minio-credentials
-        key: ACCESS_SECRET_KEY
-  backend:
-    repoPasswordSecretRef:
-      name: restic-repo
-      key: password
-    s3:
-      endpoint: s3.us-west-004.backblazeb2.com
-      bucket: buildstars-minio-backup
-      accessKeyIDSecretRef:
-        name: backblaze-credentials
-        key: ACCESS_KEY_ID
-      secretAccessKeySecretRef:
-        name: backblaze-credentials
-        key: ACCESS_SECRET_KEY
-EOF
-
-kubectl apply -f s3-to-s3.yaml
-```
-
- ## Restore from backup
-
-If you used the test-values.yaml provided, then your cluster is backing up once per minute.
-
-1. Check for backups
-
-    ```bash
-    mc ls myminio/backups/cnpg/base/
-    mc ls myminio/backups/cnpg/wals/
-    ```
-
-2. uninstall postgres
- 
-    ```bash
-    helm uninstall cnpg-cluster
-    ```
-
-3. Create a values file that targets your backups
+   > Backups are disabled during the recovery process and will be re-enabled in the next step.
 
     ```bash
     /bin/cat << EOF > restore-values.yaml
     name: "cnpg"
     instances: 1
-    backup: []
     bootstrap:
-      initdb:
-        database: app
-        owner: app
-        secret:
-          name: null
+      initdb: []
       recovery:
         source: cnpg
     certificates:
@@ -708,11 +647,30 @@ If you used the test-values.yaml provided, then your cluster is backing up once 
       user:
         enabled: true
         username: "app"
+    backup: []
+    #   retentionPolicy: "30d"
+    #   barmanObjectStore:
+    #     destinationPath: "s3://backups"
+    #     endpointURL: "http://85.10.207.26:32000"
+    #     s3Credentials:
+    #       accessKeyId:
+    #         name: "minio-credentials"
+    #         key: "ACCESS_KEY_ID"
+    #       secretAccessKey:
+    #         name: "minio-credentials"
+    #         key: "ACCESS_SECRET_KEY"
+    # scheduledBackup:
+    #   name: cnpg-backup
+    #   spec:
+    #     schedule: "0 * * * * *"
+    #     backupOwnerReference: self
+    #     cluster:
+    #       name: cnpg
     externalClusters:
       - name: cnpg
         barmanObjectStore:
           destinationPath: "s3://backups/"
-          endpointURL: "http://$LOADBALANCER_IP:32000"
+          endpointURL: "http://85.10.207.26:32000"
           s3Credentials:
             accessKeyId:
               name: "minio-credentials"
