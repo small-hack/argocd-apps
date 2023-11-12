@@ -15,6 +15,7 @@ spec:
           parameters:
             secret_vars:
               - zitadel_s3_endpoint
+              - zitadel_s3_bucket
               - global_cluster_issuer
   template:
     metadata:
@@ -133,9 +134,10 @@ spec:
 
               ## List of bucket definitions to create during tenant provisioning.
               buckets:
-                - name: zitadel-postgresql
+                - name: {{ .zitadel_s3_bucket }}
                   objectLock: false
 
+              # Each secret should specify the ``CONSOLE_ACCESS_KEY`` and ``CONSOLE_SECRET_KEY`` as the access key and secret key for that user.
               users:
                 - zitadel-postgresql-s3-credentials
 

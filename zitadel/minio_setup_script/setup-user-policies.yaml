@@ -10,10 +10,10 @@ data:
     mc admin policy create local onlyPostgres /start-config/db-user-policy.json
 
     # attach new policy to minio zitadel postgres user
-    mc admin policy attach local onlyPostgres --user zitadel-postgresql
+    mc admin policy attach local onlyPostgres --user zitadel-postgresql-16
 
     # detach consoleAdmin policy (default assigned)
-    mc admin policy detach local consoleAdmin --user zitadel-postgresql
+    mc admin policy detach local consoleAdmin --user zitadel-postgresql-16
 
   db-user-policy.json: |
     {
@@ -63,13 +63,13 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: zitadel-db-credentials
-                  key: S3_USER
+                  key: CONSOLE_ACCESS_KEY
 
             - name: SECRET_KEY
               valueFrom:
                 secretKeyRef:
                   name: zitadel-db-credentials
-                  key: S3_PASSWORD
+                  key: CONSOLE_SECRET_KEY
 
             - name: ENDPOINT
               valueFrom:
