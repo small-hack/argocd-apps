@@ -9,7 +9,7 @@ data:
   setup.sh: |
     #!/bin/bash
     env && \
-    mc alias set local http://$S3_ENDPOINT $ACCESS_KEY $SECRET_KEY && \
+    mc alias set local http://$(S3_ENDPOINT) $ACCESS_KEY $SECRET_KEY && \
     mc admin info local && \
     mc admin policy create local onlyPostgres /start-config/db-user-policy.json && \
     mc admin policy attach local onlyPostgres --user zitadel-postgresql && \
