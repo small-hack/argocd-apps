@@ -8,6 +8,7 @@ data:
   # detach consoleAdmin policy (default assigned)
   setup.sh: |
     #!/bin/bash
+    mc admin info local && \
     mc admin policy create local onlyPostgres /start-config/db-user-policy.json && \
     mc admin policy attach local onlyPostgres --user zitadel-postgresql && \
     mc admin policy detach local consoleAdmin --user zitadel-postgresql
