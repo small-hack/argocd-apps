@@ -1,13 +1,15 @@
-# Backup, Recovery and Major-Upgrade Guide
+# Mino/Postgres Backups, Recovery, and Major-Upgrades
 
-This guide will document the full backup and restore process for postgres and minio.
+This guide will walk you through the full deployment, backup, and recovery process for a local Minio deployment and postgres cluster using k8up and Backblaze B2.
+
+Recommended reading: [S3 as the universal infrastructure backend](https://medium.com/innovationendeavors/s3-as-the-universal-infrastructure-backend-a104a8cc6991) - Davis Treybig
 
 ## Outline
 
 1. K3s Cluster creation
 2. Minio instance and user setup
-3. Deploy postgres cluster
-4. Seed postgres with sample data
+3. Deploy Postgres cluster
+4. Seed Postgres with sample data
 5. Configure scheduled backups of Minio to B2
 6. Restore Minio from B2 backups
 7. Restore CNPG from Minio Backups
@@ -113,7 +115,7 @@ This guide will document the full backup and restore process for postgres and mi
     export PATH=$PATH:$HOME/minio-binaries/
     ```
 
-2. Download minio helm chart
+2. Download Minio helm chart
 
     ```bash
     helm repo add minio https://charts.min.io/
@@ -121,7 +123,7 @@ This guide will document the full backup and restore process for postgres and mi
 
 3. Deploy Minio via Helm
 
-    Set a username and password for the initial user
+    - Set a username and password for the initial user
    
     ```bash
     echo "Enter User Name : " && \
@@ -130,7 +132,7 @@ This guide will document the full backup and restore process for postgres and mi
     read PASSWORD
     ```
 
-    Create a helm values file
+    - Create a helm values file
    
     ```bash
     /bin/cat << EOF > minio-values.yaml
@@ -154,7 +156,7 @@ This guide will document the full backup and restore process for postgres and mi
     EOF
     ```
 
-    Install Minio
+    - Install Minio
     
     ```bash
     helm install \
