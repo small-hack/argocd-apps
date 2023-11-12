@@ -2,12 +2,20 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: start-config-script
-  namespace: zitadel
 data:
   setup.sh: |
     #!/bin/bash
-    mc admin policy create local only-postgres /start-config/bucket-policy.json
-  bucket-policy.json: |
+
+    # create a new policy
+    mc admin policy create local onlyPostgres /start-config/db-user-policy.json
+
+    # attach new policy to minio zitadel postgres user
+    mc admin policy attach local onlyPostgres --user zitadel-postgresql
+
+    # detach consoleAdmin policy (default assigned)
+    mc admin policy detach local consoleAdmin --user zitadel-postgresql
+
+  db-user-policy.json: |
     {
       "Version": "2012-10-17",
       "Statement": [
@@ -28,35 +36,46 @@ data:
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: setup-user-and-policies
-  namespace: zitadel
+  name: minio-setup-user-and-policies
 spec:
   backoffLimit: 5
   template:
     spec:
       restartPolicy: OnFailure
+
       volumes:
         - name: start-config
           configMap:
             name: start-config-script
             defaultMode: 0744
+
       containers:
         - name: mc
           image: minio/mc
           command: [ "/start-config/setup.sh" ]
+
           volumeMounts:
             - name: start-config
               mountPath: /start-config/
+
           env:
             - name: ACCESS_KEY
               valueFrom:
                 secretKeyRef:
-                  name: zitadel-s3-credentials
+                  name: zitadel-db-credentials
                   key: S3_USER
+
             - name: SECRET_KEY
               valueFrom:
                 secretKeyRef:
-                  name: zitadel-s3-credentials
+                  name: zitadel-db-credentials
                   key: S3_PASSWORD
+
+            - name: ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: zitadel-db-credentials
+                  key: S3_ENDPOINT
+
             - name: MC_HOST_local
-              value: https://$(ACCESS_KEY):$(SECRET_KEY)@minio.minio-tenant-1.svc.cluster.local
+              value: https://$(ACCESS_KEY):$(SECRET_KEY)@$(ENDPOINT)
