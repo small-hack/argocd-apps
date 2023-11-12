@@ -240,7 +240,7 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
 12. Create the backups storage bucket
 
     ```bash
-    mc mb myminio/backups --with-versioning
+    mc mb myminio/postgres15-backups --with-versioning
     ```
 
 13. Grant Postgres account access
@@ -257,6 +257,7 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
     /bin/cat << EOF > test-values.yaml
     name: "cnpg"
     instances: 1
+    imageName: ghcr.io/cloudnative-pg/postgresql:15.4
     bootstrap:
       initdb:
         database: app
@@ -280,7 +281,7 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
     backup:
       retentionPolicy: "30d"
       barmanObjectStore:
-        destinationPath: "s3://backups"
+        destinationPath: "s3://postgres15-backups"
         endpointURL: "http://$LOADBALANCER_IP:32000"
         s3Credentials:
           accessKeyId:
@@ -682,6 +683,7 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
     /bin/cat << EOF > restore-values.yaml
     name: "cnpg"
     instances: 1
+    imageName: ghcr.io/cloudnative-pg/postgresql:15.4
     bootstrap:
       initdb: []
       recovery:
@@ -703,7 +705,7 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
     backup: []
     #   retentionPolicy: "30d"
     #   barmanObjectStore:
-    #     destinationPath: "s3://backups"
+    #     destinationPath: "s3://postgres15-backups"
     #     endpointURL: "http://85.10.207.26:32000"
     #     s3Credentials:
     #       accessKeyId:
@@ -722,7 +724,7 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
     externalClusters:
       - name: cnpg
         barmanObjectStore:
-          destinationPath: "s3://backups/"
+          destinationPath: "s3://postgres15-backups/"
           endpointURL: "http://85.10.207.26:32000"
           s3Credentials:
             accessKeyId:
@@ -798,14 +800,43 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
 
 <h2 id="major-version-upgrades">Major Version Upgrades</h2>
 
+1. Validate you have both `WAL` and `Base` backups
 
-1. Create a manifest to bootstrap a new cluster from a backup.
+   Checking minio storage:
+   
+   ```bash
+   mc ls myminio/postgres15-backups/cnpg/base/20231112T162600/
+   [2023-11-12 17:26:06 CET] 1.3KiB STANDARD backup.info
+   [2023-11-12 17:26:06 CET]  31MiB STANDARD data.tar
+   ```
+
+   ```bash
+   mc ls myminio/postgres15-backups/cnpg/wals/0000000100000000/
+   [2023-11-12 17:25:03 CET]  16MiB STANDARD 000000010000000000000001
+   [2023-11-12 17:25:31 CET]  16MiB STANDARD 000000010000000000000002
+   [2023-11-12 17:25:33 CET]  16MiB STANDARD 000000010000000000000003
+   [2023-11-12 17:25:33 CET]   348B STANDARD 000000010000000000000003.00000028.backup
+   [2023-11-12 17:26:00 CET]  16MiB STANDARD 000000010000000000000004
+   [2023-11-12 17:26:05 CET]  16MiB STANDARD 000000010000000000000005
+   [2023-11-12 17:26:05 CET]   348B STANDARD 000000010000000000000005.00000028.backup
+   [2023-11-12 17:26:24 CET]  16MiB STANDARD 000000010000000000000006
+   ```
+
+2. Create a new bucket for backups of the new major version
+
+    ```bash
+    mc mb myminio/postgres16-backups --with-versioning
+    ```
+   
+3. Uninstall your current postgres deployment
+
+4. Create a manifest to bootstrap a new cluster from a backup.
 
 ```bash
-cat << EOF > upgrade.yaml
+/bin/cat << EOF > upgrade.yaml
     name: "cnpg"
-    instances: 1
     imageName: ghcr.io/cloudnative-pg/postgresql:16.0
+    instances: 1
     bootstrap:
       initdb:
         database: app
@@ -829,8 +860,8 @@ cat << EOF > upgrade.yaml
     backup:
       retentionPolicy: "30d"
       barmanObjectStore:
-        destinationPath: "s3://backups"
-        endpointURL: "http://85.10.207.26:32000"
+        destinationPath: "s3://postgres16-backups"
+        endpointURL: "http://$LOADBALANCER_IP:32000"
         s3Credentials:
           accessKeyId:
             name: "minio-credentials"
@@ -848,8 +879,8 @@ cat << EOF > upgrade.yaml
     externalClusters:
       - name: cnpg
         barmanObjectStore:
-          destinationPath: "s3://backups/"
-          endpointURL: "http://85.10.207.26:32000"
+          destinationPath: "s3://postgres15-backups/"
+          endpointURL: "http://$LOADBALANCER_IP:32000"
           s3Credentials:
             accessKeyId:
               name: "minio-credentials"
@@ -868,32 +899,7 @@ cat << EOF > upgrade.yaml
 EOF
 ```
 
-2. Validate you have both `WAL` and `Base` backups
-
-   Checking minio storage:
-   
-   ```bash
-   mc ls myminio/backups/cnpg/base/20231112T162600/
-   [2023-11-12 17:26:06 CET] 1.3KiB STANDARD backup.info
-   [2023-11-12 17:26:06 CET]  31MiB STANDARD data.tar
-   ```
-
-   ```bash
-   mc ls myminio/backups/cnpg/wals/0000000100000000/
-   [2023-11-12 17:25:03 CET]  16MiB STANDARD 000000010000000000000001
-   [2023-11-12 17:25:31 CET]  16MiB STANDARD 000000010000000000000002
-   [2023-11-12 17:25:33 CET]  16MiB STANDARD 000000010000000000000003
-   [2023-11-12 17:25:33 CET]   348B STANDARD 000000010000000000000003.00000028.backup
-   [2023-11-12 17:26:00 CET]  16MiB STANDARD 000000010000000000000004
-   [2023-11-12 17:26:05 CET]  16MiB STANDARD 000000010000000000000005
-   [2023-11-12 17:26:05 CET]   348B STANDARD 000000010000000000000005.00000028.backup
-   [2023-11-12 17:26:24 CET]  16MiB STANDARD 000000010000000000000006
-   ```
-
-   
-2. Uninstall your current postgres deployment
-
-3. Deploy a new postgres cluster on the latest version using a backup as a source
+5. Deploy a new postgres cluster on the latest version using a backup as a source
 
    ```bash
    helm install cnpg-cluster cnpg-cluster/cnpg-cluster --values upgrade.yaml
