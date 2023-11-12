@@ -8,9 +8,8 @@ data:
   # detach consoleAdmin policy (default assigned)
   setup.sh: |
     #!/bin/bash
-    echo "hello, does this work?" && \
-    mc -v && \
     env && \
+    mc alias set local http://$S3_ENDPOINT $ACCESS_KEY $SECRET_KEY && \
     mc admin info local && \
     mc admin policy create local onlyPostgres /start-config/db-user-policy.json && \
     mc admin policy attach local onlyPostgres --user zitadel-postgresql && \
@@ -77,6 +76,3 @@ spec:
                 secretKeyRef:
                   name: zitadel-db-credentials
                   key: S3_ENDPOINT
-
-            - name: MC_HOST_local
-              value: https://$(ACCESS_KEY):$(SECRET_KEY)@$(ENDPOINT)
