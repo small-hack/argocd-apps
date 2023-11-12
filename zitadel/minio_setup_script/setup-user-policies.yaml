@@ -1,0 +1,62 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: start-config-script
+  namespace: zitadel
+data:
+  setup.sh: |
+    #!/bin/bash
+    mc admin policy create local only-postgres /start-config/bucket-policy.json
+  bucket-policy.json: |
+    {
+      "Version": "2012-10-17",
+      "Statement": [
+        {
+          "Effect": "Allow",
+          "Action": [
+            "s3:*"
+          ],
+          "Resource": [
+            "arn:aws:s3:::zitadel-postgresql",
+            "arn:aws:s3:::zitadel-postgresql/*"
+          ]
+        }
+      ]
+    }
+
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: setup-user-and-policies
+  namespace: zitadel
+spec:
+  backoffLimit: 5
+  template:
+    spec:
+      restartPolicy: OnFailure
+      volumes:
+        - name: start-config
+          configMap:
+            name: start-config-script
+            defaultMode: 0744
+      containers:
+        - name: mc
+          image: minio/mc
+          command: [ "/start-config/setup.sh" ]
+          volumeMounts:
+            - name: start-config
+              mountPath: /start-config/
+          env:
+            - name: ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: zitadel-s3-credentials
+                  key: S3_USER
+            - name: SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: zitadel-s3-credentials
+                  key: S3_PASSWORD
+            - name: MC_HOST_local
+              value: https://$(ACCESS_KEY):$(SECRET_KEY)@minio.minio-tenant-1.svc.cluster.local

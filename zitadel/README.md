@@ -1,10 +1,12 @@
 # An Argo CD App for Zitadel
 
-[ZITADEL](https://github.com/zitadel/zitadel/tree/main) is an identity management and provider application similar to Keycloak. It helps you manage your users acrross apps and acts as your OIDC provider. It's community have been really nice, so we'll be supporting some Argo CD apps here in favor of depracting Keycloak support down the line eventually. Here's the [Zitadel helm chart](https://github.com/zitadel/zitadel-charts/tree/main) that we're deploying here.
+[ZITADEL](https://github.com/zitadel/zitadel/tree/main) is an identity management and provider application similar to Keycloak. It helps you manage your users across apps and acts as your OIDC provider. It's community have been really nice, so we'll be supporting some Argo CD apps here instead of using Keycloak. Here's the [Zitadel helm chart](https://github.com/zitadel/zitadel-charts/tree/main) that we're deploying here.
 
 It's important to take a look at the [`defaults.yaml`](https://github.com/zitadel/zitadel/blob/main/cmd/defaults.yaml) to see what the default `ConfigMap` will look like for Zitadel.
 
-This ArgoCD app of apps is designed to be pretty locked down to allow you to use **only** a default service account (that also can't log in through the UI) to do all the heavy lifting with terraform, pulumi, or your own self service script. We support both [cockroachdb](./zitadel_and_cockroachdb) _and_ [postgresql](./zitadel_and_postgresql) as the database backends.
+This Argo CD app of apps is designed to be pretty locked down to allow you to use **only** a default service account (that also can't log in through the UI) to do all the heavy lifting with openTofu, Pulumi, or your own self service script. We support only PostgreSQL as the database backend.
+
+The main magic happens in the [app_of_apps](./app_of_apps) directory.
 
 <img src="./screenshots/zitadel_app_of_apps.png">
 <img src="./screenshots/zitadel_web_appset.png">
@@ -12,23 +14,24 @@ This ArgoCD app of apps is designed to be pretty locked down to allow you to use
 
 ## Sync waves
 
-1. External Secrets for both your database (cockroachdb or postgresql) and zitadel
-   - Zitadel database credentials
-   - Zitadel `masterkey` secret
-   Persistent volume for your database, including backups via [k8up](https://k8up.io)
-2. postgres or cockraochdb helm chart
-3. zitadel helm chart with ONLY a service account and registration DISABLED
+1. - External Secrets for both your database postgresql and zitadel:
+     - Zitadel database credentials
+     - Zitadel `masterkey` Secrets
+   - MinIO Tenant (if you use directoryRecursion: true)
+2. Minio Setup Script - this sets up your minio user for postgresql and its policy
+3. Postgresql cluster via the Cloud Native Postgresql Operator
+4. Zitadel helm chart with ONLY a service account and registration DISABLED
 
 ## Usage
 
-To deploy Zitadel and postgresql:
+To deploy Zitadel and PostgreSQL _without_ an isolated MinIO tenant for PostgreSQL backups:
 ```bash
-argocd app create zitadel --upsert --repo https://github.com/small-hack/argocd-apps --path zitadel/zitadel_and_postgresql --sync-policy automated --self-heal --auto-prune --dest-namespace zitadel --dest-server https://kubernetes.default.svc
+argocd app create zitadel --upsert --repo https://github.com/small-hack/argocd-apps --path zitadel/app_of_apps --sync-policy automated --self-heal --auto-prune --dest-namespace zitadel --dest-server https://kubernetes.default.svc
 ```
 
-To deploy Zitadel and cockraochdb:
+To deploy Zitadel and PostgreSQL with an isolated MinIO tenant for PostgreSQL backups:
 ```bash
-argocd app create zitadel --upsert --repo https://github.com/small-hack/argocd-apps --path zitadel/zitadel_and_cockroachdb --sync-policy automated --self-heal --auto-prune --dest-namespace zitadel --dest-server https://kubernetes.default.svc
+argocd app create zitadel --upsert --repo https://github.com/small-hack/argocd-apps --path zitadel/app_of_apps --sync-policy automated --self-heal --auto-prune --dest-namespace zitadel --dest-server https://kubernetes.default.svc --directory-recursion
 ```
 
 ## Zitadel OIDC for logging into Argo CD with Zitadel as the SSO

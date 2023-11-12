@@ -1,0 +1,21 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: zitadel-minio-setup-script
+  namespace: argocd
+  annotations:
+    # after the external secrets and minio tenant but before the postgres and zitadel apps
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  project: zitadel
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: zitadel
+  source:
+    repoURL: https://github.com/small-hack/argocd-apps.git
+    path: zitadel/minio_setup_script/
+    targetRevision: eso-helm-chart-test
+  syncPolicy:
+    syncOptions:
+      - ApplyOutOfSyncOnly=true

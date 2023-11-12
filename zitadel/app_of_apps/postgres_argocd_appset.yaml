@@ -5,8 +5,6 @@ kind: ApplicationSet
 metadata:
   name: zitadel-postgres-app-set
   namespace: argocd
-  annotations:
-    argocd.argoproj.io/sync-wave: "2"
 spec:
   goTemplate: true
   # generator allows us to source specific values from an external k8s secret
@@ -23,7 +21,7 @@ spec:
       name: zitadel-postgres-cluster
       namespace: zitadel
       annotations:
-        argocd.argoproj.io/sync-wave: "2"
+        argocd.argoproj.io/sync-wave: "3"
     spec:
       project: zitadel
       destination:
@@ -38,25 +36,17 @@ spec:
       source:
         repoURL: https://small-hack.github.io/cloudnative-pg-tenant-chart
         chart: cnpg-cluster
-        targetRevision: 0.3.0
+        targetRevision: 0.3.7
         helm:
           releaseName: zitadel-postgres-cluster
           values: |
             name: zitadel-postgres
-            instances: 1
+            instances: 2
 
             bootstrap:
               initdb:
                 database: zitadel
                 owner: zitadel
-                # secretKeys:
-                #      userPasswordKey: password
-                #      adminPasswordKey: adminPassword
-                secret:
-                  name: zitadel-db-credentials
-                # postInitSQL:
-                #  - GRANT ALL PRIVILEGES ON DATABASE zitadel TO zitadel;
-                #  - GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO zitadel;
 
             backup:
               # barman is a utility for backing up postgres to s3
@@ -65,10 +55,10 @@ spec:
                 endpointURL: "https://{{ .zitadel_s3_endpoint }}"
                 s3Credentials:
                   accessKeyId:
-                    name: zitadel-s3-credentials
+                    name: zitadel-db-credentials
                     key : "S3_USER"
                   secretAccessKey:
-                    name: zitadel-s3-credentials
+                    name: zitadel-db-credentials
                     key : "S3_PASSWORD"
               retentionPolicy: "30d"
             
