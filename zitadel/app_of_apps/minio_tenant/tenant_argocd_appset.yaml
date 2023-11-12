@@ -137,8 +137,8 @@ spec:
                 - name: {{ .zitadel_s3_bucket }}
                   objectLock: false
 
-              # Each secret should specify the CONSOLE_ACCESS_KEY and CONSOLE_SECRET_KEY as the access key and secret key for that user.
-              users: ["zitadel-postgresql-s3-credentials"]
+              # Each secret should specify CONSOLE_ACCESS_KEY, CONSOLE_SECRET_KEY for the user
+              users: "zitadel-postgresql-s3-credentials"
 
               ## PodManagement policy for MinIO Tenant Pods. Can be "OrderedReady" or "Parallel"
               ## Refer https://kubernetes.io/docs/tutorials/stateful-application/basic-stateful-set/#pod-management-policy
