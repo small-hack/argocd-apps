@@ -8,7 +8,7 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
 > 
 ## Outline
 
-1. [K3s Cluster creation](k3s-cluster-creation)
+1. [K3s Cluster creation](#k3s-cluster-creation)
 2. Minio instance and user setup
 3. Deploy Postgres cluster
 4. Seed Postgres with sample data
