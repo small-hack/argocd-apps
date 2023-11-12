@@ -15,7 +15,6 @@ spec:
           parameters:
             secret_vars:
               - zitadel_s3_endpoint
-              - zitadel_s3_region
               - global_cluster_issuer
   template:
     metadata:
@@ -146,9 +145,6 @@ spec:
 
               ## List of bucket definitions to create during tenant provisioning.
               buckets:
-                - name: zitadel
-                  objectLock: false
-                  region: {{ .zitadel_s3_region }}
                 - name: zitadel-postgresql
                   objectLock: false
 

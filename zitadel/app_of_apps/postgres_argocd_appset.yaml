@@ -43,7 +43,7 @@ spec:
           releaseName: zitadel-postgres-cluster
           values: |
             name: zitadel-postgres
-            instances: 3
+            instances: 1
 
             bootstrap:
               initdb:
