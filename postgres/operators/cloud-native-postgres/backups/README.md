@@ -449,7 +449,44 @@
     helm install k8up k8up-io/k8up
     ```
 
-4. create a s3 to PVC restore
+4. Create a backup
+
+```bash
+cat << EOF > backup.yaml
+apiVersion: k8up.io/v1
+kind: Schedule
+metadata:
+  name: schedule-backups
+spec:
+  backend:
+    repoPasswordSecretRef:
+      name: restic-repo
+      key: password
+    s3:
+      endpoint: "s3.us-west-004.backblazeb2.com"
+      bucket: "buildstars-minio-backup"
+      accessKeyIDSecretRef:
+        name: backblaze-credentials
+        key: ACCESS_KEY_ID
+      secretAccessKeySecretRef:
+        name: backblaze-credentials
+        key: ACCESS_SECRET_KEY
+  backup:
+    schedule: '* * * * *'
+    keepJobs: 4
+  check:
+    schedule: '0 1 * * 1'
+  prune:
+    schedule: '0 1 * * 0'
+    retention:
+      keepLast: 5
+      keepDaily: 14
+EOF
+```
+
+## Restoring from offsite
+
+1. create a s3 to PVC restore
 
 ```bash
 /bin/cat << EOF > pvc.yaml
