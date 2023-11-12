@@ -1,8 +1,26 @@
-# CNPG Operator Backup and Restore Procedure
+# Backup and Recovery Guide
 
-## Set up a demo cluster
+This guide will document the full backup and restore process for postgres and minio.
 
-### Setup Kubernetes
+## Outline
+
+1. K3s Cluster creation
+2. Minio instance and user setup
+3. Deploy postgres cluster
+4. Seed postgres with sample data
+5. Configure scheduled backups of Minio to B2
+6. Restore Minio from B2 backups
+7. Restore CNPG from Minio Backups
+
+## Requirements
+
+- K8up CLI
+- Kubectl
+- Helm
+- Restic
+- Minio Client CLI (mc)
+   
+## K3s Cluster creation
 
 1. Download the k3s installer
 
@@ -36,7 +54,49 @@
     export KUBECONFIG=~/.config/kube/config
     ```
 
-### Setup Minio
+4. Install CertManager
+
+    ```bash
+    helm repo add jetstack https://charts.jetstack.io
+    helm repo update
+
+    kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.2/cert-manager.crds.yaml
+
+    helm install cert-manager jetstack/cert-manager \
+    --namespace cert-manager \
+    --create-namespace \
+    --version v1.13.2
+    ```
+    
+5. Install CNPG Operator
+
+    ```bash
+    helm repo add cnpg https://cloudnative-pg.github.io/charts
+    helm upgrade --install cnpg \
+      --namespace cnpg-system \
+      --create-namespace \
+      cnpg/cloudnative-pg \
+      --version 0.19.0
+    ```
+    
+6. Install the CNPG cluster chart
+
+   ```bash
+    helm repo add cnpg-cluster https://small-hack.github.io/cloudnative-pg-cluster-chart
+    helm repo update
+    ```
+
+7. Install k8up
+
+    ```bash
+    repo add k8up-io https://k8up-io.github.io/k8up
+    helm repo update
+    
+    kubectl apply -f https://github.com/k8up-io/k8up/releases/download/k8up-4.4.3/k8up-crd.yaml
+    helm install k8up k8up-io/k8up
+    ```
+
+## Minio instance and user setup
 
 1. install the MinIO client
 
@@ -52,16 +112,16 @@
     export PATH=$PATH:$HOME/minio-binaries/
     ```
 
-
 2. Download minio helm chart
 
     ```bash
     helm repo add minio https://charts.min.io/
     ```
 
-
 3. Deploy Minio via Helm
 
+    Set a username and password for the initial user
+   
     ```bash
     echo "Enter User Name : " && \
     read USERNAME && \
@@ -69,6 +129,8 @@
     read PASSWORD
     ```
 
+    Create a helm values file
+   
     ```bash
     /bin/cat << EOF > minio-values.yaml
     mode: standalone
@@ -90,6 +152,8 @@
         memory: 512Mi
     EOF
     ```
+
+    Install Minio
     
     ```bash
     helm install \
@@ -97,7 +161,7 @@
       --generate-name minio/minio
     ```
 
-4. Get the LoadBalancer's External-IP address and export it
+5. Get the LoadBalancer's External-IP address and export it
 
     ```console
     friend@vm0:~$ kubectl get svc
@@ -111,19 +175,19 @@
     export LOADBALANCER_IP="192.168.50.160"
     ```
 
-5. Set an alias for your server:
+6. Set an alias for your server:
 
     ```bash
     mc alias set myminio http://$LOADBALANCER_IP:32000 $USERNAME $PASSWORD
     ```
 
-6. Test the connection:
+7. Test the connection:
 
     ```bash
     mc admin info myminio
     ```
 
-7. Create a postgres user
+8. Create a postgres user
 
     ```bash
     mc admin user add myminio postgres
@@ -136,13 +200,13 @@
     Added user `postgres` successfully.
     ```
 
-8. Create an Access Key
+9. Create an Access Key
 
     ```bash
     mc admin user svcacct add myminio postgres
     ```
 
-9. base64 encode the Access Key and Secret Key    
+10. base64 encode the Access Key and Secret Key    
     
     ```bash
     export ACCESS_KEY_ID=$(echo -n "" | base64)
@@ -150,7 +214,7 @@
     export ACCESS_SECRET_KEY=$(echo -n "" |base64)
     ```
     
-10. use the following templates to create your secrets.
+11. use the following templates to create your secrets.
   
     ```bash
     /bin/cat << EOF > access_key.yaml
@@ -167,46 +231,21 @@
     kubectl apply -f access_key.yaml
     ```
 
-11. Create the backups storage bucket
+12. Create the backups storage bucket
 
     ```bash
     mc mb myminio/backups --with-versioning
     ```
 
-12. Grant postgres account access
+13. Grant postgres account access
 
     ```bash
     mc admin policy attach myminio readwrite --user postgres
     ```
 
-### Setup CNPG + CertManager
+## Deploy postgres cluster
 
-1. Install CNPG Operator
-
-    ```bash
-    helm repo add cnpg https://cloudnative-pg.github.io/charts
-    helm upgrade --install cnpg \
-      --namespace cnpg-system \
-      --create-namespace \
-      cnpg/cloudnative-pg \
-      --version 0.19.0
-    ```
-
-2. Install CertManager
-
-    ```bash
-    helm repo add jetstack https://charts.jetstack.io
-    helm repo update
-
-    kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.2/cert-manager.crds.yaml
-
-    helm install cert-manager jetstack/cert-manager \
-    --namespace cert-manager \
-    --create-namespace \
-    --version v1.13.2
-    ```
-
-3. Create an example values.yaml for the postgres cluster
+1. Create an example values.yaml for the postgres cluster
 
     ```bash
     /bin/cat << EOF > test-values.yaml
@@ -266,13 +305,10 @@
 4. Create the postgres cluster
 
     ```bash
-    helm repo add cnpg-cluster https://small-hack.github.io/cloudnative-pg-cluster-chart
-    helm repo update
-
     helm install cnpg-cluster cnpg-cluster/cnpg-cluster --values test-values.yaml
     ```
 
-## Add Demo Data to postgres
+## Seed postgres with sample data
 
 1. Get the user's `tls.key`, `tls.crt`, and `ca.crt` from secrets
 
@@ -392,7 +428,7 @@
          "Xeon Platinum 8370C"  | 32    | 64      | 2021        | 0
         ```
  
- ## Backup Minio to offsite
+ ## Configure scheduled backups of Minio to B2
 
  1. Create a secret containing your external S3 credentials
 
@@ -417,7 +453,24 @@
     kubectl apply -f backblaze.yaml
     ```
 
- 2. Create a secret containing a random password for restic
+ 2. Create a second secret with different keys to support the K8up CLI
+
+    ```bash
+    /bin/cat << EOF > k8up.yaml
+    apiVersion: v1
+    kind: Secret
+    metadata:
+      name: k8up-credentials
+    type: Opaque
+    data:
+      "username": "$ACCESS_KEY_ID"
+      "password": "$ACCESS_SECRET_KEY"
+    EOF
+
+    kubectl apply -f k8up.yaml
+    ```
+ 
+ 3. Create a secret containing a random password for restic
 
     ```bash
     export RESTIC_PASS=$(openssl rand -base64 32)
@@ -438,18 +491,8 @@
     ```bash
     kubectl apply -f restic.yaml
     ```
-  
- 3. Install k8up
 
-    ```bash
-    repo add k8up-io https://k8up-io.github.io/k8up
-    helm repo update
-    
-    kubectl apply -f https://github.com/k8up-io/k8up/releases/download/k8up-4.4.3/k8up-crd.yaml
-    helm install k8up k8up-io/k8up
-    ```
-
-4. Create a backup
+3. Create a scheduled backup
 
 ```bash
 cat << EOF > backup.yaml
@@ -482,11 +525,21 @@ spec:
       keepLast: 5
       keepDaily: 14
 EOF
+
+kubectl apply -f backup.yaml
 ```
 
-## Restoring from offsite
+## Restore Minio from B2 backups
 
-1. create a s3 to PVC restore
+1. Uninstall minio and postgres and delete your scheduled backup
+
+   ```bash
+   helm uninstall cnpg-cluster
+   helm uninstall minio-<some number>
+   kubectl delete -f backup.yaml 
+   ```
+
+2. Create a PVC to hold our restored data
 
 ```bash
 /bin/cat << EOF > pvc.yaml
@@ -506,6 +559,35 @@ EOF
 kubectl apply -f pvc.yaml
 ```
 
+3. Find your desired snapshot to restore
+
+    ```bash
+    restic snapshots
+    repository bac0980d opened (version 2, compression level auto)
+    ID        Time                 Host        Tags        Paths
+    -----------------------------------------------------------------------------
+    704f5d77  2023-11-12 10:51:14  default                 /data/minio-1699782386
+    b17c7bb1  2023-11-12 10:52:12  default                 /data/minio-1699782386
+    -----------------------------------------------------------------------------
+    2 snapshots
+    ```
+
+4. Use the k8up CLI to restore data to the PVC or use a declarative setup
+
+    ```bash
+    k8up cli restore \
+      --restoreMethod pvc \
+      --kubeconfig "$KUBECONFIG" \
+      --secretRef restic-repo \
+      --namespace default \
+      --s3endpoint s3.us-west-004.backblazeb2.com \
+      --s3bucket buildstars-minio-backup \
+      --s3secretRef k8up-credentials \
+      --snapshot b17c7bb1 \
+      --claimName backup-restore \
+      --runAsUser 1000
+    ```
+
 ```bash
 /bin/cat << EOF > s3-to-pvc.yaml
 apiVersion: k8up.io/v1
@@ -516,6 +598,7 @@ spec:
   restoreMethod:
     folder:
       claimName: backup-restore
+  snapshot: b17c7bb1
   backend:
     repoPasswordSecretRef:
       name: restic-repo
