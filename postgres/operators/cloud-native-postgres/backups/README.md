@@ -1,4 +1,4 @@
-# Backup and Recovery Guide
+# Backup, Recovery and Major-Upgrade Guide
 
 This guide will document the full backup and restore process for postgres and minio.
 
@@ -11,6 +11,7 @@ This guide will document the full backup and restore process for postgres and mi
 5. Configure scheduled backups of Minio to B2
 6. Restore Minio from B2 backups
 7. Restore CNPG from Minio Backups
+8. Major Version Upgrades
 
 ## Requirements
 
@@ -695,18 +696,7 @@ kubectl apply -f s3-to-pvc.yaml
     helm install cnpg-cluster cnpg-cluster/cnpg-cluster --values restore-values.yaml
     ```
 
-5. Get the new certificates and keys
-
-    ```bash
-    kubectl get secrets cnpg-app-cert -o yaml |yq '.data."tls.key"' |base64 -d > tls.key
-    chmod 600 tls.key
-    kubectl get secrets cnpg-app-cert -o yaml |yq '.data."tls.crt"' |base64 -d > tls.crt
-    chmod 600 tls.crt
-    kubectl get secrets cnpg-server-cert -o yaml |yq '.data."ca.crt"' |base64 -d > ca.crt
-    chmod 600 ca.crt
-    ```
- 
-6. verify that your data is restored
+5. verify that your data is restored
 
     ```bash
     psql "sslkey=./tls.key 
@@ -746,5 +736,15 @@ kubectl apply -f s3-to-pvc.yaml
          "Xeon Platinum 8370C"  | 32    | 64      | 2021        | 0
         ```
 
- 
+6. Re-enable backups
+
+   Uncomment the backups sections of the restore-values, and upgrade the deployment
+   
+   ```bash
+   helm upgrade -f restore-values.yaml cnpg-cluster cnpg-cluster/cnpg-cluster
+   ```
+
+## Major Version Upgrades
+
+
  
