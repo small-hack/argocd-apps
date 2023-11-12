@@ -10,6 +10,8 @@ data:
     #!/bin/bash
     echo "hello, does this work?" && \
     which mc && \
+    mc -v && \
+    env && \
     mc admin info local && \
     mc admin policy create local onlyPostgres /start-config/db-user-policy.json && \
     mc admin policy attach local onlyPostgres --user zitadel-postgresql && \
