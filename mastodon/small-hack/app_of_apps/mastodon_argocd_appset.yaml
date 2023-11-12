@@ -35,12 +35,9 @@ spec:
           - ApplyOutOfSyncOnly=true
       source:
         # forked from: https://github.com/mastodon/chart/tree/main
-        # repoURL: 'https://small-hack.github.io/mastodon-helm-chart'
-        # targetRevision: 4.7.0
-        # chart: mastodon
-        repoURL: 'https://github.com/small-hack/mastodon-helm-chart'
-        targetRevision: add-ssl-for-postgresql
-        path: charts/mastodon/
+        repoURL: 'https://small-hack.github.io/mastodon-helm-chart'
+        targetRevision: 5.0.0
+        chart: mastodon
         helm:
           values: |
             image:
