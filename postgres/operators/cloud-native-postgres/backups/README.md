@@ -1,12 +1,14 @@
 # Mino/Postgres Backups, Recovery, and Major-Upgrades
 
-This guide will walk you through the full deployment, backup, and recovery process for a local Minio deployment and postgres cluster using k8up and Backblaze B2. For the purposes of this demo, backups are set to run every minute. Plain-text passwords are also used for convenience - do NOT do that in production.
+This guide will walk you through the creation, backup, and recovery processes for a local [Minio](https://min.io/docs/minio/kubernetes/upstream/index.html) deployment and [CloudNative Postgres](https://cloudnative-pg.io/documentation/current/) cluster using [K8up](https://k8up.io/) and [Backblaze B2](https://www.backblaze.com/docs/cloud-storage). 
 
 Recommended reading: [S3 as the universal infrastructure backend](https://medium.com/innovationendeavors/s3-as-the-universal-infrastructure-backend-a104a8cc6991) - Davis Treybig
 
+> For the purposes of this demo, backups are set to run every minute. Plain-text passwords are also used for convenience - do NOT do that in production.
+> 
 ## Outline
 
-1. K3s Cluster creation
+1. [K3s Cluster creation](k3s-cluster-creation)
 2. Minio instance and user setup
 3. Deploy Postgres cluster
 4. Seed Postgres with sample data
@@ -22,8 +24,8 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
 - Helm
 - Restic
 - Minio Client CLI (mc)
-   
-## K3s Cluster creation
+
+<h2 id="k3s-cluster-creation">K3s Cluster creation</h2>
 
 1. Download the k3s installer
 
