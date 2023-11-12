@@ -317,13 +317,13 @@
 4. Create a table for the demo data:
 
     ```bash
-    psql 'sslkey=./tls.key 
+    psql "sslkey=./tls.key 
           sslcert=./tls.crt 
           sslrootcert=./ca.crt 
           host=$LOADBALANCER_IP
           port=30000 
           dbname=app 
-          user=app' -c 'CREATE TABLE processors (data JSONB);'
+          user=app" -c 'CREATE TABLE processors (data JSONB);'
     ```
 
 5. Download demo data and use script to populate the table
