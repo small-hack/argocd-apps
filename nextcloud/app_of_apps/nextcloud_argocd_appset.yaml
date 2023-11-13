@@ -71,6 +71,20 @@ spec:
                   hosts:
                     - "{{ .nextcloud_hostname }}"
 
+            lifecycle:
+              postStartCommand:
+                - su
+                - -s
+                - /bin/sh
+                - www-data
+                - -c
+                - |-
+                  echo "Configuring Nextcloud Apps"
+                  php occ app:install notes
+                  php occ app:install deck
+                  php occ app:install oidc-login
+                  php occ app:install bookmarks
+
             nextcloud:
               host: {{ .nextcloud_hostname }}
               existingSecret:
