@@ -64,6 +64,7 @@ spec:
                     Port: 5432
                     Database: zitadel
                     User:
+                      Username: zitadel
                       SSL:
                         Mode: verify-full
                     Admin:
@@ -119,11 +120,6 @@ spec:
             env:
               - name: ZITADEL_EXTERNALDOMAIN
                 value: {{ .zitadel_hostname }}
-              - name: ZITADEL_DATABASE_POSTGRES_USER_USERNAME
-                valueFrom:
-                  secretKeyRef:
-                    name: zitadel-db-credentials
-                    key: username
 
             ingress:
               enabled: true
