@@ -67,7 +67,7 @@ spec:
               #     - name: zitadel-init-sql
               #       key: zitadel-init.sql
 
-            enableSuperuserAccess: true
+            enableSuperuserAccess: false
 
             backup:
               # barman is a utility for backing up postgres to s3
