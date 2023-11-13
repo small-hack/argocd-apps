@@ -716,7 +716,7 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
     #       secretAccessKey:
     #         name: "minio-credentials"
     #         key: "ACCESS_SECRET_KEY"
-    # scheduledBackup:
+    scheduledBackup: []
     #   name: cnpg-backup
     #   spec:
     #     schedule: "0 * * * * *"
@@ -727,7 +727,7 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
       - name: cnpg
         barmanObjectStore:
           destinationPath: "s3://postgres15-backups/"
-          endpointURL: "http://$LOADBALANCER_IP:32000"
+          endpointURL: "http://85.10.207.26:32000"
           s3Credentials:
             accessKeyId:
               name: "minio-credentials"
@@ -802,49 +802,91 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
 
 <h2 id="major-version-upgrades">Major Version Upgrades</h2>
 
-1. Validate you have both `WAL` and `Base` backups
+Major upgrades must be perfomed by importing data from a running database. Additionally, the existing database must accept password authentication as SSL Certificates are not a supported method of connecting to an external cluster for import purposes.
 
-   Checking minio storage:
-   
-   ```bash
-   mc ls myminio/postgres15-backups/cnpg/base/20231112T162600/
-   [2023-11-12 17:26:06 CET] 1.3KiB STANDARD backup.info
-   [2023-11-12 17:26:06 CET]  31MiB STANDARD data.tar
-   ```
+To get around these issues we will:
 
-   ```bash
-   mc ls myminio/postgres15-backups/cnpg/wals/0000000100000000/
-   [2023-11-12 17:25:03 CET]  16MiB STANDARD 000000010000000000000001
-   [2023-11-12 17:25:31 CET]  16MiB STANDARD 000000010000000000000002
-   [2023-11-12 17:25:33 CET]  16MiB STANDARD 000000010000000000000003
-   [2023-11-12 17:25:33 CET]   348B STANDARD 000000010000000000000003.00000028.backup
-   [2023-11-12 17:26:00 CET]  16MiB STANDARD 000000010000000000000004
-   [2023-11-12 17:26:05 CET]  16MiB STANDARD 000000010000000000000005
-   [2023-11-12 17:26:05 CET]   348B STANDARD 000000010000000000000005.00000028.backup
-   [2023-11-12 17:26:24 CET]  16MiB STANDARD 000000010000000000000006
-   ```
+- Assume the upgrade in question is v15.4 to v16.0
+- Create a new 15.4 cluster from backups which can will accept password authentication.
+- Create a new 16.0 cluster which targets our 15.4 cluster
+- Delete the 15.4 cluster
 
-2. Create a new bucket for backups of the new major version
+1. Create a new bucket for backups of the new major version
 
     ```bash
     mc mb myminio/postgres16-backups --with-versioning
     ```
-   
-3. Uninstall your current postgres deployment
-
-4. Create a manifest to bootstrap a new cluster from a backup.
+2. Create a manifest for the 15.4 cluster that accepts password authentication
 
 ```bash
-/bin/cat << EOF > upgrade.yaml
-    name: "cnpg"
+/bin/cat << EOF > password-cluster.yaml
+name: "cnpg-15"
+instances: 1
+imageName: ghcr.io/cloudnative-pg/postgresql:15.4
+bootstrap:
+  initdb: []
+  recovery:
+    source: cnpg
+certificates:
+  server:
+    enabled: true
+    generate: true
+    serverTLSSecret: ""
+    serverCASecret: ""
+  client:
+    enabled: true
+    generate: true
+    clientCASecret: ""
+    replicationTLSSecret: ""
+  user:
+    enabled: true
+    username:
+      - "app"
+backup: []
+scheduledBackup: []
+externalClusters:
+  - name: cnpg
+    barmanObjectStore:
+      destinationPath: "s3://postgres15-backups/"
+      endpointURL: "http://85.10.207.26:32000"
+      s3Credentials:
+        accessKeyId:
+          name: "minio-credentials"
+          key: "ACCESS_KEY_ID"
+        secretAccessKey:
+          name: "minio-credentials"
+          key: "ACCESS_SECRET_KEY"
+      wal:
+        maxParallel: 8
+monitoring:
+  enablePodMonitor: false
+postgresql:
+  pg_hba:
+    - host all all all md5
+storage:
+  size: 1Gi
+testApp:
+  enabled: false
+EOF
+```
+   
+4. Uninstall your current postgres deployment
+
+5. Create a manifest to bootstrap a new cluster from a backup.
+
+    ```bash
+    /bin/cat << EOF > upgrade.yaml
+    name: "cnpg-16"
     imageName: ghcr.io/cloudnative-pg/postgresql:16.0
     instances: 1
     bootstrap:
       initdb:
-        database: app
-        owner: app
-        secret:
-          name: null
+        import:
+          type: microservice
+          databases:
+            - app
+          source:
+            externalCluster: cnpg-15
     certificates:
       server:
         enabled: true
@@ -860,46 +902,31 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
         enabled: true
         username:
           - "app"
-    backup:
-      retentionPolicy: "30d"
-      barmanObjectStore:
-        destinationPath: "s3://postgres16-backups"
-        endpointURL: "http://$LOADBALANCER_IP:32000"
-        s3Credentials:
-          accessKeyId:
-            name: "minio-credentials"
-            key: "ACCESS_KEY_ID"
-          secretAccessKey:
-            name: "minio-credentials"
-            key: "ACCESS_SECRET_KEY"
-    scheduledBackup:
-      name: cnpg-backup
-      spec:
-        schedule: "0 * * * * *"
-        backupOwnerReference: self
-        cluster:
-          name: cnpg
+    backup: []
+    scheduledBackup: []
     externalClusters:
-      - name: cnpg
-        barmanObjectStore:
-          destinationPath: "s3://postgres15-backups/"
-          endpointURL: "http://$LOADBALANCER_IP:32000"
-          s3Credentials:
-            accessKeyId:
-              name: "minio-credentials"
-              key: "ACCESS_KEY_ID"
-            secretAccessKey:
-              name: "minio-credentials"
-              key: "ACCESS_SECRET_KEY"
-          wal:
-            maxParallel: 8
+      - name: cnpg-15
+        connectionParameters:
+          host: "cnpg-15-rw.default.svc"
+          user: app
+          dbname: app
+        password:
+          name: cnpg-15-app
+          key: password
     monitoring:
       enablePodMonitor: false
+    postgresql:
+      pg_hba:
+        - host all all all md5
     storage:
       size: 1Gi
     testApp:
       enabled: false
-EOF
+    EOF
+    ```
+
+```bash
+helm install cnpg-15 cnpg-cluster/cnpg-cluster --values password-cluster.yaml
 ```
 
 5. Deploy a new postgres cluster on the latest version using a backup as a source
