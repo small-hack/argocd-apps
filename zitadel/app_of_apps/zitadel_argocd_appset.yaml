@@ -63,6 +63,12 @@ spec:
                     Host: zitadel-postgresql-rw.zitadel.svc
                     Port: 5432
                     Database: zitadel
+                    User:
+                      SSL:
+                        Mode: verify-full
+                    Admin:
+                      SSL:
+                        Mode: verify-full
 
                 TLS:
                   # off until https://github.com/zitadel/zitadel-charts/pull/141
