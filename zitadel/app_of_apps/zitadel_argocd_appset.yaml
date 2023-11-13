@@ -67,9 +67,6 @@ spec:
                       Username: zitadel
                       SSL:
                         Mode: verify-full
-                    # Admin:
-                    #  SSL:
-                    #   Mode: verify-full
 
                 ExternalDomain: {{ .zitadel_hostname }}
 
@@ -109,7 +106,7 @@ spec:
               masterkeySecretName: "zitadel-core-key"
 
               # The Secret containing the CA certificate at key ca.crt needed for establishing secure database connections
-              dbSslCaCrtSecret: "zitadel-postgres-server-cert"
+              dbSslCaCrtSecret: "zitadel-postgres-server-ca-key-pair"
 
               # The db admins secret containing the client certificate and key at tls.crt and tls.key needed for establishing secure database connections
               # dbSslAdminCrtSecret: "zitadel-postgres-server-cert"
