@@ -1,9 +1,10 @@
 apiVersion: v1
-kind: ConfigMap
+kind: Secret
 metadata:
-  name: zitadel-init-sql
-data:
-  zitadel-init.sql: |
+  name: zitadel-postgres-init-script
+type: Opaque
+stringData:
+  init.sql: |
     CREATE SCHEMA IF NOT EXISTS eventstore;
     GRANT ALL ON ALL TABLES IN SCHEMA eventstore TO zitadel;
     CREATE SCHEMA IF NOT EXISTS projections;
