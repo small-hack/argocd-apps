@@ -57,10 +57,10 @@ spec:
                 s3Credentials:
                   accessKeyId:
                     name: zitadel-db-credentials
-                    key : "CONSOLE_ACCESS_KEY"
+                    key : "ACCESS_KEY"
                   secretAccessKey:
                     name: zitadel-db-credentials
-                    key : "CONSOLE_SECRET_KEY"
+                    key : "SECRET_KEY"
               retentionPolicy: "30d"
             
             certificates:
