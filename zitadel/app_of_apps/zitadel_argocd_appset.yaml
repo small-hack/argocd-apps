@@ -114,6 +114,10 @@ spec:
               # The db users secret containing the client certificate and key at tls.crt and tls.key needed for establishing secure database connections
               dbSslUserCrtSecret: "zitadel-postgres-zitadel-cert"
 
+            initJob:
+              # Once ZITADEL is installed, the initJob can be disabled.
+              enabled: false
+
             ingress:
               enabled: true
               className: "nginx"
