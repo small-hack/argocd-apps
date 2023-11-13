@@ -71,6 +71,8 @@ spec:
                       SSL:
                         Mode: verify-full
 
+                ExternalDomain: {{ .zitadel_hostname }}
+
                 TLS:
                   # off until https://github.com/zitadel/zitadel-charts/pull/141
                   # or a similar easy fix would be merged
@@ -114,12 +116,6 @@ spec:
 
               # The db users secret containing the client certificate and key at tls.crt and tls.key needed for establishing secure database connections
               dbSslUserCrtSecret: "zitadel-postgres-zitadel-cert"
-
-            # Additional environment variables
-            # see more here: https://github.com/zitadel/zitadel/blob/main/cmd/defaults.yaml
-            env:
-              - name: ZITADEL_EXTERNALDOMAIN
-                value: {{ .zitadel_hostname }}
 
             ingress:
               enabled: true
