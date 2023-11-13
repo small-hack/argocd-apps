@@ -13,7 +13,7 @@ data:
     mc admin info local && \
     mc admin user add local zitadel-postgresql $DB_SECRET_KEY && \
     mc admin policy create local onlyPostgres /start-config/db-user-policy.json && \
-    mc admin policy attach local onlyPostgres --user zitadel-postgresql && \
+    mc admin policy attach local onlyPostgres --user zitadel-postgresql
 
   db-user-policy.json: |
     {
