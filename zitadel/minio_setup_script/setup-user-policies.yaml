@@ -8,11 +8,12 @@ data:
   # detach consoleAdmin policy (default assigned)
   setup.sh: |
     #!/bin/bash
-    mc alias set local https://$ENDPOINT $ACCESS_KEY $SECRET_KEY && \
+    source /secret/config.env && \
+    mc alias set local https://$ENDPOINT $MINIO_ROOT_USER $MINIO_ROOT_PASSWORD && \
     mc admin info local && \
+    mc admin user add local zitadel-postgresql $DB_SECRET_KEY && \
     mc admin policy create local onlyPostgres /start-config/db-user-policy.json && \
     mc admin policy attach local onlyPostgres --user zitadel-postgresql && \
-    mc admin policy detach local consoleAdmin --user zitadel-postgresql
 
   db-user-policy.json: |
     {
@@ -46,6 +47,11 @@ spec:
         - name: start-config
           configMap:
             name: start-config-script
+            defaultMode: 0740
+
+        - name: root-credentials
+          configMap:
+            name: default-tenant-env-config
             defaultMode: 0744
 
       containers:
@@ -57,18 +63,15 @@ spec:
             - name: start-config
               mountPath: /start-config/
 
-          env:
-            - name: ACCESS_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: zitadel-db-credentials
-                  key: CONSOLE_ACCESS_KEY
+            - name: root-credentials
+              mountPath: /secret/
 
-            - name: SECRET_KEY
+          env:
+            - name: DB_SECRET_KEY
               valueFrom:
                 secretKeyRef:
                   name: zitadel-db-credentials
-                  key: CONSOLE_SECRET_KEY
+                  key: SECRET_KEY
 
             - name: ENDPOINT
               valueFrom:
