@@ -19,7 +19,7 @@ The main magic happens in the [app_of_apps](./app_of_apps) directory.
      - Zitadel `masterkey` Secrets
    - MinIO Tenant (if you use directoryRecursion: true)
 2. Minio Setup Script - this sets up your minio user for postgresql and its policy
-3. Postgresql cluster via the Cloud Native Postgresql Operator
+3. Postgresql cluster via the Cloud Native Postgresql Operator including the database init described [here](https://github.com/zitadel/zitadel/tree/0386fe7f96cc8c9ff178d29c9bbee3bfe0a1a568/cmd/initialise/sql/postgres)
 4. Zitadel helm chart with ONLY a service account and registration DISABLED
 
 ## Usage
