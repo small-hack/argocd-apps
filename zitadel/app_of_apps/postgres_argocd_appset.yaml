@@ -37,7 +37,7 @@ spec:
       source:
         repoURL: https://small-hack.github.io/cloudnative-pg-cluster-chart
         chart: cnpg-cluster
-        targetRevision: 0.3.7
+        targetRevision: 0.3.8
         helm:
           releaseName: zitadel-postgres-cluster
           values: |
@@ -48,6 +48,8 @@ spec:
               initdb:
                 database: zitadel
                 owner: zitadel
+
+            enableSuperuserAccess: true
 
             backup:
               # barman is a utility for backing up postgres to s3
