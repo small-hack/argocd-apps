@@ -727,7 +727,7 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
       - name: cnpg
         barmanObjectStore:
           destinationPath: "s3://postgres15-backups/"
-          endpointURL: "http://85.10.207.26:32000"
+          endpointURL: "http://$LOADBALANCER_IP:32000"
           s3Credentials:
             accessKeyId:
               name: "minio-credentials"
