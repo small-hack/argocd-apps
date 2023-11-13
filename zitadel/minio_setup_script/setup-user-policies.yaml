@@ -50,9 +50,8 @@ spec:
             defaultMode: 0740
 
         - name: root-credentials
-          configMap:
-            name: default-tenant-env-config
-            defaultMode: 0744
+          secret:
+            secretName: default-tenant-env-config
 
       containers:
         - name: mc
