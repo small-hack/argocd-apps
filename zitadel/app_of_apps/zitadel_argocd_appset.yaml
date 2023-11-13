@@ -106,10 +106,10 @@ spec:
               masterkeySecretName: "zitadel-core-key"
 
               # The Secret containing the CA certificate at key ca.crt needed for establishing secure database connections
-              dbSslCaCrtSecret: "zitadel-postgres-server-ca-key-pair"
+              dbSslCaCrtSecret: "zitadel-postgres-server-cert"
 
               # The db admins secret containing the client certificate and key at tls.crt and tls.key needed for establishing secure database connections
-              dbSslAdminCrtSecret: "zitadel-postgres-server-cert"
+              dbSslAdminCrtSecret: "zitadel-postgres-zitadel-cert"
 
               # The db users secret containing the client certificate and key at tls.crt and tls.key needed for establishing secure database connections
               dbSslUserCrtSecret: "zitadel-postgres-zitadel-cert"
