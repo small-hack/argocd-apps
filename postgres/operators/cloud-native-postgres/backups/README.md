@@ -277,7 +277,8 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
         replicationTLSSecret: ""
       user:
         enabled: true
-        username: "app"
+        username:
+          - "app"
     backup:
       retentionPolicy: "30d"
       barmanObjectStore:
@@ -701,7 +702,8 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
         replicationTLSSecret: ""
       user:
         enabled: true
-        username: "app"
+        username:
+          - "app"
     backup: []
     #   retentionPolicy: "30d"
     #   barmanObjectStore:
@@ -856,7 +858,8 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
         replicationTLSSecret: ""
       user:
         enabled: true
-        username: "app"
+        username:
+          - "app"
     backup:
       retentionPolicy: "30d"
       barmanObjectStore:
