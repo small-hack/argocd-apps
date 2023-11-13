@@ -60,7 +60,7 @@ spec:
                     AllowRegister: false
                 Database:
                   postgres:
-                    Host: zitadel-postgresql-rw.zitadel.svc
+                    Host: zitadel-postgres-rw.zitadel.svc
                     Port: 5432
                     Database: zitadel
                     User:
