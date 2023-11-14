@@ -4,3 +4,4 @@ useExternalSecrets: "true"
 
 bitwardenCoreItemID: ""
 bitwardenDBItemID: ""
+s3CredentialsBitwardenID: ""

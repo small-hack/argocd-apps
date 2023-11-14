@@ -1,14 +1,12 @@
 ---
-# First sync wave done in parallel with creating secrets. Must be BEFORE
-# zitadel so that zitadel persists it's data between upgrades. Sync policy
-# is set to ApplyOutOfSyncOnly=true to create the volume initially only.
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: zitadel-persistence
+  name: zitadel-minio-setup-script
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "1"
+    # after the external secrets and minio tenant but before the postgres and zitadel apps
+    argocd.argoproj.io/sync-wave: "2"
 spec:
   project: zitadel
   destination:
@@ -16,10 +14,8 @@ spec:
     namespace: zitadel
   source:
     repoURL: https://github.com/small-hack/argocd-apps.git
-    path: zitadel/manifests/persistence/
+    path: zitadel/minio_setup_script/
     targetRevision: eso-helm-chart-test
   syncPolicy:
     syncOptions:
       - ApplyOutOfSyncOnly=true
-    automated:
-      selfHeal: false

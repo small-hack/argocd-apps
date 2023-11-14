@@ -5,7 +5,6 @@ metadata:
   name: zitadel-web-app-set
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "2"
     pref.argocd.argoproj.io/default-view: "network"
     pref.argocd.argoproj.io/default-pod-sort: "topLevelResource"
 spec:
@@ -20,10 +19,11 @@ spec:
             secret_vars:
               - zitadel_hostname
               - global_cluster_issuer
-
   template:
     metadata:
       name: zitadel-web-app
+      annotations:
+        argocd.argoproj.io/sync-wave: "4"
     spec:
       project: zitadel
       destination:
@@ -43,30 +43,39 @@ spec:
           releaseName: zitadel
           # https://github.com/zitadel/zitadel-charts/blob/main/charts/zitadel/values.yaml
           values: |
+            replicaCount: 1
+
+            # Overrides the image tag to the latest version
+            # as kept up to date by renovateBot
             image:
-              # Overrides the image tag whose default is the chart appVersion to the latest version as kept up to date by renovateBot
-              tag: "v2.33.0"
+              tag: "v2.35.0"
+
             zitadel:
               # See all defaults here:
               # https://github.com/zitadel/zitadel/blob/main/cmd/defaults.yaml
               configmapConfig:
                 DefaultInstance:
                   LoginPolicy:
-                    # disables registration
+                    # disable registration AKA signups
                     AllowRegister: false
                 Database:
-                  postgres:
-                    Host: zitadel-postgres
+                  Postgres:
+                    Host: zitadel-postgres-rw.zitadel.svc
                     Port: 5432
                     Database: zitadel
                     User:
+                      Username: zitadel
                       SSL:
-                        Mode: disable
+                        Mode: verify-full
                     Admin:
+                      Username: postgres
                       SSL:
-                        Mode: disable
+                        Mode: verify-full
+
+                ExternalDomain: {{ .zitadel_hostname }}
+
                 TLS:
-                  # off until https://github.com/zitadel/zitadel-charts/pull/108
+                  # off until https://github.com/zitadel/zitadel-charts/pull/141
                   # or a similar easy fix would be merged
                   Enabled: false
 
@@ -95,40 +104,23 @@ spec:
                         Name: Admin
                       MachineKey:
                         Type: 1
-              # these must be set as is until https://github.com/zitadel/zitadel-charts/issues/113 is resolved
-              dbSslRootCrtSecret:
-              dbSslClientCrtSecret:
+
               # Reference the name of the secret that contains the masterkey.
               # The key should be named "masterkey".
               masterkeySecretName: "zitadel-core-key"
 
-            replicaCount: 1
+              # The Secret containing the CA certificate at key ca.crt needed for establishing secure database connections
+              dbSslCaCrtSecret: "zitadel-postgres-server-ca-key-pair"
 
-            # Additional environment variables
-            # see more here: https://github.com/zitadel/zitadel/blob/main/cmd/defaults.yaml
-            env:
-              - name: ZITADEL_EXTERNALDOMAIN
-                value: {{ .zitadel_hostname }}
-              - name: ZITADEL_DATABASE_POSTGRES_USER_USERNAME
-                valueFrom:
-                  secretKeyRef:
-                    name: zitadel-db-credentials
-                    key: username
-              - name: ZITADEL_DATABASE_POSTGRES_USER_PASSWORD
-                valueFrom:
-                  secretKeyRef:
-                    name: zitadel-db-credentials
-                    key: password
-              - name: ZITADEL_DATABASE_POSTGRES_ADMIN_USERNAME
-                valueFrom:
-                  secretKeyRef:
-                    name: zitadel-db-credentials
-                    key: adminUser
-              - name: ZITADEL_DATABASE_POSTGRES_ADMIN_PASSWORD
-                valueFrom:
-                  secretKeyRef:
-                    name: zitadel-db-credentials
-                    key: adminPassword
+              # The db admins secret containing the client certificate and key at tls.crt and tls.key needed for establishing secure database connections
+              dbSslAdminCrtSecret: "zitadel-postgres-postgres-cert"
+
+              # The db users secret containing the client certificate and key at tls.crt and tls.key needed for establishing secure database connections
+              dbSslUserCrtSecret: "zitadel-postgres-zitadel-cert"
+
+            initJob:
+              # Once ZITADEL is installed, the initJob can be disabled.
+              enabled: false
 
             ingress:
               enabled: true
