@@ -6,11 +6,11 @@ type: Opaque
 stringData:
   init.sql: |
     BEGIN;
-    CREATE SCHEMA IF NOT EXISTS eventstore AUTHORIZATION zitadel;
-    CREATE SCHEMA IF NOT EXISTS projections AUTHORIZATION zitadel;
-    CREATE SCHEMA IF NOT EXISTS system AUTHORIZATION zitadel;
+    CREATE SCHEMA IF NOT EXISTS eventstore;
+    CREATE SCHEMA IF NOT EXISTS projections;
+    CREATE SCHEMA IF NOT EXISTS system;
     CREATE TABLE IF NOT EXISTS system.encryption_keys (id TEXT NOT NULL, key TEXT NOT NULL, PRIMARY KEY (id));
-    CREATE TABLE IF NOT EXISTS eventstore.events2 (
+    CREATE TABLE IF NOT EXISTS eventstore.events (
         instance_id TEXT NOT NULL
         , aggregate_type TEXT NOT NULL
         , aggregate_id TEXT NOT NULL
@@ -24,9 +24,9 @@ stringData:
         , "position" DECIMAL NOT NULL
         , in_tx_order INTEGER NOT NULL
         , PRIMARY KEY (instance_id, aggregate_type, aggregate_id, "sequence"));
-    CREATE INDEX IF NOT EXISTS es_active_instances ON eventstore.events2 (created_at DESC, instance_id);
-    CREATE INDEX IF NOT EXISTS es_wm ON eventstore.events2 (aggregate_id, instance_id, aggregate_type, event_type);
-    CREATE INDEX IF NOT EXISTS es_projection ON eventstore.events2 (
+    CREATE INDEX IF NOT EXISTS es_active_instances ON eventstore.events (created_at DESC, instance_id);
+    CREATE INDEX IF NOT EXISTS es_wm ON eventstore.events (aggregate_id, instance_id, aggregate_type, event_type);
+    CREATE INDEX IF NOT EXISTS es_projection ON eventstore.events (
         instance_id
         , aggregate_type
         , event_type
