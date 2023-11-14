@@ -48,10 +48,10 @@ spec:
               initdb:
                 database: zitadel
                 owner: zitadel
-                # postInitApplicationSQLRefs:
-                #  secretRefs:
-                #    - name: zitadel-postgres-init-script
-                #      key: init.sql
+                postInitApplicationSQLRefs:
+                  secretRefs:
+                    - name: zitadel-postgres-init-script
+                      key: init.sql
 
             enableSuperuserAccess: false
 

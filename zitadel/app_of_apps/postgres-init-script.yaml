@@ -6,10 +6,10 @@ type: Opaque
 stringData:
   init.sql: |
     BEGIN;
-    CREATE SCHEMA IF NOT EXISTS eventstore;
-    CREATE SCHEMA IF NOT EXISTS projections;
-    CREATE SCHEMA IF NOT EXISTS system;
-    COMMIT;
+    CREATE ROLE IF NOT EXISTS zitadel;
+    CREATE SCHEMA IF NOT EXISTS eventstore AUTHORIZATION zitadel;
+    CREATE SCHEMA IF NOT EXISTS projections AUTHORIZATION zitadel;
+    CREATE SCHEMA IF NOT EXISTS system AUTHORIZATION zitadel;
     CREATE TABLE IF NOT EXISTS system.encryption_keys (id TEXT NOT NULL, key TEXT NOT NULL, PRIMARY KEY (id));
     CREATE TABLE IF NOT EXISTS eventstore.events2 (
         instance_id TEXT NOT NULL
@@ -41,3 +41,4 @@ stringData:
     GRANT ALL ON ALL TABLES IN SCHEMA system TO zitadel;
     GRANT ALL ON ALL TABLES IN SCHEMA eventstore TO zitadel;
     GRANT ALL ON ALL TABLES IN SCHEMA projections TO zitadel;
+    COMMIT;
