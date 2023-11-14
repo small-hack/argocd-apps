@@ -6,7 +6,6 @@ type: Opaque
 stringData:
   init.sql: |
     BEGIN;
-    CREATE ROLE IF NOT EXISTS zitadel;
     CREATE SCHEMA IF NOT EXISTS eventstore AUTHORIZATION zitadel;
     CREATE SCHEMA IF NOT EXISTS projections AUTHORIZATION zitadel;
     CREATE SCHEMA IF NOT EXISTS system AUTHORIZATION zitadel;
