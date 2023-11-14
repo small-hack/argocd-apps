@@ -929,8 +929,133 @@ EOF
 helm install cnpg-15 cnpg-cluster/cnpg-cluster --values password-cluster.yaml
 ```
 
+ - Create a manifest for the service
+
+    ```bash
+    /bin/cat << EOF > cnpg-15-service.yaml
+    apiVersion: v1
+    kind: Service
+    metadata:
+      name: cnpg-15-service
+      labels:
+        cnpg.io/cluster: cnpg-15
+    spec:
+      type: NodePort
+      ports:
+      - port: 5432
+        nodePort: 30015
+        protocol: TCP
+      selector:
+        cnpg.io/cluster: cnpg-15
+        role: primary
+    EOF
+    ```
+
+  - Create the service:
+
+    ```bash
+    kubectl apply -f cnpg-15-service.yaml
+    ```
+    
 5. Deploy a new postgres cluster on the latest version using a backup as a source
 
+```bash
+/bin/cat << EOF > upgrade.yaml
+name: "cnpg-16"
+imageName: ghcr.io/cloudnative-pg/postgresql:16.0
+instances: 1
+bootstrap:
+  initdb:
+    import:
+      type: microservice
+      databases:
+        - app
+      source:
+        externalCluster: cnpg-15
+certificates:
+  server:
+    enabled: true
+    generate: true
+    serverTLSSecret: ""
+    serverCASecret: ""
+  client:
+    enabled: true
+    generate: true
+    clientCASecret: ""
+    replicationTLSSecret: ""
+  user:
+    enabled: true
+    username:
+      - "app"
+backup: []
+scheduledBackup: []
+externalClusters:
+  - name: cnpg-15
+    connectionParameters:
+      host: "cnpg-15-rw.default.svc"
+      user: app
+      dbname: app
+    password:
+      name: cnpg-15-app
+      key: password
+monitoring:
+  enablePodMonitor: false
+postgresql:
+  pg_hba:
+    - host all all all md5
+storage:
+  size: 1Gi
+testApp:
+  enabled: false
+EOF
+```
+
    ```bash
-   helm install cnpg-cluster cnpg-cluster/cnpg-cluster --values upgrade.yaml
+   helm install cnpg-16 cnpg-cluster/cnpg-cluster --values upgrade.yaml
    ```
+
+ - Create a manifest for the service
+
+    ```bash
+    /bin/cat << EOF > cnpg-16-service.yaml
+    apiVersion: v1
+    kind: Service
+    metadata:
+      name: cnpg-16-service
+      labels:
+        cnpg.io/cluster: cnpg-16
+    spec:
+      type: NodePort
+      ports:
+      - port: 5432
+        nodePort: 30016
+        protocol: TCP
+      selector:
+        cnpg.io/cluster: cnpg-16
+        role: primary
+    EOF
+    ```
+
+  - Create the service:
+
+    ```bash
+    kubectl apply -f cnpg-16-service.yaml
+    ```
+
+- check data
+  
+  ```bash
+  psql "sslkey=./tls.key
+     sslcert=./tls.crt
+     sslrootcert=./ca.crt
+     host=$LOADBALANCER_IP
+     port=30016
+     dbname=app
+     user=app" -c "SELECT data -> 'cpu_name' AS Cpu,
+                          data -> 'cpu_cores' AS Cores,
+                          data -> 'cpu_threads' AS Threads,
+                          data -> 'release_date' AS ReleaseDate,
+                          data -> 'cpumarkSingleThread' AS SingleCorePerf
+                          FROM processors
+                          ORDER BY SingleCorePerf DESC;"
+  ```
