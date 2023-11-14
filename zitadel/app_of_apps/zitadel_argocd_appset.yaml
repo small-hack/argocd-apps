@@ -67,10 +67,10 @@ spec:
                       Username: zitadel
                       SSL:
                         Mode: verify-full
-                    Admin:
-                      Username: postgres
-                      SSL:
-                        Mode: verify-full
+                    #Admin:
+                    #  Username: postgres
+                    #  SSL:
+                    #    Mode: verify-full
 
                 ExternalDomain: {{ .zitadel_hostname }}
 
@@ -113,14 +113,14 @@ spec:
               dbSslCaCrtSecret: "zitadel-postgres-server-ca-key-pair"
 
               # The db admins secret containing the client certificate and key at tls.crt and tls.key needed for establishing secure database connections
-              dbSslAdminCrtSecret: "zitadel-postgres-postgres-cert"
+              # dbSslAdminCrtSecret: "zitadel-postgres-postgres-cert"
 
               # The db users secret containing the client certificate and key at tls.crt and tls.key needed for establishing secure database connections
               dbSslUserCrtSecret: "zitadel-postgres-zitadel-cert"
 
             initJob:
               # Once ZITADEL is installed, the initJob can be disabled.
-              enabled: true
+              enabled: false
 
             ingress:
               enabled: true
