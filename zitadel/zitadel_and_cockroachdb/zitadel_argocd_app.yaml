@@ -43,7 +43,7 @@ spec:
   source:
     repoURL: https://charts.cockroachdb.com/
     chart: cockroachdb
-    targetRevision: 11.2.1
+    targetRevision: 11.2.2
     helm:
       values: |
         configmapConfig:
