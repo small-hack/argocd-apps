@@ -48,12 +48,12 @@ spec:
               initdb:
                 database: zitadel
                 owner: zitadel
-                postInitApplicationSQLRefs:
-                  secretRefs:
-                    - name: zitadel-postgres-init-script
-                      key: init.sql
+                #postInitApplicationSQLRefs:
+                #  secretRefs:
+                #    - name: zitadel-postgres-init-script
+                #      key: init.sql
 
-            enableSuperuserAccess: false
+            enableSuperuserAccess: true
 
             backup:
               # barman is a utility for backing up postgres to s3
