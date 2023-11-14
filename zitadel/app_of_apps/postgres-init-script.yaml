@@ -7,14 +7,10 @@ stringData:
   init.sql: |
     BEGIN;
     CREATE SCHEMA IF NOT EXISTS eventstore;
-    GRANT ALL ON ALL TABLES IN SCHEMA eventstore TO zitadel;
-    COMMIT;
     CREATE SCHEMA IF NOT EXISTS projections;
-    GRANT ALL ON ALL TABLES IN SCHEMA projections TO zitadel;
     CREATE SCHEMA IF NOT EXISTS system;
-    GRANT ALL ON ALL TABLES IN SCHEMA system TO zitadel;
     COMMIT;
-    CREATE TABLE IF NOT EXISTS system.encryption_keys ( id TEXT NOT NULL , key TEXT NOT NULL , PRIMARY KEY (id));
+    CREATE TABLE IF NOT EXISTS system.encryption_keys (id TEXT NOT NULL, key TEXT NOT NULL, PRIMARY KEY (id));
     CREATE TABLE IF NOT EXISTS eventstore.events2 (
         instance_id TEXT NOT NULL
         , aggregate_type TEXT NOT NULL
@@ -42,3 +38,6 @@ stringData:
         , unique_type TEXT
         , unique_field TEXT
         , PRIMARY KEY (instance_id, unique_type, unique_field));
+    GRANT ALL ON ALL TABLES IN SCHEMA system TO zitadel;
+    GRANT ALL ON ALL TABLES IN SCHEMA eventstore TO zitadel;
+    GRANT ALL ON ALL TABLES IN SCHEMA projections TO zitadel;
