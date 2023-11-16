@@ -12,10 +12,13 @@ spec:
   destination:
     server: "https://kubernetes.default.svc"
     namespace: zitadel
+  syncPolicy:
+    syncOptions:
+      - ApplyOutOfSyncOnly=true
+    automated:
+      prune: true
+      selfHeal: true
   source:
     repoURL: https://github.com/small-hack/argocd-apps.git
     path: zitadel/minio_setup_script/
     targetRevision: eso-helm-chart-test
-  syncPolicy:
-    syncOptions:
-      - ApplyOutOfSyncOnly=true
