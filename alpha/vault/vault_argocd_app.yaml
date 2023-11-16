@@ -2,7 +2,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: vault
+  name: vault-app
   namespace: argocd
 spec:
   project: vault
@@ -14,7 +14,7 @@ spec:
       - ApplyOutOfSyncOnly=true
     automated:
       prune: false
-      selfHeal: false
+      selfHeal: true
   source:
     repoURL: 'https://helm.releases.hashicorp.com'
     targetRevision: 0.26.1
