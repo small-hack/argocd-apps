@@ -11,6 +11,7 @@ spec:
     namespace: vault
   syncPolicy:
     syncOptions:
+      - CreateNamespace=true
       - ApplyOutOfSyncOnly=true
     automated:
       prune: false
