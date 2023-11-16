@@ -19,6 +19,7 @@ spec:
   ignoreDifferences:
     - group: apps
       kind: MutatingWebhookConfiguration
+      name: vault-app-agent-injector-cfg
       jqPathExpressions:
         - '.webhooks[]?.clientConfig.caBundle'
   source:
