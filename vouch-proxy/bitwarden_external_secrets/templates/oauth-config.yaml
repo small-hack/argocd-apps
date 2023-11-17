@@ -1,3 +1,4 @@
+{{- if .Values.useExternalSecrets }}
 ---
 apiVersion: external-secrets.io/v1beta1
 kind: ExternalSecret
@@ -99,3 +100,4 @@ spec:
       remoteRef:
         key: {{ .Values.vouchOauthConfigBitwardenID }}
         property: preferredDomain
+{{- end }}
