@@ -1,4 +1,4 @@
-{{- if .Values.useExternalSecrets }}
+{{- if .Values.useBitwardenExternalSecrets }}
 ---
 apiVersion: external-secrets.io/v1beta1
 kind: ExternalSecret
