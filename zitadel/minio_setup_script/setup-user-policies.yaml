@@ -37,6 +37,8 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: minio-setup-user-and-policies
+  argocd.argoproj.io/hook: Sync
+  argocd.argoproj.io/hook-delete-policy: HookSucceeded
 spec:
   backoffLimit: 10
   template:
