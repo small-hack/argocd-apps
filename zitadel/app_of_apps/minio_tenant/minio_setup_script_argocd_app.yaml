@@ -6,7 +6,7 @@ metadata:
   namespace: argocd
   annotations:
     # after the external secrets and minio tenant but before the postgres and zitadel apps
-    argocd.argoproj.io/sync-wave: "2"
+    argocd.argoproj.io/sync-wave: "3"
 spec:
   project: zitadel
   destination:
