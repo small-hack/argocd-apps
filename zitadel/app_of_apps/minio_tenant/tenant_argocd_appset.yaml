@@ -43,7 +43,7 @@ spec:
           values: |
             ## Secret with default environment variable configurations to be used by MinIO Tenant.
             secrets:
-              existingSecret: default-tenant-env-config
+              existingSecret: minio-env-config
 
             ## MinIO Tenant Definition
             tenant:

@@ -51,7 +51,7 @@ spec:
 
         - name: root-credentials
           secret:
-            secretName: default-tenant-env-config
+            secretName: minio-env-config
 
       containers:
         - name: mc
