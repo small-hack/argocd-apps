@@ -2,6 +2,9 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: start-config-script
+  annotations:
+    argocd.argoproj.io/hook: PreSync
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded
 data:
   # create a new policy
   # attach new policy to minio zitadel postgres user
@@ -37,8 +40,9 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: minio-setup-user-and-policies
-  argocd.argoproj.io/hook: Sync
-  argocd.argoproj.io/hook-delete-policy: HookSucceeded
+  annotations:
+    argocd.argoproj.io/hook: Sync
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded
 spec:
   backoffLimit: 10
   template:
