@@ -53,7 +53,7 @@ spec:
               ## Secret name that contains additional environment variable configurations.
               ## The secret is expected to have a key named config.env containing environment variables exports.
               configuration:
-                name: default-tenant-env-config
+                name: minio-env-config
 
               ## Specification for MinIO Pool(s) in this Tenant.
               pools:
