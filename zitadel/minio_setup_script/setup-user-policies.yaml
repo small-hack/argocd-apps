@@ -38,7 +38,7 @@ kind: Job
 metadata:
   name: minio-setup-user-and-policies
 spec:
-  backoffLimit: 5
+  backoffLimit: 10
   template:
     spec:
       restartPolicy: OnFailure
