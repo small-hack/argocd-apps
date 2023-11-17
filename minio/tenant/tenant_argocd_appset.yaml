@@ -85,7 +85,7 @@ spec:
                   
                   # Specify `annotations <https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/>`__ to associate to Tenant pods.
                   annotations:
-                    "k8up.io/backup": "true"
+                    k8up.io/backup: "true"
                   
                   ## nodeSelector parameters for MinIO Pods. It specifies a map of key-value pairs. For the pod to be
                   ## eligible to run on a node, the node must have each of the
