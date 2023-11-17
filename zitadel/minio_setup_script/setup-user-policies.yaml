@@ -41,7 +41,7 @@ spec:
   backoffLimit: 10
   template:
     spec:
-      restartPolicy: OnFailure
+      restartPolicy: Never
 
       volumes:
         - name: start-config
