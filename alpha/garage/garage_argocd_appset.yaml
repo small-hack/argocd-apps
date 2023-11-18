@@ -16,6 +16,8 @@ spec:
           parameters:
             secret_vars:
               - garage_hostname
+              - garage_s3_region
+              - garage_s3_endpoint
               - global_cluster_issuer
   template:
     metadata:
@@ -34,8 +36,246 @@ spec:
           prune: true
           selfHeal: true
       source:
-        repoURL: ''
-        targetRevision: 
-        chart: garage
+        repoURL: 'https://git.deuxfleurs.fr/Deuxfleurs/garage'
+        path: 'script/helm/'
+        targetRevision: main
         helm:
           values: |
+            # Default values for garage.
+            # This is a YAML-formatted file.
+            # Declare variables to be passed into your templates.
+
+            # Garage configuration. These values go to garage.toml
+            garage:
+              # Can be changed for better performance on certain systems
+              # https://garagehq.deuxfleurs.fr/documentation/reference-manual/configuration/#db-engine-since-v0-8-0
+              dbEngine: "sled"
+
+              # Defaults is 1MB
+              # An increase can result in better performance in certain scenarios
+              # https://garagehq.deuxfleurs.fr/documentation/reference-manual/configuration/#block-size
+              blockSize: "1048576"
+
+              # Tuning parameters for the sled DB engine
+              # https://garagehq.deuxfleurs.fr/documentation/reference-manual/configuration/#sled-cache-capacity
+              sledCacheCapacity: "134217728"
+              sledFlushEveryMs: "2000"
+
+              # Default to 3 replicas, see the replication_mode section at
+              # https://garagehq.deuxfleurs.fr/documentation/reference-manual/configuration/#replication-mode
+              replicationMode: "3"
+
+              # zstd compression level of stored blocks
+              # https://garagehq.deuxfleurs.fr/documentation/reference-manual/configuration/#compression-level
+              compressionLevel: "1"
+
+              rpcBindAddr: "[::]:3901"
+              # If not given, a random secret will be generated and stored in a Secret object
+              rpcSecret: ""
+              # This is not required if you use the integrated kubernetes discovery
+              bootstrapPeers: []
+              kubernetesSkipCrd: false
+              s3:
+                api:
+                  region: "garage"
+                  rootDomain: "{{ .garage_s3_endpoint }}"
+                web:
+                  rootDomain: "{{ .garage_hostname }}"
+                  index: "index.html"
+
+              # Template for the garage configuration
+              # Values can be templated
+              # ref: https://garagehq.deuxfleurs.fr/documentation/reference-manual/configuration/
+              garage.toml: |-
+                metadata_dir = "/mnt/meta"
+                data_dir = "/mnt/data"
+
+                db_engine = "sled"
+
+                block_size = "1048576"
+
+                sledCacheCapacity: "134217728"
+                sledFlushEveryMs: "2000"
+
+                replication_mode = "3"
+
+                compression_level = "1"
+
+                rpc_bind_addr = "[::]:3901"
+                # rpc_secret will be populated by the init container from a k8s secret object
+                rpc_secret = "__RPC_SECRET_REPLACE__"
+
+                bootstrap_peers = []
+
+                [kubernetes_discovery]
+                namespace = "garage"
+                service_name = "garage"
+                skip_crd = false
+
+                [s3_api]
+                s3_region = "{{ .garage_s3_region }}"
+                api_bind_addr = "[::]:3900"
+                root_domain = "{{ .garage_s3_endpoint }}"
+
+                [s3_web]
+                bind_addr = "[::]:3902"
+                root_domain = "{{ .garage_hostname }}"
+                index = "index.html"
+
+                [admin]
+                api_bind_addr = "[::]:3903"
+
+            # Data persistence
+            persistence:
+              enabled: true
+              meta:
+                # storageClass: "fast-storage-class"
+                size: 100Mi
+                # used only for daemon sets
+                hostPath: /var/lib/garage/meta
+              data:
+                # storageClass: "slow-storage-class"
+                size: 100Mi
+                # used only for daemon sets
+                hostPath: /var/lib/garage/data
+
+            # Deployment configuration
+            deployment:
+              # Switchable to DaemonSet
+              kind: StatefulSet
+              # Number of StatefulSet replicas/garage nodes to start
+              replicaCount: 3
+
+            image:
+              repository: dxflrs/amd64_garage
+              # please prefer using the chart version and not this tag
+              tag: ""
+              pullPolicy: IfNotPresent
+
+            initImage:
+              repository: busybox
+              tag: stable
+              pullPolicy: IfNotPresent
+
+            imagePullSecrets: []
+            nameOverride: ""
+            fullnameOverride: ""
+
+            serviceAccount:
+              # Specifies whether a service account should be created
+              create: true
+              # Annotations to add to the service account
+              annotations: {}
+              # The name of the service account to use.
+              # If not set and create is true, a name is generated using the fullname template
+              name: ""
+
+            podAnnotations: {}
+
+            podSecurityContext:
+              runAsUser: 1000
+              runAsGroup: 1000
+              fsGroup: 1000
+              runAsNonRoot: true
+
+            securityContext:
+              # The default security context is heavily restricted
+              # feel free to tune it to your requirements
+              capabilities:
+                drop:
+                  - ALL
+              readOnlyRootFilesystem: true
+
+            service:
+              # You can rely on any service to expose your cluster
+              # - ClusterIP (+ Ingress)
+              # - NodePort (+ Ingress)
+              # - LoadBalancer
+              type: ClusterIP
+              s3:
+                api:
+                  port: 3900
+                web:
+                  port: 3902
+                # NOTE: the admin API is excluded for now as it is not consistent across nodes
+
+            ingress:
+              s3:
+                api:
+                  enabled: true
+                  # Rely either on the className or the annotation below but not both
+                  # replace "nginx" by an Ingress controller
+                  # you can find examples here https://kubernetes.io/docs/concepts/services-networking/ingress-controllers
+                  className: "nginx"
+                  annotations:
+                    cert-manager.io/cluster-issuer: {{ .global_cluster_issuer }}
+                  labels: {}
+                  hosts:
+                    - host: "{{ .garage_s3_endpoint }}" 
+                      paths:
+                        - path: /
+                          pathType: Prefix
+                    - host: "*.{{ .garage_s3_endpoint }}" # garage S3 API endpoint, DNS style bucket access
+                      paths:
+                        - path: /
+                          pathType: Prefix
+                  tls:
+                    - secretName: garage-tls
+                      hosts:
+                        - {{ .garage_s3_endpoint }}
+                web:
+                  enabled: false
+                  # Rely either on the className or the annotation below but not both
+                  # replace "nginx" by an Ingress controller
+                  # you can find examples here https://kubernetes.io/docs/concepts/services-networking/ingress-controllers
+                  className: "nginx"
+                  annotations:
+                    cert-manager.io/cluster-issuer: {{ .global_cluster_issuer }}
+                  labels: {}
+                  hosts:
+                   - host: "*.{{ .garage_hostname }}" # wildcard website access with bucket name prefix
+                     paths:
+                       - path: /
+                         pathType: Prefix
+                   - host: "mywebpage.example.com" # specific bucket access with FQDN bucket
+                     paths:
+                       - path: /
+                         pathType: Prefix
+                  tls:
+                    - secretName: garage-cluster-tls
+                      hosts:
+                        - {{ .garage_hostname }}
+
+            resources: {}
+              # The following are indicative for a small-size deployement, for anything serious double them.
+              # limits:
+              #   cpu: 100m
+              #   memory: 1024Mi
+              # requests:
+              #   cpu: 100m
+              #   memory: 512Mi
+
+            nodeSelector: {}
+
+            tolerations: []
+
+            affinity: {}
+
+            monitoring:
+              metrics:
+                # If true, a service for monitoring is created with a prometheus.io/scrape annotation
+                enabled: false
+                serviceMonitor:
+                  # If true, a ServiceMonitor CRD is created for a prometheus operator
+                  # https://github.com/coreos/prometheus-operator
+                  enabled: false
+                  path: /metrics
+                  #  namespace: monitoring  (defaults to use the namespace this chart is deployed to)
+                  labels: {}
+                  interval: 15s
+                  scheme: http
+                  tlsConfig: {}
+                  scrapeTimeout: 10s
+                  relabelings: []
+              tracing:
+                sink: ""
