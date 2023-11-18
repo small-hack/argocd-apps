@@ -95,8 +95,8 @@ spec:
 
                 block_size = "1048576"
 
-                sledCacheCapacity: "134217728"
-                sledFlushEveryMs: "2000"
+                sledCacheCapacity = "134217728"
+                sledFlushEveryMs = "2000"
 
                 replication_mode = "3"
 
