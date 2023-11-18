@@ -116,16 +116,14 @@ spec:
               #    size: "24Ti"
               #    storageClass: "local-path-provisioner"
               data:
-                type: "hostPath"
-                size: ""
-                storageClass: ""
-                hostPathPrefix: /ssd
+                type: "persistentVolumeClaim"
+                size: "5Gi"
+                storageClass: "local-path"
 
               logs:
-                type: "hostPath"
-                size: ""
-                storageClass: ""
-                hostPathPrefix: /storage
+                type: "persistentVolumeClaim"
+                size: "5Gi"
+                storageClass: "local-path"
 
               initContainers: ""
 
