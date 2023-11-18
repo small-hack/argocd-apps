@@ -38,12 +38,13 @@ spec:
           selfHeal: true
       source:
         # only for testing local charts, if there's anything broken
-        # repoURL: https://github.com/jessebot/seaweedfs
-        # targetRevision: main
-        # path: k8s/charts/seaweedfs/
-        repoURL: 'https://seaweedfs.github.io/seaweedfs/helm'
-        targetRevision: 3.59.1
-        chart: seaweedfs
+        repoURL: https://github.com/seaweedfs/seaweedfs
+        targetRevision: master
+        path: k8s/charts/seaweedfs/
+        # can be uncommented when helm chart is released again
+        # repoURL: 'https://seaweedfs.github.io/seaweedfs/helm'
+        # targetRevision: 3.59.1
+        # chart: seaweedfs
         helm:
           releaseName: seaweedfs
           values: |
