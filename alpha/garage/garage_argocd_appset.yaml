@@ -100,7 +100,7 @@ spec:
 
                 replication_mode = "3"
 
-                compression_level = "1"
+                compression_level = 1
 
                 rpc_bind_addr = "[::]:3901"
                 # rpc_secret will be populated by the init container from a k8s secret object
