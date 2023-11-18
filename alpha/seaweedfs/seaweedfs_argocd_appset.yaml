@@ -379,11 +379,6 @@ spec:
 
             filer:
               enabled: true
-              repository: null
-              imageName: null
-              imageTag: null
-              imageOverride: null
-              restartPolicy: null
               replicas: 1
               port: 8888
               grpcPort: 18888
@@ -416,11 +411,11 @@ spec:
 
               # Settings for configuring stateful storage of filer pods.
               # enablePVC will create a pvc for filer for data persistence.
-              enablePVC: false
+              enablePVC: true
               # storage should be set to the disk size of the attached volume.
               storage: 25Gi
               # storageClass is the class of storage which defaults to null (the Kube cluster will pick the default).
-              storageClass: null
+              storageClass: local-path
 
               # can use ANY storage-class , example with local-path-provisioner
               #  data:
@@ -428,16 +423,14 @@ spec:
               #    size: "24Ti"
               #    storageClass: "local-path-provisioner"
               data:
-                type: "hostPath"
-                size: ""
-                storageClass: ""
-                hostPathPrefix: /storage
+                type: "persistentVolumeClaim"
+                size: "25Gi"
+                storageClass: "local-path"
 
               logs:
-                type: "hostPath"
-                size: ""
-                storageClass: ""
-                hostPathPrefix: /storage
+                type: "persistentVolumeClaim"
+                size: "25Gi"
+                storageClass: "local-path"
 
               initContainers: ""
 
@@ -544,7 +537,7 @@ spec:
                 initialDelaySeconds: 20
                 periodSeconds: 30
                 successThreshold: 1
-                failureThreshold: 5
+                failureThreshold: 10
                 timeoutSeconds: 10
 
               # used to configure readinessProbe on filer containers
