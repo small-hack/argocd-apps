@@ -145,7 +145,7 @@ spec:
               # Switchable to DaemonSet
               kind: StatefulSet
               # Number of StatefulSet replicas/garage nodes to start
-              replicaCount: 3
+              replicaCount: 1
 
             image:
               repository: dxflrs/amd64_garage
