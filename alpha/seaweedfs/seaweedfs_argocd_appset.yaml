@@ -35,9 +35,14 @@ spec:
           prune: true
           selfHeal: true
       source:
-        repoURL: 'https://seaweedfs.github.io/seaweedfs/helm'
-        targetRevision: 3.59.0
-        chart: seaweedfs
+        # can be removed and the below commented when s3.ingress.annotations bug is fixed
+        repoURL: https://github.com/jessebot/seaweedfs
+        targetRevision: update-ingress-values
+        path: k8s/charts/seaweedfs/
+        # can be uncommented when https://github.com/seaweedfs/seaweedfs/pull/5023, or similar, is merged
+        # repoURL: 'https://seaweedfs.github.io/seaweedfs/helm'
+        # targetRevision: 3.59.0
+        # chart: seaweedfs
         helm:
           releaseName: seaweedfs
           values: |
