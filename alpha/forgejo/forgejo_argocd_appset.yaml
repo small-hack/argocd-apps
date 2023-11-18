@@ -29,6 +29,7 @@ spec:
         namespace: forgejo
       syncPolicy:
         syncOptions:
+          - CreateNamespace=true
           - ApplyOutOfSyncOnly=true
         automated:
           prune: true
