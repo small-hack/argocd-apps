@@ -64,7 +64,7 @@ spec:
 
               # Default to 3 replicas, see the replication_mode section at
               # https://garagehq.deuxfleurs.fr/documentation/reference-manual/configuration/#replication-mode
-              replicationMode: "3"
+              replicationMode: "1"
 
               # zstd compression level of stored blocks
               # https://garagehq.deuxfleurs.fr/documentation/reference-manual/configuration/#compression-level
@@ -98,7 +98,7 @@ spec:
                 sledCacheCapacity = "134217728"
                 sledFlushEveryMs = "2000"
 
-                replication_mode = "3"
+                replication_mode = "1"
 
                 compression_level = 1
 
