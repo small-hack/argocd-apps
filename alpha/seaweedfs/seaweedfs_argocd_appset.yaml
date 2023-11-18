@@ -37,10 +37,16 @@ spec:
           prune: true
           selfHeal: true
       source:
-        # only for testing local charts, if there's anything broken
-        repoURL: https://github.com/seaweedfs/seaweedfs
-        targetRevision: master
+        repoURL: https://github.com/cloudymax/seaweedfs
+        targetRevision: helm-add-existingClaim
         path: k8s/charts/seaweedfs/
+
+        # only for testing local charts, if there's anything broken
+        # can be uncommented if our tests are merged
+        # repoURL: https://github.com/seaweedfs/seaweedfs
+        # targetRevision: master
+        # path: k8s/charts/seaweedfs/
+
         # can be uncommented when helm chart is released again
         # repoURL: 'https://seaweedfs.github.io/seaweedfs/helm'
         # targetRevision: 3.59.1
@@ -64,8 +70,10 @@ spec:
                 enabled: false
                 gatewayHost: null
                 gatewayPort: null
+
               # if enabled will use global.replicationPlacment and override master & filer defaultReplicaPlacement config
               enableReplication: false
+
               #  replication type is XYZ:
               # X number of replica in other data centers
               # Y number of replica in other racks in the same data center
@@ -116,14 +124,9 @@ spec:
               #    size: "24Ti"
               #    storageClass: "local-path-provisioner"
               data:
-                type: "persistentVolumeClaim"
+                type: "existingClaim"
                 size: "5Gi"
                 storageClass: "local-path"
-
-              # logs:
-              #   type: "persistentVolumeClaim"
-              #   size: "5Gi"
-              #   storageClass: "local-path"
 
               initContainers: ""
 
@@ -263,21 +266,14 @@ spec:
             #    size: "24Ti"
             #    storageClass: "local-path-provisioner"
               data:
-                type: "persistentVolumeClaim"
+                type: "existingClaim"
                 size: "5Gi"
                 storageClass: "local-path"
 
               idx:
-                type: "persistentVolumeClaim"
-                size: ""
+                type: "existingClaim"
                 size: "5Gi"
                 storageClass: "local-path"
-
-              logs:
-                type: "hostPath"
-                size: ""
-                storageClass: ""
-                hostPathPrefix: /storage
 
               # limit background compaction or copying speed in mega bytes per second
               compactionMBps: "50"
@@ -409,31 +405,25 @@ spec:
               # Disable http request, only gRpc operations are allowed
               disableHttp: false
 
-              # DEPRECATE: enablePVC, storage, storageClass
-              # Consider replacing with filer.data section below instead.
-
               # Settings for configuring stateful storage of filer pods.
               # enablePVC will create a pvc for filer for data persistence.
-              enablePVC: true
+              enablePVC: false
+
               # storage should be set to the disk size of the attached volume.
               storage: 25Gi
+
               # storageClass is the class of storage which defaults to null (the Kube cluster will pick the default).
               storageClass: local-path
 
               # can use ANY storage-class , example with local-path-provisioner
               #  data:
-              #    type: "persistentVolumeClaim"
+              #    type: "existingClaim"
               #    size: "24Ti"
               #    storageClass: "local-path-provisioner"
               data:
-                type: "persistentVolumeClaim"
+                type: "existingClaim"
                 size: "25Gi"
                 storageClass: "local-path"
-
-              # logs:
-              #   type: "persistentVolumeClaim"
-              #   size: "25Gi"
-              #   storageClass: "local-path"
 
               initContainers: ""
 
@@ -558,14 +548,14 @@ spec:
 
               # secret env variables
               secretExtraEnvironmentVars: []
-                  # WEED_POSTGRES_USERNAME:
-                  #   secretKeyRef:
-                  #     name: postgres-credentials
-                  #     key: username
-                  # WEED_POSTGRES_PASSWORD:
-                  #   secretKeyRef:
-                  #     name: postgres-credentials
-                  #     key: password
+                # WEED_POSTGRES_USERNAME:
+                #   secretKeyRef:
+                #     name: postgres-credentials
+                #     key: username
+                # WEED_POSTGRES_PASSWORD:
+                #   secretKeyRef:
+                #     name: postgres-credentials
+                #     key: password
 
               s3:
                 enabled: true
