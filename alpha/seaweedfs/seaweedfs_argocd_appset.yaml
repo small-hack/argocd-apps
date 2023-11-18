@@ -244,12 +244,16 @@ spec:
               ipBind: "0.0.0.0"
               replicas: 1
               loggingOverrideLevel: null
+
               # number of seconds between heartbeats, must be smaller than or equal to the master's setting
               pulseSeconds: null
+
               # Choose [memory|leveldb|leveldbMedium|leveldbLarge] mode for memory~performance balance., default memory
               index: null
+
               # limit file size to avoid out of memory, default 256mb
               fileSizeLimitMB: null
+
               # minimum free disk space(in percents). If free disk space lower this value - all volumes marks as ReadOnly
               minFreeSpacePercent: 7
 
@@ -259,16 +263,15 @@ spec:
             #    size: "24Ti"
             #    storageClass: "local-path-provisioner"
               data:
-                type: "hostPath"
-                size: ""
-                storageClass: ""
-                hostPathPrefix: /storage
+                type: "persistentVolumeClaim"
+                size: "5Gi"
+                storageClass: "local-path"
 
               idx:
-                type: "hostPath"
+                type: "persistentVolumeClaim"
                 size: ""
-                storageClass: ""
-                hostPathPrefix: /ssd
+                size: "5Gi"
+                storageClass: "local-path"
 
               logs:
                 type: "hostPath"
