@@ -38,7 +38,7 @@ spec:
           selfHeal: true
       source:
         repoURL: 'https://git.deuxfleurs.fr/Deuxfleurs/garage'
-        path: 'script/helm/'
+        path: 'script/helm/garage/'
         targetRevision: main
         helm:
           values: |
