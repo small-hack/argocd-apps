@@ -574,7 +574,7 @@ spec:
                   #     key: password
 
               s3:
-                enabled: true
+                enabled: false
                 port: 8333
                 # add additional https port
                 httpsPort: 0
