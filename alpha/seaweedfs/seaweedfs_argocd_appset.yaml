@@ -39,6 +39,7 @@ spec:
         targetRevision: 3.59.0
         chart: seaweedfs
         helm:
+          releaseName: seaweedfs
           values: |
             global:
               createClusterRole: true
