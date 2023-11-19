@@ -279,16 +279,16 @@ EOF
 1. Get the user's `tls.key`, `tls.crt`, and `ca.crt` from secrets
 
     ```bash
-    kubectl get secrets cnpg-app-cert -o yaml |yq '.data."tls.key"' |base64 -d > tls.key
+    kubectl get secrets cnpg15-app-cert -o yaml |yq '.data."tls.key"' |base64 -d > tls.key
     chmod 600 tls.key
-    kubectl get secrets cnpg-app-cert -o yaml |yq '.data."tls.crt"' |base64 -d > tls.crt
+    kubectl get secrets cnpg15-app-cert -o yaml |yq '.data."tls.crt"' |base64 -d > tls.crt
     chmod 600 tls.crt
     ```
 
 2. Get the servers `ca.crt` from secrets
 
     ```bash
-    kubectl get secrets cnpg-server-cert -o yaml |yq '.data."ca.crt"' |base64 -d > ca.crt
+    kubectl get secrets cnpg15-server-cert -o yaml |yq '.data."ca.crt"' |base64 -d > ca.crt
     chmod 600 ca.crt
     ```
 
@@ -301,17 +301,17 @@ EOF
     apiVersion: v1
     kind: Service
     metadata:
-      name: cnpg-service
+      name: cnpg15-service
       labels:
-        cnpg.io/cluster: cnpg
+        cnpg.io/cluster: cnpg15
     spec:
       type: NodePort
       ports:
       - port: 5432
-        nodePort: 30000
+        nodePort: 30001
         protocol: TCP
       selector:
-        cnpg.io/cluster: cnpg
+        cnpg.io/cluster: cnpg15
         role: primary
     EOF
     ```
@@ -328,8 +328,8 @@ EOF
     psql "sslkey=./tls.key 
           sslcert=./tls.crt 
           sslrootcert=./ca.crt 
-          host=$LOADBALANCER_IP
-          port=30000 
+          host=$NODE_IP
+          port=30001 
           dbname=app 
           user=app" -c 'CREATE TABLE processors (data JSONB);'
     ```
@@ -356,8 +356,8 @@ EOF
           psql "sslkey=./tls.key
             sslcert=./tls.crt
             sslrootcert=./ca.crt
-            host=$LOADBALANCER_IP
-            port=30000
+            host=$NODE_IP
+            port=30001
             dbname=app
             user=app" -c "INSERT INTO processors VALUES ('$JSON');"
       done
@@ -376,8 +376,8 @@ EOF
     psql "sslkey=./tls.key 
          sslcert=./tls.crt 
          sslrootcert=./ca.crt 
-         host=$LOADBALANCER_IP 
-         port=30000 
+         host=$NODE_IP 
+         port=30001 
          dbname=app 
          user=app" -c "SELECT data -> 'cpu_name' AS Cpu,
                               data -> 'cpu_cores' AS Cores,
@@ -423,7 +423,7 @@ EOF
       ```
       
       ```bash
-      /bin/cat << EOF > backblaze.yaml
+      /bin/cat << EOF > backblaze-secret.yaml
       apiVersion: v1
       kind: Secret
       metadata:
@@ -434,13 +434,13 @@ EOF
         "ACCESS_SECRET_KEY": "$ACCESS_SECRET_KEY"
       EOF
 
-      kubectl apply -f backblaze.yaml
+      kubectl apply -f backblaze-secret.yaml
       ```
 
     - Create a second secret with different keys to support the K8up CLI if you plan to use it.
 
       ```bash
-      /bin/cat << EOF > k8up.yaml
+      /bin/cat << EOF > k8up-secret.yaml
       apiVersion: v1
       kind: Secret
       metadata:
@@ -475,6 +475,7 @@ EOF
       "password": "$RESTIC_PASS"
     EOF
     ```
+    
   - Create the secret
 
     ```bash
@@ -486,7 +487,7 @@ EOF
   - Create a manifest for the backup 
 
     ```bash
-    cat << EOF > backup.yaml
+    /bin/cat << EOF > backup.yaml
     apiVersion: k8up.io/v1
     kind: Schedule
     metadata:
@@ -531,7 +532,7 @@ EOF
    ```bash
    helm uninstall cnpg-cluster
    
-   helm uninstall minio-<some number>
+   k delete -f seaweedfs/k8s/charts/seaweedfs/manifests.yaml
    
    kubectl delete -f backup.yaml 
    ```
