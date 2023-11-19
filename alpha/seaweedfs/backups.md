@@ -254,7 +254,7 @@ EOF
         schedule: "0 * * * * *"
         backupOwnerReference: self
         cluster:
-          name: cnpg
+          name: cnpg15
     monitoring:
       enablePodMonitor: false
     postgresql:
