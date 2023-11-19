@@ -537,46 +537,106 @@ EOF
    kubectl delete -f backup.yaml 
    ```
 
-2. Create a PVC to hold our restored data
+2. Create PVCs to hold our restored data
 
-  - Create a manifest for the PVC
+  - Create a manifest for the PVCs
 
-    ```bash
-    /bin/cat << EOF > pvc.yaml
-    kind: PersistentVolumeClaim
-    apiVersion: v1
-    metadata:
-      name: backup-restore
-    spec:
-      accessModes:
-        - ReadWriteOnce
-      resources:
-        requests:
-          # Must be sufficient to hold your data
-          storage: 5Gi
-    EOF
-    ```
+```bash
+/bin/cat << EOF > pvc.yaml
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: swfs-volume-data
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: swfs-master-data
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: swfs-filer-data
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+EOF
+```
   
   - Create the PVC
 
     ```bash
     kubectl apply -f pvc.yaml
     ```
+3. Setup your restic redentials
 
-3. Find your desired snapshot to restore
+```bash
+# the password used in your restic-repo secret
+export RESTIC_PASSWORD=""
 
-    ```bash
-    restic snapshots
-    repository bac0980d opened (version 2, compression level auto)
-    ID        Time                 Host        Tags        Paths
-    -----------------------------------------------------------------------------
-    704f5d77  2023-11-12 10:51:14  default                 /data/minio-1699782386
-    b17c7bb1  2023-11-12 10:52:12  default                 /data/minio-1699782386
-    -----------------------------------------------------------------------------
-    2 snapshots
-    ```
+# Your backblaze credentials
+export AWS_ACCESS_KEY_ID=""
+export AWS_SECRET_ACCESS_KEY=""
+RESTIC_REPOSITORY="s3://<backblaze bucket url>/<backups bucket>
+```
 
-4. Use the K8up CLI or a declarative setup to restore data to the PVC. 
+4. Find your desired snapshot to restore
+
+```bash
+restic snapshots
+repository 650596ff opened (version 2, compression level auto)
+created new cache in /home/friend/.cache/restic
+ID        Time                 Host        Tags        Paths
+--------------------------------------------------------------------------------------------
+4db7cb29  2023-11-19 12:24:11  default                 /data/cnpg15-1
+4de08d63  2023-11-19 12:24:14  default                 /data/data-default-seaweedfs-master-0
+fe4ffc6f  2023-11-19 12:24:20  default                 /data/data-filer-seaweedfs-filer-0
+912e6cde  2023-11-19 12:24:24  default                 /data/data-seaweedfs-volume-0
+55a2f1ee  2023-11-19 12:25:07  default                 /data/cnpg15-1
+48be1efb  2023-11-19 12:25:13  default                 /data/data-default-seaweedfs-master-0
+d27abb43  2023-11-19 12:25:17  default                 /data/data-filer-seaweedfs-filer-0
+e3c88621  2023-11-19 12:25:21  default                 /data/data-seaweedfs-volume-0
+a01c6a17  2023-11-19 12:26:07  default                 /data/cnpg15-1
+30b4678b  2023-11-19 12:26:13  default                 /data/data-default-seaweedfs-master-0
+675b5ebe  2023-11-19 12:26:18  default                 /data/data-filer-seaweedfs-filer-0
+cbcd7def  2023-11-19 12:26:23  default                 /data/data-seaweedfs-volume-0
+1d7b48b0  2023-11-19 12:27:07  default                 /data/cnpg15-1
+bf2305b0  2023-11-19 12:27:13  default                 /data/data-default-seaweedfs-master-0
+034405a2  2023-11-19 12:27:18  default                 /data/data-filer-seaweedfs-filer-0
+b09694ed  2023-11-19 12:27:22  default                 /data/data-seaweedfs-volume-0
+4971c8cd  2023-11-19 12:28:08  default                 /data/cnpg15-1
+4e6502f4  2023-11-19 12:28:13  default                 /data/data-default-seaweedfs-master-0
+d2177064  2023-11-19 12:28:18  default                 /data/data-filer-seaweedfs-filer-0
+ff056fdf  2023-11-19 12:28:23  default                 /data/data-seaweedfs-volume-0
+f6be0d73  2023-11-19 12:29:08  default                 /data/cnpg15-1
+328df749  2023-11-19 12:29:14  default                 /data/data-default-seaweedfs-master-0
+b26460ff  2023-11-19 12:29:19  default                 /data/data-filer-seaweedfs-filer-0
+a4904f73  2023-11-19 12:29:26  default                 /data/data-seaweedfs-volume-0
+7a853211  2023-11-19 12:30:08  default                 /data/cnpg15-1
+921fe874  2023-11-19 12:30:14  default                 /data/data-default-seaweedfs-master-0
+cb3612fb  2023-11-19 12:30:19  default                 /data/data-filer-seaweedfs-filer-0
+1bbde1a5  2023-11-19 12:30:24  default                 /data/data-seaweedfs-volume-0
+--------------------------------------------------------------------------------------------
+28 snapshots
+```
+
+4. Use the K8up CLI or a declarative setup to restore data to the PVC. You will need to do this for each PVC that needs to be restored 
 
     > Minio requires you to run the restore as user `1000`
 
@@ -591,8 +651,8 @@ EOF
       --s3endpoint s3.us-west-004.backblazeb2.com \
       --s3bucket buildstars-minio-backup \
       --s3secretRef k8up-credentials \
-      --snapshot b17c7bb1 \
-      --claimName backup-restore \
+      --snapshot 1bbde1a5 \
+      --claimName swfs-volume-data \
       --runAsUser 1000
     ```
     
@@ -607,10 +667,10 @@ EOF
     spec:
       restoreMethod:
         folder:
-          claimName: backup-restore
+          claimName: swfs-volume-data
       podSecurityContext:
         runAsUser: 1000
-      snapshot: b17c7bb1
+      snapshot: 1bbde1a5
       backend:
         repoPasswordSecretRef:
           name: restic-repo
@@ -631,6 +691,44 @@ EOF
     ```bash
     kubectl apply -f s3-to-pvc.yaml
     ```
+    
+5. Re-deploy Seaweedfs from the existing PVCs
+
+```yaml
+cd seaweedfs/k8s/charts/seaweedfs/
+
+/bin/cat << EOF > restore-values.yaml
+master:
+  data:
+    type: "existingClaim"
+    claimName: "swfs-master-data"
+volume:
+  data:
+    type: "existingClaim"
+    claimName: "swfs-volume-data"
+filer:
+  enablePVC: false
+  data:
+    type: "existingClaim"
+    claimName: "swfs-filer-data"
+  s3:
+    enabled: true
+    port: 8333
+    httpsPort: 0
+    allowEmptyFolder: false
+    domainName: ""
+    enableAuth: false
+    skipAuthSecretCreation: false
+    auditLogConfig: {}
+EOF
+```
+
+- Deploy via Helm
+
+   ```bash
+   helm template . -f restore-values.yaml > manifests.yaml
+   kubectl apply -f manifests.yaml
+   ```
 
 <h2 id="restore-cnpg-from-minio-backups">Restore CNPG from Minio Backups</h2>
 
