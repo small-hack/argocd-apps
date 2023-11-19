@@ -53,7 +53,7 @@ spec:
         # chart: seaweedfs
         helm:
           releaseName: seaweedfs
-          values: |
+          valuesObject:
             global:
               createClusterRole: true
               loggingLevel: 1
@@ -404,7 +404,7 @@ spec:
 
               # Settings for configuring stateful storage of filer pods.
               # enablePVC will create a pvc for filer for data persistence.
-              enablePVC: false
+              enablePVC: true
 
               # storage should be set to the disk size of the attached volume.
               storage: 25Gi
