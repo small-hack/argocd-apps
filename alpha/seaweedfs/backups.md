@@ -548,6 +548,8 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: swfs-volume-data
+  annotations:
+    "k8up.io/backup": "true"
 spec:
   accessModes:
     - ReadWriteOnce
@@ -559,6 +561,8 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: swfs-master-data
+  annotations:
+    "k8up.io/backup": "true"
 spec:
   accessModes:
     - ReadWriteOnce
@@ -570,6 +574,8 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: swfs-filer-data
+  annotations:
+    "k8up.io/backup": "true"
 spec:
   accessModes:
     - ReadWriteOnce
@@ -637,55 +643,82 @@ cb3612fb  2023-11-19 12:30:19  default                 /data/data-filer-seaweedf
 ```
 
 4. Use the K8up CLI or a declarative setup to restore data to the PVC. You will need to do this for each PVC that needs to be restored 
-
-    > Minio requires you to run the restore as user `1000`
-
-  - Example of restoring from S3 to a PVC using the K8up CLI. 
-
-    ```bash
-    k8up cli restore \
-      --restoreMethod pvc \
-      --kubeconfig "$KUBECONFIG" \
-      --secretRef restic-repo \
-      --namespace default \
-      --s3endpoint s3.us-west-004.backblazeb2.com \
-      --s3bucket buildstars-minio-backup \
-      --s3secretRef k8up-credentials \
-      --snapshot 1bbde1a5 \
-      --claimName swfs-volume-data \
-      --runAsUser 1000
-    ```
     
   - Example manifest for a S3-to-PVC restore job 
 
-    ```bash
-    /bin/cat << EOF > s3-to-pvc.yaml
-    apiVersion: k8up.io/v1
-    kind: Restore
-    metadata:
-      name: restore-from-b2
-    spec:
-      restoreMethod:
-        folder:
-          claimName: swfs-volume-data
-      podSecurityContext:
-        runAsUser: 1000
-      snapshot: 1bbde1a5
-      backend:
-        repoPasswordSecretRef:
-          name: restic-repo
-          key: password
-        s3:
-          endpoint: s3.us-west-004.backblazeb2.com
-          bucket: buildstars-minio-backup
-          accessKeyIDSecretRef:
-            name: backblaze-credentials
-            key: ACCESS_KEY_ID
-          secretAccessKeySecretRef:
-            name: backblaze-credentials
-            key: ACCESS_SECRET_KEY
-    EOF
-    ```
+```bash
+/bin/cat << EOF > s3-to-pvc.yaml
+---
+apiVersion: k8up.io/v1
+kind: Restore
+metadata:
+  name: restore-volume-data
+spec:
+  restoreMethod:
+    folder:
+      claimName: swfs-volume-data
+  snapshot: a4904f73
+  backend:
+    repoPasswordSecretRef:
+      name: restic-repo
+      key: password
+    s3:
+      endpoint: s3.us-west-004.backblazeb2.com
+      bucket: buildstars-minio-backup
+      accessKeyIDSecretRef:
+        name: backblaze-credentials
+        key: ACCESS_KEY_ID
+      secretAccessKeySecretRef:
+        name: backblaze-credentials
+        key: ACCESS_SECRET_KEY
+---
+apiVersion: k8up.io/v1
+kind: Restore
+metadata:
+  name: restore-master-data
+spec:
+  restoreMethod:
+    folder:
+      claimName: swfs-master-data
+  snapshot: 328df749
+  backend:
+    repoPasswordSecretRef:
+      name: restic-repo
+      key: password
+    s3:
+      endpoint: s3.us-west-004.backblazeb2.com
+      bucket: buildstars-minio-backup
+      accessKeyIDSecretRef:
+        name: backblaze-credentials
+        key: ACCESS_KEY_ID
+      secretAccessKeySecretRef:
+        name: backblaze-credentials
+        key: ACCESS_SECRET_KEY
+---
+apiVersion: k8up.io/v1
+kind: Restore
+metadata:
+  name: restore-filer-data
+spec:
+  restoreMethod:
+    folder:
+      claimName: swfs-filer-data
+  snapshot: b26460ff
+  backend:
+    repoPasswordSecretRef:
+      name: restic-repo
+      key: password
+    s3:
+      endpoint: s3.us-west-004.backblazeb2.com
+      bucket: buildstars-minio-backup
+      accessKeyIDSecretRef:
+        name: backblaze-credentials
+        key: ACCESS_KEY_ID
+      secretAccessKeySecretRef:
+        name: backblaze-credentials
+        key: ACCESS_SECRET_KEY
+EOF
+```
 
   - Apply manifest
     ```bash
