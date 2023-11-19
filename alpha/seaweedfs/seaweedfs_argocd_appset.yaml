@@ -22,8 +22,8 @@ spec:
   template:
     metadata:
       name: seaweedfs-web-app
-      # annotations:
-      #   argocd.argoproj.io/sync-wave: "3"
+      annotations:
+        argocd.argoproj.io/sync-wave: "2"
     spec:
       project: seaweedfs
       destination:
@@ -125,8 +125,7 @@ spec:
               #    storageClass: "local-path-provisioner"
               data:
                 type: "existingClaim"
-                size: "5Gi"
-                storageClass: "local-path"
+                claimName: "swfs-master-data"
 
               initContainers: ""
 
@@ -267,13 +266,11 @@ spec:
             #    storageClass: "local-path-provisioner"
               data:
                 type: "existingClaim"
-                size: "5Gi"
-                storageClass: "local-path"
+                claimName: "swfs-volume-data"
 
               idx:
                 type: "existingClaim"
-                size: "5Gi"
-                storageClass: "local-path"
+                claimName: "swfs-volume-idx"
 
               # limit background compaction or copying speed in mega bytes per second
               compactionMBps: "50"
@@ -422,8 +419,7 @@ spec:
               #    storageClass: "local-path-provisioner"
               data:
                 type: "existingClaim"
-                size: "25Gi"
-                storageClass: "local-path"
+                claimName: "swfs-filer-data"
 
               initContainers: ""
 

@@ -1,0 +1,22 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: seaweedfs-persistent-volumes
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  project: external-secrets-operator
+  source:
+    repoURL: 'https://github.com/small-hack/argocd-apps/alpha/seaweedfs/persistence'
+    targetRevision: eso-helm-chart-test
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: seaweedfs
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+    automated:
+      prune: true
+      selfHeal: true
