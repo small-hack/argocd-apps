@@ -9,7 +9,8 @@ metadata:
 spec:
   project: external-secrets-operator
   source:
-    repoURL: 'https://github.com/small-hack/argocd-apps/alpha/seaweedfs/persistence'
+    repoURL: "https://github.com/small-hack/argocd-apps"
+    path: "/alpha/seaweedfs/persistence/"
     targetRevision: eso-helm-chart-test
   destination:
     server: "https://kubernetes.default.svc"
