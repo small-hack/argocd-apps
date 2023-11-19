@@ -53,7 +53,7 @@ spec:
         # chart: seaweedfs
         helm:
           releaseName: seaweedfs
-          valuesObject:
+          values: |
             global:
               createClusterRole: true
               loggingLevel: 1
