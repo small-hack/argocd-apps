@@ -779,36 +779,19 @@ EOF
         username:
           - "app"
     backup: []
-    #   retentionPolicy: "30d"
-    #   barmanObjectStore:
-    #     destinationPath: "s3://postgres15-backups"
-    #     endpointURL: "http://seaweedfs-s3.default.svc.cluster.local:8333"
-    #     s3Credentials:
-    #       accessKeyId:
-    #         name: "minio-credentials"
-    #         key: "ACCESS_KEY_ID"
-    #       secretAccessKey:
-    #         name: "minio-credentials"
-    #         key: "ACCESS_SECRET_KEY"
     scheduledBackup: []
-    #   name: cnpg-backup
-    #   spec:
-    #     schedule: "0 * * * * *"
-    #     backupOwnerReference: self
-    #     cluster:
-    #       name: cnpg
     externalClusters:
       - name: cnpg15
         barmanObjectStore:
           destinationPath: "s3://postgres15-backups/"
-          endpointURL: "http://85.10.207.26:32000"
+          endpointURL: "http://seaweedfs-s3.default.svc.cluster.local:8333"
           s3Credentials:
             accessKeyId:
-              name: "minio-credentials"
-              key: "ACCESS_KEY_ID"
+              name: "seaweedfs-s3-secret"
+              key: "admin_access_key_id"
             secretAccessKey:
-              name: "minio-credentials"
-              key: "ACCESS_SECRET_KEY"
+              name: "seaweedfs-s3-secret"
+              key: "admin_secret_access_key"
           wal:
             maxParallel: 8
     monitoring:
