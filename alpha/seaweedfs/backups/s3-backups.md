@@ -93,7 +93,7 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
 
 3. Create a values file
 
-    ```yaml
+    ```bash
     /bin/cat << EOF > test-values.yaml
     master:
       data:
@@ -129,14 +129,14 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
     EOF
     ```
 
-3. Deploy via Helm
+4. Deploy via Helm
 
    ```bash
    helm template . -f test-values.yaml > manifests.yaml
    kubectl apply -f manifests.yaml
    ```
 
-4. Expose the S3 endpoint
+5. Expose the S3 endpoint
 
     ```bash
     /bin/cat << EOF > service.yaml
@@ -167,9 +167,9 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
    
     - get the `admin_access_key_id` and `admin_secret_access_key` from the secret `seaweedfs-s3-secret`
 
-    ```bash
-    mc alias set seaweedfs http://$NODE_IP:30000 $admin_access_key_id $admin_secret_access_key
-    ```
+      ```bash
+      mc alias set seaweedfs http://$NODE_IP:30000 $admin_access_key_id $admin_secret_access_key
+      ```
 
 8. Create a bucket
    
