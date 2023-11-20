@@ -615,18 +615,16 @@ RESTIC_REPOSITORY="s3://<backblaze bucket url>/<backups bucket>
 
 ```bash
 restic snapshots
-repository a214d8f0 opened (version 2, compression level auto)
+repository fffd1d0e opened (version 2, compression level auto)
 created new cache in /home/friend/.cache/restic
 ID        Time                 Host        Tags        Paths
------------------------------------------------------------------------------
-527be9db  2023-11-19 15:51:10  default                 /data/cnpg15-1
-da3a1e5b  2023-11-19 15:51:14  default                 /data/swfs-filer-data
-6336ac9a  2023-11-19 15:51:18  default                 /data/swfs-master-data
-8bd44af5  2023-11-19 15:51:23  default                 /data/swfs-volume-data
-ebc7d7af  2023-11-19 15:52:07  default                 /data/cnpg15-1
-8869d769  2023-11-19 15:52:12  default                 /data/swfs-filer-data
------------------------------------------------------------------------------
-6 snapshots
+--------------------------------------------------------------------------------------------
+656b5abe  2023-11-20 10:57:11  default                 /data/cnpg15-1
+98718e38  2023-11-20 10:57:16  default                 /data/data-default-seaweedfs-master-0
+8c2f8d99  2023-11-20 10:57:20  default                 /data/data-filer-seaweedfs-filer-0
+be86c2e5  2023-11-20 10:57:26  default                 /data/data-seaweedfs-volume-0
+--------------------------------------------------------------------------------------------
+4 snapshots
 ```
 
 4. Use the K8up CLI or a declarative setup to restore data to the PVC. You will need to do this for each PVC that needs to be restored 
@@ -644,13 +642,13 @@ spec:
   restoreMethod:
     folder:
       claimName: swfs-volume-data
-  snapshot: 8bd44af5
+  snapshot: "be86c2e5"
   backend:
     repoPasswordSecretRef:
       name: restic-repo
       key: password
     s3:
-      endpoint: s3.us-west-004.backblazeb2.com
+      endpoint: "s3.us-west-004.backblazeb2.com"
       bucket: buildstars-minio-backup
       accessKeyIDSecretRef:
         name: backblaze-credentials
@@ -667,13 +665,13 @@ spec:
   restoreMethod:
     folder:
       claimName: swfs-master-data
-  snapshot: 6336ac9a
+  snapshot: "98718e38"
   backend:
     repoPasswordSecretRef:
       name: restic-repo
       key: password
     s3:
-      endpoint: s3.us-west-004.backblazeb2.com
+      endpoint: "s3.us-west-004.backblazeb2.com"
       bucket: buildstars-minio-backup
       accessKeyIDSecretRef:
         name: backblaze-credentials
@@ -690,13 +688,13 @@ spec:
   restoreMethod:
     folder:
       claimName: swfs-filer-data
-  snapshot: da3a1e5b
+  snapshot: "8c2f8d99"
   backend:
     repoPasswordSecretRef:
       name: restic-repo
       key: password
     s3:
-      endpoint: s3.us-west-004.backblazeb2.com
+      endpoint: "s3.us-west-004.backblazeb2.com"
       bucket: buildstars-minio-backup
       accessKeyIDSecretRef:
         name: backblaze-credentials
@@ -727,7 +725,7 @@ volume:
     type: "existingClaim"
     claimName: "swfs-volume-data"
 filer:
-  enablePVC: false
+  enablePVC: true
   data:
     type: "existingClaim"
     claimName: "swfs-filer-data"
