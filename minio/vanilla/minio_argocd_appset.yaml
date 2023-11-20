@@ -42,6 +42,42 @@ spec:
         helm:
           releaseName: minio
           values: |
+            ## Use existing Secret that store following variables:
+            ##
+            ## | Chart var             | .data.<key> in Secret    |
+            ## |:----------------------|:-------------------------|
+            ## | rootUser              | rootUser                 |
+            ## | rootPassword          | rootPassword             |
+            ##
+            ## All mentioned variables will be ignored in values file.
+            ## .data.rootUser and .data.rootPassword are mandatory,
+            ## others depend on enabled status of corresponding sections.
+            existingSecret: "minio-root-credentials"
+            
+            ## TLS Settings for MinIO
+            tls:
+              enabled: false
+              ## Create a secret with private.key and public.crt files and pass that here. Ref: https://github.com/minio/minio/tree/master/docs/tls/kubernetes#2-create-kubernetes-secret
+              certSecret: ""
+              publicCrt: public.crt
+              privateKey: private.key
+
+            ## Trusted Certificates Settings for MinIO. Ref: https://min.io/docs/minio/linux/operations/network-encryption.html#third-party-certificate-authorities
+            ## Bundle multiple trusted certificates into one secret and pass that here. Ref: https://github.com/minio/minio/tree/master/docs/tls/kubernetes#2-create-kubernetes-secret
+            ## When using self-signed certificates, remember to include MinIO's own certificate in the bundle with key public.crt.
+            ## If certSecret is left empty and tls is enabled, this chart installs the public certificate from .Values.tls.certSecret.
+            trustedCertsSecret: ""
+
+            ## Enable persistence using Persistent Volume Claims
+            ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+            ##
+            persistence:
+              enabled: true
+              ## A manually managed Persistent Volume and Claim
+              ## Requires persistence.enabled: true
+              ## If defined, PVC must be created manually before volume will be bound
+              existingClaim: "minio-data"
+
             ingress:
               enabled: true
               ingressClassName: nginx
