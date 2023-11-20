@@ -56,39 +56,7 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
     export KUBECONFIG=~/.config/kube/config
     ```
 
-4. Install CertManager
-
-    ```bash
-    helm repo add jetstack https://charts.jetstack.io
-    helm repo update
-
-    kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.2/cert-manager.crds.yaml
-
-    helm install cert-manager jetstack/cert-manager \
-    --namespace cert-manager \
-    --create-namespace \
-    --version v1.13.2
-    ```
-    
-5. Install CNPG Operator
-
-    ```bash
-    helm repo add cnpg https://cloudnative-pg.github.io/charts
-    helm upgrade --install cnpg \
-      --namespace cnpg-system \
-      --create-namespace \
-      cnpg/cloudnative-pg \
-      --version 0.19.0
-    ```
-    
-6. Install the CNPG cluster chart
-
-   ```bash
-    helm repo add cnpg-cluster https://small-hack.github.io/cloudnative-pg-cluster-chart
-    helm repo update
-    ```
-
-7. Install k8up
+5. Install k8up
 
     ```bash
     repo add k8up-io https://k8up-io.github.io/k8up
@@ -101,10 +69,18 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
 
 <h2 id="seaweedfs-instance-and-user-setup">SeaweedFS instance and user setup</h2>
 
-1. install the AWS cli
+1. install the MinIO client
+
+    Docs: https://min.io/docs/minio/linux/reference/minio-mc.html
 
     ```bash
-    pip install awscli
+    mkdir -p $HOME/minio-binaries
+
+    wget https://dl.min.io/client/mc/release/linux-amd64/mc -O $HOME/minio-binaries/mc
+
+    chmod +x $HOME/minio-binaries/mc
+
+    export PATH=$PATH:$HOME/minio-binaries/
     ```
 
 2. Clone repo and get the right branch
@@ -180,29 +156,35 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
         "app.kubernetes.io/name": "seaweedfs"
     EOF
     ```
-
-5. Configure the AWS CLI
-   
-    - get the `admin_access_key_id` and `admin_secret_access_key` from the secret `seaweedfs-s3-secret`
     
-    - run `aws configure`
-    
-    - Populate the `AWS Access Key ID` and `AWS Secret Access Key` fileds, all other values can be blank
-
 6. Export your NodeIP as an env var
 
    ```bash
    export NODE_IP=""
    ```
 
-7. Create a bucket for backups
+7. Set an alias for your server:
+   
+    - get the `admin_access_key_id` and `admin_secret_access_key` from the secret `seaweedfs-s3-secret`
+
+    ```bash
+    mc alias set seaweedfs http://$NODE_IP:30000 $admin_access_key_id $admin_secret_access_key
+    ```
+
+8. Create a bucket
    
     - The endpoint-url is the IP of our node + the nodePort form our service
 
       ```bash
-      aws --endpoint-url http://$NODE_IP:30000 s3 mb s3://postgres15-backups
+      mc mb seaweedfs s3://backups
       ```
 
+8. Add some data to the bucket
+
+      ```bash
+      mc cp ./some-file seaweedfs/backups/
+      ```
+ 
  <h2 id="configure-scheduled-backups-of-seaweedf3-to-b2">Configure scheduled backups of SeaweedFS to B2</h2>
 
  1. Create a secret containing your external S3 credentials
@@ -228,23 +210,6 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
       EOF
 
       kubectl apply -f backblaze-secret.yaml
-      ```
-
-    - Create a second secret with different keys to support the K8up CLI if you plan to use it.
-
-      ```bash
-      /bin/cat << EOF > k8up-secret.yaml
-      apiVersion: v1
-      kind: Secret
-      metadata:
-        name: k8up-credentials
-      type: Opaque
-      data:
-        "username": "$ACCESS_KEY_ID"
-        "password": "$ACCESS_SECRET_KEY"
-      EOF
-
-      kubectl apply -f k8up.yaml
       ```
  
  2. Create a secret containing a random password for restic
@@ -277,6 +242,13 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
 
 3. Create a scheduled backups
 
+  - Export your S3 address:
+
+    ```bash
+    export BACKUP_S3_URL=""
+    export BACKUP_S3_BUCKET="s3://"
+    ``` 
+
   - Create a manifest for the backup 
 
     ```bash
@@ -291,8 +263,8 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
           name: restic-repo
           key: password
         s3:
-          endpoint: "<your-s3-url>"
-          bucket: "<your-s3-backup-bucket>"
+          endpoint: "$BACKUP_S3_URL"
+          bucket: "$BACKUP_S3_BUCKET"
           accessKeyIDSecretRef:
             name: backblaze-credentials
             key: ACCESS_KEY_ID
@@ -433,8 +405,8 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
           name: restic-repo
           key: password
         s3:
-          endpoint: "<your-s3-url>"
-          bucket: "<your-s3-bucket>"
+          endpoint: "$BACKUP_S3_URL"
+          bucket: "$BACKUP_S3_BUCKET"
           accessKeyIDSecretRef:
             name: backblaze-credentials
             key: ACCESS_KEY_ID
@@ -456,8 +428,8 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
           name: restic-repo
           key: password
         s3:
-          endpoint: "<your-s3-url>"
-          bucket: "<your-s3-bucket>"
+          endpoint: "$BACKUP_S3_URL"
+          bucket: "$BACKUP_S3_BUCKET"
           accessKeyIDSecretRef:
             name: backblaze-credentials
             key: ACCESS_KEY_ID
@@ -479,8 +451,8 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
           name: restic-repo
           key: password
         s3:
-          endpoint: "<your-s3-url>"
-          bucket: "<your-s3-bucket>"
+          endpoint: "$BACKUP_S3_URL"
+          bucket: "$BACKUP_S3_BUCKET"
           accessKeyIDSecretRef:
             name: backblaze-credentials
             key: ACCESS_KEY_ID
