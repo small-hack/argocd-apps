@@ -248,13 +248,7 @@ EOF
           secretAccessKey:
             name: "seaweedfs-s3-secret"
             key: "admin_secret_access_key"
-    scheduledBackup:
-      name: cnpg-backup
-      spec:
-        schedule: "0 * * * * *"
-        backupOwnerReference: self
-        cluster:
-          name: cnpg15
+    scheduledBackup: []
     monitoring:
       enablePodMonitor: false
     postgresql:
@@ -409,6 +403,21 @@ EOF
     >  "Xeon 2696v3"          | 12    | 24      | 2013        | 1698
     >  "Xeon Platinum 8370C"  | 32    | 64      | 2021        | 0
     > ```
+
+7. Create a backup of postgres
+
+   ```
+   /bin/cat << EOF > on-demand-backup.yaml
+   apiVersion: postgresql.cnpg.io/v1
+   kind: Backup
+   metadata:
+     name: cnpg15-backup
+   spec:
+     method: barmanObjectStore
+     cluster:
+       name: cnpg15
+   EOF
+   ```
 
  <h2 id="configure-scheduled-backups-of-minio-to-b2">Configure scheduled backups of Minio to B2</h2>
 
@@ -606,40 +615,18 @@ RESTIC_REPOSITORY="s3://<backblaze bucket url>/<backups bucket>
 
 ```bash
 restic snapshots
-repository 650596ff opened (version 2, compression level auto)
+repository a214d8f0 opened (version 2, compression level auto)
 created new cache in /home/friend/.cache/restic
 ID        Time                 Host        Tags        Paths
---------------------------------------------------------------------------------------------
-4db7cb29  2023-11-19 12:24:11  default                 /data/cnpg15-1
-4de08d63  2023-11-19 12:24:14  default                 /data/data-default-seaweedfs-master-0
-fe4ffc6f  2023-11-19 12:24:20  default                 /data/data-filer-seaweedfs-filer-0
-912e6cde  2023-11-19 12:24:24  default                 /data/data-seaweedfs-volume-0
-55a2f1ee  2023-11-19 12:25:07  default                 /data/cnpg15-1
-48be1efb  2023-11-19 12:25:13  default                 /data/data-default-seaweedfs-master-0
-d27abb43  2023-11-19 12:25:17  default                 /data/data-filer-seaweedfs-filer-0
-e3c88621  2023-11-19 12:25:21  default                 /data/data-seaweedfs-volume-0
-a01c6a17  2023-11-19 12:26:07  default                 /data/cnpg15-1
-30b4678b  2023-11-19 12:26:13  default                 /data/data-default-seaweedfs-master-0
-675b5ebe  2023-11-19 12:26:18  default                 /data/data-filer-seaweedfs-filer-0
-cbcd7def  2023-11-19 12:26:23  default                 /data/data-seaweedfs-volume-0
-1d7b48b0  2023-11-19 12:27:07  default                 /data/cnpg15-1
-bf2305b0  2023-11-19 12:27:13  default                 /data/data-default-seaweedfs-master-0
-034405a2  2023-11-19 12:27:18  default                 /data/data-filer-seaweedfs-filer-0
-b09694ed  2023-11-19 12:27:22  default                 /data/data-seaweedfs-volume-0
-4971c8cd  2023-11-19 12:28:08  default                 /data/cnpg15-1
-4e6502f4  2023-11-19 12:28:13  default                 /data/data-default-seaweedfs-master-0
-d2177064  2023-11-19 12:28:18  default                 /data/data-filer-seaweedfs-filer-0
-ff056fdf  2023-11-19 12:28:23  default                 /data/data-seaweedfs-volume-0
-f6be0d73  2023-11-19 12:29:08  default                 /data/cnpg15-1
-328df749  2023-11-19 12:29:14  default                 /data/data-default-seaweedfs-master-0
-b26460ff  2023-11-19 12:29:19  default                 /data/data-filer-seaweedfs-filer-0
-a4904f73  2023-11-19 12:29:26  default                 /data/data-seaweedfs-volume-0
-7a853211  2023-11-19 12:30:08  default                 /data/cnpg15-1
-921fe874  2023-11-19 12:30:14  default                 /data/data-default-seaweedfs-master-0
-cb3612fb  2023-11-19 12:30:19  default                 /data/data-filer-seaweedfs-filer-0
-1bbde1a5  2023-11-19 12:30:24  default                 /data/data-seaweedfs-volume-0
---------------------------------------------------------------------------------------------
-28 snapshots
+-----------------------------------------------------------------------------
+527be9db  2023-11-19 15:51:10  default                 /data/cnpg15-1
+da3a1e5b  2023-11-19 15:51:14  default                 /data/swfs-filer-data
+6336ac9a  2023-11-19 15:51:18  default                 /data/swfs-master-data
+8bd44af5  2023-11-19 15:51:23  default                 /data/swfs-volume-data
+ebc7d7af  2023-11-19 15:52:07  default                 /data/cnpg15-1
+8869d769  2023-11-19 15:52:12  default                 /data/swfs-filer-data
+-----------------------------------------------------------------------------
+6 snapshots
 ```
 
 4. Use the K8up CLI or a declarative setup to restore data to the PVC. You will need to do this for each PVC that needs to be restored 
@@ -657,7 +644,7 @@ spec:
   restoreMethod:
     folder:
       claimName: swfs-volume-data
-  snapshot: a4904f73
+  snapshot: 8bd44af5
   backend:
     repoPasswordSecretRef:
       name: restic-repo
@@ -680,7 +667,7 @@ spec:
   restoreMethod:
     folder:
       claimName: swfs-master-data
-  snapshot: 328df749
+  snapshot: 6336ac9a
   backend:
     repoPasswordSecretRef:
       name: restic-repo
@@ -703,7 +690,7 @@ spec:
   restoreMethod:
     folder:
       claimName: swfs-filer-data
-  snapshot: b26460ff
+  snapshot: da3a1e5b
   backend:
     repoPasswordSecretRef:
       name: restic-repo
@@ -770,8 +757,8 @@ EOF
    > Backups are disabled during the recovery process and will be re-enabled in the next step.
 
     ```bash
-    /bin/cat << EOF > restore-values.yaml
-    name: "cnpg"
+    /bin/cat << EOF > pg-restore-values.yaml
+    name: "cnpg15"
     instances: 1
     imageName: ghcr.io/cloudnative-pg/postgresql:15.4
     bootstrap:
@@ -813,7 +800,7 @@ EOF
     #     cluster:
     #       name: cnpg
     externalClusters:
-      - name: cnpg
+      - name: cnpg15
         barmanObjectStore:
           destinationPath: "s3://postgres15-backups/"
           endpointURL: "http://85.10.207.26:32000"
