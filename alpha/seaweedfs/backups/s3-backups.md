@@ -272,7 +272,7 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
             name: backblaze-credentials
             key: ACCESS_SECRET_KEY
       backup:
-        schedule: '* * * * *'
+        schedule: '*/5 * * * *'
         keepJobs: 4
       check:
         schedule: '0 1 * * 1'
@@ -292,14 +292,12 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
 
 <h2 id="restore-seaweedfs-from-b2-backups">Restore SeaweedFS from B2 backups</h2>
 
-1. Uninstall SeaweedFS and Postgres and delete your scheduled backup
+1. Uninstall SeaweedFS and delete your scheduled backup
 
    ```bash
-   helm uninstall cnpg-cluster
-   
    k delete -f manifests.yaml
    
-   kubectl delete -f backup.yaml 
+   kubectl delete -f backup.yaml
    ```
 
 2. Create PVCs to hold our restored data
@@ -372,16 +370,15 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
 
     ```bash
     restic snapshots
-    repository fffd1d0e opened (version 2, compression level auto)
+    repository d91e9530 opened (version 2, compression level auto)
     created new cache in /home/friend/.cache/restic
     ID        Time                 Host        Tags        Paths
     --------------------------------------------------------------------------------------------
-    656b5abe  2023-11-20 10:57:11  default                 /data/cnpg15-1
-    98718e38  2023-11-20 10:57:16  default                 /data/data-default-seaweedfs-master-0
-    8c2f8d99  2023-11-20 10:57:20  default                 /data/data-filer-seaweedfs-filer-0
-    be86c2e5  2023-11-20 10:57:26  default                 /data/data-seaweedfs-volume-0
+    4a25424a  2023-11-20 19:40:10  default                 /data/data-default-seaweedfs-master-0
+    649b25c7  2023-11-20 19:40:14  default                 /data/data-filer-seaweedfs-filer-0
+    99160498  2023-11-20 19:40:19  default                 /data/data-seaweedfs-volume-0
     --------------------------------------------------------------------------------------------
-    4 snapshots
+    3 snapshots
     ```
 
 4. Use the K8up CLI or a declarative setup to restore data to the PVC. You will need to do this for each PVC that needs to be restored 
@@ -399,7 +396,7 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
       restoreMethod:
         folder:
           claimName: swfs-volume-data
-      snapshot: "be86c2e5"
+      snapshot: "99160498"
       backend:
         repoPasswordSecretRef:
           name: restic-repo
@@ -422,7 +419,7 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
       restoreMethod:
         folder:
           claimName: swfs-master-data
-      snapshot: "98718e38"
+      snapshot: "4a25424a"
       backend:
         repoPasswordSecretRef:
           name: restic-repo
@@ -445,7 +442,7 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
       restoreMethod:
         folder:
           claimName: swfs-filer-data
-      snapshot: "8c2f8d99"
+      snapshot: "649b25c7"
       backend:
         repoPasswordSecretRef:
           name: restic-repo
@@ -470,8 +467,6 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
 5. Re-deploy Seaweedfs from the existing PVCs
 
     ```yaml
-    cd seaweedfs/k8s/charts/seaweedfs/
-    
     /bin/cat << EOF > restore-values.yaml
     master:
       data:
@@ -505,3 +500,16 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
    kubectl apply -f manifests.yaml
    ```
 
+6. Update your alias for your server:
+   
+    - get the `admin_access_key_id` and `admin_secret_access_key` from the secret `seaweedfs-s3-secret`
+
+    ```bash
+    mc alias set seaweedfs http://$NODE_IP:30000 $admin_access_key_id $admin_secret_access_key
+    ```
+    
+- View for your data:
+
+  ```bash
+  mc ls seaweedfs
+  ```
