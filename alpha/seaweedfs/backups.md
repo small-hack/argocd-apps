@@ -12,10 +12,9 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
 2. [SeaweedFS instance and user setup](#seaweedfs-instance-and-user-setup)
 3. [Deploy Postgres cluster](#deploy-postgres-cluster)
 4. [Seed Postgres with sample data](#seed-postgres-with-sample-data)
-5. [Configure scheduled backups of Minio to B2](#configure-scheduled-backups-of-minio-to-b2)
-6. [Restore Minio from B2 backups](#restore-minio-from-b2-backups)
-7. [Restore CNPG from Minio Backups](#restore-cnpg-from-minio-backups)
-8. [Major Version Upgrades](#major-version-upgrades)
+5. [Configure scheduled backups of SeaweedFS to B2](#configure-scheduled-backups-of-seaweedfs-to-b2)
+6. [Restore SeaweedFS from B2 backups](#restore-seaweedfs-from-b2-backups)
+7. [Restore CNPG from SeaweedFS Backups](#restore-cnpg-from-seaweedfs-backups)
 
 ## Requirements
 
@@ -23,7 +22,7 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
 - Kubectl
 - Helm
 - Restic
-- Minio Client CLI (mc)
+- S3 CLI tool of your choice, I'll be using awscli in this guide.
 
 <h2 id="k3s-cluster-creation">K3s Cluster creation</h2>
 
@@ -120,41 +119,41 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
 
 3. Create a values file
 
-```yaml
-/bin/cat << EOF > test-values.yaml
-master:
-  data:
-    type: "persistentVolumeClaim"
-    size: "5Gi"
-    storageClass: "local-path"
-    annotations:
-      "k8up.io/backup": "true"
-volume:
-  data:
-    type: "persistentVolumeClaim"
-    size: "5Gi"
-    storageClass: "local-path"
-    annotations:
-      "k8up.io/backup": "true"
-filer:
-  enablePVC: true
-  storage: 5Gi
-  data:
-    type: "persistentVolumeClaim"
-    size: "5Gi"
-    storageClass: "local-path"
-    annotations:
-  s3:
-    enabled: true
-    port: 8333
-    httpsPort: 0
-    allowEmptyFolder: false
-    domainName: ""
-    enableAuth: false
-    skipAuthSecretCreation: false
-    auditLogConfig: {}
-EOF
-```
+    ```yaml
+    /bin/cat << EOF > test-values.yaml
+    master:
+      data:
+        type: "persistentVolumeClaim"
+        size: "5Gi"
+        storageClass: "local-path"
+        annotations:
+          "k8up.io/backup": "true"
+    volume:
+      data:
+        type: "persistentVolumeClaim"
+        size: "5Gi"
+        storageClass: "local-path"
+        annotations:
+          "k8up.io/backup": "true"
+    filer:
+      enablePVC: true
+      storage: 5Gi
+      data:
+        type: "persistentVolumeClaim"
+        size: "5Gi"
+        storageClass: "local-path"
+        annotations:
+      s3:
+        enabled: true
+        port: 8333
+        httpsPort: 0
+        allowEmptyFolder: false
+        domainName: ""
+        enableAuth: false
+        skipAuthSecretCreation: false
+        auditLogConfig: {}
+    EOF
+    ```
 
 3. Deploy via Helm
 
@@ -163,28 +162,28 @@ EOF
    kubectl apply -f manifests.yaml
    ```
 
-4. Expose the s3 enpoint
+4. Expose the S3 endpoint
 
-```bash
-/bin/cat << EOF > service.yaml
-apiVersion: v1
-kind: Service
-metadata:
-  name: swfs-s3-nodeport
-  labels:
-    "app.kubernetes.io/name": "seaweedfs"
-spec:
-  type: NodePort
-  ports:
-  - port: 8333
-    nodePort: 30000
-    protocol: TCP
-  selector:
-    "app.kubernetes.io/name": "seaweedfs"
-EOF
-```
+    ```bash
+    /bin/cat << EOF > service.yaml
+    apiVersion: v1
+    kind: Service
+    metadata:
+      name: swfs-s3-nodeport
+      labels:
+        "app.kubernetes.io/name": "seaweedfs"
+    spec:
+      type: NodePort
+      ports:
+      - port: 8333
+        nodePort: 30000
+        protocol: TCP
+      selector:
+        "app.kubernetes.io/name": "seaweedfs"
+    EOF
+    ```
 
-5. Configure the aws cli
+5. Configure the AWS CLI
    
     - get the `admin_access_key_id` and `admin_secret_access_key` from the secret `seaweedfs-s3-secret`
     
@@ -406,7 +405,7 @@ EOF
 
 7. Create a backup of postgres
 
-   ```
+   ```bash
    /bin/cat << EOF > on-demand-backup.yaml
    apiVersion: postgresql.cnpg.io/v1
    kind: Backup
@@ -419,11 +418,15 @@ EOF
    EOF
    ```
 
- <h2 id="configure-scheduled-backups-of-minio-to-b2">Configure scheduled backups of Minio to B2</h2>
+   ```bash
+   kubectl apply -f on-demand-backup.yaml
+   ```
+
+ <h2 id="configure-scheduled-backups-of-seaweedf3-to-b2">Configure scheduled backups of SeaweedFS to B2</h2>
 
  1. Create a secret containing your external S3 credentials
 
-    - You will need to get these from your provider:
+    - You will need to get these from your provider (Backblaze, Wasabi etc..):
     
       ```bash
       export ACCESS_KEY_ID=$(echo -n "" | base64)
@@ -507,8 +510,8 @@ EOF
           name: restic-repo
           key: password
         s3:
-          endpoint: "s3.us-west-004.backblazeb2.com"
-          bucket: "buildstars-minio-backup"
+          endpoint: "<your-s3-url>"
+          bucket: "<your-s3-backup-bucket>"
           accessKeyIDSecretRef:
             name: backblaze-credentials
             key: ACCESS_KEY_ID
@@ -534,14 +537,14 @@ EOF
     kubectl apply -f backup.yaml
     ```
 
-<h2 id="restore-minio-from-b2-backups">Restore Minio from B2 backups</h2>
+<h2 id="restore-seaweedfs-from-b2-backups">Restore SeaweedFS from B2 backups</h2>
 
-1. Uninstall minio and postgres and delete your scheduled backup
+1. Uninstall SeaweedFS and Postgres and delete your scheduled backup
 
    ```bash
    helm uninstall cnpg-cluster
    
-   k delete -f seaweedfs/k8s/charts/seaweedfs/manifests.yaml
+   k delete -f manifests.yaml
    
    kubectl delete -f backup.yaml 
    ```
@@ -550,160 +553,161 @@ EOF
 
   - Create a manifest for the PVCs
 
-```bash
-/bin/cat << EOF > pvc.yaml
----
-kind: PersistentVolumeClaim
-apiVersion: v1
-metadata:
-  name: swfs-volume-data
-  annotations:
-    "k8up.io/backup": "true"
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 10Gi
----
-kind: PersistentVolumeClaim
-apiVersion: v1
-metadata:
-  name: swfs-master-data
-  annotations:
-    "k8up.io/backup": "true"
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 10Gi
----
-kind: PersistentVolumeClaim
-apiVersion: v1
-metadata:
-  name: swfs-filer-data
-  annotations:
-    "k8up.io/backup": "true"
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 10Gi
-EOF
-```
+    ```bash
+    /bin/cat << EOF > pvc.yaml
+    ---
+    kind: PersistentVolumeClaim
+    apiVersion: v1
+    metadata:
+      name: swfs-volume-data
+      annotations:
+        "k8up.io/backup": "true"
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 10Gi
+    ---
+    kind: PersistentVolumeClaim
+    apiVersion: v1
+    metadata:
+      name: swfs-master-data
+      annotations:
+        "k8up.io/backup": "true"
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 10Gi
+    ---
+    kind: PersistentVolumeClaim
+    apiVersion: v1
+    metadata:
+      name: swfs-filer-data
+      annotations:
+        "k8up.io/backup": "true"
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 10Gi
+    EOF
+    ```
   
-  - Create the PVC
+  - Create the PVCs
 
     ```bash
     kubectl apply -f pvc.yaml
     ```
-3. Setup your restic redentials
 
-```bash
-# the password used in your restic-repo secret
-export RESTIC_PASSWORD=""
+3. Setup your restic credentials
 
-# Your backblaze credentials
-export AWS_ACCESS_KEY_ID=""
-export AWS_SECRET_ACCESS_KEY=""
-RESTIC_REPOSITORY="s3://<backblaze bucket url>/<backups bucket>
-```
+    ```bash
+    # the password used in your restic-repo secret
+    export RESTIC_PASSWORD=""
+    
+    # Your S3 credentials
+    export AWS_ACCESS_KEY_ID=""
+    export AWS_SECRET_ACCESS_KEY=""
+    RESTIC_REPOSITORY="s3://<backblaze bucket url>/<backups bucket>
+    ```
 
 4. Find your desired snapshot to restore
 
-```bash
-restic snapshots
-repository fffd1d0e opened (version 2, compression level auto)
-created new cache in /home/friend/.cache/restic
-ID        Time                 Host        Tags        Paths
---------------------------------------------------------------------------------------------
-656b5abe  2023-11-20 10:57:11  default                 /data/cnpg15-1
-98718e38  2023-11-20 10:57:16  default                 /data/data-default-seaweedfs-master-0
-8c2f8d99  2023-11-20 10:57:20  default                 /data/data-filer-seaweedfs-filer-0
-be86c2e5  2023-11-20 10:57:26  default                 /data/data-seaweedfs-volume-0
---------------------------------------------------------------------------------------------
-4 snapshots
-```
+    ```bash
+    restic snapshots
+    repository fffd1d0e opened (version 2, compression level auto)
+    created new cache in /home/friend/.cache/restic
+    ID        Time                 Host        Tags        Paths
+    --------------------------------------------------------------------------------------------
+    656b5abe  2023-11-20 10:57:11  default                 /data/cnpg15-1
+    98718e38  2023-11-20 10:57:16  default                 /data/data-default-seaweedfs-master-0
+    8c2f8d99  2023-11-20 10:57:20  default                 /data/data-filer-seaweedfs-filer-0
+    be86c2e5  2023-11-20 10:57:26  default                 /data/data-seaweedfs-volume-0
+    --------------------------------------------------------------------------------------------
+    4 snapshots
+    ```
 
 4. Use the K8up CLI or a declarative setup to restore data to the PVC. You will need to do this for each PVC that needs to be restored 
     
-  - Example manifest for a S3-to-PVC restore job 
+  - Example manifest for a S3-to-PVC restore job which uses the restic snapshots shown above. 
 
-```bash
-/bin/cat << EOF > s3-to-pvc.yaml
----
-apiVersion: k8up.io/v1
-kind: Restore
-metadata:
-  name: restore-volume-data
-spec:
-  restoreMethod:
-    folder:
-      claimName: swfs-volume-data
-  snapshot: "be86c2e5"
-  backend:
-    repoPasswordSecretRef:
-      name: restic-repo
-      key: password
-    s3:
-      endpoint: "s3.us-west-004.backblazeb2.com"
-      bucket: buildstars-minio-backup
-      accessKeyIDSecretRef:
-        name: backblaze-credentials
-        key: ACCESS_KEY_ID
-      secretAccessKeySecretRef:
-        name: backblaze-credentials
-        key: ACCESS_SECRET_KEY
----
-apiVersion: k8up.io/v1
-kind: Restore
-metadata:
-  name: restore-master-data
-spec:
-  restoreMethod:
-    folder:
-      claimName: swfs-master-data
-  snapshot: "98718e38"
-  backend:
-    repoPasswordSecretRef:
-      name: restic-repo
-      key: password
-    s3:
-      endpoint: "s3.us-west-004.backblazeb2.com"
-      bucket: buildstars-minio-backup
-      accessKeyIDSecretRef:
-        name: backblaze-credentials
-        key: ACCESS_KEY_ID
-      secretAccessKeySecretRef:
-        name: backblaze-credentials
-        key: ACCESS_SECRET_KEY
----
-apiVersion: k8up.io/v1
-kind: Restore
-metadata:
-  name: restore-filer-data
-spec:
-  restoreMethod:
-    folder:
-      claimName: swfs-filer-data
-  snapshot: "8c2f8d99"
-  backend:
-    repoPasswordSecretRef:
-      name: restic-repo
-      key: password
-    s3:
-      endpoint: "s3.us-west-004.backblazeb2.com"
-      bucket: buildstars-minio-backup
-      accessKeyIDSecretRef:
-        name: backblaze-credentials
-        key: ACCESS_KEY_ID
-      secretAccessKeySecretRef:
-        name: backblaze-credentials
-        key: ACCESS_SECRET_KEY
-EOF
-```
+    ```bash
+    /bin/cat << EOF > s3-to-pvc.yaml
+    ---
+    apiVersion: k8up.io/v1
+    kind: Restore
+    metadata:
+      name: restore-volume-data
+    spec:
+      restoreMethod:
+        folder:
+          claimName: swfs-volume-data
+      snapshot: "be86c2e5"
+      backend:
+        repoPasswordSecretRef:
+          name: restic-repo
+          key: password
+        s3:
+          endpoint: "<your-s3-url>"
+          bucket: "<your-s3-bucket>"
+          accessKeyIDSecretRef:
+            name: backblaze-credentials
+            key: ACCESS_KEY_ID
+          secretAccessKeySecretRef:
+            name: backblaze-credentials
+            key: ACCESS_SECRET_KEY
+    ---
+    apiVersion: k8up.io/v1
+    kind: Restore
+    metadata:
+      name: restore-master-data
+    spec:
+      restoreMethod:
+        folder:
+          claimName: swfs-master-data
+      snapshot: "98718e38"
+      backend:
+        repoPasswordSecretRef:
+          name: restic-repo
+          key: password
+        s3:
+          endpoint: "<your-s3-url>"
+          bucket: "<your-s3-bucket>"
+          accessKeyIDSecretRef:
+            name: backblaze-credentials
+            key: ACCESS_KEY_ID
+          secretAccessKeySecretRef:
+            name: backblaze-credentials
+            key: ACCESS_SECRET_KEY
+    ---
+    apiVersion: k8up.io/v1
+    kind: Restore
+    metadata:
+      name: restore-filer-data
+    spec:
+      restoreMethod:
+        folder:
+          claimName: swfs-filer-data
+      snapshot: "8c2f8d99"
+      backend:
+        repoPasswordSecretRef:
+          name: restic-repo
+          key: password
+        s3:
+          endpoint: "<your-s3-url>"
+          bucket: "<your-s3-bucket>"
+          accessKeyIDSecretRef:
+            name: backblaze-credentials
+            key: ACCESS_KEY_ID
+          secretAccessKeySecretRef:
+            name: backblaze-credentials
+            key: ACCESS_SECRET_KEY
+    EOF
+    ```
 
   - Apply manifest
     ```bash
@@ -712,34 +716,34 @@ EOF
     
 5. Re-deploy Seaweedfs from the existing PVCs
 
-```yaml
-cd seaweedfs/k8s/charts/seaweedfs/
-
-/bin/cat << EOF > restore-values.yaml
-master:
-  data:
-    type: "existingClaim"
-    claimName: "swfs-master-data"
-volume:
-  data:
-    type: "existingClaim"
-    claimName: "swfs-volume-data"
-filer:
-  enablePVC: true
-  data:
-    type: "existingClaim"
-    claimName: "swfs-filer-data"
-  s3:
-    enabled: true
-    port: 8333
-    httpsPort: 0
-    allowEmptyFolder: false
-    domainName: ""
-    enableAuth: false
-    skipAuthSecretCreation: false
-    auditLogConfig: {}
-EOF
-```
+    ```yaml
+    cd seaweedfs/k8s/charts/seaweedfs/
+    
+    /bin/cat << EOF > restore-values.yaml
+    master:
+      data:
+        type: "existingClaim"
+        claimName: "swfs-master-data"
+    volume:
+      data:
+        type: "existingClaim"
+        claimName: "swfs-volume-data"
+    filer:
+      enablePVC: true
+      data:
+        type: "existingClaim"
+        claimName: "swfs-filer-data"
+      s3:
+        enabled: true
+        port: 8333
+        httpsPort: 0
+        allowEmptyFolder: false
+        domainName: ""
+        enableAuth: false
+        skipAuthSecretCreation: false
+        auditLogConfig: {}
+    EOF
+    ```
 
 - Deploy via Helm
 
@@ -748,11 +752,11 @@ EOF
    kubectl apply -f manifests.yaml
    ```
 
-<h2 id="restore-cnpg-from-minio-backups">Restore CNPG from Minio Backups</h2>
+<h2 id="restore-cnpg-from-seaweedfs-backups">Restore CNPG from SeaweedFS Backups</h2>
 
-1. Create a values file that targets your Minio instance for backups
+1. Create a values file that targets your SeaweedFS instance for backups
 
-   > Backups are disabled during the recovery process and will be re-enabled in the next step.
+   > Backups are disabled during the recovery process as ongoing backups are not required for this demo.
 
     ```bash
     /bin/cat << EOF > pg-restore-values.yaml
