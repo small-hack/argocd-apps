@@ -1,6 +1,6 @@
 # Argo CD Applications for deploying SeaweedFS
 
-We are currently experimenting with SeaweedFS on Kubernetes.
+We are currently experimenting with [SeaweedFS](https://github.com/seaweedfs/seaweedfs) on Kubernetes.
 
 ## Sync Waves
 
