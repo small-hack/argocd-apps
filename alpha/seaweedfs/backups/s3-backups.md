@@ -508,8 +508,8 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
       mc alias set seaweedfs http://$NODE_IP:30000 $admin_access_key_id $admin_secret_access_key
       ```
     
-- View for your data:
+    - View for your data:
 
-    ```bash
-    mc ls seaweedfs
-    ```
+      ```bash
+      mc ls seaweedfs
+      ```
