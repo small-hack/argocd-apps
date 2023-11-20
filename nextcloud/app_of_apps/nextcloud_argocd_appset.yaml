@@ -35,12 +35,9 @@ spec:
           prune: false
           selfHeal: false
       source:
-        repoURL: https://github.com/wrenix/nextcloud-helm
-        path: charts/nextcloud/
-        targetRevision: patch-1
-        # repoURL: 'https://nextcloud.github.io/helm'
-        # targetRevision: 4.3.6
-        # chart: nextcloud
+        repoURL: 'https://nextcloud.github.io/helm'
+        targetRevision: 4.5.2
+        chart: nextcloud
         helm:
           values: |
             image:
