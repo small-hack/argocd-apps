@@ -240,7 +240,7 @@ EOF
       retentionPolicy: "30d"
       barmanObjectStore:
         destinationPath: "s3://postgres15-backups"
-        endpointURL: "http://$NODE_IP:30000"
+        endpointURL: "http://seaweedfs-s3.default.svc.cluster.local:8333"
         s3Credentials:
           accessKeyId:
             name: "seaweedfs-s3-secret"
@@ -784,7 +784,7 @@ EOF
     #   retentionPolicy: "30d"
     #   barmanObjectStore:
     #     destinationPath: "s3://postgres15-backups"
-    #     endpointURL: "http://85.10.207.26:32000"
+    #     endpointURL: "http://seaweedfs-s3.default.svc.cluster.local:8333"
     #     s3Credentials:
     #       accessKeyId:
     #         name: "minio-credentials"
@@ -924,7 +924,7 @@ externalClusters:
   - name: cnpg
     barmanObjectStore:
       destinationPath: "s3://postgres15-backups/"
-      endpointURL: "http://85.10.207.26:32000"
+      endpointURL: "http://seaweedfs-s3.default.svc.cluster.local:8333"
       s3Credentials:
         accessKeyId:
           name: "minio-credentials"
