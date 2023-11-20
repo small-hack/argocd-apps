@@ -565,8 +565,8 @@ spec:
                 # Suffix of the host name, {bucket}.{domainName}
                 domainName: "{{ .seaweedfs_s3_endpoint }}"
                 # enable user & permission to s3 (need to inject to all services)
-                enableAuth: false
-                skipAuthSecretCreation: false
+                enableAuth: true
+                skipAuthSecretCreation: true
                 auditLogConfig: {}
 
             s3:

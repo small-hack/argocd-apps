@@ -1,0 +1,7 @@
+# Use external secrets if set to bitwarden
+provider: ""
+
+s3CredentialsBitwardenID: ""
+adminCredentialsBitwardenID: ""
+
+# pgsqlCredentialsBitwardenID: ""
