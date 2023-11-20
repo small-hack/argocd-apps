@@ -20,7 +20,7 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
 - Kubectl
 - Helm
 - Restic
-- S3 CLI tool of your choice, I'll be using awscli in this guide.
+- S3 CLI tool of your choice, I'll be using `mc`
 
 <h2 id="k3s-cluster-creation">K3s Cluster creation</h2>
 
@@ -214,81 +214,81 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
  
  2. Create a secret containing a random password for restic
 
-  - Generate a password and base64 encode it.
+    - Generate a password and base64 encode it.
     
-    ```bash
-    export RESTIC_PASS=$(openssl rand -base64 32)
-    ```
+      ```bash
+      export RESTIC_PASS=$(openssl rand -base64 32)
+      ```
     
-  - Create a secret manifest
+    - Create a secret manifest
 
-    ```bash
-    /bin/cat << EOF > restic.yaml
-    apiVersion: v1
-    kind: Secret
-    metadata:
-      name: restic-repo
-    type: Opaque
-    data:
-      "password": "$RESTIC_PASS"
-    EOF
-    ```
-    
-  - Create the secret
+      ```bash
+      /bin/cat << EOF > restic.yaml
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: restic-repo
+      type: Opaque
+      data:
+        "password": "$RESTIC_PASS"
+      EOF
+      ```
+      
+    - Create the secret
 
-    ```bash
-    kubectl apply -f restic.yaml
-    ```
+      ```bash
+      kubectl apply -f restic.yaml
+      ```
 
 3. Create a scheduled backups
 
-  - Export your S3 address:
+    - Export your S3 address:
 
-    ```bash
-    export BACKUP_S3_URL=""
-    export BACKUP_S3_BUCKET="s3://"
-    ``` 
+      ```bash
+      export BACKUP_S3_URL=""
+      export BACKUP_S3_BUCKET="s3://"
+      ``` 
 
-  - Create a manifest for the backup 
+    - Create a manifest for the backup 
 
-    ```bash
-    /bin/cat << EOF > backup.yaml
-    apiVersion: k8up.io/v1
-    kind: Schedule
-    metadata:
-      name: schedule-backups
-    spec:
-      backend:
-        repoPasswordSecretRef:
-          name: restic-repo
-          key: password
-        s3:
-          endpoint: "$BACKUP_S3_URL"
-          bucket: "$BACKUP_S3_BUCKET"
-          accessKeyIDSecretRef:
-            name: backblaze-credentials
-            key: ACCESS_KEY_ID
-          secretAccessKeySecretRef:
-            name: backblaze-credentials
-            key: ACCESS_SECRET_KEY
-      backup:
-        schedule: '*/5 * * * *'
-        keepJobs: 4
-      check:
-        schedule: '0 1 * * 1'
-      prune:
-        schedule: '0 1 * * 0'
-        retention:
-          keepLast: 5
-          keepDaily: 14
-    EOF
-    ```
+      ```bash
+      /bin/cat << EOF > backup.yaml
+      apiVersion: k8up.io/v1
+      kind: Schedule
+      metadata:
+        name: schedule-backups
+      spec:
+        backend:
+          repoPasswordSecretRef:
+            name: restic-repo
+            key: password
+          s3:
+            endpoint: "$BACKUP_S3_URL"
+            bucket: "$BACKUP_S3_BUCKET"
+            accessKeyIDSecretRef:
+              name: backblaze-credentials
+              key: ACCESS_KEY_ID
+            secretAccessKeySecretRef:
+              name: backblaze-credentials
+              key: ACCESS_SECRET_KEY
+        backup:
+          schedule: '*/5 * * * *'
+          keepJobs: 4
+        check:
+          schedule: '0 1 * * 1'
+        prune:
+          schedule: '0 1 * * 0'
+          retention:
+            keepLast: 5
+            keepDaily: 14
+      EOF
+      ```
 
-  - Create the backup
+    - Create the backup
 
-    ```bash
-    kubectl apply -f backup.yaml
-    ```
+      ```bash
+      kubectl apply -f backup.yaml
+      ```
 
 <h2 id="restore-seaweedfs-from-b2-backups">Restore SeaweedFS from B2 backups</h2>
 
@@ -302,57 +302,57 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
 
 2. Create PVCs to hold our restored data
 
-  - Create a manifest for the PVCs
+    - Create a manifest for the PVCs
 
-    ```bash
-    /bin/cat << EOF > pvc.yaml
-    ---
-    kind: PersistentVolumeClaim
-    apiVersion: v1
-    metadata:
-      name: swfs-volume-data
-      annotations:
-        "k8up.io/backup": "true"
-    spec:
-      accessModes:
-        - ReadWriteOnce
-      resources:
-        requests:
-          storage: 10Gi
-    ---
-    kind: PersistentVolumeClaim
-    apiVersion: v1
-    metadata:
-      name: swfs-master-data
-      annotations:
-        "k8up.io/backup": "true"
-    spec:
-      accessModes:
-        - ReadWriteOnce
-      resources:
-        requests:
-          storage: 10Gi
-    ---
-    kind: PersistentVolumeClaim
-    apiVersion: v1
-    metadata:
-      name: swfs-filer-data
-      annotations:
-        "k8up.io/backup": "true"
-    spec:
-      accessModes:
-        - ReadWriteOnce
-      resources:
-        requests:
-          storage: 10Gi
-    EOF
-    ```
-  
-  - Create the PVCs
+      ```bash
+      /bin/cat << EOF > pvc.yaml
+      ---
+      kind: PersistentVolumeClaim
+      apiVersion: v1
+      metadata:
+        name: swfs-volume-data
+        annotations:
+          "k8up.io/backup": "true"
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 10Gi
+      ---
+      kind: PersistentVolumeClaim
+      apiVersion: v1
+      metadata:
+        name: swfs-master-data
+        annotations:
+          "k8up.io/backup": "true"
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 10Gi
+      ---
+      kind: PersistentVolumeClaim
+      apiVersion: v1
+      metadata:
+        name: swfs-filer-data
+        annotations:
+          "k8up.io/backup": "true"
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 10Gi
+      EOF
+      ```
+    
+    - Create the PVCs
 
-    ```bash
-    kubectl apply -f pvc.yaml
-    ```
+      ```bash
+      kubectl apply -f pvc.yaml
+      ```
 
 3. Setup your restic credentials
 
@@ -383,90 +383,90 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
 
 4. Use the K8up CLI or a declarative setup to restore data to the PVC. You will need to do this for each PVC that needs to be restored 
     
-  - Example manifest for a S3-to-PVC restore job which uses the restic snapshots shown above. 
+    - Example manifest for a S3-to-PVC restore job which uses the restic snapshots shown above. 
 
-    ```bash
-    /bin/cat << EOF > s3-to-pvc.yaml
-    ---
-    apiVersion: k8up.io/v1
-    kind: Restore
-    metadata:
-      name: restore-volume-data
-    spec:
-      restoreMethod:
-        folder:
-          claimName: swfs-volume-data
-      snapshot: "99160498"
-      backend:
-        repoPasswordSecretRef:
-          name: restic-repo
-          key: password
-        s3:
-          endpoint: "$BACKUP_S3_URL"
-          bucket: "$BACKUP_S3_BUCKET"
-          accessKeyIDSecretRef:
-            name: backblaze-credentials
-            key: ACCESS_KEY_ID
-          secretAccessKeySecretRef:
-            name: backblaze-credentials
-            key: ACCESS_SECRET_KEY
-    ---
-    apiVersion: k8up.io/v1
-    kind: Restore
-    metadata:
-      name: restore-master-data
-    spec:
-      restoreMethod:
-        folder:
-          claimName: swfs-master-data
-      snapshot: "4a25424a"
-      backend:
-        repoPasswordSecretRef:
-          name: restic-repo
-          key: password
-        s3:
-          endpoint: "$BACKUP_S3_URL"
-          bucket: "$BACKUP_S3_BUCKET"
-          accessKeyIDSecretRef:
-            name: backblaze-credentials
-            key: ACCESS_KEY_ID
-          secretAccessKeySecretRef:
-            name: backblaze-credentials
-            key: ACCESS_SECRET_KEY
-    ---
-    apiVersion: k8up.io/v1
-    kind: Restore
-    metadata:
-      name: restore-filer-data
-    spec:
-      restoreMethod:
-        folder:
-          claimName: swfs-filer-data
-      snapshot: "649b25c7"
-      backend:
-        repoPasswordSecretRef:
-          name: restic-repo
-          key: password
-        s3:
-          endpoint: "$BACKUP_S3_URL"
-          bucket: "$BACKUP_S3_BUCKET"
-          accessKeyIDSecretRef:
-            name: backblaze-credentials
-            key: ACCESS_KEY_ID
-          secretAccessKeySecretRef:
-            name: backblaze-credentials
-            key: ACCESS_SECRET_KEY
-    EOF
-    ```
+      ```bash
+      /bin/cat << EOF > s3-to-pvc.yaml
+      ---
+      apiVersion: k8up.io/v1
+      kind: Restore
+      metadata:
+        name: restore-volume-data
+      spec:
+        restoreMethod:
+          folder:
+            claimName: swfs-volume-data
+        snapshot: "99160498"
+        backend:
+          repoPasswordSecretRef:
+            name: restic-repo
+            key: password
+          s3:
+            endpoint: "$BACKUP_S3_URL"
+            bucket: "$BACKUP_S3_BUCKET"
+            accessKeyIDSecretRef:
+              name: backblaze-credentials
+              key: ACCESS_KEY_ID
+            secretAccessKeySecretRef:
+              name: backblaze-credentials
+              key: ACCESS_SECRET_KEY
+      ---
+      apiVersion: k8up.io/v1
+      kind: Restore
+      metadata:
+        name: restore-master-data
+      spec:
+        restoreMethod:
+          folder:
+            claimName: swfs-master-data
+        snapshot: "4a25424a"
+        backend:
+          repoPasswordSecretRef:
+            name: restic-repo
+            key: password
+          s3:
+            endpoint: "$BACKUP_S3_URL"
+            bucket: "$BACKUP_S3_BUCKET"
+            accessKeyIDSecretRef:
+              name: backblaze-credentials
+              key: ACCESS_KEY_ID
+            secretAccessKeySecretRef:
+              name: backblaze-credentials
+              key: ACCESS_SECRET_KEY
+      ---
+      apiVersion: k8up.io/v1
+      kind: Restore
+      metadata:
+        name: restore-filer-data
+      spec:
+        restoreMethod:
+          folder:
+            claimName: swfs-filer-data
+        snapshot: "649b25c7"
+        backend:
+          repoPasswordSecretRef:
+            name: restic-repo
+            key: password
+          s3:
+            endpoint: "$BACKUP_S3_URL"
+            bucket: "$BACKUP_S3_BUCKET"
+            accessKeyIDSecretRef:
+              name: backblaze-credentials
+              key: ACCESS_KEY_ID
+            secretAccessKeySecretRef:
+              name: backblaze-credentials
+              key: ACCESS_SECRET_KEY
+      EOF
+      ```
 
-  - Apply manifest
-    ```bash
-    kubectl apply -f s3-to-pvc.yaml
-    ```
+    - Apply manifest
+      ```bash
+      kubectl apply -f s3-to-pvc.yaml
+      ```
     
 5. Re-deploy Seaweedfs from the existing PVCs
 
-    ```yaml
+    ```bash
     /bin/cat << EOF > restore-values.yaml
     master:
       data:
@@ -493,23 +493,23 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
     EOF
     ```
 
-- Deploy via Helm
-
-   ```bash
-   helm template . -f restore-values.yaml > manifests.yaml
-   kubectl apply -f manifests.yaml
-   ```
+    - Deploy via Helm
+  
+      ```bash
+      helm template . -f restore-values.yaml > manifests.yaml
+      kubectl apply -f manifests.yaml
+      ```
 
 6. Update your alias for your server:
    
     - get the `admin_access_key_id` and `admin_secret_access_key` from the secret `seaweedfs-s3-secret`
 
-    ```bash
-    mc alias set seaweedfs http://$NODE_IP:30000 $admin_access_key_id $admin_secret_access_key
-    ```
+      ```bash
+      mc alias set seaweedfs http://$NODE_IP:30000 $admin_access_key_id $admin_secret_access_key
+      ```
     
 - View for your data:
 
-  ```bash
-  mc ls seaweedfs
-  ```
+    ```bash
+    mc ls seaweedfs
+    ```
