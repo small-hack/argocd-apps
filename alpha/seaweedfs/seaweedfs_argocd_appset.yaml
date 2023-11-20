@@ -393,7 +393,7 @@ spec:
               # split files larger than the limit, default 32
               maxMB: null
               # encrypt data on volume servers
-              encryptVolumeData: false
+              encryptVolumeData: true
 
               # Whether proxy or redirect to volume server during file GET request
               redirectOnRead: false
