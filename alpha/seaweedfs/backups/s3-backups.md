@@ -2,7 +2,7 @@
 
 This guide will walk you through the creation, backup, and recovery processes for a local [SeaweedFS](https://github.com/seaweedfs/seaweedfs) deployment using [K8up](https://k8up.io/) and [Backblaze B2](https://www.backblaze.com/docs/cloud-storage).
 
-K8up is a Kubernetes-native wrapper for [Restic](https://restic.readthedocs.io/en/stable/) therefore users of Restic and other Restic-based tooling like [Velero](https://velero.io/) should also find the techniques described here useful. Users of other S3 hosted services such as [Wasabi S3](https://wasabi.com/), [CLoudflare R2](https://www.cloudflare.com/developer-platform/r2/) etc... should also be able to follow along.
+K8up is a Kubernetes-native wrapper for [Restic](https://restic.readthedocs.io/en/stable/) therefore users of Restic and other Restic-based tooling like [Velero](https://velero.io/) should also find the techniques described here useful. Users of other S3 hosted services such as [Wasabi S3](https://wasabi.com/), [Cloudflare R2](https://www.cloudflare.com/developer-platform/r2/) etc... should also be able to follow along.
 
 > For the purposes of this demo, backups are set to run very frequently and plain-text passwords are also used for convenience - do NOT do that in production.
 
@@ -17,10 +17,10 @@ K8up is a Kubernetes-native wrapper for [Restic](https://restic.readthedocs.io/e
 
 ## Requirements
 
-- Kubectl
-- Helm
-- Restic
-- S3 CLI tool of your choice, I'll be using `mc`
+- [Kubectl](https://kubernetes.io/docs/tasks/tools/)
+- [Helm](https://helm.sh/docs/intro/install/)
+- [Restic](https://restic.readthedocs.io/en/latest/020_installation.html)
+- S3 CLI tool of your choice, I'll be using the [mc](https://min.io/docs/minio/linux/reference/minio-mc.html) utility from Minio.
 
 <h2 id="k3s-cluster-creation">K3s Cluster creation</h2>
 
