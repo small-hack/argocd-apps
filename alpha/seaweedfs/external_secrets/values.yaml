@@ -1,4 +1,5 @@
-# Use external secrets if set to bitwarden
+# Use external secrets if set to bitwarden, else don't deploy external secrets
+# other providers may be supported in the future
 provider: ""
 
 s3CredentialsBitwardenID: ""
