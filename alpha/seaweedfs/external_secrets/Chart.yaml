@@ -1,6 +1,6 @@
 apiVersion: v2
-name: mastodon-eso-bitwarden-chart
-description: A Helm chart for mastodon External Secrets using the Bitwarden ESO provider on Kubernetes 
+name: seaweedfs-eso-chart
+description: A Helm chart for seaweedfs External Secrets using the Bitwarden ESO provider on Kubernetes 
 
 # A chart can be either an 'application' or a 'library' chart.
 #
