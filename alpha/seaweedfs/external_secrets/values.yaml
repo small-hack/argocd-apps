@@ -3,6 +3,5 @@
 provider: ""
 
 s3CredentialsBitwardenID: ""
-adminCredentialsBitwardenID: ""
-
-# pgsqlCredentialsBitwardenID: ""
+# adminCredentialsBitwardenID: ""
+pgsqlCredentialsBitwardenID: ""
