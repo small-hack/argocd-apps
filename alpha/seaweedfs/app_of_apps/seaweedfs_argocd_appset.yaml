@@ -6,7 +6,7 @@ metadata:
   name: seaweedfs-web-app-set
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "2"
+    argocd.argoproj.io/sync-wave: "3"
 spec:
   goTemplate: true
   # generator allows us to source specific values from an external k8s secret
@@ -25,7 +25,7 @@ spec:
     metadata:
       name: seaweedfs-web-app
       annotations:
-        argocd.argoproj.io/sync-wave: "2"
+        argocd.argoproj.io/sync-wave: "3"
     spec:
       project: seaweedfs
       destination:
@@ -40,19 +40,13 @@ spec:
           selfHeal: true
       source:
         # only for testing our own patches before PRs
-        repoURL: https://github.com/jessebot/seaweedfs
-        targetRevision: allow-existing-s3-secret
-        path: k8s/charts/seaweedfs/
+        # repoURL: https://github.com/jessebot/seaweedfs
+        # targetRevision: main
+        # path: k8s/charts/seaweedfs/
 
-        # only for testing before releases
-        #repoURL: https://github.com/seaweedfs/seaweedfs
-        #targetRevision: master
-        #path: k8s/charts/seaweedfs/
-
-        # can be uncommented when helm chart is released again
-        # repoURL: 'https://seaweedfs.github.io/seaweedfs/helm'
-        # targetRevision: 3.59.1
-        # chart: seaweedfs
+        repoURL: 'https://seaweedfs.github.io/seaweedfs/helm'
+        targetRevision: 3.59.2
+        chart: seaweedfs
         helm:
           releaseName: seaweedfs
           values: |
@@ -261,11 +255,6 @@ spec:
               # minimum free disk space(in percents). If free disk space lower this value - all volumes marks as ReadOnly
               minFreeSpacePercent: 7
 
-            # can use ANY storage-class , example with local-path-provisioner
-            #  data:
-            #    type: "persistentVolumeClaim"
-            #    size: "24Ti"
-            #    storageClass: "local-path-provisioner"
               data:
                 type: "existingClaim"
                 claimName: "swfs-volume-data"
@@ -279,6 +268,7 @@ spec:
 
               # Directories to store data files. dir[,dir]... (default "/tmp")
               dir: "/data"
+
               # Directories to store index files. dir[,dir]... (default is the same as "dir")
               dir_idx: null
 
@@ -414,11 +404,6 @@ spec:
               # storageClass is the class of storage which defaults to null (the Kube cluster will pick the default).
               storageClass: local-path
 
-              # can use ANY storage-class , example with local-path-provisioner
-              #  data:
-              #    type: "existingClaim"
-              #    size: "24Ti"
-              #    storageClass: "local-path-provisioner"
               data:
                 type: "existingClaim"
                 claimName: "swfs-filer-data"
@@ -501,20 +486,14 @@ spec:
               # extraEnvVars is a list of extra enviroment variables to set with the stateful set.
               extraEnvironmentVars:
                 WEED_MYSQL_ENABLED: "false"
-                WEED_MYSQL_HOSTNAME: "mysql-db-host"
-                WEED_MYSQL_PORT: "3306"
-                WEED_MYSQL_DATABASE: "sw_database"
-                WEED_MYSQL_CONNECTION_MAX_IDLE: "5"
-                WEED_MYSQL_CONNECTION_MAX_OPEN: "75"
-                # "refresh" connection every 10 minutes, eliminating mysql closing "old" connections
-                WEED_MYSQL_CONNECTION_MAX_LIFETIME_SECONDS: "600"
-                # enable usage of memsql as filer backend
-                WEED_MYSQL_INTERPOLATEPARAMS: "true"
+
                 # if you want to use leveldb2, then should enable "enablePVC". or you may lose your data.
                 WEED_LEVELDB2_ENABLED: "true"
+
                 # with http DELETE, by default the filer would check whether a folder is empty.
                 # recursive_delete will delete all sub folders and files, similar to "rm -Rf"
                 WEED_FILER_OPTIONS_RECURSIVE_DELETE: "false"
+
                 # directories under this folder will be automatically creating a separate bucket
                 WEED_FILER_BUCKETS_FOLDER: "/buckets"
 
@@ -555,14 +534,13 @@ spec:
                 #     name: postgres-credentials
                 #     key: password
 
+              # this enables the filer and s3 which are both required to be deployed together
               s3:
                 enabled: true
                 port: 8333
                 # add additional https port
                 httpsPort: 0
-                # allow empty folders
                 allowEmptyFolder: false
-                # Suffix of the host name, {bucket}.{domainName}
                 domainName: "{{ .seaweedfs_s3_endpoint }}"
                 # enable user & permission to s3 (need to inject to all services)
                 enableAuth: true
@@ -572,48 +550,3 @@ spec:
 
             s3:
               enabled: false
-              replicas: 1
-              bindAddress: 0.0.0.0
-              port: 8333
-              # add additional https port
-              httpsPort: 0
-              metricsPort: 9327
-              # allow empty folders
-              allowEmptyFolder: true
-              # enable user & permission to s3 (need to inject to all services)
-              enableAuth: false
-              skipAuthSecretCreation: false
-              auditLogConfig: {}
-
-              # Suffix of the host name, {bucket}.{domainName}
-              domainName: "{{ .seaweedfs_s3_endpoint }}"
-
-              ingress:
-                enabled: true
-                className: "nginx"
-                host: "{{ .seaweedfs_s3_endpoint }}"
-                annotations:
-                  cert-manager.io/cluster-issuer: {{ .global_cluster_issuer }}
-                  nginx.ingress.kubernetes.io/proxy-body-size: 1G
-                tls:
-                  - secretName: seaweedfs-tls
-                    hosts:
-                      - {{ .seaweedfs_s3_endpoint }}
-                  
-            certificates:
-              commonName: "SeaweedFS CA"
-              ipAddresses: []
-              keyAlgorithm: rsa
-              keySize: 2048
-              duration: 2160h  # 90d
-              renewBefore: 360h  # 15d
-              externalCertificates:
-                # This will avoid the need to use cert-manager and will rely on providing your own external certificates and CA
-                # you will need to store your provided certificates in the secret read by the different services:
-                # seaweedfs-master-cert, seaweedfs-filer-cert, etc. Can see any statefulset definition to see secret names
-                enabled: false
-
-            # Labels to be added to all the created pods
-            podLabels: {}
-            # Annotations to be added to all the created pods
-            podAnnotations: {}
