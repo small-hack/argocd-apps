@@ -1,6 +1,6 @@
-## if this is not set to "true", we will not actually deploy any templates
-## MUST be a string, NOT a boolean
-useExternalSecrets: ""
+## if this is not set to "bitwarden", we will not actually deploy any templates
+# we may support other secret providers in the future
+provider: ""
 
 adminCredentialsBitwardenID: ""
 serverInfoBitwardenID: ""
