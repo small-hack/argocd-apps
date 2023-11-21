@@ -40,14 +40,14 @@ spec:
           selfHeal: true
       source:
         # only for testing our own patches before PRs
-        # repoURL: https://github.com/jessebot/seaweedfs
-        # targetRevision: master
-        # path: k8s/charts/seaweedfs/
+        repoURL: https://github.com/jessebot/seaweedfs
+        targetRevision: allow-existing-s3-secret
+        path: k8s/charts/seaweedfs/
 
         # only for testing before releases
-        repoURL: https://github.com/seaweedfs/seaweedfs
-        targetRevision: master
-        path: k8s/charts/seaweedfs/
+        #repoURL: https://github.com/seaweedfs/seaweedfs
+        #targetRevision: master
+        #path: k8s/charts/seaweedfs/
 
         # can be uncommented when helm chart is released again
         # repoURL: 'https://seaweedfs.github.io/seaweedfs/helm'
@@ -566,6 +566,7 @@ spec:
                 domainName: "{{ .seaweedfs_s3_endpoint }}"
                 # enable user & permission to s3 (need to inject to all services)
                 enableAuth: true
+                existingConfigSecret: seaweedfs-s3-secret
                 skipAuthSecretCreation: true
                 auditLogConfig: {}
 
