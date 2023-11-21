@@ -593,6 +593,7 @@ spec:
                 host: "{{ .seaweedfs_s3_endpoint }}"
                 annotations:
                   cert-manager.io/cluster-issuer: {{ .global_cluster_issuer }}
+                  nginx.ingress.kubernetes.io/proxy-body-size: 1G
                 tls:
                   - secretName: seaweedfs-tls
                     hosts:
