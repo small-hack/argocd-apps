@@ -1,5 +1,5 @@
-# User external secrets true/false
-useExternalSecrets: "true"
+# Use external secrets. Set to bitwarden to use this chart. other providers may be supported in the future
+provider: ""
 
 s3CredentialsBitwardenID: ""
 adminCredentialsBitwardenID: ""
