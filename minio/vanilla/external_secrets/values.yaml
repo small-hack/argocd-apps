@@ -1,6 +1,6 @@
 ## if this is not set to "bitwarden", we will not actually deploy any templates
 # we may support other secret stores in the future :)
-useExternalSecrets: ""
+provider: ""
 
 rootCredentialsBitwardenID: ""
 oidcCredentialsBitwardenID: ""
