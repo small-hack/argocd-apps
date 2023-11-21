@@ -1,5 +1,6 @@
-# User external secrets true/false
-useExternalSecrets: "true"
+# to use bitwarden as a provider, set to bitwarden, else we don't deploy templates
+# we may support other providers in the future
+provider: ""
 
 s3CredentialsBitwardenID: ""
 adminCredentialsBitwardenID: ""
