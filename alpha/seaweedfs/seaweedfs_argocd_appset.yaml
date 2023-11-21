@@ -39,15 +39,15 @@ spec:
           prune: true
           selfHeal: true
       source:
-        repoURL: https://github.com/cloudymax/seaweedfs
-        targetRevision: helm-add-existingClaim
-        path: k8s/charts/seaweedfs/
-
-        # only for testing local charts, if there's anything broken
-        # can be uncommented if our tests are merged
-        # repoURL: https://github.com/seaweedfs/seaweedfs
+        # only for testing our own patches before PRs
+        # repoURL: https://github.com/jessebot/seaweedfs
         # targetRevision: master
         # path: k8s/charts/seaweedfs/
+
+        # only for testing before releases
+        repoURL: https://github.com/seaweedfs/seaweedfs
+        targetRevision: master
+        path: k8s/charts/seaweedfs/
 
         # can be uncommented when helm chart is released again
         # repoURL: 'https://seaweedfs.github.io/seaweedfs/helm'
