@@ -1,6 +1,6 @@
 # Shared Argo CD templates for self hosted infra
 
-A collection of <a href="https://argo-cd.readthedocs.io/en/stable/">Argo CD</a> templates for deploying helm apps or directories of <a href="https://kubernetes.io">Kubernetes</a> (k8s) manifests as <a href="https://argo-cd.readthedocs.io/en/stable/core_concepts/">Argo CD apps</a>
+A collection of <a href="https://argo-cd.readthedocs.io/en/stable/">Argo CD</a> templates for deploying helm apps or directories of <a href="https://kubernetes.io">Kubernetes</a> (k8s) manifests as <a href="https://argo-cd.readthedocs.io/en/stable/core_concepts/">Argo CD apps</a>. We're still working on full stability, but please feel free to ask questions or make suggestions :)
 
 https://github.com/small-hack/argocd-apps/assets/2389292/76b0fe06-554e-4e46-856f-51a268ed170e
 
