@@ -20,31 +20,36 @@ Here's some quick guidelines, but you if you'd like to contribute, please read t
 * [Continuous Deployment](#continuous-deployment)
 * [Database](#database)
 * [File Storage and Backups](#file-storage-and-backups)
-    * [🚧 Under construction](#-under-construction)
+  * [🚧 Under construction](#-under-construction)
 * [Identity Providers and SSO](#identity-providers-and-sso)
-    * [🚧 Under construction](#-under-construction-1)
+  * [🚧 Under construction](#-under-construction-1)
 * [Ingress](#ingress)
 * [Monitoring](#monitoring)
 * [Networking](#networking)
-    * [🚧 Under construction](#-under-construction-2)
+  * [🚧 Under construction](#-under-construction-2)
+* [Other](#other)
+  * [🚧 Under construction](#-under-construction-3)
 * [Security](#security)
 * [Secrets Management](#secrets-management)
+  * [🚧 Under construction](#-under-construction-4)
 * [Social Media and chat](#social-media-and-chat)
+  * [🚧 Under construction](#-under-construction-5)
 * [Virtual Machines](#virtual-machines)
-    * [🚧 Under construction](#-under-construction-3)
+  * [🚧 Under construction](#-under-construction-6)
 * [Troubleshooting Tips](#troubleshooting-tips)
+* [Art](#art)
 
 
 ## Continuous Deployment
 
-|               App              | Description                                                                              |
-|:------------------------------:|:-----------------------------------------------------------------------------------------|
+|    App Directory   | Description                                                                                                                                                                                                       |
+|:------------------:|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | [argocd](./argocd) | The one, the only, [Argo CD](https://argoproj.github.io/cd/) is used for declarative continuous delivery to Kubernetes with a fully-loaded UI. This actually deploys all the other apps and manages itself too :3 |
 
 
 ## Database
 
-| App                                      | Description                                                                                                       |
+| App Directory                                      | Description                                                                                                       |
 |:-----------------------------------------|:------------------------------------------------------------------------------------------------------------------|
 | [postgres-operator](./postgres/operator) | PostgreSQL database management tool to spin up additional postgres instances, collect metrics, and create backups |
 | [postgres](./postgres/bitnami)           | Just a bitnami PostgreSQL database helm chart on k8s, in case you need that for something                         |
@@ -52,36 +57,39 @@ Here's some quick guidelines, but you if you'd like to contribute, please read t
 
 ## File Storage and Backups
 
-| App                      | Description                                                                                                                                                        |
-|:-------------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [k8up](./k8up)           | [K8up](https://k8up.io/k8up/2.7/index.html) is a k8s native backups done via restic, so you can sync your persistent volumes to external s3 compliant storage      |
-| [nextcloud](./nextcloud) | [Nextcloud](https://nextcloud.com/) is a self hosted file storage cloud solution. Replaces something like google drive/photos/notes/meets/calendar - mostly stable |
+| App Directory                  | Description                                                                                                                                                           |
+|:-------------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [k8up](./k8up)                 | [K8up](https://k8up.io/k8up/2.7/index.html) is a k8s native backups done via restic, so you can sync your persistent volumes to external s3 compliant storage         |
+| [nextcloud](./nextcloud)       | [Nextcloud](https://nextcloud.com/) is a self hosted file storage cloud solution. Replaces something like google drive/photos/notes/meets/calendar - mostly stable    |
+| [minio](./minio)               | [MinIO](https://min.io) is a secure self hosted S3 compatible Object Store.                                                                                           |
+| [seaweedfs](./alpha/seaweedfs) | [SeaweedFS](https://github.com/seaweedfs/seaweedfs) is a secure and very fast self hosted S3 compatible Object Store specialized for either many files or large files |
 
 
 #### 🚧 Under construction
-|           App          | Description                                                                                                                                  |
-|:----------------------:|:---------------------------------------------------------------------------------------------------------------------------------------------|
-|   [Harbor](./harbor)   | Container Registry and OCI artifact store with built-in vulernability scanning via Trivy                                                     |
-| [Longhorn](./longhorn) | [Longhorn](https://github.com/longhorn/longhorn) is a lightweight, reliable and easy-to-use distributed block storage system for Kubernetes. |
+|       App Directory      | Description                                                                                                                                                                          |
+|:------------------------:|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [garage](./alpha/garage) | [Garage](https://git.deuxfleurs.fr/Deuxfleurs/garage/src/branch/main) is a self hosted S3 compatible Object Store                                                                    |
+|    [Harbor](./harbor)    | Container Registry and OCI artifact store with built-in vulernability scanning via Trivy                                                                                             |
+|  [Longhorn](./longhorn)  | [Longhorn](https://github.com/longhorn/longhorn) is a lightweight, reliable and easy-to-use distributed block storage system for Kubernetes. (not currently actively in development) |
 
 ## Identity Providers and SSO
 
-|                  App                 | Description                                                                                                                                                                                                                                                                                                                                       |
-|:------------------------------------:|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|         App Directory        | Description                                                                                                                                                                                                                                                                                                                                       |
+|:----------------------------:|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | [vouch-proxy](./vouch-proxy) | helm chart for [Vouch](https://github.com/vouch/vouch-proxy), an OAuth2 proxy that allows you to use ingress-nginx annotations to connect to a third party identity provider, giving you proper auth on websites that don't have auth. Currently works with the keycloak provider in this template, but also known to work with google and github |
-|      [zitadel](./zitadel)      | helm chart for [Zitadel](https://zitadel.com/), an Identity Access Management tool with built in OpenIDConnect for authenticating to self hosted apps. Recommended over keycloak.|
+|     [zitadel](./zitadel)     | helm chart for [Zitadel](https://zitadel.com/), an Identity Access Management tool with built in OpenIDConnect for authenticating to self hosted apps. Recommended over keycloak.                                                                                                                                                                 |
 
 
 #### 🚧 Under construction
 
-|               App              | Description                                                                              |
-|:------------------------------:|:-----------------------------------------------------------------------------------------|
-| [keycloak](./alpha/keycloak)   | helm chart for [Keycloak](https://www.keycloak.org/), an Identity Access Management tool with built in OpenIDConnect for authenticating to self hosted apps  |
-| [oauth2-proxy](./oauth2-proxy) | Oauth2 proxy that works with Google, however we're testing a keycloak provider right now |
+|          App Directory         | Description                                                                                                                                                 |
+|:------------------------------:|:------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|  [keycloak](./alpha/keycloak)  | helm chart for [Keycloak](https://www.keycloak.org/), an Identity Access Management tool with built in OpenIDConnect for authenticating to self hosted apps |
+| [oauth2-proxy](./oauth2-proxy) | Oauth2 proxy that works with Google, however we're testing a keycloak provider right now                                                                    |
 
 ## Ingress
 
-|                    App                   | Description                                                                                                                                       |
+|          App Directory                   | Description                                                                                                                                       |
 |:----------------------------------------:|:--------------------------------------------------------------------------------------------------------------------------------------------------|
 |  [cert-manager](./cert-manager)  | helm chart for [cert-manager](https://cert-manager.io), for providing TLS certificates based on nginx ingress annotations                         |
 | [ingress-nginx](./ingress-nginx) | helm chart for [ingress-nginx](https://github.com/kubernetes/ingress-nginx), an nginx ingress controller to allow external traffic to the cluster |
@@ -89,26 +97,33 @@ Here's some quick guidelines, but you if you'd like to contribute, please read t
 
 ## Monitoring
 
-| App                                                             | Description                                                                                                                                                                         |
-|:----------------------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| App Directory                                                           | Description                                                                                                                                                                         |
+|:------------------------------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | [kube-prometheus-stack](./prometheus/prometheus_argocd_appset.yaml)     | [prometheus](https://prometheus.io/docs/introduction/overview/), alertmanager, [grafana](https://grafana.com) for collecting metrics for monitoring/alerting, and dashboards/charts |
-| [loki-stack](./prometheus/loki_argocd_app.yaml)                           | [loki](https://grafana.com/oss/loki/) and [promtail](https://grafana.com/docs/loki/latest/clients/promtail/) for collecting logs in prometheus                                      |
+| [loki-stack](./prometheus/loki_argocd_app.yaml)                         | [loki](https://grafana.com/oss/loki/) and [promtail](https://grafana.com/docs/loki/latest/clients/promtail/) for collecting logs in prometheus                                      |
 | [prometheus-push-gateway](./prometheus/push-gateway_argocd_appset.yaml) | Installs the [Prometheus Push Gateway](https://prometheus.io/docs/instrumenting/pushing/) which enables pushing metrics from jobs that would be difficult or impossible to scrape   |
+
+
+#### 🚧 Under construction
+
+|       App Directory      | Description                                                                                                                                                                                                                                                                                                               |
+|:------------------------:|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [kepler](./alpha/kepler) | helm chart for [Kepler](https://github.com/sustainable-computing-io/kepler), (Kubernetes-based Efficient Power Level Exporter), which uses eBPF to probe performance counters and other system stats, use ML models to estimate workload energy consumption based on these stats, and exports them as Prometheus metrics. |
 
 
 ## Networking
 
-|         App          | Description                                                       |
-|:--------------------:|:------------------------------------------------------------------|
+|     App Directory    | Description                                                                                                                       |
+|:--------------------:|:----------------------------------------------------------------------------------------------------------------------------------|
 | [metallb](./metallb) | A helm chart for [metallb](https://metallb.universe.tf/) which will let you manager your own ip address pool for use with ingress |
 
 #### 🚧 Under construction
 
-|               App               | Description                                                                |
-|:-------------------------------------:|:---------------------------------------------------------------------------|
-| [cilium](./alpha/cilium)              | A helm chart for cilium, for transparently securing network connectivity/loadbalancing b/w app workloads such as app containers or processes |
-| [wireguard](./alpha/wg-access-server) | A helm chart for wg-access-server which uses Wireguard®️ for a VPN          |
-|     [headscale](./alpha/headscale)    | VPN, there isn't an official helm chart, so we're still working on this    |
+|             App Directory             | Description                                                                                                                                  |
+|:-------------------------------------:|:---------------------------------------------------------------------------------------------------------------------------------------------|
+|        [cilium](./alpha/cilium)       | A helm chart for cilium, for transparently securing network connectivity/loadbalancing b/w app workloads such as app containers or processes |
+| [wireguard](./alpha/wg-access-server) | A helm chart for wg-access-server which uses Wireguard®️ for a VPN                                                                            |
+|     [headscale](./alpha/headscale)    | VPN, there isn't an official helm chart, so we're still working on this                                                                      |
 
 
 ## Other
@@ -116,44 +131,55 @@ Other useful tools that don't fit neatly into any one category.
 
 #### 🚧 Under construction
 
-|         App          | Description                                                       |
-|:--------------------:|:------------------------------------------------------------------|
-| [k8tz](./alpha/k8tz) | A helm chart for k8tz, to inject timezone info into cronjob pods  |
+|     App Directory    | Description                                                      |
+|:--------------------:|:-----------------------------------------------------------------|
+| [k8tz](./alpha/k8tz) | A helm chart for k8tz, to inject timezone info into cronjob pods |
 
 
 ## Security
 
-| App                        | Description                         |
+| App Directory              | Description                         |
 |:---------------------------|:------------------------------------|
 | [kyverno](./alpha/kyverno) | Kubernetes-native policy management |
 
 
 ## Secrets Management
 
-| App                                                        | Description                                                                                                                          |
+| App Directory                                              | Description                                                                                                                          |
 |:-----------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------|
 | [external-secrets-operator](./external-secrets-operator)   | ESO ([External Secrets Operator](https://external-secrets.io/latest/)) used for sourcing k8s secrets from an external provider       |
 | [bitwarden-external-secrets](./bitwarden-external-secrets) | ESO [Bitwarden](https://external-secrets.io/v0.9.1/examples/bitwarden/) SecretStore, for using secrets directly from bitwarden items |
-| [infisical](./infisical) | [Infisical](https://infisical.com/docs/integrations/platforms/kubernetes) is an open source secrets management solution and it has a k8s secrets operator. |
 
+#### 🚧 Under construction
+
+| App Directory            | Description                                                                                                                                                |
+|:-------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [infisical](./infisical) | [Infisical](https://infisical.com/docs/integrations/platforms/kubernetes) is an open source secrets management solution and it has a k8s secrets operator. |
+| [vault](./vault)         | [Vault](https://github.com/hashicorp/vault) is an open source secrets management solution by Hashicorp.                                                    |
 
 ## Social Media and chat
 
-| App                    | Description                                                                                                                                          |
-|:-----------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------|
-| [coturn](./coturn)     | TURN/STUN server for connecting VoIP peers                               |   
+| App Directory          | Description                                                                                                                                                                                                                                                                 |
+|:-----------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [coturn](./coturn)     | TURN/STUN server for connecting VoIP peers                                                                                                                                                                                                                                  |
 | [mastodon](./mastodon) | Selfhosted social media site, includes [postgresql](https://github.com/bitnami/charts/tree/main/bitnami/postgresql), [elastic search] (for full text searching), and [redis](https://github.com/bitnami/charts/tree/main/bitnami/redis) (in memory caching) - mostly stable |
-| [matrix](./matrix)     | Selfhosted chat server that plugs into a bunch of other chat apps                                |        
+| [matrix](./matrix)     | Selfhosted chat server that plugs into a bunch of other chat apps                                                                                                                                                                                                           |
+
+#### 🚧 Under construction
+
+| App Directory                  | Description                                                                        |
+|:-------------------------------|:-----------------------------------------------------------------------------------|
+| [iceshrimp](./alpha/iceshrimp) | Selfhosted social media. This is forked from firefish, which is forked from miskey |
 
 
 ## Virtual Machines
 
-| App                    | Description                                                                             |
+| App Directory          | Description                                                                             |
 |:-----------------------|:----------------------------------------------------------------------------------------|
 | [kubevirt](./kubevirt) | [KubeVirt](https://kubevirt.io/) is a virtual machine management add-on for Kubernetes. |
 
 #### 🚧 Under construction
-|                      App                     | Description                                                                       |
+|                 App Directory                | Description                                                                       |
 |:--------------------------------------------:|:----------------------------------------------------------------------------------|
 | [Nvidia GPU Operator](./nvidia/gpu-operator) | The GPU Operator allows administrators of Kubernetes clusters to manage GPU nodes |
 
@@ -180,4 +206,9 @@ Other useful tools that don't fit neatly into any one category.
 
 ## Art
 
-<img src="https://github.com/small-hack/argocd-apps/assets/2389292/1e7e5902-d48f-440d-98f4-44028f4bd90e" width="250">
+This part is just here for fun :) If you have open source fan art, consider submitting it to the project itself and/or us, and we'll display it with credit 💙
+
+
+### Argo CD Squid riding a Docker whale
+<img src="https://github.com/small-hack/argocd-apps/assets/2389292/1e7e5902-d48f-440d-98f4-44028f4bd90e" alt="The Argo CD mascot, an orange squid, riding a blue docker whale. The docker whale is holding a package. It's drawn in a simple cute flat style." width="250">
+By @jessebot
