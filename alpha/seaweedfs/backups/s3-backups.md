@@ -1,11 +1,12 @@
 # SeaweedFS Backups and Recovery with k8up
 
-This guide will walk you through the creation, backup, and recovery processes for a local [SeaweedFS](https://github.com/seaweedfs/seaweedfs) deployment and [CloudNative Postgres](https://cloudnative-pg.io/documentation/current/) cluster using [K8up](https://k8up.io/) and [Backblaze B2](https://www.backblaze.com/docs/cloud-storage). 
+This guide will walk you through the creation, backup, and recovery processes for a local [SeaweedFS](https://github.com/seaweedfs/seaweedfs) deployment using [K8up](https://k8up.io/) and [Backblaze B2](https://www.backblaze.com/docs/cloud-storage).
 
-Recommended reading: [S3 as the universal infrastructure backend](https://medium.com/innovationendeavors/s3-as-the-universal-infrastructure-backend-a104a8cc6991) - Davis Treybig
+K8up is a Kubernetes-native wrapper for [Restic](https://restic.readthedocs.io/en/stable/) therefore users of Restic and other Restic-based tooling like [Velero](https://velero.io/) should also find the techniques described here useful. Users of other S3 hosted services such as [Wasabi S3](https://wasabi.com/), [CLoudflare R2](https://www.cloudflare.com/developer-platform/r2/) etc... should also be able to follow along.
 
-> For the purposes of this demo, backups are set to run every minute. Plain-text passwords are also used for convenience - do NOT do that in production.
-> 
+> For the purposes of this demo, backups are set to run very frequently and plain-text passwords are also used for convenience - do NOT do that in production.
+
+
 ## Outline
 
 1. [K3s Cluster creation](#k3s-cluster-creation)
@@ -16,7 +17,6 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
 
 ## Requirements
 
-- K8up CLI
 - Kubectl
 - Helm
 - Restic
@@ -83,15 +83,14 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
     export PATH=$PATH:$HOME/minio-binaries/
     ```
 
-2. Clone repo and get the right branch
+2. Clone repo and cd to the helm dir
 
     ```bash
-    git clone https://github.com/cloudymax/seaweedfs
+    https://github.com/seaweedfs/seaweedfs
     cd seaweedfs/k8s/charts/seaweedfs
-    git checkout helm-add-existingClaim
     ```
 
-3. Create a values file
+3. Create a minimal values file for the Seaweedfs deployment which adds annotations for K8up.
 
     ```bash
     /bin/cat << EOF > test-values.yaml
@@ -136,7 +135,7 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
    kubectl apply -f manifests.yaml
    ```
 
-5. Expose the S3 endpoint
+5. Expose the S3 endpoint 
 
     ```bash
     /bin/cat << EOF > service.yaml
@@ -163,17 +162,15 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
    export NODE_IP=""
    ```
 
-7. Set an alias for your server:
+7. Create an alias for your server using your S3 CLI tool:
    
-    - get the `admin_access_key_id` and `admin_secret_access_key` from the secret `seaweedfs-s3-secret`
+    - You can find the `admin_access_key_id` and `admin_secret_access_key` values in the secret `seaweedfs-s3-secret`
 
       ```bash
       mc alias set seaweedfs http://$NODE_IP:30000 $admin_access_key_id $admin_secret_access_key
       ```
 
-8. Create a bucket
-   
-    - The endpoint-url is the IP of our node + the nodePort form our service
+8. Create a bucket that will hold our demo data
 
       ```bash
       mc mb seaweedfs s3://backups
@@ -240,13 +237,13 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
       kubectl apply -f restic.yaml
       ```
 
-3. Create a scheduled backups
+3. Create a scheduled backup
 
     - Export your S3 address:
 
       ```bash
       export BACKUP_S3_URL=""
-      export BACKUP_S3_BUCKET="s3://"
+      export BACKUP_S3_BUCKET=""
       ``` 
 
     - Create a manifest for the backup 
@@ -363,7 +360,7 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
     # Your S3 credentials
     export AWS_ACCESS_KEY_ID=""
     export AWS_SECRET_ACCESS_KEY=""
-    RESTIC_REPOSITORY="s3://<backblaze bucket url>/<backups bucket>
+    RESTIC_REPOSITORY="s3://$BACKUP_S3_URL/$BACKUP_S3_BUCKET
     ```
 
 4. Find your desired snapshot to restore
@@ -466,32 +463,34 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
     
 5. Re-deploy Seaweedfs from the existing PVCs
 
-    ```bash
-    /bin/cat << EOF > restore-values.yaml
-    master:
-      data:
-        type: "existingClaim"
-        claimName: "swfs-master-data"
-    volume:
-      data:
-        type: "existingClaim"
-        claimName: "swfs-volume-data"
-    filer:
-      enablePVC: true
-      data:
-        type: "existingClaim"
-        claimName: "swfs-filer-data"
-      s3:
-        enabled: true
-        port: 8333
-        httpsPort: 0
-        allowEmptyFolder: false
-        domainName: ""
-        enableAuth: false
-        skipAuthSecretCreation: false
-        auditLogConfig: {}
-    EOF
-    ```
+   - Create a manifest that targets the PVCs we created
+
+      ```bash
+      /bin/cat << EOF > restore-values.yaml
+      master:
+        data:
+          type: "existingClaim"
+          claimName: "swfs-master-data"
+      volume:
+        data:
+          type: "existingClaim"
+          claimName: "swfs-volume-data"
+      filer:
+        enablePVC: true
+        data:
+          type: "existingClaim"
+          claimName: "swfs-filer-data"
+        s3:
+          enabled: true
+          port: 8333
+          httpsPort: 0
+          allowEmptyFolder: false
+          domainName: ""
+          enableAuth: false
+          skipAuthSecretCreation: false
+          auditLogConfig: {}
+      EOF
+      ```
 
     - Deploy via Helm
   
@@ -500,7 +499,7 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
       kubectl apply -f manifests.yaml
       ```
 
-6. Update your alias for your server:
+7. Update your alias for your server:
    
     - get the `admin_access_key_id` and `admin_secret_access_key` from the secret `seaweedfs-s3-secret`
 
