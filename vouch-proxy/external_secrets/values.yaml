@@ -1,4 +1,6 @@
-useBitwardenExternalSecrets: "true"
+# set to bitwarden to use bitwarden as an external secrets provider, or "" to not deploy secrets
+# other providers may be supported in the future
+provider: "bitwarden"
 
 vouchOauthConfigBitwardenID: ""
 vouchConfigBitwardenID: ""
