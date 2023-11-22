@@ -63,7 +63,7 @@ spec:
   source:
     repoURL: 'registry-1.docker.io'
     chart: bitnamicharts/postgresql
-    targetRevision: 13.2.14
+    targetRevision: 13.2.15
     helm:
       skipCrds: true
       values: |
