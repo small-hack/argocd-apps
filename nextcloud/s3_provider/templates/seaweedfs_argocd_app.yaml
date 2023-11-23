@@ -1,4 +1,4 @@
-{{- if eq .Values.local_provider "seaweedfs" }}
+{{- if eq .Values.provider "seaweedfs" }}
 ---
 # webapp is deployed 3rd because we need secrets and persistent volumes up first
 apiVersion: argoproj.io/v1alpha1
@@ -506,7 +506,7 @@ spec:
             domainName: {{ .Values.api_endpoint }}
             # enable user & permission to s3 (need to inject to all services)
             enableAuth: true
-            existingConfigSecret: seaweedfs-s3-secret
+            existingConfigSecret: {{ .Values.seaweedfs.policy_secret }}
             createBuckets:
               - name: {{ .Values.app_name }}
                 anonymousRead: false

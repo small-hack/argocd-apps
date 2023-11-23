@@ -4,6 +4,8 @@ kind: ApplicationSet
 metadata:
   name: nextcloud-s3-provider-app-set
   namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
 spec:
   goTemplate: true
   # generator allows us to source specific values from an external k8s secret
@@ -15,14 +17,11 @@ spec:
           parameters:
             secret_vars:
               - nextcloud_s3_provider
-              - nextcloud_s3_endpoint
-              - nextcloud_s3_region
-              - global_cluster_issuer
   template:
     metadata:
       name: nextcloud-s3-provider
       annotations:
-        argocd.argoproj.io/sync-wave: "2"
+        argocd.argoproj.io/sync-wave: "1"
     spec:
       project: nextcloud
       destination:
@@ -36,24 +35,16 @@ spec:
           selfHeal: true
       source:
         repoURL: https://github.com/small-hack/argocd-apps.git
-        path: nextcloud/s3_provider/
+        path: nextcloud/persistence/
         targetRevision: eso-helm-chart-test
         helm:
           values: |
             provider: "{{ .nextcloud_s3_provider }}"
+            pvc_capacity: "100Gi"
 
-            api_endpoint: "{{ .nextcloud_s3_endpoint }}"
+            # not in use yet
+            k8up:
+              s3_endpoint: ""
+              s3_bucket: ""
+              s3_credentials_secret: ""
 
-            database_bucket_and_user: true
-
-            app_name: "nextcloud"
-
-            argocd_project: "nextcloud"
-
-            minio:
-              admin_credentials_secret: "admin-s3-credentials"
-              user_credentials_secret: "nextcloud-s3-credentials"
-              database_credentials_secret: "postgres-s3-credentials"
-
-            seaweedfs:
-              policy_secret: "seaweedfs-s3-secret"

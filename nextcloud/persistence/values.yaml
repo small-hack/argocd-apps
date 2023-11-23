@@ -1,0 +1,9 @@
+# -- provider must be set to minio or seaweedfs
+provider: seaweedfs
+pvc_capacity: 10Gi
+
+# -- for enabling backups to a remote s3 provider
+k8up:
+  s3_endpoint: ""
+  s3_bucket: ""
+  s3_credentials_secret: ""

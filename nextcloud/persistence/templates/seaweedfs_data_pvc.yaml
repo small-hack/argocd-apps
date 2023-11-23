@@ -1,4 +1,4 @@
-{{- if eq .Values.local_provider "seaweedfs" }}
+{{- if eq .Values.provider "seaweedfs" }}
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1

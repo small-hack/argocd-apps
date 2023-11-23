@@ -1,4 +1,4 @@
-{{- if eq .Values.local_provider "minio" }}
+{{- if eq .Values.provider "minio" }}
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1
