@@ -2,7 +2,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: nextcloud-s3-provider-app-set
+  name: nextcloud-s3-pvc-app-set
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "1"
@@ -19,7 +19,7 @@ spec:
               - nextcloud_s3_provider
   template:
     metadata:
-      name: nextcloud-s3-provider
+      name: nextcloud-s3-pvc
       annotations:
         argocd.argoproj.io/sync-wave: "1"
     spec:
