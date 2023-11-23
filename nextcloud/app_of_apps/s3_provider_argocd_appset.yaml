@@ -1,0 +1,65 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: nextcloud-s3-provider-app-set
+  namespace: argocd
+spec:
+  goTemplate: true
+  # generator allows us to source specific values from an external k8s secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - nextcloud_s3_provider
+              - nextcloud_s3_endpoint
+              - nextcloud_s3_region
+              - global_external_secrets
+              - global_cluster_issuer
+  template:
+    metadata:
+      name: nextcloud-s3-provider
+      annotations:
+        argocd.argoproj.io/sync-wave: "2"
+    spec:
+      project: nextcloud
+      destination:
+        server: "https://kubernetes.default.svc"
+        namespace: nextcloud
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
+          selfHeal: true
+      source:
+        repoURL: https://github.com/small-hack/argocd-apps.git
+        path: nextcloud/s3_provider/
+        targetRevision: eso-helm-chart-test
+        helm:
+          values: |
+            # -- must be either minio or seaweedfs
+            local_provider: "{{ .nextcloud_s3_provider }}"
+
+            # -- must be in FQDN already in DNS
+            api_endpoint: "{{ .nextcloud_s3_endpoint }}"
+
+            # -- must provide at least one initial bucket
+            buckets:
+              - nextcloud
+              - nextcloud-postgresql
+
+            # -- existing kubernetes secret with admin credentials
+            admin_credentials_secret: "nextcloud-s3-credentials"
+
+            # -- user credentials secrets, list of existing kubernetes secrets with user creds
+            user_credentials_secrets: []
+
+            # -- name of the application you're deploying the s3 endpoint for, gets rendered in release name
+            app_name: "nextcloud"
+
+            # -- argocd project to deploy argo apps to
+            argocd_project: "nextcloud"

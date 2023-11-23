@@ -1,0 +1,27 @@
+# -- must be either minio or seaweedfs
+local_provider: "seaweedfs"
+
+# -- must be in FQDN already in DNS
+api_endpoint: "s3.cooldomainsfordogs.com"
+
+# -- must provide at least one initial bucket
+buckets: []
+
+# -- existing kubernetes secret with admin credentials
+admin_credentials_secret: "my-secret"
+
+# -- user credentials secrets, list of existing kubernetes secrets with user creds
+user_credentials_secrets: []
+
+# -- name of the application you're deploying the s3 endpoint for, gets rendered in release name
+app_name: "nextcloud"
+
+# -- argocd project to deploy argo apps to
+argocd_project: "nextcloud"
+
+# -- which external secrets provider to use, only none or bitwarden is supported so far
+external_secrets_provider: "bitwarden"
+
+bitwarden:
+  # -- if using bitwarden for external secrets, this is the ID of the item containing your s3 credentials in bitwarden
+  s3CredentialsID: "754893q05789305789342789543"
