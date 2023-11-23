@@ -17,7 +17,6 @@ spec:
               - nextcloud_s3_provider
               - nextcloud_s3_endpoint
               - nextcloud_s3_region
-              - global_external_secrets
               - global_cluster_issuer
   template:
     metadata:
@@ -41,25 +40,27 @@ spec:
         targetRevision: eso-helm-chart-test
         helm:
           values: |
-            # -- must be either minio or seaweedfs
             local_provider: "{{ .nextcloud_s3_provider }}"
 
-            # -- must be in FQDN already in DNS
             api_endpoint: "{{ .nextcloud_s3_endpoint }}"
 
-            # -- must provide at least one initial bucket
-            buckets:
-              - nextcloud
-              - nextcloud-postgresql
+            database_bucket_and_user: true
 
-            # -- existing kubernetes secret with admin credentials
-            admin_credentials_secret: "nextcloud-s3-credentials"
-
-            # -- user credentials secrets, list of existing kubernetes secrets with user creds
-            user_credentials_secrets: []
-
-            # -- name of the application you're deploying the s3 endpoint for, gets rendered in release name
             app_name: "nextcloud"
 
-            # -- argocd project to deploy argo apps to
             argocd_project: "nextcloud"
+
+            pvc_capacity: "100Gi"
+
+            k8up:
+              s3_endpoint: ""
+              s3_bucket: ""
+              s3_credentials_secret: ""
+
+            minio:
+              admin_credentials_secret: "admin-s3-credentials"
+              user_credentials_secret: "nextcloud-s3-credentials"
+              database_credentials_secret: "postgres-s3-credentials"
+
+            seaweedfs:
+              policy_secret: "seaweedfs-s3-secret"

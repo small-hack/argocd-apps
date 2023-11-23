@@ -4,24 +4,35 @@ local_provider: ""
 # -- must be in FQDN already in DNS
 api_endpoint: ""
 
-# -- must provide at least one initial bucket
-buckets: []
-
-# -- existing kubernetes secret with admin credentials
-admin_credentials_secret: ""
-
-# -- user credentials secrets, list of existing kubernetes secrets with user creds
-user_credentials_secrets: []
-
 # -- name of the application you're deploying the s3 endpoint for, gets rendered in release name
 app_name: ""
 
 # -- argocd project to deploy argo apps to
 argocd_project: ""
 
-# -- which external secrets provider to use, only none or bitwarden is supported so far
-external_secrets_provider: ""
+# -- create a bucket and user for a postgresql database in addition to bucket with app_name
+database_bucket_and_user: false
 
-bitwarden:
-  # -- if using bitwarden for external secrets, this is the ID of the item containing your s3 credentials in bitwarden
-  s3CredentialsID: ""
+# -- storage capacity for the underlying persistent volume claim for s3 files
+pvc_capacity: "10Gi"
+
+# -- for enabling backups to a remote s3 provider
+k8up:
+  s3_endpoint: ""
+  s3_bucket: ""
+  s3_credentials_secret: ""
+
+minio:
+  # -- existing kubernetes secret with admin credentials
+  admin_credentials_secret: ""
+
+  # -- user credentials secret, existing kubernetes secrets with user creds
+  user_credentials_secrets: ""
+
+  # -- database user credentials secret, existing kubernetes secrets with user creds
+  # only appliable when database_bucket_and_user is set to "true"
+  database_user_credentials_secret: ""
+
+seaweedfs:
+  # -- policy secret - only used for seaweedfs
+  policy_secret: ""

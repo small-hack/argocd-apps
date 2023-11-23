@@ -1,0 +1,13 @@
+{{- if eq .Values.local_provider "minio" }}
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: minio-data
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.pvc_capacity }}
+{{- end }}
