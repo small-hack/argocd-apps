@@ -43,15 +43,7 @@ spec:
           releaseName: minio
           values: |
             ## Use existing Secret that store following variables:
-            ##
-            ## | Chart var             | .data.<key> in Secret    |
-            ## |:----------------------|:-------------------------|
-            ## | rootUser              | rootUser                 |
-            ## | rootPassword          | rootPassword             |
-            ##
-            ## All mentioned variables will be ignored in values file.
             ## .data.rootUser and .data.rootPassword are mandatory,
-            ## others depend on enabled status of corresponding sections.
             existingSecret: "minio-root-credentials"
             
             ## TLS Settings for MinIO
@@ -280,33 +272,9 @@ spec:
               # Command to run after the main command on exit
               exitCommand: ""
 
-            ## OpenID Identity Management
-            ## The following section documents environment variables for enabling external identity management using an OpenID Connect (OIDC)-compatible provider.
-            ## See https://min.io/docs/minio/linux/operations/external-iam/configure-openid-external-identity-management.html for a tutorial on using these variables.
-            oidc:
-              enabled: true
-              configUrl: "https://identity-provider-url/.well-known/openid-configuration"
-              clientId: "minio"
-              # Provide existing client secret from the Kubernetes Secret resource, existing secret will have priority over `clientSecret`
-              existingClientSecretName: "minio-oidc-credentials"
-              existingClientSecretKey: "clientSecret"
-              claimName: "policy"
-              scopes: "openid,profile,email"
-              redirectUri: "https://console-endpoint-url/oauth_callback"
-              # Can leave empty
-              claimPrefix: ""
-              comment: "zitadel"
-
             networkPolicy:
               enabled: false
               allowExternal: true
-
-            ## PodDisruptionBudget settings
-            ## ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
-            ##
-            podDisruptionBudget:
-              enabled: false
-              maxUnavailable: 1
 
             ## Specify the service account to use for the MinIO pods. If 'create' is set to 'false'
             ## and 'name' is left unspecified, the account 'default' will be used.
@@ -319,29 +287,3 @@ spec:
             metrics:
               serviceMonitor:
                 enabled: false
-                # scrape each node/pod individually for additional metrics
-                includeNode: false
-                public: true
-                additionalLabels: {}
-                annotations: {}
-                # for node metrics
-                relabelConfigs: {}
-                # for cluster metrics
-                relabelConfigsCluster: {}
-                  # metricRelabelings:
-                  #   - regex: (server|pod)
-                  #     action: labeldrop
-                namespace: ~
-                # Scrape interval, for example `interval: 30s`
-                interval: ~
-                # Scrape timeout, for example `scrapeTimeout: 10s`
-                scrapeTimeout: ~
-
-            ## ETCD settings: https://github.com/minio/minio/blob/master/docs/sts/etcd.md
-            ## Define endpoints to enable this section.
-            etcd:
-              endpoints: []
-              pathPrefix: ""
-              corednsPathPrefix: ""
-              clientCert: ""
-              clientCertKey: ""
