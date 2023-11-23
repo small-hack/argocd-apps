@@ -21,13 +21,13 @@ spec:
       selfHeal: true 
   source:
     # only for testing our own patches before PRs
-    # repoURL: https://github.com/jessebot/seaweedfs
-    # targetRevision: main
-    # path: k8s/charts/seaweedfs/
+    repoURL: https://github.com/cloudymax/seaweedfs
+    targetRevision: helm-post-install-hook
+    path: k8s/charts/seaweedfs/
 
-    repoURL: 'https://seaweedfs.github.io/seaweedfs/helm'
-    targetRevision: 3.59.2
-    chart: seaweedfs
+    # repoURL: 'https://seaweedfs.github.io/seaweedfs/helm'
+    # targetRevision: 3.59.3
+    # chart: seaweedfs
     helm:
       releaseName: {{ .Values.app_name }}-seaweedfs
       values: |
@@ -507,7 +507,11 @@ spec:
             # enable user & permission to s3 (need to inject to all services)
             enableAuth: true
             existingConfigSecret: seaweedfs-s3-secret
-            skipAuthSecretCreation: true
+            createBuckets:
+              - name: {{ .Values.app_name }}
+                anonymousRead: false
+              - name: {{ .Values.app_name }}-postgres
+                anonymousRead: false
         s3:
           enabled: false
 {{- end }}
