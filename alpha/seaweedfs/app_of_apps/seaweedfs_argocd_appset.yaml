@@ -547,6 +547,13 @@ spec:
                 existingConfigSecret: seaweedfs-s3-secret
                 skipAuthSecretCreation: true
                 auditLogConfig: {}
-
+                # You may specify buckets to be created during the install process.
+                # Buckets may be exposed publicly by setting `anonymousRead` to `true`
+                # createBuckets:
+                #   - name: bucket-a
+                #     anonymousRead: true
+                #   - name: bucket-b
+                #     anonymousRead: false
+    
             s3:
               enabled: false
