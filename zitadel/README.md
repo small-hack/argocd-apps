@@ -1,10 +1,10 @@
 # An Argo CD App for Zitadel
 
-[ZITADEL](https://github.com/zitadel/zitadel/tree/main) is an identity management and provider application similar to Keycloak. It helps you manage your users across apps and acts as your OIDC provider. It's community have been really nice, so we'll be supporting some Argo CD apps here instead of using Keycloak. Here's the [Zitadel helm chart](https://github.com/zitadel/zitadel-charts/tree/main) that we're deploying here.
+[ZITADEL](https://github.com/zitadel/zitadel/tree/main) is an identity management and provider application similar to Keycloak. It helps you manage your users across apps and acts as your OIDC provider. The Zitadel community and maintainers have been really nice, so we'll be supporting some Argo CD apps here instead of using Keycloak. Here's the [Zitadel helm chart](https://github.com/zitadel/zitadel-charts/tree/main) that we're deploying here.
 
 It's important to take a look at the [`defaults.yaml`](https://github.com/zitadel/zitadel/blob/main/cmd/defaults.yaml) to see what the default `ConfigMap` will look like for Zitadel.
 
-This Argo CD app of apps is designed to be pretty locked down to allow you to use **only** a default service account (that also can't log in through the UI) to do all the heavy lifting with openTofu, Pulumi, or your own self service script. We support only PostgreSQL as the database backend.
+This Argo CD app of apps is designed to be pretty locked down to allow you to use **only** a default service account (that can't log in through the UI) to do all the heavy lifting with openTofu, Pulumi, or your own self service script. We support only PostgreSQL as the database backend. PostgreSQL is backed up by [barman]() to a local s3 instance using SeaweedFS. That SeaweedFS instance is then backed up to a remote s3 endpoint of your choosing.
 
 The main magic happens in the [app_of_apps](./app_of_apps) directory.
 
@@ -17,8 +17,7 @@ The main magic happens in the [app_of_apps](./app_of_apps) directory.
 1. - External Secrets for both your database postgresql and zitadel:
      - Zitadel database credentials
      - Zitadel `masterkey` Secrets
-   - MinIO Tenant (if you use directoryRecursion: true)
-2. Minio Setup Script - this sets up your minio user for postgresql and its policy
+2. SeaweedFS instance.
 3. Postgresql cluster via the Cloud Native Postgresql Operator including the database init described [here](https://github.com/zitadel/zitadel/tree/0386fe7f96cc8c9ff178d29c9bbee3bfe0a1a568/cmd/initialise/sql/postgres)
 4. Zitadel helm chart with ONLY a service account and registration DISABLED
 
@@ -70,6 +69,8 @@ DefaultInstance:
 ```
 
 ## Writing an action to send a groupsClaim
+
+Just an example of how to make a groups claim for zitadel.
 
 ```js
 function groupsClaim(ctx, api) {
