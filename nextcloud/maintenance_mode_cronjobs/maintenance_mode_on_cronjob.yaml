@@ -6,13 +6,15 @@ metadata:
   namespace: nextcloud
 spec:
   # daily at 1pm Central Europe Time
-  schedule: "45 13 * * *"
+  schedule: "0 14 * * *"
   successfulJobsHistoryLimit: 0
   failedJobsHistoryLimit: 3
   jobTemplate:
     spec:
       template:
         spec:
+          securityContext:
+            fsGroup: 82
           restartPolicy: OnFailure
           volumes:
             - emptyDir: {}
