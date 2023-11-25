@@ -4,4 +4,5 @@ provider: "true"
 
 bitwardenCoreItemID: ""
 bitwardenDBItemID: ""
-s3CredentialsBitwardenID: ""
+s3PostgresCredentialsBitwardenID: ""
+s3BackupsCredentialsBitwardenID: ""
