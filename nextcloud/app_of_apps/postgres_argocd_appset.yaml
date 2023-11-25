@@ -43,7 +43,7 @@ spec:
           releaseName: nextcloud-postgres-cluster
           values: |
             name: nextcloud-postgres
-            instances: 3
+            instances: 2
 
             bootstrap:
               initdb:
