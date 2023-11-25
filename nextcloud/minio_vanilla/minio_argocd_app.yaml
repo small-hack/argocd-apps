@@ -1,17 +1,16 @@
-{{- if eq .Values.provider "minio" }}
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: {{ .Values.app_name }}-minio
+  name: nextcloud-minio
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "2"
 spec:
-  project: {{ .Values.argocd_project }}
+  project: nextcloud
   destination:
     server: https://kubernetes.default.svc
-    namespace: {{ .Release.Namespace }}
+    namespace: nextcloud
   syncPolicy:
     syncOptions:
       - ApplyOutOfSyncOnly=true
@@ -24,11 +23,11 @@ spec:
     chart: minio
     targetRevision: 5.0.14
     helm:
-      releaseName: {{ .Values.app_name }}-minio
+      releaseName: nextcloud-minio
       values: |
         ## Use existing Secret that store following variables:
         ## .data.rootUser and .data.rootPassword are mandatory,
-        existingSecret: "{{ .Values.minio.admin_credentials_secret }}"
+        existingSecret: "admin-s3-credentials"
         
         ## TLS Settings for MinIO
         tls:
@@ -72,11 +71,11 @@ spec:
         ## In addition to default policies [readonly|readwrite|writeonly|consoleAdmin|diagnostics]
         ## you can define additional policies with custom supported actions and resources
         policies:
-          - name: "{{ .Values.app_name }}ReadWrite"
+          - name: "nextcloudReadWrite"
             statements:
               - effect: Allow
                 resources:
-                  - 'arn:aws:s3:::{{ .Values.app_name }}/*'
+                  - 'arn:aws:s3:::nextcloud/*'
                 actions:
                   - "s3:AbortMultipartUpload"
                   - "s3:GetObject"
@@ -86,18 +85,17 @@ spec:
                   - "s3:ListBucket"
                   - "s3:ListBucketMultipartUploads"
                 conditions:
-                  - StringEquals: '"aws:username": "{{ .Values.app_name }}"'
+                  - StringEquals: '"aws:username": "nextcloud"'
                   - IpAddress: |
                       "aws:SourceIp": [
                         "10.0.0.0/8",
                         "192.168.0.0/24"
                       ]
-          {{- if .Values.database_bucket_and_user }}
-          - name: "{{ .Values.app_name }}PostgresReadWrite"
+          - name: "nextcloudPostgresReadWrite"
             statements:
               - effect: Allow
                 resources:
-                  - 'arn:aws:s3:::{{ .Values.app_name }}-postgres/*'
+                  - 'arn:aws:s3:::nextcloud-postgres/*'
                 actions:
                   - "s3:AbortMultipartUpload"
                   - "s3:GetObject"
@@ -107,13 +105,12 @@ spec:
                   - "s3:ListBucket"
                   - "s3:ListBucketMultipartUploads"
                 conditions:
-                  - StringEquals: '"aws:username": "{{ .Values.app_name }}-postgres"'
+                  - StringEquals: '"aws:username": "nextcloud-postgres"'
                   - IpAddress: |
                       "aws:SourceIp": [
                         "10.0.0.0/8",
                         "192.168.0.0/24"
                       ]
-          {{- end }}
         ## Additional stuff for the Kubernetes Job makePolicyJob
         makePolicyJob:
           securityContext:
@@ -133,16 +130,14 @@ spec:
           ## Default policies are [readonly|readwrite|writeonly|consoleAdmin|diagnostics]
           ## Add new policies as explained here https://min.io/docs/minio/kubernetes/upstream/administration/identity-access-management.html#access-management
           # Or you can refer to specific secret
-          - accessKey: {{ .Values.app_name }}
-            existingSecret: {{ .Values.minio.user_credentials_secret }}
+          - accessKey: nextcloud
+            existingSecret: nextcloud-s3-credentials
             existingSecretKey: password
             policy: readwrite
-          {{- if .Values.database_bucket_and_user }}
-          - accessKey: {{ .Values.app_name }}-postgres
-            existingSecret: {{ .Values.minio.database_user_credentials_secret }}
+          - accessKey: nextcloud-postgres
+            existingSecret: postgres-s3-credentials
             existingSecretKey: password
             policy: readwrite
-          {{- end }}
         
         ## Additional stuff for the Kubernetes Job makeUserJob
         makeUserJob:
@@ -159,7 +154,7 @@ spec:
         ## List of buckets to be created after minio install
         ##
         buckets:
-          - name: {{ .Values.app_name }}
+          - name: nextcloud
             # Policy to be set on the bucket [none|download|upload|public]
             policy: none
             # Purge if bucket exists already
@@ -168,8 +163,7 @@ spec:
             versioning: true
             # set objectlocking for bucket [true|false]
             objectlocking: false
-          {{- if .Values.database_bucket_and_user }}
-          - name: {{ .Values.app_name }}-postgres
+          - name: nextcloud-postgres
             # Policy to be set on the bucket [none|download|upload|public]
             policy: none
             # Purge if bucket exists already
@@ -178,7 +172,6 @@ spec:
             versioning: true
             # set objectlocking for bucket [true|false]
             objectlocking: false
-          {{- end }}
 
         ## Additional Annotations for the Kubernetes Job makeBucketJob
         makeBucketJob:
@@ -207,4 +200,3 @@ spec:
         metrics:
           serviceMonitor:
             enabled: false
-{{- end }}

@@ -17,6 +17,7 @@ spec:
           parameters:
             secret_vars:
               - nextcloud_s3_provider
+              - nextcloud_s3_pvc_capacity
   template:
     metadata:
       name: nextcloud-s3-pvc
@@ -40,7 +41,7 @@ spec:
         helm:
           values: |
             provider: "{{ .nextcloud_s3_provider }}"
-            pvc_capacity: "100Gi"
+            pvc_capacity: "{{ .nextcloud_s3_pvc_capacity }}"
 
             # not in use yet
             k8up:

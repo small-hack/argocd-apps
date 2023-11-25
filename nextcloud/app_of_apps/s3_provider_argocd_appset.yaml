@@ -15,12 +15,9 @@ spec:
           parameters:
             secret_vars:
               - nextcloud_s3_provider
-              - nextcloud_s3_endpoint
-              - nextcloud_s3_region
-              - global_cluster_issuer
   template:
     metadata:
-      name: nextcloud-s3-provider
+      name: nextcloud-{{ .nextcloud_s3_provider }}
       annotations:
         argocd.argoproj.io/sync-wave: "2"
     spec:
@@ -36,24 +33,5 @@ spec:
           selfHeal: true
       source:
         repoURL: https://github.com/small-hack/argocd-apps.git
-        path: nextcloud/s3_provider/
+        path: nextcloud/{{ .nextcloud_s3_provider }}/
         targetRevision: eso-helm-chart-test
-        helm:
-          values: |
-            provider: "{{ .nextcloud_s3_provider }}"
-
-            api_endpoint: "{{ .nextcloud_s3_endpoint }}"
-
-            database_bucket_and_user: true
-
-            app_name: "nextcloud"
-
-            argocd_project: "nextcloud"
-
-            minio:
-              admin_credentials_secret: "admin-s3-credentials"
-              user_credentials_secret: "nextcloud-s3-credentials"
-              database_credentials_secret: "postgres-s3-credentials"
-
-            seaweedfs:
-              policy_secret: "seaweedfs-s3-secret"

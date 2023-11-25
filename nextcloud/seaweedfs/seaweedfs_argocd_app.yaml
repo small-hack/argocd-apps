@@ -1,18 +1,17 @@
-{{- if eq .Values.provider "seaweedfs" }}
 ---
 # webapp is deployed 3rd because we need secrets and persistent volumes up first
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: {{ .Values.app_name }}-seaweedfs-web-app
+  name: nextcloud-seaweedfs-web-app
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "3"
+    argocd.argoproj.io/sync-wave: "2"
 spec:
-  project: {{ .Values.argocd_project }}
+  project: nextcloud
   destination:
     server: https://kubernetes.default.svc
-    namespace: {{ .Release.Namespace }}
+    namespace: nextcloud
   syncPolicy:
     syncOptions:
       - ApplyOutOfSyncOnly=true
@@ -29,7 +28,7 @@ spec:
     targetRevision: 3.59.3
     chart: seaweedfs
     helm:
-      releaseName: {{ .Values.app_name }}-seaweedfs
+      releaseName: nextcloud-seaweedfs
       values: |
         global:
           createClusterRole: true
@@ -45,8 +44,6 @@ spec:
             alphacrds: false
           monitoring:
             enabled: false
-            gatewayHost: null
-            gatewayPort: null
 
           # if enabled will use global.replicationPlacment and override master & filer defaultReplicaPlacement config
           enableReplication: false
@@ -63,11 +60,6 @@ spec:
 
         master:
           enabled: true
-          repository: null
-          imageName: null
-          imageTag: null
-          imageOverride: null
-          restartPolicy: null
           replicas: 1
           port: 9333
           grpcPort: 19333
@@ -75,11 +67,6 @@ spec:
           ipBind: "0.0.0.0"
           volumePreallocate: false
           volumeSizeLimitMB: 1000
-          loggingOverrideLevel: null
-          # number of seconds between heartbeats, default 5
-          pulseSeconds: null
-          # threshold to vacuum and reclaim spaces, default 0.3 (30%)
-          garbageThreshold: null
           # Prometheus push interval in seconds, default 15
           metricsIntervalSec: 15
           #  replication type is XYZ:
@@ -111,12 +98,6 @@ spec:
 
           ## Set podManagementPolicy
           podManagementPolicy: Parallel
-
-          # Resource requests, limits, etc. for the master cluster placement. This
-          # should map directly to the value of the resources field for a PodSpec,
-          # formatted as a multi-line string. By default no direct resource request
-          # is made.
-          resources: null
 
           # updatePartition is used to control a careful rolling update of SeaweedFS
           # masters.
@@ -193,23 +174,11 @@ spec:
 
         volume:
           enabled: true
-          repository: null
-          imageName: null
-          imageTag: null
-          imageOverride: null
-          restartPolicy: null
           port: 8080
           grpcPort: 18080
           metricsPort: 9327
           ipBind: "0.0.0.0"
           replicas: 1
-          loggingOverrideLevel: null
-
-          # number of seconds between heartbeats, must be smaller than or equal to the master's setting
-          pulseSeconds: null
-
-          # Choose [memory|leveldb|leveldbMedium|leveldbLarge] mode for memory~performance balance., default memory
-          index: null
 
           # limit file size to avoid out of memory, default 256mb
           fileSizeLimitMB: null
@@ -237,12 +206,6 @@ spec:
           # Maximum numbers of volumes, count[,count]...
           # If set to zero on non-windows OS, the limit will be auto configured. (default "7")
           maxVolumes: "0"
-
-          # Volume server's rack name
-          rack: null
-
-          # Volume server's data center name
-          dataCenter: null
 
           # Redirect moved or non-local volumes. (default proxy)
           readMode: proxy
@@ -273,12 +236,6 @@ spec:
                       app.kubernetes.io/instance: seaweedfs
                       app.kubernetes.io/component: volume
                   topologyKey: kubernetes.io/hostname
-
-          # Resource requests, limits, etc. for the server cluster placement. This
-          # should map directly to the value of the resources field for a PodSpec,
-          # formatted as a multi-line string. By default no direct resource request
-          # is made.
-          resources: null
 
           # Toleration Settings for server pods
           # This should be a multi-line string matching the Toleration array
@@ -330,16 +287,7 @@ spec:
         filer:
           enabled: true
           replicas: 1
-          port: 8888
-          grpcPort: 18888
-          metricsPort: 9327
           loggingOverrideLevel: null
-          filerGroup: ""
-          #  replication type is XYZ:
-          # X number of replica in other data centers
-          # Y number of replica in other racks in the same data center
-          # Z number of replica in other servers in the same rack
-          defaultReplicaPlacement: "000"
           # turn off directory listing
           disableDirListing: false
           # split files larger than the limit, default 32
@@ -370,11 +318,6 @@ spec:
             type: "existingClaim"
             claimName: "swfs-filer-data"
 
-          initContainers: ""
-
-          extraVolumes: ""
-          extraVolumeMounts: ""
-
           ## Set podManagementPolicy
           podManagementPolicy: Parallel
 
@@ -394,12 +337,6 @@ spec:
           # updatePartition is used to control a careful rolling update of SeaweedFS
           # masters.
           updatePartition: 0
-
-          # Resource requests, limits, etc. for the server cluster placement. This
-          # should map directly to the value of the resources field for a PodSpec,
-          # formatted as a multi-line string. By default no direct resource request
-          # is made.
-          resources: null
 
           # Toleration Settings for server pods
           # This should be a multi-line string matching the Toleration array
@@ -424,26 +361,6 @@ spec:
 
           ingress:
             enabled: false
-            className: "nginx"
-            # host: false for "*" hostname
-            host: "seaweedfs.cluster.local"
-            annotations: |
-              nginx.ingress.kubernetes.io/backend-protocol: GRPC
-              nginx.ingress.kubernetes.io/auth-type: "basic"
-              nginx.ingress.kubernetes.io/auth-secret: "default/ingress-basic-auth-secret"
-              nginx.ingress.kubernetes.io/auth-realm: 'Authentication Required - SW-Filer'
-              nginx.ingress.kubernetes.io/service-upstream: "true"
-              nginx.ingress.kubernetes.io/rewrite-target: /$1
-              nginx.ingress.kubernetes.io/use-regex: "true"
-              nginx.ingress.kubernetes.io/enable-rewrite-log: "true"
-              nginx.ingress.kubernetes.io/ssl-redirect: "false"
-              nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
-              nginx.ingress.kubernetes.io/configuration-snippet: |
-                sub_filter '<head>' '<head> <base href="/sw-filer/">'; #add base url
-                sub_filter '="/' '="./';                               #make absolute paths to relative
-                sub_filter '=/' '=./';
-                sub_filter '/seaweedfsstatic' './seaweedfsstatic';
-                sub_filter_once off;
 
           # extraEnvVars is a list of extra enviroment variables to set with the stateful set.
           extraEnvironmentVars:
@@ -485,33 +402,18 @@ spec:
             failureThreshold: 100
             timeoutSeconds: 10
 
-          # secret env variables
-          secretExtraEnvironmentVars: []
-            # WEED_POSTGRES_USERNAME:
-            #   secretKeyRef:
-            #     name: postgres-credentials
-            #     key: username
-            # WEED_POSTGRES_PASSWORD:
-            #   secretKeyRef:
-            #     name: postgres-credentials
-            #     key: password
-
           # this enables the filer and s3 which are both required to be deployed together
           s3:
             enabled: true
-            port: 8333
-            # add additional https port
-            httpsPort: 0
             allowEmptyFolder: false
-            domainName: {{ .Values.api_endpoint }}
+            domainName: {{ .nextcloud_s3_endpoint }}
             # enable user & permission to s3 (need to inject to all services)
             enableAuth: true
-            existingConfigSecret: {{ .Values.seaweedfs.policy_secret }}
+            existingConfigSecret: seaweedfs-s3-secret
             createBuckets:
-              - name: {{ .Values.app_name }}
+              - name: nextcloud
                 anonymousRead: false
-              - name: {{ .Values.app_name }}-postgres
+              - name: nextcloud-postgres
                 anonymousRead: false
         s3:
           enabled: false
-{{- end }}
