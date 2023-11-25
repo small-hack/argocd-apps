@@ -4,7 +4,6 @@ apiVersion: external-secrets.io/v1beta1
 kind: ExternalSecret
 metadata:
   name: seaweedfs-s3-secret
-  namespace: seaweedfs
 spec:
   target:
     name: seaweedfs-s3-secret
