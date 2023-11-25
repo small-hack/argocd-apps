@@ -45,7 +45,7 @@ spec:
               image: nextcloud:27.1.3-fpm-alpine
               imagePullPolicy: IfNotPresent
               command:
-                - /bin/bash
+                - /bin/sh
                 - -c
                 - su -s /bin/sh www-data -c "php occ files:scan --all && php occ maintenance:mode --on"
               volumeMounts:
