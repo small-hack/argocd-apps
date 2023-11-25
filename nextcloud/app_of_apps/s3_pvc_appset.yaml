@@ -17,6 +17,9 @@ spec:
           parameters:
             secret_vars:
               - nextcloud_s3_provider
+              - nextcloud_s3_backup_endpoint
+              - nextcloud_s3_backup_bucket
+              - nextcloud_s3_backup_region
               - nextcloud_s3_pvc_capacity
   template:
     metadata:
@@ -36,7 +39,7 @@ spec:
           selfHeal: true
       source:
         repoURL: https://github.com/small-hack/argocd-apps.git
-        path: nextcloud/persistence/
+        path: s3_persistence_and_backups/
         targetRevision: eso-helm-chart-test
         helm:
           values: |
@@ -45,7 +48,33 @@ spec:
 
             # not in use yet
             k8up:
-              s3_endpoint: ""
-              s3_bucket: ""
-              s3_credentials_secret: ""
+              backup_name: "nextcloud-nightly-backup"
 
+              # -- can be set to 's3' or 'local'
+              backup_type: "s3"
+
+              s3:
+                bucket: {{ .nextcloud_backup_s3_bucket }}
+                endpoint: {{ .nextcloud_backup_s3_endpoint }}
+                accessKeyIDSecretRef:
+                  name: 'backups-s3-credentials'
+                  key: 'accessKey'
+                  optional: false
+                secretAccessKeySecretRef:
+                  name: 'backups-s3-credentials'
+                  key: 'secretKey'
+                  optional: false
+
+              repoPasswordSecretRef:
+                name: 'backups-s3-credentials'
+                key: 'resticRepoPass'
+
+              prometheus_url: ''
+
+              podSecurityContext:
+                runAsUser: 0
+
+              schedules:
+                backup: "05 13 * * *"
+                check: "10 13 * * *"
+                prune: "20 13 * * *"

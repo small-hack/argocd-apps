@@ -5,8 +5,8 @@ metadata:
   name: maintanence-mode-on
   namespace: nextcloud
 spec:
-  # daily at 2:00AM Central Europe Time
-  schedule: "0 2 * * *"
+  # daily at 1pm Central Europe Time
+  schedule: "0 13 * * *"
   successfulJobsHistoryLimit: 0
   failedJobsHistoryLimit: 3
   jobTemplate:
@@ -15,9 +15,8 @@ spec:
         spec:
           restartPolicy: OnFailure
           volumes:
-            - name: nextcloud-main
-              persistentVolumeClaim:
-                claimName: nextcloud-files
+            - emptyDir: {}
+              name: nextcloud-main
             - configMap:
                 defaultMode: 420
                 name: nextcloud-web-app-config
@@ -26,17 +25,29 @@ spec:
                 defaultMode: 420
                 name: nextcloud-web-app-nginxconfig
               name: nextcloud-nginx-config
+            - configMap:
+                defaultMode: 420
+                name: nextcloud-web-app-phpconfig
+              name: nextcloud-phpconfig
+            - name: postgres-ca
+              secret:
+                defaultMode: 416
+                secretName: nextcloud-postgres-server-ca-key-pair
+            - name: postgres-client-certs
+              secret:
+                defaultMode: 416
+                secretName: nextcloud-postgres-nextcloud-cert
           # consider this to chown /var/www/html/data and /data to www-data:root
           # initContainers:
           #   - name: nextcloud-maintanence-perm-fix
           containers:
             - name: nextcloud-maintanence
-              image: nextcloud:27.0.1-fpm
+              image: nextcloud:27.1.3-fpm-alpine
               imagePullPolicy: IfNotPresent
               command:
                 - /bin/bash
                 - -c
-                - su -s /bin/bash www-data -c "php occ files:scan --all && php occ maintenance:mode --on"
+                - su -s /bin/sh www-data -c "php occ files:scan --all && php occ maintenance:mode --on"
               volumeMounts:
                 - mountPath: /var/www/
                   name: nextcloud-main
@@ -63,9 +74,18 @@ spec:
                 - mountPath: /var/www/html/config/logging.config.php
                   name: nextcloud-config
                   subPath: logging.config.php
+                - mountPath: /var/www/html/config/oidc.config.php
+                  name: nextcloud-config
+                  subPath: oidc.config.php
+                - mountPath: /var/www/html/config/previews.config.php
+                  name: nextcloud-config
+                  subPath: previews.config.php
                 - mountPath: /var/www/html/config/proxy.config.php
                   name: nextcloud-config
                   subPath: proxy.config.php
+                - mountPath: /var/www/html/config/s3.config.php
+                  name: nextcloud-config
+                  subPath: s3.config.php
                 - mountPath: /var/www/html/config/.htaccess
                   name: nextcloud-config
                   subPath: .htaccess
@@ -84,20 +104,27 @@ spec:
                 - mountPath: /var/www/html/config/smtp.config.php
                   name: nextcloud-config
                   subPath: smtp.config.php
+                - mountPath: /etc/secrets/ca
+                  name: postgres-ca
+                - mountPath: /etc/secrets/nextcloud
+                  name: postgres-client-certs
+                - mountPath: /usr/local/etc/php-fpm.d/www.conf
+                  name: nextcloud-phpconfig
+                  subPath: www.conf
               env:
                 - name: POSTGRES_HOST
-                  value: nextcloud-web-app-postgresql
+                  value: nextcloud-postgres-rw.nextcloud.svc:5432;sslmode=verify-full;sslrootcert=/etc/secrets/ca/ca.crt;sslcert=/etc/secrets/nextcloud/tls.crt;sslkey=/etc/secrets/nextcloud/tls.key
                 - name: POSTGRES_DB
                   value: nextcloud
                 - name: POSTGRES_USER
                   valueFrom:
                     secretKeyRef:
-                      key: nextcloudUsername
+                      key: username
                       name: nextcloud-pgsql-credentials
                 - name: POSTGRES_PASSWORD
                   valueFrom:
                     secretKeyRef:
-                      key: nextcloudPassword
+                      key: password
                       name: nextcloud-pgsql-credentials
                 - name: NEXTCLOUD_ADMIN_USER
                   valueFrom:
@@ -109,7 +136,79 @@ spec:
                     secretKeyRef:
                       key: password
                       name: nextcloud-admin-credentials
-                # - name: NEXTCLOUD_TRUSTED_DOMAINS
-                #   value: cloud.example.com
                 - name: NEXTCLOUD_DATA_DIR
                   value: /var/www/html/data
+                - name: MAIL_FROM_ADDRESS
+                  value: user
+                - name: MAIL_DOMAIN
+                  value: domain.com
+                - name: SMTP_SECURE
+                  value: ssl
+                - name: SMTP_PORT
+                  value: "465"
+                - name: SMTP_AUTHTYPE
+                  value: LOGIN
+                - name: SMTP_HOST
+                  valueFrom:
+                    secretKeyRef:
+                      key: smtpHost
+                      name: nextcloud-admin-credentials
+                - name: SMTP_NAME
+                  valueFrom:
+                    secretKeyRef:
+                      key: smtpUsername
+                      name: nextcloud-admin-credentials
+                - name: SMTP_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      key: smtpPassword
+                      name: nextcloud-admin-credentials
+                - name: NC_oidc_login_provider_url
+                  valueFrom:
+                    secretKeyRef:
+                      key: issuer
+                      name: nextcloud-oidc-credentials
+                - name: NC_oidc_login_client_id
+                  valueFrom:
+                    secretKeyRef:
+                      key: client_id
+                      name: nextcloud-oidc-credentials
+                - name: NC_oidc_login_client_secret
+                  valueFrom:
+                    secretKeyRef:
+                      key: client_secret
+                      name: nextcloud-oidc-credentials
+                - name: OBJECTSTORE_S3_HOST
+                  valueFrom:
+                    secretKeyRef:
+                      key: S3_HOSTNAME
+                      name: nextcloud-s3-credentials
+                - name: OBJECTSTORE_S3_BUCKET
+                  valueFrom:
+                    secretKeyRef:
+                      key: S3_BUCKET
+                      name: nextcloud-s3-credentials
+                - name: OBJECTSTORE_S3_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      key: S3_USER
+                      name: nextcloud-s3-credentials
+                - name: OBJECTSTORE_S3_SECRET
+                  valueFrom:
+                    secretKeyRef:
+                      key: S3_PASSWORD
+                      name: nextcloud-s3-credentials
+                - name: OBJECTSTORE_S3_PORT
+                  value: "443"
+                - name: OBJECTSTORE_S3_SSL
+                  value: "true"
+                - name: OBJECTSTORE_S3_REGION
+                  value: eu-west-1
+                - name: OBJECTSTORE_S3_USEPATH_STYLE
+                  value: "true"
+                - name: PGSSLCERT
+                  value: /etc/secrets/nextcloud/tls.crt
+                - name: PGSSLKEY
+                  value: /etc/secrets/nextcloud/tls.key
+                - name: PGSSLROOTCERT
+                  value: /etc/secrets/ca/ca.crt
