@@ -48,7 +48,7 @@ spec:
         chart: seaweedfs
         helm:
           releaseName: nextcloud-seaweedfs
-          valuesObject:
+          values: |
             global:
               createClusterRole: true
               loggingLevel: 1
