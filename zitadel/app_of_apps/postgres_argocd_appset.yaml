@@ -16,7 +16,6 @@ spec:
           parameters:
             secret_vars:
               - zitadel_s3_endpoint
-              - zitadel_s3_bucket
   template:
     metadata:
       name: zitadel-postgres-cluster
@@ -58,7 +57,7 @@ spec:
             backup:
               # barman is a utility for backing up postgres to s3
               barmanObjectStore:
-                destinationPath: "s3://{{ .zitadel_s3_bucket }}"
+                destinationPath: "s3://zitadel-postgres"
                 endpointURL: "https://{{ .zitadel_s3_endpoint }}"
                 s3Credentials:
                   accessKeyId:

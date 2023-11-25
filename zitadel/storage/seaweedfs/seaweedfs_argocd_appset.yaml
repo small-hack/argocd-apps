@@ -36,11 +36,6 @@ spec:
           prune: true
           selfHeal: true 
       source:
-        ## only for testing our own patches before PRs
-        # repoURL: https://github.com/cloudymax/seaweedfs
-        # targetRevision: helm-post-install-hook
-        # path: k8s/charts/seaweedfs/
-
         repoURL: 'https://seaweedfs.github.io/seaweedfs/helm'
         targetRevision: 3.59.3
         chart: seaweedfs
@@ -428,7 +423,7 @@ spec:
                 enableAuth: true
                 existingConfigSecret: seaweedfs-s3-secret
                 createBuckets:
-                  - name: zitadel
+                  - name: zitadel-postgres
                     anonymousRead: false
             s3:
               enabled: false
