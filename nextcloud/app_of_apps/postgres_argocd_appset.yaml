@@ -51,9 +51,6 @@ spec:
                 owner: nextcloud
                 secret:
                   name: nextcloud-pgsql-credentials
-                # postInitSQL:
-                #  - GRANT ALL PRIVILEGES ON DATABASE nextcloud TO nextcloud;
-                #  - GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO nextcloud;
 
             backup:
               # barman is a utility for backing up postgres to s3
@@ -62,10 +59,10 @@ spec:
                 endpointURL: "https://{{ .nextcloud_s3_endpoint }}"
                 s3Credentials:
                   accessKeyId:
-                    name: nextcloud-s3-credentials
+                    name: postgres-s3-credentials
                     key : "S3_USER"
                   secretAccessKey:
-                    name: nextcloud-s3-credentials
+                    name: postgres-s3-credentials
                     key : "S3_PASSWORD"
               retentionPolicy: "30d"
             
