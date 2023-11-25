@@ -17,7 +17,6 @@ spec:
         input:
           parameters:
             secret_vars:
-              - nextcloud_hostname
               - nextcloud_s3_region
               - nextcloud_s3_endpoint
               - global_cluster_issuer
@@ -434,6 +433,7 @@ spec:
                     anonymousRead: false
                   - name: nextcloud-postgres
                     anonymousRead: false
+
             s3:
               enabled: false
               ingress:
@@ -441,7 +441,6 @@ spec:
                 className: "nginx"
                 # host: false for "*" hostname
                 host: "{{ .nextcloud_s3_endpoint }}"
-                # additional ingress annotations for the s3 endpoint
                 annotations:
                   nginx.ingress.kubernetes.io/proxy-body-size: 1G
                   cert-manager.io/cluster-issuer: {{ .global_cluster_issuer }}
