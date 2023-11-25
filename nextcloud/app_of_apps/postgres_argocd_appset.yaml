@@ -56,8 +56,7 @@ spec:
               # barman is a utility for backing up postgres to s3
               barmanObjectStore:
                 destinationPath: "s3://nextcloud-postgres"
-                # endpointURL: "https://{{ .nextcloud_s3_endpoint }}"
-                endpointURL: "http://seaweedfs-s3.nextcloud.svc.cluster.local:8333"
+                endpointURL: "https://{{ .nextcloud_s3_endpoint }}"
                 s3Credentials:
                   accessKeyId:
                     name: postgres-s3-credentials
