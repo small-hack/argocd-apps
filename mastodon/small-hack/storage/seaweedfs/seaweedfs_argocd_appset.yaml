@@ -36,14 +36,18 @@ spec:
           prune: true
           selfHeal: true 
       source:
-        repoURL: 'https://seaweedfs.github.io/seaweedfs/helm'
-        targetRevision: 3.59.3
-        chart: seaweedfs
+        repoURL: 'https://github.com/jessebot/seaweedfs'
+        targetRevision: cluster-role-naming-update
+        path: k8s/charts/seaweedfs/
+        # repoURL: 'https://seaweedfs.github.io/seaweedfs/helm'
+        # targetRevision: 3.59.3
+        # chart: seaweedfs
         helm:
           releaseName: mastodon-seaweedfs
           values: |
             global:
               createClusterRole: true
+              serviceAccountName: "mastodon-seaweedfs"
               loggingLevel: 1
               enableSecurity: false
               securityConfig:
