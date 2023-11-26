@@ -16,7 +16,7 @@ spec:
     namespace: matrix
   source:
     repoURL: https://github.com/small-hack/argocd-apps.git
-    path: matrix/manifests/persistence/
+    path: matrix/storage/pvc/
     targetRevision: eso-helm-chart-test
   syncPolicy:
     syncOptions:
