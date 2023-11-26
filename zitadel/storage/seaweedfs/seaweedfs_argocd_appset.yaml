@@ -279,7 +279,7 @@ spec:
                   scheme: HTTP
                 initialDelaySeconds: 10
                 periodSeconds: 2
-                successThreshold: 2
+                successThreshold: 1
                 failureThreshold: 100
                 timeoutSeconds: 10
 
@@ -397,7 +397,7 @@ spec:
                   scheme: HTTP
                 initialDelaySeconds: 10
                 periodSeconds: 2
-                successThreshold: 2
+                successThreshold: 1
                 failureThreshold: 100
                 timeoutSeconds: 10
 
