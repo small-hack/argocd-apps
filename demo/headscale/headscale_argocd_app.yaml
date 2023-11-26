@@ -40,7 +40,7 @@ spec:
 
         ingress:
           main:
-            enabled: false
+            enabled: true
             hosts:
               - host: headscale.buildstar.online
                 paths:
