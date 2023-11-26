@@ -43,20 +43,17 @@ spec:
           releaseName: mastodon-postgres-cluster
           values: |
             name: mastodon-postgres
-            instances: 3
+            instances: 2
 
             bootstrap:
               initdb:
                 database: mastodon
                 owner: mastodon
-                # postInitSQL:
-                #  - GRANT ALL PRIVILEGES ON DATABASE mastodon TO mastodon;
-                #  - GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO mastodon;
 
             backup:
               # barman is a utility for backing up postgres to s3
               barmanObjectStore:
-                destinationPath: "s3://mastodon-postgresql"
+                destinationPath: "s3://mastodon-postgres"
                 endpointURL: "https://{{ .mastodon_s3_endpoint }}"
                 s3Credentials:
                   accessKeyId:

@@ -209,7 +209,7 @@ spec:
               enabled: true
               hostname: mastodon-postgres-rw.mastodon.svc
               port: "5432"
-              database: mastodon
+              database: mastodon-postgres
               user: mastodon
               existingSecret: "mastodon-pgsql-credentials"
               sslmode: "verify-full"
