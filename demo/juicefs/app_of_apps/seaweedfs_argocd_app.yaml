@@ -14,7 +14,7 @@ spec:
   source:
     repoURL: 'https://seaweedfs.github.io/seaweedfs/helm'
     chart: seaweedfs
-    targetRevision: 3.59.2
+    targetRevision: 3.59.3
     helm:
       values: |
         master:
