@@ -35,6 +35,12 @@ spec:
       destination:
         server: https://kubernetes.default.svc
         namespace: matrix
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
+          selfHeal: true
       source:
         repoURL: 'https://small-hack.github.io/matrix-chart'
         targetRevision: 6.2.1
