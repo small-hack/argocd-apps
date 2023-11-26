@@ -1,0 +1,52 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: juicefs-seaweedfs
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  project: default
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: juicefs
+  source:
+    repoURL: 'https://seaweedfs.github.io/seaweedfs/helm'
+    chart: seaweedfs
+    targetRevision: 3.59.2
+    helm:
+      values: |
+        master:
+          data:
+            type: "existingClaim"
+            claimName: "swfs-master-data"
+        volume:
+          data:
+            type: "existingClaim"
+            claimName: "swfs-volume-data"
+        filer:
+          enablePVC: true
+          storage: 10Gi
+          data:
+            type: "existingClaim"
+            claimName: "swfs-filer-data"
+          s3:
+            enabled: true
+            port: 8333
+            httpsPort: 0
+            allowEmptyFolder: false
+            domainName: ""
+            enableAuth: true
+            skipAuthSecretCreation: false
+            auditLogConfig: {}
+            createBuckets:
+              - name: juicefs
+                anonymousRead: false
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+      - Replace=true
+    automated:
+      selfHeal: false
+      prune: true
