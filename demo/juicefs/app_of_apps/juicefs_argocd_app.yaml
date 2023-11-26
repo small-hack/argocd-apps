@@ -27,7 +27,7 @@ spec:
           #   storageclass.kubernetes.io/is-default-class: "true"
           backend:
             name: "juicefs"
-            metaurl: "juicefs-redis-master.juicefs.svc.cluster.local:6379"
+            metaurl: "redis://:password@juicefs-redis-master.juicefs.svc.cluster.local:6379/1"
             storage: "s3"
             bucket: "seaweedfs-s3.juicefs.svc.cluster.local:8333"
             accessKey: ""
