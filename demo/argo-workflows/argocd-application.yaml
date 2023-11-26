@@ -18,7 +18,7 @@ spec:
       targetRevision: 0.38.0
       helm:
         valueFiles:
-        - $values/alpha/argo-workflows/values.yaml
+        - $values/demo/argo-workflows/values.yaml
     # our values.yaml file locally
     - repoURL: 'https://github.com/small-hack/argocd-apps.git'
       targetRevision: main

@@ -9,8 +9,8 @@ metadata:
 spec:
   project: seaweedfs
   source:
-    repoURL: "https://github.com/small-hack/argocd-apps"
-    path: "alpha/seaweedfs/persistence/"
+    repoURL: https://github.com/small-hack/argocd-apps
+    path: demo/seaweedfs/persistence/
     targetRevision: eso-helm-chart-test
   destination:
     server: "https://kubernetes.default.svc"
