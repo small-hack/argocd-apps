@@ -210,10 +210,10 @@ spec:
                 httpGet:
                   path: /cluster/status
                   scheme: HTTP
-                initialDelaySeconds: 20
-                periodSeconds: 30
+                initialDelaySeconds: 10
+                periodSeconds: 2
                 successThreshold: 1
-                failureThreshold: 4
+                failureThreshold: 100
                 timeoutSeconds: 10
 
               # used to configure readinessProbe on master-server containers
@@ -224,8 +224,8 @@ spec:
                   path: /cluster/status
                   scheme: HTTP
                 initialDelaySeconds: 10
-                periodSeconds: 45
-                successThreshold: 2
+                periodSeconds: 2
+                successThreshold: 1
                 failureThreshold: 100
                 timeoutSeconds: 10
 
@@ -346,10 +346,10 @@ spec:
                 httpGet:
                   path: /status
                   scheme: HTTP
-                initialDelaySeconds: 20
-                periodSeconds: 90
+                initialDelaySeconds: 10
+                periodSeconds: 2
                 successThreshold: 1
-                failureThreshold: 4
+                failureThreshold: 100
                 timeoutSeconds: 30
 
               # used to configure readinessProbe on volume-server containers
@@ -359,8 +359,8 @@ spec:
                 httpGet:
                   path: /status
                   scheme: HTTP
-                initialDelaySeconds: 15
-                periodSeconds: 15
+                initialDelaySeconds: 10
+                periodSeconds: 2
                 successThreshold: 1
                 failureThreshold: 100
                 timeoutSeconds: 30
@@ -504,10 +504,10 @@ spec:
                 httpGet:
                   path: /
                   scheme: HTTP
-                initialDelaySeconds: 20
-                periodSeconds: 30
+                initialDelaySeconds: 10
+                periodSeconds: 2
                 successThreshold: 1
-                failureThreshold: 10
+                failureThreshold: 100
                 timeoutSeconds: 10
 
               # used to configure readinessProbe on filer containers
@@ -518,7 +518,7 @@ spec:
                   path: /
                   scheme: HTTP
                 initialDelaySeconds: 10
-                periodSeconds: 15
+                periodSeconds: 2
                 successThreshold: 1
                 failureThreshold: 100
                 timeoutSeconds: 10
