@@ -1,0 +1,23 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nextcloud-config-pvc
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  project: nextcloud
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: nextcloud
+  syncPolicy:
+    syncOptions:
+      - ApplyOutOfSyncOnly=true
+    automated:
+      prune: true
+      selfHeal: true
+  source:
+    repoURL: https://github.com/small-hack/argocd-apps.git
+    path: nextcloud/storage/pvc/
+    targetRevision: eso-helm-chart-test
