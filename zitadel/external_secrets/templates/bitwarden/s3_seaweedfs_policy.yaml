@@ -13,6 +13,12 @@ spec:
       data:
         seaweedfs_s3_config: |-
           {"identities":[
+            {"name": "anvAdmin",
+             "credentials": [
+               {"accessKey": "{{ `{{ .adminAccessKey }}` }}",
+                "secretKey": "{{ `{{ .adminSecretKey }}` }}"}
+             ],
+             "actions": ["Admin","Read","Write"]},
             {"name": "zitadel-postgres",
              "credentials": [
                {"accessKey": "{{ `{{ .dbUserAccessKey }}` }}",
@@ -21,6 +27,24 @@ spec:
              "actions": ["Read:zitadel-postgres","Write:zitadel-postgres","List:zitadel-postgres"]}
           ]}
   data:
+    - secretKey: adminAccessKey
+      sourceRef:
+        storeRef:
+          name: bitwarden-login
+          kind: ClusterSecretStore
+      remoteRef:
+        key: {{ .Values.s3AdminCredentialsBitwardenID }} 
+        property: username
+
+    - secretKey: adminSecretKey
+      sourceRef:
+        storeRef:
+          name: bitwarden-login
+          kind: ClusterSecretStore
+      remoteRef:
+        key: {{ .Values.s3AdminCredentialsBitwardenID }}
+        property: password
+
     - secretKey: dbUserAccessKey
       sourceRef:
         storeRef:

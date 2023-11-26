@@ -1,9 +1,12 @@
 ## if this is not set to "bitwarden", we will not actually deploy any templates
 # other providers may be supported in the future
 provider: "true"
-s3_provider: "seaweedfs"
 
 bitwardenCoreItemID: ""
 bitwardenDBItemID: ""
+
+# s3 related credentials
+s3_provider: "seaweedfs"
+s3AdminCredentialsBitwardenID: ""
 s3PostgresCredentialsBitwardenID: ""
 s3BackupsCredentialsBitwardenID: ""
