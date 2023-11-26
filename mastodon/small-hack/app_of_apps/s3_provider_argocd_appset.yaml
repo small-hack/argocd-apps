@@ -33,5 +33,5 @@ spec:
           selfHeal: true
       source:
         repoURL: https://github.com/small-hack/argocd-apps.git
-        path: mastodon/storage/{{ .mastodon_s3_provider }}/
+        path: mastodon/small-hack/storage/{{ .mastodon_s3_provider }}/
         targetRevision: eso-helm-chart-test
