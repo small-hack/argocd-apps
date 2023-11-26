@@ -56,7 +56,7 @@ spec:
             backup:
               # barman is a utility for backing up postgres to s3
               barmanObjectStore:
-                destinationPath: "s3://matrix-postgresql"
+                destinationPath: "s3://matrix-postgres"
                 endpointURL: "https://{{ .matrix_s3_endpoint }}"
                 s3Credentials:
                   accessKeyId:
