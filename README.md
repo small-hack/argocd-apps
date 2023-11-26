@@ -62,13 +62,13 @@ Here's some quick guidelines, but you if you'd like to contribute, please read t
 | [k8up](./k8up)                 | [K8up](https://k8up.io/k8up/2.7/index.html) is a k8s native backups done via restic, so you can sync your persistent volumes to external s3 compliant storage         |
 | [nextcloud](./nextcloud)       | [Nextcloud](https://nextcloud.com/) is a self hosted file storage cloud solution. Replaces something like google drive/photos/notes/meets/calendar - mostly stable    |
 | [minio](./minio)               | [MinIO](https://min.io) is a secure self hosted S3 compatible Object Store.                                                                                           |
-| [seaweedfs](./alpha/seaweedfs) | [SeaweedFS](https://github.com/seaweedfs/seaweedfs) is a secure and very fast self hosted S3 compatible Object Store specialized for either many files or large files |
+| [seaweedfs](./demo/seaweedfs) | [SeaweedFS](https://github.com/seaweedfs/seaweedfs) is a secure and very fast self hosted S3 compatible Object Store specialized for either many files or large files |
 
 
 #### 🚧 Under construction
 |       App Directory      | Description                                                                                                                                                                          |
 |:------------------------:|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [garage](./alpha/garage) | [Garage](https://git.deuxfleurs.fr/Deuxfleurs/garage/src/branch/main) is a self hosted S3 compatible Object Store                                                                    |
+| [garage](./demo/garage) | [Garage](https://git.deuxfleurs.fr/Deuxfleurs/garage/src/branch/main) is a self hosted S3 compatible Object Store                                                                    |
 |    [Harbor](./harbor)    | Container Registry and OCI artifact store with built-in vulernability scanning via Trivy                                                                                             |
 |  [Longhorn](./longhorn)  | [Longhorn](https://github.com/longhorn/longhorn) is a lightweight, reliable and easy-to-use distributed block storage system for Kubernetes. (not currently actively in development) |
 
@@ -84,7 +84,7 @@ Here's some quick guidelines, but you if you'd like to contribute, please read t
 
 |          App Directory         | Description                                                                                                                                                 |
 |:------------------------------:|:------------------------------------------------------------------------------------------------------------------------------------------------------------|
-|  [keycloak](./alpha/keycloak)  | helm chart for [Keycloak](https://www.keycloak.org/), an Identity Access Management tool with built in OpenIDConnect for authenticating to self hosted apps |
+|  [keycloak](./demo/keycloak)  | helm chart for [Keycloak](https://www.keycloak.org/), an Identity Access Management tool with built in OpenIDConnect for authenticating to self hosted apps |
 | [oauth2-proxy](./oauth2-proxy) | Oauth2 proxy that works with Google, however we're testing a keycloak provider right now                                                                    |
 
 ## Ingress
@@ -108,7 +108,7 @@ Here's some quick guidelines, but you if you'd like to contribute, please read t
 
 |       App Directory      | Description                                                                                                                                                                                                                                                                                                               |
 |:------------------------:|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [kepler](./alpha/kepler) | helm chart for [Kepler](https://github.com/sustainable-computing-io/kepler), (Kubernetes-based Efficient Power Level Exporter), which uses eBPF to probe performance counters and other system stats, use ML models to estimate workload energy consumption based on these stats, and exports them as Prometheus metrics. |
+| [kepler](./demo/kepler) | helm chart for [Kepler](https://github.com/sustainable-computing-io/kepler), (Kubernetes-based Efficient Power Level Exporter), which uses eBPF to probe performance counters and other system stats, use ML models to estimate workload energy consumption based on these stats, and exports them as Prometheus metrics. |
 
 
 ## Networking
@@ -121,9 +121,9 @@ Here's some quick guidelines, but you if you'd like to contribute, please read t
 
 |             App Directory             | Description                                                                                                                                  |
 |:-------------------------------------:|:---------------------------------------------------------------------------------------------------------------------------------------------|
-|        [cilium](./alpha/cilium)       | A helm chart for cilium, for transparently securing network connectivity/loadbalancing b/w app workloads such as app containers or processes |
-| [wireguard](./alpha/wg-access-server) | A helm chart for wg-access-server which uses Wireguard®️ for a VPN                                                                            |
-|     [headscale](./alpha/headscale)    | VPN, there isn't an official helm chart, so we're still working on this                                                                      |
+|        [cilium](./demo/cilium)       | A helm chart for cilium, for transparently securing network connectivity/loadbalancing b/w app workloads such as app containers or processes |
+| [wireguard](./demo/wg-access-server) | A helm chart for wg-access-server which uses Wireguard®️ for a VPN                                                                            |
+|     [headscale](./demo/headscale)    | VPN, there isn't an official helm chart, so we're still working on this                                                                      |
 
 
 ## Other
@@ -133,14 +133,14 @@ Other useful tools that don't fit neatly into any one category.
 
 |     App Directory    | Description                                                      |
 |:--------------------:|:-----------------------------------------------------------------|
-| [k8tz](./alpha/k8tz) | A helm chart for k8tz, to inject timezone info into cronjob pods |
+| [k8tz](./demo/k8tz) | A helm chart for k8tz, to inject timezone info into cronjob pods |
 
 
 ## Security
 
 | App Directory              | Description                         |
 |:---------------------------|:------------------------------------|
-| [kyverno](./alpha/kyverno) | Kubernetes-native policy management |
+| [kyverno](./demo/kyverno) | Kubernetes-native policy management |
 
 
 ## Secrets Management
@@ -169,7 +169,7 @@ Other useful tools that don't fit neatly into any one category.
 
 | App Directory                  | Description                                                                        |
 |:-------------------------------|:-----------------------------------------------------------------------------------|
-| [iceshrimp](./alpha/iceshrimp) | Selfhosted social media. This is forked from firefish, which is forked from miskey |
+| [iceshrimp](./demo/iceshrimp) | Selfhosted social media. This is forked from firefish, which is forked from miskey |
 
 
 ## Virtual Machines

@@ -1,15 +1,15 @@
 .github/* @jessebot
 
-alpha/artifactory/* @cloudymax
-alpha/cilium/* @jessebot @cloudymax
-alpha/diagrams/* @cloudymax
-alpha/home-assistant/* @jessebot
-alpha/k8tz/* @cloudymax
-alpha/kepler/* @jessebot
-alpha/longhorn/* @cloudymax
-alhpa/netmaker/* @jessebot
-alpha/oauth2-proxy/* @jessebot
-alpha/wg-access-server/* @jessebot @cloudymax
+demo/artifactory/* @cloudymax
+demo/cilium/* @jessebot @cloudymax
+demo/diagrams/* @cloudymax
+demo/home-assistant/* @jessebot
+demo/k8tz/* @cloudymax
+demo/kepler/* @jessebot
+demo/longhorn/* @cloudymax
+demo/netmaker/* @jessebot
+demo/oauth2-proxy/* @jessebot
+demo/wg-access-server/* @jessebot @cloudymax
 
 argocd/* @jessebot
 coturn/* @cloudymax
