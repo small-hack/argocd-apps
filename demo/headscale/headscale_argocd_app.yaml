@@ -20,6 +20,7 @@ spec:
       values: |
         env:
           HEADSCALE_DNS_CONFIG_BASE_DOMAIN: buildstars.local
+          TZ: Europe/Amsterdam
           # HEADSCALE_OIDC_ISSUER: ""
           # HEADSCALE_OIDC_CLIENT_ID: ""
           # HEADSCALE_OIDC_CLIENT_SECRET: ""
