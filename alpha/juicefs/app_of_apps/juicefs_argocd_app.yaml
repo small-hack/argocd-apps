@@ -1,0 +1,45 @@
+---
+# has to be after secrets, but before web-app
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: juicefs-csi-driver
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  project: default
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: juicefs
+  source:
+    repoURL: 'https://juicedata.github.io/charts/'
+    chart: juicefs-csi-driver
+    targetRevision: 0.19.2
+    helm:
+      values: |
+        storageClasses:
+        - name: "juicefs-sc"
+          enabled: true
+          reclaimPolicy: Delete
+          allowVolumeExpansion: true
+          # annotations:
+          #   storageclass.kubernetes.io/is-default-class: "true"
+          backend:
+            name: "juicefs"
+            metaurl: ""
+            storage: "s3"
+            bucket: "juicefs"
+            accessKey: ""
+            secretKey: ""
+            envs: ""
+            configs: ""
+            trashDays: ""
+            formatOptions: ""
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+      - Replace=true
+    automated:
+      selfHeal: false
+      prune: true

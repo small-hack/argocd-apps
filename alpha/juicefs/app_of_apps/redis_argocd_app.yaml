@@ -1,0 +1,35 @@
+---
+# has to be after secrets, but before web-app
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: juicefs-redis
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  project: default
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: juicefs
+  source:
+    repoURL: 'registry-1.docker.io'
+    chart: bitnamicharts/redis
+    targetRevision: 18.4.0
+    helm:
+      values: |
+        global:
+          storageClass: "local-path"
+        replica:
+          replicaCount: 1
+        auth:
+          # you can also specify the name of an existing Secret
+          # with a key of redis-password set to the password you want
+         existingSecret: "redis-credentials"
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+      - Replace=true
+    automated:
+      selfHeal: false
+      prune: true
