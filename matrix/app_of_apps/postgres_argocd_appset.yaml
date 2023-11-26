@@ -41,7 +41,7 @@ spec:
           releaseName: matrix-postgres-cluster
           values: |
             name: matrix-postgres
-            instances: 3
+            instances: 2
 
             bootstrap:
               initdb:
