@@ -17,8 +17,9 @@ spec:
             fsGroup: 82
           restartPolicy: OnFailure
           volumes:
-            - emptyDir: {}
-              name: nextcloud-main
+            - name: nextcloud-main
+              persistentVolumeClaim:
+                claimName: nextcloud-config
             - configMap:
                 defaultMode: 420
                 name: nextcloud-web-app-config
