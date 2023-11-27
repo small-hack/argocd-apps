@@ -38,7 +38,7 @@ spec:
       source:
         repoURL: https://zitadel.github.io/zitadel-charts
         chart: zitadel
-        targetRevision: 7.1.0
+        targetRevision: 7.3.1
         helm:
           releaseName: zitadel
           # https://github.com/zitadel/zitadel-charts/blob/main/charts/zitadel/values.yaml
@@ -48,7 +48,7 @@ spec:
             # Overrides the image tag to the latest version
             # as kept up to date by renovateBot
             image:
-              tag: "v2.35.0"
+              tag: "v2.41.1"
 
             zitadel:
               # See all defaults here:
@@ -121,6 +121,8 @@ spec:
             initJob:
               # Once ZITADEL is installed, the initJob can be disabled.
               enabled: true
+              backoffLimit: 100
+              activeDeadlineSeconds: 120
 
             ingress:
               enabled: true
