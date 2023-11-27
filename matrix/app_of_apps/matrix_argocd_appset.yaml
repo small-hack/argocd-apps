@@ -15,12 +15,12 @@ spec:
         input:
           parameters:
             secret_vars:
+              # - matrix_idp_id
+              # - matrix_idp_name
               - matrix_hostname
               - matrix_element_hostname
               - matrix_federation_hostname
               - matrix_admin_email
-              - matrix_idp_id
-              - matrix_idp_name
               - matrix_s3_bucket
               - matrix_s3_region
               - matrix_s3_endpoint
@@ -146,8 +146,8 @@ spec:
                   client_secret: "client_secret"
 
                 providers:
-                  - idp_id: {{ .matrix_idp_id }}
-                    idp_name: {{ .matrix_idp_name }}
+                  - idp_id: zitadel
+                    idp_name: zitadel
                     # discover: true
                     # options: client_secret_basic (default), client_secret_post, 'none'
                     # client_auth_method: client_secret_post
