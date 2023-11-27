@@ -432,8 +432,6 @@ spec:
                 createBuckets:
                   - name: nextcloud-data
                     anonymousRead: false
-                  - name: nextcloud-config
-                    anonymousRead: false
                   - name: nextcloud-postgres
                     anonymousRead: false
 
