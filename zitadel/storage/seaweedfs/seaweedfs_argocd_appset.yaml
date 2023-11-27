@@ -37,13 +37,14 @@ spec:
           selfHeal: true 
       source:
         repoURL: 'https://seaweedfs.github.io/seaweedfs/helm'
-        targetRevision: 3.59.3
+        targetRevision: 3.59.4
         chart: seaweedfs
         helm:
           releaseName: zitadel-seaweedfs
           values: |
             global:
               createClusterRole: true
+              serviceAccountName: "zitadel-seaweedfs"
               loggingLevel: 1
               enableSecurity: false
               securityConfig:

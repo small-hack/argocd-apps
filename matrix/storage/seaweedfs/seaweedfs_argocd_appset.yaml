@@ -37,7 +37,7 @@ spec:
           selfHeal: true 
       source:
         repoURL: 'https://seaweedfs.github.io/seaweedfs/helm'
-        targetRevision: 3.59.3
+        targetRevision: 3.59.4
         chart: seaweedfs
         helm:
           releaseName: matrix-seaweedfs
@@ -46,6 +46,7 @@ spec:
               createClusterRole: true
               loggingLevel: 1
               enableSecurity: false
+              serviceAccountName: "matrix-seaweedfs"
               securityConfig:
                 jwtSigning:
                   volumeWrite: true

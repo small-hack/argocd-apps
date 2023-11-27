@@ -43,13 +43,14 @@ spec:
         # path: k8s/charts/seaweedfs/
 
         repoURL: 'https://seaweedfs.github.io/seaweedfs/helm'
-        targetRevision: 3.59.3
+        targetRevision: 3.59.4
         chart: seaweedfs
         helm:
           releaseName: nextcloud-seaweedfs
           values: |
             global:
               createClusterRole: true
+              serviceAccountName: "nextcloud-seaweedfs"
               loggingLevel: 1
               enableSecurity: false
               securityConfig:
