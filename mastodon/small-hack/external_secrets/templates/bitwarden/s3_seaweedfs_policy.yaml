@@ -29,6 +29,7 @@ spec:
                 "secretKey": "{{ `{{ .userSecretKey }}` }}"}
              ],
              "actions": ["Read:mastodon","Write:mastodon","List:mastodon"]},
+            {"name": "anonymous", "actions": ["Read:mastodon"]},
             {"name": "mastodon-postgres",
              "credentials": [
                {"accessKey": "{{ `{{ .dbUserAccessKey }}` }}",

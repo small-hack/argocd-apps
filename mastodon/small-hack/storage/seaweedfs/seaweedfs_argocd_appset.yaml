@@ -425,7 +425,7 @@ spec:
                 existingConfigSecret: seaweedfs-s3-secret
                 createBuckets:
                   - name: mastodon
-                    anonymousRead: true
+                    anonymousRead: false
                   - name: mastodon-postgres
                     anonymousRead: false
             s3:
