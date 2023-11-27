@@ -396,24 +396,24 @@ spec:
 
             livenessProbe:
               enabled: false
-              initialDelaySeconds: 120
-              periodSeconds: 30
-              timeoutSeconds: 5
-              failureThreshold: 3
+              initialDelaySeconds: 20
+              periodSeconds: 10
+              timeoutSeconds: 10
+              failureThreshold: 100
               successThreshold: 1
             readinessProbe:
               enabled: true
-              initialDelaySeconds: 120
-              periodSeconds: 30
-              timeoutSeconds: 5
-              failureThreshold: 3
+              initialDelaySeconds: 20
+              periodSeconds: 10
+              timeoutSeconds: 10
+              failureThreshold: 100
               successThreshold: 1
             startupProbe:
               enabled: false
-              initialDelaySeconds: 120
-              periodSeconds: 30
-              timeoutSeconds: 5
-              failureThreshold: 30
+              initialDelaySeconds: 20
+              periodSeconds: 10
+              timeoutSeconds: 10
+              failureThreshold: 100
               successThreshold: 1
             hpa:
               enabled: false
