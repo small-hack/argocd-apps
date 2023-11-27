@@ -46,7 +46,7 @@ spec:
 
             mastodon:
               createAdmin:
-                enabled: true
+                enabled: false
                 existingSecret: mastodon-admin-credentials
                 secretKeys:
                   usernameKey: username
