@@ -28,7 +28,7 @@ spec:
                {"accessKey": "{{ `{{ .userAccessKey }}` }}",
                 "secretKey": "{{ `{{ .userSecretKey }}` }}"}
              ],
-             "actions": ["Read:nextcloud","Write:nextcloud","List:nextcloud"]},
+             "actions": ["Read:nextcloud-data","Write:nextcloud-data","List:nextcloud-data"]},
             {"name": "nextcloud-postgres",
              "credentials": [
                {"accessKey": "{{ `{{ .dbUserAccessKey }}` }}",
