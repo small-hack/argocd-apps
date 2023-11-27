@@ -45,7 +45,7 @@ spec:
         # path: k8s/charts/seaweedfs/
 
         repoURL: 'https://seaweedfs.github.io/seaweedfs/helm'
-        targetRevision: 3.59.2
+        targetRevision: 3.59.4
         chart: seaweedfs
         helm:
           releaseName: seaweedfs
@@ -54,6 +54,7 @@ spec:
               createClusterRole: true
               loggingLevel: 1
               enableSecurity: false
+              serviceAccountName: "seaweedfs-core"
               securityConfig:
                 jwtSigning:
                   volumeWrite: true
