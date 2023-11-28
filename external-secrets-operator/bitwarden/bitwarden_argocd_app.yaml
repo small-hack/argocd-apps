@@ -7,9 +7,9 @@ metadata:
 spec:
   project: external-secrets-operator
   source:
-    repoURL: 'https://small-hack.github.io/bitwarden-eso-provider'
-    targetRevision: 0.5.1
-    chart: bitwarden-eso-provider
+    repoURL: 'https://github.com/jokajak/bitwarden-eso-provider'
+    targetRevision: support_bw_appid
+    path: charts/bitwarden-eso-provider/
     helm:
       values: |
         network_policy: false
