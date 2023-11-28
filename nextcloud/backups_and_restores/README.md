@@ -2,6 +2,8 @@
 
 If you're using our Nextcloud Argo CD App of Apps, then you're already backing up your data to a remote s3 instance of some sort. This directory is just meant to help you test that the backups are there and working, as well as provide a script for helping with restores.
 
+The scheduled backup is created in the app of apps via [s3_pvc_appset.yaml](../app_of_apps/s3_pvc_appset.yaml) using [k8up](https://k8up.io) which wraps [restic](https://restic.net/), which uses the local [s3_persistence_and_backups helm chart](../../../s3_persistence_and_backups). That helm chart includes [this scheduled backup template](../../../s3_persistence_and_backups/templates/scheduled_backups.yaml).
+
 # Restoring Nextcloud from K8up (Restic) Backups
 
 *Prereq*:

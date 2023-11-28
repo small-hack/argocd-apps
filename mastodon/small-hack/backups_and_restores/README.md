@@ -2,7 +2,7 @@
 
 This Argo CD App of Apps for Mastodon contains a scheduled backup to an remote s3 compliant endpoint.
 
-The scheduled backup is created in the app of apps via [s3_pvc_appset.yaml](../app_of_apps/s3_pvc_appset.yaml), which uses the local [s3_persistence_and_backups helm chart](../../../s3_persistence_and_backups). That helm chart includes [this scheduled backup template](../../../s3_persistence_and_backups/templates/scheduled_backups.yaml).
+The scheduled backup is created in the app of apps via [s3_pvc_appset.yaml](../app_of_apps/s3_pvc_appset.yaml) using [k8up](https://k8up.io) which wraps [restic](https://restic.net/), which uses the local [s3_persistence_and_backups helm chart](../../../s3_persistence_and_backups). That helm chart includes [this scheduled backup template](../../../s3_persistence_and_backups/templates/scheduled_backups.yaml).
 
 
 ## Checking your backups
