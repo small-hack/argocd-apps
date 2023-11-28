@@ -52,8 +52,8 @@ spec:
                   - profile
             ingress:
               enabled: true
+              ingressClassName: nginx
               annotations:
-                kubernetes.io/ingress.class: nginx
                 cert-manager.io/cluster-issuer: {{ .global_cluster_issuer }}
               paths:
                 - /
