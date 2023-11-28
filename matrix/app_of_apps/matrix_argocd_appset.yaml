@@ -275,7 +275,7 @@ spec:
             s3:
               # -- enable s3 storage via https://github.com/matrix-org/synapse-s3-storage-provider
               enabled: true
-              endpoint: {{ .matrix_s3_endpoint }}
+              endpoint: https://{{ .matrix_s3_endpoint }}
               bucket: {{ .matrix_s3_bucket }}
               region: {{ .matrix_s3_region }}
               existingSecret: "matrix-s3-credentials"
