@@ -69,7 +69,7 @@ spec:
                 name: 'backups-s3-credentials'
                 key: 'resticRepoPass'
 
-              prometheus_url: ''
+              prometheus_url: 'push-gateway.prometheus.svc:9091'
 
               podSecurityContext:
                 runAsUser: 0
