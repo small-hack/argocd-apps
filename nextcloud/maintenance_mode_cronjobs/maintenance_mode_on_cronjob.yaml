@@ -3,7 +3,6 @@ apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: maintanence-mode-on
-  namespace: nextcloud
 spec:
   # daily at 1pm Central Europe Time
   schedule: "0 14 * * *"
