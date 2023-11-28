@@ -54,8 +54,8 @@ spec:
               backup_type: "s3"
 
               s3:
-                bucket: {{ .matrix_backup_s3_bucket }}
-                endpoint: {{ .matrix_backup_s3_endpoint }}
+                bucket: {{ .matrix_s3_backup_bucket }}
+                endpoint: {{ .matrix_s3_backup_endpoint }}
                 accessKeyIDSecretRef:
                   name: 'backups-s3-credentials'
                   key: 'accessKey'
