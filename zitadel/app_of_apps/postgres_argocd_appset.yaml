@@ -84,7 +84,8 @@ spec:
             scheduledBackup:
               name: zitadel-pg-backup
               spec:
-                schedule: "0 0 0 * * *" 
+                # hourly full data backups
+                schedule: "0 0 * * * *" 
                 backupOwnerReference: self
                 cluster:
                   name: pg-backup
