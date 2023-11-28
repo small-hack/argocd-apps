@@ -14,7 +14,7 @@ spec:
         input:
           parameters:
             secret_vars:
-              - global_timezone
+              - global_time_zone
   template:
     metadata:
       name: k8tz-helm-release
@@ -43,7 +43,7 @@ spec:
             
             namespace: k8tz
             injectionStrategy: initContainer
-            timezone: {{ .global_timezone }}
+            timezone: {{ .global_time_zone }}
             injectAll: false
             cronJobTimeZone: true
             # requires kubernetes >=1.24.0-beta.0 with 'CronJobTimeZone' 

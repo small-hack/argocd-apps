@@ -17,7 +17,7 @@ spec:
         input:
           parameters:
             secret_vars:
-              - global_timezone
+              - global_time_zone
   template:
     metadata:
       name: k8up-helm-release
@@ -43,7 +43,7 @@ spec:
               # -- Specifies the timezone K8up is using for scheduling.
               # Empty value defaults to the timezone in which Kubernetes is deployed.
               # Accepts `tz database` compatible entries, e.g. `Europe/Zurich`
-              timezone: {{ .global_timezone }}
+              timezone: {{ .global_time_zone }}
 
             metrics:
               service:
