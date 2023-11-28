@@ -19,3 +19,7 @@ Then change the values for the endpoint, bucket, access id, and secret key to yo
 source .env
 restic snapshots
 ```
+
+## Restoring a PostgreSQL Backup
+
+Checkout the [postgres backup docs](../../../postgres/backups/README.md) for more info.
