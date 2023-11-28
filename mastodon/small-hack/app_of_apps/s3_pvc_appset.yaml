@@ -54,8 +54,8 @@ spec:
               backup_type: "s3"
 
               s3:
-                bucket: {{ .mastodon_backup_s3_bucket }}
-                endpoint: {{ .mastodon_backup_s3_endpoint }}
+                bucket: {{ .mastodon_s3_backup_bucket }}
+                endpoint: {{ .mastodon_s3_backup_endpoint }}
                 accessKeyIDSecretRef:
                   name: 'backups-s3-credentials'
                   key: 'accessKey'
