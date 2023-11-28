@@ -54,8 +54,8 @@ spec:
               backup_type: "s3"
 
               s3:
-                bucket: {{ .zitadel_backup_s3_bucket }}
-                endpoint: {{ .zitadel_backup_s3_endpoint }}
+                bucket: {{ .zitadel_s3_backup_bucket }}
+                endpoint: {{ .zitadel_s3_backup_endpoint }}
                 accessKeyIDSecretRef:
                   name: 'backups-s3-credentials'
                   key: 'accessKey'
