@@ -84,7 +84,7 @@ spec:
                 schedule: "0 0 * * * *" 
                 backupOwnerReference: self
                 cluster:
-                  name: pg-backup
+                  name: matrix-postgres
 
             monitoring:
               enablePodMonitor: false
