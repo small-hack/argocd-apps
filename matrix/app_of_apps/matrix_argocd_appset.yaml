@@ -106,6 +106,7 @@ spec:
                     enabled: true
                   host: {{ .matrix_federation_hostname }}
                   annotations:
+                    nginx.ingress.kubernetes.io/proxy-body-size: 10G
                     # -- required for the Nginx ingress provider. You can remove it if you
                     # use a different ingress provider
                     nginx.ingress.kubernetes.io/configuration-snippet: |
