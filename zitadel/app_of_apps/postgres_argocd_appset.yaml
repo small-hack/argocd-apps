@@ -88,7 +88,7 @@ spec:
                 schedule: "0 0 * * * *" 
                 backupOwnerReference: self
                 cluster:
-                  name: pg-backup
+                  name: zitadel-postgres
 
             monitoring:
               enablePodMonitor: false
