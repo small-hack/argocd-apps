@@ -39,7 +39,7 @@ spec:
           command:
             - /bin/sh
             - -c
-            - su -s /bin/sh www-data -c "php occ app:install oidc_login"
+            - su -s /bin/sh www-data -c "php occ app:install oidc_login && php occ app:install notes && php occ app:install bookmarks && php occ app:install deck"
           volumeMounts:
             - mountPath: /var/www/
               name: nextcloud-main
