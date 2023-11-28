@@ -78,7 +78,8 @@ spec:
             scheduledBackup:
               name: mastodon-pg-backup
               spec:
-                schedule: "0 0 0 * * *" 
+                # hourly backups for postgres data
+                schedule: "0 0 * * * *" 
                 backupOwnerReference: self
                 cluster:
                   name: pg-backup
