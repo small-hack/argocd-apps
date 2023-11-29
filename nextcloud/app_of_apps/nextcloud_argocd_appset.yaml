@@ -338,7 +338,7 @@ spec:
               image:
                 repository: nginxinc/nginx-unprivileged
                 tag: alpine
-              enabled: true
+              enabled: false
               securityContext:
                 runAsUser: 82
                 runAsGroup: 82
