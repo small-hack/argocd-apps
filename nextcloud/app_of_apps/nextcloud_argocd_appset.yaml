@@ -175,12 +175,12 @@ spec:
                 - name: postgres-ca
                   secret:
                     secretName: nextcloud-postgres-server-ca-key-pair
-                    defaultMode: 0640
+                    defaultMode: 0644
 
                 - name: postgres-client-certs
                   secret:
                     secretName: nextcloud-postgres-nextcloud-cert
-                    defaultMode: 0640
+                    defaultMode: 0644
 
               extraVolumeMounts:
                 - name: postgres-ca
