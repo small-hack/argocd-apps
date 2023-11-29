@@ -112,7 +112,7 @@ spec:
 
               extraInitContainers:
                 - name: change-data-dir-permissions
-                  image: nginx-alpine:latest
+                  image: nginx:alpine
                   command:
                     - /bin/sh
                     - -c
