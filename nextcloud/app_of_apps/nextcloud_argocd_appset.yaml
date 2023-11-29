@@ -79,6 +79,10 @@ spec:
                   location = /.well-known/caldav {
                     return 301 $scheme://$host/remote.php/dav/;
                   }
+
+                  location / {
+                    try_files $uri $uri/ /index.php$request_uri;
+                  }
               tls:
                 - secretName: nextcloud-tls
                   hosts:
