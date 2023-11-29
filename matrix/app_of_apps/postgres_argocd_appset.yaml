@@ -60,10 +60,10 @@ spec:
                 endpointURL: "https://{{ .matrix_s3_endpoint }}"
                 s3Credentials:
                   accessKeyId:
-                    name: matrix-s3-credentials
+                    name: postgres-s3-credentials
                     key : "S3_ACCESS_KEY"
                   secretAccessKey:
-                    name: matrix-s3-credentials
+                    name: postgres-s3-credentials
                     key : "S3_SECRET_KEY"
               retentionPolicy: "30d"
             
