@@ -3,10 +3,10 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: cozy-web-app-set
+  name: cozy-couchdb-app-set
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "3"
+    argocd.argoproj.io/sync-wave: "2"
 spec:
   goTemplate: true
   # generator allows us to source specific values from an external k8s secret
@@ -17,18 +17,17 @@ spec:
         input:
           parameters:
             secret_vars:
-              - cozy_hostname
               - global_cluster_issuer
   template:
     metadata:
-      name: cozy-web-app
+      name: cozy-couchdb-web-app
       annotations:
-        argocd.argoproj.io/sync-wave: "3"
+        argocd.argoproj.io/sync-wave: "2"
     spec:
-      project: cozy
+      project: couchdb
       destination:
         server: https://kubernetes.default.svc
-        namespace: cozy
+        namespace: couchdb
       syncPolicy:
         syncOptions:
           - CreateNamespace=true
