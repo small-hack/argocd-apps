@@ -190,6 +190,7 @@ spec:
                 www.conf: |-
                   [www]
                   security.limit_extensions = .php .css .js
+
               #  www.conf: |-
               #    [www]
               #    user = www-data
