@@ -121,7 +121,7 @@ spec:
                     - mountPath: /var/www/
                       name: nextcloud-main
                       subPath: root
-                    - mountPath: /var/www/
+                    - mountPath: /var/www/html
                       name: nextcloud-main
                       subPath: html
                     - mountPath: /var/www/html/data
