@@ -61,10 +61,17 @@ spec:
                 # nginx.ingress.kubernetes.io/enable-cors: "false"
                 nginx.ingress.kubernetes.io/cors-allow-headers: "X-Forwarded-For"
                 nginx.ingress.kubernetes.io/server-snippet: |-
-                  fastcgi_split_path_info ^(.+?\.php)(/.*)$;
-                  set $path_info $fastcgi_path_info;
+                  location ~ \.php(?:$|/) {
+                    # Required for legacy support
+                    rewrite ^/(?!index|remote|public|cron|core\/ajax\/update|status|ocs\/v[12]|updater\/.+|oc[ms]-provider\/.+|.+\/richdocumentscode\/proxy) /index.php$request_uri;
 
-                  try_files $fastcgi_script_name =404;
+                    fastcgi_split_path_info ^(.+?\.php)(/.*)$;
+                    set $path_info $fastcgi_path_info;
+
+                    try_files $fastcgi_script_name =404;
+
+                    fastcgi_pass php-handler;
+                  }
 
                   proxy_hide_header X-Powered-By;
                   rewrite ^/.well-known/webfinger /index.php/.well-known/webfinger last;
