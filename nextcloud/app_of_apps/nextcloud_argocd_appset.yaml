@@ -116,7 +116,7 @@ spec:
                   command:
                     - /bin/sh
                     - -c
-                    - useradd -u 82 www-data && chmod 760 -R /var/www/html && chown www-data: -R /var/www/html
+                    - "useradd -u 82 www-data && chmod 760 -R /var/www/html && chown www-data: -R /var/www/html"
                   volumeMounts:
                     - mountPath: /var/www/
                       name: nextcloud-main
