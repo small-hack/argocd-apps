@@ -193,6 +193,12 @@ spec:
                 www.conf: |-
                   [www]
                   security.limit_extensions = .php .css .js
+                  listen = 127.0.0.1:9000
+                  pm = dynamic
+                  pm.max_children = 350
+                  pm.start_servers = 80
+                  pm.min_spare_servers = 80
+                  pm.max_spare_servers = 268
 
               #  www.conf: |-
               #    [www]
