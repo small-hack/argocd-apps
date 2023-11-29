@@ -59,7 +59,7 @@ spec:
                 nginx.ingress.kubernetes.io/proxy-body-size: 10G
 
                 # nginx.ingress.kubernetes.io/enable-cors: "false"
-                # nginx.ingress.kubernetes.io/cors-allow-headers: "X-Forwarded-For"
+                nginx.ingress.kubernetes.io/cors-allow-headers: "X-Forwarded-For"
                 nginx.ingress.kubernetes.io/server-snippet: |-
                   proxy_hide_header X-Powered-By;
                   rewrite ^/.well-known/webfinger /index.php/.well-known/webfinger last;
@@ -224,7 +224,9 @@ spec:
               phpConfigs:
                 www.conf: |-
                   [www]
-                  security.limit_extensions = .php .css .js
+                  user = www-data
+                  group = www-data
+                  security.limit_extensions = .php .css .js .html
                   listen = 127.0.0.1:9000
                   pm = dynamic
                   pm.max_children = 350
@@ -236,13 +238,6 @@ spec:
               #    [www]
               #    user = www-data
               #    group = www-data
-              #    listen = 127.0.0.1:9000
-              #    pm = dynamic
-              #    pm.max_children = 350
-              #    pm.start_servers = 80
-              #    pm.min_spare_servers = 80
-              #    pm.max_spare_servers = 268
-              #    security.limit_extensions = .php .css
 
               configs:
                 logging.config.php: |-
