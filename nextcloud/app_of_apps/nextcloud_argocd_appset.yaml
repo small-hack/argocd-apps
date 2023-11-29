@@ -336,6 +336,10 @@ spec:
 
             nginx:
               enabled: true
+              securityContext:
+                runAsUser: 82
+                runAsGroup: 82
+                runAsNonRoot: true
 
             internalDatabase:
               enabled: false
