@@ -1,0 +1,59 @@
+---
+# webapp is deployed 2nd because we need secrets and persistent volumes up 1st
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: cozy-web-app-set
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+spec:
+  goTemplate: true
+  # generator allows us to source specific values from an external k8s secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - cozy_hostname
+              - global_cluster_issuer
+  template:
+    metadata:
+      name: cozy-web-app
+      annotations:
+        argocd.argoproj.io/sync-wave: "3"
+    spec:
+      project: cozy
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: cozy
+      syncPolicy:
+        syncOptions:
+          - CreateNamespace=true
+          - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
+          selfHeal: true
+      source:
+        repoURL: 'https://jessebot.github.io/cozy-helm-chart'
+        chart: cozy-stack
+        targetRevision: 0.1.0
+        helm:
+          values: |
+            ingress:
+              enabled: true 
+              className: "nginx"
+              annotations:
+                cert-manager.io/cluster-issuer: {{ .global_cluster_issuer }}
+                nginx.ingress.kubernetes.io/proxy-body-size: 10G
+              hosts:
+                - host: {{ .cozy_hostname }}
+                  paths:
+                    - path: /
+                      pathType: ImplementationSpecific
+              tls:
+                - secretName: cozy-tls
+                  hosts:
+                    - "{{ .cozy_hostname }}"
