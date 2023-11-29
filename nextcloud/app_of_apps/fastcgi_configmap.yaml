@@ -8,8 +8,7 @@ metadata:
 data:
   modHeadersAvailable: "true"
   front_controller_active: "true"
-  SCRIPT_FILENAME: "/var/www/html$fastcgi_script_name"
+  DOCUMENT_ROOT: "/var/www/html"
+  SCRIPT_FILENAME: "$document_root$fastcgi_script_name"
   PATH_INFO: "$fastcgi_path_info"
   HTTPS: "1"
-  PATH_TRANSLATED: "$document_root$fastcgi_path_info"
-  DOCUMENT_ROOT: "/var/www/html"
