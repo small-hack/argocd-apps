@@ -54,48 +54,23 @@ spec:
                 nginx.ingress.kubernetes.io/fastcgi-params-configmap: "nextcloud-fastcgi-cm"
 
                 nginx.ingress.kubernetes.io/proxy-body-size: 10G
-                nginx.ingress.kubernetes.io/server-snippet: |-
-                  # Ensure this block, which passes PHP files to the PHP process, is above the blocks
-                  # which handle static assets (as seen below). If this block is not declared first,
-                  # then Nginx will encounter an infinite rewriting loop when it prepends `/index.php`
-                  # to the URI, resulting in a HTTP 500 error response.
-                  location ~ \.php(?:$|/) {
-                      # Required for legacy support
-                      rewrite ^/(?!index|remote|public|cron|core\/ajax\/update|status|ocs\/v[12]|updater\/.+|oc[ms]-provider\/.+|.+\/richdocumentscode\/proxy) /index.php$request_uri;
 
-                      fastcgi_split_path_info ^(.+?\.php)(/.*)$;
-                      set $path_info $fastcgi_path_info;
-
-                      try_files $fastcgi_script_name =404;
-
-                      include fastcgi_params;
-                      fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-                      fastcgi_param PATH_INFO $path_info;
-                      #fastcgi_param HTTPS on;
-
-                      fastcgi_param modHeadersAvailable true;         # Avoid sending the security headers twice
-                      fastcgi_param front_controller_active true;     # Enable pretty urls
-                      fastcgi_pass php-handler;
-
-                      fastcgi_intercept_errors on;
-                      fastcgi_request_buffering off;
-                  }
                 # nginx.ingress.kubernetes.io/enable-cors: "false"
                 # nginx.ingress.kubernetes.io/cors-allow-headers: "X-Forwarded-For"
-                # nginx.ingress.kubernetes.io/server-snippet: |-
-                #  proxy_hide_header X-Powered-By;
-                #  rewrite ^/.well-known/webfinger /index.php/.well-known/webfinger last;
-                #  rewrite ^/.well-known/nodeinfo /index.php/.well-known/nodeinfo last;
-                #  rewrite ^/.well-known/host-meta /public.php?service=host-meta last;
-                #  rewrite ^/.well-known/host-meta.json /public.php?service=host-meta-json;
+                nginx.ingress.kubernetes.io/server-snippet: |-
+                  proxy_hide_header X-Powered-By;
+                  rewrite ^/.well-known/webfinger /index.php/.well-known/webfinger last;
+                  rewrite ^/.well-known/nodeinfo /index.php/.well-known/nodeinfo last;
+                  rewrite ^/.well-known/host-meta /public.php?service=host-meta last;
+                  rewrite ^/.well-known/host-meta.json /public.php?service=host-meta-json;
 
-                #  location = /.well-known/carddav {
-                #    return 301 $scheme://$host/remote.php/dav/;
-                #  }
+                  location = /.well-known/carddav {
+                    return 301 $scheme://$host/remote.php/dav/;
+                  }
 
-                #  location = /.well-known/caldav {
-                #    return 301 $scheme://$host/remote.php/dav/;
-                #  }
+                  location = /.well-known/caldav {
+                    return 301 $scheme://$host/remote.php/dav/;
+                  }
               tls:
                 - secretName: nextcloud-tls
                   hosts:
