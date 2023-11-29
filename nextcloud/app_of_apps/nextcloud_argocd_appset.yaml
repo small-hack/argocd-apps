@@ -36,7 +36,7 @@ spec:
           selfHeal: true
       source:
         repoURL: 'https://nextcloud.github.io/helm'
-        targetRevision: 4.5.2
+        targetRevision: 4.5.3
         chart: nextcloud
         helm:
           values: |
@@ -335,6 +335,9 @@ spec:
                     );
 
             nginx:
+              image:
+                repository: nginxinc/nginx-unprivileged
+                tag: alpine
               enabled: true
               securityContext:
                 runAsUser: 82
