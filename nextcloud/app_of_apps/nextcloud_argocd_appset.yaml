@@ -99,17 +99,37 @@ spec:
               securityContext:
                 runAsUser: 82
                 runAsGroup: 82
-                runAsNonRoot: true
+                # runAsNonRoot: true
 
               podSecurityContext:
                 runAsUser: 82
                 runAsGroup: 82
                 fsGroup: 82
-                runAsNonRoot: true
 
               # for sending notifications
               mail:
                 enabled: true
+
+              extraInitContainers:
+                - name: change-data-dir-permissions
+                  image: alpine:latest
+                  command:
+                    - /bin/sh
+                    - -c
+                    - useradd -u 82 www-data && chmod 760 -R /var/www/html && chown www-data: -R /var/www/html
+                  volumeMounts:
+                    - mountPath: /var/www/
+                      name: nextcloud-main
+                      subPath: root
+                    - mountPath: /var/www/
+                      name: nextcloud-main
+                      subPath: html
+                    - mountPath: /var/www/html/data
+                      name: nextcloud-main
+                      subPath: data
+                    - mountPath: /var/www/html/config
+                      name: nextcloud-main
+                      subPath: config
 
               extraEnv:
                 # OIDC parameters
