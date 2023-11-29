@@ -112,7 +112,7 @@ spec:
 
               extraInitContainers:
                 - name: change-data-dir-permissions
-                  image: nginx:alpine
+                  image: bitnami/os-shell:11-debian-11-r91
                   command:
                     - /bin/sh
                     - -c
@@ -130,6 +130,12 @@ spec:
                     - mountPath: /var/www/html/config
                       name: nextcloud-main
                       subPath: config
+                  securityContext:
+                    runAsUser: 0
+                    runAsGroup: 0
+                    runAsNonRoot: false
+                    seccompProfile:
+                      type: RuntimeDefault
 
               extraEnv:
                 # OIDC parameters
