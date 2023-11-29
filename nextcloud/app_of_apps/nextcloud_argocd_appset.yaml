@@ -182,9 +182,6 @@ spec:
                 - name: nextcloud-php-fpm-conf
                   configmap:
                     name: nextcloud-php-fpm-conf
-                    items:
-                      - key: www.conf
-                        path: www.conf
 
               extraVolumeMounts:
                 - name: postgres-ca
@@ -195,6 +192,7 @@ spec:
 
                 - name: nextcloud-php-fpm-conf
                   mountPath: /usr/local/etc/php-fpm.d/
+                  subPath: www.conf
 
               phpConfigs:
                 www.conf: |-
