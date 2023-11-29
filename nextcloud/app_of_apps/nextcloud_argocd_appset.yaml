@@ -35,9 +35,12 @@ spec:
           prune: true
           selfHeal: true
       source:
-        repoURL: 'https://nextcloud.github.io/helm'
-        targetRevision: 4.5.3
-        chart: nextcloud
+        # repoURL: 'https://nextcloud.github.io/helm'
+        # targetRevision: 4.5.3
+        # chart: nextcloud
+        repoURL: 'https://github.com/jessebot/nextcloud-helm'
+        path: charts/nextcloud/
+        targetRevision: update-php-configs
         helm:
           values: |
             image:
@@ -179,10 +182,6 @@ spec:
                     secretName: nextcloud-postgres-nextcloud-cert
                     defaultMode: 0640
 
-                - name: nextcloud-php-fpm-conf
-                  configmap:
-                    name: nextcloud-php-fpm-conf
-
               extraVolumeMounts:
                 - name: postgres-ca
                   mountPath: /etc/secrets/ca
@@ -190,13 +189,10 @@ spec:
                 - name: postgres-client-certs
                   mountPath: /etc/secrets/nextcloud
 
-                - name: nextcloud-php-fpm-conf
-                  mountPath: /usr/local/etc/php-fpm.d
-
-              #phpConfigs:
-              #  www.conf: |-
-              #    [www]
-              #    security.limit_extensions = .php .css .js
+              phpConfigs:
+                www.conf: |-
+                  [www]
+                  security.limit_extensions = .php .css .js
 
               #  www.conf: |-
               #    [www]
