@@ -179,12 +179,22 @@ spec:
                     secretName: nextcloud-postgres-nextcloud-cert
                     defaultMode: 0640
 
+                - name: nextcloud-php-fpm-conf
+                  configmap:
+                    name: nextcloud-php-fpm-conf
+                    items:
+                      - key: www.conf
+                        path: www.conf
+
               extraVolumeMounts:
                 - name: postgres-ca
                   mountPath: /etc/secrets/ca
 
                 - name: postgres-client-certs
                   mountPath: /etc/secrets/nextcloud
+
+                - name: nextcloud-php-fpm-conf
+                  mountPath: /usr/local/etc/php-fpm.d/
 
               phpConfigs:
                 www.conf: |-
