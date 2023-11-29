@@ -126,7 +126,7 @@ spec:
                   command:
                     - /bin/sh
                     - -c
-                    - "chmod 770 -R /var/www/html && chown 82:www-data -R /var/www/html"
+                    - "chmod 770 -R /var/www/html/data && chown 82:www-data -R /var/www/html"
                   volumeMounts:
                     - mountPath: /var/www/
                       name: nextcloud-main
@@ -234,8 +234,6 @@ spec:
               phpConfigs:
                 www.conf: |-
                   [www]
-                  user = www-data
-                  group = www-data
                   security.limit_extensions = .php .css .js .html
                   listen = 127.0.0.1:9000
                   pm = dynamic
