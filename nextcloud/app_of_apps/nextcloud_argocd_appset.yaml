@@ -40,7 +40,7 @@ spec:
         # chart: nextcloud
         repoURL: 'https://github.com/jessebot/nextcloud-helm'
         path: charts/nextcloud/
-        targetRevision: update-php-configs
+        targetRevision: allow-updating-fsgroup
         helm:
           values: |
             image:
@@ -96,9 +96,15 @@ spec:
 
               containerPort: 9000
 
+              securityContext:
+                runAsUser: 82
+                runAsGroup: 82
+                runAsNonRoot: true
+
               podSecurityContext:
                 runAsUser: 82
                 runAsGroup: 82
+                fsGroup: 82
                 runAsNonRoot: true
 
               # for sending notifications
@@ -175,12 +181,12 @@ spec:
                 - name: postgres-ca
                   secret:
                     secretName: nextcloud-postgres-server-ca-key-pair
-                    defaultMode: 0644
+                    defaultMode: 0640
 
                 - name: postgres-client-certs
                   secret:
                     secretName: nextcloud-postgres-nextcloud-cert
-                    defaultMode: 0644
+                    defaultMode: 0640
 
               extraVolumeMounts:
                 - name: postgres-ca
@@ -356,14 +362,7 @@ spec:
                     );
 
             nginx:
-              image:
-                repository: nginxinc/nginx-unprivileged
-                tag: alpine
               enabled: false
-              securityContext:
-                runAsUser: 82
-                runAsGroup: 82
-                runAsNonRoot: true
 
             internalDatabase:
               enabled: false
