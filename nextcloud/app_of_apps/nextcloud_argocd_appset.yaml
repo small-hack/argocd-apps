@@ -191,8 +191,7 @@ spec:
                   mountPath: /etc/secrets/nextcloud
 
                 - name: nextcloud-php-fpm-conf
-                  mountPath: /usr/local/etc/php-fpm.d/www.conf
-                  subPath: www.conf
+                  mountPath: /usr/local/etc/php-fpm.d
 
               #phpConfigs:
               #  www.conf: |-
