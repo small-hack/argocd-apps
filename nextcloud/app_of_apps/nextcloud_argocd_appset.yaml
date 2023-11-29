@@ -191,13 +191,13 @@ spec:
                   mountPath: /etc/secrets/nextcloud
 
                 - name: nextcloud-php-fpm-conf
-                  mountPath: /usr/local/etc/php-fpm.d/
+                  mountPath: /usr/local/etc/php-fpm.d/www.conf
                   subPath: www.conf
 
-              phpConfigs:
-                www.conf: |-
-                  [www]
-                  security.limit_extensions = .php .css .js
+              #phpConfigs:
+              #  www.conf: |-
+              #    [www]
+              #    security.limit_extensions = .php .css .js
 
               #  www.conf: |-
               #    [www]
