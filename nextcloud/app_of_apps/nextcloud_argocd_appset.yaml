@@ -61,6 +61,11 @@ spec:
                 # nginx.ingress.kubernetes.io/enable-cors: "false"
                 nginx.ingress.kubernetes.io/cors-allow-headers: "X-Forwarded-For"
                 nginx.ingress.kubernetes.io/server-snippet: |-
+                  fastcgi_split_path_info ^(.+?\.php)(/.*)$;
+                  set $path_info $fastcgi_path_info;
+
+                  try_files $fastcgi_script_name =404;
+
                   proxy_hide_header X-Powered-By;
                   rewrite ^/.well-known/webfinger /index.php/.well-known/webfinger last;
                   rewrite ^/.well-known/nodeinfo /index.php/.well-known/nodeinfo last;
