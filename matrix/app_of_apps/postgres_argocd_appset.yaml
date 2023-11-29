@@ -61,10 +61,10 @@ spec:
                 s3Credentials:
                   accessKeyId:
                     name: postgres-s3-credentials
-                    key : "S3_ACCESS_KEY"
+                    key : "S3_USER"
                   secretAccessKey:
                     name: postgres-s3-credentials
-                    key : "S3_SECRET_KEY"
+                    key : "S3_PASSWORD"
               retentionPolicy: "30d"
             
             certificates:
