@@ -72,7 +72,7 @@ spec:
               prometheus_url: 'push-gateway.prometheus.svc:9091'
 
               podSecurityContext:
-                runAsUser: 0
+                runAsUser: 82
 
               schedules:
                 backup: "03 14 * * *"

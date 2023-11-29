@@ -71,20 +71,6 @@ spec:
                   hosts:
                     - "{{ .nextcloud_hostname }}"
 
-            # lifecycle:
-            #  postStartCommand:
-            # - su
-            # - -s
-            # - /bin/sh
-            # - www-data
-            # - -c
-            # - |-
-            # echo "Configuring Nextcloud Apps"
-            # php occ app:install notes
-            # php occ app:install deck
-            # #php occ app:install oidc-login
-            # php occ app:install bookmarks
-
             nextcloud:
               host: {{ .nextcloud_hostname }}
               existingSecret:
@@ -99,6 +85,11 @@ spec:
 
               # update to the latest version of nextcloud
               update: 1
+
+              podSecurityContext:
+                runAsUser: 82
+                runAsGroup: 82
+                runAsNonRoot: true
 
               # for sending notifications
               mail:
@@ -160,12 +151,6 @@ spec:
 
                 - name: "OBJECTSTORE_S3_USEPATH_STYLE"
                   value: "true"
-
-                #- name: "OBJECTSTORE_S3_ENCYRPTION_KEY"
-                #  valueFrom:
-                #    secretKeyRef:
-                #      name: nextcloud-s3-credentials
-                #      key: S3_ENCRYPTION_KEY
 
                 - name: "PGSSLCERT"
                   value: /etc/secrets/nextcloud/tls.crt
