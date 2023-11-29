@@ -69,8 +69,6 @@ spec:
                     set $path_info $fastcgi_path_info;
 
                     try_files $fastcgi_script_name =404;
-
-                    fastcgi_pass php-handler;
                   }
 
                   proxy_hide_header X-Powered-By;
