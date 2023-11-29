@@ -112,11 +112,11 @@ spec:
 
               extraInitContainers:
                 - name: change-data-dir-permissions
-                  image: bitnami/os-shell:11-debian-11-r91
+                  image: alpine:latest
                   command:
                     - /bin/sh
                     - -c
-                    - "chmod 760 -R /var/www/html && chown www-data: -R /var/www/html"
+                    - "chmod 770 -R /var/www/html && chown 82:www-data -R /var/www/html"
                   volumeMounts:
                     - mountPath: /var/www/
                       name: nextcloud-main
