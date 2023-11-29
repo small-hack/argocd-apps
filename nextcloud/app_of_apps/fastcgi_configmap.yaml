@@ -3,6 +3,9 @@ kind: ConfigMap
 metadata:
   name: nextcloud-fastcgi-cm
 data:
-  SCRIPT_FILENAME: "/var/www/html/index.php"
   modHeadersAvailable: "true"
   front_controller_active: "true"
+  SCRIPT_FILENAME: "/var/www/html$fastcgi_script_name"
+  DOCUMENT_ROOT: "/var/www/html"
+  PATH_INFO: "$fastcgi_path_info"
+  PATH_TRANSLATED: "$document_root$fastcgi_path_info"

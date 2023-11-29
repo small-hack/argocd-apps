@@ -186,7 +186,10 @@ spec:
                 - name: postgres-client-certs
                   mountPath: /etc/secrets/nextcloud
 
-              #phpConfigs:
+              phpConfigs:
+                www.conf: |-
+                  [www]
+                  security.limit_extensions = .php .css
               #  www.conf: |-
               #    [www]
               #    user = www-data
@@ -197,6 +200,7 @@ spec:
               #    pm.start_servers = 80
               #    pm.min_spare_servers = 80
               #    pm.max_spare_servers = 268
+              #    security.limit_extensions = .php .css
 
               configs:
                 logging.config.php: |-
