@@ -12,3 +12,4 @@ data:
   front_controller_active: "true"
   SCRIPT_FILENAME: "/var/www/html$fastcgi_script_name"
   PATH_INFO: "$fastcgi_path_info"
+  HTTPS: "1"
