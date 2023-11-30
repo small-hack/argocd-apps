@@ -95,7 +95,7 @@ spec:
                   paths:
                     - path: /
                       pathType: ImplementationSpecific
-                - host: home.{{ .cozy_hostname }}
+                - host: max.buildstars.online
                   paths:
                     - path: /
                       pathType: ImplementationSpecific
@@ -105,4 +105,4 @@ spec:
                     - "{{ .cozy_hostname }}"
                 - secretName: cozy-home-tls
                   hosts:
-                    - "home.{{ .cozy_hostname }}"
+                    - "max.buildstars.online"
