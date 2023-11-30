@@ -115,6 +115,10 @@ spec:
                   paths:
                     - path: /
                       pathType: ImplementationSpecific
+                - host: notes.{{ .cozy_hostname }}
+                  paths:
+                    - path: /
+                      pathType: ImplementationSpecific
               tls:
                 - secretName: cozy-home-tls
                   hosts:
@@ -135,6 +139,10 @@ spec:
                 - secretName: cozy-drive-tls
                   hosts:
                     - "drive.{{ .cozy_hostname }}"
+
+                - secretName: cozy-drive-tls
+                  hosts:
+                    - "notes.{{ .cozy_hostname }}"
 
                 - secretName: cozy-tls
                   hosts:
