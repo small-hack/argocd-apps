@@ -57,6 +57,7 @@ spec:
             cozy:
               adminPassphrase: "ChangeMeTodayTest"
               configPath: "/etc/cozy"
+              domain: {{ .cozy_hostname }}
 
             couchdb:
               existingSecret: "couchdb-couchdb"
