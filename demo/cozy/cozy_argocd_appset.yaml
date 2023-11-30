@@ -56,8 +56,7 @@ spec:
 
             cozy:
               adminPassphrase: "ChangeMeTodayTest"
-              # existingSecret: ""
-              fs_url: "/var/lib/cozy"
+              configPath: "/etc/cozy"
 
             couchdb:
               existingSecret: "couchdb-couchdb"
