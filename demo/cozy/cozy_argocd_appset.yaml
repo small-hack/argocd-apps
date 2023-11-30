@@ -50,6 +50,10 @@ spec:
           # and later these:
           # https://docs.cozy.io/en/cozy-stack/config/#stack-endpoints
           values: |
+            image:
+              repository: jessebot/cozy-stack
+              tag: 1.6.15-rc2
+
             cozy:
               adminPassphrase: "ChangeMeTodayTest"
               # existingSecret: ""
