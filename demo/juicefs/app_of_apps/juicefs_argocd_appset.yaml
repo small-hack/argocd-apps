@@ -1,0 +1,59 @@
+---
+# has to be after secrets, but before web-app
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: juicefs-csi-driver-app-set
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  goTemplate: true
+  # generator allows us to source specific values from an external k8s secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - juicefs_redis_password
+              - seadweedfs_s3_access_key
+              - seaweedfs_s3_secret_key
+  template:
+    metadata:
+      name: juicefs-csi-driver-app
+    spec:
+      project: juicefs
+      destination:
+        server: 'https://kubernetes.default.svc'
+        namespace: juicefs
+      source:
+        repoURL: 'https://juicedata.github.io/charts/'
+        chart: juicefs-csi-driver
+        targetRevision: 0.19.2
+        helm:
+          values: |
+            storageClasses:
+            - name: "juicefs-sc"
+              enabled: true
+              reclaimPolicy: Delete
+              allowVolumeExpansion: true
+              backend:
+                name: "juicefs"
+                metaurl: "redis://:{{ .juicefs_redis_password }}@juicefs-redis-master.juicefs.svc.cluster.local:6379/1"
+                storage: "s3"
+                bucket: "http://seaweedfs-s3.juicefs.svc.cluster.local:8333/juicefs"
+                accessKey: {{ .seadweedfs_s3_access_key }}
+                secretKey: {{ .seaweedfs_s3_secret_key }}
+                envs: ""
+                configs: ""
+                trashDays: ""
+                formatOptions: ""
+      syncPolicy:
+        syncOptions:
+          - CreateNamespace=true
+          - Replace=true
+        automated:
+          selfHeal: false
+          prune: true

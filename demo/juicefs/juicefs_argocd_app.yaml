@@ -2,12 +2,12 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: juicefs-argocd-appset
+  name: juicef-app-of-apps
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "1"
 spec:
-  project: default
+  project: juicefs
   destination:
     server: "https://kubernetes.default.svc"
     namespace: juicefs
