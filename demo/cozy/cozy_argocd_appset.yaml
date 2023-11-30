@@ -53,7 +53,7 @@ spec:
               fs_url: "/var/lib/cozy"
 
             couchdb:
-              existingSecret: "couchdb-credentials-couchdb"
+              existingSecret: "couchdb-couchdb"
               # secretKeys:
               #   host: "host"
               #   port: "port"
