@@ -24,10 +24,10 @@ spec:
       annotations:
         argocd.argoproj.io/sync-wave: "2"
     spec:
-      project: couchdb
+      project: cozy
       destination:
         server: https://kubernetes.default.svc
-        namespace: couchdb
+        namespace: cozy
       syncPolicy:
         syncOptions:
           - CreateNamespace=true
