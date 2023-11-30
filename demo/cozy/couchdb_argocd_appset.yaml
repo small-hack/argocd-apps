@@ -40,7 +40,14 @@ spec:
         chart: couchdb
         targetRevision: 4.4.5
         helm:
+          releaseName: couchdb
           values: |
+            nameOverride: couchdb
+
+            fullnameOverride: couchdb
+
+            createAdminSecret: false
+
             couchdbConfig:
               couchdb:
                 uuid: fisharefriendsnotfoodpleaseunderstand
