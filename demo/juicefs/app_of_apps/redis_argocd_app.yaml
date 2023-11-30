@@ -3,12 +3,12 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: juicefs-redis
+  name: juicefs-redis-app
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "2"
+    argocd.argoproj.io/sync-wave: "1"
 spec:
-  project: default
+  project: juicefs
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: juicefs
@@ -23,8 +23,6 @@ spec:
         replica:
           replicaCount: 1
         auth:
-          # you can also specify the name of an existing Secret
-          # with a key of redis-password set to the password you want
          existingSecret: "redis-credentials"
   syncPolicy:
     syncOptions:

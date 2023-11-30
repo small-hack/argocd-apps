@@ -2,12 +2,12 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: juicefs-seaweedfs
+  name: juicefs-seaweedfs-app
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "2"
 spec:
-  project: default
+  project: juicefs
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: juicefs
