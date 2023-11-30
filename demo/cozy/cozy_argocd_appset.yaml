@@ -39,7 +39,7 @@ spec:
       source:
         repoURL: 'https://jessebot.github.io/cozy-helm-chart'
         chart: cozy-stack
-        targetRevision: 0.2.1
+        targetRevision: 0.2.2
         helm:
           # these values for cozy and couchdb just render the env vars here:
           # https://github.com/cozy/cozy-stack/tree/0fe78134b2d09c73813be48274c66ed8582328e6/scripts/docker/production
