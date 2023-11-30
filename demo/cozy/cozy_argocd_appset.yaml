@@ -52,7 +52,7 @@ spec:
           values: |
             image:
               repository: jessebot/cozy-stack
-              tag: 1.6.15-rc4
+              tag: 1.6.15-rc5
 
             cozy:
               adminPassphrase: "ChangeMeTodayTest"
