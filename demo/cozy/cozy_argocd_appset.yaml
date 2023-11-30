@@ -48,7 +48,7 @@ spec:
           # https://docs.cozy.io/en/cozy-stack/config/#stack-endpoints
           values: |
             cozy:
-              adminPassphrase: "ChangeMeToday!"
+              adminPassphrase: "ChangeMeTodayTest"
               # existingSecret: ""
               fs_url: "/var/lib/cozy"
 
