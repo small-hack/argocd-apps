@@ -95,7 +95,14 @@ spec:
                   paths:
                     - path: /
                       pathType: ImplementationSpecific
+                - host: home.{{ .cozy_hostname }}
+                  paths:
+                    - path: /
+                      pathType: ImplementationSpecific
               tls:
                 - secretName: cozy-tls
                   hosts:
                     - "{{ .cozy_hostname }}"
+                - secretName: cozy-home-tls
+                  hosts:
+                    - "home.{{ .cozy_hostname }}"
