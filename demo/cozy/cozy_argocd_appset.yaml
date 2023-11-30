@@ -99,7 +99,19 @@ spec:
                   paths:
                     - path: /
                       pathType: ImplementationSpecific
-                - host: max.buildstars.online
+                - host: drive.{{ .cozy_hostname }}
+                  paths:
+                    - path: /
+                      pathType: ImplementationSpecific
+                - host: store.{{ .cozy_hostname }}
+                  paths:
+                    - path: /
+                      pathType: ImplementationSpecific
+                - host: settings.{{ .cozy_hostname }}
+                  paths:
+                    - path: /
+                      pathType: ImplementationSpecific
+                - host: photos.{{ .cozy_hostname }}
                   paths:
                     - path: /
                       pathType: ImplementationSpecific
@@ -107,9 +119,23 @@ spec:
                 - secretName: cozy-home-tls
                   hosts:
                     - "home.{{ .cozy_hostname }}"
+
+                - secretName: cozy-photos-tls
+                  hosts:
+                    - "photos.{{ .cozy_hostname }}"
+
+                - secretName: cozy-store-tls
+                  hosts:
+                    - "store.{{ .cozy_hostname }}"
+
+                - secretName: cozy-settings-tls
+                  hosts:
+                    - "settings.{{ .cozy_hostname }}"
+
+                - secretName: cozy-drive-tls
+                  hosts:
+                    - "drive.{{ .cozy_hostname }}"
+
                 - secretName: cozy-tls
                   hosts:
                     - "{{ .cozy_hostname }}"
-                - secretName: cozy-max-tls
-                  hosts:
-                    - "max.buildstars.online"
