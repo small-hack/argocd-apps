@@ -7,6 +7,7 @@ metadata:
   annotations:
     pref.argocd.argoproj.io/default-view: "network"
     pref.argocd.argoproj.io/default-pod-sort: "topLevelResource"
+    argocd.argoproj.io/sync-wave: "4"
 spec:
   goTemplate: true
   # generator allows us to source specific values from an external k8s secret
@@ -23,7 +24,7 @@ spec:
     metadata:
       name: zitadel-web-app
       annotations:
-        argocd.argoproj.io/sync-wave: "5"
+        argocd.argoproj.io/sync-wave: "4"
     spec:
       project: zitadel
       destination:
