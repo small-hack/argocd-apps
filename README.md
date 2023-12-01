@@ -20,22 +20,22 @@ Here's some quick guidelines, but you if you'd like to contribute, please read t
 * [Continuous Deployment](#continuous-deployment)
 * [Database](#database)
 * [File Storage and Backups](#file-storage-and-backups)
-  * [🚧 Under construction](#-under-construction)
+  * [Experimental](#experimental)
 * [Identity Providers and SSO](#identity-providers-and-sso)
-  * [🚧 Under construction](#-under-construction-1)
+  * [Experimental](#experimental-1)
 * [Ingress](#ingress)
 * [Monitoring](#monitoring)
 * [Networking](#networking)
-  * [🚧 Under construction](#-under-construction-2)
+  * [Experimental](#experimental-2)
 * [Other](#other)
-  * [🚧 Under construction](#-under-construction-3)
+  * [Experimental](#experimental-3)
 * [Security](#security)
 * [Secrets Management](#secrets-management)
-  * [🚧 Under construction](#-under-construction-4)
+  * [Experimental](#experimental-4)
 * [Social Media and chat](#social-media-and-chat)
-  * [🚧 Under construction](#-under-construction-5)
+  * [Experimental](#experimental-5)
 * [Virtual Machines](#virtual-machines)
-  * [🚧 Under construction](#-under-construction-6)
+  * [Experimental](#experimental-6)
 * [Troubleshooting Tips](#troubleshooting-tips)
 * [Art](#art)
 
@@ -65,12 +65,12 @@ Here's some quick guidelines, but you if you'd like to contribute, please read t
 | [seaweedfs](./demo/seaweedfs) | [SeaweedFS](https://github.com/seaweedfs/seaweedfs) is a secure and very fast self hosted S3 compatible Object Store specialized for either many files or large files |
 
 
-#### 🚧 Under construction
+#### Experimental
 |       App Directory      | Description                                                                                                                                                                          |
 |:------------------------:|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | [garage](./demo/garage) | [Garage](https://git.deuxfleurs.fr/Deuxfleurs/garage/src/branch/main) is a self hosted S3 compatible Object Store                                                                    |
 |    [Harbor](./harbor)    | Container Registry and OCI artifact store with built-in vulernability scanning via Trivy                                                                                             |
-|  [Longhorn](./longhorn)  | [Longhorn](https://github.com/longhorn/longhorn) is a lightweight, reliable and easy-to-use distributed block storage system for Kubernetes. (not currently actively in development) |
+|  [Longhorn](./demo/longhorn)  | [Longhorn](https://github.com/longhorn/longhorn) is a lightweight, reliable and easy-to-use distributed block storage system for Kubernetes. (not currently actively in development) |
 
 ## Identity Providers and SSO
 
@@ -80,7 +80,7 @@ Here's some quick guidelines, but you if you'd like to contribute, please read t
 |     [zitadel](./zitadel)     | helm chart for [Zitadel](https://zitadel.com/), an Identity Access Management tool with built in OpenIDConnect for authenticating to self hosted apps. Recommended over keycloak.                                                                                                                                                                 |
 
 
-#### 🚧 Under construction
+#### Experimental
 
 |          App Directory         | Description                                                                                                                                                 |
 |:------------------------------:|:------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -104,7 +104,7 @@ Here's some quick guidelines, but you if you'd like to contribute, please read t
 | [prometheus-push-gateway](./prometheus/push-gateway_argocd_appset.yaml) | Installs the [Prometheus Push Gateway](https://prometheus.io/docs/instrumenting/pushing/) which enables pushing metrics from jobs that would be difficult or impossible to scrape   |
 
 
-#### 🚧 Under construction
+#### Experimental
 
 |       App Directory      | Description                                                                                                                                                                                                                                                                                                               |
 |:------------------------:|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -117,7 +117,7 @@ Here's some quick guidelines, but you if you'd like to contribute, please read t
 |:--------------------:|:----------------------------------------------------------------------------------------------------------------------------------|
 | [metallb](./metallb) | A helm chart for [metallb](https://metallb.universe.tf/) which will let you manager your own ip address pool for use with ingress |
 
-#### 🚧 Under construction
+#### Experimental
 
 |             App Directory             | Description                                                                                                                                  |
 |:-------------------------------------:|:---------------------------------------------------------------------------------------------------------------------------------------------|
@@ -129,7 +129,7 @@ Here's some quick guidelines, but you if you'd like to contribute, please read t
 ## Other
 Other useful tools that don't fit neatly into any one category.
 
-#### 🚧 Under construction
+#### Experimental
 
 |     App Directory    | Description                                                      |
 |:--------------------:|:-----------------------------------------------------------------|
@@ -150,7 +150,7 @@ Other useful tools that don't fit neatly into any one category.
 | [external-secrets-operator](./external-secrets-operator)   | ESO ([External Secrets Operator](https://external-secrets.io/latest/)) used for sourcing k8s secrets from an external provider       |
 | [bitwarden-external-secrets](./bitwarden-external-secrets) | ESO [Bitwarden](https://external-secrets.io/v0.9.1/examples/bitwarden/) SecretStore, for using secrets directly from bitwarden items |
 
-#### 🚧 Under construction
+#### Experimental
 
 | App Directory            | Description                                                                                                                                                |
 |:-------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -165,7 +165,7 @@ Other useful tools that don't fit neatly into any one category.
 | [mastodon](./mastodon) | Selfhosted social media site, includes [postgresql](https://github.com/bitnami/charts/tree/main/bitnami/postgresql), [elastic search] (for full text searching), and [redis](https://github.com/bitnami/charts/tree/main/bitnami/redis) (in memory caching) - mostly stable |
 | [matrix](./matrix)     | Selfhosted chat server that plugs into a bunch of other chat apps                                                                                                                                                                                                           |
 
-#### 🚧 Under construction
+#### Experimental
 
 | App Directory                  | Description                                                                        |
 |:-------------------------------|:-----------------------------------------------------------------------------------|
@@ -178,7 +178,7 @@ Other useful tools that don't fit neatly into any one category.
 |:-----------------------|:----------------------------------------------------------------------------------------|
 | [kubevirt](./kubevirt) | [KubeVirt](https://kubevirt.io/) is a virtual machine management add-on for Kubernetes. |
 
-#### 🚧 Under construction
+#### Experimental
 |                 App Directory                | Description                                                                       |
 |:--------------------------------------------:|:----------------------------------------------------------------------------------|
 | [Nvidia GPU Operator](./nvidia/gpu-operator) | The GPU Operator allows administrators of Kubernetes clusters to manage GPU nodes |
