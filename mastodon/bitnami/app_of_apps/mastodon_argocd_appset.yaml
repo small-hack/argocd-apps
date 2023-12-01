@@ -36,13 +36,9 @@ spec:
           prune: true
           selfHeal: true
       source:
-        repoURL: https://github.com/jessebot/charts
-        path: bitnami/mastodon/
-        targetRevision: test-helm-hooks
-        # can't be enabled till this is fixed: https://github.com/bitnami/charts/pull/20901
-        # repoURL: registry-1.docker.io
-        # chart: bitnamicharts/mastodon
-        # targetRevision: 3.2.3
+        repoURL: registry-1.docker.io
+        chart: bitnamicharts/mastodon
+        targetRevision: 3.2.5
         helm:
           releaseName: "mastodon"
           values: |

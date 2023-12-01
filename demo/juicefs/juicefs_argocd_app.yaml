@@ -1,0 +1,21 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: juicef-app-of-apps
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  project: juicefs
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: juicefs
+  source:
+    repoURL: https://github.com/small-hack/argocd-apps.git
+    path: demo/juicefs/
+  syncPolicy:
+    syncOptions:
+      - ApplyOutOfSyncOnly=true
+    automated:
+      selfHeal: true

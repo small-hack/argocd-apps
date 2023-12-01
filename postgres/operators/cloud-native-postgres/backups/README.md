@@ -1,8 +1,31 @@
-# CNPG Operator Backup and Restore Procedure
+# Mino/Postgres Backups, Recovery, and Major-Upgrades
 
-## Set up a demo cluster
+This guide will walk you through the creation, backup, and recovery processes for a local [Minio](https://min.io/docs/minio/kubernetes/upstream/index.html) deployment and [CloudNative Postgres](https://cloudnative-pg.io/documentation/current/) cluster using [K8up](https://k8up.io/) and [Backblaze B2](https://www.backblaze.com/docs/cloud-storage). 
 
-### Setup Kubernetes
+Recommended reading: [S3 as the universal infrastructure backend](https://medium.com/innovationendeavors/s3-as-the-universal-infrastructure-backend-a104a8cc6991) - Davis Treybig
+
+> For the purposes of this demo, backups are set to run every minute. Plain-text passwords are also used for convenience - do NOT do that in production.
+> 
+## Outline
+
+1. [K3s Cluster creation](#k3s-cluster-creation)
+2. [Minio instance and user setup](#minio-instance-and-user-setup)
+3. [Deploy Postgres cluster](#deploy-postgres-cluster)
+4. [Seed Postgres with sample data](#seed-postgres-with-sample-data)
+5. [Configure scheduled backups of Minio to B2](#configure-scheduled-backups-of-minio-to-b2)
+6. [Restore Minio from B2 backups](#restore-minio-from-b2-backups)
+7. [Restore CNPG from Minio Backups](#restore-cnpg-from-minio-backups)
+8. [Major Version Upgrades](#major-version-upgrades)
+
+## Requirements
+
+- K8up CLI
+- Kubectl
+- Helm
+- Restic
+- Minio Client CLI (mc)
+
+<h2 id="k3s-cluster-creation">K3s Cluster creation</h2>
 
 1. Download the k3s installer
 
@@ -36,7 +59,50 @@
     export KUBECONFIG=~/.config/kube/config
     ```
 
-### Setup Minio
+4. Install CertManager
+
+    ```bash
+    helm repo add jetstack https://charts.jetstack.io
+    helm repo update
+
+    kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.2/cert-manager.crds.yaml
+
+    helm install cert-manager jetstack/cert-manager \
+    --namespace cert-manager \
+    --create-namespace \
+    --version v1.13.2
+    ```
+    
+5. Install CNPG Operator
+
+    ```bash
+    helm repo add cnpg https://cloudnative-pg.github.io/charts
+    helm upgrade --install cnpg \
+      --namespace cnpg-system \
+      --create-namespace \
+      cnpg/cloudnative-pg \
+      --version 0.19.0
+    ```
+    
+6. Install the CNPG cluster chart
+
+   ```bash
+    helm repo add cnpg-cluster https://small-hack.github.io/cloudnative-pg-cluster-chart
+    helm repo update
+    ```
+
+7. Install k8up
+
+    ```bash
+    repo add k8up-io https://k8up-io.github.io/k8up
+    helm repo update
+    
+    kubectl apply -f https://github.com/k8up-io/k8up/releases/download/k8up-4.4.3/k8up-crd.yaml
+    helm install k8up k8up-io/k8up
+    ```
+
+
+<h2 id="minio-instance-and-user-setup">Minio instance and user setup</h2>
 
 1. install the MinIO client
 
@@ -52,35 +118,56 @@
     export PATH=$PATH:$HOME/minio-binaries/
     ```
 
-
-2. Download minio helm chart
+2. Download Minio helm chart
 
     ```bash
     helm repo add minio https://charts.min.io/
     ```
 
-
 3. Deploy Minio via Helm
 
-    ```bash
-    echo "Enter User Name : " && \
-    read USERNAME && \
-    echo "Enter User Password : " && \
-    read PASSWORD
+    - Set a username and password for the initial user
+   
+      ```bash
+      echo "Enter User Name : " && \
+      read USERNAME && \
+      echo "Enter User Password : " && \
+      read PASSWORD
+      ```
 
-    helm install \
-      --set resources.requests.memory=512Mi \
-      --set replicas=1 \
-      --set persistence.size=32Gi \
-      --set mode=standalone \
-      --set rootUser=$USERNAME,rootPassword=$PASSWORD \
-      --set consoleService.type=LoadBalancer \
-      --set consoleService.port=80 \
-      --set service.type=NodePort \
-      --generate-name minio/minio
-    ```
+    - Create a helm values file
+   
+      ```bash
+      /bin/cat << EOF > minio-values.yaml
+      mode: standalone
+      rootUser: "$USERNAME"
+      rootPassword: "$PASSWORD"
+      replicas: 1
+      persistence:
+        enabled: true
+        annotations:
+          "k8up.io/backup": "true"
+        size: 5Gi
+      service:
+        type: NodePort
+      consoleService:
+        type: LoadBalancer
+        port: "80"
+      resources:
+        requests:
+          memory: 512Mi
+      EOF
+      ```
 
-4. Get the LoadBalancer's External-IP address
+    - Install Minio
+    
+      ```bash
+      helm install \
+        --values minio-values.yaml \
+        --generate-name minio/minio
+      ```
+
+5. Get the LoadBalancer's External-IP address and export it
 
     ```console
     friend@vm0:~$ kubectl get svc
@@ -90,19 +177,23 @@
     minio-1697277405-console   LoadBalancer   10.43.116.107   192.168.50.160   80:31179/TCP     6h31m
     ```
 
-5. Set an alias for your server:
+    ```bash
+    export LOADBALANCER_IP="<your-LB-IP-here>"
+    ```
+
+6. Set an alias for your server:
 
     ```bash
     mc alias set myminio http://$LOADBALANCER_IP:32000 $USERNAME $PASSWORD
     ```
 
-6. Test the connection:
+7. Test the connection:
 
     ```bash
     mc admin info myminio
     ```
 
-7. Create a postgres user
+8. Create a Postgres user
 
     ```bash
     mc admin user add myminio postgres
@@ -115,13 +206,13 @@
     Added user `postgres` successfully.
     ```
 
-8. Create an Access Key
+9. Create an Access Key
 
     ```bash
     mc admin user svcacct add myminio postgres
     ```
 
-9. base64 encode the Access Key and Secret Key    
+10. base64 encode the Access Key and Secret Key    
     
     ```bash
     export ACCESS_KEY_ID=$(echo -n "" | base64)
@@ -129,7 +220,7 @@
     export ACCESS_SECRET_KEY=$(echo -n "" |base64)
     ```
     
-10. use the following templates to create your secrets.
+11. use the following templates to create your secrets.
   
     ```bash
     /bin/cat << EOF > access_key.yaml
@@ -142,55 +233,31 @@
       "ACCESS_KEY_ID": "$ACCESS_KEY_ID"
       "ACCESS_SECRET_KEY": "$ACCESS_SECRET_KEY"
     EOF
+
+    kubectl apply -f access_key.yaml
     ```
 
-11. Create the backups storage bucket
+12. Create the backups storage bucket
 
     ```bash
-    mc mb myminio/backups --with-versioning
+    mc mb myminio/postgres15-backups --with-versioning
     ```
 
-12. Grant postgres account access
+13. Grant Postgres account access
 
     ```bash
     mc admin policy attach myminio readwrite --user postgres
     ```
 
-### Setup CNPG + CertManager
+<h2 id="deploy-postgres-cluster">Deploy Postgres cluster</h2>
 
-1. Install CNPG Operator
-
-    ```bash
-    helm repo add cnpg https://cloudnative-pg.github.io/charts
-    helm upgrade --install cnpg \
-      --namespace cnpg-system \
-      --create-namespace \
-      cnpg/cloudnative-pg \
-      --version 0.19.0
-    ```
-
-2. Install CertManager
-
-    ```bash
-    helm repo add jetstack https://charts.jetstack.io
-    helm repo update
-
-    kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.2/cert-manager.crds.yaml
-
-    helm install cert-manager jetstack/cert-manager \
-    --namespace cert-manager \
-    --create-namespace \
-    --version v1.13.2
-    ```
-
-3. Create an example values.yaml for the postgres cluster
+1. Create an example values.yaml for the Postgres cluster
 
     ```bash
     /bin/cat << EOF > test-values.yaml
     name: "cnpg"
     instances: 1
-    superuserSecret:
-      name: null
+    imageName: ghcr.io/cloudnative-pg/postgresql:15.4
     bootstrap:
       initdb:
         database: app
@@ -210,12 +277,13 @@
         replicationTLSSecret: ""
       user:
         enabled: true
-        username: "app"
+        username:
+          - "app"
     backup:
       retentionPolicy: "30d"
       barmanObjectStore:
-        destinationPath: "s3://backups"
-        endpointURL: "http://192.168.50.161:32000"
+        destinationPath: "s3://postgres15-backups"
+        endpointURL: "http://$LOADBALANCER_IP:32000"
         s3Credentials:
           accessKeyId:
             name: "minio-credentials"
@@ -234,25 +302,22 @@
       enablePodMonitor: false
     postgresql:
       pg_hba:
-        - hostnossl all all 0.0.0.0/0 reject
-        - hostssl all all 0.0.0.0/0 cert clientcert=verify-full
+        - hostssl all all all cert
     storage:
       size: 1Gi
     testApp:
       enabled: true
-    EOF          
+    EOF
     ```
 
-4. Create the postgres cluster
+4. Create the Postgres cluster
 
     ```bash
-    helm repo add cnpg-cluster https://small-hack.github.io/cloudnative-pg-cluster-chart
-    helm repo update
-
     helm install cnpg-cluster cnpg-cluster/cnpg-cluster --values test-values.yaml
     ```
 
-## Add Demo Data to postgres
+
+<h2 id="seed-postgres-with-sample-data">Seed Postgres with sample data</h2>
 
 1. Get the user's `tls.key`, `tls.crt`, and `ca.crt` from secrets
 
@@ -270,7 +335,9 @@
     chmod 600 ca.crt
     ```
 
-3. Expose postgres with a service:
+3. Expose Postgres with a service:
+
+  - Create a manifest for the service
 
     ```bash
     /bin/cat << EOF > service.yaml
@@ -290,54 +357,72 @@
         cnpg.io/cluster: cnpg
         role: primary
     EOF
+    ```
 
+  - Create the service:
+
+    ```bash
     kubectl apply -f service.yaml
     ```
 
 4. Create a table for the demo data:
 
     ```bash
-    psql 'sslkey=./tls.key 
+    psql "sslkey=./tls.key 
           sslcert=./tls.crt 
           sslrootcert=./ca.crt 
-          host=192.168.50.161 
+          host=$LOADBALANCER_IP
           port=30000 
           dbname=app 
-          user=app' -c 'CREATE TABLE processors (data JSONB);'
+          user=app" -c 'CREATE TABLE processors (data JSONB);'
     ```
 
-5. Use script to populate the table
+5. Download demo data and use script to populate the table
+
+    - Grab a copy of the demo data
+   
+      ```bash
+      wget https://raw.githubusercontent.com/small-hack/argocd-apps/main/postgres/operators/cloud-native-postgres/backups/demo-data.json
+      ```
+
+    - Create a script to add the demo data to your table
+    
+      ```
+      /bin/cat << 'EOF' > populate.sh 
+      #!/bin/bash
+      
+      COUNT=$(jq length demo-data.json)
+
+      for (( i=0; i<$COUNT; i++ ))
+      do
+          JSON=$(jq ".[$i]" demo-data.json)
+          psql "sslkey=./tls.key
+            sslcert=./tls.crt
+            sslrootcert=./ca.crt
+            host=$LOADBALANCER_IP
+            port=30000
+            dbname=app
+            user=app" -c "INSERT INTO processors VALUES ('$JSON');"
+      done
+      EOF
+      ```
+    
+    - Run the script
+
+      ```bash  
+      bash populate.sh
+      ```
+
+6. Perform a test query against the DB
 
     ```bash
-    /bin/cat << EOF > populate.sh 
-    #!/bin/bash
-    COUNT=$(jq length demo-data.json)
-    for (( i=0; i<$COUNT; i++ ))
-    do
-        JSON=$(jq ".[$i]" demo-data.json)
-        psql 'sslkey=./tls.key
-          sslcert=./tls.crt
-          sslrootcert=./ca.crt
-          host=192.168.50.161
-          port=30000
-          dbname=app
-          user=app' -c "INSERT INTO processors VALUES ('$JSON');"
-    done
-    EOF
-
-    bash populate.sh
-    ```
-
-6. Make a test query
-
-    ```bash
-    psql 'sslkey=./tls.key 
+    psql "sslkey=./tls.key 
          sslcert=./tls.crt 
          sslrootcert=./ca.crt 
-         host=192.168.50.161 
+         host=$LOADBALANCER_IP 
          port=30000 
          dbname=app 
-         user=app' -c "SELECT data -> 'cpu_name' AS Cpu,
+         user=app" -c "SELECT data -> 'cpu_name' AS Cpu,
                               data -> 'cpu_cores' AS Cores,
                               data -> 'cpu_threads' AS Threads,
                               data -> 'release_date' AS ReleaseDate,
@@ -346,52 +431,260 @@
                               ORDER BY SingleCorePerf DESC;"
     ```
 
-    - Expected Output:
-     
-        ```console
-                      cpu           | cores | threads | releasedate | singlecoreperf
-        ------------------------+-------+---------+-------------+----------------
-         "Xeon E-2378G"         | 8     | 16      | 2021        | 3477
-         "Xeon E-2288G"         | 8     | 16      | 2019        | 2783
-         "EPYC 7713"            | 64    | 128     | 2021        | 2721
-         "EPYC 7763v"           | 64    | 128     | 2021        | 2576
-         "Xeon Gold 6338"       | 32    | 64      | 2021        | 2446
-         "Xeon Platinum 8375C"  | 32    | 64      | 2021        | 2439
-         "Xeon 2696v4"          | 22    | 44      | 2016        | 2179
-         "Xeon 2696v3"          | 18    | 36      | 2014        | 2145
-         "Xeon E5-2690V4"       | 14    | 28      | 2016        | 2066
-         "Xeon Platinum 8173M"  | 28    | 56      | 2017        | 2003
-         "EPYC 7402P"           | 24    | 48      | 2019        | 1947
-         "Xeon Platinum 8175M"  | 24    | 48      | 2018        | 1796
-         "Xeon Platinum 8259CL" | 24    | 48      | 2020        | 1781
-         "Xeon 2696v3"          | 12    | 24      | 2013        | 1698
-         "Xeon Platinum 8370C"  | 32    | 64      | 2021        | 0
-        ```
+    Expected Output:
+    
+    > ```console
+    >               cpu           | cores | threads | releasedate | singlecoreperf
+    > ------------------------+-------+---------+-------------+----------------
+    >  "Xeon E-2378G"         | 8     | 16      | 2021        | 3477
+    >  "Xeon E-2288G"         | 8     | 16      | 2019        | 2783
+    >  "EPYC 7713"            | 64    | 128     | 2021        | 2721
+    >  "EPYC 7763v"           | 64    | 128     | 2021        | 2576
+    >  "Xeon Gold 6338"       | 32    | 64      | 2021        | 2446
+    >  "Xeon Platinum 8375C"  | 32    | 64      | 2021        | 2439
+    >  "Xeon 2696v4"          | 22    | 44      | 2016        | 2179
+    >  "Xeon 2696v3"          | 18    | 36      | 2014        | 2145
+    >  "Xeon E5-2690V4"       | 14    | 28      | 2016        | 2066
+    >  "Xeon Platinum 8173M"  | 28    | 56      | 2017        | 2003
+    >  "EPYC 7402P"           | 24    | 48      | 2019        | 1947
+    >  "Xeon Platinum 8175M"  | 24    | 48      | 2018        | 1796
+    >  "Xeon Platinum 8259CL" | 24    | 48      | 2020        | 1781
+    >  "Xeon 2696v3"          | 12    | 24      | 2013        | 1698
+    >  "Xeon Platinum 8370C"  | 32    | 64      | 2021        | 0
+    > ```
+
+ <h2 id="configure-scheduled-backups-of-minio-to-b2">Configure scheduled backups of Minio to B2</h2>
+
+ 1. Create a secret containing your external S3 credentials
+
+    - You will need to get these from your provider:
+    
+      ```bash
+      export ACCESS_KEY_ID=$(echo -n "" | base64)
+      
+      export ACCESS_SECRET_KEY=$(echo -n "" |base64)
+      ```
+      
+      ```bash
+      /bin/cat << EOF > backblaze.yaml
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: backblaze-credentials
+      type: Opaque
+      data:
+        "ACCESS_KEY_ID": "$ACCESS_KEY_ID"
+        "ACCESS_SECRET_KEY": "$ACCESS_SECRET_KEY"
+      EOF
+
+      kubectl apply -f backblaze.yaml
+      ```
+
+    - Create a second secret with different keys to support the K8up CLI if you plan to use it.
+
+      ```bash
+      /bin/cat << EOF > k8up.yaml
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: k8up-credentials
+      type: Opaque
+      data:
+        "username": "$ACCESS_KEY_ID"
+        "password": "$ACCESS_SECRET_KEY"
+      EOF
+
+      kubectl apply -f k8up.yaml
+      ```
  
-## Restore from backup
+ 2. Create a secret containing a random password for restic
 
-If you used the test-values.yaml provided, then your cluster is backing up once per minute.
-
-1. Check for backups
+  - Generate a password and base64 encode it.
+    
+    ```bash
+    export RESTIC_PASS=$(openssl rand -base64 32)
+    ```
+    
+  - Create a secret manifest
 
     ```bash
-    mc ls myminio/backups/cnpg/base/
-    mc ls myminio/backups/cnpg/wals/
+    /bin/cat << EOF > restic.yaml
+    apiVersion: v1
+    kind: Secret
+    metadata:
+      name: restic-repo
+    type: Opaque
+    data:
+      "password": "$RESTIC_PASS"
+    EOF
     ```
+  - Create the secret
 
-2. uninstall postgres
- 
     ```bash
-    helm uninstall cnpg-cluster
+    kubectl apply -f restic.yaml
     ```
 
-3. Create a values file that targets your backups
+3. Create a scheduled backups
+
+  - Create a manifest for the backup 
+
+    ```bash
+    cat << EOF > backup.yaml
+    apiVersion: k8up.io/v1
+    kind: Schedule
+    metadata:
+      name: schedule-backups
+    spec:
+      backend:
+        repoPasswordSecretRef:
+          name: restic-repo
+          key: password
+        s3:
+          endpoint: "s3.us-west-004.backblazeb2.com"
+          bucket: "buildstars-minio-backup"
+          accessKeyIDSecretRef:
+            name: backblaze-credentials
+            key: ACCESS_KEY_ID
+          secretAccessKeySecretRef:
+            name: backblaze-credentials
+            key: ACCESS_SECRET_KEY
+      backup:
+        schedule: '* * * * *'
+        keepJobs: 4
+      check:
+        schedule: '0 1 * * 1'
+      prune:
+        schedule: '0 1 * * 0'
+        retention:
+          keepLast: 5
+          keepDaily: 14
+    EOF
+    ```
+
+  - Create the backup
+
+    ```bash
+    kubectl apply -f backup.yaml
+    ```
+
+<h2 id="restore-minio-from-b2-backups">Restore Minio from B2 backups</h2>
+
+1. Uninstall minio and postgres and delete your scheduled backup
+
+   ```bash
+   helm uninstall cnpg-cluster
+   
+   helm uninstall minio-<some number>
+   
+   kubectl delete -f backup.yaml 
+   ```
+
+2. Create a PVC to hold our restored data
+
+  - Create a manifest for the PVC
+
+    ```bash
+    /bin/cat << EOF > pvc.yaml
+    kind: PersistentVolumeClaim
+    apiVersion: v1
+    metadata:
+      name: backup-restore
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          # Must be sufficient to hold your data
+          storage: 5Gi
+    EOF
+    ```
+  
+  - Create the PVC
+
+    ```bash
+    kubectl apply -f pvc.yaml
+    ```
+
+3. Find your desired snapshot to restore
+
+    ```bash
+    restic snapshots
+    repository bac0980d opened (version 2, compression level auto)
+    ID        Time                 Host        Tags        Paths
+    -----------------------------------------------------------------------------
+    704f5d77  2023-11-12 10:51:14  default                 /data/minio-1699782386
+    b17c7bb1  2023-11-12 10:52:12  default                 /data/minio-1699782386
+    -----------------------------------------------------------------------------
+    2 snapshots
+    ```
+
+4. Use the K8up CLI or a declarative setup to restore data to the PVC. 
+
+    > Minio requires you to run the restore as user `1000`
+
+  - Example of restoring from S3 to a PVC using the K8up CLI. 
+
+    ```bash
+    k8up cli restore \
+      --restoreMethod pvc \
+      --kubeconfig "$KUBECONFIG" \
+      --secretRef restic-repo \
+      --namespace default \
+      --s3endpoint s3.us-west-004.backblazeb2.com \
+      --s3bucket buildstars-minio-backup \
+      --s3secretRef k8up-credentials \
+      --snapshot b17c7bb1 \
+      --claimName backup-restore \
+      --runAsUser 1000
+    ```
+    
+  - Example manifest for a S3-to-PVC restore job 
+
+    ```bash
+    /bin/cat << EOF > s3-to-pvc.yaml
+    apiVersion: k8up.io/v1
+    kind: Restore
+    metadata:
+      name: restore-from-b2
+    spec:
+      restoreMethod:
+        folder:
+          claimName: backup-restore
+      podSecurityContext:
+        runAsUser: 1000
+      snapshot: b17c7bb1
+      backend:
+        repoPasswordSecretRef:
+          name: restic-repo
+          key: password
+        s3:
+          endpoint: s3.us-west-004.backblazeb2.com
+          bucket: buildstars-minio-backup
+          accessKeyIDSecretRef:
+            name: backblaze-credentials
+            key: ACCESS_KEY_ID
+          secretAccessKeySecretRef:
+            name: backblaze-credentials
+            key: ACCESS_SECRET_KEY
+    EOF
+    ```
+
+  - Apply manifest
+    ```bash
+    kubectl apply -f s3-to-pvc.yaml
+    ```
+
+<h2 id="restore-cnpg-from-minio-backups">Restore CNPG from Minio Backups</h2>
+
+1. Create a values file that targets your Minio instance for backups
+
+   > Backups are disabled during the recovery process and will be re-enabled in the next step.
 
     ```bash
     /bin/cat << EOF > restore-values.yaml
     name: "cnpg"
     instances: 1
-    backup: []
+    imageName: ghcr.io/cloudnative-pg/postgresql:15.4
     bootstrap:
       initdb: []
       recovery:
@@ -409,12 +702,32 @@ If you used the test-values.yaml provided, then your cluster is backing up once 
         replicationTLSSecret: ""
       user:
         enabled: true
-        username: "app"
+        username:
+          - "app"
+    backup: []
+    #   retentionPolicy: "30d"
+    #   barmanObjectStore:
+    #     destinationPath: "s3://postgres15-backups"
+    #     endpointURL: "http://85.10.207.26:32000"
+    #     s3Credentials:
+    #       accessKeyId:
+    #         name: "minio-credentials"
+    #         key: "ACCESS_KEY_ID"
+    #       secretAccessKey:
+    #         name: "minio-credentials"
+    #         key: "ACCESS_SECRET_KEY"
+    scheduledBackup: []
+    #   name: cnpg-backup
+    #   spec:
+    #     schedule: "0 * * * * *"
+    #     backupOwnerReference: self
+    #     cluster:
+    #       name: cnpg
     externalClusters:
       - name: cnpg
         barmanObjectStore:
-          destinationPath: "s3://backups/"
-          endpointURL: "http://192.168.50.161:32000"
+          destinationPath: "s3://postgres15-backups/"
+          endpointURL: "http://85.10.207.26:32000"
           s3Credentials:
             accessKeyId:
               name: "minio-credentials"
@@ -430,36 +743,25 @@ If you used the test-values.yaml provided, then your cluster is backing up once 
       size: 1Gi
     testApp:
       enabled: false
-    EOF          
+    EOF
     ```
 
-4. Re-install postgres
+4. Re-install Postgres
 
     ```bash
     helm install cnpg-cluster cnpg-cluster/cnpg-cluster --values restore-values.yaml
     ```
 
-5. Get the new certificates and keys
+5. Verify that your data is restored
 
     ```bash
-    kubectl get secrets cnpg-app-cert -o yaml |yq '.data."tls.key"' |base64 -d > tls.key
-    chmod 600 tls.key
-    kubectl get secrets cnpg-app-cert -o yaml |yq '.data."tls.crt"' |base64 -d > tls.crt
-    chmod 600 tls.crt
-    kubectl get secrets cnpg-server-cert -o yaml |yq '.data."ca.crt"' |base64 -d > ca.crt
-    chmod 600 ca.crt
-    ```
- 
-6. verify that your data is restored
-
-    ```bash
-    psql 'sslkey=./tls.key 
+    psql "sslkey=./tls.key 
          sslcert=./tls.crt 
          sslrootcert=./ca.crt 
-         host=192.168.50.161 
+         host=$LOADBALANCER_IP
          port=30000 
          dbname=app 
-         user=app' -c "SELECT data -> 'cpu_name' AS Cpu,
+         user=app" -c "SELECT data -> 'cpu_name' AS Cpu,
                               data -> 'cpu_cores' AS Cores,
                               data -> 'cpu_threads' AS Threads,
                               data -> 'release_date' AS ReleaseDate,
@@ -468,34 +770,292 @@ If you used the test-values.yaml provided, then your cluster is backing up once 
                               ORDER BY SingleCorePerf DESC;"
     ```
 
-    - Expected Output:
+    Expected Output:
      
-        ```console
-                      cpu           | cores | threads | releasedate | singlecoreperf
-        ------------------------+-------+---------+-------------+----------------
-         "Xeon E-2378G"         | 8     | 16      | 2021        | 3477
-         "Xeon E-2288G"         | 8     | 16      | 2019        | 2783
-         "EPYC 7713"            | 64    | 128     | 2021        | 2721
-         "EPYC 7763v"           | 64    | 128     | 2021        | 2576
-         "Xeon Gold 6338"       | 32    | 64      | 2021        | 2446
-         "Xeon Platinum 8375C"  | 32    | 64      | 2021        | 2439
-         "Xeon 2696v4"          | 22    | 44      | 2016        | 2179
-         "Xeon 2696v3"          | 18    | 36      | 2014        | 2145
-         "Xeon E5-2690V4"       | 14    | 28      | 2016        | 2066
-         "Xeon Platinum 8173M"  | 28    | 56      | 2017        | 2003
-         "EPYC 7402P"           | 24    | 48      | 2019        | 1947
-         "Xeon Platinum 8175M"  | 24    | 48      | 2018        | 1796
-         "Xeon Platinum 8259CL" | 24    | 48      | 2020        | 1781
-         "Xeon 2696v3"          | 12    | 24      | 2013        | 1698
-         "Xeon Platinum 8370C"  | 32    | 64      | 2021        | 0
-        ```
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
+    > ```console
+    >           cpu           | cores | threads | releasedate | singlecoreperf
+    > ------------------------+-------+---------+-------------+----------------
+    >  "Xeon E-2378G"         | 8     | 16      | 2021        | 3477
+    >  "Xeon E-2288G"         | 8     | 16      | 2019        | 2783
+    >  "EPYC 7713"            | 64    | 128     | 2021        | 2721
+    >  "EPYC 7763v"           | 64    | 128     | 2021        | 2576
+    >  "Xeon Gold 6338"       | 32    | 64      | 2021        | 2446
+    >  "Xeon Platinum 8375C"  | 32    | 64      | 2021        | 2439
+    >  "Xeon 2696v4"          | 22    | 44      | 2016        | 2179
+    >  "Xeon 2696v3"          | 18    | 36      | 2014        | 2145
+    >  "Xeon E5-2690V4"       | 14    | 28      | 2016        | 2066
+    >  "Xeon Platinum 8173M"  | 28    | 56      | 2017        | 2003
+    >  "EPYC 7402P"           | 24    | 48      | 2019        | 1947
+    >  "Xeon Platinum 8175M"  | 24    | 48      | 2018        | 1796
+    >  "Xeon Platinum 8259CL" | 24    | 48      | 2020        | 1781
+    >  "Xeon 2696v3"          | 12    | 24      | 2013        | 1698
+    >  "Xeon Platinum 8370C"  | 32    | 64      | 2021        | 0
+    > ```
+
+6. Re-enable backups
+
+   Uncomment the backups sections of the restore-values, and upgrade the deployment
+   
+   ```bash
+   helm upgrade -f restore-values.yaml cnpg-cluster cnpg-cluster/cnpg-cluster
+   ```
+
+<h2 id="major-version-upgrades">Major Version Upgrades</h2>
+
+Major upgrades must be perfomed by importing data from a running database. Additionally, the existing database must accept password authentication as SSL Certificates are not a supported method of connecting to an external cluster for import purposes.
+
+To get around these issues we will:
+
+- Assume the upgrade in question is v15.4 to v16.0
+- Create a new 15.4 cluster from backups which can will accept password authentication.
+- Create a new 16.0 cluster which targets our 15.4 cluster
+- Delete the 15.4 cluster
+
+1. Create a new bucket for backups of the new major version
+
+    ```bash
+    mc mb myminio/postgres16-backups --with-versioning
+    ```
+2. Create a manifest for the 15.4 cluster that accepts password authentication
+
+```bash
+/bin/cat << EOF > password-cluster.yaml
+name: "cnpg-15"
+instances: 1
+imageName: ghcr.io/cloudnative-pg/postgresql:15.4
+bootstrap:
+  initdb: []
+  recovery:
+    source: cnpg
+certificates:
+  server:
+    enabled: true
+    generate: true
+    serverTLSSecret: ""
+    serverCASecret: ""
+  client:
+    enabled: true
+    generate: true
+    clientCASecret: ""
+    replicationTLSSecret: ""
+  user:
+    enabled: true
+    username:
+      - "app"
+backup: []
+scheduledBackup: []
+externalClusters:
+  - name: cnpg
+    barmanObjectStore:
+      destinationPath: "s3://postgres15-backups/"
+      endpointURL: "http://85.10.207.26:32000"
+      s3Credentials:
+        accessKeyId:
+          name: "minio-credentials"
+          key: "ACCESS_KEY_ID"
+        secretAccessKey:
+          name: "minio-credentials"
+          key: "ACCESS_SECRET_KEY"
+      wal:
+        maxParallel: 8
+monitoring:
+  enablePodMonitor: false
+postgresql:
+  pg_hba:
+    - host all all all md5
+storage:
+  size: 1Gi
+testApp:
+  enabled: false
+EOF
+```
+   
+4. Uninstall your current postgres deployment
+
+5. Create a manifest to bootstrap a new cluster from a backup.
+
+    ```bash
+    /bin/cat << EOF > upgrade.yaml
+    name: "cnpg-16"
+    imageName: ghcr.io/cloudnative-pg/postgresql:16.0
+    instances: 1
+    bootstrap:
+      initdb:
+        import:
+          type: microservice
+          databases:
+            - app
+          source:
+            externalCluster: cnpg-15
+    certificates:
+      server:
+        enabled: true
+        generate: true
+        serverTLSSecret: ""
+        serverCASecret: ""
+      client:
+        enabled: true
+        generate: true
+        clientCASecret: ""
+        replicationTLSSecret: ""
+      user:
+        enabled: true
+        username:
+          - "app"
+    backup: []
+    scheduledBackup: []
+    externalClusters:
+      - name: cnpg-15
+        connectionParameters:
+          host: "cnpg-15-rw.default.svc"
+          user: app
+          dbname: app
+        password:
+          name: cnpg-15-app
+          key: password
+    monitoring:
+      enablePodMonitor: false
+    postgresql:
+      pg_hba:
+        - host all all all md5
+    storage:
+      size: 1Gi
+    testApp:
+      enabled: false
+    EOF
+    ```
+
+```bash
+helm install cnpg-15 cnpg-cluster/cnpg-cluster --values password-cluster.yaml
+```
+
+ - Create a manifest for the service
+
+    ```bash
+    /bin/cat << EOF > cnpg-15-service.yaml
+    apiVersion: v1
+    kind: Service
+    metadata:
+      name: cnpg-15-service
+      labels:
+        cnpg.io/cluster: cnpg-15
+    spec:
+      type: NodePort
+      ports:
+      - port: 5432
+        nodePort: 30015
+        protocol: TCP
+      selector:
+        cnpg.io/cluster: cnpg-15
+        role: primary
+    EOF
+    ```
+
+  - Create the service:
+
+    ```bash
+    kubectl apply -f cnpg-15-service.yaml
+    ```
+    
+5. Deploy a new postgres cluster on the latest version using a backup as a source
+
+```bash
+/bin/cat << EOF > upgrade.yaml
+name: "cnpg-16"
+imageName: ghcr.io/cloudnative-pg/postgresql:16.0
+instances: 1
+bootstrap:
+  initdb:
+    import:
+      type: microservice
+      databases:
+        - app
+      source:
+        externalCluster: cnpg-15
+certificates:
+  server:
+    enabled: true
+    generate: true
+    serverTLSSecret: ""
+    serverCASecret: ""
+  client:
+    enabled: true
+    generate: true
+    clientCASecret: ""
+    replicationTLSSecret: ""
+  user:
+    enabled: true
+    username:
+      - "app"
+backup: []
+scheduledBackup: []
+externalClusters:
+  - name: cnpg-15
+    connectionParameters:
+      host: "cnpg-15-rw.default.svc"
+      user: app
+      dbname: app
+    password:
+      name: cnpg-15-app
+      key: password
+monitoring:
+  enablePodMonitor: false
+postgresql:
+  pg_hba:
+    - host all all all md5
+storage:
+  size: 1Gi
+testApp:
+  enabled: false
+EOF
+```
+
+   ```bash
+   helm install cnpg-16 cnpg-cluster/cnpg-cluster --values upgrade.yaml
+   ```
+
+ - Create a manifest for the service
+
+    ```bash
+    /bin/cat << EOF > cnpg-16-service.yaml
+    apiVersion: v1
+    kind: Service
+    metadata:
+      name: cnpg-16-service
+      labels:
+        cnpg.io/cluster: cnpg-16
+    spec:
+      type: NodePort
+      ports:
+      - port: 5432
+        nodePort: 30016
+        protocol: TCP
+      selector:
+        cnpg.io/cluster: cnpg-16
+        role: primary
+    EOF
+    ```
+
+  - Create the service:
+
+    ```bash
+    kubectl apply -f cnpg-16-service.yaml
+    ```
+
+- check data
+  
+  ```bash
+  psql "sslkey=./tls.key
+     sslcert=./tls.crt
+     sslrootcert=./ca.crt
+     host=$LOADBALANCER_IP
+     port=30016
+     dbname=app
+     user=app" -c "SELECT data -> 'cpu_name' AS Cpu,
+                          data -> 'cpu_cores' AS Cores,
+                          data -> 'cpu_threads' AS Threads,
+                          data -> 'release_date' AS ReleaseDate,
+                          data -> 'cpumarkSingleThread' AS SingleCorePerf
+                          FROM processors
+                          ORDER BY SingleCorePerf DESC;"
+  ```
