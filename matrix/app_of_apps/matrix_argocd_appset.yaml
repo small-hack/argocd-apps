@@ -1,0 +1,569 @@
+---
+# webapp is deployed 2nd because we need secrets and persistent volumes up 1st
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: matrix-web-app-set
+  namespace: argocd
+spec:
+  goTemplate: true
+  # generator allows us to source specific values from an external k8s secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              # - matrix_idp_id
+              # - matrix_idp_name
+              - matrix_hostname
+              - matrix_element_hostname
+              - matrix_federation_hostname
+              - matrix_admin_email
+              - matrix_s3_bucket
+              - matrix_s3_region
+              - matrix_s3_endpoint
+              - global_cluster_issuer
+  template:
+    metadata:
+      name: matrix-web-app
+      annotations:
+        argocd.argoproj.io/sync-wave: "3"
+    spec:
+      project: matrix
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: matrix
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
+          selfHeal: true
+      source:
+        repoURL: 'https://small-hack.github.io/matrix-chart'
+        targetRevision: 6.2.1
+        chart: matrix
+        helm:
+          values: |
+            fullnameOverride: matrix-stack
+
+            # Runtime configuration for Synapse and settings related to the Matrix protocol
+            matrix:
+              # -- Domain name of the server
+              serverName: "{{ .matrix_hostname }}"
+              # -- Enable anonymous telemetry to matrix.org
+              telemetry: false
+              # -- Set to false to disable presence (online/offline indicators)
+              presence: true
+              # -- Set to true to block non-admins from inviting users to any rooms
+              blockNonAdminInvites: false
+
+              # -- Set to false to disable message searching
+              search: true
+
+              # Which types of rooms to enable end-to-end encryption on by default
+              # off:    none
+              # all:    all rooms
+              # invite: private msg/room created w/ private_chat or trusted_private_chat
+              #         room presets
+              encryptByDefault: all
+
+              # -- Email address of the administrator
+              adminEmail: {{ .matrix_admin_email }}
+
+              # -- Settings related to image and multimedia uploads
+              uploads:
+                # -- Max upload size in bytes
+                maxSize: 10M
+
+                # -- Max image size in pixels
+                maxPixels: 32M
+
+              # Settings related to federation
+              federation:
+                # -- Set to false to disable federation and run an isolated homeserver
+                enabled: true
+
+                # -- Allow members of other homeservers to fetch *public* rooms
+                allowPublicRooms: true
+
+                # -- IP addresses to blacklist federation requests to
+                blacklist:
+                  - '127.0.0.0/8'
+                  - '10.0.0.0/8'
+                  - '172.16.0.0/12'
+                  - '192.168.0.0/16'
+                  - '100.64.0.0/10'
+                  - '169.254.0.0/16'
+                  - '::1/128'
+                  - 'fe80::/64'
+                  - 'fc00::/7'
+                ingress:
+                  enabled: true
+                  tls:
+                    enabled: true
+                  host: {{ .matrix_federation_hostname }}
+                  annotations:
+                    # -- required for the Nginx ingress provider. You can remove it if you
+                    # use a different ingress provider
+                    nginx.ingress.kubernetes.io/configuration-snippet: |
+                      proxy_intercept_errors off;
+                    # -- required for TLS certs issued by cert-manager
+                    cert-manager.io/cluster-issuer: {{ .global_cluster_issuer }}
+
+              # User registration settings
+              registration:
+                # -- Allow new users to register an account
+                enabled: false
+
+                existingSecret: "matrix-registration"
+                secretKey: "registrationSharedSecret"
+
+                # -- Allow users to join rooms as a guest
+                allowGuests: false
+
+                # Required "3PIDs" - third-party identifiers such as email or msisdn (SMS)
+                # required3Pids:
+                #   - email
+                #   - msisdn
+
+                # -- Rooms to automatically join all new users to
+                autoJoinRooms: []
+                # - "#welcome:{{ .matrix_hostname }}"
+
+                # -- Whether to allow token based registration
+                requiresToken: false
+
+              # ref: https://github.com/matrix-org/synapse/blob/develop/docs/openid.md
+              oidc:
+                enabled: true
+                existingSecret: "synapse-oidc"
+                secretKeys:
+                  issuer: "issuer"
+                  client_id: "client_id"
+                  client_secret: "client_secret"
+
+                providers:
+                  - idp_id: zitadel
+                    idp_name: zitadel
+                    # discover: true
+                    # options: client_secret_basic (default), client_secret_post, 'none'
+                    # client_auth_method: client_secret_post
+                    scopes:
+                      - "openid"
+                      - "profile"
+                    # skip_verification: false
+                    user_mapping_provider:
+                      config:
+                        localpart_template: {{ `"{{ user.preferred_username }}"` }}
+                        display_name_template: {{ `"{{ user.name }}"` }}
+
+              # Settings for the URL preview crawler
+              urlPreviews:
+                # -- Enable URL previews. WARN: Make sure to review default rules below to
+                # ensure that users cannot crawl sensitive internal endpoints on yr cluster
+                enabled: false
+
+                # Blacklists and whitelists for the URL preview crawler
+                rules:
+                  # -- Max size of a crawlable page. Keep this low to prevent a DOS vector
+                  maxSize: 10M
+
+                  # Whitelist and blacklist for crawlable IP addresses
+                  ip:
+                    whitelist: []
+                    blacklist:
+                      - '127.0.0.0/8'
+                      - '10.0.0.0/8'
+                      - '172.16.0.0/12'
+                      - '192.168.0.0/16'
+                      - '100.64.0.0/10'
+                      - '169.254.0.0/16'
+                      - '::1/128'
+                      - 'fe80::/64'
+                      - 'fc00::/7'
+
+                  # -- Whitelist and blacklist based on URL pattern matching
+                  url: {}
+                  # whitelist:
+                  # blacklist:
+                  #  # blacklist any URL with a username in its URI
+                  #  - username: '*'
+                  #
+                  #  # blacklist all *.google.com URLs
+                  #  - netloc: 'google.com'
+                  #  - netloc: '*.google.com'
+                  #
+                  #  # blacklist all plain HTTP URLs
+                  #  - scheme: 'http'
+                  #
+                  #  # blacklist http(s)://www.acme.com/foo
+                  #  - netloc: 'www.acme.com'
+                  #    path: '/foo'
+                  #
+                  #  # blacklist any URL with a literal IPv4 address
+                  #  - netloc: '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$'
+
+              # -- How long to keep redacted events in unredacted form in the database
+              retentionPeriod: 7d
+
+              security:
+                # This disables the warning that is emitted when the
+                # trustedKeyServers include 'matrix.org'. See below.
+                # Set to false to re-enable the warning.
+                #
+                surpressKeyServerWarning: true
+
+                # The trusted servers to download signing keys from.
+                #
+                # When we need to fetch a signing key, each server is tried in parallel.
+                #
+                # Normally, the connection to the key server is validated via TLS certs.
+                # Additional security can be provided by configuring a `verify key`, which
+                # will make synapse check that the response is signed by that key.
+                #
+                # This setting supercedes an older setting named `perspectives`. Old format
+                # is still supported for backwards-compatibility, but it is deprecated.
+                #
+                # 'trustedKeyServers' defaults to matrix.org, but using it will generate a
+                # warning on start-up. To suppress this warning, set
+                # 'surpressKeyServerWarning' to true.
+                #
+                # Options for each entry in the list include:
+                #
+                #  serverName: the name of the server. required.
+                #
+                #  verifyKeys: an optional map from key id to base64-encoded public key.
+                #     If specified, we will check that the response is signed by at least
+                #     one of the given keys.
+                #
+                #  acceptKeysInsecurely: a boolean. Normally, if `verify_keys` is unset,
+                #    and federation_verify_certificates is not `true`, synapse will refuse
+                #    to start, because this would allow anyone who can spoof DNS responses
+                #    to masquerade as the trusted key server. If you know what you are doing
+                #    and are sure that your network environment provides a secure connection
+                #    to the key server, you can set this to `true` to override this
+                #    behaviour.
+                #
+                # An example configuration might look like:
+                #
+                # trustedKeyServers:
+                #   - serverName: my_trusted_server.{{ .matrix_hostname }}
+                #     verifyKeys:
+                #       - id: "ed25519:auto"
+                #         key: "abcdefghijklmnopqrstuvwxyzabcdefghijklmopqr"
+                #     acceptKeysInsecurely: false
+                #   - serverName: my_other_trusted_server.{{ .matrix_hostname }}
+
+              # -- Set to true to globally block access to the homeserver
+              disabled: false
+              # -- Human readable reason for why the homeserver is blocked
+              disabledMessage: ""
+
+              logging:
+                # -- Root log level is the default log level for log outputs that don't
+                # have more specific settings.
+                rootLogLevel: WARNING
+                # -- beware: increasing this to DEBUG will make synapse log sensitive
+                # information such as access tokens.
+                sqlLogLevel: WARNING
+                # -- The log level for the synapse server
+                synapseLogLevel: WARNING
+
+            s3:
+              # -- enable s3 storage via https://github.com/matrix-org/synapse-s3-storage-provider
+              enabled: true
+              endpoint: https://{{ .matrix_s3_endpoint }}
+              bucket: {{ .matrix_s3_bucket }}
+              region: {{ .matrix_s3_region }}
+              existingSecret: "matrix-s3-credentials"
+              secretKeys:
+                accessKey: "S3_ACCESS_KEY"
+                secretKey: "S3_SECRET_KEY"
+              cronjob:
+                # -- enable a regular cleanup k8s cronjob to automatically backup everything
+                # to your s3 bucket for you and delete it from local disk ref:
+                # https://github.com/matrix-org/synapse-s3-storage-provider/tree/main#regular-cleanup-job
+                enabled: false
+                schedule: "0 0 * * *"
+                # -- this is the age of files you'd like to clean up, defaults files not used
+                # within two months (2m)
+                file_age: 2m
+
+            # Persistent volumes configuration
+            volumes:
+              media:
+                existingClaim: "matrix-media"
+              signingKey:
+                existingClaim: "matrix-signing-key"
+              synapseConfig:
+                existingClaim: "matrix-synapse-config"
+
+            externalDatabase:
+              enabled: true
+              sslmode: verify-full
+              sslrootcert: /etc/secrets/ca/ca.crt
+              sslcert: /etc/secrets/matrix/tls.crt
+              sslkey: /etc/secrets/matrix/tls.key
+              port: 5432
+              # -- Name of existing secret to use for PostgreSQL credentials
+              existingSecret: "matrix-pgsql-credentials"
+              # secretKeys to grab from existingSecret
+              # if postgresql.existingSecret is provided, the following are ignored
+              # postgresql.password/username/hostname/database/port
+              secretKeys:
+                # -- key in existingSecret with hostname of the database
+                databaseHostname: hostname
+                # -- key in existingSecret with username for matrix to connect to db
+                databaseUsername: username
+                # -- key in existingSecret with password for matrix to connect to db
+                userPasswordKey: password
+                # -- key in existingSecret with the admin postgresql password
+                adminPasswordKey: password
+
+            # PostgreSQL Database configuration, for more options:
+            # https://github.com/bitnami/charts/tree/main/bitnami/postgresql
+            postgresql:
+              enabled: false
+
+            # Synapse Kubernetes resource settings
+            synapse:
+              image:
+                # -- image registry and repository to use for synapse
+                repository: "matrixdotorg/synapse"
+                # -- pullPolicy for synapse image, Use Always if using image.tag: latest
+                pullPolicy: IfNotPresent
+
+              service:
+                # -- service type for synpase
+                type: ClusterIP
+                # -- service port for synapse
+                port: 80
+                federation:
+                  type: ClusterIP
+                  port: 80
+
+              ingress:
+                enabled: true
+                host: {{ .matrix_hostname }}
+                tls:
+                  enabled: true
+                annotations:
+                  nginx.ingress.kubernetes.io/proxy-body-size: 1G
+                  # -- This annotation is required for the Nginx ingress provider. You can
+                  # remove it if you use a different ingress provider
+                  nginx.ingress.kubernetes.io/configuration-snippet: |
+                    proxy_intercept_errors off;
+                  # -- required for TLS certs issued by cert-manager
+                  cert-manager.io/cluster-issuer: {{ .global_cluster_issuer }}
+
+              replicaCount: 1
+              resources: {}
+              # Configure timings for readiness, startup, and liveness probes here
+              probes:
+                readiness:
+                  # -- readiness probe seconds before timing out
+                  timeoutSeconds: 5
+                  # -- readiness probe seconds trying again
+                  periodSeconds: 10
+                startup:
+                  # -- startup probe seconds before timing out
+                  timeoutSeconds: 5
+                  # -- startup probe seconds trying again
+                  periodSeconds: 5
+                  # -- startup probe times to try and fail before giving up
+                  failureThreshold: 6
+                liveness:
+                  # -- liveness probe seconds before timing out
+                  timeoutSeconds: 5
+                  # -- liveness probe seconds trying again
+                  periodSeconds: 10
+
+              # Does not work by default in all cloud providers, disable by default
+              securityContext:
+                # -- user to run the synapse container as
+                runAsUser: 1000
+                # -- group to run the synapse container as
+                runAsGroup: 1000
+                fsGroup: 1000
+                runAsNonRoot: true
+
+                # -- Enable if your k8s environment allows containers to chuser/setuid
+                # https://github.com/matrix-org/synapse/blob/96cf81e312407f0caba1b45ba9899906b1dcc098/docker/start.py#L196
+                env: false
+
+              # -- Labels to be appended to all Synapse resources
+              labels:
+                component: synapse
+
+              # Prometheus metrics for Synapse
+              # https://github.com/matrix-org/synapse/blob/develop/docs/metrics-howto.md
+              metrics:
+                # -- Whether Synapse should capture metrics on an additional endpoint
+                enabled: true
+                # -- Port to listen on for metrics scraping
+                port: 9092
+                annotations: true
+
+              extraVolumes:
+                - name: postgres-ca
+                  secret:
+                    secretName: matrix-postgres-server-ca-key-pair
+                    defaultMode: 0640
+
+                - name: postgres-client-certs
+                  secret:
+                    secretName: matrix-postgres-matrix-cert
+                    defaultMode: 0640
+
+              extraVolumeMounts:
+                - name: postgres-ca
+                  mountPath: /etc/secrets/ca
+
+                - name: postgres-client-certs
+                  mountPath: /etc/secrets/matrix 
+
+              extraEnv:
+                - name: PIP_CACHE_DIR
+                  value: /tmp
+
+            # Element client configuration. see: https://element.io/
+            element:
+              # -- Set to false to disable a deployment of Element. Users will still be able
+              # to connect via any other instances of Element e.g. https://app.element.io,
+              # Element Desktop, or any other Matrix clients
+              enabled: true
+
+              ingress:
+                # -- enable ingress for element
+                enabled: true
+                tls:
+                  enabled: true
+                # -- the hostname to use for element
+                host: {{ .matrix_element_hostname }}
+                annotations:
+                  # This annotation is required for the Nginx ingress provider. You can
+                  # remove it if you use a different ingress provider
+                  nginx.ingress.kubernetes.io/configuration-snippet: |
+                    proxy_intercept_errors off;
+                  # -- required for TLS certs issued by cert-manager
+                  cert-manager.io/cluster-issuer: {{ .global_cluster_issuer }}
+
+              # Organization/enterprise branding
+              branding:
+                # -- brand shown in email notifications
+                brand: "{{ .matrix_hostname }}"
+                # -- Background of login splash screen
+                welcomeBackgroundUrl: "https://i.imgur.com/VpFquY4.png"
+                # -- Logo shown at top of login screen
+                authHeaderLogoUrl: "https://raw.githubusercontent.com/jessebot/dot_files/main/.local/share/fastfetch/logos/dogontheinternet.png"
+                # -- Array of links to show at the bottom of the login screen
+                authFooterLinks: []
+                #  - text:
+                #    url:
+
+              # Element integrations configuration
+              integrations:
+                # -- enables the Integrations menu, including:
+                #    widgets, bots, and other plugins to Element
+                enabled: true
+                # -- UI to load when a user selects the Integrations button at the top-right
+                #    of a room
+                ui: "https://scalar.vector.im/"
+                # -- API for the integration server
+                api: "https://scalar.vector.im/api"
+                # -- Array of API paths providing widgets
+                widgets:
+                  - "https://scalar.vector.im/_matrix/integrations/v1"
+                  - "https://scalar.vector.im/api"
+                  - "https://scalar-staging.vector.im/_matrix/integrations/v1"
+                  - "https://scalar-staging.vector.im/api"
+                  - "https://scalar-staging.element.im/scalar/api"
+
+              # -- Experimental features in Element, see:
+              # https://github.com/vector-im/element-web/blob/develop/docs/labs.md
+              labs:
+                - feature_report_to_moderators
+                - feature_pinning
+                - feature_state_counters
+                - feature_mjolnir
+                - feature_dm_verification
+                - feature_bridge_state
+                - feature_custom_themes
+                - feature_jump_to_date
+                - feature_video_rooms
+                - feature_element_call_video_rooms
+                - feature_group_calls
+
+              # -- Servers to show in the Explore menu (the current server is always shown)
+              roomDirectoryServers:
+                - matrix.org
+
+              # -- Set to the user ID (@username:domain.tld) of a bot to invite all new
+              # users to a DM with the bot upon registration
+              welcomeUserId: ""
+
+              # -- Prefix before permalinks generated when users share links to rooms,
+              # users, or messages. If running an unfederated Synapse, set the below to the
+              # URL of your Element instance.
+              permalinkPrefix: "https://matrix.to"
+
+              # Element Kubernetes resource settings
+              image:
+                # -- registry and repository to use for element docker image
+                repository: "vectorim/element-web"
+                # -- tag to use for element docker image
+                # -- pullPolicy to use for element image, set to Always if using latest tag
+                pullPolicy: IfNotPresent
+              service:
+                type: ClusterIP
+                port: 80
+              replicaCount: 1
+              resources: {}
+              probes:
+                readiness: {}
+                startup: {}
+                liveness: {}
+
+              # -- Element specific labels
+              labels:
+                component: element
+
+            # Settings for Coturn TURN relay, used for routing voice calls
+            coturn:
+              # -- Set to false to disable the included deployment of Coturn
+              enabled: false
+
+            # Settings for email notifications
+            mail:
+              enabled: true
+              # disable exim relay
+              relay:
+                enabled: false
+              # External mail server
+              external:
+                # INSECURE: 25, SSL: 465, STARTTLS: 587
+                port: 587
+                requireTransportSecurity: true
+                existingSecret: "matrix-smtp-credentials"
+                secretKeys:
+                  host: "host"
+                  username: "username"
+                  password: "password"
+
+            bridges:
+              irc:
+                # -- Set to true to enable the IRC bridge
+                enabled: false
+              whatsapp:
+                # -- Set to true to enable the WhatsApp bridge
+                enabled: false
+              discord:
+                # -- Set to true to enable the Discord bridge
+                enabled: false
+
+            networkPolicies:
+              # -- whether to enable kubernetes network policies or not
+              enabled: true

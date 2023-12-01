@@ -1,0 +1,140 @@
+---
+# webapp is deployed 2nd because we need secrets and persistent volumes up 1st
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: cozy-web-app-set
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+spec:
+  goTemplate: true
+  # generator allows us to source specific values from an external k8s secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - cozy_hostname
+              - global_cluster_issuer
+  template:
+    metadata:
+      name: cozy-web-app
+      annotations:
+        argocd.argoproj.io/sync-wave: "3"
+    spec:
+      project: cozy
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: cozy
+      syncPolicy:
+        syncOptions:
+          - CreateNamespace=true
+          - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
+          selfHeal: true
+      source:
+        repoURL: 'https://jessebot.github.io/cozy-helm-chart'
+        chart: cozy-stack
+        targetRevision: 0.4.0
+        # for testing the live repo
+        # repoURL: https://github.com/jessebot/cozy-helm-chart
+        # targetRevision: main
+        # path: charts/cozy-stack/
+        helm:
+          # these values for cozy and couchdb just render the env vars here:
+          # https://github.com/cozy/cozy-stack/tree/0fe78134b2d09c73813be48274c66ed8582328e6/scripts/docker/production
+          #
+          # and later these:
+          # https://docs.cozy.io/en/cozy-stack/config/#stack-endpoints
+          values: |
+            cozy:
+              adminPassphrase: "ChangeMeTodayTest"
+              configPath: "/etc/cozy"
+              domain: {{ .cozy_hostname }}
+
+            couchdb:
+              existingSecret: "couchdb-couchdb"
+
+            livenessProbe:
+              enabled: true
+              initialDelaySeconds: 10
+              periodSeconds: 10
+              timeoutSeconds: 300
+              failureThreshold: 15
+              successThreshold: 1
+
+            readinessProbe:
+              enabled: true
+              initialDelaySeconds: 10
+              periodSeconds: 10
+              timeoutSeconds: 300
+              failureThreshold: 15
+              successThreshold: 1
+
+            ingress:
+              enabled: true 
+              className: "nginx"
+              annotations:
+                cert-manager.io/cluster-issuer: {{ .global_cluster_issuer }}
+                nginx.ingress.kubernetes.io/proxy-body-size: 10G
+              hosts:
+                - host: {{ .cozy_hostname }}
+                  paths:
+                    - path: /
+                      pathType: ImplementationSpecific
+                - host: home.{{ .cozy_hostname }}
+                  paths:
+                    - path: /
+                      pathType: ImplementationSpecific
+                - host: drive.{{ .cozy_hostname }}
+                  paths:
+                    - path: /
+                      pathType: ImplementationSpecific
+                - host: store.{{ .cozy_hostname }}
+                  paths:
+                    - path: /
+                      pathType: ImplementationSpecific
+                - host: settings.{{ .cozy_hostname }}
+                  paths:
+                    - path: /
+                      pathType: ImplementationSpecific
+                - host: photos.{{ .cozy_hostname }}
+                  paths:
+                    - path: /
+                      pathType: ImplementationSpecific
+                - host: notes.{{ .cozy_hostname }}
+                  paths:
+                    - path: /
+                      pathType: ImplementationSpecific
+              tls:
+                - secretName: cozy-home-tls
+                  hosts:
+                    - "home.{{ .cozy_hostname }}"
+
+                - secretName: cozy-photos-tls
+                  hosts:
+                    - "photos.{{ .cozy_hostname }}"
+
+                - secretName: cozy-store-tls
+                  hosts:
+                    - "store.{{ .cozy_hostname }}"
+
+                - secretName: cozy-settings-tls
+                  hosts:
+                    - "settings.{{ .cozy_hostname }}"
+
+                - secretName: cozy-drive-tls
+                  hosts:
+                    - "drive.{{ .cozy_hostname }}"
+
+                - secretName: cozy-drive-tls
+                  hosts:
+                    - "notes.{{ .cozy_hostname }}"
+
+                - secretName: cozy-tls
+                  hosts:
+                    - "{{ .cozy_hostname }}"

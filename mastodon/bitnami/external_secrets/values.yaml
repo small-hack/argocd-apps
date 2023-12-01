@@ -1,0 +1,11 @@
+# to use bitwarden as a provider, set to bitwarden, else we don't deploy templates
+# we may support other providers in the future
+provider: ""
+
+s3CredentialsBitwardenID: ""
+adminCredentialsBitwardenID: ""
+pgsqlCredentialsBitwardenID: ""
+redisCredentialsBitwardenID: ""
+mastodonSecretsBitwardenID: ""
+smtpCredentialsBitwardenID: ""
+elasticSearchCredentialsBitwardenID: ""

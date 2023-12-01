@@ -1,0 +1,220 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: mastodon-minio-appset
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  goTemplate: true
+  # generator allows us to source specific values from an external k8s secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - mastodon_s3_region
+              - mastodon_s3_endpoint
+              - global_cluster_issuer
+  template:
+    metadata:
+      name: mastodon-minio-app
+      annotations:
+        argocd.argoproj.io/sync-wave: "2"
+    spec:
+      project: mastodon
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: mastodon
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
+          selfHeal: true
+      source:
+        # official minio helm repo
+        repoURL: 'https://charts.min.io/'
+        chart: minio
+        targetRevision: 5.0.14
+        helm:
+          releaseName: mastodon-minio
+          values: |
+            ## Use existing Secret that store following variables:
+            ## .data.rootUser and .data.rootPassword are mandatory,
+            existingSecret: "admin-s3-credentials"
+            
+            ## TLS Settings for MinIO
+            tls:
+              enabled: false
+              ## Create a secret with private.key and public.crt files and pass that here. Ref: https://github.com/minio/minio/tree/master/docs/tls/kubernetes#2-create-kubernetes-secret
+              certSecret: ""
+              publicCrt: public.crt
+              privateKey: private.key
+
+            ## Trusted Certificates Settings for MinIO. Ref: https://min.io/docs/minio/linux/operations/network-encryption.html#third-party-certificate-authorities
+            ## Bundle multiple trusted certificates into one secret and pass that here. Ref: https://github.com/minio/minio/tree/master/docs/tls/kubernetes#2-create-kubernetes-secret
+            ## When using self-signed certificates, remember to include MinIO's own certificate in the bundle with key public.crt.
+            ## If certSecret is left empty and tls is enabled, this chart installs the public certificate from .Values.tls.certSecret.
+            trustedCertsSecret: ""
+
+            ## Enable persistence using Persistent Volume Claims
+            ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+            ##
+            persistence:
+              enabled: true
+              ## A manually managed Persistent Volume and Claim
+              ## Requires persistence.enabled: true
+              ## If defined, PVC must be created manually before volume will be bound
+              existingClaim: "minio-data"
+
+            ingress:
+              enabled: true
+              ingressClassName: nginx
+              annotations:
+                cert-manager.io/cluster-issuer: {{ .global_cluster_issuer }}
+              path: /
+              hosts:
+                - {{ .minio_admin_console_hostname }}
+              tls:
+                - secretName: minio-tls
+                  hosts:
+                    - {{ .minio_admin_console_hostname }}
+
+            ## List of policies to be created after minio install
+            ##
+            ## In addition to default policies [readonly|readwrite|writeonly|consoleAdmin|diagnostics]
+            ## you can define additional policies with custom supported actions and resources
+            policies:
+              - name: "mastodonReadWrite"
+                statements:
+                  - effect: Allow
+                    resources:
+                      - 'arn:aws:s3:::mastodon/*'
+                    actions:
+                      - "s3:AbortMultipartUpload"
+                      - "s3:GetObject"
+                      - "s3:DeleteObject"
+                      - "s3:PutObject"
+                      - "s3:ListMultipartUploadParts"
+                      - "s3:ListBucket"
+                      - "s3:ListBucketMultipartUploads"
+                    conditions:
+                      - StringEquals: '"aws:username": "mastodon"'
+                      - IpAddress: |
+                          "aws:SourceIp": [
+                            "10.0.0.0/8",
+                            "192.168.0.0/24"
+                          ]
+              - name: "mastodonPostgresReadWrite"
+                statements:
+                  - effect: Allow
+                    resources:
+                      - 'arn:aws:s3:::mastodon-postgres/*'
+                    actions:
+                      - "s3:AbortMultipartUpload"
+                      - "s3:GetObject"
+                      - "s3:DeleteObject"
+                      - "s3:PutObject"
+                      - "s3:ListMultipartUploadParts"
+                      - "s3:ListBucket"
+                      - "s3:ListBucketMultipartUploads"
+                    conditions:
+                      - StringEquals: '"aws:username": "mastodon-postgres"'
+                      - IpAddress: |
+                          "aws:SourceIp": [
+                            "10.0.0.0/8",
+                            "192.168.0.0/24"
+                          ]
+            ## Additional stuff for the Kubernetes Job makePolicyJob
+            makePolicyJob:
+              securityContext:
+                enabled: false
+                runAsUser: 1000
+                runAsGroup: 1000
+              resources:
+                requests:
+                  memory: 128Mi
+              # Command to run after the main command on exit
+              exitCommand: ""
+            
+            ## List of users to be created after minio install
+            ##
+            users:
+              ## Username, password and policy to be assigned to the user
+              ## Default policies are [readonly|readwrite|writeonly|consoleAdmin|diagnostics]
+              ## Add new policies as explained here https://min.io/docs/minio/kubernetes/upstream/administration/identity-access-management.html#access-management
+              # Or you can refer to specific secret
+              - accessKey: mastodon
+                existingSecret: mastodon-s3-credentials
+                existingSecretKey: password
+                policy: readwrite
+              - accessKey: mastodon-postgres
+                existingSecret: postgres-s3-credentials
+                existingSecretKey: password
+                policy: readwrite
+            
+            ## Additional stuff for the Kubernetes Job makeUserJob
+            makeUserJob:
+              securityContext:
+                enabled: false
+                runAsUser: 1000
+                runAsGroup: 1000
+              resources:
+                requests:
+                  memory: 128Mi
+              # Command to run after the main command on exit
+              exitCommand: ""
+
+            ## List of buckets to be created after minio install
+            ##
+            buckets:
+              - name: mastodon
+                # Policy to be set on the bucket [none|download|upload|public]
+                policy: none
+                # Purge if bucket exists already
+                purge: false
+                # set versioning for bucket [true|false]
+                versioning: true
+                # set objectlocking for bucket [true|false]
+                objectlocking: false
+              - name: mastodon-postgres
+                # Policy to be set on the bucket [none|download|upload|public]
+                policy: none
+                # Purge if bucket exists already
+                purge: false
+                # set versioning for bucket [true|false]
+                versioning: true
+                # set objectlocking for bucket [true|false]
+                objectlocking: false
+
+            ## Additional Annotations for the Kubernetes Job makeBucketJob
+            makeBucketJob:
+              securityContext:
+                enabled: false
+                runAsUser: 1000
+                runAsGroup: 1000
+              resources:
+                requests:
+                  memory: 128Mi
+              # Command to run after the main command on exit
+              exitCommand: ""
+
+            networkPolicy:
+              enabled: false
+              allowExternal: true
+
+            ## Specify the service account to use for the MinIO pods. If 'create' is set to 'false'
+            ## and 'name' is left unspecified, the account 'default' will be used.
+            serviceAccount:
+              create: true
+              ## The name of the service account to use. If 'create' is 'true', a service account with that name
+              ## will be created.
+              name: "minio-sa"
+
+            metrics:
+              serviceMonitor:
+                enabled: false

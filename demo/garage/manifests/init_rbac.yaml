@@ -1,0 +1,27 @@
+---
+# see: https://stackoverflow.com/questions/54196533/how-to-execute-command-from-one-pod-inside-another-pod-using-kubectl-exec-which
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: garage-setup-role
+  namespace: garage
+  labels:
+    app: garage
+rules:
+  - apiGroups: [""]
+    # this might need to also include pods/exec as an array item?
+    resources: ["pods"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete", "exec"]
+
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: garage-rolebinding
+  namespace: garage
+  labels:
+    app: garage
+subjects:
+  - kind: Group
+    name: system:serviceaccounts
+    apiGroup: rbac.authorization.k8s.io

@@ -1,0 +1,25 @@
+---
+# First sync wave done in parallel with creating secrets. Must be BEFORE
+# matrix so that matrix persists it's data between upgrades. Sync policy
+# is set to ApplyOutOfSyncOnly=true to create the volume initially only.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: matrix-persistence
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  project: matrix
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: matrix
+  source:
+    repoURL: https://github.com/small-hack/argocd-apps.git
+    path: matrix/storage/pvc/
+    targetRevision: main
+  syncPolicy:
+    syncOptions:
+      - ApplyOutOfSyncOnly=true
+    automated:
+      selfHeal: false
