@@ -40,7 +40,7 @@ spec:
       source:
         repoURL: https://github.com/small-hack/argocd-apps.git
         path: s3_persistence_and_backups/
-        targetRevision: eso-helm-chart-test
+        targetRevision: main
         helm:
           values: |
             provider: "{{ .mastodon_s3_provider }}"

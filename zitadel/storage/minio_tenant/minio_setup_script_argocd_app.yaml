@@ -21,4 +21,4 @@ spec:
   source:
     repoURL: https://github.com/small-hack/argocd-apps.git
     path: zitadel/storage/minio_tenant/minio_setup_script/
-    targetRevision: eso-helm-chart-test
+    targetRevision: main

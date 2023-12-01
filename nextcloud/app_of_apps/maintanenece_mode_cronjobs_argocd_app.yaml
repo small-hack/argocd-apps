@@ -17,7 +17,7 @@ spec:
   source:
     repoURL: https://github.com/small-hack/argocd-apps.git
     path: nextcloud/maintenance_mode_cronjobs/
-    targetRevision: eso-helm-chart-test
+    targetRevision: main
   syncPolicy:
     syncOptions:
       - ApplyOutOfSyncOnly=true

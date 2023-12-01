@@ -20,4 +20,4 @@ spec:
   source:
     repoURL: https://github.com/small-hack/argocd-apps.git
     path: nextcloud/storage/pvc/
-    targetRevision: eso-helm-chart-test
+    targetRevision: main

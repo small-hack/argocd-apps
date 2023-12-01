@@ -34,4 +34,4 @@ spec:
       source:
         repoURL: https://github.com/small-hack/argocd-apps.git
         path: nextcloud/storage/{{ .nextcloud_s3_provider }}/
-        targetRevision: eso-helm-chart-test
+        targetRevision: main

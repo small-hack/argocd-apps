@@ -11,7 +11,7 @@ spec:
   source:
     repoURL: https://github.com/small-hack/argocd-apps
     path: demo/seaweedfs/persistence/
-    targetRevision: eso-helm-chart-test
+    targetRevision: main
   destination:
     server: "https://kubernetes.default.svc"
     namespace: seaweedfs
