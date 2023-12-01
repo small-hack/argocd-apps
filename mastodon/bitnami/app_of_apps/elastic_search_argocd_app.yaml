@@ -1,0 +1,40 @@
+
+---
+# has to be after secrets, but before web-app
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: mastodon-elasticsearch
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  project: mastodon
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: mastodon
+  source:
+    repoURL: 'registry-1.docker.io'
+    chart: bitnamicharts/elasticsearch
+    targetRevision: 19.13.9
+    helm:
+      releaseName: mastodon-elasticsearch
+      values: |
+        fullnameOverride: mastodon-elasticsearch
+
+        security:
+          existingSecret: mastodon-elasticsearch-credentials
+
+        master:
+          replicaCount: 1
+          autoscaling:
+            minReplicas: 1
+
+        data:
+          replicaCount: 1
+
+        coordinating:
+          replicaCount: 1
+
+        ingest:
+          replicaCount: 1

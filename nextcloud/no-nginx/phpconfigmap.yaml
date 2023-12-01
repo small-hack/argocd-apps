@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nextcloud-php-fpm-conf
+data:
+  www.conf: |-
+    [www]
+    security.limit_extensions = .php .css .js

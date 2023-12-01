@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  annotations:
+    argocd.argoproj.io/hook: PreSync
+  name: nextcloud-fastcgi-cm
+# removed fastcgi options:
+data:
+  modHeadersAvailable: "true"
+  front_controller_active: "true"
+  DOCUMENT_ROOT: "/var/www/html"
+  SCRIPT_FILENAME: "$document_root$fastcgi_script_name"
+  PATH_INFO: "$fastcgi_path_info"
+  HTTPS: "1"

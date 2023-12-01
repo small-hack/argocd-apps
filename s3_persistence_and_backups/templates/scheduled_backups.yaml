@@ -1,0 +1,50 @@
+---
+apiVersion: k8up.io/v1
+kind: Schedule
+metadata:
+  name: {{ .Values.k8up.backup_name }}
+  annotations:
+    "helm.sh/hook": post-install
+    "helm.sh/resource-policy": keep
+spec:
+  backend:
+    repoPasswordSecretRef:
+      name: {{ .Values.k8up.repoPasswordSecretRef.name }}
+      key: {{ .Values.k8up.repoPasswordSecretRef.key }}
+    {{- if eq .Values.k8up.backup_type "s3" }}
+    s3:
+      endpoint: {{ .Values.k8up.s3.endpoint }}
+      bucket: {{ .Values.k8up.s3.bucket }}
+      accessKeyIDSecretRef:
+        name: {{ .Values.k8up.s3.accessKeyIDSecretRef.name }}
+        key: {{ .Values.k8up.s3.accessKeyIDSecretRef.key }}
+        optional: {{ .Values.k8up.s3.accessKeyIDSecretRef.optional }}
+      secretAccessKeySecretRef:
+        name: {{ .Values.k8up.s3.secretAccessKeySecretRef.name }}
+        key: {{ .Values.k8up.s3.secretAccessKeySecretRef.key }}
+        optional: {{ .Values.k8up.s3.secretAccessKeySecretRef.optional }}
+    {{- end }}
+    {{- if eq .Values.k8up.backup_type "local" }}
+    local:
+      mountPath: {{ .Values.k8up.local.mountPath }}
+    {{- end }}
+  # Backup nightly at 2:10 AM (Central Europe Time)
+  backup:
+    schedule: {{ .Values.k8up.schedules.backup }}
+    failedJobsHistoryLimit: 5
+    successfulJobsHistoryLimit: 2
+    promURL: {{ .Values.k8up.prometheus_url }}
+    {{- if .Values.k8up.podSecurityContext }}
+    podSecurityContext:
+      runAsUser: {{ .Values.k8up.podSecurityContext.runAsUser }}
+    {{- end }}
+  # verify the backups are ok
+  check:
+    schedule: {{ .Values.k8up.schedules.check }}
+    promURL: {{ .Values.k8up.prometheus_url }}
+  # delete old backups
+  prune:
+    schedule: {{ .Values.k8up.schedules.prune }}
+    retention:
+      keepDaily: 7
+      keepWeekly: 8

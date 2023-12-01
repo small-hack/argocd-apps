@@ -1,0 +1,31 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: vault-app
+  namespace: argocd
+spec:
+  project: vault
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: vault
+
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+      - ApplyOutOfSyncOnly=true
+    automated:
+      prune: true
+      selfHeal: true
+
+  ignoreDifferences:
+    - group: apps
+      kind: MutatingWebhookConfiguration
+      name: vault-app-agent-injector-cfg
+      jqPathExpressions:
+        - '.webhooks[]?.clientConfig.caBundle'
+
+  source:
+    repoURL: 'https://helm.releases.hashicorp.com'
+    targetRevision: 0.26.1
+    chart: vault

@@ -1,0 +1,39 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: zitadel-s3-provider-app-set
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  goTemplate: true
+  # generator allows us to source specific values from an external k8s secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - zitadel_s3_provider
+  template:
+    metadata:
+      name: zitadel-{{ .zitadel_s3_provider }}
+      annotations:
+        argocd.argoproj.io/sync-wave: "2"
+    spec:
+      project: zitadel
+      destination:
+        server: "https://kubernetes.default.svc"
+        namespace: zitadel
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
+          selfHeal: true
+      source:
+        repoURL: https://github.com/small-hack/argocd-apps.git
+        path: zitadel/storage/{{ .zitadel_s3_provider }}/
+        targetRevision: main

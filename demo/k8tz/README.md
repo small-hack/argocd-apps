@@ -40,7 +40,7 @@ You should be able to just set argo to use this repo. There's an example templat
         namespace: k8tz
         server: 'https://kubernetes.default.svc'
       source:
-        path: alpha/k8tz
+        path: demo/k8tz
         repoURL: 'https://github.com/small-hack/argocd-apps.git'
         targetRevision: HEAD
       sources: []

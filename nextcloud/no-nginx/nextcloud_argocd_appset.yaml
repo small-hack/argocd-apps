@@ -1,0 +1,483 @@
+---
+# webapp is deployed 2nd because we need secrets and persistent volumes up 1st
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: nextcloud-web-app-set
+  namespace: argocd
+spec:
+  goTemplate: true
+  # generator allows us to source specific values from an external k8s secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - nextcloud_hostname
+              - nextcloud_s3_region
+              - global_cluster_issuer
+  template:
+    metadata:
+      name: nextcloud-web-app
+      annotations:
+        argocd.argoproj.io/sync-wave: "3"
+    spec:
+      project: nextcloud
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: nextcloud
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
+          selfHeal: true
+      source:
+        # repoURL: 'https://nextcloud.github.io/helm'
+        # targetRevision: 4.5.3
+        # chart: nextcloud
+        repoURL: 'https://github.com/jessebot/nextcloud-helm'
+        path: charts/nextcloud/
+        targetRevision: allow-updating-fsgroup
+        helm:
+          values: |
+            image:
+              flavor: fpm-alpine
+
+            ingress:
+              enabled: true
+              className: nginx
+              annotations:
+                cert-manager.io/cluster-issuer: {{ .global_cluster_issuer }}
+
+                nginx.ingress.kubernetes.io/backend-protocol: "FCGI"
+                nginx.ingress.kubernetes.io/fastcgi-index: "index.php"
+                nginx.ingress.kubernetes.io/fastcgi-params-configmap: "nextcloud-fastcgi-cm"
+
+                nginx.ingress.kubernetes.io/proxy-body-size: 10G
+
+                # nginx.ingress.kubernetes.io/enable-cors: "false"
+                nginx.ingress.kubernetes.io/cors-allow-headers: "X-Forwarded-For"
+                nginx.ingress.kubernetes.io/server-snippet: |-
+                  location ~ \.php(?:$|/) {
+                    fastcgi_split_path_info ^(.+?\.php)(/.*)$;
+                    set $path_info $fastcgi_path_info;
+                  }
+
+                  proxy_hide_header X-Powered-By;
+                  rewrite ^/.well-known/webfinger /index.php/.well-known/webfinger last;
+                  rewrite ^/.well-known/nodeinfo /index.php/.well-known/nodeinfo last;
+                  rewrite ^/.well-known/host-meta /public.php?service=host-meta last;
+                  rewrite ^/.well-known/host-meta.json /public.php?service=host-meta-json;
+
+                  location = /.well-known/carddav {
+                    return 301 $scheme://$host/remote.php/dav/;
+                  }
+
+                  location = /.well-known/caldav {
+                    return 301 $scheme://$host/remote.php/dav/;
+                  }
+
+                  location / {
+                    try_files $uri $uri/ /index.php$request_uri;
+                  }
+              tls:
+                - secretName: nextcloud-tls
+                  hosts:
+                    - "{{ .nextcloud_hostname }}"
+
+            nextcloud:
+              host: {{ .nextcloud_hostname }}
+              existingSecret:
+                enabled: true
+                secretName: nextcloud-admin-credentials
+                usernameKey: username
+                passwordKey: password
+                tokenKey: serverInfoToken
+                smtpUsernameKey: smtpUsername
+                smtpPasswordKey: smtpPassword
+                smtpHostKey: smtpHost
+
+              # update to the latest version of nextcloud
+              update: 1
+
+              containerPort: 9000
+
+              securityContext:
+                runAsUser: 82
+                runAsGroup: 82
+                # runAsNonRoot: true
+
+              podSecurityContext:
+                runAsUser: 82
+                runAsGroup: 82
+                fsGroup: 82
+
+              # for sending notifications
+              mail:
+                enabled: true
+
+              extraInitContainers:
+                - name: change-data-dir-permissions
+                  image: alpine:latest
+                  command:
+                    - /bin/sh
+                    - -c
+                    - "chmod 770 -R /var/www/html/data && chown 82:www-data -R /var/www/html"
+                  volumeMounts:
+                    - mountPath: /var/www/
+                      name: nextcloud-main
+                      subPath: root
+                    - mountPath: /var/www/html
+                      name: nextcloud-main
+                      subPath: html
+                    - mountPath: /var/www/html/data
+                      name: nextcloud-main
+                      subPath: data
+                    - mountPath: /var/www/html/config
+                      name: nextcloud-main
+                      subPath: config
+                  securityContext:
+                    runAsUser: 0
+                    runAsGroup: 0
+                    runAsNonRoot: false
+                    seccompProfile:
+                      type: RuntimeDefault
+
+              extraEnv:
+                # OIDC parameters
+                - name: "NC_oidc_login_provider_url"
+                  valueFrom:
+                    secretKeyRef:
+                      name: nextcloud-oidc-credentials
+                      key: issuer
+
+                - name: "NC_oidc_login_client_id"
+                  valueFrom:
+                    secretKeyRef:
+                      name: nextcloud-oidc-credentials
+                      key: client_id
+
+                - name: "NC_oidc_login_client_secret"
+                  valueFrom:
+                    secretKeyRef:
+                      name: nextcloud-oidc-credentials
+                      key: client_secret
+
+                # s3 parameters
+                - name: "OBJECTSTORE_S3_HOST"
+                  valueFrom:
+                    secretKeyRef:
+                      name: nextcloud-s3-credentials
+                      key: S3_HOSTNAME
+
+                - name: "OBJECTSTORE_S3_BUCKET"
+                  valueFrom:
+                    secretKeyRef:
+                      name: nextcloud-s3-credentials
+                      key: S3_BUCKET
+
+                - name: "OBJECTSTORE_S3_KEY"
+                  valueFrom:
+                    secretKeyRef:
+                      name: nextcloud-s3-credentials
+                      key: S3_USER
+
+                - name: "OBJECTSTORE_S3_SECRET"
+                  valueFrom:
+                    secretKeyRef:
+                      name: nextcloud-s3-credentials
+                      key: S3_PASSWORD
+
+                - name: "OBJECTSTORE_S3_PORT"
+                  value: "443"
+
+                - name: "OBJECTSTORE_S3_SSL"
+                  value: "true"
+
+                - name: "OBJECTSTORE_S3_REGION"
+                  value: {{ .nextcloud_s3_region }}
+
+                - name: "OBJECTSTORE_S3_USEPATH_STYLE"
+                  value: "true"
+
+                - name: "PGSSLCERT"
+                  value: /etc/secrets/nextcloud/tls.crt
+
+                - name: "PGSSLKEY"
+                  value: /etc/secrets/nextcloud/tls.key
+
+                - name: "PGSSLROOTCERT"
+                  value: /etc/secrets/ca/ca.crt
+
+              extraVolumes:
+                - name: postgres-ca
+                  secret:
+                    secretName: nextcloud-postgres-server-ca-key-pair
+                    defaultMode: 0640
+
+                - name: postgres-client-certs
+                  secret:
+                    secretName: nextcloud-postgres-nextcloud-cert
+                    defaultMode: 0640
+
+              extraVolumeMounts:
+                - name: postgres-ca
+                  mountPath: /etc/secrets/ca
+
+                - name: postgres-client-certs
+                  mountPath: /etc/secrets/nextcloud
+
+              phpConfigs:
+                www.conf: |-
+                  [www]
+                  security.limit_extensions = .php .css .js .html
+                  listen = 127.0.0.1:9000
+                  pm = dynamic
+                  pm.max_children = 350
+                  pm.start_servers = 80
+                  pm.min_spare_servers = 80
+                  pm.max_spare_servers = 268
+
+              #  www.conf: |-
+              #    [www]
+              #    user = www-data
+              #    group = www-data
+
+              configs:
+                logging.config.php: |-
+                  <?php
+                  $CONFIG = array (
+                    'log_type' => 'file',
+                    'logfile' => 'nextcloud.log',
+                    'loglevel' => 1,
+                    'logdateformat' => 'F d, Y H:i:s'
+                    );
+
+                previews.config.php: |-
+                  <?php
+                  $CONFIG = array (
+                    'enable_previews' => true,
+                    'enabledPreviewProviders' => array (
+                      'OC\Preview\Movie',
+                      'OC\Preview\PNG',
+                      'OC\Preview\JPEG',
+                      'OC\Preview\GIF',
+                      'OC\Preview\BMP',
+                      'OC\Preview\XBitmap',
+                      'OC\Preview\MP3',
+                      'OC\Preview\MP4',
+                      'OC\Preview\TXT',
+                      'OC\Preview\MarkDown',
+                      'OC\Preview\PDF'
+                    ),
+                  );
+
+                # 'sse_c_key' => getenv('OBJECTSTORE_S3_ENCYRPTION_KEY')
+                s3.config.php: |-
+                  <?php
+                  $CONFIG = array (
+                    'objectstore' => [
+                      'class' => '\\OC\\Files\\ObjectStore\\S3',
+                      'arguments' => [
+                            'bucket' => getenv('OBJECTSTORE_S3_BUCKET'),
+                            'hostname' => getenv('OBJECTSTORE_S3_HOST'),
+                            'key' => getenv('OBJECTSTORE_S3_KEY'),
+                            'secret' => getenv('OBJECTSTORE_S3_SECRET'),
+                            'region' => getenv('OBJECTSTORE_S3_REGION'),
+                            'port' => getenv('OBJECTSTORE_S3_PORT'),
+                            'use_ssl' => true,
+                            'use_path_style' => true,
+                            'autocreate' => false,
+                            'verify_bucket_exists' => false,
+                      ]
+                    ]
+                  );
+
+                proxy.config.php: |-
+                  <?php
+                  $CONFIG = array (
+                    'trusted_proxies' => array(
+                      0 => '127.0.0.1',
+                      1 => '10.0.0.0/8'
+                    ),
+                    'forwarded_for_headers' => array('HTTP_X_FORWARDED_FOR'),
+                  );
+
+                oidc.config.php: |-
+                  <?php
+                  $CONFIG = array (
+                    // Some Nextcloud options that might make sense here
+                    'allow_user_to_change_display_name' => true,
+                    'lost_password_link' => 'disabled',
+
+                    // Automatically redirect the login page to the provider
+                    'oidc_login_auto_redirect' => false,
+
+                    // Redirect to this page after logging out the user
+                    'oidc_login_logout_url' => '{{ .nextcloud_hostname }}',
+
+                    // If set to true the user will be redirected to the
+                    // logout endpoint of the OIDC provider after logout
+                    'oidc_login_end_session_redirect' => false,
+
+                    // Login button text
+                    'oidc_login_button_text' => 'Log in with ZITADEL',
+
+                    // Hide the NextCloud password change form.
+                    'oidc_login_hide_password_form' => false,
+
+                    // Use ID Token instead of UserInfo
+                    'oidc_login_use_id_token' => false,
+
+                    // Attribute map for OIDC response. 
+                    'oidc_login_attributes' => array (
+                        'id' => 'preferred_username',
+                        'name' => 'name',
+                        'mail' => 'email',
+                        'login_filter' => 'groups',
+                        'photoURL' => 'picture',
+                        'is_admin' => 'groups_nextcloud_admins',
+                    ),
+
+                    // Allow only users in configured value(s) to access Nextcloud. In case the user
+                    // is not assigned to this value (read from oidc_login_attributes) the login
+                    // will not be allowed for this user.
+                    'oidc_login_filter_allowed_values' => array('nextcloud_admins', 'nextcloud_users'),
+
+                    // Set OpenID Connect scope
+                    'oidc_login_scope' => 'openid profile email',
+
+                    // Run in LDAP proxy mode
+                    'oidc_login_proxy_ldap' => false,
+
+                    // Disable creation of users new to Nextcloud from OIDC login.
+                    // A user may be known to the IdP but not (yet) known to Nextcloud.
+                    'oidc_login_disable_registration' => false,
+
+                    // Fallback to direct login if login from OIDC fails
+                    // Note that no error message will be displayed if enabled
+                    'oidc_login_redir_fallback' => false,
+
+                    // If you get your groups from the oidc_login_attributes, you might want
+                    // to create them if they are not already existing, Default is `false`.
+                    'oidc_create_groups' => false,
+
+                    // Enable use of WebDAV via OIDC bearer token.
+                    'oidc_login_webdav_enabled' => false,
+
+                    // Enable authentication with user/password for DAV clients that do not
+                    // support token authentication (e.g. DAVx⁵)
+                    'oidc_login_password_authentication' => true,
+
+                    // The time in seconds used to cache public keys from provider.
+                    // The default value is 1 day.
+                    'oidc_login_public_key_caching_time' => 86400,
+
+                    // The time in seconds used to cache the OIDC well-known configuration from the provider.
+                    // The default value is 1 day.
+                    'oidc_login_well_known_caching_time' => 86400,
+
+                    // If true, nextcloud will download user avatars on login.
+                    // This may lead to security issues as the server does not control
+                    // which URLs will be requested. Use with care.
+                    'oidc_login_update_avatar' => false,
+
+                    // Code challenge method for PKCE flow.
+                    'oidc_login_code_challenge_method' => 'S256',
+                    );
+
+            nginx:
+              enabled: false
+
+            internalDatabase:
+              enabled: false
+
+            externalDatabase:
+              enabled: true
+              type: postgresql
+              host: "nextcloud-postgres-rw.nextcloud.svc:5432;sslmode=verify-full;sslrootcert=/etc/secrets/ca/ca.crt;sslcert=/etc/secrets/nextcloud/tls.crt;sslkey=/etc/secrets/nextcloud/tls.key"
+              database: nextcloud
+              existingSecret:
+                enabled: true
+                secretName: nextcloud-pgsql-credentials
+                usernameKey: username
+                passwordKey: password
+
+            postgresql:
+              enabled: false
+
+            redis:
+              enabled: false
+              replica:
+                replicaCount: 3
+              auth:
+                enabled: true
+                existingSecret: nextcloud-redis-credentials
+                existingSecretPasswordKey: redis_password
+
+            cronjob:
+              enabled: true
+
+            service:
+              type: ClusterIP
+              port: 9000
+              nodePort: nil
+
+            persistence:
+              enabled: true
+              existingClaim: nextcloud-config
+              nextcloudData:
+                enabled: false
+                subPath:
+
+            livenessProbe:
+              enabled: false
+              initialDelaySeconds: 20
+              periodSeconds: 10
+              timeoutSeconds: 10
+              failureThreshold: 100
+              successThreshold: 1
+            readinessProbe:
+              enabled: false
+              initialDelaySeconds: 20
+              periodSeconds: 10
+              timeoutSeconds: 10
+              failureThreshold: 100
+              successThreshold: 1
+            startupProbe:
+              enabled: false
+              initialDelaySeconds: 20
+              periodSeconds: 10
+              timeoutSeconds: 10
+              failureThreshold: 100
+              successThreshold: 1
+            hpa:
+              enabled: false
+              cputhreshold: 60
+              minPods: 1
+              maxPods: 10
+
+            metrics:
+              enabled: false
+              https: true
+              token: "enabled"
+              timeout: 10s
+              podLabels:
+                jobLabel: nextcloud-metrics
+
+              service:
+                annotations:
+                  prometheus.io/scrape: "true"
+                  prometheus.io/port: "9205"
+                labels:
+                  jobLabel: nextcloud-metrics
+
+              serviceMonitor:
+                enabled: true
+                namespace: "nextcloud"
+
+            rbac:
+              enabled: true
