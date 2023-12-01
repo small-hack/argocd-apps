@@ -78,10 +78,10 @@ spec:
                     - {{ .prometheus_hostname }}
               prometheusSpec:
                 serviceMonitorSelectorNilUsesHelmValues: false
-                additionalScrapeConfigsSecret:
-                  enabled: true
-                  name: additional-scrape-configs
-                  key: scrape-targets.yaml
+                # additionalScrapeConfigsSecret:
+                #   enabled: true
+                #   name: additional-scrape-configs
+                #   key: scrape-targets.yaml
                 storageSpec:
                   volumeClaimTemplate:
                     spec:
