@@ -1,0 +1,358 @@
+---
+# third sync wave because it has to be up after postgres
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: mastodon-app-set
+  namespace: argocd
+spec:
+  goTemplate: true
+  # generator allows us to source specific values from an external k8s secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - global_cluster_issuer
+              - mastodon_hostname
+              - mastodon_s3_endpoint
+
+  template:
+    metadata:
+      name: mastodon-web-app
+      annotations:
+        argocd.argoproj.io/sync-wave: "3"
+    spec:
+      project: mastodon
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: mastodon
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
+          selfHeal: true
+      source:
+        repoURL: registry-1.docker.io
+        chart: bitnamicharts/mastodon
+        targetRevision: 3.2.5
+        helm:
+          releaseName: "mastodon"
+          values: |
+            ## String to fully override common.names.fullname
+            fullnameOverride: "mastodon"
+
+            # name of an existing Secret with your extra config for Mastodon
+            existingSecret: "mastodon-server-secrets"
+
+            ## Enable the search engine (uses Elasticsearch under the hood)
+            enableSearches: true
+
+            ## Enable the S3 storage engine
+            enableS3: true
+
+            ## Force Mastodon's S3_PROTOCOL to be https (Useful when TLS is terminated using cert-manager/Ingress)
+            forceHttpsS3Protocol: true
+
+            ## Set Mastodon's STREAMING_API_BASE_URL to use secure websocket (wss:// instead of ws://)
+            useSecureWebSocket: true
+
+            ## Set this instance to advertise itself to the fediverse using HTTPS. should always be true.
+            local_https: true
+
+            ## The domain name used by accounts on this instance. Unless you're using
+            ## webDomain, this value should be set to the URL at which your instance is hosted
+            localDomain: {{ .mastodon_hostname }}
+
+            # adminUser: ""
+
+            smtp:
+              port: 587
+              ## From address for sent emails
+              from_address: "toots@{{ .mastodon_hostname }}"
+              ## SMTP domain
+              domain: {{ .mastodon_hostname }}
+              ## Reply-To value for sent emails
+              reply_to: "noreply@{{ .mastodon_hostname }}"
+              delivery_method: smtp
+              ca_file: /etc/ssl/certs/ca-certificates.crt
+              ## OpenSSL verify mode, maybe this should be peer?
+              openssl_verify_mode: none
+              enable_starttls_auto: true
+              tls: true
+              auth_method: login
+              existingSecret: "mastodon-smtp-credentials"
+              existingSecretLoginKey: "login"
+              existingSecretPasswordKey: "password"
+              existingSecretServerKey: "server"
+
+            ## @section Mastodon Web Parameters
+            web:
+              replicaCount: 1
+              ## Mastodon web resource requests and limits
+              ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+              resources:
+                limits: {}
+                requests: {}
+
+              # Array with extra env variables to add to Mastodon web nodes
+              extraEnvVars:
+                - name: "PGSSLCERT"
+                  value: /etc/secrets/mastodon/tls.crt
+                - name: "PGSSLKEY"
+                  value: /etc/secrets/mastodon/tls.key
+                - name: "PGSSLROOTCERT"
+                  value: /etc/secrets/ca/ca.crt
+
+              extraVolumes:
+                - name: postgres-ca
+                  secret:
+                    secretName: mastodon-postgres-server-ca-key-pair
+                    defaultMode: 0440
+                - name: postgres-client-certs
+                  secret:
+                    secretName: mastodon-postgres-mastodon-cert
+                    defaultMode: 0440
+
+              extraVolumeMounts:
+                - name: postgres-ca
+                  mountPath: /etc/secrets/ca
+                - name: postgres-client-certs
+                  mountPath: /etc/secrets/mastodon
+
+            ## @section Mastodon Sidekiq Parameters
+            sidekiq:
+              ## Number of Mastodon sidekiq replicas to deploy
+              replicaCount: 1
+              ## Mastodon sidekiq resource requests and limits
+              ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+              ## The resources limits for the Mastodon sidekiq containers
+              resources:
+                limits: {}
+                requests: {}
+
+              extraEnvVars:
+                - name: "PGSSLCERT"
+                  value: /etc/secrets/mastodon/tls.crt
+                - name: "PGSSLKEY"
+                  value: /etc/secrets/mastodon/tls.key
+                - name: "PGSSLROOTCERT"
+                  value: /etc/secrets/ca/ca.crt
+
+              extraVolumes:
+                - name: postgres-ca
+                  secret:
+                    secretName: mastodon-postgres-server-ca-key-pair
+                    defaultMode: 0440
+                - name: postgres-client-certs
+                  secret:
+                    secretName: mastodon-postgres-mastodon-cert
+                    defaultMode: 0440
+
+              extraVolumeMounts:
+                - name: postgres-ca
+                  mountPath: /etc/secrets/ca
+                - name: postgres-client-certs
+                  mountPath: /etc/secrets/mastodon
+
+            ## @section Mastodon Streaming Parameters
+            streaming:
+              ## Number of Mastodon streaming replicas to deploy
+              replicaCount: 1
+              ## Mastodon streaming resource requests and limits
+              ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+              ## The resources limits for the Mastodon streaming containers
+              resources:
+                limits: {}
+                requests: {}
+
+              extraEnvVars:
+                - name: "PGSSLCERT"
+                  value: /etc/secrets/mastodon/tls.crt
+                - name: "PGSSLKEY"
+                  value: /etc/secrets/mastodon/tls.key
+                - name: "PGSSLROOTCERT"
+                  value: /etc/secrets/ca/ca.crt
+
+              extraVolumes:
+                - name: postgres-ca
+                  secret:
+                    secretName: mastodon-postgres-server-ca-key-pair
+                    defaultMode: 0440
+                - name: postgres-client-certs
+                  secret:
+                    secretName: mastodon-postgres-mastodon-cert
+                    defaultMode: 0440
+
+              extraVolumeMounts:
+                - name: postgres-ca
+                  mountPath: /etc/secrets/ca
+                - name: postgres-client-certs
+                  mountPath: /etc/secrets/mastodon
+
+            ## @section Mastodon Media Management Cronjob Parameters
+            tootctlMediaManagement:
+              ## Enable Cronjob to manage all media caches
+              enabled: false
+              ## Enable removing attachements
+              removeAttachments: true
+              ## Number of days old media attachments must be for removal
+              removeAttachmentsDays: 30
+              ## Enable removal of cached remote emoji files
+              removeCustomEmoji: false
+              ## Enable removal of cached preview cards
+              removePreviewCards: false
+              ## Number of days old preview cards must be for removal
+              removePreviewCardsDays: 30
+              ## Enable removal of cached remote avatar images
+              removeAvatars: false
+              ## Number of days old avatar images must be for removal
+              removeAvatarsDays: 30
+              ## Enable removal of cached profile header images
+              removeHeaders: false
+              ## Number of days old header images must be for removal
+              removeHeadersDays: 30
+              ## Enable removal of cached orphan files
+              removeOrphans: false
+              ## Enable removal of cached avatar and header when local users are following the accounts
+              includeFollows: false
+              ## Cron job schedule to run tootctl media commands
+              cronSchedule: '14 3 * * *'
+              ## Number of failed jobs to keep
+              failedJobsHistoryLimit: 3
+              ## Number of successful jobs to keep
+              successfulJobsHistoryLimit: 3
+              ## Concurrency Policy. Should be Allow, Forbid or Replace
+              concurrencyPolicy: Allow
+
+            ## @section Mastodon Migration job Parameters
+            initJob:
+              ## Execute rake assets:precompile as part of the job
+              precompileAssets: true
+              ## Execute rake db:migrate as part of the job
+              migrateDB: true
+              ## Execute rake chewy:upgrade as part of the job
+              migrateElasticsearch: true
+              ## Create admin user as part of the job
+              createAdmin: true
+              ## set backoff limit of the job
+              backoffLimit: 10
+              extraEnvVars:
+                # use ssl for db work
+                - name: "PGSSLCERT"
+                  value: /etc/secrets/mastodon/tls.crt
+                - name: "PGSSLKEY"
+                  value: /etc/secrets/mastodon/tls.key
+                - name: "PGSSLROOTCERT"
+                  value: /etc/secrets/ca/ca.crt
+
+              extraEnvVarsCM: ""
+              extraEnvVarsSecret: "mastodon-admin-credentials"
+
+              extraVolumes:
+                - name: postgres-ca
+                  secret:
+                    secretName: mastodon-postgres-server-ca-key-pair
+                    defaultMode: 0440
+                - name: postgres-client-certs
+                  secret:
+                    secretName: mastodon-postgres-mastodon-cert
+                    defaultMode: 0440
+
+              extraVolumeMounts:
+                - name: postgres-ca
+                  mountPath: /etc/secrets/ca
+                - name: postgres-client-certs
+                  mountPath: /etc/secrets/mastodon
+
+              ## Container resource requests and limits
+              ## ref: https://kubernetes.io/docs/user-guide/compute-resources/
+              resources:
+                limits: {}
+                requests: {}
+              ## [object] Add annotations to the job
+              annotations:
+                helm.sh/hook: post-install, pre-upgrade
+                helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
+                # This should be executed after the minio provisioning job
+                helm.sh/hook-weight: "10"
+
+            ## @section Persistence Parameters (only when S3 is disabled)
+            ## ref: https://kubernetes.io/docs/user-guide/persistent-volumes/
+            persistence:
+              enabled: false
+
+            ## 'volumePermissions' init container parameters
+            ## Changes owner/group of PV mount point to runAsUser:fsGroup values
+            ## based on the *podSecurityContext/*containerSecurityContext parameters
+            volumePermissions:
+              ## OS Shell + Utility image
+              ## ref: https://hub.docker.com/r/bitnami/os-shell/tags/
+              enabled: true
+
+            ## @section External S3 parameters
+            externalS3:
+              host: {{ .mastodon_s3_endpoint }}
+              port: 443
+              existingSecret: mastodon-s3-credentials
+              existingSecretAccessKeyIDKey: "S3_USER"
+              existingSecretKeySecretKey: "S3_PASSWORD"
+              protocol: "https"
+              bucket: "mastodon"
+              region: "eu-west-1"
+
+            externalRedis:
+              host: "mastodon-redis-master"
+              port: 6379
+              existingSecret: "mastodon-redis-credentials"
+              existingSecretPasswordKey: "redis-password"
+
+            ## ref: https://github.com/bitnami/charts/blob/main/bitnami/redis/values.yaml
+            redis:
+              enabled: false
+
+            externalDatabase:
+              host: mastodon-postgres-rw.mastodon.svc
+              port: 5432
+              user: mastodon
+              database: mastodon
+              existingSecret: "mastodon-pgsql-credentials"
+              existingSecretPasswordKey: "password"
+
+            ## ref: https://github.com/bitnami/charts/blob/main/bitnami/postgresql/values.yaml
+            postgresql:
+              enabled: false
+
+            ## MinIO chart installation to be used as an objstore for Mastodon
+            # ref: https://github.com/bitnami/charts/tree/main/bitnami/minio
+            minio:
+              enabled: false
+
+            elasticsearch:
+              enabled: false
+
+            externalElasticsearch:
+              host: mastodon-elasticsearch
+              port: 9200
+              existingSecret: "mastodon-elasticsearch-credentials"
+              existingSecretPasswordKey: "elasticsearch-password"
+
+            ## @section Apache chart configuration
+            ## https://github.com/bitnami/charts/blob/main/bitnami/apache/values.yaml
+            apache:
+              ## Enable Apache chart
+              enabled: true
+              fullnameOverride: mastodon-apache
+              vhostsConfigMap: "mastodon-apache-mastodon-vhost"
+              ingress:
+                enabled: true
+                hostname: {{ .mastodon_hostname }}
+                tls: true
+                ingressClassName: nginx
+                annotations:
+                  cert-manager.io/cluster-issuer: "{{ .global_cluster_issuer }}"
+                  # ensure that NGINX's upload size matches Mastodon's
+                  nginx.ingress.kubernetes.io/proxy-body-size: 40m

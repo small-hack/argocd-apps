@@ -1,0 +1,21 @@
+## if this is not set to "bitwarden", we will not actually deploy any templates
+# we may support other secret stores in the future :)
+provider: ""
+
+postgresqlCredentialsBitwardenID: ""
+oidcCredentialsBitwardenID: ""
+smtpCredentialsBitwardenID: ""
+registrationBitwardenID: ""
+
+# -- if set to seaweedfs we deploy a policy secret. can also be minio
+s3_provider: "seaweedfs"
+
+# -- existing kubernetes secret with s3 admin credentials
+s3AdminCredentialsBitwardenID: ""
+# -- existing kubernetes secret with s3 matrix credentials
+s3MatrixCredentialsBitwardenID: ""
+# -- existing kubernetes secret with s3 postgres credentials
+s3PostgresCredentialsBitwardenID: ""
+
+# -- existing kubernetes secret with s3 credentials for the remote backups
+s3BackupCredentialsBitwardenID: ""

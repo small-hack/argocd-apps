@@ -1,0 +1,30 @@
+{{- if eq .Values.provider "bitwarden" }}
+# secret zitadel core key
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: zitadel-core-key
+  namespace: zitadel
+spec:
+  target:
+    # Name of the kubernetes secret
+    name: zitadel-core-key
+    deletionPolicy: Delete
+    template:
+      type: Opaque
+      data:
+        masterkey: |-
+         {{ `{{ .password }}` }}
+
+  data:
+    - secretKey: password
+      sourceRef:
+        storeRef:
+          name: bitwarden-login
+          kind: ClusterSecretStore
+      remoteRef:
+        # id of the bitwarden secret
+        key: {{ .Values.bitwardenCoreItemID }}
+        # property within the bitwarden secret we want
+        property: password
+{{- end }}

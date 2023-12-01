@@ -1,0 +1,159 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: zitadel-web-app-set
+  namespace: argocd
+  annotations:
+    pref.argocd.argoproj.io/default-view: "network"
+    pref.argocd.argoproj.io/default-pod-sort: "topLevelResource"
+    argocd.argoproj.io/sync-wave: "4"
+spec:
+  goTemplate: true
+  # generator allows us to source specific values from an external k8s secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - zitadel_hostname
+              - global_cluster_issuer
+  template:
+    metadata:
+      name: zitadel-web-app
+      annotations:
+        argocd.argoproj.io/sync-wave: "4"
+    spec:
+      project: zitadel
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: zitadel
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
+          selfHeal: true
+      source:
+        repoURL: https://zitadel.github.io/zitadel-charts
+        chart: zitadel
+        targetRevision: 7.3.1
+        helm:
+          releaseName: zitadel
+          # https://github.com/zitadel/zitadel-charts/blob/main/charts/zitadel/values.yaml
+          values: |
+            replicaCount: 1
+
+            # Overrides the image tag to the latest version
+            # as kept up to date by renovateBot
+            image:
+              tag: "v2.41.1"
+
+            zitadel:
+              # See all defaults here:
+              # https://github.com/zitadel/zitadel/blob/main/cmd/defaults.yaml
+              configmapConfig:
+                DefaultInstance:
+                  LoginPolicy:
+                    # disable registration AKA signups
+                    AllowRegister: false
+                Database:
+                  Postgres:
+                    Host: zitadel-postgres-rw.zitadel.svc
+                    Port: 5432
+                    Database: zitadel
+                    User:
+                      Username: zitadel
+                      SSL:
+                        Mode: verify-full
+                    Admin:
+                      Username: postgres
+                      SSL:
+                        Mode: verify-full
+
+                ExternalDomain: {{ .zitadel_hostname }}
+
+                TLS:
+                  # off until https://github.com/zitadel/zitadel-charts/pull/141
+                  # or a similar easy fix would be merged
+                  Enabled: false
+
+                # specifies if ZITADEL is exposed externally through TLS this
+                # must be set to true even if TLS is not enabled on ZITADEL itself
+                # but TLS traffic is terminated on a reverse proxy
+                # !!! Changing this after initial setup breaks your system !!!
+                ExternalSecure: true
+                ExternalPort: 443
+
+                Machine:
+                  Identification:
+                    Hostname:
+                      Enabled: true
+                    Webhook:
+                      Enabled: false
+
+                # setup ZITADEL with a service account
+                FirstInstance:
+                  Org:
+                    Machine:
+                      Machine:
+                        # Creates a service account with the name zitadel-admin-sa,
+                        # which results in a secret 'zitadel-admin-sa' with a key 'zitadel-admin-sa.json'
+                        Username: zitadel-admin-sa
+                        Name: Admin
+                      MachineKey:
+                        Type: 1
+
+              # Reference the name of the secret that contains the masterkey.
+              # The key should be named "masterkey".
+              masterkeySecretName: "zitadel-core-key"
+
+              # The Secret containing the CA certificate at key ca.crt needed for establishing secure database connections
+              dbSslCaCrtSecret: "zitadel-postgres-server-ca-key-pair"
+
+              # The db admins secret containing the client certificate and key at tls.crt and tls.key needed for establishing secure database connections
+              dbSslAdminCrtSecret: "zitadel-postgres-postgres-cert"
+
+              # The db users secret containing the client certificate and key at tls.crt and tls.key needed for establishing secure database connections
+              dbSslUserCrtSecret: "zitadel-postgres-zitadel-cert"
+
+            initJob:
+              # Once ZITADEL is installed, the initJob can be disabled.
+              enabled: true
+              backoffLimit: 100
+              activeDeadlineSeconds: 120
+
+            ingress:
+              enabled: true
+              className: "nginx"
+              annotations:
+                kubernetes.io/tls-acme: "true"
+                cert-manager.io/cluster-issuer: {{ .global_cluster_issuer }}
+              hosts:
+                - host: {{ .zitadel_hostname }}
+                  paths:
+                    - path: /
+                      pathType: Prefix
+              tls:
+                - secretName: zitadel-tls
+                  hosts:
+                    - {{ .zitadel_hostname }}
+
+            metrics:
+              enabled: false
+              serviceMonitor:
+                enabled: false
+
+            readinessProbe:
+              enabled: true
+              initialDelaySeconds: 20
+              periodSeconds: 15
+              failureThreshold: 6
+
+            livenessProbe:
+              enabled: true
+              initialDelaySeconds: 20
+              periodSeconds: 15
+              failureThreshold: 6

@@ -1,0 +1,263 @@
+image:
+  flavor: fpm-alpine
+
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+
+    nginx.ingress.kubernetes.io/backend-protocol: "FCGI"
+    nginx.ingress.kubernetes.io/fastcgi-index: "index.php"
+    nginx.ingress.kubernetes.io/fastcgi-params-configmap: "nextcloud-fastcgi-cm"
+
+    nginx.ingress.kubernetes.io/proxy-body-size: 10G
+
+    # nginx.ingress.kubernetes.io/enable-cors: "false"
+    nginx.ingress.kubernetes.io/cors-allow-headers: "X-Forwarded-For"
+    nginx.ingress.kubernetes.io/server-snippet: |-
+      location ~ \.php(?:$|/) {
+        fastcgi_split_path_info ^(.+?\.php)(/.*)$;
+        set $path_info $fastcgi_path_info;
+      }
+
+      proxy_hide_header X-Powered-By;
+      rewrite ^/.well-known/webfinger /index.php/.well-known/webfinger last;
+      rewrite ^/.well-known/nodeinfo /index.php/.well-known/nodeinfo last;
+      rewrite ^/.well-known/host-meta /public.php?service=host-meta last;
+      rewrite ^/.well-known/host-meta.json /public.php?service=host-meta-json;
+
+      location = /.well-known/carddav {
+        return 301 $scheme://$host/remote.php/dav/;
+      }
+
+      location = /.well-known/caldav {
+        return 301 $scheme://$host/remote.php/dav/;
+      }
+
+      location / {
+        try_files $uri $uri/ /index.php$request_uri;
+      }
+  tls:
+    - secretName: nextcloud-tls
+      hosts:
+        - "cloud.example.com"
+
+nextcloud:
+  host: cloud.example.com
+  existingSecret:
+    enabled: true
+    secretName: nextcloud-admin-credentials
+    usernameKey: username
+    passwordKey: password
+    tokenKey: serverInfoToken
+
+  # update to the latest version of nextcloud
+  update: 1
+
+  containerPort: 9000
+
+  securityContext:
+    runAsUser: 82
+    runAsGroup: 82
+    # runAsNonRoot: true
+
+  podSecurityContext:
+    runAsUser: 82
+    runAsGroup: 82
+    fsGroup: 82
+
+  extraInitContainers:
+    - name: change-data-dir-permissions
+      image: alpine:latest
+      command:
+        - /bin/sh
+        - -c
+        - "chmod 770 -R /var/www/html/data && chown 82:www-data -R /var/www/html"
+      volumeMounts:
+        - mountPath: /var/www/
+          name: nextcloud-main
+          subPath: root
+        - mountPath: /var/www/html
+          name: nextcloud-main
+          subPath: html
+        - mountPath: /var/www/html/data
+          name: nextcloud-main
+          subPath: data
+        - mountPath: /var/www/html/config
+          name: nextcloud-main
+          subPath: config
+      securityContext:
+        runAsUser: 0
+        runAsGroup: 0
+        runAsNonRoot: false
+        seccompProfile:
+          type: RuntimeDefault
+
+  extraEnv:
+    # s3 parameters
+    - name: "OBJECTSTORE_S3_HOST"
+      valueFrom:
+        secretKeyRef:
+          name: nextcloud-s3-credentials
+          key: S3_HOSTNAME
+
+    - name: "OBJECTSTORE_S3_BUCKET"
+      valueFrom:
+        secretKeyRef:
+          name: nextcloud-s3-credentials
+          key: S3_BUCKET
+
+    - name: "OBJECTSTORE_S3_KEY"
+      valueFrom:
+        secretKeyRef:
+          name: nextcloud-s3-credentials
+          key: S3_USER
+
+    - name: "OBJECTSTORE_S3_SECRET"
+      valueFrom:
+        secretKeyRef:
+          name: nextcloud-s3-credentials
+          key: S3_PASSWORD
+
+    - name: "OBJECTSTORE_S3_PORT"
+      value: "443"
+
+    - name: "OBJECTSTORE_S3_SSL"
+      value: "true"
+
+    - name: "OBJECTSTORE_S3_REGION"
+      value: eu-west-1
+
+    - name: "OBJECTSTORE_S3_USEPATH_STYLE"
+      value: "true"
+
+    - name: "PGSSLCERT"
+      value: /etc/secrets/nextcloud/tls.crt
+
+    - name: "PGSSLKEY"
+      value: /etc/secrets/nextcloud/tls.key
+
+    - name: "PGSSLROOTCERT"
+      value: /etc/secrets/ca/ca.crt
+
+  extraVolumes:
+    - name: postgres-ca
+      secret:
+        secretName: nextcloud-postgres-server-ca-key-pair
+        defaultMode: 0640
+
+    - name: postgres-client-certs
+      secret:
+        secretName: nextcloud-postgres-nextcloud-cert
+        defaultMode: 0640
+
+  extraVolumeMounts:
+    - name: postgres-ca
+      mountPath: /etc/secrets/ca
+
+    - name: postgres-client-certs
+      mountPath: /etc/secrets/nextcloud
+
+  phpConfigs:
+    www.conf: |-
+      [www]
+      security.limit_extensions = .php .css .js .html
+      listen = 127.0.0.1:9000
+      pm = dynamic
+      pm.max_children = 350
+      pm.start_servers = 80
+      pm.min_spare_servers = 80
+      pm.max_spare_servers = 268
+
+  configs:
+    logging.config.php: |-
+      <?php
+      $CONFIG = array (
+        'log_type' => 'file',
+        'logfile' => 'nextcloud.log',
+        'loglevel' => 1,
+        'logdateformat' => 'F d, Y H:i:s'
+        );
+
+    s3.config.php: |-
+      <?php
+      $CONFIG = array (
+        'objectstore' => [
+          'class' => '\\OC\\Files\\ObjectStore\\S3',
+          'arguments' => [
+                'bucket' => getenv('OBJECTSTORE_S3_BUCKET'),
+                'hostname' => getenv('OBJECTSTORE_S3_HOST'),
+                'key' => getenv('OBJECTSTORE_S3_KEY'),
+                'secret' => getenv('OBJECTSTORE_S3_SECRET'),
+                'region' => getenv('OBJECTSTORE_S3_REGION'),
+                'port' => getenv('OBJECTSTORE_S3_PORT'),
+                'use_ssl' => true,
+                'use_path_style' => true,
+                'autocreate' => false,
+                'verify_bucket_exists' => false,
+          ]
+        ]
+      );
+
+    proxy.config.php: |-
+      <?php
+      $CONFIG = array (
+        'trusted_proxies' => array(
+          0 => '127.0.0.1',
+          1 => '10.0.0.0/8'
+        ),
+        'forwarded_for_headers' => array('HTTP_X_FORWARDED_FOR'),
+      );
+
+nginx:
+  enabled: false
+
+internalDatabase:
+  enabled: false
+
+externalDatabase:
+  enabled: true
+  type: postgresql
+  host: "nextcloud-postgres-rw.nextcloud.svc:5432;sslmode=verify-full;sslrootcert=/etc/secrets/ca/ca.crt;sslcert=/etc/secrets/nextcloud/tls.crt;sslkey=/etc/secrets/nextcloud/tls.key"
+  database: nextcloud
+  existingSecret:
+    enabled: true
+    secretName: nextcloud-pgsql-credentials
+    usernameKey: username
+    passwordKey: password
+
+postgresql:
+  enabled: false
+
+redis:
+  enabled: false
+
+cronjob:
+  enabled: false
+
+service:
+  type: ClusterIP
+  port: 9000
+  nodePort: nil
+
+persistence:
+  enabled: true
+  existingClaim: nextcloud-config
+  nextcloudData:
+    enabled: false
+
+livenessProbe:
+  enabled: false
+readinessProbe:
+  enabled: false
+startupProbe:
+  enabled: false
+hpa:
+  enabled: false
+
+metrics:
+  enabled: false
+
+rbac:
+  enabled: true

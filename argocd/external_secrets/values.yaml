@@ -1,0 +1,4 @@
+## if this is not set to "bitwarden", we will not actually deploy any templates
+provider: ""
+
+bitwardenItemID: ""

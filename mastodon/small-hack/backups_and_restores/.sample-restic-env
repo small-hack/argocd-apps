@@ -1,0 +1,10 @@
+# this contains both the s3 endpoint (this example uses b2, but you can use any s3 compliant endpoint) AND the s3 bucket
+export RESTIC_REPOSITORY="s3:s3.eu-central-003.backblazeb2.com/my-mastodon-bucket"
+
+# Create this file, with a single line with your restic repo password. Make sure it's `chmod`ed to 600 and has only your user as the owner
+export RESTIC_PASSWORD_FILE=./.mastodon-restic-password
+
+export AWS_ACCESS_KEY_ID="access key id goes here"
+export AWS_SECRET_ACCESS_KEY="secret key goes here"
+
+# after sourcing this file, you can do the following to test: restic snapshots
