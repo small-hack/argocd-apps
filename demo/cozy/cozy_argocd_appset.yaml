@@ -37,12 +37,13 @@ spec:
           prune: true
           selfHeal: true
       source:
-        # repoURL: 'https://jessebot.github.io/cozy-helm-chart'
-        # chart: cozy-stack
-        # targetRevision: 0.3.1
-        repoURL: https://github.com/jessebot/cozy-helm-chart
-        targetRevision: add-configurable-security-context-and-mountpath
-        path: charts/cozy-stack/
+        repoURL: 'https://jessebot.github.io/cozy-helm-chart'
+        chart: cozy-stack
+        targetRevision: 0.4.0
+        # for testing the live repo
+        # repoURL: https://github.com/jessebot/cozy-helm-chart
+        # targetRevision: main
+        # path: charts/cozy-stack/
         helm:
           # these values for cozy and couchdb just render the env vars here:
           # https://github.com/cozy/cozy-stack/tree/0fe78134b2d09c73813be48274c66ed8582328e6/scripts/docker/production
@@ -50,10 +51,6 @@ spec:
           # and later these:
           # https://docs.cozy.io/en/cozy-stack/config/#stack-endpoints
           values: |
-            image:
-              repository: jessebot/cozy-stack
-              tag: 1.6.15-rc5
-
             cozy:
               adminPassphrase: "ChangeMeTodayTest"
               configPath: "/etc/cozy"
@@ -61,12 +58,6 @@ spec:
 
             couchdb:
               existingSecret: "couchdb-couchdb"
-              # secretKeys:
-              #   host: "host"
-              #   port: "port"
-              #   protocol: "protocol"
-              #   user: "user"
-              #   password: "password"
 
             livenessProbe:
               enabled: true
