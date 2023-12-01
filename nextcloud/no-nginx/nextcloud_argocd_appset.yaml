@@ -35,9 +35,12 @@ spec:
           prune: true
           selfHeal: true
       source:
-        repoURL: 'https://nextcloud.github.io/helm'
-        targetRevision: 4.5.4
-        chart: nextcloud
+        # repoURL: 'https://nextcloud.github.io/helm'
+        # targetRevision: 4.5.3
+        # chart: nextcloud
+        repoURL: 'https://github.com/jessebot/nextcloud-helm'
+        path: charts/nextcloud/
+        targetRevision: allow-updating-fsgroup
         helm:
           values: |
             image:
@@ -48,10 +51,21 @@ spec:
               className: nginx
               annotations:
                 cert-manager.io/cluster-issuer: {{ .global_cluster_issuer }}
+
+                nginx.ingress.kubernetes.io/backend-protocol: "FCGI"
+                nginx.ingress.kubernetes.io/fastcgi-index: "index.php"
+                nginx.ingress.kubernetes.io/fastcgi-params-configmap: "nextcloud-fastcgi-cm"
+
                 nginx.ingress.kubernetes.io/proxy-body-size: 10G
+
                 # nginx.ingress.kubernetes.io/enable-cors: "false"
                 nginx.ingress.kubernetes.io/cors-allow-headers: "X-Forwarded-For"
                 nginx.ingress.kubernetes.io/server-snippet: |-
+                  location ~ \.php(?:$|/) {
+                    fastcgi_split_path_info ^(.+?\.php)(/.*)$;
+                    set $path_info $fastcgi_path_info;
+                  }
+
                   proxy_hide_header X-Powered-By;
                   rewrite ^/.well-known/webfinger /index.php/.well-known/webfinger last;
                   rewrite ^/.well-known/nodeinfo /index.php/.well-known/nodeinfo last;
@@ -64,6 +78,10 @@ spec:
 
                   location = /.well-known/caldav {
                     return 301 $scheme://$host/remote.php/dav/;
+                  }
+
+                  location / {
+                    try_files $uri $uri/ /index.php$request_uri;
                   }
               tls:
                 - secretName: nextcloud-tls
@@ -372,7 +390,7 @@ spec:
                     );
 
             nginx:
-              enabled: true
+              enabled: false
 
             internalDatabase:
               enabled: false
