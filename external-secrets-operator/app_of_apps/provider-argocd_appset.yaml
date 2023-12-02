@@ -16,10 +16,10 @@ spec:
         input:
           parameters:
             secret_vars:
-              - external_secrets_operator_provider
+              - global_external_secrets
   template:
     metadata:
-      name: "{{ .external_secrets_operator_provider }}-provider-app"
+      name: "{{ .global_external_secrets }}-provider-app"
       annotations:
         argocd.argoproj.io/sync-wave: "2"
     spec:
@@ -27,7 +27,7 @@ spec:
       source:
         repoURL: 'https://github.com/small-hack/argocd-apps'
         targetRevision: main
-        path: external-secrets-operator/providers/{{ .external_secrets_operator_provider }}/
+        path: external-secrets-operator/providers/{{ .global_external_secrets }}/
       destination:
         server: "https://kubernetes.default.svc"
         namespace: external-secrets
