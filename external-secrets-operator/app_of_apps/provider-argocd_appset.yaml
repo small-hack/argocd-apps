@@ -1,0 +1,37 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: external-secret-provider-app-set
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  goTemplate: true
+  # generator allows us to source specific values from an external k8s secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - external_secrets_operator_provider
+  template:
+    metadata:
+      name: "{{ .external_secrets_operator_provider }}-provider-app"
+      annotations:
+        argocd.argoproj.io/sync-wave: "2"
+    spec:
+      project: external-secrets-operator
+      source:
+        repoURL: 'https://github.com/small-hack/argocd-apps'
+        targetRevision: main
+        path: external-secrets-operator/providers/{{ .external_secrets_operator_provider }}/
+      destination:
+        server: "https://kubernetes.default.svc"
+        namespace: external-secrets
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
