@@ -24,7 +24,6 @@ For the Argo CD App of Apps in [./app_of_apps](./app_of_apps):
 1. External Secret and [Argo CD appset secret plugin](https://jessebot.github.io/argocd-appset-secret-plugin)
 2. Argo CD
 
-For the basic app in [./basic](./basic) we only deploy Argo CD and so there is only one sync wave.
 
 ## External secrets
 
