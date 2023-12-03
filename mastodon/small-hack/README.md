@@ -1,6 +1,13 @@
 # Mastodon Argo CD ApplicationSet
 Mastodon is social networking that's not for sale: https://joinmastodon.org/
 
+<img width="846" src="https://github.com/small-hack/argocd-apps/assets/2389292/712e9538-9409-49a6-8d93-a6464f368134" alt="screenshot of the mastodon applicationset in Argo CD's web interface using the tree mode view. the main mastodon app has 6 child apps: mastodon-redis, mastodon-app-set with child mastodon-web-app, mastodon-external-secrets-appset with child mastodon-external-secrets, mastodon-postgres-app-set with child mastodon-postgres-cluster, mastodon-s3-provider-app-set with child mastodon-seaweedfs, and mastodon-s3-pvc-appset with child mastodon-s3-pvc.">
+
+This is the networking view in Argo CD:
+
+<img width="1225" alt="screenshot of the mastodon applicationset in Argo CD's web interface using the networking tree mode view. it shows the flow of cloud to ip address to mastodon-web-app ingress to two services mastodon-web-app-streaming and mastodon-web-app-web which each go to their respective pods. There's also additional services and pods outside of that flow. pods masotdon-web-app-media and masotdon-web-app-sidekiq have no children. 2 elastic search services have the same elastic search pod child. and then there's an additional 3 matching elastic search service and pod pairs" src="https://github.com/small-hack/argocd-apps/assets/2389292/d2ea734d-8dd9-49fd-8a5e-acbecafe3f3a">
+
+
 ## Sync waves
 In the [`./app_of_apps`](./app_of_apps) directory we create the manifests and helm chart in this sync wave order:
 1. all required PVCs, and Secrets (secrets are external secrets in a private repo)
