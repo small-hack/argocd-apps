@@ -1,17 +1,17 @@
-# Mastodon ArgoCD Template
+# Mastodon Argo CD ApplicationSet
 Mastodon is social networking that's not for sale: https://joinmastodon.org/
 
-In the `./mastodon_app_of_apps/` directory we create the manifests and helm chart in this sync wave order:
-- all required PVCs, and Secrets (secrets are external secrets in a private repo)
-- Postgresql stateful set
-- Mastodon web app (including elastic search and redis)
-
-You can optionally also use [directory recursion](https://argo-cd.readthedocs.io/en/stable/user-guide/directory/#enabling-recursive-resource-detection) with your Mastodon app of apps, to use the MinIO operator to create an isolated tenant for S3 storage.
-
-This helm chart was retired for a bit till it became clear that there was no other immediate alternative, so now it's back 🤷
+## Sync waves
+In the [`./app_of_apps`](./app_of_apps) directory we create the manifests and helm chart in this sync wave order:
+1. all required PVCs, and Secrets (secrets are external secrets in a private repo)
+2. SeaweedFS file system and s3 endpoint with two buckets, one for postgres backups and one for mastodon media
+3. Postgresql Cluster
+4. Mastodon web app (including elastic search and redis)
 
 ## Creating Mastodon Secrets
-This template relies on you already having created secrets using the below method and then creating those as k8s secrets.
+This template relies on you already having created secrets. You can do that via [`smol-k8s-lab`](https://small-hack.github.io/smol-k8s-lab/k8s_apps/mastodon/) or manually.
+
+### Creating secrets manually
 
 ```bash
 SECRET_KEY_BASE=$(docker run --rm -it tootsuite/mastodon:latest bin/rake secret)
@@ -21,6 +21,8 @@ docker run --rm -e "OTP_SECRET=$OTP_SECRET" \
     -e "SECRET_KEY_BASE=$SECRET_KEY_BASE" \
     -it tootsuite/mastodon:latest bin/rake mastodon:webpush:generate_vapid_key 
 ```
+
+# Troubleshooting Mastodon
 
 ## Connect to PostgreSQL with worker container
 Deploy the following container and attach to the shell, then run:
