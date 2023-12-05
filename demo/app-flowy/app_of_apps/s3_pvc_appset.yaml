@@ -1,0 +1,80 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: appflowy-s3-pvc-app-set
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  goTemplate: true
+  # generator allows us to source specific values from an external k8s secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - appflowy_s3_provider
+              - appflowy_s3_backup_endpoint
+              - appflowy_s3_backup_bucket
+              - appflowy_s3_backup_region
+              - appflowy_s3_pvc_capacity
+  template:
+    metadata:
+      name: appflowy-s3-pvc
+      annotations:
+        argocd.argoproj.io/sync-wave: "1"
+    spec:
+      project: appflowy
+      destination:
+        server: "https://kubernetes.default.svc"
+        namespace: appflowy
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
+          selfHeal: true
+      source:
+        repoURL: https://github.com/small-hack/argocd-apps.git
+        path: s3_persistence_and_backups/
+        targetRevision: main
+        helm:
+          values: |
+            provider: "{{ .appflowy_s3_provider }}"
+            pvc_capacity: "{{ .appflowy_s3_pvc_capacity }}"
+
+            # not in use yet
+            k8up:
+              backup_name: "appflowy-nightly-backup"
+
+              # -- can be set to 's3' or 'local'
+              backup_type: "s3"
+
+              s3:
+                bucket: {{ .appflowy_s3_backup_bucket }}
+                endpoint: {{ .appflowy_s3_backup_endpoint }}
+                accessKeyIDSecretRef:
+                  name: 'backups-s3-credentials'
+                  key: 'accessKey'
+                  optional: false
+                secretAccessKeySecretRef:
+                  name: 'backups-s3-credentials'
+                  key: 'secretKey'
+                  optional: false
+
+              repoPasswordSecretRef:
+                name: 'backups-s3-credentials'
+                key: 'resticRepoPass'
+
+              prometheus_url: 'push-gateway.prometheus.svc:9091'
+
+              podSecurityContext:
+                runAsUser: 82
+
+              schedules:
+                backup: "03 14 * * *"
+                check: "05 14 * * *"
+                prune: "05 14 * * *"
