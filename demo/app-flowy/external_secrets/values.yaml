@@ -8,6 +8,9 @@ s3_provider: "seaweedfs"
 # -- existing bitwarden vault item id with s3 appflowy credentials
 s3AppflowyCredentialsBitwardenID: ""
 
+# -- existing bitwarden vault item id with s3 db credentials for gotrue
+s3PostgresCredentialsBitwardenID: ""
+
 # -- existing bitwarden vault item id with s3 credentials for the remote backups
 s3BackupCredentialsBitwardenID: ""
 
