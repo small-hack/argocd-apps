@@ -1,0 +1,111 @@
+---
+# webapp is deployed 2nd because we need secrets and persistent volumes up 1st
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: appflowy-web-app-set
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+spec:
+  goTemplate: true
+  # generator allows us to source specific values from an external k8s secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - appflowy_hostname
+              - global_cluster_issuer
+  template:
+    metadata:
+      name: appflowy-web-app
+      annotations:
+        argocd.argoproj.io/sync-wave: "3"
+    spec:
+      project: appflowy
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: appflowy
+      syncPolicy:
+        syncOptions:
+          - CreateNamespace=true
+          - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
+          selfHeal: true
+      source:
+        # repoURL: 'https://jessebot.github.io/appflowy-helm'
+        # chart: appflowy
+        # targetRevision: 0.1.0
+        #
+        # for testing the live repo
+        repoURL: https://github.com/jessebot/appflowy-helm
+        targetRevision: adding-initial-commit-of-helm-chart
+        path: charts/appflowy/
+        helm:
+          values: |
+            appflowy:
+              # -- set environment
+              environment: "production"
+              gotrue:
+                # -- use an existing secret for gotrue info
+                existingSecret: ""
+              s3:
+                # -- whether or not to use minio
+                useMinio: false
+                # -- use an existing secret for s3 credentials
+                existingSecret: ""
+              # -- set the log level for rust
+              rustLog: "info"
+
+              adminFrontend:
+                # -- whether or not to deploy the admin frontend
+                enabled: true
+                image:
+                  # -- docker repository for the admin frontend
+                  repository: appflowyinc/admin_frontend
+                  # -- image pullPolicy for the admin frontend. set to Always if using latest tag
+                  pullPolicy: IfNotPresent
+                  # -- image tag to use for the admin frontend container
+                  # ref: https://hub.docker.com/r/appflowyinc/admin_frontend/tags
+                  tag: v0.0.1
+
+                # -- service for the appflowy admin frontend
+                service:
+                  type: ClusterIP
+                  port: 80
+                  targetPort: 8000
+
+                ingress:
+                  # -- enable ingress, access from outside the cluster, for the admin frontend
+                  enabled: false
+                  className: "nginx"
+                  annotations: {}
+                  hosts:
+                    - host: chart-example.local
+                      paths:
+                        - path: /
+                          pathType: ImplementationSpecific
+                  tls: []
+                  #  - secretName: chart-example-tls
+                  #    hosts:
+                  #      - chart-example.local
+
+            ingress:
+              enabled: true 
+              className: "nginx"
+              annotations:
+                cert-manager.io/cluster-issuer: {{ .global_cluster_issuer }}
+                nginx.ingress.kubernetes.io/proxy-body-size: 2G
+              hosts:
+                - host: {{ .appflowy_hostname }}
+                  paths:
+                    - path: /
+                      pathType: ImplementationSpecific
+              tls:
+                - secretName: appflowy-tls
+                  hosts:
+                    - "{{ .appflowy_hostname }}"
