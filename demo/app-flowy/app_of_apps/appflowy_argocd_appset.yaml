@@ -6,7 +6,7 @@ metadata:
   name: appflowy-web-app-set
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "3"
+    argocd.argoproj.io/sync-wave: "5"
 spec:
   goTemplate: true
   # generator allows us to source specific values from an external k8s secret
@@ -24,7 +24,7 @@ spec:
     metadata:
       name: appflowy-web-app
       annotations:
-        argocd.argoproj.io/sync-wave: "3"
+        argocd.argoproj.io/sync-wave: "5"
     spec:
       project: appflowy
       destination:
