@@ -1,0 +1,209 @@
+---
+# webapp is deployed 2nd because we need secrets and persistent volumes up 1st
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: appflowy-gotrue-appset
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+spec:
+  goTemplate: true
+  # generator allows us to source specific values from an external k8s secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - global_cluster_issuer
+  template:
+    metadata:
+      name: gotrue-app
+      annotations:
+        argocd.argoproj.io/sync-wave: "3"
+    spec:
+      project: appflowy
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: appflowy
+      syncPolicy:
+        syncOptions:
+          - CreateNamespace=true
+          - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
+          selfHeal: true
+      source:
+        repoURL: 'https://jessebot.github.io/gotrue-helm'
+        chart: gotrue
+        targetRevision: 0.1.1
+        #
+        # for testing the live repo
+        # repoURL: https://github.com/jessebot/gotrue-helm
+        # targetRevision: main
+        # path: charts/gotrue/
+        helm:
+          values: |
+            gotrue:
+              # -- siteUrl to use for gotrue
+              siteUrl: "http://localhost:3000"
+              # -- use an existing secret for gotrue env vars
+              existingSecret: ""
+              # -- set the admin password for gotrue - ignored if gotrue.existingSecret is not empty
+              adminPassword: ""
+              # -- gotrue api external URL
+              externalUrl: "http://localhost:9999"
+              # -- api host
+              apiHost: "localhost"
+              # -- port to use for gotrue
+              port: "9999"
+
+              jwt:
+                # -- set the JWT secret for gotrue
+                secret: ""
+                # -- expiration of jwt token
+                exp: "3600"
+                # -- authentication check
+                aud: "authenticated"
+                # -- default group name
+                defaultGroupName: "authenticated"
+                # -- roles to use for admin
+                adminRoles: "supabase_admin,service_role"
+
+              logLevel: debug
+
+              # https://github.com/supabase/gotrue/blob/425487325b3e1d7be4661e9f292232205a9a3ce0/example.env#L207
+              security:
+                refreshToken:
+                  rotationEnabled: false
+                  reuseInterval: "0"
+                updatePasswordRequireReauth: false
+
+              # https://github.com/supabase/gotrue/blob/425487325b3e1d7be4661e9f292232205a9a3ce0/example.env#L213C1-L213C1
+              rateLimit:
+                header: "X-Forwarded-For"
+                emailSent: "100"
+
+              # -- https://github.com/supabase/gotrue/blob/425487325b3e1d7be4661e9f292232205a9a3ce0/example.env#L216
+              webhook:
+                url: "http://register-lambda:3000/"
+                secret: "test_secret"
+                retries: "5"
+                timeoutSec: "3"
+                events: "validate,signup,login"
+
+              # -- https://github.com/supabase/gotrue/blob/425487325b3e1d7be4661e9f292232205a9a3ce0/example.env#L223
+              cookie:
+                key: "sb"
+                domain: "locahost"
+                maxVerifiedFactors: "10"
+
+              # -- uri allow list e.g. ["http://localhost:3000"]
+              uriAllowList: "*"
+
+              database:
+                # -- which database backend to use for gotrue
+                driver: postgres
+                # -- database connection url
+                connectionUrl: "postgres://supabase_auth_admin:root@postgresql.gotrue.svc.cluster.local:5432/gotrue"
+                # -- database namespace - sets the schema name
+                namespace: "auth"
+
+              smtp:
+                # -- smtp hostname
+                host: ""
+                # -- smtp port
+                port: "587"
+                # -- smtp user
+                user: ""
+                # -- smtp password
+                password: ""
+                # -- name of user to send from
+                senderName: ""
+                # -- smtp admin email addresss
+                adminEmail: ""
+                # -- smtp max frequency
+                maxFrequency: "5s"
+
+              mailer:
+                # -- auto confirm accounts
+                autoConfirm: false
+
+                secureEmailChangeEnabled: true
+
+                # -- https://github.com/supabase/gotrue/blob/425487325b3e1d7be4661e9f292232205a9a3ce0/example.env#L29
+                urlPaths:
+                  confirmation: "/verify"
+                  invite: "/verify"
+                  recovery: "/verify"
+                  emailChange: "/verify"
+
+                # -- https://github.com/supabase/gotrue/blob/425487325b3e1d7be4661e9f292232205a9a3ce0/example.env#L33
+                subjects:
+                  confirmation: "Confirm your Email"
+                  recovery: "Reset Your Password"
+                  magicLink: "Your Magic Link"
+                  emailChange: "Confirm Email Change"
+                  invite: "You have been invited"
+
+              signup:
+                disable: false
+
+              external:
+                # https://github.com/supabase/gotrue/blob/425487325b3e1d7be4661e9f292232205a9a3ce0/example.env#L50
+                email:
+                  enabled: true
+
+                # https://github.com/supabase/gotrue/blob/425487325b3e1d7be4661e9f292232205a9a3ce0/example.env#L51
+                phone:
+                  enabled: true
+
+                # -- https://github.com/supabase/gotrue/blob/425487325b3e1d7be4661e9f292232205a9a3ce0/example.env#L52C1-L52C1
+                ios:
+                  bundleID: "com.supabase.gotrue"
+
+                # -- PKCE Config https://github.com/supabase/gotrue/blob/425487325b3e1d7be4661e9f292232205a9a3ce0/example.env#L171
+                flowStateExpiryDuration: "300s"
+
+                github:
+                  # -- enable github as your external auth provider
+                  enabled: false
+                  # -- client id
+                  clientID: ""
+                  # -- client secret
+                  secret: ""
+                  # -- redirect URI
+                  redirectUri: ""
+
+                saml:
+                  # -- enable a saml provider for your external auth provider
+                  enabled: false
+                  # -- metadata URL for saml
+                  metadataUrl: ""
+                  apiBase: "http://localhost:9999"
+                  name: "auth0"
+                  signingCert: ""
+                  signingKey: ""
+
+            # -- service for gotrue
+            service:
+              type: ClusterIP
+              port: 80
+              targetPort: 8080
+
+            ingress:
+              # -- enable ingress, access from outside the cluster
+              enabled: false
+              className: "nginx"
+              annotations: {}
+              hosts:
+                - host: chart-example.local
+                  paths:
+                    - path: /
+                      pathType: ImplementationSpecific
+              tls: []
+              #  - secretName: chart-example-tls
+              #    hosts:
+              #      - chart-example.local
