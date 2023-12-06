@@ -80,7 +80,7 @@ spec:
 
               database:
                 driver: postgres
-                user: supabase_auth_admin
+                user: supabase-auth-admin
                 host: postgresql.appflowy.svc.cluster.local
                 port: 5432
                 database: gotrue
