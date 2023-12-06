@@ -49,13 +49,11 @@ spec:
         helm:
           values: |
             appflowy:
-              # -- set environment
               environment: "production"
-              gotrue:
-                existingSecret: "appflowy-gotrue-credentials"
               s3:
                 useMinio: true
                 existingSecret: "appflowy-s3-credentials"
+
               rustLog: "info"
 
               adminFrontend:
@@ -80,6 +78,14 @@ spec:
                     - secretName: appflowy-admin-tls
                       hosts:
                         - {{ .appflowy_admin_hostname }}
+
+            gotrue:
+              existingSecret: "appflowy-gotrue-credentials"
+              secretKeys:
+                adminEmail: "adminEmail"
+                adminPassword: "adminPassword"
+                externalUrl: "externalUrl"
+                jwtSecret: "jwtSecret"
 
             ingress:
               enabled: true 
