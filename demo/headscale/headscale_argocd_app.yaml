@@ -15,7 +15,7 @@ spec:
   source:
     repoURL: 'https://charts.gabe565.com'
     chart: headscale
-    targetRevision: 0.12.6
+    targetRevision: 0.12.7
     helm:
       values: |
         env:
