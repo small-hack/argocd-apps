@@ -43,7 +43,7 @@ spec:
           releaseName: gotrue-postgres-cluster
           values: |
             name: gotrue-postgres
-            instances: 2
+            instances: 1
 
             bootstrap:
               initdb:
@@ -51,6 +51,10 @@ spec:
                 owner: gotrue
                 secret:
                   name: gotrue-pgsql-credentials
+                postInitApplicationSQLRefs:
+                  secretRefs:
+                  - name: postgres-init-script
+                    key: init.sql
 
             backup:
               # barman is a utility for backing up postgres to s3
@@ -75,7 +79,7 @@ spec:
                 generate: true
               user:
                 enabled: true
-                username: gotrue
+                username: supabase_auth_admin
 
             scheduledBackup:
               name: gotrue-pg-backup

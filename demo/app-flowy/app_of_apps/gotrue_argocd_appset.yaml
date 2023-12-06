@@ -80,8 +80,14 @@ spec:
 
               database:
                 driver: postgres
-                connectionUrl: "postgres://supabase_auth_admin:root@postgresql.gotrue.svc.cluster.local:5432/gotrue"
-                # -- sets the schema name
+                user: supabase_auth_admin
+                host: postgresql.appflowy.svc.cluster.local
+                port: 5432
+                database: gotrue
+                sslMode: "verify-full"
+                sslCert: "/etc/secrets/gotrue/tls.crt"
+                sslRootCert: "/etc/secrets/ca/ca.crt"
+                sslKey: "/etc/secrets/gotrue/tls.key"
                 namespace: "auth"
 
               smtp:
@@ -139,11 +145,41 @@ spec:
                   signingCert: ""
                   signingKey: ""
 
-            # -- service for gotrue
             service:
               type: ClusterIP
               port: 80
               targetPort: 9999
+
+            extraEnv:
+              - name: "PGSSLMODE"
+                value: "verify-full"
+
+              - name: "PGSSLCERT"
+                value: /etc/secrets/gotrue/tls.crt
+
+              - name: "PGSSLKEY"
+                value: /etc/secrets/gotrue/tls.key
+
+              - name: "PGSSLROOTCERT"
+                value: /etc/secrets/ca/ca.crt
+            
+            volumes:
+              - name: postgres-ca
+                secret:
+                  secretName: gotrue-postgres-server-ca-key-pair
+                  defaultMode: 0640
+
+              - name: postgres-client-certs
+                secret:
+                  secretName: gotrue-postgres-gotrue-cert
+                  defaultMode: 0640
+
+            volumeMounts:
+              - name: postgres-ca
+                mountPath: /etc/secrets/ca
+
+              - name: postgres-client-certs
+                mountPath: /etc/secrets/gotrue
 
             ingress:
               enabled: false

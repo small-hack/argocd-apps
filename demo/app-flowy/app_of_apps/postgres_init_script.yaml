@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: postgres-init-script
+type: Opaque
+stringData:
+  # CREATE USER supabase_auth_admin NOINHERIT CREATEROLE LOGIN NOREPLICATION PASSWORD 'mysecurepassword'; 
+  init.sql: |
+    BEGIN;
+    CREATE USER supabase_admin LOGIN CREATEROLE CREATEDB REPLICATION BYPASSRLS; 
+    CREATE USER supabase_auth_admin NOINHERIT CREATEROLE LOGIN NOREPLICATION; 
+    CREATE SCHEMA IF NOT EXISTS auth AUTHORIZATION supabase_auth_admin; 
+    GRANT CREATE ON DATABASE postgres TO supabase_auth_admin; 
+    ALTER USER supabase_auth_admin SET search_path = 'auth';
+    COMMIT;
