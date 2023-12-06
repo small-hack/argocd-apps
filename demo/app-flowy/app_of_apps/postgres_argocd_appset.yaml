@@ -49,8 +49,6 @@ spec:
               initdb:
                 database: gotrue
                 owner: gotrue
-                secret:
-                  name: gotrue-pgsql-credentials
                 postInitApplicationSQLRefs:
                   secretRefs:
                   - name: postgres-init-script
