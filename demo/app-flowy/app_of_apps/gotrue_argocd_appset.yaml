@@ -38,7 +38,7 @@ spec:
       source:
         repoURL: 'https://jessebot.github.io/gotrue-helm'
         chart: gotrue
-        targetRevision: 0.1.1
+        targetRevision: 0.2.0
         #
         # for testing the live repo
         # repoURL: https://github.com/jessebot/gotrue-helm
@@ -47,30 +47,12 @@ spec:
         helm:
           values: |
             gotrue:
-              # -- siteUrl to use for gotrue
               siteUrl: "http://localhost:3000"
-              # -- use an existing secret for gotrue env vars
-              existingSecret: ""
-              # -- set the admin password for gotrue - ignored if gotrue.existingSecret is not empty
-              adminPassword: ""
-              # -- gotrue api external URL
-              externalUrl: "http://localhost:9999"
-              # -- api host
+              externalUrl: "http://0.0.0.0:9999"
               apiHost: "localhost"
-              # -- port to use for gotrue
-              port: "9999"
 
               jwt:
-                # -- set the JWT secret for gotrue
                 secret: ""
-                # -- expiration of jwt token
-                exp: "3600"
-                # -- authentication check
-                aud: "authenticated"
-                # -- default group name
-                defaultGroupName: "authenticated"
-                # -- roles to use for admin
-                adminRoles: "supabase_admin,service_role"
 
               logLevel: debug
 
@@ -81,12 +63,6 @@ spec:
                   reuseInterval: "0"
                 updatePasswordRequireReauth: false
 
-              # https://github.com/supabase/gotrue/blob/425487325b3e1d7be4661e9f292232205a9a3ce0/example.env#L213C1-L213C1
-              rateLimit:
-                header: "X-Forwarded-For"
-                emailSent: "100"
-
-              # -- https://github.com/supabase/gotrue/blob/425487325b3e1d7be4661e9f292232205a9a3ce0/example.env#L216
               webhook:
                 url: "http://register-lambda:3000/"
                 secret: "test_secret"
@@ -94,7 +70,6 @@ spec:
                 timeoutSec: "3"
                 events: "validate,signup,login"
 
-              # -- https://github.com/supabase/gotrue/blob/425487325b3e1d7be4661e9f292232205a9a3ce0/example.env#L223
               cookie:
                 key: "sb"
                 domain: "locahost"
@@ -104,43 +79,29 @@ spec:
               uriAllowList: "*"
 
               database:
-                # -- which database backend to use for gotrue
                 driver: postgres
-                # -- database connection url
                 connectionUrl: "postgres://supabase_auth_admin:root@postgresql.gotrue.svc.cluster.local:5432/gotrue"
-                # -- database namespace - sets the schema name
+                # -- sets the schema name
                 namespace: "auth"
 
               smtp:
-                # -- smtp hostname
                 host: ""
-                # -- smtp port
                 port: "587"
-                # -- smtp user
                 user: ""
-                # -- smtp password
                 password: ""
-                # -- name of user to send from
                 senderName: ""
-                # -- smtp admin email addresss
                 adminEmail: ""
-                # -- smtp max frequency
                 maxFrequency: "5s"
+                existingSecret: ""
 
               mailer:
-                # -- auto confirm accounts
                 autoConfirm: false
-
                 secureEmailChangeEnabled: true
-
-                # -- https://github.com/supabase/gotrue/blob/425487325b3e1d7be4661e9f292232205a9a3ce0/example.env#L29
                 urlPaths:
                   confirmation: "/verify"
                   invite: "/verify"
                   recovery: "/verify"
                   emailChange: "/verify"
-
-                # -- https://github.com/supabase/gotrue/blob/425487325b3e1d7be4661e9f292232205a9a3ce0/example.env#L33
                 subjects:
                   confirmation: "Confirm your Email"
                   recovery: "Reset Your Password"
@@ -152,15 +113,10 @@ spec:
                 disable: false
 
               external:
-                # https://github.com/supabase/gotrue/blob/425487325b3e1d7be4661e9f292232205a9a3ce0/example.env#L50
                 email:
                   enabled: true
-
-                # https://github.com/supabase/gotrue/blob/425487325b3e1d7be4661e9f292232205a9a3ce0/example.env#L51
                 phone:
                   enabled: true
-
-                # -- https://github.com/supabase/gotrue/blob/425487325b3e1d7be4661e9f292232205a9a3ce0/example.env#L52C1-L52C1
                 ios:
                   bundleID: "com.supabase.gotrue"
 
@@ -170,17 +126,13 @@ spec:
                 github:
                   # -- enable github as your external auth provider
                   enabled: false
-                  # -- client id
                   clientID: ""
-                  # -- client secret
                   secret: ""
-                  # -- redirect URI
                   redirectUri: ""
 
                 saml:
                   # -- enable a saml provider for your external auth provider
                   enabled: false
-                  # -- metadata URL for saml
                   metadataUrl: ""
                   apiBase: "http://localhost:9999"
                   name: "auth0"
@@ -191,10 +143,9 @@ spec:
             service:
               type: ClusterIP
               port: 80
-              targetPort: 8080
+              targetPort: 9999
 
             ingress:
-              # -- enable ingress, access from outside the cluster
               enabled: false
               className: "nginx"
               annotations: {}
@@ -203,7 +154,7 @@ spec:
                   paths:
                     - path: /
                       pathType: ImplementationSpecific
-              tls: []
-              #  - secretName: chart-example-tls
-              #    hosts:
-              #      - chart-example.local
+              tls:
+                - secretName: chart-example-tls
+                  hosts:
+                    - chart-example.local
