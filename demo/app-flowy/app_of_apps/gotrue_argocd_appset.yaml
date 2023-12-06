@@ -171,7 +171,7 @@ spec:
 
               - name: postgres-client-certs
                 secret:
-                  secretName: gotrue-postgres-gotrue-cert
+                  secretName: gotrue-postgres-supabaseauthadmin-cert
                   defaultMode: 0640
 
             volumeMounts:
