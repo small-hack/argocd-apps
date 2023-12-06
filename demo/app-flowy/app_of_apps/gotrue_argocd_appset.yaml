@@ -38,7 +38,7 @@ spec:
       source:
         repoURL: 'https://jessebot.github.io/gotrue-helm'
         chart: gotrue
-        targetRevision: 0.2.1
+        targetRevision: 0.2.2
         #
         # for testing the live repo
         # repoURL: https://github.com/jessebot/gotrue-helm
