@@ -79,6 +79,8 @@ spec:
               uriAllowList: "*"
 
               database:
+                # databaseUrl: postgres://supabaseauthadmin@gotrue-postgres-rw.appflowy.svc:5432/gotrue;sslmode=verify-full;sslrootcert=/etc/secrets/ca/ca.crt;sslcert=/etc/secrets/gotrue/tls.crt;sslkey=/etc/secrets/gotrue/tls.key
+                databaseUrl: postgres://supabaseauthadmin@gotrue-postgres-rw.appflowy.svc:5432/gotrue
                 driver: postgres
                 user: supabaseauthadmin
                 host: gotrue-postgres-rw.appflowy.svc
