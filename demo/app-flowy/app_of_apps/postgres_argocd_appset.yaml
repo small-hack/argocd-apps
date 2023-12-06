@@ -78,7 +78,7 @@ spec:
               user:
                 enabled: true
                 username:
-                  - "supabase-auth-admin"
+                  - "supabaseauthadmin"
 
             scheduledBackup:
               name: gotrue-pg-backup
