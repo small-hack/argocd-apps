@@ -18,6 +18,7 @@ spec:
           parameters:
             secret_vars:
               - global_cluster_issuer
+              - appflowy_hostname
   template:
     metadata:
       name: gotrue-app
@@ -47,7 +48,7 @@ spec:
         helm:
           values: |
             gotrue:
-              siteUrl: "http://localhost:3000"
+              siteUrl: "https://{{ .appflowy_hostname }}"
               externalUrl: "http://0.0.0.0:9999"
               apiHost: "localhost"
 
