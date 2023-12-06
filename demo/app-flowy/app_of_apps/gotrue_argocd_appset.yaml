@@ -38,7 +38,7 @@ spec:
       source:
         repoURL: 'https://jessebot.github.io/gotrue-helm'
         chart: gotrue
-        targetRevision: 0.3.0
+        targetRevision: 0.4.0
         #
         # for testing the live repo
         # repoURL: https://github.com/jessebot/gotrue-helm
@@ -79,8 +79,6 @@ spec:
               uriAllowList: "*"
 
               database:
-                # databaseUrl: postgres://supabaseauthadmin@gotrue-postgres-rw.appflowy.svc:5432/gotrue;sslmode=verify-full;sslrootcert=/etc/secrets/ca/ca.crt;sslcert=/etc/secrets/gotrue/tls.crt;sslkey=/etc/secrets/gotrue/tls.key
-                databaseUrl: postgres://supabaseauthadmin@gotrue-postgres-rw.appflowy.svc:5432/gotrue
                 driver: postgres
                 user: supabaseauthadmin
                 host: gotrue-postgres-rw.appflowy.svc
@@ -152,19 +150,6 @@ spec:
               port: 80
               targetPort: 9999
 
-            extraEnv:
-              - name: "PGSSLMODE"
-                value: "verify-full"
-
-              - name: "PGSSLCERT"
-                value: /etc/secrets/gotrue/tls.crt
-
-              - name: "PGSSLKEY"
-                value: /etc/secrets/gotrue/tls.key
-
-              - name: "PGSSLROOTCERT"
-                value: /etc/secrets/ca/ca.crt
-            
             volumes:
               - name: postgres-ca
                 secret:
