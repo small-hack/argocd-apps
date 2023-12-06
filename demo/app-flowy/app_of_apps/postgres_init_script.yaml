@@ -7,9 +7,9 @@ stringData:
   # CREATE USER supabase-auth-admin NOINHERIT CREATEROLE LOGIN NOREPLICATION PASSWORD 'mysecurepassword'; 
   init.sql: |
     BEGIN;
-    CREATE USER supabaseadmin LOGIN CREATEROLE CREATEDB REPLICATION BYPASSRLS; 
-    CREATE USER supabaseauthadmin NOINHERIT CREATEROLE LOGIN NOREPLICATION; 
-    CREATE SCHEMA IF NOT EXISTS auth AUTHORIZATION supabaseauthadmin; 
-    GRANT CREATE ON DATABASE postgres TO supabaseauthadmin; 
+    CREATE USER supabaseadmin LOGIN CREATEROLE CREATEDB REPLICATION BYPASSRLS;
+    CREATE USER supabaseauthadmin NOINHERIT CREATEROLE LOGIN NOREPLICATION;
+    CREATE SCHEMA IF NOT EXISTS auth AUTHORIZATION supabaseauthadmin;
+    GRANT CREATE ON DATABASE postgres TO supabaseauthadmin;
     ALTER USER supabaseauthadmin SET search_path = 'auth';
     COMMIT;
