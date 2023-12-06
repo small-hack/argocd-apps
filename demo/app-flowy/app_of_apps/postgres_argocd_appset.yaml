@@ -21,14 +21,14 @@ spec:
   template:
     metadata:
       name: gotrue-postgres-cluster
-      namespace: gotrue
+      namespace: appflowy
       annotations:
         argocd.argoproj.io/sync-wave: "3"
     spec:
-      project: gotrue
+      project: appflowy
       destination:
         server: "https://kubernetes.default.svc"
-        namespace: gotrue
+        namespace: appflowy
       syncPolicy:
         syncOptions:
           - ApplyOutOfSyncOnly=true
