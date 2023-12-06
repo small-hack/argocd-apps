@@ -5,6 +5,9 @@ provider: ""
 # -- if set to seaweedfs we deploy a policy secret. can also be minio
 s3_provider: "seaweedfs"
 
+# -- existing bitwarden vault item id with s3 admin credentials
+s3AdminCredentialsBitwardenID: ""
+
 # -- existing bitwarden vault item id with s3 appflowy credentials
 s3AppflowyCredentialsBitwardenID: ""
 
