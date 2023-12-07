@@ -20,7 +20,7 @@ spec:
               - appflowy_s3_endpoint
   template:
     metadata:
-      name: appflowy-postgres-cluster
+      name: gotrue-postgres-cluster
       namespace: appflowy
       annotations:
         argocd.argoproj.io/sync-wave: "3"
@@ -40,7 +40,7 @@ spec:
         chart: cnpg-cluster
         targetRevision: 0.3.10
         helm:
-          releaseName: appflowy-postgres-cluster
+          releaseName: gotrue-postgres-cluster
           values: |
             name: gotrue-postgres
             instances: 1
