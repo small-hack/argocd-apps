@@ -3,7 +3,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: gotrue-postgres-app-set
+  name: appflowy-postgres-app-set
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "3"
@@ -20,7 +20,7 @@ spec:
               - gotrue_s3_endpoint
   template:
     metadata:
-      name: gotrue-postgres-cluster
+      name: appflowy-postgres-cluster
       namespace: appflowy
       annotations:
         argocd.argoproj.io/sync-wave: "3"
@@ -40,9 +40,9 @@ spec:
         chart: cnpg-cluster
         targetRevision: 0.3.10
         helm:
-          releaseName: gotrue-postgres-cluster
+          releaseName: appflowy-postgres-cluster
           values: |
-            name: gotrue-postgres
+            name: appflowy-postgres
             instances: 1
 
             bootstrap:
@@ -57,7 +57,7 @@ spec:
             backup:
               # barman is a utility for backing up postgres to s3
               barmanObjectStore:
-                destinationPath: "s3://gotrue-postgres"
+                destinationPath: "s3://appflowy-postgres"
                 endpointURL: "https://{{ .gotrue_s3_endpoint }}"
                 s3Credentials:
                   accessKeyId:
@@ -79,15 +79,16 @@ spec:
                 enabled: true
                 username:
                   - "supabaseauthadmin"
+                  - "appflowy"
 
             scheduledBackup:
-              name: gotrue-pg-backup
+              name: appflowy-pg-backup
               spec:
                 # hourly backups for postgres data
                 schedule: "0 0 * * * *" 
                 backupOwnerReference: self
                 cluster:
-                  name: gotrue-postgres
+                  name: appflowy-postgres
 
             monitoring:
               enablePodMonitor: false
