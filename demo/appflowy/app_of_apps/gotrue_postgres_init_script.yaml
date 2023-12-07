@@ -12,8 +12,4 @@ stringData:
     CREATE SCHEMA IF NOT EXISTS auth AUTHORIZATION supabaseauthadmin;
     GRANT CREATE ON DATABASE postgres TO supabaseauthadmin;
     ALTER USER supabaseauthadmin SET search_path = 'auth';
-    CREATE DATABASE appflowy;
-    CREATE USER appflowy LOGIN NOINHERIT CREATEROLE CREATEDB NOREPLICATION;
-    GRANT CREATE ON DATABASE postgres TO appflowy;
-    GRANT CREATE ON DATABASE appflowy TO appflowy;
     COMMIT;
