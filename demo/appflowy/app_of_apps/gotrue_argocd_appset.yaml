@@ -83,7 +83,7 @@ spec:
               database:
                 driver: postgres
                 user: supabaseauthadmin
-                host: appflowy-postgres-rw.appflowy.svc
+                host: gotrue-postgres-rw.appflowy.svc
                 port: "5432"
                 database: gotrue
                 sslMode: "verify-full"
