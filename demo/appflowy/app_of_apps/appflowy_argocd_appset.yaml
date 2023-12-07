@@ -101,12 +101,12 @@ spec:
             externalDatabase:
               host: "appflowy-postgres-rw.appflowy.svc"
               port: "5432"
-              user: "appflowy"
+              user: "postgres"
               database: "appflowy"
               sslMode: "verify-full"
-              sslCert: "/etc/secrets/appflowy/tls.crt"
+              sslCert: "/etc/secrets/postgres/tls.crt"
               sslRootCert: "/etc/secrets/ca/ca.crt"
-              sslKey: "/etc/secrets/appflowy/tls.key"
+              sslKey: "/etc/secrets/postgres/tls.key"
 
             extraVolumes:
               - name: postgres-ca
@@ -116,7 +116,7 @@ spec:
 
               - name: postgres-client-certs
                 secret:
-                  secretName: appflowy-postgres-appflowy-cert
+                  secretName: appflowy-postgres-postgres-cert
                   defaultMode: 0640
 
             extraVolumeMounts:
@@ -124,7 +124,7 @@ spec:
                 mountPath: /etc/secrets/ca
 
               - name: postgres-client-certs
-                mountPath: /etc/secrets/appflowy
+                mountPath: /etc/secrets/postgres
 
             initJob:
               extraVolumes:
@@ -135,7 +135,7 @@ spec:
 
                 - name: postgres-client-certs
                   secret:
-                    secretName: appflowy-postgres-appflowy-cert
+                    secretName: appflowy-postgres-postgres-cert
                     defaultMode: 0640
 
               extraVolumeMounts:
@@ -143,7 +143,7 @@ spec:
                   mountPath: /etc/secrets/ca
 
                 - name: postgres-client-certs
-                  mountPath: /etc/secrets/appflowy
+                  mountPath: /etc/secrets/postgres
 
             ingress:
               enabled: true 
