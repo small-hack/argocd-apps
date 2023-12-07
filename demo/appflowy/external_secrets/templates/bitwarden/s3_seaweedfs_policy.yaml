@@ -29,12 +29,12 @@ spec:
                 "secretKey": "{{ `{{ .userSecretKey }}` }}"}
              ],
              "actions": ["Read:appflowy","Write:appflowy","List:appflowy"]},
-            {"name": "gotrue-postgres",
+            {"name": "appflowy-postgres",
              "credentials": [
                {"accessKey": "{{ `{{ .dbUserAccessKey }}` }}",
                 "secretKey": "{{ `{{ .dbUserSecretKey }}` }}"}
              ],
-             "actions": ["Read:gotrue-postgres","Write:gotrue-postgres","List:gotrue-postgres"]}
+             "actions": ["Read:appflowy-postgres","Write:appflowy-postgres","List:appflowy-postgres"]}
           ]}
   data:
     - secretKey: adminAccessKey
