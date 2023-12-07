@@ -143,7 +143,7 @@ spec:
                 mountPath: /etc/secrets/ca
 
               - name: postgres-client-certs
-                mountPath: /etc/secrets/gotrue
+                mountPath: /etc/secrets/appflowy
 
             ingress:
               enabled: true 
