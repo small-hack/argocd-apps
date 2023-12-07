@@ -101,7 +101,7 @@ spec:
             externalDatabase:
               host: "appflowy-postgres-rw.appflowy.svc"
               port: "5432"
-              user: "postgres"
+              user: "appflowy"
               database: "appflowy"
               sslMode: "verify-full"
               sslCert: "/etc/secrets/appflowy/tls.crt"
