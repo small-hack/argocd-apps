@@ -155,7 +155,7 @@ spec:
             volumes:
               - name: postgres-ca
                 secret:
-                  secretName: gotrue-postgres-server-ca-key-pair
+                  secretName: appflowy-postgres-server-ca-key-pair
                   defaultMode: 0640
 
               - name: postgres-client-certs
