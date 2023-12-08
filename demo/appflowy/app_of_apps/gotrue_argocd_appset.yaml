@@ -85,11 +85,11 @@ spec:
                 user: supabase_auth_admin
                 host: appflowy-postgres-rw.appflowy.svc
                 port: "5432"
-                database: gotrue
+                database: appflowy
                 sslMode: "verify-full"
-                sslCert: "/etc/secrets/supabase-auth-admin/tls.crt"
+                sslCert: "/etc/secrets/supabase_auth_admin/tls.crt"
                 sslRootCert: "/etc/secrets/ca/ca.crt"
-                sslKey: "/etc/secrets/supabase-auth-admin/tls.key"
+                sslKey: "/etc/secrets/supabase_auth-_dmin/tls.key"
                 namespace: "auth"
 
               smtp:
@@ -168,7 +168,7 @@ spec:
                 mountPath: /etc/secrets/ca
 
               - name: postgres-client-certs
-                mountPath: /etc/secrets/supabase-auth-admin
+                mountPath: /etc/secrets/supabase_auth_admin
 
             # ref: https://github.com/supabase/gotrue/blob/312f871614438245aa11ca8cde34b2500611de52/Dockerfile#L19
             securityContext:
