@@ -2,14 +2,39 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: postgres-init-script
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
 type: Opaque
 stringData:
-  # CREATE USER supabase-auth-admin NOINHERIT CREATEROLE LOGIN NOREPLICATION PASSWORD 'mysecurepassword'; 
   init.sql: |
     BEGIN;
-    CREATE USER supabaseadmin LOGIN CREATEROLE CREATEDB REPLICATION BYPASSRLS;
-    CREATE USER supabaseauthadmin NOINHERIT CREATEROLE LOGIN NOREPLICATION;
-    CREATE SCHEMA IF NOT EXISTS auth AUTHORIZATION supabaseauthadmin;
-    GRANT CREATE ON DATABASE postgres TO supabaseauthadmin;
-    ALTER USER supabaseauthadmin SET search_path = 'auth';
+    CREATE OR REPLACE FUNCTION create_roles(roles text []) RETURNS void LANGUAGE plpgsql AS $$
+    DECLARE role_name text;
+    BEGIN FOREACH role_name IN ARRAY roles LOOP IF NOT EXISTS (
+        SELECT 1
+        FROM pg_roles
+        WHERE rolname = role_name
+    ) THEN EXECUTE 'CREATE ROLE ' || role_name;
+    END IF;
+    END LOOP;
+    END;
+    $$;
+    SELECT create_roles(ARRAY ['anon', 'authenticated']);
+    DO $$ BEGIN IF NOT EXISTS (
+        SELECT
+        FROM pg_catalog.pg_roles
+        WHERE rolname = 'supabase_admin'
+    ) THEN CREATE USER supabase_admin LOGIN CREATEROLE CREATEDB REPLICATION BYPASSRLS;
+    END IF;
+    END $$;
+    DO $$ BEGIN IF NOT EXISTS (
+        SELECT
+        FROM pg_catalog.pg_roles
+        WHERE rolname = 'supabase_auth_admin'
+    ) THEN CREATE USER supabase_auth_admin BYPASSRLS NOINHERIT CREATEROLE LOGIN NOREPLICATION;
+    END IF;
+    END $$;
+    CREATE SCHEMA IF NOT EXISTS auth AUTHORIZATION supabase_auth_admin;
+    GRANT CREATE ON DATABASE postgres TO supabase_auth_admin;
+    ALTER USER supabase_auth_admin SET search_path = 'auth';
     COMMIT;
