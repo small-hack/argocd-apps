@@ -49,8 +49,10 @@ spec:
               initdb:
                 database: appflowy
                 owner: appflowy
-
-            enableSuperuserAccess: true
+                postInitApplicationSQLRefs:
+                  secretRefs:
+                  - name: postgres-init-script
+                    key: init.sql
 
             backup:
               # barman is a utility for backing up postgres to s3
@@ -76,8 +78,8 @@ spec:
               user:
                 enabled: true
                 username:
-                  - appflowy
-                  - postgres
+                  - "supabase_auth_admin"
+                  - "appflowy"
 
             scheduledBackup:
               name: appflowy-pg-backup

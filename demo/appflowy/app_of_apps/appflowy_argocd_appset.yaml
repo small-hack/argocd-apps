@@ -87,13 +87,11 @@ spec:
             gotrue:
               externalUrl: "http://0.0.0.0:9999"
               smtp:
-                adminEmail: ""
-                existingSecret: ""
+                existingSecret: "appflowy-gotrue-credentials"
                 secretKeys:
                   adminEmail: "adminEmail"
               jwt:
-                secret: ""
-                existingSecret: ""
+                existingSecret: "appflowy-gotrue-credentials"
                 secretKey: "jwtSecret"
 
             ## external database to use for appflowy
@@ -127,6 +125,7 @@ spec:
                 mountPath: /etc/secrets/postgres
 
             initJob:
+              enabled: true
               extraVolumes:
                 - name: postgres-ca
                   secret:
