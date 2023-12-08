@@ -89,7 +89,7 @@ spec:
                 sslMode: "verify-full"
                 sslCert: "/etc/secrets/supabase_auth_admin/tls.crt"
                 sslRootCert: "/etc/secrets/ca/ca.crt"
-                sslKey: "/etc/secrets/supabase_auth-_dmin/tls.key"
+                sslKey: "/etc/secrets/supabase_auth_admin/tls.key"
                 namespace: "auth"
 
               smtp:
