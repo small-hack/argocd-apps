@@ -425,7 +425,7 @@ spec:
                 enableAuth: true
                 existingConfigSecret: seaweedfs-s3-secret
                 createBuckets:
-                  - name: appflowy-data
+                  - name: appflowy
                     anonymousRead: false
                   - name: appflowy-postgres
                     anonymousRead: false
