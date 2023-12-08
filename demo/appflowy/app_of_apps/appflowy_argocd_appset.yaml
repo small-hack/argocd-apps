@@ -125,7 +125,7 @@ spec:
                 mountPath: /etc/secrets/postgres
 
             initJob:
-              enabled: true
+              enabled: false
               extraVolumes:
                 - name: postgres-ca
                   secret:
