@@ -160,7 +160,7 @@ spec:
 
               - name: postgres-client-certs
                 secret:
-                  secretName: gotrue-postgres-supabaseauthadmin-cert
+                  secretName: appflowy-postgres-supabase-auth-admin-cert
                   defaultMode: 0640
 
             volumeMounts:
@@ -168,7 +168,7 @@ spec:
                 mountPath: /etc/secrets/ca
 
               - name: postgres-client-certs
-                mountPath: /etc/secrets/gotrue
+                mountPath: /etc/secrets/supabase-auth-admin
 
             # ref: https://github.com/supabase/gotrue/blob/312f871614438245aa11ca8cde34b2500611de52/Dockerfile#L19
             securityContext:
