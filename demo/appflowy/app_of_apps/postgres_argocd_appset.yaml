@@ -80,6 +80,7 @@ spec:
                 username:
                   - "supabase_auth_admin"
                   - "appflowy"
+                  - "postgres"
 
             scheduledBackup:
               name: appflowy-pg-backup
