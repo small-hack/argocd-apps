@@ -42,6 +42,8 @@ spec:
         helm:
           releaseName: minio
           values: |
+            replicas: 3
+
             ## Use existing Secret that store following variables:
             ## .data.rootUser and .data.rootPassword are mandatory,
             existingSecret: "minio-root-credentials"
