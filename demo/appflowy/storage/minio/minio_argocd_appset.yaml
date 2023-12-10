@@ -41,7 +41,7 @@ spec:
         targetRevision: 5.0.14
         helm:
           releaseName: minio
-          valuesObject:
+          values: |
             ## Use existing Secret that store following variables:
             ## .data.rootUser and .data.rootPassword are mandatory,
             existingSecret: "minio-root-credentials"
