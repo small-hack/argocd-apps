@@ -20,7 +20,7 @@ spec:
               - global_cluster_issuer
   template:
     metadata:
-      name: appflowy-minio
+      name: appflowy-minio-app
       annotations:
         argocd.argoproj.io/sync-wave: "2"
     spec:
