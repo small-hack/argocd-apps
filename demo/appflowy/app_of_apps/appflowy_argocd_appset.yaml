@@ -48,10 +48,10 @@ spec:
         path: charts/appflowy/
         helm:
           values: |
-            image:
-              # to test if this comment works: https://github.com/AppFlowy-IO/AppFlowy-Cloud/issues/204#issuecomment-1849865344
-              repository: jessebot/appflowy-cloud
-              tag: 0.0.3
+            # to test if this comment works: https://github.com/AppFlowy-IO/AppFlowy-Cloud/issues/204#issuecomment-1849865344
+            # image:
+            #   repository: jessebot/appflowy-cloud
+            #   tag: 0.0.3
 
             appflowy:
               environment: "production"
