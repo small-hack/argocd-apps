@@ -42,7 +42,7 @@ spec:
     # official oauth2-proxy helm repo
     - repoURL: 'https://oauth2-proxy.github.io/manifests'
       chart: oauth2-proxy
-      targetRevision: 6.20.1
+      targetRevision: 6.21.1
       helm:
         valueFiles:
           - $values/oauth2-proxy/values/values.yaml
