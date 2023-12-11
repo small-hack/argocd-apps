@@ -13,10 +13,10 @@ spec:
     metadata:
       name: nextcloud-web-app
     spec:
-      project: default
+      project: nextcloud
       destination:
         server: https://kubernetes.default.svc
-        namespace: default
+        namespace: nextcloud
       syncPolicy:
         syncOptions:
           - ApplyOutOfSyncOnly=true
