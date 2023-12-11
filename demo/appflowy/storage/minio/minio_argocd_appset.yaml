@@ -235,6 +235,11 @@ spec:
                  purge: false
                  versioning: true
                  objectlocking: false
+               - name: appflowy-postgres
+                 policy: none
+                 purge: false
+                 versioning: true
+                 objectlocking: false
 
             ## Additional Annotations for the Kubernetes Job makeBucketJob
             makeBucketJob:
