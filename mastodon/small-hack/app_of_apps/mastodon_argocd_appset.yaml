@@ -39,7 +39,7 @@ spec:
         targetRevision: 5.0.0
         chart: mastodon
         helm:
-          values: |
+          valuesObject:
             image:
               repository: ghcr.io/mastodon/mastodon
               pullPolicy: IfNotPresent
