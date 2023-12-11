@@ -13,10 +13,15 @@ spec:
     metadata:
       name: nextcloud-web-app
     spec:
-      project: nextcloud
+      project: default
       destination:
         server: https://kubernetes.default.svc
-        namespace: nextcloud
+        namespace: default
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
       source:
         repoURL: 'https://nextcloud.github.io/helm'
         targetRevision: 3.5.20
@@ -211,8 +216,3 @@ spec:
                 namespace: "nextcloud"
             rbac:
               enabled: true
-      syncPolicy:
-        syncOptions:
-          - ApplyOutOfSyncOnly=true
-        automated:
-          prune: true
