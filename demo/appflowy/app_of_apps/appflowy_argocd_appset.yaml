@@ -51,7 +51,7 @@ spec:
             appflowy:
               environment: "production"
               s3:
-                useMinio: false
+                useMinio: true
                 existingSecret: "appflowy-s3-credentials"
 
               rustLog: "debug"
