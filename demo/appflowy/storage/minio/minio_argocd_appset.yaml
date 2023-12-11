@@ -173,7 +173,7 @@ spec:
                 policy: writeappflowypolicy
               - accessKey: appflowy-postgres
                 existingSecret: postgres-s3-credentials
-                existingSecretKey: secretAccessKey
+                existingSecretKey: S3_PASSWORD
                 policy: writeappflowypolicy
             
             ## Additional stuff for the Kubernetes Job makeUserJob
