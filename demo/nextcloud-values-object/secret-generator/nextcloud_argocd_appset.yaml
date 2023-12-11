@@ -1,0 +1,224 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: nextcloud-web-app-set
+  namespace: argocd
+spec:
+  goTemplate: true
+  # generator allows us to source specific values from an external k8s secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - nextcloudHostname
+  template:
+    metadata:
+      name: nextcloud-web-app
+    spec:
+      project: nextcloud
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: nextcloud
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
+      source:
+        repoURL: 'https://nextcloud.github.io/helm'
+        targetRevision: 3.5.20
+        chart: nextcloud
+        helm:
+          valuesObject:
+            ingress:
+              enabled: true
+              className: nginx
+              annotations:
+                nginx.ingress.kubernetes.io/proxy-body-size: 10G
+                kubernetes.io/tls-acme: "true"
+                cert-manager.io/cluster-issuer: letsencrypt-staging
+                nginx.ingress.kubernetes.io/enable-cors: "false"
+                nginx.ingress.kubernetes.io/cors-allow-headers: "X-Forwarded-For"
+                nginx.ingress.kubernetes.io/server-snippet: |-
+                  proxy_hide_header X-Powered-By;
+                  rewrite ^/.well-known/webfinger /index.php/.well-known/webfinger last;
+                  rewrite ^/.well-known/nodeinfo /index.php/.well-known/nodeinfo last;
+                  rewrite ^/.well-known/host-meta /public.php?service=host-meta last;
+                  rewrite ^/.well-known/host-meta.json /public.php?service=host-meta-json;
+
+                  location = /.well-known/carddav {
+                    return 301 $scheme://$host/remote.php/dav/;
+                  }
+
+                  location = /.well-known/caldav {
+                    return 301 $scheme://$host/remote.php/dav/;
+                  }
+              tls:
+                - secretName: nextcloud-tls
+                  hosts:
+                    - "{{ .nextcloudHostname }}"
+            nextcloud:
+              host: "{{ .nextcloudHostname }}"
+              existingSecret:
+                enabled: true
+                secretName: nextcloud-admin-credentials
+                usernameKey: username
+                passwordKey: password
+                tokenKey: serverinfo_token
+                smtpUsernameKey: smtpUsername
+                smtpPasswordKey: smtpPassword
+              update: 1
+              mail:
+                enabled: false
+              configs:
+                logging.config.php: |-
+                  <?php
+                  $CONFIG = array (
+                    'log_type' => 'file',
+                    'logfile' => 'nextcloud.log',
+                    'loglevel' => 1,
+                    'logdateformat' => 'F d, Y H:i:s'
+                    );
+                video_previews.config.php: |-
+                  <?php
+                  $CONFIG = array (
+                    'enable_previews' => true,
+                    'enabledPreviewProviders' => array (
+                      'OC\Preview\Movie',
+                      'OC\Preview\PNG',
+                      'OC\Preview\JPEG',
+                      'OC\Preview\GIF',
+                      'OC\Preview\BMP',
+                      'OC\Preview\XBitmap',
+                      'OC\Preview\MP3',
+                      'OC\Preview\MP4',
+                      'OC\Preview\TXT',
+                      'OC\Preview\MarkDown',
+                      'OC\Preview\PDF'
+                    ),
+                  );
+                proxy.config.php: |-
+                  <?php
+                  $CONFIG = array (
+                    'trusted_proxies' => array(
+                      0 => '127.0.0.1',
+                      1 => '10.0.0.0/8'
+                    ),
+                    'forwarded_for_headers' => array('HTTP_X_FORWARDED_FOR'),
+                  );
+            nginx:
+              enabled: true
+            internalDatabase:
+              enabled: false
+            externalDatabase:
+              enabled: true
+              type: postgresql
+              host: localhost:5432
+              user: nextcloud
+              database: nextcloud
+              existingSecret:
+                enabled: true
+                secretName: nextcloud-pgsql-credentials
+                usernameKey: username
+                passwordKey: nextcloudPassword
+            postgresql:
+              enabled: true
+              global:
+                postgresql:
+                  auth:
+                    username: nextcloud
+                    database: nextcloud
+                    existingSecret: nextcloud-pgsql-credentials
+                    secretKeys:
+                      userPasswordKey: nextcloudPassword
+                      adminPasswordKey: postgresPassword
+              volumePermissions:
+                enabled: true
+              primary:
+                podAnnotations:
+                  k8up.io/backupcommand: "sh -c 'PGDATABASE=\"$POSTGRES_DB\" PGUSER=\"$POSTGRES_USER\" PGPASSWORD=\"$POSTGRES_PASSWORD\" pg_dump --clean'"
+                  k8up.io/file-extension: .sql
+                pgHbaConfiguration: |-
+                  local all all trust
+                  host all all 127.0.0.1/32 md5
+                  host all nextcloud 10.0.0.0/8 md5
+                initdb:
+                  scripts:
+                    my_init_script.sql: |
+                      ALTER DATABASE nextcloud OWNER TO nextcloud;
+                      GRANT ALL PRIVILEGES ON DATABASE nextcloud TO nextcloud;
+                      GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO nextcloud;
+                persistence:
+                  enabled: true
+                  existingClaim: "nextcloud-postgresql"
+            redis:
+              enabled: false
+              replica:
+                replicaCount: 1
+              auth:
+                enabled: true
+                existingSecret: nextcloud-redis-credentials
+                existingSecretPasswordKey: redis_password
+            cronjob:
+              enabled: true
+            service:
+              type: ClusterIP
+              port: 8080
+              loadBalancerIP: nil
+              nodePort: nil
+            persistence:
+              enabled: true
+              existingClaim: nextcloud-files
+              nextcloudData:
+                enabled: false
+                subPath:
+            livenessProbe:
+              enabled: false
+              initialDelaySeconds: 45
+              periodSeconds: 15
+              timeoutSeconds: 5
+              failureThreshold: 3
+              successThreshold: 1
+            readinessProbe:
+              enabled: true
+              initialDelaySeconds: 45
+              periodSeconds: 15
+              timeoutSeconds: 5
+              failureThreshold: 3
+              successThreshold: 1
+            startupProbe:
+              enabled: false
+              initialDelaySeconds: 30
+              periodSeconds: 10
+              timeoutSeconds: 5
+              failureThreshold: 30
+              successThreshold: 1
+            hpa:
+              enabled: false
+              cputhreshold: 60
+              minPods: 1
+              maxPods: 10
+            metrics:
+              enabled: true
+              https: true
+              token: "enabled"
+              timeout: 10s
+              image:
+                tag: 0.6.0
+              podLabels:
+                jobLabel: nextcloud-metrics
+              service:
+                annotations:
+                  prometheus.io/scrape: "true"
+                  prometheus.io/port: "9205"
+                labels:
+                  jobLabel: nextcloud-metrics
+              serviceMonitor:
+                enabled: true
+                namespace: "nextcloud"
+            rbac:
+              enabled: true
