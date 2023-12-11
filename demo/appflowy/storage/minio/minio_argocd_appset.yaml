@@ -41,7 +41,7 @@ spec:
         targetRevision: 5.0.14
         helm:
           releaseName: minio
-          valuesObject:
+          values: |
             replicas: 3
 
             ## Use existing Secret that store following variables:
