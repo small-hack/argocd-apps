@@ -46,6 +46,7 @@ spec:
         # targetRevision: main
         # path: charts/gotrue/
         helm:
+          releaseName: gotrue
           values: |
             gotrue:
               siteUrl: "https://{{ .appflowy_hostname }}"
