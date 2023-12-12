@@ -168,3 +168,4 @@ spec:
 
             redis:
               enabled: true
+              fullnameOverride: appflowy-redis
