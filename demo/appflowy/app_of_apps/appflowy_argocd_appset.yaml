@@ -165,3 +165,6 @@ spec:
                 - secretName: appflowy-tls
                   hosts:
                     - "{{ .appflowy_hostname }}"
+
+            redis:
+              enabled: true
