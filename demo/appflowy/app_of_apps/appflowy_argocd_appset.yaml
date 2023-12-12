@@ -54,7 +54,8 @@ spec:
                 useMinio: true
                 existingSecret: "appflowy-s3-credentials"
 
-              rustLog: "debug"
+              rustLog: "trace"
+              rustBacktrace: "full"
 
               adminFrontend:
                 enabled: true
