@@ -99,7 +99,7 @@ spec:
             ## Liveness and readiness probe values
             ##
             livenessProbe:
-              enabled: true
+              enabled: false
               initialDelaySeconds: 10
               periodSeconds: 10
               timeoutSeconds: 10
@@ -109,7 +109,7 @@ spec:
             readinessProbe:
               enabled: true
               initialDelaySeconds: 10
-              periodSeconds: 10
+              periodSeconds: 20
               timeoutSeconds: 10
               failureThreshold: 100
               successThreshold: 1
