@@ -152,6 +152,10 @@ spec:
             initJob:
               enabled: false
 
+            service:
+              port: 8000
+              targetPort: 8000
+
             ingress:
               enabled: true 
               className: "nginx"
