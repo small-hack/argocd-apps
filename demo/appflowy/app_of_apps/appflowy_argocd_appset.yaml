@@ -41,7 +41,7 @@ spec:
         # repoURL: 'https://jessebot.github.io/appflowy-helm'
         # chart: appflowy
         # targetRevision: 0.1.0
-        #
+
         # for testing the live repo
         repoURL: https://github.com/jessebot/appflowy-helm
         targetRevision: adding-initial-commit-of-helm-chart
@@ -63,7 +63,7 @@ spec:
               rustBacktrace: "full"
 
               adminFrontend:
-                enabled: true
+                enabled: false
                 image:
                   repository: appflowyinc/admin_frontend
                   pullPolicy: IfNotPresent
@@ -142,20 +142,12 @@ spec:
                   secretName: appflowy-postgres-postgres-cert
                   defaultMode: 0640
 
-              - name: minio-certs
-                secret:
-                  secretName: appflowy-minio-tls
-                  defaultMode: 0640
-
             extraVolumeMounts:
               - name: postgres-ca
                 mountPath: /etc/secrets/ca
 
               - name: postgres-client-certs
                 mountPath: /etc/secrets/postgres
-
-              - name: minio-certs
-                mountPath: /usr/local/ssl/certs
 
             initJob:
               enabled: false
