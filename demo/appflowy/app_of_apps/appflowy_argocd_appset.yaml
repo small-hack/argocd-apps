@@ -48,6 +48,11 @@ spec:
         path: charts/appflowy/
         helm:
           values: |
+            image:
+              repository: jessebot/appflowy-cloud
+              pullPolicy: IfNotPresent
+              tag: 0.0.3-dev
+
             appflowy:
               environment: "production"
               s3:
