@@ -179,3 +179,5 @@ spec:
             redis:
               enabled: true
               fullnameOverride: appflowy-redis
+              replica:
+                replicaCount: 2
