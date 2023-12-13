@@ -51,7 +51,7 @@ spec:
             image:
               repository: jessebot/appflowy-cloud
               pullPolicy: IfNotPresent
-              tag: 0.0.3-linux
+              tag: 0.0.4-linux
 
             appflowy:
               environment: "production"
