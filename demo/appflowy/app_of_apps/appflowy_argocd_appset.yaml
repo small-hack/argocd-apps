@@ -47,7 +47,7 @@ spec:
         targetRevision: adding-initial-commit-of-helm-chart
         path: charts/appflowy/
         helm:
-          values: |
+          valuesObject:
             image:
               repository: jessebot/appflowy-cloud
               pullPolicy: IfNotPresent
@@ -74,7 +74,7 @@ spec:
                   enabled: false
                   className: "nginx"
                   annotations:
-                    cert-manager.io/cluster-issuer: {{ .global_cluster_issuer }}
+                    cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
                   hosts:
                     - host: "{{ .appflowy_admin_hostname }}"
                       paths:
@@ -83,7 +83,7 @@ spec:
                   tls:
                     - secretName: appflowy-admin-tls
                       hosts:
-                        - {{ .appflowy_admin_hostname }}
+                        - '{{ .appflowy_admin_hostname }}'
 
               gotrue:
                 existingSecret: "appflowy-gotrue-credentials"
@@ -160,10 +160,10 @@ spec:
               enabled: true 
               className: "nginx"
               annotations:
-                cert-manager.io/cluster-issuer: {{ .global_cluster_issuer }}
+                cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
                 nginx.ingress.kubernetes.io/proxy-body-size: 2G
               hosts:
-                - host: {{ .appflowy_hostname }}
+                - host: '{{ .appflowy_hostname }}'
                   paths:
                     - path: /
                       pathType: ImplementationSpecific
