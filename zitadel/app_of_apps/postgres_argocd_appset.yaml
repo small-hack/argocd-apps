@@ -41,7 +41,7 @@ spec:
         targetRevision: 0.3.12
         helm:
           releaseName: zitadel-postgres-cluster
-          values: |
+          valuesObject:
             name: zitadel-postgres
             instances: 1
 
