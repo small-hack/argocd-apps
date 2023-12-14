@@ -43,7 +43,7 @@ spec:
         helm:
           releaseName: zitadel
           # https://github.com/zitadel/zitadel-charts/blob/main/charts/zitadel/values.yaml
-          values: |
+          valuesObject:
             replicaCount: 1
 
             # Overrides the image tag to the latest version
@@ -73,7 +73,7 @@ spec:
                       SSL:
                         Mode: verify-full
 
-                ExternalDomain: {{ .zitadel_hostname }}
+                ExternalDomain: '{{ .zitadel_hostname }}'
 
                 TLS:
                   # off until https://github.com/zitadel/zitadel-charts/pull/141
@@ -130,16 +130,16 @@ spec:
               className: "nginx"
               annotations:
                 kubernetes.io/tls-acme: "true"
-                cert-manager.io/cluster-issuer: {{ .global_cluster_issuer }}
+                cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
               hosts:
-                - host: {{ .zitadel_hostname }}
+                - host: '{{ .zitadel_hostname }}'
                   paths:
                     - path: /
                       pathType: Prefix
               tls:
                 - secretName: zitadel-tls
                   hosts:
-                    - {{ .zitadel_hostname }}
+                    - '{{ .zitadel_hostname }}'
 
             metrics:
               enabled: false

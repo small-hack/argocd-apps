@@ -41,7 +41,7 @@ spec:
         chart: seaweedfs
         helm:
           releaseName: zitadel-seaweedfs
-          values: |
+          valuesObject:
             global:
               createClusterRole: true
               serviceAccountName: "zitadel-seaweedfs"
@@ -419,7 +419,7 @@ spec:
               s3:
                 enabled: true
                 allowEmptyFolder: false
-                domainName: {{ .zitadel_s3_endpoint }}
+                domainName: '{{ .zitadel_s3_endpoint }}'
                 # enable user & permission to s3 (need to inject to all services)
                 enableAuth: true
                 existingConfigSecret: seaweedfs-s3-secret
@@ -432,12 +432,12 @@ spec:
                 enabled: true
                 className: "nginx"
                 # host: false for "*" hostname
-                host: "{{ .zitadel_s3_endpoint }}"
+                host: '{{ .zitadel_s3_endpoint }}'
                 # additional ingress annotations for the s3 endpoint
                 annotations:
                   nginx.ingress.kubernetes.io/proxy-body-size: 1G
-                  cert-manager.io/cluster-issuer: {{ .global_cluster_issuer }}
+                  cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
                 tls:
                   - secretName: zitadel-seaweedfs-tls
                     hosts:
-                      - "{{ .zitadel_s3_endpoint }}"
+                      - '{{ .zitadel_s3_endpoint }}'
