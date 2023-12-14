@@ -75,7 +75,8 @@ spec:
                 generate: true
               user:
                 enabled: true
-                username: nextcloud
+                username:
+                - nextcloud
 
             scheduledBackup:
               name: nextcloud-pg-backup
