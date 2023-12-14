@@ -90,7 +90,7 @@ spec:
               securityContext:
                 runAsUser: 82
                 runAsGroup: 82
-                runAsNonRoot: true
+                # runAsNonRoot: true
 
               podSecurityContext:
                 fsGroup: 82
