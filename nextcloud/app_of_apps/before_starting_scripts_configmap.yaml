@@ -6,9 +6,9 @@ metadata:
 data:
   install-apps.sh: |
     echo "Installing Nextcloud apps..."
-    php occ app:install oidc_login
-    php occ app:install notes
-    php occ app:install bookmarks
-    php occ app:install deck
-    php occ app:install side_menu
+    php /var/www/html/occ app:install oidc_login
+    php /var/www/html/occ app:install notes
+    php /var/www/html/occ app:install bookmarks
+    php /var/www/html/occ app:install deck
+    php /var/www/html/occ app:install side_menu
     echo "Nextcloud apps installation complete."
