@@ -61,7 +61,7 @@ spec:
 
               # -- available locales: https://github.com/mastodon/mastodon/blob/main/config/application.rb#L71
               locale: en
-              local_domain: {{ .mastodon_hostname }}
+              local_domain: '{{ .mastodon_hostname }}'
 
               # -- Use of WEB_DOMAIN requires careful consideration: https://docs.joinmastodon.org/admin/config/#federation
               # You must redirect the path LOCAL_DOMAIN/.well-known/ to WEB_DOMAIN/.well-known/ as described
@@ -98,7 +98,7 @@ spec:
               s3:
                 enabled: true
                 existingSecret: "mastodon-s3-credentials"
-                hostname: {{ .mastodon_s3_endpoint }}
+                hostname: '{{ .mastodon_s3_endpoint }}'
                 secretKeys:
                   s3AccessKeyID: S3_USER
                   s3AccessKey: S3_PASSWORD
@@ -130,12 +130,12 @@ spec:
                 auth_method: login
                 ca_file: /etc/ssl/certs/ca-certificates.crt
                 delivery_method: smtp
-                domain: {{ .mastodon_hostname }}
+                domain: '{{ .mastodon_hostname }}'
                 enable_starttls: 'auto'
-                from_address: toots@{{ .mastodon_hostname }}
+                from_address: 'toots@{{ .mastodon_hostname }}'
                 openssl_verify_mode: peer
                 port: 587
-                reply_to: no-reply@{{ .mastodon_hostname }}
+                reply_to: 'no-reply@{{ .mastodon_hostname }}'
                 tls: true
                 # keys must be named `server`, `login`, `password`
                 existingSecret: mastodon-smtp-credentials
@@ -173,18 +173,18 @@ spec:
               enabled: true
               annotations:
                 kubernetes.io/tls-acme: "true"
-                cert-manager.io/cluster-issuer: {{ .global_cluster_issuer }}
+                cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
                 # ensure that NGINX's upload size matches Mastodon's
                 nginx.ingress.kubernetes.io/proxy-body-size: 40m
               ingressClassName: nginx
               hosts:
-                - host: {{ .mastodon_hostname }}
+                - host: '{{ .mastodon_hostname }}'
                   paths:
                     - path: '/'
               tls:
                 - secretName: mastodon-tls
                   hosts:
-                    - {{ .mastodon_hostname }}
+                    - '{{ .mastodon_hostname }}'
 
 
             # https://github.com/bitnami/charts/tree/main/bitnami/elasticsearch#parameters
