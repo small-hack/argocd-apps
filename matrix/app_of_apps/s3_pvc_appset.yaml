@@ -42,9 +42,9 @@ spec:
         path: s3_persistence_and_backups/
         targetRevision: main
         helm:
-          values: |
-            provider: "{{ .matrix_s3_provider }}"
-            pvc_capacity: "{{ .matrix_s3_pvc_capacity }}"
+          valuesObject:
+            provider: '{{ .matrix_s3_provider }}'
+            pvc_capacity: '{{ .matrix_s3_pvc_capacity }}'
 
             # not in use yet
             k8up:
@@ -54,8 +54,8 @@ spec:
               backup_type: "s3"
 
               s3:
-                bucket: {{ .matrix_s3_backup_bucket }}
-                endpoint: {{ .matrix_s3_backup_endpoint }}
+                bucket: '{{ .matrix_s3_backup_bucket }}'
+                endpoint: '{{ .matrix_s3_backup_endpoint }}'
                 accessKeyIDSecretRef:
                   name: 'backups-s3-credentials'
                   key: 'accessKey'
