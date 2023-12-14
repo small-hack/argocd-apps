@@ -211,9 +211,10 @@ spec:
                     secretName: nextcloud-postgres-nextcloud-cert
                     defaultMode: 0640
 
-                - name: post-install-scripts
+                - name: before-starting-scripts
                   configMap:
-                    name: post-install-scripts
+                    name: before-starting-scripts
+                    defaultMode: 660
 
               extraVolumeMounts:
                 - name: postgres-ca
@@ -222,8 +223,8 @@ spec:
                 - name: postgres-client-certs
                   mountPath: /etc/secrets/nextcloud
 
-                - name: post-install-scripts
-                  mountPath: /docker-entrypoint-hooks.d/post-installation
+                - name: before-starting-scripts
+                  mountPath: /docker-entrypoint-hooks.d/before-starting
 
               defaultConfigs:
                 redis.config.php: false
