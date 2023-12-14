@@ -42,7 +42,7 @@ spec:
         chart: seaweedfs
         helm:
           releaseName: nextcloud-seaweedfs
-          values: |
+          valuesObject:
             global:
               createClusterRole: true
               serviceAccountName: "nextcloud-seaweedfs"
@@ -420,7 +420,7 @@ spec:
               s3:
                 enabled: true
                 allowEmptyFolder: false
-                domainName: {{ .nextcloud_s3_endpoint }}
+                domainName: '{{ .nextcloud_s3_endpoint }}'
                 # enable user & permission to s3 (need to inject to all services)
                 enableAuth: true
                 existingConfigSecret: seaweedfs-s3-secret
@@ -436,11 +436,11 @@ spec:
                 enabled: true
                 className: "nginx"
                 # host: false for "*" hostname
-                host: "{{ .nextcloud_s3_endpoint }}"
+                host: '{{ .nextcloud_s3_endpoint }}'
                 annotations:
                   nginx.ingress.kubernetes.io/proxy-body-size: 1G
-                  cert-manager.io/cluster-issuer: {{ .global_cluster_issuer }}
+                  cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
                 tls:
                   - secretName: nextcloud-seaweedfs-tls
                     hosts:
-                      - "{{ .nextcloud_s3_endpoint }}"
+                      - '{{ .nextcloud_s3_endpoint }}'
