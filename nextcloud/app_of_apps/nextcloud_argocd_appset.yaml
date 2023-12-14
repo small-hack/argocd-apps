@@ -39,7 +39,7 @@ spec:
         targetRevision: 4.5.5
         chart: nextcloud
         helm:
-          values: |
+          valuesObject:
             image:
               flavor: fpm-alpine
 
@@ -47,7 +47,7 @@ spec:
               enabled: true
               className: nginx
               annotations:
-                cert-manager.io/cluster-issuer: {{ .global_cluster_issuer }}
+                cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
                 nginx.ingress.kubernetes.io/proxy-body-size: 10G
                 # nginx.ingress.kubernetes.io/enable-cors: "false"
                 nginx.ingress.kubernetes.io/cors-allow-headers: "X-Forwarded-For"
@@ -68,10 +68,10 @@ spec:
               tls:
                 - secretName: nextcloud-tls
                   hosts:
-                    - "{{ .nextcloud_hostname }}"
+                    - '{{ .nextcloud_hostname }}'
 
             nextcloud:
-              host: {{ .nextcloud_hostname }}
+              host: '{{ .nextcloud_hostname }}'
               existingSecret:
                 enabled: true
                 secretName: nextcloud-admin-credentials
@@ -180,7 +180,7 @@ spec:
                   value: "true"
 
                 - name: "OBJECTSTORE_S3_REGION"
-                  value: {{ .nextcloud_s3_region }}
+                  value: '{{ .nextcloud_s3_region }}'
 
                 - name: "OBJECTSTORE_S3_USEPATH_STYLE"
                   value: "true"
