@@ -95,8 +95,6 @@ spec:
               # update to the latest version of nextcloud
               update: 1
 
-              containerPort: 9000
-
               securityContext:
                 runAsUser: 82
                 runAsGroup: 82
@@ -410,11 +408,6 @@ spec:
 
             cronjob:
               enabled: true
-
-            service:
-              type: ClusterIP
-              port: 9000
-              nodePort: nil
 
             persistence:
               enabled: true
