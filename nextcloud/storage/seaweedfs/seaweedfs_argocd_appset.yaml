@@ -37,9 +37,12 @@ spec:
           prune: true
           selfHeal: true 
       source:
-        repoURL: 'https://seaweedfs.github.io/seaweedfs/helm'
-        targetRevision: 3.59.4
-        chart: seaweedfs
+        repoURL: https://github.com/jessebot/seaweedfs
+        targetRevision: patch-2
+        path: k8s/charts/seaweedfs/
+        # repoURL: 'https://seaweedfs.github.io/seaweedfs/helm'
+        # targetRevision: 3.59.4
+        # chart: seaweedfs
         helm:
           releaseName: nextcloud-seaweedfs
           valuesObject:
