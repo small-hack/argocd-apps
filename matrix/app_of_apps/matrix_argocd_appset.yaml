@@ -46,7 +46,7 @@ spec:
         targetRevision: 6.2.1
         chart: matrix
         helm:
-          values: |
+          valuesObject:
             fullnameOverride: matrix-stack
 
             # Runtime configuration for Synapse and settings related to the Matrix protocol
@@ -71,7 +71,7 @@ spec:
               encryptByDefault: all
 
               # -- Email address of the administrator
-              adminEmail: {{ .matrix_admin_email }}
+              adminEmail: '{{ .matrix_admin_email }}'
 
               # -- Settings related to image and multimedia uploads
               uploads:
@@ -104,14 +104,14 @@ spec:
                   enabled: true
                   tls:
                     enabled: true
-                  host: {{ .matrix_federation_hostname }}
+                  host: '{{ .matrix_federation_hostname }}'
                   annotations:
                     # -- required for the Nginx ingress provider. You can remove it if you
                     # use a different ingress provider
                     nginx.ingress.kubernetes.io/configuration-snippet: |
                       proxy_intercept_errors off;
                     # -- required for TLS certs issued by cert-manager
-                    cert-manager.io/cluster-issuer: {{ .global_cluster_issuer }}
+                    cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
 
               # User registration settings
               registration:
@@ -157,8 +157,8 @@ spec:
                     # skip_verification: false
                     user_mapping_provider:
                       config:
-                        localpart_template: {{ `"{{ user.preferred_username }}"` }}
-                        display_name_template: {{ `"{{ user.name }}"` }}
+                        localpart_template: '{{ `"{{ user.preferred_username }}"` }}'
+                        display_name_template: '{{ `"{{ user.name }}"` }}'
 
               # Settings for the URL preview crawler
               urlPreviews:
@@ -250,12 +250,12 @@ spec:
                 # An example configuration might look like:
                 #
                 # trustedKeyServers:
-                #   - serverName: my_trusted_server.{{ .matrix_hostname }}
+                #   - serverName: 'my_trusted_server.{{ .matrix_hostname }}'
                 #     verifyKeys:
                 #       - id: "ed25519:auto"
                 #         key: "abcdefghijklmnopqrstuvwxyzabcdefghijklmopqr"
                 #     acceptKeysInsecurely: false
-                #   - serverName: my_other_trusted_server.{{ .matrix_hostname }}
+                #   - serverName: 'my_other_trusted_server.{{ .matrix_hostname }}'
 
               # -- Set to true to globally block access to the homeserver
               disabled: false
@@ -275,9 +275,9 @@ spec:
             s3:
               # -- enable s3 storage via https://github.com/matrix-org/synapse-s3-storage-provider
               enabled: true
-              endpoint: https://{{ .matrix_s3_endpoint }}
-              bucket: {{ .matrix_s3_bucket }}
-              region: {{ .matrix_s3_region }}
+              endpoint: 'https://{{ .matrix_s3_endpoint }}'
+              bucket: '{{ .matrix_s3_bucket }}'
+              region: '{{ .matrix_s3_region }}'
               existingSecret: "matrix-s3-credentials"
               secretKeys:
                 accessKey: "S3_ACCESS_KEY"
@@ -347,7 +347,7 @@ spec:
 
               ingress:
                 enabled: true
-                host: {{ .matrix_hostname }}
+                host: '{{ .matrix_hostname }}'
                 tls:
                   enabled: true
                 annotations:
@@ -357,7 +357,7 @@ spec:
                   nginx.ingress.kubernetes.io/configuration-snippet: |
                     proxy_intercept_errors off;
                   # -- required for TLS certs issued by cert-manager
-                  cert-manager.io/cluster-issuer: {{ .global_cluster_issuer }}
+                  cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
 
               replicaCount: 1
               resources: {}
@@ -442,14 +442,14 @@ spec:
                 tls:
                   enabled: true
                 # -- the hostname to use for element
-                host: {{ .matrix_element_hostname }}
+                host: '{{ .matrix_element_hostname }}'
                 annotations:
                   # This annotation is required for the Nginx ingress provider. You can
                   # remove it if you use a different ingress provider
                   nginx.ingress.kubernetes.io/configuration-snippet: |
                     proxy_intercept_errors off;
                   # -- required for TLS certs issued by cert-manager
-                  cert-manager.io/cluster-issuer: {{ .global_cluster_issuer }}
+                  cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
 
               # Organization/enterprise branding
               branding:
