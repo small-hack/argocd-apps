@@ -1,0 +1,12 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: post-install-scripts
+data:
+  install-apps.sh: |
+    php occ app:install oidc_login
+    php occ app:install notes
+    php occ app:install bookmarks
+    php occ app:install deck
+    php occ app:install side_menu
