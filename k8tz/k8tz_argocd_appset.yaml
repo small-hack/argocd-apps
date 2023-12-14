@@ -35,7 +35,7 @@ spec:
         targetRevision: 0.14.0
         chart: k8tz
         helm:
-          values: |
+          valuesObject:
             # Default values for k8tz.
             
             kind: Deployment
@@ -43,7 +43,7 @@ spec:
             
             namespace: k8tz
             injectionStrategy: initContainer
-            timezone: {{ .global_time_zone }}
+            timezone: '{{ .global_time_zone }}'
             injectAll: false
             cronJobTimeZone: true
             # requires kubernetes >=1.24.0-beta.0 with 'CronJobTimeZone' 
