@@ -41,7 +41,7 @@ spec:
         targetRevision: 0.3.12
         helm:
           releaseName: nextcloud-postgres-cluster
-          values: |
+          valuesObject:
             name: nextcloud-postgres
             instances: 2
 
