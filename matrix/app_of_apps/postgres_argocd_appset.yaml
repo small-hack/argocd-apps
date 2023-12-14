@@ -39,7 +39,7 @@ spec:
         targetRevision: 0.3.12
         helm:
           releaseName: matrix-postgres-cluster
-          values: |
+          valuesObject:
             name: matrix-postgres
             instances: 2
 
