@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: post-install-scripts
+  name: before-starting-scripts
 data:
   install-apps.sh: |
     echo "Installing Nextcloud apps..."
