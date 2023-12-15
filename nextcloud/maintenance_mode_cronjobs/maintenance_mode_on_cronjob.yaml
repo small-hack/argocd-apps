@@ -5,7 +5,7 @@ metadata:
   name: maintanence-mode-on
 spec:
   # daily at 1pm Central Europe Time
-  schedule: "0 14 * * *"
+  schedule: "0 11 * * *"
   successfulJobsHistoryLimit: 0
   failedJobsHistoryLimit: 3
   jobTemplate:
