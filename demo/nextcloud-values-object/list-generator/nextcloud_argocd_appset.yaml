@@ -24,7 +24,7 @@ spec:
           prune: true
       source:
         repoURL: 'https://nextcloud.github.io/helm'
-        targetRevision: 4.5.5
+        targetRevision: 4.5.8
         chart: nextcloud
         helm:
           valuesObject:
