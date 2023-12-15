@@ -12,6 +12,8 @@ spec:
     spec:
       template:
         spec:
+          securityContext:
+            fsGroup: 82
           restartPolicy: OnFailure
           volumes:
             - name: nextcloud-main
