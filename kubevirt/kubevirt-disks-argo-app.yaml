@@ -1,0 +1,21 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kubevirt-disks
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "5"
+spec:
+  project: kubevirt
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: kubevirt
+  source:
+    repoURL: https://github.com/small-hack/argocd-apps.git
+    path: kubevirt/disks/
+  syncPolicy:
+    syncOptions:
+      - ApplyOutOfSyncOnly=true
+    automated:
+      selfHeal: true
