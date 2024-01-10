@@ -9,6 +9,7 @@ kind: Application
 metadata:
   name: kubevirt-operator
 spec:
+  project: kubevirt
   destination:
     namespace: kubevirt
     server: 'https://kubernetes.default.svc'
