@@ -2,6 +2,32 @@
 
 Kubevirt wraps QEMU and provides a Kubernetes-Native way to deploy virtual machines as code.
 
+## Manually deploy to ArgoCD
+
+```yaml
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kubevirt-app-of-apps
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  project: kubevirt
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: kubevirt
+  source:
+    repoURL: https://github.com/small-hack/argocd-apps.git
+    path: kubevirt/
+  syncPolicy:
+    syncOptions:
+      - ApplyOutOfSyncOnly=true
+    automated:
+      selfHeal: true
+```
+
 ## Check host features
 
 - Install libvirt-clients
