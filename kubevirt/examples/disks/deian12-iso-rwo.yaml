@@ -7,7 +7,7 @@ metadata:
     app: containerized-data-importer
   annotations:
     cdi.kubevirt.io/storage.bind.immediate.requested: "true"
-    cdi.kubevirt.io/storage.import.endpoint: "https://cdimage.debian.org/debian-cd/current-live/amd64/iso-hybrid/debian-live-12.0.0-amd64-gnome.iso"
+    cdi.kubevirt.io/storage.import.endpoint: "https://cdimage.debian.org/debian-cd/current/amd64/iso-dvd/debian-12.4.0-amd64-DVD-1.iso"
 spec:
   storageClassName: local-path
   accessModes:
