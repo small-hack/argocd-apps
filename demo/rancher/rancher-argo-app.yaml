@@ -10,7 +10,7 @@ metadata:
   name: rancher
   namespace: argocd
 spec:
-  project: rancher
+  project: default
   sources:
     - repoURL: 'https://releases.rancher.com/server-charts/latest'
       targetRevision: 2.8.0
