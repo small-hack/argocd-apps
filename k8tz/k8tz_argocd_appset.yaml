@@ -32,7 +32,7 @@ spec:
       source:
         # official k8tz helm repo
         repoURL: 'https://k8tz.github.io/k8tz/'
-        targetRevision: 0.14.1
+        targetRevision: 0.15.0
         chart: k8tz
         helm:
           valuesObject:
