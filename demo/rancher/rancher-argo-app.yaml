@@ -1,8 +1,3 @@
-# KubeVirt extends Kubernetes by adding additional virtualization resource types 
-# (especially the VM type) through Kubernetes's Custom Resource Definitions API. 
-# By using this mechanism, the Kubernetes API can be used to manage these VM resources 
-# alongside all other resources Kubernetes provides.
-# https://github.com/kubevirt/kubevirt
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
