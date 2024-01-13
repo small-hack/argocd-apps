@@ -71,6 +71,8 @@ spec:
           pciHostDevices:
           - pciVendorSelector: "10de:17fd"
             resourceName: "nvidia.com/GM200GL_Tesla_M40"
+          - pciVendorSelector: "10de:2782"
+            resourceName: "nvidia.com/AD104_GeForce_RTX4070Ti"
           mediatedDevices: []
         
         mediatedDevicesTypes: []
