@@ -64,6 +64,17 @@ spec:
         priorityclass:
           create: true
           value: 1000000000
+          
+        permittedHostDevices:
+          pciHostDevices:
+          - pciVendorSelector: "10DE:1EB8"
+            resourceName: "nvidia.com/TU104GL_Tesla_T4"
+           mediatedDevices: []
+        # - mdevNameSelector: "GRID T4-1Q"
+        #   resourceName: "nvidia.com/GRID_T4-1Q"
+        
+        mediatedDevicesTypes: []
+        # - nvidia-436
         
         kubevirt:
           create: true
