@@ -43,6 +43,14 @@ spec:
         securityContext:
           privileged: true
         
+        resources: {}
+          # limits:
+          #   cpu: 100m
+          #   memory: 128Mi
+          # requests:
+          #   cpu: 100m
+          #   memory: 128Mi
+        
         nodeSelector: {}
         tolerations:
           - key: CriticalAddonsOnly
@@ -76,27 +84,30 @@ spec:
         mediatedDevicesTypes: []
         # - nvidia-436
         
-        kubevirt:
-          create: true
-          configuration:
-            developerConfiguration:
-              useEmulation: true
-              featureGates:
-                - ExpandDisks
-                - CPUManager
-                - GPU
-                - HostDevices
-                - VMExport
-                - HotplugVolumes
-                - HostDisk
-                - Macvtap
-                - Passt
-                - HotplugNICs
-                - clientPassthrough
-                - Snapshot
-                - CPUNodeDiscovery
+        permittedHostDevices:
+          pciHostDevices:
+          - pciVendorSelector: "10DE:1EB8"
+            resourceName: "nvidia.com/TU104GL_Tesla_T4"
+        
+        mediatedDevices: []
+        mediatedDevicesTypes: []
+        useEmulation: false
+        
+        featureGates:
+          - ExpandDisks
+          - CPUManager
+          - GPU
+          - HostDevices
+          - VMExport
+          - HotplugVolumes
+          - HostDisk
+          - Macvtap
+          - Passt
+          - HotplugNICs
+          - clientPassthrough
+          - Snapshot
+          - CPUNodeDiscovery
   sources: []
-  project: default
   syncPolicy:
     automated:
       prune: false
