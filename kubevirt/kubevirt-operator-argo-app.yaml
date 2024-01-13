@@ -81,7 +81,6 @@ spec:
             resourceName: "nvidia.com/TU104GL_Tesla_T4"
         
         mediatedDevices: []
-        mediatedDevicesTypes: []
         useEmulation: false
         
         featureGates:
