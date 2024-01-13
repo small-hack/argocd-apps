@@ -69,18 +69,12 @@ spec:
           
         permittedHostDevices:
           pciHostDevices:
-          - pciVendorSelector: "10DE:1EB8"
-            resourceName: "nvidia.com/TU104GL_Tesla_T4"
+          - pciVendorSelector: "10de:17fd"
+            resourceName: "nvidia.com/GM200GL_Tesla_M40"
           mediatedDevices: []
         
         mediatedDevicesTypes: []
         
-        permittedHostDevices:
-          pciHostDevices:
-          - pciVendorSelector: "10DE:1EB8"
-            resourceName: "nvidia.com/TU104GL_Tesla_T4"
-        
-        mediatedDevices: []
         useEmulation: false
         
         featureGates:
