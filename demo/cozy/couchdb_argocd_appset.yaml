@@ -38,7 +38,7 @@ spec:
       source:
         repoURL: 'https://apache.github.io/couchdb-helm'
         chart: couchdb
-        targetRevision: 4.4.5
+        targetRevision: 4.5.0
         helm:
           releaseName: couchdb
           values: |
