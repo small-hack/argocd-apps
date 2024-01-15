@@ -15,7 +15,7 @@ spec:
   source:
     repoURL: 'registry-1.docker.io'
     chart: bitnamicharts/redis
-    targetRevision: 18.5.0
+    targetRevision: 18.6.4
     helm:
       values: |
         global:
