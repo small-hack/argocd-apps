@@ -37,7 +37,7 @@ spec:
         # official cilium helm repo
         repoURL: 'https://helm.cilium.io/'
         chart: cilium
-        targetRevision: 1.14.5
+        targetRevision: 1.14.6
         helm:
           values: |
             operator:
