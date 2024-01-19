@@ -13,7 +13,7 @@ spec:
     namespace: juicefs
   source:
     repoURL: https://github.com/small-hack/argocd-apps.git
-    path: demo/juicefs/
+    path: demo/juicefs/app-of-apps/
   syncPolicy:
     syncOptions:
       - ApplyOutOfSyncOnly=true
