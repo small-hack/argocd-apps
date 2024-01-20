@@ -23,7 +23,7 @@ spec:
         replica:
           replicaCount: 1
         auth:
-         existingSecret: "redis-credentials"
+         existingSecret: "juicefs-redis-password"
   syncPolicy:
     syncOptions:
       - CreateNamespace=true
