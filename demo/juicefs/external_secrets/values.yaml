@@ -1,5 +1,5 @@
 # Use external secrets. Set to bitwarden to use this chart. other providers may be supported in the future
-provider: ""
+provider: "bitwarden"
 
 # -- if set to seaweedfs we deploy a policy secret. can also be minio
 s3_provider: "seaweedfs"
