@@ -5,5 +5,5 @@ provider: "bitwarden"
 s3_provider: "seaweedfs"
 
 # -- existing kubernetes secret with s3 postgres credentials
-s3CredentialsBitwardenID: ""
+s3CredentialsBitwardenID: "juicefs-s3-credentials"
 
