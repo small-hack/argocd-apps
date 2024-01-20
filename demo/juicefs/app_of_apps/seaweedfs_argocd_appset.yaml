@@ -545,7 +545,7 @@ spec:
                 domainName: "{{ .seaweedfs_s3_endpoint }}"
                 # enable user & permission to s3 (need to inject to all services)
                 enableAuth: true
-                existingConfigSecret: seaweedfs-s3-secret
+                existingConfigSecret: juicefs-s3-secret
                 skipAuthSecretCreation: true
                 auditLogConfig: {}
                 # You may specify buckets to be created during the install process.
