@@ -29,11 +29,11 @@ spec:
              autoattachGraphicsDevice: true
           machine:
             machineType: "q35"
-            cpuPassthrough: false
-            vCores: 2
+            cpuPassthrough: true
+            vCores: 4
             pinCores: false
             hyperThreadingEnabled: false
-            memory: 2Gi
+            memory: 8Gi
           gpus: []
         
         virtualMachinePool:
