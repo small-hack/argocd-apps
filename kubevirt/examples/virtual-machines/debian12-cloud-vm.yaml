@@ -10,7 +10,7 @@ spec:
     server: 'https://kubernetes.default.svc'
   source:
     path: ''
-    repoURL: 'https://cloudymax.github.io/kubevirt-charts/'
+    repoURL: 'https://cloudymax.github.io/kubevirt-community-stack/'
     targetRevision: 0.2.0
     chart: kubevirt-vm
     helm:
