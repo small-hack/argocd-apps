@@ -49,7 +49,8 @@ spec:
             pvsize: 32G
             pvstorageClass: local-path
             pvaccessMode: ReadWriteOnce
-            source: "https://cloud.debian.org/images/cloud/bookworm/daily/latest/debian-12-generic-amd64-daily.qcow2"
+            source: "url"
+            url: "https://cloud.debian.org/images/cloud/bookworm/daily/latest/debian-12-generic-amd64-daily.qcow2"
           - name: cloudinitvolume
             type: cdrom
             bus: sata
