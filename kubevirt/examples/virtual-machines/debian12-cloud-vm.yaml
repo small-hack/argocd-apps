@@ -34,7 +34,9 @@ spec:
             pinCores: false
             hyperThreadingEnabled: false
             memory: 8Gi
-          gpus: []
+          gpus:
+          - name: gpu0
+            deviceName: nvidia.com/GM200GL_Tesla_M40
         
         virtualMachinePool:
           enabled: false
