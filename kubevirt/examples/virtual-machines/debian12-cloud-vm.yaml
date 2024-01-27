@@ -29,7 +29,7 @@ spec:
              autoattachGraphicsDevice: true
           machine:
             machineType: "q35"
-            cpuPassthrough: true
+            cpuPassthrough: false
             vCores: 4
             pinCores: false
             hyperThreadingEnabled: false
@@ -48,11 +48,11 @@ spec:
             bus: virtio
             bootorder: 2
             readonly: false
-            pvsize: 32G
+            pvsize: 64G
             pvstorageClass: local-path
             pvaccessMode: ReadWriteOnce
             source: "url"
-            url: "https://cloud.debian.org/images/cloud/bookworm/daily/latest/debian-12-generic-amd64-daily.qcow2"
+            url: "https://laotzu.ftp.acc.umu.se/images/cloud/bookworm/latest/debian-12-generic-amd64.qcow2"
           - name: cloudinitvolume
             type: cdrom
             bus: sata
@@ -96,8 +96,23 @@ spec:
           write_files: []
           package_update: true
           package_upgrade: false
-          packages: []
-          runcmd: []
+          packages:
+            - ssh-import-id
+            - git
+            - htop
+            - clang
+            - qemu-guest-agent
+          runcmd:
+            - sudo -u friend -i ssh-import-id-gh cloudymax
+            - wget https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh
+            - chmod +x /install.sh
+            - chmod 777 /install.sh
+            - sudo -u friend -i NONINTERACTIVE=1 /bin/bash /install.sh
+            - sudo -u friend -i /home/linuxbrew/.linuxbrew/bin/brew shellenv >> /home/friend/.bashrc
+            - sudo -u friend -i /home/linuxbrew/.linuxbrew/bin/brew install python@3.12 
+            - sudo -u friend -i /home/linuxbrew/.linuxbrew/opt/python@3.12/libexec/bin >> /home/friend/.bashrc
+            - sudo mkdir -p /home/friend/.config/smol-ka8s-lab
+            - wget -O /home/friend/.config/smol-ka8s-lab/config.yaml https://raw.githubusercontent.com/cloudymax/linux_notes/main/smol-k8s-config.yaml
   sources: []
   project: default
   syncPolicy:
