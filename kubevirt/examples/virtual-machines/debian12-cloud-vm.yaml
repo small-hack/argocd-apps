@@ -108,8 +108,6 @@ spec:
             - chmod 777 /install.sh
             - sudo -u friend -i NONINTERACTIVE=1 /bin/bash /install.sh
             - sudo -u friend -i /home/linuxbrew/.linuxbrew/bin/brew shellenv >> /home/friend/.bashrc
-            - sudo -u friend -i /home/linuxbrew/.linuxbrew/bin/brew install python@3.12 
-            - sudo -u friend -i /home/linuxbrew/.linuxbrew/opt/python@3.12/libexec/bin >> /home/friend/.bashrc
             - sudo chown -R friend:friend /home/friend
             - sudo chown -R friend:friend /home/linuxbrew
   sources: []
