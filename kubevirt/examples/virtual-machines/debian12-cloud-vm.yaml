@@ -23,7 +23,7 @@ spec:
              kvmEnabled: true
              acpiEnabled: true
              smmEnabled: true
-             efiEnabled: true
+             efiEnabled: false
              autoattachPodInterface: true
              autoattachSerialConsole: true
              autoattachGraphicsDevice: true
