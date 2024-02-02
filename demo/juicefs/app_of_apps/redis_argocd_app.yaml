@@ -1,5 +1,6 @@
 ---
 # has to be after secrets, but before web-app
+apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
   name: juicefs-redis-app
