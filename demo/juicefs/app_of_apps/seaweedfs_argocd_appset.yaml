@@ -68,7 +68,6 @@ spec:
                 allowEmptyFolder: false
                 domainName: "{{ .juicefs_s3_hostname }}"
                 enableAuth: true
-                existingConfigSecret: juicefs-s3-credentials
                 skipAuthSecretCreation: false
                 auditLogConfig: {}
             global:
