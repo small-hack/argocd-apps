@@ -19,7 +19,7 @@ spec:
               - juicefs_redis_password
   template:
     metadata:
-      name: juicefs-redis--appset
+      name: juicefs-redis-appset
       annotations:
         argocd.argoproj.io/sync-wave: "1"
     spec:
@@ -39,7 +39,7 @@ spec:
         chart: bitnamicharts/redis
         targetRevision: 18.6.4
         helm:
-          releaseName: juicefs
+          releaseName: juicefs-redis
           values: |
             global:
               storageClass: "local-path"
