@@ -67,8 +67,9 @@ spec:
                 httpsPort: 0
                 allowEmptyFolder: false
                 domainName: "{{ .seaweedfs_s3_endpoint }}"
-                enableAuth: false
-                skipAuthSecretCreation: false
+                enableAuth: true
+                existingConfigSecret: juicefs-s3-credentials
+                skipAuthSecretCreation: true
                 auditLogConfig: {}
             global:
               createClusterRole: true
