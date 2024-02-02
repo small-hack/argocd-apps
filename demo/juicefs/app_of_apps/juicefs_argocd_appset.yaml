@@ -18,7 +18,7 @@ spec:
           parameters:
             secret_vars:
               - juicefs_redis_password
-              - juicefs_s3_access_key
+              - juicefs_s3_key_id
               - juicefs_s3_secret_key
   template:
     metadata:
@@ -44,8 +44,8 @@ spec:
                 metaurl: "redis://:{{ .juicefs_redis_password }}@juicefs-redis-master.juicefs.svc.cluster.local:6379/1"
                 storage: "s3"
                 bucket: "http://seaweedfs-s3.juicefs.svc.cluster.local:8333/juicefs"
-                accessKey: {{ .seadweedfs_s3_access_key }}
-                secretKey: {{ .seaweedfs_s3_secret_key }}
+                accessKey: {{ .juicefs_s3_key_id }}
+                secretKey: {{ .juicefs_s3_secret_key }}
                 envs: ""
                 configs: ""
                 trashDays: ""
