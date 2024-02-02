@@ -1,33 +1,47 @@
 ---
 # has to be after secrets, but before web-app
-apiVersion: argoproj.io/v1alpha1
-kind: Application
+kind: ApplicationSet
 metadata:
   name: juicefs-redis-app
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "2"
+    argocd.argoproj.io/sync-wave: "3"
 spec:
-  project: juicefs
-  destination:
-    server: 'https://kubernetes.default.svc'
-    namespace: juicefs
-  source:
-    repoURL: 'registry-1.docker.io'
-    chart: bitnamicharts/redis
-    targetRevision: 18.6.4
-    helm:
-      values: |
-        global:
-          storageClass: "local-path"
-        replica:
-          replicaCount: 1
-        auth:
-         existingSecret: "juicefs-redis-password"
-  syncPolicy:
-    syncOptions:
-      - CreateNamespace=true
-      - Replace=true
-    automated:
-      selfHeal: false
-      prune: true
+  goTemplate: true
+  # generator allows us to source specific values from an external k8s secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - juicefs_redis_password
+  template:
+    metadata:
+      name: juicefs-redis--appset
+      annotations:
+        argocd.argoproj.io/sync-wave: "1"
+    spec:
+      project: juicefs
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: juicefs
+      syncPolicy:
+        syncOptions:
+          - CreateNamespace=true
+          - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
+          selfHeal: true
+      source:
+        repoURL: 'registry-1.docker.io'
+        chart: bitnamicharts/redis
+        targetRevision: 18.6.4
+        helm:
+          releaseName: juicefs
+          values: |
+            global:
+              storageClass: "local-path"
+              redis:
+                password: "{{ .juicefs_redis_password }}"
