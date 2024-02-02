@@ -55,6 +55,9 @@ spec:
               data:
                 type: "existingClaim"
                 claimName: "swfs-volume-data"
+              idx:
+                type: "existingClaim"
+                claimName: "swfs-volume-idx"
             filer:
               enablePVC: true
               storage: 25Gi
