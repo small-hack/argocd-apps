@@ -66,7 +66,7 @@ spec:
                 port: 8333
                 httpsPort: 0
                 allowEmptyFolder: false
-                domainName: "{{ .hostname }}"
+                domainName: "{{ .juicefs_s3_hostname }}"
                 enableAuth: true
                 existingConfigSecret: juicefs-s3-credentials
                 skipAuthSecretCreation: true
