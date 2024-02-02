@@ -57,7 +57,7 @@ spec:
                 claimName: "swfs-volume-data"
             filer:
               enablePVC: true
-              storage: 5Gi
+              storage: 25Gi
               data:
                 type: "existingClaim"
                 claimName: "swfs-filer-data"
@@ -68,7 +68,6 @@ spec:
                 allowEmptyFolder: false
                 domainName: ""
                 enableAuth: false
-                existingConfigSecret: juicefs-s3-credentials
                 skipAuthSecretCreation: false
                 auditLogConfig: {}
             global:
