@@ -13,6 +13,17 @@ spec:
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
+  name: swfs-volume-idx
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
   name: swfs-master-data
 spec:
   accessModes:
@@ -30,4 +41,4 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 100Gi
+      storage: 10Gi
