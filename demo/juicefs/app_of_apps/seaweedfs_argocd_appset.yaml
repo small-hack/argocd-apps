@@ -67,9 +67,9 @@ spec:
                 httpsPort: 0
                 allowEmptyFolder: false
                 domainName: ""
-                enableAuth: true
+                enableAuth: false
                 existingConfigSecret: juicefs-s3-credentials
-                skipAuthSecretCreation: true
+                skipAuthSecretCreation: false
                 auditLogConfig: {}
             global:
               createClusterRole: true
