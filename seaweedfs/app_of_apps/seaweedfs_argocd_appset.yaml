@@ -120,9 +120,9 @@ spec:
               #    type: "persistentVolumeClaim"
               #    size: "24Ti"
               #    storageClass: "local-path-provisioner"
-              data:
-                type: "existingClaim"
-                claimName: "swfs-master-data"
+              dataDirs:
+              - name: data
+                claimName: "swfs-volume-data"
 
               initContainers: ""
 
