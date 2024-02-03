@@ -46,7 +46,7 @@ spec:
               createClusterRole: true
               loggingLevel: 1
               enableSecurity: false
-              serviceAccountName: "seaweedfs-core"
+              serviceAccountName: "juicefs-core"
               securityConfig:
                 jwtSigning:
                   volumeWrite: true
