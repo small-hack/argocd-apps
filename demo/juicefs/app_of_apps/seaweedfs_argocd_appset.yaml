@@ -248,8 +248,8 @@ spec:
               # minimum free disk space(in percents). If free disk space lower this value - all volumes marks as ReadOnly
               minFreeSpacePercent: 7
 
-              data:
-                type: "existingClaim"
+              dataDirs:
+              - name: data1
                 claimName: "swfs-volume-data"
 
               idx:
