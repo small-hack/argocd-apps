@@ -70,8 +70,8 @@ spec:
               replicationPlacment: "001"
               extraEnvironmentVars:
                 WEED_CLUSTER_DEFAULT: "sw"
-                WEED_CLUSTER_SW_MASTER: "seaweedfs-master.seaweedfs:9333"
-                WEED_CLUSTER_SW_FILER: "seaweedfs-filer-client.seaweedfs:8888"
+                WEED_CLUSTER_SW_MASTER: "seaweedfs-master.juicefs:9333"
+                WEED_CLUSTER_SW_FILER: "seaweedfs-filer-client.juicefs:8888"
 
             master:
               enabled: true
@@ -533,10 +533,10 @@ spec:
                 # add additional https port
                 httpsPort: 0
                 allowEmptyFolder: false
-                domainName: "{{ .seaweedfs_s3_endpoint }}"
+                domainName: "{{ .juicefs_s3_hostname }}"
                 # enable user & permission to s3 (need to inject to all services)
                 enableAuth: true
-                existingConfigSecret: seaweedfs-s3-secret
+                existingConfigSecret: juicefs-s3-secret
                 skipAuthSecretCreation: true
                 auditLogConfig: {}
                 # You may specify buckets to be created during the install process.
