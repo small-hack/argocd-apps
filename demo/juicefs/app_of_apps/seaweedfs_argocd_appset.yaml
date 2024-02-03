@@ -20,7 +20,7 @@ spec:
               - juicefs_s3_hostname
   template:
     metadata:
-      name: seaweedfs-web-app
+      name: juicefs-seaweedfs-web-app
       annotations:
         argocd.argoproj.io/sync-wave: "3"
     spec:
@@ -36,22 +36,6 @@ spec:
           prune: true
           selfHeal: true
       source:
-        # only for testing our own patches before PRs
-        # repoURL: https://github.com/jessebot/seaweedfs
-        # targetRevision: main
-        # path: k8s/charts/seaweedfs/
-
-        repoURL: 'https://seaweedfs.github.io/seaweedfs/helm'
-        targetRevision: 3.62.0
-        chart: seaweedfs
-        helm:
-          releaseName: seaweedfs
-          values: |
-        # only for testing our own patches before PRs
-        # repoURL: https://github.com/jessebot/seaweedfs
-        # targetRevision: main
-        # path: k8s/charts/seaweedfs/
-
         repoURL: 'https://seaweedfs.github.io/seaweedfs/helm'
         targetRevision: 3.62.0
         chart: seaweedfs
