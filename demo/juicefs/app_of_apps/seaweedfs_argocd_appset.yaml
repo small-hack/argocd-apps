@@ -73,6 +73,9 @@ spec:
                 enableAuth: true
                 skipAuthSecretCreation: false
                 auditLogConfig: {}
+                createBuckets:
+                  - name: juicefs
+                    anonymousRead: false
             global:
               createClusterRole: true
               loggingLevel: 1
