@@ -257,7 +257,7 @@ spec:
               minFreeSpacePercent: 7
 
               dataDirs:
-              - name: data
+              - name: data1
                 type: "existingClaim"
                 claimName: "swfs-volume-data"
 
