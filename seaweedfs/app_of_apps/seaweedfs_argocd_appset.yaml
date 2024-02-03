@@ -120,9 +120,9 @@ spec:
               #    type: "persistentVolumeClaim"
               #    size: "24Ti"
               #    storageClass: "local-path-provisioner"
-              dataDirs:
-              - name: data
-                claimName: "swfs-volume-data"
+              data:
+                type: "existingClaim"
+                claimName: "swfs-master-data"
 
               initContainers: ""
 
@@ -256,7 +256,8 @@ spec:
               # minimum free disk space(in percents). If free disk space lower this value - all volumes marks as ReadOnly
               minFreeSpacePercent: 7
 
-              data:
+              dataDirs:
+              - name: data
                 type: "existingClaim"
                 claimName: "swfs-volume-data"
 
