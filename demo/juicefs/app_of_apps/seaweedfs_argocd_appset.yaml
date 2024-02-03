@@ -253,9 +253,7 @@ spec:
                 type: "existingClaim"
                 claimName: "swfs-volume-data"
 
-              idx:
-                type: "existingClaim"
-                claimName: "swfs-volume-idx"
+              idx: ""
 
               # limit background compaction or copying speed in mega bytes per second
               compactionMBps: "50"
