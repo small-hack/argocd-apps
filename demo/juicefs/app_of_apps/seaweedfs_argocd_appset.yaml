@@ -537,7 +537,7 @@ spec:
                 domainName: "{{ .juicefs_s3_hostname }}"
                 # enable user & permission to s3 (need to inject to all services)
                 enableAuth: true
-                existingConfigSecret: juicefs-s3-secret
+                existingConfigSecret: juicefs-s3-credentials
                 skipAuthSecretCreation: true
                 auditLogConfig: {}
                 # You may specify buckets to be created during the install process.
