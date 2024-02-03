@@ -49,21 +49,32 @@ spec:
           values: |
             master:
               data:
-                type: "existingClaim"
-                claimName: "swfs-master-data"
+                type: "persistentVolumeClaim"
+                size: "5Gi"
+                storageClass: "local-path"
+                annotations:
+                  "k8up.io/backup": "true"
             volume:
               data:
-                type: "existingClaim"
-                claimName: "swfs-volume-data"
+                type: "persistentVolumeClaim"
+                size: "100Gi"
+                storageClass: "local-path"
+                annotations:
+                  "k8up.io/backup": "true"
               idx:
-                type: "existingClaim"
-                claimName: "swfs-volume-idx"
+                type: "persistentVolumeClaim"
+                size: "5Gi"
+                storageClass: "local-path"
+                annotations:
+                  "k8up.io/backup": "true"
             filer:
               enablePVC: true
-              storage: 25Gi
               data:
-                type: "existingClaim"
-                claimName: "swfs-filer-data"
+                type: "persistentVolumeClaim"
+                size: "25Gi"
+                storageClass: "local-path"
+                annotations:
+                  "k8up.io/backup": "true"
               s3:
                 enabled: true
                 port: 8333
