@@ -3,7 +3,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: seaweedfs-web-app-set
+  name: juicefs-seaweedfs-web-app-set
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "3"
