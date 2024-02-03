@@ -1,0 +1,23 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: juicefs-persistent-volumes
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  project: juicefs
+  source:
+    repoURL: https://github.com/small-hack/argocd-apps
+    path: demo/juicefs/persistence/
+    targetRevision: main
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: juicefs
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+    automated:
+      prune: true
+      selfHeal: true
