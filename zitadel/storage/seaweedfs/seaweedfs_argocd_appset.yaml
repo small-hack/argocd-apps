@@ -199,13 +199,13 @@ spec:
               # minimum free disk space(in percents). If free disk space lower this value - all volumes marks as ReadOnly
               minFreeSpacePercent: 7
 
-              data:
+              dataDirs:
+              - name: data1
                 type: "existingClaim"
                 claimName: "swfs-volume-data"
+                maxVolumes: 0
 
-              idx:
-                type: "existingClaim"
-                claimName: "swfs-volume-idx"
+              idx: ""
 
               # limit background compaction or copying speed in mega bytes per second
               compactionMBps: "50"
