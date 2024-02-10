@@ -38,7 +38,7 @@ spec:
           selfHeal: true
       source:
         repoURL: 'https://cloudymax.github.io/kubevirt-community-stack/'
-        targetRevision: 0.1.3
+        targetRevision: 0.1.4
         chart: kubevirt-manager
         helm:
           valuesObject:
@@ -49,7 +49,10 @@ spec:
               targetPort: 80
               protocol: TCP
               name: http
-            prometheusEnabled: true
+            prometheus:
+              enabled: true
+              serviceName: prometheus-prometheus
+              serviceNamespace: promethus
             ingress:
               enabled: true
               className: "nginx"
