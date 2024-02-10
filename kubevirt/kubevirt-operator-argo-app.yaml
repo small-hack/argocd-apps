@@ -16,7 +16,7 @@ spec:
     server: 'https://kubernetes.default.svc'
   source:
     repoURL: 'https://cloudymax.github.io/kubevirt-community-stack/'
-    targetRevision: 0.1.5
+    targetRevision: 0.1.6
     chart: kubevirt
     helm:
       values: |
@@ -49,6 +49,8 @@ spec:
         tolerations:
           - key: CriticalAddonsOnly
             operator: Exists
+            
+        monitorNamespace: "prometheus"
         
         affinity:
           podAntiAffinity:
