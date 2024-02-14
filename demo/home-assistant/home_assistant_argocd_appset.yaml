@@ -34,27 +34,24 @@ spec:
         automated:
           selfHeal: true
       source:
-        # https://github.com/pajikos/home-assistant-helm-chart
-        repoURL: 'http://pajikos.github.io/home-assistant-helm-chart/'
+        # https://github.com/jessebot/home-assistant-helm
+        repoURL: http://jessebot.github.io/home-assistant-helm
         chart: home-assistant
-        targetRevision: 0.2.34
+        targetRevision: 0.1.1
         helm:
           releaseName: home-assistant
           values: |
-            # Image settings
-            image:
-              repository: ghcr.io/home-assistant/home-assistant
+            fullnameOverride: home-assistant
 
-            additionalVolumes:
+            volumes:
               - name: home-assistant-config
                 configMap:
                   name: home-assistant-config
 
-            additionalVolumeMounts:
+            volumeMounts:
               - name: home-assistant-config
                 mountPath: "/config"
 
-            # Ingress settings
             ingress:
               # Enable ingress for home assistant
               enabled: true
