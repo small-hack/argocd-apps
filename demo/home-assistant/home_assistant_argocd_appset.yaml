@@ -44,12 +44,7 @@ spec:
           values: |
             # Image settings
             image:
-              # Repository for the Home Assistant image
               repository: ghcr.io/home-assistant/home-assistant
-              # Image pull policy
-              pullPolicy: IfNotPresent
-              # Overrides the image tag whose default is the chart appVersion.
-              tag: "2023.10.0b1"
             # Ingress settings
             ingress:
               # Enable ingress for home assistant
