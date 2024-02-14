@@ -67,7 +67,7 @@ spec:
     # official wg-access-server helm repo
     - repoURL: 'https://freifunkMUC.github.io/wg-access-server-chart/'
       chart: wg-access-server
-      targetRevision: 0.12.1
+      targetRevision: 0.12.2
       helm:
         valueFiles:
           - $values/wg-access-server/values/values.yaml
