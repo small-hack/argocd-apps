@@ -5,7 +5,7 @@ metadata:
   name: home-assistant-app-set
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "1"
+    argocd.argoproj.io/sync-wave: "2"
 spec:
   goTemplate: true
   # generator allows us to source specific values from an external k8s secret
@@ -20,9 +20,9 @@ spec:
               - global_cluster_issuer
   template:
     metadata:
-      name: home-assistant
+      name: home-assistant-app
       annotations:
-        argocd.argoproj.io/sync-wave: "1"
+        argocd.argoproj.io/sync-wave: "2"
     spec:
       project: home-assistant
       destination:
@@ -32,7 +32,6 @@ spec:
         syncOptions:
           - ApplyOutOfSyncOnly=true
         automated:
-          prune: true
           selfHeal: true
       source:
         # https://github.com/pajikos/home-assistant-helm-chart
@@ -45,6 +44,16 @@ spec:
             # Image settings
             image:
               repository: ghcr.io/home-assistant/home-assistant
+
+            additionalVolumes:
+              - name: home-assistant-config
+                configMap:
+                  name: home-assistant-config
+
+            additionalVolumeMounts:
+              - name: home-assistant-config
+                mountPath: "/config"
+
             # Ingress settings
             ingress:
               # Enable ingress for home assistant
