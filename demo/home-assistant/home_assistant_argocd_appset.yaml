@@ -44,6 +44,10 @@ spec:
             fullnameOverride: home-assistant
 
             volumes:
+              - name: config
+                persistentVolumeClaim:
+                  claimName: home-assistant
+
               - name: home-assistant-config
                 configMap:
                   name: home-assistant-config
@@ -52,6 +56,9 @@ spec:
                       path: "configuration.yaml"
 
             volumeMounts:
+              - name: config
+                mountPath: "/config"
+
               - name: home-assistant-config
                 mountPath: "/config"
 
