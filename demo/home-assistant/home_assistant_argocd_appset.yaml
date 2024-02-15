@@ -40,13 +40,16 @@ spec:
         targetRevision: 0.1.1
         helm:
           releaseName: home-assistant
-          values: |
+          valuesObject:
             fullnameOverride: home-assistant
 
             volumes:
               - name: home-assistant-config
                 configMap:
                   name: home-assistant-config
+                  items:
+                    - key: "configuration.yaml"
+                      path: "configuration.yaml"
 
             volumeMounts:
               - name: home-assistant-config
@@ -58,13 +61,13 @@ spec:
               className: "nginx"
               annotations:
                 kubernetes.io/tls-acme: "true"
-                cert-manager.io/cluster-issuer: {{ .global_cluster_issuer }}
+                cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
               hosts:
-                - host: {{ .home_assistant_hostname }}
+                - host: '{{ .home_assistant_hostname }}'
                   paths:
                     - path: /
                       pathType: ImplementationSpecific
               tls:
                - secretName: home-assistant-tls
                  hosts:
-                   - {{ .home_assistant_hostname }}
+                   - '{{ .home_assistant_hostname }}'
