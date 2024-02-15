@@ -63,6 +63,7 @@ spec:
             persistence:
               enabled: true
               # existingClaim: home-assistant
+              storageClass: local
             
             homeAssistant:
               # existingConfigMap: home-assistant
