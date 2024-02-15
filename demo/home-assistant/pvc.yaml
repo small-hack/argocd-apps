@@ -5,8 +5,6 @@ kind: PersistentVolumeClaim
 metadata:
   namespace: home-assistant
   name: home-assistant
-  annotations:
-    argocd.argoproj.io/sync-wave: "1"
 spec:
   accessModes:
     - ReadWriteOnce
