@@ -37,7 +37,7 @@ spec:
         # https://github.com/jessebot/home-assistant-helm
         repoURL: http://jessebot.github.io/home-assistant-helm
         chart: home-assistant
-        targetRevision: 0.2.1
+        targetRevision: 0.2.2
         helm:
           releaseName: home-assistant
           valuesObject:
@@ -65,9 +65,9 @@ spec:
               existingClaim: home-assistant
             
             homeAssistant:
-              existingConfigMap: home-assistant
-              # configuration:
-              #   http:
-              #     use_x_forwarded_for: true
-              #     trusted_proxies:
-              #       - 10.0.0.0/8
+              # existingConfigMap: home-assistant
+              configuration:
+                http:
+                  use_x_forwarded_for: true
+                  trusted_proxies:
+                    - 10.0.0.0/8
