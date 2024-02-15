@@ -37,30 +37,11 @@ spec:
         # https://github.com/jessebot/home-assistant-helm
         repoURL: http://jessebot.github.io/home-assistant-helm
         chart: home-assistant
-        targetRevision: 0.1.1
+        targetRevision: 0.2.0
         helm:
           releaseName: home-assistant
           valuesObject:
             fullnameOverride: home-assistant
-
-            volumes:
-              - name: config
-                persistentVolumeClaim:
-                  claimName: home-assistant
-
-              - name: home-assistant-config
-                configMap:
-                  name: home-assistant-config
-                  items:
-                    - key: "configuration.yaml"
-                      path: "configuration.yaml"
-
-            volumeMounts:
-              - name: config
-                mountPath: "/config"
-
-              - name: home-assistant-config
-                mountPath: "/config"
 
             ingress:
               # Enable ingress for home assistant
@@ -78,3 +59,14 @@ spec:
                - secretName: home-assistant-tls
                  hosts:
                    - '{{ .home_assistant_hostname }}'
+
+            persistence:
+              enabled: true
+              existingClaim: home-assistant
+            
+            homeAssistant:
+              configuration:
+                http:
+                  use_x_forwarded_for: true
+                  trusted_proxies:
+                    - 10.0.0.0/8
