@@ -37,7 +37,7 @@ spec:
         # https://github.com/jessebot/home-assistant-helm
         repoURL: http://jessebot.github.io/home-assistant-helm
         chart: home-assistant
-        targetRevision: 0.2.4
+        targetRevision: 0.2.5
         helm:
           releaseName: home-assistant
           valuesObject:
@@ -72,3 +72,8 @@ spec:
                   use_x_forwarded_for: true
                   trusted_proxies:
                     - 10.0.0.0/8
+
+            livenessProbe:
+              enabled: false
+            readinessProbe:
+              enabled: false
