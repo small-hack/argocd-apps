@@ -47,27 +47,10 @@ spec:
               nginx.ingress.kubernetes.io/rewrite-target: /
             tls:
               - hosts:
-                  - headscale.buildstar.online
+                  - headscale.buildstars.online
                 secretName: headscale-tls
             rules:
-            - host: headscale.buildstar.online
-              http:
-                paths:
-                - path: /
-                  pathType: Prefix
-
-          ui:
-            enabled: true
-            annotations:
-              kubernetes.io/ingress.class: nginx
-              cert-manager.io/cluster-issuer: letsencrypt-develop
-              nginx.ingress.kubernetes.io/rewrite-target: /
-            tls:
-              - hosts:
-                  - headscale-ui.buildstar.online
-                secretName: headscale-tls
-            rules:
-            - host: headscale-ui.buildstar.online
+            - host: headscale.buildstars.online
               http:
                 paths:
                 - path: /
