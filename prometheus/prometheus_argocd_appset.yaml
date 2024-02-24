@@ -77,11 +77,31 @@ spec:
                     hosts:
                     - {{ .prometheus_hostname }}
               prometheusSpec:
+                probeSelectorNilUsesHelmValues: false
+                probeSelector: {}
+                probeNamespaceSelector:
+                  any: true
+                  
+                podMonitorSelectorNilUsesHelmValues: false
+                podMonitorSelector: {}
+                podMonitorNamespaceSelector:
+                  any: true
+
+                ruleSelectorNilUsesHelmValues: false
+                ruleSelector: {}
+                ruleNamespaceSelector:
+                  any: true
+                  
                 serviceMonitorSelectorNilUsesHelmValues: false
-                # additionalScrapeConfigsSecret:
-                #   enabled: true
-                #   name: additional-scrape-configs
-                #   key: scrape-targets.yaml
+                serviceMonitorSelector: {}
+                serviceMonitorNamespaceSelector:
+                  any: true
+                
+                additionalScrapeConfigsSecret:
+                  enabled: true
+                  name: additional-scrape-configs
+                  key: scrape-targets.yaml
+                  
                 storageSpec:
                   volumeClaimTemplate:
                     spec:
@@ -92,6 +112,7 @@ spec:
                           storage: 32Gi
                 retention: 30d
                 logLevel: info
+                
               prometheusOperator:
                 namespaces:
                   releaseNamespace: true
