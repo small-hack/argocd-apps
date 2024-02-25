@@ -24,7 +24,7 @@ spec:
       - longhorn.buildstar.online
       secretName: "longhorn-ui-tls"
   rules:
-  - host: longhorn.buildstar.online/
+  - host: longhorn.buildstar.online
     http:
       paths:
       - path: /
