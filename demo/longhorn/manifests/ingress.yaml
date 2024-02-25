@@ -21,7 +21,7 @@ metadata:
 spec:
   tls:
     - hosts:
-      - longhorn.buildstar.online/
+      - longhorn.buildstar.online
       secretName: "longhorn-ui-tls"
   rules:
   - host: longhorn.buildstar.online/
