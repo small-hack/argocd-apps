@@ -2,7 +2,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: kubevirt-disks
+  name: kubevirt-machine-sizes
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "5"
