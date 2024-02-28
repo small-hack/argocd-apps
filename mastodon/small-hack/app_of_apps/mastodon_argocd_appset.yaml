@@ -36,7 +36,7 @@ spec:
       source:
         # forked from: https://github.com/mastodon/chart/tree/main
         repoURL: 'https://small-hack.github.io/mastodon-helm-chart'
-        targetRevision: 5.0.0
+        targetRevision: 5.1.0
         chart: mastodon
         helm:
           valuesObject:
