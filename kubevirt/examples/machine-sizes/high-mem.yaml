@@ -1,6 +1,6 @@
 # High Memory machines: Num Cores == (GB RAM)/4
 ---
-apiVersion: instancetype.kubevirt.io/v1alpha2
+apiVersion: instancetype.kubevirt.io/v1beta1
 kind: VirtualMachineClusterInstancetype
 metadata:
   name: highmem-micro
@@ -10,7 +10,7 @@ spec:
   memory:
     guest: 4Gi
 ---
-apiVersion: instancetype.kubevirt.io/v1alpha2
+apiVersion: instancetype.kubevirt.io/v1beta1
 kind: VirtualMachineClusterInstancetype
 metadata:
   name: highmem-small
@@ -20,7 +20,7 @@ spec:
   memory:
     guest: 8Gi
 ---
-apiVersion: instancetype.kubevirt.io/v1alpha2
+apiVersion: instancetype.kubevirt.io/v1beta1
 kind: VirtualMachineClusterInstancetype
 metadata:
   name: highmem-medium
@@ -30,7 +30,7 @@ spec:
   memory:
     guest: 16Gi
 ---
-apiVersion: instancetype.kubevirt.io/v1alpha2
+apiVersion: instancetype.kubevirt.io/v1beta1
 kind: VirtualMachineClusterInstancetype
 metadata:
   name: highmem-large
