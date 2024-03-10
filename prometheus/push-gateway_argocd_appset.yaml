@@ -38,7 +38,7 @@ spec:
       source:
         repoURL: https://prometheus-community.github.io/helm-charts
         chart: prometheus-pushgateway
-        targetRevision: 2.7.1
+        targetRevision: 2.8.0
         helm:
           releaseName: push-gateway
           values: |
