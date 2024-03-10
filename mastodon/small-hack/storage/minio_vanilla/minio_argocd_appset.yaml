@@ -39,7 +39,7 @@ spec:
         # official minio helm repo
         repoURL: 'https://charts.min.io/'
         chart: minio
-        targetRevision: 5.0.15
+        targetRevision: 5.1.0
         helm:
           releaseName: mastodon-minio
           values: |
