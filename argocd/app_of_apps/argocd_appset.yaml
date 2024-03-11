@@ -601,8 +601,7 @@ spec:
                   kubernetes.io/tls-acme: true
                   nginx.ingress.kubernetes.io/backend-protocol: HTTPS
                   nginx.ingress.kubernetes.io/ssl-passthrough: true
-                hosts:
-                  - {{ .argo_cd_hostname }}
+                hostname: {{ .argo_cd_hostname }}
                 tls:
                   - secretName: argocd-secret
                     hosts:
