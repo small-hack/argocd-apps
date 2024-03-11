@@ -15,7 +15,7 @@ spec:
   source:
     repoURL: 'registry-1.docker.io'
     chart: bitnamicharts/redis
-    targetRevision: 18.17.1
+    targetRevision: 18.19.1
     helm:
       releaseName: mastodon-redis
       values: |
