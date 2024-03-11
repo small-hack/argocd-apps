@@ -16,7 +16,7 @@ spec:
   source:
     repoURL: 'registry-1.docker.io'
     chart: bitnamicharts/elasticsearch
-    targetRevision: 19.21.1
+    targetRevision: 19.21.2
     helm:
       releaseName: mastodon-elasticsearch
       values: |
