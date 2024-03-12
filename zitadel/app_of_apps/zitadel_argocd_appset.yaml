@@ -46,11 +46,6 @@ spec:
           valuesObject:
             replicaCount: 1
 
-            # Overrides the image tag to the latest version
-            # as kept up to date by renovateBot
-            image:
-              tag: "v2.41.1"
-
             zitadel:
               # See all defaults here:
               # https://github.com/zitadel/zitadel/blob/main/cmd/defaults.yaml
