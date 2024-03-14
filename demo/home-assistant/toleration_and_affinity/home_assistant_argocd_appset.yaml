@@ -1,0 +1,104 @@
+# this version of home assistant argo cd app allows setting node affinity
+# and tolerations to allow home assistant to be scheduled on its own isolated
+# node. useful if you have bluetooth or USB devices on a specific node
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: home-assistant-app-set
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  goTemplate: true
+  # generator allows us to source specific values from an external k8s secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - home_assistant_hostname
+              - global_cluster_issuer
+              - home_assistant_toleration_key
+              - home_assistant_toleration_operator
+              - home_assistant_toleration_value
+              - home_assistant_toleration_effect
+              - home_assistant_affinity_key
+              - home_assistant_affinity_value
+  template:
+    metadata:
+      name: home-assistant-app
+      annotations:
+        argocd.argoproj.io/sync-wave: "2"
+    spec:
+      project: home-assistant
+      destination:
+        server: "https://kubernetes.default.svc"
+        namespace: home-assistant
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+        automated:
+          selfHeal: true
+      source:
+        # https://github.com/jessebot/home-assistant-helm
+        repoURL: http://jessebot.github.io/home-assistant-helm
+        chart: home-assistant
+        targetRevision: 0.3.0
+        helm:
+          releaseName: home-assistant
+          valuesObject:
+            fullnameOverride: home-assistant
+
+            ingress:
+              # Enable ingress for home assistant
+              enabled: true
+              className: "nginx"
+              annotations:
+                kubernetes.io/tls-acme: "true"
+                cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
+              hosts:
+                - host: '{{ .home_assistant_hostname }}'
+                  paths:
+                    - path: /
+                      pathType: ImplementationSpecific
+              tls:
+               - secretName: home-assistant-tls
+                 hosts:
+                   - '{{ .home_assistant_hostname }}'
+
+            persistence:
+              enabled: true
+              # existingClaim: home-assistant
+              storageClass: local-path
+
+            tolerations:
+              - key: {{ .home_assistant_toleration_key }}
+                operator: {{ .home_assistant_toleration_operator }}
+                value: {{ .home_assistant_toleration_value }}
+                effect: {{ .home_assistant_toleration_effect }}
+
+            affinity:
+                nodeAffinity:
+                requiredDuringSchedulingIgnoredDuringExecution:
+                  nodeSelectorTerms:
+                  - matchExpressions:
+                    - key: {{ .home_assistant_affinity_key }}
+                      operator: In
+                      values:
+                      - {{ .home_assistant_affinity_value }}
+            
+            homeAssistant:
+              # existingConfigMap: home-assistant
+              configuration:
+                http:
+                  use_x_forwarded_for: true
+                  trusted_proxies:
+                    - 10.0.0.0/8
+
+            livenessProbe:
+              enabled: false
+            readinessProbe:
+              enabled: false
