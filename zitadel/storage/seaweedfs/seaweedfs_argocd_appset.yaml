@@ -44,6 +44,8 @@ spec:
           valuesObject:
             global:
               createClusterRole: true
+              imageName: chrislusf/seaweedfs
+              imagePullPolicy: IfNotPresent
               serviceAccountName: "zitadel-seaweedfs"
               loggingLevel: 1
               enableSecurity: false
@@ -103,6 +105,11 @@ spec:
               data:
                 type: "existingClaim"
                 claimName: "swfs-master-data"
+              logs:
+                type: "hostPath"
+                size: ""
+                storageClass: ""
+                hostPathPrefix: /storage
 
               initContainers: ""
 
@@ -200,7 +207,7 @@ spec:
               minFreeSpacePercent: 7
 
               dataDirs:
-              - name: data1
+              - name: data
                 type: "existingClaim"
                 claimName: "swfs-volume-data"
                 maxVolumes: 0
