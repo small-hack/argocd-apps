@@ -53,7 +53,7 @@ spec:
                   volumeRead: false
                   filerWrite: false
                   filerRead: false
-              serviceAccountName: "zitadel-seaweedfs"
+              serviceAccountName: "seaweedfs"
               certificates:
                 alphacrds: false
               monitoring:
