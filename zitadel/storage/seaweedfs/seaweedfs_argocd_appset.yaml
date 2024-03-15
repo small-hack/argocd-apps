@@ -41,7 +41,7 @@ spec:
         chart: seaweedfs
         helm:
           releaseName: zitadel-seaweedfs
-          valuesObject:
+          values: |
             global:
               createClusterRole: true
               serviceAccountName: "zitadel-seaweedfs"
