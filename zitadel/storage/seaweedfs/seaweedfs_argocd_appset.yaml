@@ -78,8 +78,6 @@ spec:
               grpcPort: 19333
               metricsPort: 9327
               ipBind: "0.0.0.0"
-              volumePreallocate: false
-              volumeSizeLimitMB: 1000
               # Prometheus push interval in seconds, default 15
               metricsIntervalSec: 15
               #  replication type is XYZ:
@@ -200,7 +198,7 @@ spec:
               minFreeSpacePercent: 7
 
               dataDirs:
-              - name: data1
+              - name: data
                 type: "existingClaim"
                 claimName: "swfs-volume-data"
                 maxVolumes: 0
