@@ -2,10 +2,12 @@
 
 CloudNativePG is the Kubernetes operator that covers the full lifecycle of a highly available PostgreSQL database cluster with a primary/standby architecture, using native streaming replication. 
 
-Website: https://cloudnative-pg.io/
-GitHub: https://github.com/cloudnative-pg/cloudnative-pg
-Helm chart: https://github.com/cloudnative-pg/charts
-Docs: https://cloudnative-pg.io/documentation/1.21/
+| Description | Link                                             |
+|-------------|--------------------------------------------------|
+| Website     | https://cloudnative-pg.io/                       |
+| GitHub      | https://github.com/cloudnative-pg/cloudnative-pg |
+| Helm chart  | https://github.com/cloudnative-pg/charts         |
+| Docs        | https://cloudnative-pg.io/documentation/1.21/.   |
 
 ## Connecting with TLS
  
