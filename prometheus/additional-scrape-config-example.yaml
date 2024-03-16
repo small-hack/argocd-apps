@@ -1,3 +1,3 @@
 - job_name: "nginx-ingress"
   static_configs:
-  - targets: ["ingress-nginx-controller-metrics.ingress.svc.cluster.local:10254"]
+  - targets: ["ingress-nginx-controller-metrics.ingress.svc.cluster.local:10254", "http://ddns.vleermuis.tech:9100"]
