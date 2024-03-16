@@ -41,15 +41,13 @@ spec:
         targetRevision: 0.3.12
         helm:
           releaseName: mastodon-postgres-cluster
-          values: |
+          valuesObject: 
             name: mastodon-postgres
             instances: 2
-
             bootstrap:
               initdb:
                 database: mastodon
                 owner: mastodon
-
             backup:
               # barman is a utility for backing up postgres to s3
               barmanObjectStore:
@@ -63,7 +61,6 @@ spec:
                     name: postgres-s3-credentials
                     key : "S3_PASSWORD"
               retentionPolicy: "30d"
-            
             certificates:
               server:
                 enabled: true
@@ -73,8 +70,8 @@ spec:
                 generate: true
               user:
                 enabled: true
-                username: mastodon
-
+                username: 
+                  - mastodon
             scheduledBackup:
               name: mastodon-pg-backup
               spec:
@@ -83,10 +80,8 @@ spec:
                 backupOwnerReference: self
                 cluster:
                   name: mastodon-postgres
-
             monitoring:
               enablePodMonitor: false
-
             postgresql:
               pg_hba: 
                 - hostnossl all all 0.0.0.0/0 reject
