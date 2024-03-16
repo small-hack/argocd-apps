@@ -93,6 +93,8 @@ spec:
             homeAssistant:
               # existingConfigMap: home-assistant
               configuration:
+                homeassistant:
+                  external_url: 'https://{{ .home_assistant_hostname }}'
                 http:
                   use_x_forwarded_for: true
                   trusted_proxies:
