@@ -166,6 +166,9 @@ spec:
                 domainName: "{{ .seaweedfs_s3_endpoint }}"
                 enableAuth: true
                 existingConfigSecret: seaweedfs-s3-secret
+                createBuckets:
+                  - name: zitadel-postgres
+                    anonymousRead: false
               livenessProbe:
                 enabled: true
                 httpGet:
