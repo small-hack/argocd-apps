@@ -350,7 +350,7 @@ cleanupJobs:
       repository: bitnami/kubectl
       # -- Image tag
       # Defaults to `latest` if omitted
-      tag: '1.29.2'
+      tag: '1.29.3'
       # -- (string) Image pull policy
       # Defaults to image.pullPolicy if omitted
       pullPolicy: ~
@@ -406,7 +406,7 @@ cleanupJobs:
       repository: bitnami/kubectl
       # -- Image tag
       # Defaults to `latest` if omitted
-      tag: '1.29.2'
+      tag: '1.29.3'
       # -- (string) Image pull policy
       # Defaults to image.pullPolicy if omitted
       pullPolicy: ~
