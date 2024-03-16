@@ -163,7 +163,7 @@ spec:
                 port: 8333
                 httpsPort: 0
                 allowEmptyFolder: false
-                domainName: "{{ .seaweedfs_s3_endpoint }}"
+                domainName: "{{ .zitadel_s3_endpoint }}"
                 enableAuth: true
                 existingConfigSecret: seaweedfs-s3-secret
                 createBuckets:
