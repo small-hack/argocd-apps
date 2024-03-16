@@ -1,3 +1,6 @@
 - job_name: "nginx-ingress"
   static_configs:
-  - targets: ["ingress-nginx-controller-metrics.ingress.svc.cluster.local:10254", "http://***REMOVED***:9100"]
+  - targets: ["ingress-nginx-controller-metrics.ingress.svc.cluster.local:10254"] 
+- job_name: "opnsense"
+  static_configs:
+  - targets: ["http://***REMOVED***:9100"]
