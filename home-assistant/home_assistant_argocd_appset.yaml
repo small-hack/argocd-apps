@@ -34,8 +34,8 @@ spec:
         automated:
           selfHeal: true
       source:
-        # https://github.com/jessebot/home-assistant-helm
-        repoURL: http://jessebot.github.io/home-assistant-helm
+        # https://github.com/small-hack/home-assistant-helm
+        repoURL: http://small-hack.github.io/home-assistant-helm
         chart: home-assistant
         targetRevision: 0.3.0
         helm:
