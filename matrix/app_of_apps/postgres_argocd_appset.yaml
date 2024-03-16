@@ -76,7 +76,8 @@ spec:
                 generate: true
               user:
                 enabled: true
-                username: matrix
+                username:
+                  - matrix
 
             scheduledBackup:
               name: matrix-pg-backup
