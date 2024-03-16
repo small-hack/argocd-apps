@@ -81,7 +81,7 @@ spec:
                 effect: '{{ .home_assistant_toleration_effect }}'
 
             affinity:
-                nodeAffinity:
+              nodeAffinity:
                 requiredDuringSchedulingIgnoredDuringExecution:
                   nodeSelectorTerms:
                     - matchExpressions:
