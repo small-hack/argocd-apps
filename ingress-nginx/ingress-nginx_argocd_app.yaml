@@ -12,9 +12,14 @@ spec:
     targetRevision: 4.10.0
     helm:
       releaseName: 'ingress-nginx'
-      values: |
+      valuesObject:
         controller:
           allowSnippetAnnotations: true
+          metrics:
+            enabled: true
+          podAnnotations:
+            prometheus.io/scrape: true
+            prometheus.io/port: 10254
   destination:
     server: "https://kubernetes.default.svc"
     namespace: ingress-nginx
