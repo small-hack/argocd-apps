@@ -65,9 +65,9 @@ spec:
                     - path: /
                       pathType: ImplementationSpecific
               tls:
-               - secretName: home-assistant-tls
-                 hosts:
-                   - '{{ .home_assistant_hostname }}'
+                - secretName: home-assistant-tls
+                  hosts:
+                    - '{{ .home_assistant_hostname }}'
 
             persistence:
               enabled: true
@@ -75,20 +75,20 @@ spec:
               storageClass: local-path
 
             tolerations:
-              - key: {{ .home_assistant_toleration_key }}
-                operator: {{ .home_assistant_toleration_operator }}
-                value: {{ .home_assistant_toleration_value }}
-                effect: {{ .home_assistant_toleration_effect }}
+              - key: '{{ .home_assistant_toleration_key }}'
+                operator: '{{ .home_assistant_toleration_operator }}'
+                value: '{{ .home_assistant_toleration_value }}'
+                effect: '{{ .home_assistant_toleration_effect }}'
 
             affinity:
                 nodeAffinity:
                 requiredDuringSchedulingIgnoredDuringExecution:
                   nodeSelectorTerms:
-                  - matchExpressions:
-                    - key: {{ .home_assistant_affinity_key }}
-                      operator: In
-                      values:
-                      - {{ .home_assistant_affinity_value }}
+                    - matchExpressions:
+                      - key: '{{ .home_assistant_affinity_key }}'
+                        operator: In
+                        values:
+                          - '{{ .home_assistant_affinity_value }}'
             
             homeAssistant:
               # existingConfigMap: home-assistant
