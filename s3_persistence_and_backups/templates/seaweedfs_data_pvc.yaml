@@ -16,19 +16,6 @@ spec:
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: swfs-volume-idx
-  annotations:
-    k8up.io/backup: "true"
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 5Gi
----
-kind: PersistentVolumeClaim
-apiVersion: v1
-metadata:
   name: swfs-master-data
   annotations:
     k8up.io/backup: "true"
