@@ -41,11 +41,11 @@ spec:
         chart: seaweedfs
         helm:
           releaseName: mastodon-seaweedfs
-          values: |
+          valuesObject:
             global:
               createClusterRole: true
-              serviceAccountName: "mastodon-seaweedfs"
-              loggingLevel: 1
+              imageName: chrislusf/seaweedfs
+              imagePullPolicy: IfNotPresent
               enableSecurity: false
               securityConfig:
                 jwtSigning:
@@ -53,24 +53,22 @@ spec:
                   volumeRead: false
                   filerWrite: false
                   filerRead: false
+              serviceAccountName: "mastodon-seaweedfs"
               certificates:
                 alphacrds: false
               monitoring:
                 enabled: false
-
-              # if enabled will use global.replicationPlacment and override master & filer defaultReplicaPlacement config
+                gatewayHost: null
+                gatewayPort: null
               enableReplication: false
-
-              #  replication type is XYZ:
-              # X number of replica in other data centers
-              # Y number of replica in other racks in the same data center
-              # Z number of replica in other servers in the same rack
               replicationPlacment: "001"
               extraEnvironmentVars:
                 WEED_CLUSTER_DEFAULT: "sw"
                 WEED_CLUSTER_SW_MASTER: "seaweedfs-master.seaweedfs:9333"
                 WEED_CLUSTER_SW_FILER: "seaweedfs-filer-client.seaweedfs:8888"
-
+            image:
+              registry: ""
+              repository: ""
             master:
               enabled: true
               replicas: 1
@@ -78,89 +76,23 @@ spec:
               grpcPort: 19333
               metricsPort: 9327
               ipBind: "0.0.0.0"
-              volumePreallocate: false
-              volumeSizeLimitMB: 1000
-              # Prometheus push interval in seconds, default 15
+              loggingOverrideLevel: null
+              pulseSeconds: null
+              garbageThreshold: null
               metricsIntervalSec: 15
-              #  replication type is XYZ:
-              # X number of replica in other data centers
-              # Y number of replica in other racks in the same data center
-              # Z number of replica in other servers in the same rack
               defaultReplication: "000"
-
-              # Disable http request, only gRpc operations are allowed
               disableHttp: false
-
               config: |-
                 # Enter any extra configuration for master.toml here.
                 # It may be be a multi-line string.
-
-              # can use ANY storage-class , example with local-path-provisioner
-              #  data:
-              #    type: "persistentVolumeClaim"
-              #    size: "24Ti"
-              #    storageClass: "local-path-provisioner"
               data:
                 type: "existingClaim"
                 claimName: "swfs-master-data"
-
-              initContainers: ""
-
-              extraVolumes: ""
-              extraVolumeMounts: ""
-
-              ## Set podManagementPolicy
-              podManagementPolicy: Parallel
-
-              # updatePartition is used to control a careful rolling update of SeaweedFS
-              # masters.
-              updatePartition: 0
-
-              # Affinity Settings
-              # Commenting out or setting as empty the affinity variable, will allow
-              # deployment to single node services such as Minikube
-              affinity: |
-                podAntiAffinity:
-                  requiredDuringSchedulingIgnoredDuringExecution:
-                    - labelSelector:
-                        matchLabels:
-                          app.kubernetes.io/name: seaweedfs
-                          app.kubernetes.io/instance: seaweedfs
-                          app.kubernetes.io/component: master
-                      topologyKey: kubernetes.io/hostname
-
-              # Toleration Settings for master pods
-              # This should be a multi-line string matching the Toleration array
-              # in a PodSpec.
-              tolerations: ""
-
-              # nodeSelector labels for master pod assignment, formatted as a muli-line string.
-              # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
-              # Example:
-              nodeSelector: |
-                beta.kubernetes.io/arch: amd64
-              # nodeSelector: |
-              #   sw-backend: "true"
-
-              # used to assign priority to master pods
-              # ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
-              priorityClassName: ""
-
-              # used to assign a service account.
-              # ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
-              serviceAccountName: ""
-
-              ingress:
-                enabled: false
-
-              extraEnvironmentVars:
-                WEED_MASTER_VOLUME_GROWTH_COPY_1: 7
-                WEED_MASTER_VOLUME_GROWTH_COPY_2: 6
-                WEED_MASTER_VOLUME_GROWTH_COPY_3: 3
-                WEED_MASTER_VOLUME_GROWTH_COPY_OTHER: 1
-
-              # used to configure livenessProbe on master-server containers
-              #
+              logs:
+                type: "hostPath"
+                size: ""
+                storageClass: ""
+                hostPathPrefix: /storage
               livenessProbe:
                 enabled: true
                 httpGet:
@@ -171,9 +103,6 @@ spec:
                 successThreshold: 1
                 failureThreshold: 100
                 timeoutSeconds: 10
-
-              # used to configure readinessProbe on master-server containers
-              #
               readinessProbe:
                 enabled: true
                 httpGet:
@@ -181,10 +110,9 @@ spec:
                   scheme: HTTP
                 initialDelaySeconds: 10
                 periodSeconds: 2
-                successThreshold: 1
+                successThreshold: 2
                 failureThreshold: 100
                 timeoutSeconds: 10
-
             volume:
               enabled: true
               port: 8080
@@ -192,87 +120,14 @@ spec:
               metricsPort: 9327
               ipBind: "0.0.0.0"
               replicas: 1
-
-              # limit file size to avoid out of memory, default 256mb
+              loggingOverrideLevel: null
               fileSizeLimitMB: null
-
-              # minimum free disk space(in percents). If free disk space lower this value - all volumes marks as ReadOnly
               minFreeSpacePercent: 7
-
-              data:
-                type: "existingClaim"
-                claimName: "swfs-volume-data"
-
-              idx:
-                type: "existingClaim"
-                claimName: "swfs-volume-idx"
-
-              # limit background compaction or copying speed in mega bytes per second
-              compactionMBps: "50"
-
-              # Directories to store data files. dir[,dir]... (default "/tmp")
-              dir: "/data"
-
-              # Directories to store index files. dir[,dir]... (default is the same as "dir")
-              dir_idx: null
-
-              # Maximum numbers of volumes, count[,count]...
-              # If set to zero on non-windows OS, the limit will be auto configured. (default "7")
-              maxVolumes: "0"
-
-              # Redirect moved or non-local volumes. (default proxy)
-              readMode: proxy
-
-              # Comma separated Ip addresses having write permission. No limit if empty.
-              whiteList: null
-
-              # Adjust jpg orientation when uploading.
-              imagesFixOrientation: false
-
-              initContainers: ""
-
-              extraVolumes: ""
-              extraVolumeMounts: ""
-
-              ## Set podManagementPolicy
-              podManagementPolicy: Parallel
-
-              # Affinity Settings
-              # Commenting out or setting as empty the affinity variable, will allow
-              # deployment to single node services such as Minikube
-              affinity: |
-                podAntiAffinity:
-                  requiredDuringSchedulingIgnoredDuringExecution:
-                    - labelSelector:
-                        matchLabels:
-                          app.kubernetes.io/name: seaweedfs
-                          app.kubernetes.io/instance: seaweedfs
-                          app.kubernetes.io/component: volume
-                      topologyKey: kubernetes.io/hostname
-
-              # Toleration Settings for server pods
-              # This should be a multi-line string matching the Toleration array
-              # in a PodSpec.
-              tolerations: ""
-
-              # nodeSelector labels for server pod assignment, formatted as a muli-line string.
-              # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
-              # Example:
-              nodeSelector: |
-               beta.kubernetes.io/arch: amd64
-              # nodeSelector: |
-              #   sw-volume: "true"
-
-              # used to assign priority to server pods
-              # ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
-              priorityClassName: ""
-
-              # used to assign a service account.
-              # ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
-              serviceAccountName: ""
-
-              # used to configure livenessProbe on volume-server containers
-              #
+              dataDirs:
+                - name: data
+                  type: "existingClaim"
+                  claimName: "swfs-volume-data"
+                  maxVolumes: 0
               livenessProbe:
                 enabled: true
                 httpGet:
@@ -283,9 +138,6 @@ spec:
                 successThreshold: 1
                 failureThreshold: 100
                 timeoutSeconds: 10
-
-              # used to configure readinessProbe on volume-server containers
-              #
               readinessProbe:
                 enabled: true
                 httpGet:
@@ -293,134 +145,25 @@ spec:
                   scheme: HTTP
                 initialDelaySeconds: 10
                 periodSeconds: 2
-                successThreshold: 1
+                successThreshold: 2
                 failureThreshold: 100
                 timeoutSeconds: 10
-
             filer:
               enabled: true
               replicas: 1
-              loggingOverrideLevel: null
-              # turn off directory listing
-              disableDirListing: false
-              # split files larger than the limit, default 32
-              maxMB: null
-              # encrypt data on volume servers
+              port: 8888
+              grpcPort: 18888
+              metricsPort: 9327
               encryptVolumeData: true
-
-              # Whether proxy or redirect to volume server during file GET request
-              redirectOnRead: false
-
-              # Limit sub dir listing size (default 100000)
-              dirListLimit: 100000
-
-              # Disable http request, only gRpc operations are allowed
-              disableHttp: false
-
-              # Settings for configuring stateful storage of filer pods.
-              # enablePVC will create a pvc for filer for data persistence.
-              enablePVC: true
-
-              # storage should be set to the disk size of the attached volume.
-              storage: 25Gi
-
-              # storageClass is the class of storage which defaults to null (the Kube cluster will pick the default).
-              storageClass: local-path
-
               data:
                 type: "existingClaim"
                 claimName: "swfs-filer-data"
-
-              ## Set podManagementPolicy
-              podManagementPolicy: Parallel
-
-              # Affinity Settings
-              # Commenting out or setting as empty the affinity variable, will allow
-              # deployment to single node services such as Minikube
-              affinity: |
-                podAntiAffinity:
-                  requiredDuringSchedulingIgnoredDuringExecution:
-                    - labelSelector:
-                        matchLabels:
-                          app.kubernetes.io/name: seaweedfs
-                          app.kubernetes.io/instance: seaweedfs
-                          app.kubernetes.io/component: filer
-                      topologyKey: kubernetes.io/hostname
-
-              # updatePartition is used to control a careful rolling update of SeaweedFS
-              # masters.
-              updatePartition: 0
-
-              # Toleration Settings for server pods
-              # This should be a multi-line string matching the Toleration array
-              # in a PodSpec.
-              tolerations: ""
-
-              # nodeSelector labels for server pod assignment, formatted as a muli-line string.
-              # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
-              # Example:
-              nodeSelector: |
-                beta.kubernetes.io/arch: amd64
-              # nodeSelector: |
-              #   sw-backend: "true"
-
-              # used to assign priority to server pods
-              # ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
-              priorityClassName: ""
-
-              # used to assign a service account.
-              # ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
-              serviceAccountName: ""
-
-              ingress:
-                enabled: false
-
-              # extraEnvVars is a list of extra enviroment variables to set with the stateful set.
-              extraEnvironmentVars:
-                WEED_MYSQL_ENABLED: "false"
-
-                # if you want to use leveldb2, then should enable "enablePVC". or you may lose your data.
-                WEED_LEVELDB2_ENABLED: "true"
-
-                # with http DELETE, by default the filer would check whether a folder is empty.
-                # recursive_delete will delete all sub folders and files, similar to "rm -Rf"
-                WEED_FILER_OPTIONS_RECURSIVE_DELETE: "false"
-
-                # directories under this folder will be automatically creating a separate bucket
-                WEED_FILER_BUCKETS_FOLDER: "/buckets"
-
-              # used to configure livenessProbe on filer containers
-              #
-              livenessProbe:
-                enabled: true
-                httpGet:
-                  path: /
-                  scheme: HTTP
-                initialDelaySeconds: 10
-                periodSeconds: 2
-                successThreshold: 1
-                failureThreshold: 100
-                timeoutSeconds: 10
-
-              # used to configure readinessProbe on filer containers
-              #
-              readinessProbe:
-                enabled: true
-                httpGet:
-                  path: /
-                  scheme: HTTP
-                initialDelaySeconds: 10
-                periodSeconds: 2
-                successThreshold: 1
-                failureThreshold: 100
-                timeoutSeconds: 10
-
-              # this enables the filer and s3 which are both required to be deployed together
               s3:
                 enabled: true
+                port: 8333
+                httpsPort: 0
                 allowEmptyFolder: false
-                domainName: {{ .mastodon_s3_endpoint }}
-                # enable user & permission to s3 (need to inject to all services)
+                domainName: '{{ .mastodon_s3_endpoint }}'
                 enableAuth: true
                 existingConfigSecret: seaweedfs-s3-secret
                 createBuckets:
@@ -428,18 +171,28 @@ spec:
                     anonymousRead: false
                   - name: mastodon-postgres
                     anonymousRead: false
+              livenessProbe:
+                enabled: true
+                httpGet:
+                  path: /
+                  scheme: HTTP
+                initialDelaySeconds: 10
+                periodSeconds: 2
+                successThreshold: 1
+                failureThreshold: 100
+                timeoutSeconds: 10
+              readinessProbe:
+                enabled: true
+                httpGet:
+                  path: /
+                  scheme: HTTP
+                initialDelaySeconds: 10
+                periodSeconds: 2
+                successThreshold: 2
+                failureThreshold: 100
+                timeoutSeconds: 10
             s3:
               enabled: false
-              ingress:
-                enabled: true
-                className: "nginx"
-                # host: false for "*" hostname
-                host: "{{ .mastodon_s3_endpoint }}"
-                # additional ingress annotations for the s3 endpoint
-                annotations:
-                  nginx.ingress.kubernetes.io/proxy-body-size: 1G
-                  cert-manager.io/cluster-issuer: {{ .global_cluster_issuer }}
-                tls:
                   - secretName: mastodon-seaweedfs-tls
                     hosts:
-                      - "{{ .mastodon_s3_endpoint }}"
+                      - '{{ .mastodon_s3_endpoint }}'
