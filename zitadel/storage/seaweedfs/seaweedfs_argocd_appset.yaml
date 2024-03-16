@@ -53,7 +53,7 @@ spec:
                   volumeRead: false
                   filerWrite: false
                   filerRead: false
-              serviceAccountName: "seaweedfs"
+              serviceAccountName: "zitadel-seaweedfs"
               certificates:
                 alphacrds: false
               monitoring:
@@ -114,7 +114,7 @@ spec:
               port: 8888
               grpcPort: 18888
               metricsPort: 9327
-              encryptVolumeData: false
+              encryptVolumeData: true
               data:
                 type: "existingClaim"
                 claimName: "swfs-filer-data"
