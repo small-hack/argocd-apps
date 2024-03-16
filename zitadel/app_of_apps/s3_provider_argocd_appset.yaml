@@ -36,4 +36,4 @@ spec:
       source:
         repoURL: https://github.com/small-hack/argocd-apps.git
         path: zitadel/storage/{{ .zitadel_s3_provider }}/
-        targetRevision: fix/zitadel-s3
+        targetRevision: main
