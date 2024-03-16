@@ -93,6 +93,26 @@ spec:
                 size: ""
                 storageClass: ""
                 hostPathPrefix: /storage
+              livenessProbe:
+                enabled: true
+                httpGet:
+                  path: /cluster/status
+                  scheme: HTTP
+                initialDelaySeconds: 10
+                periodSeconds: 2
+                successThreshold: 1
+                failureThreshold: 100
+                timeoutSeconds: 10
+              readinessProbe:
+                enabled: true
+                httpGet:
+                  path: /cluster/status
+                  scheme: HTTP
+                initialDelaySeconds: 10
+                periodSeconds: 2
+                successThreshold: 2
+                failureThreshold: 100
+                timeoutSeconds: 10
             volume:
               enabled: true
               port: 8080
@@ -108,6 +128,26 @@ spec:
                   type: "existingClaim"
                   claimName: "swfs-volume-data"
                   maxVolumes: 0
+              livenessProbe:
+                enabled: true
+                httpGet:
+                  path: /status
+                  scheme: HTTP
+                initialDelaySeconds: 10
+                periodSeconds: 2
+                successThreshold: 1
+                failureThreshold: 100
+                timeoutSeconds: 10
+              readinessProbe:
+                enabled: true
+                httpGet:
+                  path: /status
+                  scheme: HTTP
+                initialDelaySeconds: 10
+                periodSeconds: 2
+                successThreshold: 2
+                failureThreshold: 100
+                timeoutSeconds: 10
             filer:
               enabled: true
               replicas: 1
@@ -126,5 +166,25 @@ spec:
                 domainName: "{{ .seaweedfs_s3_endpoint }}"
                 enableAuth: true
                 existingConfigSecret: seaweedfs-s3-secret
+              livenessProbe:
+                enabled: true
+                httpGet:
+                  path: /
+                  scheme: HTTP
+                initialDelaySeconds: 10
+                periodSeconds: 2
+                successThreshold: 1
+                failureThreshold: 100
+                timeoutSeconds: 10
+              readinessProbe:
+                enabled: true
+                httpGet:
+                  path: /
+                  scheme: HTTP
+                initialDelaySeconds: 10
+                periodSeconds: 2
+                successThreshold: 2
+                failureThreshold: 100
+                timeoutSeconds: 10
             s3:
               enabled: false
