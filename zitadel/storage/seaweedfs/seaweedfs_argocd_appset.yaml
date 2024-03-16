@@ -41,7 +41,7 @@ spec:
         chart: seaweedfs
         helm:
           releaseName: zitadel-seaweedfs
-          values: |
+          valuesObject:
             global:
               createClusterRole: true
               imageName: chrislusf/seaweedfs
