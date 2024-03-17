@@ -28,6 +28,7 @@ spec:
               - home_assistant_toleration_effect
               - home_assistant_affinity_key
               - home_assistant_affinity_value
+              - home_assistant_usb_device_path
   template:
     metadata:
       name: home-assistant-app
@@ -74,6 +75,17 @@ spec:
               enabled: true
               # existingClaim: home-assistant
               storageClass: local-path
+
+            extraVolumes:
+              - hostPath:
+                  path: >-
+                    {{ .home_assistant_usb_device_path }}
+                  type: CharDevice
+                name: usb
+
+            extraVolumeMounts:
+              - mountPath: /dev/ttyACM0
+                name: usb
 
             tolerations:
               - key: '{{ .home_assistant_toleration_key }}'
