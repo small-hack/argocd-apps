@@ -122,10 +122,10 @@ spec:
                     - 127.0.0.1
 
                 # Discover some devices automatically
-                mobile_app:
+                mobile_app: nil
 
                 # enable configuration ui i think
-                config:
+                config: nil
 
             livenessProbe:
               enabled: false
