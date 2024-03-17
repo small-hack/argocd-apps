@@ -32,7 +32,7 @@ spec:
         syncOptions:
           - ApplyOutOfSyncOnly=true
         automated:
-          selfHeal: true
+          selfHeal: false
       source:
         # https://github.com/small-hack/home-assistant-chart
         repoURL: https://small-hack.github.io/home-assistant-chart
