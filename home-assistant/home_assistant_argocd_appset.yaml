@@ -66,6 +66,8 @@ spec:
                   location /api/websocket {
                     proxy_pass http://home-assistant.home-assistant.svc.cluster.local:80/api/websocket;
                     proxy_set_header Host $host;
+                    proxy_redirect http:// https://;
+                    proxysetheader Upgrade $httpupgrade;
                     proxy_http_version 1.1;
                     proxy_set_header Upgrade $http_upgrade;
                     proxy_set_header Connection "upgrade";
