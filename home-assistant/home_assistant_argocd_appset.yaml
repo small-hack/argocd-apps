@@ -52,14 +52,20 @@ spec:
                 cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
               hosts:
                 - host: '{{ .home_assistant_hostname }}'
-                  paths:
+                  http:
+                    paths:
                     - path: /
-                      pathType: ImplementationSpecific
+                      pathType: Prefix
+                      backend:
+                        service:
+                          name: home-assistant
+                          port:
+                            number: 80
               tls:
-               - secretName: home-assistant-tls
-                 hosts:
+                - hosts:
                    - '{{ .home_assistant_hostname }}'
-
+                  secretName: home-assistant-tls
+                  
             persistence:
               enabled: true
               # existingClaim: home-assistant
