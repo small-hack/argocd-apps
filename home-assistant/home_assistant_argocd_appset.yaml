@@ -54,19 +54,33 @@ spec:
                 nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
                 nginx.ingress.kubernetes.io/server-snippets: |
                   location / {
+                    proxy_pass http://home-assistant.home-assistant.svc.cluster.local:80
+                    proxysetheader Host $host;
+                    proxy_redirect http:// https://;
                     proxysetheader Upgrade $httpupgrade;
                     proxyhttpversion 1.1;
-                    proxysetheader X-Forwarded-Host $httphost;
-                    proxysetheader X-Forwarded-Proto $scheme;
-                    proxysetheader X-Forwarded-For $remoteaddr;
-                    proxysetheader Host $host;
-                    proxysetheader Connection "upgrade";
-                    proxycachebypass $httpupgrade;
+                    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                    proxy_set_header Upgrade $http_upgrade;
+                    proxy_set_header Connection "upgrade";
+                  }
+                  location /api/websocket {
+                    proxy_pass http://home-assistant.home-assistant.svc.cluster.local:80/api/websocket;
+                    proxy_set_header Host $host;
+                    proxy_http_version 1.1;
+                    proxy_set_header Upgrade $http_upgrade;
+                    proxy_set_header Connection "upgrade";
                   }
               hosts:
                 - host: '{{ .home_assistant_hostname }}'
                   paths:
                   - path: /
+                    pathType: Prefix
+                    backend:
+                      service:
+                        name: home-assistant
+                        port:
+                          number: 80
+                  - path: /api/websocket
                     pathType: Prefix
                     backend:
                       service:
