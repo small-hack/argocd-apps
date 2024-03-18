@@ -28,6 +28,9 @@ spec:
               - home_assistant_toleration_effect
               - home_assistant_affinity_key
               - home_assistant_affinity_value
+              - home_assistant_usb_device_path
+              - home_assistant_usb_device_mount_path
+              - home_assistant_usb_device_index
   template:
     metadata:
       name: home-assistant-app
@@ -47,7 +50,7 @@ spec:
         # https://github.com/small-hack/home-assistant-chart
         repoURL: https://small-hack.github.io/home-assistant-chart
         chart: home-assistant
-        targetRevision: 0.3.1
+        targetRevision: 0.4.0
         helm:
           releaseName: home-assistant
           valuesObject:
@@ -75,6 +78,22 @@ spec:
               # existingClaim: home-assistant
               storageClass: local-path
 
+            extraVolumes:
+              - hostPath:
+                  path: >-
+                    {{ .home_assistant_usb_device_path }}
+                  type: CharDevice
+                name: usb
+
+            extraVolumeMounts:
+              - mountPath: '{{ .home_assistant_usb_device_mount_path }}'
+                name: usb
+
+            resources:
+              limits:
+                # this is from the generic device plugin
+                squat.ai/serial: '{{ .home_assistant_usb_device_index }}'
+
             tolerations:
               - key: '{{ .home_assistant_toleration_key }}'
                 operator: '{{ .home_assistant_toleration_operator }}'
@@ -92,13 +111,13 @@ spec:
                           - '{{ .home_assistant_affinity_value }}'
             
             homeAssistant:
-              configuration:
+              configuration: |
                 # basic home assitant config stuff
                 homeassistant:
                   external_url: 'https://{{ .home_assistant_hostname }}'
                   time_zone: '{{ .global_time_zone }}'
-                  temperature_unit: C
-                  unit_system: metric
+                  temperature_unit: {{ .home_assistant_temperature_unit }}
+                  unit_system: {{ .home_assistant_unit_system }}
 
                 # reverse proxy for nginx stuff
                 http:
@@ -107,11 +126,11 @@ spec:
                     - 10.0.0.0/8
                     - 127.0.0.1
 
-                # Discover some devices automatically
-                mobile_app: nil
+                # Discover some mobile devices automatically
+                mobile_app:
 
                 # enable configuration ui i think
-                config: nil
+                config:
 
             livenessProbe:
               enabled: false
