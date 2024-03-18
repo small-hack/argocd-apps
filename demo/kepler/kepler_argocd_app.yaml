@@ -13,7 +13,7 @@ spec:
     namespace: kepler
   source:
     repoURL: 'https://sustainable-computing-io.github.io/kepler-helm-chart'
-    targetRevision: 0.5.5
+    targetRevision: 0.5.6
     chart: kepler
     helm:
       values: |
