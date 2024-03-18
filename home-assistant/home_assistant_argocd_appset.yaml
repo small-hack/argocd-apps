@@ -75,5 +75,6 @@ spec:
 
             livenessProbe:
               enabled: false
+
             readinessProbe:
               enabled: false

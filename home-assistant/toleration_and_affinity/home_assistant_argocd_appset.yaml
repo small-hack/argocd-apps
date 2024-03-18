@@ -29,6 +29,8 @@ spec:
               - home_assistant_affinity_key
               - home_assistant_affinity_value
               - home_assistant_usb_device_path
+              - home_assistant_usb_device_mount_path
+              - home_assistant_usb_device_index
   template:
     metadata:
       name: home-assistant-app
@@ -84,13 +86,13 @@ spec:
                 name: usb
 
             extraVolumeMounts:
-              - mountPath: /dev/ttyACM0
+              - mountPath: '{{ .home_assistant_usb_device_mount_path }}'
                 name: usb
 
-            # this uses the generic device plugin
             resources:
               limits:
-                squat.ai/serial: 1
+                # this is from the generic device plugin
+                squat.ai/serial: '{{ .home_assistant_usb_device_index }}'
 
             tolerations:
               - key: '{{ .home_assistant_toleration_key }}'
@@ -114,8 +116,8 @@ spec:
                 homeassistant:
                   external_url: 'https://{{ .home_assistant_hostname }}'
                   time_zone: '{{ .global_time_zone }}'
-                  temperature_unit: C
-                  unit_system: metric
+                  temperature_unit: {{ .home_assistant_temperature_unit }}
+                  unit_system: {{ .home_assistant_unit_system }}
 
                 # reverse proxy for nginx stuff
                 http:
@@ -124,11 +126,11 @@ spec:
                     - 10.0.0.0/8
                     - 127.0.0.1
 
-                # Discover some devices automatically
-                mobile_app: nil
+                # Discover some mobile devices automatically
+                mobile_app:
 
                 # enable configuration ui i think
-                config: nil
+                config:
 
             livenessProbe:
               enabled: false
