@@ -18,6 +18,9 @@ spec:
             secret_vars:
               - home_assistant_hostname
               - global_cluster_issuer
+              - global_time_zone
+              - home_assistant_unit_system
+              - home_assistant_temperature_unit
   template:
     metadata:
       name: home-assistant-app
@@ -68,10 +71,25 @@ spec:
             homeAssistant:
               # existingConfigMap: home-assistant
               configuration: |
+                # basic home assitant config stuff
+                homeassistant:
+                  external_url: 'https://{{ .home_assistant_hostname }}'
+                  time_zone: '{{ .global_time_zone }}'
+                  temperature_unit: {{ .home_assistant_temperature_unit }}
+                  unit_system: {{ .home_assistant_unit_system }}
+
+                # reverse proxy for nginx stuff
                 http:
                   use_x_forwarded_for: true
                   trusted_proxies:
                     - 10.0.0.0/8
+                    - 127.0.0.1
+
+                # Discover some mobile devices automatically
+                mobile_app:
+
+                # enable configuration ui i think
+                config:
 
             livenessProbe:
               enabled: false
