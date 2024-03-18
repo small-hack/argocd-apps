@@ -37,7 +37,7 @@ spec:
         # https://github.com/small-hack/home-assistant-chart
         repoURL: https://small-hack.github.io/home-assistant-chart
         chart: home-assistant
-        targetRevision: 0.3.1
+        targetRevision: 0.4.0
         helm:
           releaseName: home-assistant
           valuesObject:
@@ -67,7 +67,7 @@ spec:
             
             homeAssistant:
               # existingConfigMap: home-assistant
-              configuration:
+              configuration: |
                 http:
                   use_x_forwarded_for: true
                   trusted_proxies:
