@@ -87,6 +87,11 @@ spec:
               - mountPath: /dev/ttyACM0
                 name: usb
 
+            # this uses the generic device plugin
+            resources:
+              limits:
+                squat.ai/serial: 1
+
             tolerations:
               - key: '{{ .home_assistant_toleration_key }}'
                 operator: '{{ .home_assistant_toleration_operator }}'
