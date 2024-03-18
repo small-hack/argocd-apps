@@ -8,4 +8,4 @@
 
 - Sets up basic home assistant configuration.yaml with time zone, proxy settings, and mobile_app integration enabled
 
-- Setups up a USB device, such as conbee/zigbee
+- Setups up a USB device, such as conbee II. (NOTE: requires the [generic device plugin](../../generic-device-plugin) to work)
