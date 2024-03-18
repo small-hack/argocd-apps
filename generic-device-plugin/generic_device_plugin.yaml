@@ -1,0 +1,24 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: generic-device-plugin-app
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  project: default
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: kube-system
+  source:
+    # generic-device-plugin repo
+    repoURL: 'https://github.com/squat/generic-device-plugin'
+    path: 'manifests/generic-device-plugin.yaml'
+    targetRevision: main
+  syncPolicy:
+    syncOptions:
+      - ApplyOutOfSyncOnly=true
+    automated:
+      prune: true
+      selfHeal: true
