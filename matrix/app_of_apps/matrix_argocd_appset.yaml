@@ -137,6 +137,7 @@ spec:
                 requiresToken: false
 
               # ref: https://github.com/matrix-org/synapse/blob/develop/docs/openid.md
+              # ref: https://github.com/element-hq/synapse/blob/develop/docs/openid.md 
               oidc:
                 enabled: true
                 existingSecret: "synapse-oidc"
@@ -157,7 +158,7 @@ spec:
                     # skip_verification: false
                     user_mapping_provider:
                       config:
-                        localpart_template: '{{ `"{{ user.preferred_username }}"` }}'
+                        localpart_template: '{{ `"{{ user.preferred_username.replace("=22","") }}"` }}'
                         display_name_template: '{{ `"{{ user.name }}"` }}'
 
               # Settings for the URL preview crawler
