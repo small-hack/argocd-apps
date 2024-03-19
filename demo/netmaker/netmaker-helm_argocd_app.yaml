@@ -71,7 +71,7 @@ spec:
       targetRevision: 0.9.0
       helm:
         valueFiles:
-          - $values/demo/maker/values/values.yaml
+          - $values/demo/netmaker/values/values.yaml
     # our values.yaml file locally
     - repoURL: 'https://github.com/small-hack/argocd-apps.git'
       targetRevision: main
