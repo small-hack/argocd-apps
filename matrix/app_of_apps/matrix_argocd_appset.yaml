@@ -136,7 +136,6 @@ spec:
                 # -- Whether to allow token based registration
                 requiresToken: false
 
-              # ref: https://github.com/matrix-org/synapse/blob/develop/docs/openid.md
               # ref: https://github.com/element-hq/synapse/blob/develop/docs/openid.md 
               oidc:
                 enabled: true
