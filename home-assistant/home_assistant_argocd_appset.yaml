@@ -91,6 +91,12 @@ spec:
                 # enable configuration ui i think
                 config:
 
+                # required for the automations UI to work
+                automation: !include automations.yaml
+                
+                # required for the scenes UI to work
+                scene: !include scenes.yaml
+
             livenessProbe:
               enabled: false
 
