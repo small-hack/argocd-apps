@@ -66,7 +66,7 @@ spec:
     # official netmaker helm repo: https://github.com/gravitl/netmaker-helm
     # we're using a fork of this repo with fixes we need for security:
     # https://aldiserg.github.io/netmaker-helm/
-    - repoURL: 'https://jessebot.github.io/netmaker-helm'
+    - repoURL: 'https://small-hack.github.io/netmaker-helm'
       chart: netmaker
       targetRevision: 0.9.0
       helm:
