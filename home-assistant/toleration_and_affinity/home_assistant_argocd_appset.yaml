@@ -134,6 +134,9 @@ spec:
                 # enable configuration ui i think
                 config:
 
+                # The configuration required for the UI to work
+                automation: !include automations.yaml
+
             livenessProbe:
               enabled: false
             readinessProbe:
