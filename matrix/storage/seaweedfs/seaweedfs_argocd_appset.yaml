@@ -197,12 +197,12 @@ spec:
                 enabled: true
                 className: "nginx"
                 # host: false for "*" hostname
-                host: "{{ .matrix_s3_endpoint }}"
+                host: '{{ .matrix_s3_endpoint }}'
                 # additional ingress annotations for the s3 endpoint
                 annotations:
                   nginx.ingress.kubernetes.io/proxy-body-size: 1G
-                  cert-manager.io/cluster-issuer: {{ .global_cluster_issuer }}
+                  cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
                 tls:
                   - secretName: matrix-seaweedfs-tls
                     hosts:
-                      - "{{ .matrix_s3_endpoint }}"
+                      - '{{ .matrix_s3_endpoint }}'
