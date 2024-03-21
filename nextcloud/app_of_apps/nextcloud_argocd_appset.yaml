@@ -154,43 +154,6 @@ spec:
                       name: nextcloud-oidc-credentials
                       key: client_secret
 
-                # s3 parameters
-                - name: "OBJECTSTORE_S3_HOST"
-                  valueFrom:
-                    secretKeyRef:
-                      name: nextcloud-s3-credentials
-                      key: S3_HOSTNAME
-
-                - name: "OBJECTSTORE_S3_BUCKET"
-                  valueFrom:
-                    secretKeyRef:
-                      name: nextcloud-s3-credentials
-                      key: S3_BUCKET
-
-                - name: "OBJECTSTORE_S3_KEY"
-                  valueFrom:
-                    secretKeyRef:
-                      name: nextcloud-s3-credentials
-                      key: S3_USER
-
-                - name: "OBJECTSTORE_S3_SECRET"
-                  valueFrom:
-                    secretKeyRef:
-                      name: nextcloud-s3-credentials
-                      key: S3_PASSWORD
-
-                - name: "OBJECTSTORE_S3_PORT"
-                  value: "443"
-
-                - name: "OBJECTSTORE_S3_SSL"
-                  value: "true"
-
-                - name: "OBJECTSTORE_S3_REGION"
-                  value: '{{ .nextcloud_s3_region }}'
-
-                - name: "OBJECTSTORE_S3_USEPATH_STYLE"
-                  value: "true"
-
                 - name: "PGSSLCERT"
                   value: /etc/secrets/nextcloud/tls.crt
 
@@ -272,27 +235,6 @@ spec:
                       'OC\Preview\MarkDown',
                       'OC\Preview\PDF'
                     ),
-                  );
-
-                # 'sse_c_key' => getenv('OBJECTSTORE_S3_ENCYRPTION_KEY')
-                s3.config.php: |-
-                  <?php
-                  $CONFIG = array (
-                    'objectstore' => [
-                      'class' => '\\OC\\Files\\ObjectStore\\S3',
-                      'arguments' => [
-                            'bucket' => getenv('OBJECTSTORE_S3_BUCKET'),
-                            'hostname' => getenv('OBJECTSTORE_S3_HOST'),
-                            'key' => getenv('OBJECTSTORE_S3_KEY'),
-                            'secret' => getenv('OBJECTSTORE_S3_SECRET'),
-                            'region' => getenv('OBJECTSTORE_S3_REGION'),
-                            'port' => getenv('OBJECTSTORE_S3_PORT'),
-                            'use_ssl' => true,
-                            'use_path_style' => true,
-                            'autocreate' => false,
-                            'verify_bucket_exists' => false,
-                      ]
-                    ]
                   );
 
                 proxy.config.php: |-
@@ -422,10 +364,9 @@ spec:
 
             persistence:
               enabled: true
-              existingClaim: nextcloud-config
+              existingClaim: nextcloud-files
               nextcloudData:
                 enabled: false
-                subPath:
 
             livenessProbe:
               enabled: false
@@ -434,6 +375,7 @@ spec:
               timeoutSeconds: 10
               failureThreshold: 100
               successThreshold: 1
+
             readinessProbe:
               enabled: false
               initialDelaySeconds: 20
@@ -441,6 +383,7 @@ spec:
               timeoutSeconds: 10
               failureThreshold: 100
               successThreshold: 1
+
             startupProbe:
               enabled: false
               initialDelaySeconds: 20
@@ -448,6 +391,7 @@ spec:
               timeoutSeconds: 10
               failureThreshold: 100
               successThreshold: 1
+
             hpa:
               enabled: false
               cputhreshold: 60
