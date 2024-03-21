@@ -202,6 +202,6 @@ spec:
                   nginx.ingress.kubernetes.io/proxy-body-size: 1G
                   cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
                 tls:
-                  - secretName: matrix-seaweedfs-tls
+                  - secretName: nextcloud-seaweedfs-tls
                     hosts:
                       - '{{ .nextcloud_s3_endpoint }}'
