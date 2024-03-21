@@ -2,7 +2,7 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: nextcloud-config
+  name: nextcloud-files
 spec:
   accessModes:
     - ReadWriteOnce
