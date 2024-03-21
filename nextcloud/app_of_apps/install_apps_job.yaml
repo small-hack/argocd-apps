@@ -14,7 +14,7 @@ spec:
       volumes:
         - name: nextcloud-main
           persistentVolumeClaim:
-            claimName: nextcloud-config
+            claimName: nextcloud-files
         - configMap:
             defaultMode: 420
             name: nextcloud-web-app-config
