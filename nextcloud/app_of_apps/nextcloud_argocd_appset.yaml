@@ -250,6 +250,9 @@ spec:
                 oidc.config.php: |-
                   <?php
                   $CONFIG = array (
+                    // this disables the default login 
+                    'hide_login_form' => true,
+
                     // Some Nextcloud options that might make sense here
                     'allow_user_to_change_display_name' => true,
                     'lost_password_link' => 'disabled',
@@ -268,7 +271,7 @@ spec:
                     'oidc_login_button_text' => 'Log in with ZITADEL',
 
                     // Hide the NextCloud password change form.
-                    'oidc_login_hide_password_form' => false,
+                    'oidc_login_hide_password_form' => true,
 
                     // Use ID Token instead of UserInfo
                     'oidc_login_use_id_token' => false,
@@ -307,7 +310,7 @@ spec:
                     'oidc_create_groups' => false,
 
                     // Enable use of WebDAV via OIDC bearer token.
-                    'oidc_login_webdav_enabled' => false,
+                    'oidc_login_webdav_enabled' => true,
 
                     // Enable authentication with user/password for DAV clients that do not
                     // support token authentication (e.g. DAVx⁵)
@@ -324,7 +327,7 @@ spec:
                     // If true, nextcloud will download user avatars on login.
                     // This may lead to security issues as the server does not control
                     // which URLs will be requested. Use with care.
-                    'oidc_login_update_avatar' => false,
+                    'oidc_login_update_avatar' => true,
 
                     // Code challenge method for PKCE flow.
                     'oidc_login_code_challenge_method' => 'S256',
