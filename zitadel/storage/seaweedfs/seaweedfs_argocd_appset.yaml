@@ -191,6 +191,16 @@ spec:
                 timeoutSeconds: 10
             s3:
               enabled: false
+              ingress:
+                enabled: true
+                className: "nginx"
+                # host: false for "*" hostname
+                host: '{{ .zitadel_s3_endpoint }}'
+                # additional ingress annotations for the s3 endpoint
+                annotations:
+                  nginx.ingress.kubernetes.io/proxy-body-size: 1G
+                  cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
+                tls:
                   - secretName: zitadel-seaweedfs-tls
                     hosts:
                       - '{{ .zitadel_s3_endpoint }}'
