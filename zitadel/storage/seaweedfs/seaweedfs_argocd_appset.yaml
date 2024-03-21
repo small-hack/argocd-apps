@@ -191,3 +191,6 @@ spec:
                 timeoutSeconds: 10
             s3:
               enabled: false
+                  - secretName: zitadel-seaweedfs-tls
+                    hosts:
+                      - '{{ .zitadel_s3_endpoint }}'
