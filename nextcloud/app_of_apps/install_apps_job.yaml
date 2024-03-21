@@ -75,9 +75,6 @@ spec:
             - mountPath: /var/www/html/config/proxy.config.php
               name: nextcloud-config
               subPath: proxy.config.php
-            - mountPath: /var/www/html/config/s3.config.php
-              name: nextcloud-config
-              subPath: s3.config.php
             - mountPath: /var/www/html/config/.htaccess
               name: nextcloud-config
               subPath: .htaccess
