@@ -39,7 +39,7 @@ spec:
           command:
             - /bin/sh
             - -c
-            - su -s /bin/sh www-data -c "php occ app:install oidc_login --allow-unstable; php occ app:install notes --allow-unstable; php occ app:install bookmarks --allow-unstable; php occ app:install deck --allow-unstable; php occ app:install side_menu --allow-unstable"
+            - su -s /bin/sh www-data -c "php occ app:install oidc_login --allow-unstable; php occ app:install notes --allow-unstable; php occ app:install bookmarks --allow-unstable; php occ app:install deck --allow-unstable; php occ app:install side_menu --allow-unstable; echo done"
           volumeMounts:
             - mountPath: /var/www/
               name: nextcloud-main
