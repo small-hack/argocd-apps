@@ -51,9 +51,9 @@ Here's some quick guidelines, but you if you'd like to contribute, please read t
 
 ## Database
 
-| App Directory                                      | Description                                                                                                       |
+| App Directory                                      | Description                                                                                             |
 |:-----------------------------------------|:------------------------------------------------------------------------------------------------------------------|
-| [postgres-operator](./postgres/operator) | PostgreSQL database management tool to spin up additional postgres instances, collect metrics, and create backups |
+| [cloud-native-postgres-operator](./postgres/operators/cloud-native-postgres) | PostgreSQL database management operator to spin up postgres instances, collect metrics, and create backups |
 | [postgres](./postgres/bitnami)           | Just a bitnami PostgreSQL database helm chart on k8s, in case you need that for something                         |
 
 
@@ -64,7 +64,7 @@ Here's some quick guidelines, but you if you'd like to contribute, please read t
 | [k8up](./k8up)                 | [K8up](https://k8up.io/k8up/2.7/index.html) is a k8s native backups done via restic, so you can sync your persistent volumes to external s3 compliant storage         |
 | [nextcloud](./nextcloud)       | [Nextcloud](https://nextcloud.com/) is a self hosted file storage cloud solution. Replaces something like google drive/photos/notes/meets/calendar - mostly stable    |
 | [minio](./minio)               | [MinIO](https://min.io) is a secure self hosted S3 compatible Object Store.                                                                                           |
-| [seaweedfs](./demo/seaweedfs) | [SeaweedFS](https://github.com/seaweedfs/seaweedfs) is a secure and very fast self hosted S3 compatible Object Store specialized for either many files or large files |
+| [seaweedfs](./seaweedfs) | [SeaweedFS](https://github.com/seaweedfs/seaweedfs) is a secure and very fast self hosted S3 compatible Object Store specialized for either many files or large files |
 
 
 #### Experimental
@@ -123,9 +123,10 @@ Here's some quick guidelines, but you if you'd like to contribute, please read t
 
 |             App Directory             | Description                                                                                                                                  |
 |:-------------------------------------:|:---------------------------------------------------------------------------------------------------------------------------------------------|
-|        [cilium](./demo/cilium)       | A helm chart for cilium, for transparently securing network connectivity/loadbalancing b/w app workloads such as app containers or processes |
+|        [cilium](./demo/cilium)       | A helm chart for cilium, for transparently securing network connectivity/loadbalancing b/w app workloads such as app containers or processes  |
+|     [headscale](./demo/headscale)    | VPN, there isn't an official helm chart, so we're still working on this                                                                       |
+|     [netmaker](./demo/netmaker)      | VPN utilizing wiregaurd on the backend                                                                                                        |
 | [wireguard](./demo/wg-access-server) | A helm chart for wg-access-server which uses Wireguard®️ for a VPN                                                                            |
-|     [headscale](./demo/headscale)    | VPN, there isn't an official helm chart, so we're still working on this                                                                      |
 
 
 ## Other
@@ -150,14 +151,14 @@ Other useful tools that don't fit neatly into any one category.
 | App Directory                                              | Description                                                                                                                          |
 |:-----------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------|
 | [external-secrets-operator](./external-secrets-operator)   | ESO ([External Secrets Operator](https://external-secrets.io/latest/)) used for sourcing k8s secrets from an external provider       |
-| [bitwarden-external-secrets](./bitwarden-external-secrets) | ESO [Bitwarden](https://external-secrets.io/v0.9.1/examples/bitwarden/) SecretStore, for using secrets directly from bitwarden items |
+| [bitwarden-external-secrets](./external-secrets-operator/providers/bitwarden) | ESO [Bitwarden](https://external-secrets.io/v0.9.1/examples/bitwarden/) SecretStore, for using secrets directly from bitwarden items |
 
 #### Experimental
 
 | App Directory            | Description                                                                                                                                                |
 |:-------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [infisical](./infisical) | [Infisical](https://infisical.com/docs/integrations/platforms/kubernetes) is an open source secrets management solution and it has a k8s secrets operator. |
-| [vault](./vault)         | [Vault](https://github.com/hashicorp/vault) is an open source secrets management solution by Hashicorp.                                                    |
+| [infisical](./demo/infisical) | [Infisical](https://infisical.com/docs/integrations/platforms/kubernetes) is an open source secrets management solution and it has a k8s secrets operator. |
+| [vault](./demo/vault)         | [Vault](https://github.com/hashicorp/vault) is an open source secrets management solution by Hashicorp.                                                    |
 
 ## Social Media and chat
 
