@@ -199,6 +199,7 @@ spec:
                 # additional ingress annotations for the s3 endpoint
                 annotations:
                   cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
+                  nginx.ingress.kubernetes.io/proxy-body-size: "64m"
                 tls:
                   - secretName: zitadel-seaweedfs-tls
                     hosts:
