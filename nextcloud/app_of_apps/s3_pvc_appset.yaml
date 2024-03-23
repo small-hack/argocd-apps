@@ -75,6 +75,6 @@ spec:
                 runAsUser: 82
 
               schedules:
-                backup: "03 11 * * *"
-                check: "05 11 * * *"
-                prune: "05 11 * * *"
+                backup: "03 10 * * *"
+                check: "05 10 * * *"
+                prune: "05 10 * * *"
