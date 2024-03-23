@@ -79,23 +79,19 @@ spec:
               prometheusSpec:
                 probeSelectorNilUsesHelmValues: false
                 probeSelector: {}
-                probeNamespaceSelector:
-                  any: true
+                probeNamespaceSelector: {}
                   
                 podMonitorSelectorNilUsesHelmValues: false
                 podMonitorSelector: {}
-                podMonitorNamespaceSelector:
-                  any: true
+                podMonitorNamespaceSelector: {}
 
                 ruleSelectorNilUsesHelmValues: false
                 ruleSelector: {}
-                ruleNamespaceSelector:
-                  any: true
+                ruleNamespaceSelector: {}
                   
                 serviceMonitorSelectorNilUsesHelmValues: false
                 serviceMonitorSelector: {}
-                serviceMonitorNamespaceSelector:
-                  any: true
+                serviceMonitorNamespaceSelector: {}
                 
                 additionalScrapeConfigsSecret:
                   enabled: true
