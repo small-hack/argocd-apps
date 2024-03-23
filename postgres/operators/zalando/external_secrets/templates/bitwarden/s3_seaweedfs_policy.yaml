@@ -23,18 +23,12 @@ spec:
                 "secretKey": "{{ `{{ .adminSecretKey }}` }}"}
              ],
              "actions": ["Admin","Read","Write"]},
-            {"name": "matrix",
+            {"name": "postgres-operator",
              "credentials": [
                {"accessKey": "{{ `{{ .userAccessKey }}` }}",
                 "secretKey": "{{ `{{ .userSecretKey }}` }}"}
              ],
-             "actions": ["Read:matrix","Write:matrix"]},
-            {"name": "matrix-postgres",
-             "credentials": [
-               {"accessKey": "{{ `{{ .dbUserAccessKey }}` }}",
-                "secretKey": "{{ `{{ .dbUserSecretKey }}` }}"}
-             ],
-             "actions": ["Read:matrix-postgres","Write:matrix-postgres","List:matrix-postgres"]}
+             "actions": ["Read:postgres-operator","Write:postgres-operator","List:postgres-operator"]}
           ]}
   data:
     - secretKey: adminAccessKey
@@ -61,7 +55,7 @@ spec:
           name: bitwarden-login
           kind: ClusterSecretStore
       remoteRef:
-        key: {{ .Values.s3MatrixCredentialsBitwardenID }} 
+        key: {{ .Values.s3UserCredentialsBitwardenID }} 
         property: username
 
     - secretKey: userSecretKey
@@ -70,24 +64,6 @@ spec:
           name: bitwarden-login
           kind: ClusterSecretStore
       remoteRef:
-        key: {{ .Values.s3MatrixCredentialsBitwardenID }}
-        property: password
-
-    - secretKey: dbUserAccessKey
-      sourceRef:
-        storeRef:
-          name: bitwarden-login
-          kind: ClusterSecretStore
-      remoteRef:
-        key: {{ .Values.s3PostgresCredentialsBitwardenID }} 
-        property: username
-
-    - secretKey: dbUserSecretKey
-      sourceRef:
-        storeRef:
-          name: bitwarden-login
-          kind: ClusterSecretStore
-      remoteRef:
-        key: {{ .Values.s3PostgresCredentialsBitwardenID }}
+        key: {{ .Values.s3UserCredentialsBitwardenID }}
         property: password
 {{- end }}
