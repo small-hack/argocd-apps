@@ -1,0 +1,218 @@
+# https://github.com/zalando/postgres-operator
+# Postgres operator creates and manages PostgreSQL clusters running in Kubernetes 
+# https://postgres-operator.readthedocs.io/
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: postgres-operator
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  goTemplate: true
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - postgres_operator_hostname
+
+  template:
+    metadata:
+      name: postgres-operator-app
+    spec:
+      project: postgres-operator
+      destination:
+        server: "https://kubernetes.default.svc"
+        namespace: postgres-operator
+      syncPolicy:
+        syncOptions:
+          - CreateNamespace=true
+        automated:
+          prune: true
+          selfHeal: true
+      source:
+        repoURL: 'https://opensource.zalando.com/postgres-operator/charts/postgres-operator'
+        targetRevision: 1.11.0
+        chart: postgres-operator
+        helm:
+          releaseName: pgoperator
+          valuesObject:
+            image:
+              registry: registry.opensource.zalan.do
+              repository: acid/postgres-operator
+              tag: v1.11.0
+
+            # JSON logging format
+            enableJsonLogging: true
+
+            # general configuration parameters
+            configGeneral:
+              # update only the statefulsets without immediately doing the rolling update
+              enable_lazy_spilo_upgrade: false
+              # set the PGVERSION env var instead of providing the version via postgresql.bin_dir in SPILO_CONFIGURATION
+              enable_pgversion_env_var: true
+              # start any new database pod without limitations on shm memory
+              enable_shm_volume: true
+              # enables backwards compatible path between Spilo 12 and Spilo 13+ images
+              enable_spilo_wal_path_compat: false
+              # operator will sync only clusters where name starts with teamId prefix
+              enable_team_id_clustername_prefix: false
+
+              # Select if setup uses endpoints (default), or configmaps to manage leader (DCS=k8s)
+              # kubernetes_use_configmaps: false
+
+              # min number of instances in Postgres cluster. -1 = no limit
+              min_instances: -1
+              # max number of instances in Postgres cluster. -1 = no limit
+              max_instances: -1
+              # period between consecutive repair requests
+              repair_period: 5m
+              # period between consecutive sync requests
+              resync_period: 30m
+              # can prevent certain cases of memory overcommitment
+              # set_memory_request_to_limit: false
+
+              # number of routines the operator spawns to process requests concurrently
+              workers: 8
+
+            # parameters describing Postgres users
+            configUsers:
+              # roles to be granted to database owners
+              # additional_owner_roles:
+              # - cron_admin
+
+              # enable password rotation for app users that are not database owners
+              enable_password_rotation: false
+              # rotation interval for updating credentials in K8s secrets of app users
+              password_rotation_interval: 90
+              # retention interval to keep rotation users
+              password_rotation_user_retention: 180
+              # postgres username used for replication between instances
+              replication_username: standby
+              # postgres superuser name to be created by initdb
+              super_username: postgres
+
+            configMajorVersionUpgrade:
+              # "off": no upgrade, "manual": manifest triggers action, "full": minimal version violation triggers too
+              major_version_upgrade_mode: "full"
+              # upgrades will only be carried out for clusters of listed teams when mode is "off"
+              # major_version_upgrade_team_allow_list:
+              # - acid
+
+              # minimal Postgres major version that will not automatically be upgraded
+              minimal_major_version: "14"
+              # target Postgres major version when upgrading clusters automatically
+              target_major_version: "16"
+
+            configKubernetes:
+              # default DNS domain of K8s cluster where operator is running
+              cluster_domain: cluster.local
+              # label assigned to Kubernetes objects created by the operator
+              cluster_name_label: cluster-name
+
+              # namespaced name of the secret containing the OAuth2 token to pass to the teams API
+              # oauth_token_secret_name: postgresql-operator
+
+              # namespaced name of the ConfigMap with environment variables to populate on every pod
+              # pod_environment_configmap: "default/my-custom-config"
+              # name of the Secret (in cluster namespace) with environment variables to populate on every pod
+              # pod_environment_secret: "my-custom-secret"
+
+              # service account definition as JSON/YAML string to be used by postgres cluster pods
+              # pod_service_account_definition: ""
+
+              # role binding definition as JSON/YAML string to be used by pod service account
+              # pod_service_account_role_binding_definition: ""
+
+              # storage resize strategy, available options are: ebs, pvc, off or mixed
+              storage_resize_mode: pvc
+
+              # operator watches for postgres objects in the given namespace
+              watched_namespace: "*"  # listen to all namespaces
+
+            # configure behavior of load balancers
+            # configLoadBalancer:
+            #  # DNS zone for cluster DNS name when load balancer is configured for cluster
+            #  db_hosted_zone: '{{ .postgres-operator_hostname }}'
+
+            # options to aid debugging of the operator itself
+            configDebug:
+              # toggles verbose debug logs from the operator
+              debug_logging: true
+              # toggles operator functionality that require access to the postgres database
+              enable_database_access: true
+
+            # parameters affecting logging and REST API listener
+            configLoggingRestApi:
+              # REST API listener listens to this port
+              api_port: 8080
+              # number of entries in the cluster history ring buffer
+              cluster_history_entries: 1000
+              # number of lines in the ring buffer used to store cluster logs
+              ring_log_lines: 100
+
+            # configure interaction with non-Kubernetes objects from AWS or GCP
+            configAwsOrGcp:
+              # Additional Secret (aws or gcp credentials) to mount in the pod
+              # additional_secret_mount: "some-secret-name"
+
+              # Path to mount the above Secret in the filesystem of the container(s)
+              # additional_secret_mount_path: "/some/dir"
+
+              # AWS region used to store EBS volumes
+              aws_region: eu-central-1
+
+              # enable automatic migration on AWS from gp2 to gp3 volumes
+              enable_ebs_gp3_migration: false
+              # defines maximum volume size in GB until which auto migration happens
+              # enable_ebs_gp3_migration_max_size: 1000
+
+              # GCP credentials that will be used by the operator / pods
+              # gcp_credentials: ""
+
+              # AWS IAM role to supply in the iam.amazonaws.com/role annotation of Postgres pods
+              # kube_iam_role: ""
+
+              # S3 bucket to use for shipping postgres daily logs
+              # log_s3_bucket: ""
+
+              # S3 bucket to use for shipping WAL segments with WAL-E
+              # wal_s3_bucket: ""
+
+              # GCS bucket to use for shipping WAL segments with WAL-E
+              # wal_gs_bucket: ""
+
+              # Azure Storage Account to use for shipping WAL segments with WAL-G
+              # wal_az_storage_account: ""
+
+            # configure K8s cron job managed by the operator
+            configLogicalBackup:
+              # prefix for the backup job name
+              logical_backup_job_prefix: "logical-backup-"
+              # storage provider - either "s3", "gcs" or "az"
+              logical_backup_provider: "s3"
+              # S3 bucket to store backup results
+              logical_backup_s3_bucket: "{{ .postgres_operator_s3_bucket }}"
+              # S3 region of bucket
+              logical_backup_s3_region: "{{ .postgres_operator_s3_region }}"
+              # $AWS_ENDPOINT - S3 endpoint url when not using AWS
+              # logical_backup_s3_endpoint: "{{ s }}"
+              # $AWS_ACCESS_KEY_ID - S3 Access Key ID
+              # logical_backup_s3_access_key_id: ""
+              # $AWS_SECRET_ACCESS_KEY - S3 Secret Access Key
+              # logical_backup_s3_secret_access_key: ""
+              # S3 retention time for stored backups e.g. "2 week", "7 days"
+              logical_backup_s3_retention_time: "8 weeks"
+              # backup schedule in the cron format
+              logical_backup_schedule: "10 14 * * *"
+              # secret to be used as reference for env variables in cronjob
+              logical_backup_cronjob_environment_secret: "backups-s3-credentials"
+              # resources for logical backup pod, if empty configPostgresPodResources will be used
+              # logical_backup_cpu_limit: ""
+              # logical_backup_cpu_request: ""
+              # logical_backup_memory_limit: ""
+              # logical_backup_memory_request: ""
