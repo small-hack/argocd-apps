@@ -1,0 +1,5 @@
+cluster_name: "nextcloud"
+user: "nextcloud"
+databases:
+  # nextcloud user is owner of nextcloud database
+  nextcloud: nextcloud
