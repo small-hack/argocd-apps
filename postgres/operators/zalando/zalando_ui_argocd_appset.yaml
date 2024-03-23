@@ -29,6 +29,10 @@ spec:
       destination:
         server: https://kubernetes.default.svc
         namespace: postgres-operator
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
       source:
         repoURL: https://opensource.zalando.com/postgres-operator/charts/postgres-operator-ui
         targetRevision: 1.11.0
