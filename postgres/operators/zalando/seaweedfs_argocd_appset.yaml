@@ -42,7 +42,7 @@ spec:
         targetRevision: 3.63.0
         chart: seaweedfs
         helm:
-          releaseName: postgres_operator-seaweedfs
+          releaseName: postgres-operator-seaweedfs
           valuesObject:
             global:
               createClusterRole: true
