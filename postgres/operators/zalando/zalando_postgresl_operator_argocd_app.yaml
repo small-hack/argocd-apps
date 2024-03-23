@@ -22,7 +22,7 @@ spec:
       selfHeal: true
   source:
     repoURL: 'https://opensource.zalando.com/postgres-operator/charts/postgres-operator'
-    targetRevision: 1.10.0
+    targetRevision: 1.11.0
     chart: postgres-operator
     helm:
       releaseName: pgoperator
