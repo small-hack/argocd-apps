@@ -168,7 +168,7 @@ spec:
                 enableAuth: true
                 existingConfigSecret: seaweedfs-s3-secret
                 createBuckets:
-                  - name: zitadel-postgres
+                  - name: nextcloud
                     anonymousRead: false
               livenessProbe:
                 enabled: true
