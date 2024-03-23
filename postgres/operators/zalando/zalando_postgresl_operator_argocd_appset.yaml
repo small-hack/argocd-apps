@@ -18,7 +18,11 @@ spec:
         input:
           parameters:
             secret_vars:
-              - postgres_operator_hostname
+              - postgres_operator_s3_endpoint
+              - postgres_operator_s3_bucket
+              - postgres_operator_s3_region
+              - postgres_operator_backup_schedule
+              - postgres_operator_backup_rentention_time
 
   template:
     metadata:
@@ -200,15 +204,15 @@ spec:
               # S3 region of bucket
               logical_backup_s3_region: "{{ .postgres_operator_s3_region }}"
               # $AWS_ENDPOINT - S3 endpoint url when not using AWS
-              # logical_backup_s3_endpoint: "{{ s }}"
+              logical_backup_s3_endpoint: "{{ .postgres_operator_s3_endpoint }}"
               # $AWS_ACCESS_KEY_ID - S3 Access Key ID
               # logical_backup_s3_access_key_id: ""
               # $AWS_SECRET_ACCESS_KEY - S3 Secret Access Key
               # logical_backup_s3_secret_access_key: ""
               # S3 retention time for stored backups e.g. "2 week", "7 days"
-              logical_backup_s3_retention_time: "8 weeks"
+              logical_backup_s3_retention_time: "{{ .postgres_operator_backup_backup_rentention_time }}"
               # backup schedule in the cron format
-              logical_backup_schedule: "10 14 * * *"
+              logical_backup_schedule: "{{ .postgres_operator_backup_schedule }}"
               # secret to be used as reference for env variables in cronjob
               logical_backup_cronjob_environment_secret: "backups-s3-credentials"
               # resources for logical backup pod, if empty configPostgresPodResources will be used
