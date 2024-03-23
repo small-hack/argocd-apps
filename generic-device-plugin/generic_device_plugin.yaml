@@ -4,8 +4,6 @@ kind: Application
 metadata:
   name: generic-device-plugin-app
   namespace: argocd
-  annotations:
-    argocd.argoproj.io/sync-wave: "1"
 spec:
   project: default
   destination:
@@ -14,7 +12,7 @@ spec:
   source:
     # generic-device-plugin repo
     repoURL: 'https://github.com/squat/generic-device-plugin'
-    path: 'manifests/generic-device-plugin.yaml'
+    path: 'manifests/'
     targetRevision: main
   syncPolicy:
     syncOptions:
