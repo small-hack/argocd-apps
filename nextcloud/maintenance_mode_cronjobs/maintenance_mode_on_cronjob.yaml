@@ -18,7 +18,7 @@ spec:
           volumes:
             - name: nextcloud-main
               persistentVolumeClaim:
-                claimName: nextcloud-config
+                claimName: nextcloud-files
             - configMap:
                 defaultMode: 420
                 name: nextcloud-web-app-config
@@ -180,34 +180,6 @@ spec:
                     secretKeyRef:
                       key: client_secret
                       name: nextcloud-oidc-credentials
-                - name: OBJECTSTORE_S3_HOST
-                  valueFrom:
-                    secretKeyRef:
-                      key: S3_HOSTNAME
-                      name: nextcloud-s3-credentials
-                - name: OBJECTSTORE_S3_BUCKET
-                  valueFrom:
-                    secretKeyRef:
-                      key: S3_BUCKET
-                      name: nextcloud-s3-credentials
-                - name: OBJECTSTORE_S3_KEY
-                  valueFrom:
-                    secretKeyRef:
-                      key: S3_USER
-                      name: nextcloud-s3-credentials
-                - name: OBJECTSTORE_S3_SECRET
-                  valueFrom:
-                    secretKeyRef:
-                      key: S3_PASSWORD
-                      name: nextcloud-s3-credentials
-                - name: OBJECTSTORE_S3_PORT
-                  value: "443"
-                - name: OBJECTSTORE_S3_SSL
-                  value: "true"
-                - name: OBJECTSTORE_S3_REGION
-                  value: eu-west-1
-                - name: OBJECTSTORE_S3_USEPATH_STYLE
-                  value: "true"
                 - name: PGSSLCERT
                   value: /etc/secrets/nextcloud/tls.crt
                 - name: PGSSLKEY
