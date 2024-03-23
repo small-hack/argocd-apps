@@ -28,7 +28,7 @@ spec:
     local:
       mountPath: {{ .Values.k8up.local.mountPath }}
     {{- end }}
-  # Backup nightly at 2:10 AM (Central Europe Time)
+  # Backup nightly at scheduled time (Central Europe Time)
   backup:
     schedule: {{ .Values.k8up.schedules.backup }}
     failedJobsHistoryLimit: 5
