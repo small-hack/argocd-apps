@@ -6,6 +6,8 @@ kind: ApplicationSet
 metadata:
   name: postgres-operator-ui-app-set
   namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
 spec:
   # generator allows us to source specific values from an external k8s secret
   generators:
@@ -14,7 +16,8 @@ spec:
           name: secret-var-plugin-generator
         input:
           parameters:
-            secret_vars: ["postgres-operator_hostname"]
+            secret_vars:
+              - postgres-operator_hostname
   template:
     metadata:
       name: postgres-operator-ui
@@ -30,7 +33,7 @@ spec:
         chart: postgres-operator-ui
         helm:
           skipCrds: true
-          values: |
+          valuesObject:
             envs:
               # IMPORTANT: While operator chart and UI chart are independent, this is the interface between
               # UI and operator API. Insert the service name of the operator API here!
