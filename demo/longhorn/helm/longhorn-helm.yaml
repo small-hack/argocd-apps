@@ -3,6 +3,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: longhorn-helm-chart
+  namespace: argocd
 spec:
   destination:
     namespace: longhorn-system
