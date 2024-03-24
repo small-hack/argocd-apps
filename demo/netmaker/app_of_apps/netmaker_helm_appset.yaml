@@ -200,9 +200,9 @@ spec:
             
             oauth:
               enabled: true
-              frontendURL: admin.'{{ .netmaker_hostname }}'
               existingSecret: netmaker-oauth-config
               secretKeys:
                 clientID: clientId
                 clientSecret: clientSecret
                 issuer: authUrl
+                frontendURL: admin.'{{ .netmaker_hostname }}'
