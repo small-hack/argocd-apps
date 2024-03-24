@@ -24,10 +24,6 @@ spec:
           {{ `{{ .userInfoUrl }}` }}
         endSessionEndpoint: |-
           {{ `{{ .endSessionEndpoint }}` }}
-        callbackUrls: |-
-          {{ `{{ .callbackUrls }}` }}
-        preferredDomain: |-
-          {{ `{{ .preferredDomain }}` }}
   data:
     - secretKey: username
       sourceRef:
@@ -74,15 +70,6 @@ spec:
         key: {{ .Values.netmakerOauthConfigBitwardenID }}
         property: userInfoUrl
 
-    - secretKey: callbackUrls
-      sourceRef:
-        storeRef:
-          name: bitwarden-fields
-          kind: ClusterSecretStore
-      remoteRef:
-        key: {{ .Values.netmakerOauthConfigBitwardenID }}
-        property: callbackUrls
-
     - secretKey: endSessionEndpoint
       sourceRef:
         storeRef:
@@ -91,13 +78,4 @@ spec:
       remoteRef:
         key: {{ .Values.netmakerOauthConfigBitwardenID }}
         property: endSessionEndpoint
-
-    - secretKey: preferredDomain
-      sourceRef:
-        storeRef:
-          name: bitwarden-fields
-          kind: ClusterSecretStore
-      remoteRef:
-        key: {{ .Values.netmakerOauthConfigBitwardenID }}
-        property: preferredDomain
 {{- end }}
