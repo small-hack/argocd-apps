@@ -13,7 +13,7 @@ spec:
     chart: longhorn
     helm:
       releaseName: longhorn
-  project: default
+  project: longhorn
   syncPolicy:
     syncOptions:
       - CreateNamespace=true
