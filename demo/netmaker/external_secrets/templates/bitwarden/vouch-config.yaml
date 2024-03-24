@@ -1,0 +1,39 @@
+{{- if eq .Values.provider "bitwarden" }}
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: netmaker-postgres
+spec:
+  target:
+    # Name for the secret to be created on the cluster
+    name: netmaker-postgres
+    deletionPolicy: Delete
+    template:
+      type: Opaque
+      data:
+        SQL_PASS: |-
+          {{ `{{ .SQL_PASS }}` }}
+        postgres-password: |-
+          {{ `{{ .postgres-password }}` }}
+  data:
+    # key of this struct to reference in spec.target.template.data
+    - secretKey: SQL_PASS
+      sourceRef:
+        storeRef:
+          name: bitwarden-fields
+          kind: ClusterSecretStore
+      remoteRef:
+        # name of the item in bitwarden
+        key: {{ .Values.netmakerConfigBitwardenID }}
+        # name of the custom field in the bitwarden item
+        property: SQL_PASS
+
+    - secretKey: postgres-password
+      sourceRef:
+        storeRef:
+          name: bitwarden-fields
+          kind: ClusterSecretStore
+      remoteRef:
+        key: {{ .Values.netmakerConfigBitwardenID }}
+        property: postgres-password
+{{- end }}

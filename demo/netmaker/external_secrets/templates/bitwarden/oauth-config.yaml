@@ -1,0 +1,103 @@
+{{- if eq .Values.provider "bitwarden" }}
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: vouch-oauth-config
+spec:
+  target:
+    # Name for the secret to be created on the cluster
+    name: vouch-oauth-config
+    deletionPolicy: Delete
+    template:
+      type: Opaque
+      data:
+        clientId: |-
+          {{ `{{ .username }}` }}
+        clientSecret: |-
+          {{ `{{ .password }}` }}
+        authUrl: |-
+          {{ `{{ .authUrl }}` }}
+        tokenUrl: |-
+          {{ `{{ .tokenUrl }}` }}
+        userInfoUrl: |-
+          {{ `{{ .userInfoUrl }}` }}
+        endSessionEndpoint: |-
+          {{ `{{ .endSessionEndpoint }}` }}
+        callbackUrls: |-
+          {{ `{{ .callbackUrls }}` }}
+        preferredDomain: |-
+          {{ `{{ .preferredDomain }}` }}
+  data:
+    - secretKey: username
+      sourceRef:
+        storeRef:
+          name: bitwarden-login
+          kind: ClusterSecretStore
+      remoteRef:
+        key: {{ .Values.netmakerOauthConfigBitwardenID }}
+        property: username
+
+    - secretKey: password
+      sourceRef:
+        storeRef:
+          name: bitwarden-login
+          kind: ClusterSecretStore
+      remoteRef:
+        key: {{ .Values.netmakerOauthConfigBitwardenID }}
+        property: password
+
+    - secretKey: authUrl
+      sourceRef:
+        storeRef:
+          name: bitwarden-fields
+          kind: ClusterSecretStore
+      remoteRef:
+        key: {{ .Values.netmakerOauthConfigBitwardenID }}
+        property: authUrl
+
+    - secretKey: tokenUrl
+      sourceRef:
+        storeRef:
+          name: bitwarden-fields
+          kind: ClusterSecretStore
+      remoteRef:
+        key: {{ .Values.netmakerOauthConfigBitwardenID }}
+        property: tokenUrl
+
+    - secretKey: userInfoUrl
+      sourceRef:
+        storeRef:
+          name: bitwarden-fields
+          kind: ClusterSecretStore
+      remoteRef:
+        key: {{ .Values.netmakerOauthConfigBitwardenID }}
+        property: userInfoUrl
+
+    - secretKey: callbackUrls
+      sourceRef:
+        storeRef:
+          name: bitwarden-fields
+          kind: ClusterSecretStore
+      remoteRef:
+        key: {{ .Values.netmakerOauthConfigBitwardenID }}
+        property: callbackUrls
+
+    - secretKey: endSessionEndpoint
+      sourceRef:
+        storeRef:
+          name: bitwarden-fields
+          kind: ClusterSecretStore
+      remoteRef:
+        key: {{ .Values.netmakerOauthConfigBitwardenID }}
+        property: endSessionEndpoint
+
+    - secretKey: preferredDomain
+      sourceRef:
+        storeRef:
+          name: bitwarden-fields
+          kind: ClusterSecretStore
+      remoteRef:
+        key: {{ .Values.netmakerOauthConfigBitwardenID }}
+        property: preferredDomain
+{{- end }}
