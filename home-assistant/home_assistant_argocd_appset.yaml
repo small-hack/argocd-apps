@@ -67,6 +67,15 @@ spec:
               enabled: true
               # existingClaim: home-assistant
               storageClass: local-path
+
+            extraVolumes:
+              - name: themes
+                configMap:
+                  name: home-assistant-themes
+
+            extraVolumeMounts:
+              - name: themes
+                mountPaht: /config/themes
             
             homeAssistant:
               # existingConfigMap: home-assistant
@@ -96,6 +105,10 @@ spec:
                 
                 # required for the scenes UI to work
                 scene: !include scenes.yaml
+
+                # include themes from another directory
+                frontend:
+                  themes: !include_dir_merge_named themes
 
             livenessProbe:
               enabled: false
