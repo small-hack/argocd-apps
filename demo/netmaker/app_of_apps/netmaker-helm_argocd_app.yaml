@@ -16,36 +16,11 @@ spec:
     namespace: netmaker
   source:
     repoURL: https://github.com/small-hack/argocd-apps.git
-    path: netmaker/manifests/persistence/
+    path: /demo/netmaker/manifests/persistence/
   syncPolicy:
     syncOptions:
       - ApplyOutOfSyncOnly=true
     automated:
-      selfHeal: true
-
----
-# First sync wave because we need secrets for netmaker, so it has to be
-# before netmaker so it has secrets for all its credentials.
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: netmaker-external-secrets
-  namespace: argocd
-  annotations:
-    argocd.argoproj.io/sync-wave: "1"
-spec:
-  project: default
-  destination:
-    server: "https://kubernetes.default.svc"
-    namespace: netmaker
-  source:
-    repoURL: https://github.com/small-hack/argocd-apps.git
-    path: netmaker/external_secrets/
-  syncPolicy:
-    syncOptions:
-      - Replace=true
-    automated:
-      prune: true
       selfHeal: true
 
 ---
