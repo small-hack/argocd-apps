@@ -124,7 +124,6 @@ spec:
               enabled: true
               className: "nginx"
               annotations:
-                kubernetes.io/tls-acme: "true"
                 cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
               hosts:
                 - host: '{{ .zitadel_hostname }}'
