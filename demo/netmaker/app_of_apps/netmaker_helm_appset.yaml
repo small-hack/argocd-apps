@@ -170,7 +170,7 @@ spec:
                 # -- postgres pass to generate, ignored if existingSecret passed in
                 # password: netmaker
                 # -- postgress number of replicas to deploy
-                existingSecret: netmaker-pqsql-credentials
+                existingSecret: netmaker-pgsql-credentials
                 secretKeys:
                   userPasswordKey: SQL_PASS
                   adminPasswordKey: postgres_password
