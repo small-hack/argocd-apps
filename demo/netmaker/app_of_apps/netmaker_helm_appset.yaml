@@ -195,8 +195,9 @@ spec:
                       ALTER DATABASE netmaker OWNER TO netmaker;
                       GRANT ALL PRIVILEGES ON DATABASE netmaker TO netmaker;
                       GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO netmaker;
-              persistence:
-                existingClaim: netmaker-postgresql
+                persistence:
+                  enabled: true
+                  existingClaim: netmaker-postgresql
             
             oauth:
               enabled: true
