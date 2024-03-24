@@ -35,7 +35,7 @@ spec:
       source:
         repoURL: 'https://small-hack.github.io/netmaker-helm'
         chart: netmaker
-        targetRevision: 0.9.0
+        targetRevision: fix/posgres
         helm:
           valuesObject:
             # Default values for netmaker.
