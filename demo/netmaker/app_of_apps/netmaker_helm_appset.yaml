@@ -34,7 +34,7 @@ spec:
         namespace: netmaker
       source:
         repoURL: 'https://github.com/small-hack/netmaker-helm'
-        targetRevision: main
+        targetRevision: fix/posgres
         path: charts/netmaker/
         helm:
           valuesObject:
