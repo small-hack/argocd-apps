@@ -4,4 +4,3 @@ provider: "bitwarden"
 
 netmakerOauthConfigBitwardenID: ""
 netmakerPgsqlConfigBitwardenID: ""
-netmakerMqConfigBitwardenID: ""
