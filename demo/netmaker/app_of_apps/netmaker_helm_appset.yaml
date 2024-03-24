@@ -205,4 +205,4 @@ spec:
                 clientID: clientId
                 clientSecret: clientSecret
                 issuer: authUrl
-                frontendURL: admin.'{{ .netmaker_hostname }}'
+                frontendURL: 'admin.{{ .netmaker_hostname }}'
