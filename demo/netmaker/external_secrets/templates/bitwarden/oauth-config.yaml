@@ -3,11 +3,11 @@
 apiVersion: external-secrets.io/v1beta1
 kind: ExternalSecret
 metadata:
-  name: vouch-oauth-config
+  name: netmaker-oauth-config
 spec:
   target:
     # Name for the secret to be created on the cluster
-    name: vouch-oauth-config
+    name: netmaker-oauth-config
     deletionPolicy: Delete
     template:
       type: Opaque
