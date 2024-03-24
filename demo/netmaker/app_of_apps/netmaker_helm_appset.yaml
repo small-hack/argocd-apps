@@ -33,9 +33,9 @@ spec:
         server: https://kubernetes.default.svc
         namespace: netmaker
       source:
-        repoURL: 'https://small-hack.github.io/netmaker-helm'
-        chart: netmaker
+        repoURL: 'https://github.com/small-hack/netmaker-helm'
         targetRevision: fix/posgres
+        path: charts/netmaker/
         helm:
           valuesObject:
             # Default values for netmaker.
