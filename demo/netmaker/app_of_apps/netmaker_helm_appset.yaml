@@ -69,22 +69,94 @@ spec:
             # -- pod security contect to add
             podSecurityContext: {}
             # fsGroup: 2000
-            
-            baseDomain: '{{ .netmaker_hostname }}'
+
+            api:
+              service:
+                # -- type for netmaker server services
+                type: ClusterIP
+                # -- port for API service
+                port: 8081
+                # -- targetport for API service
+                targetPort: 8081
+
+              ingress:
+                # -- attempts to configure ingress if true
+                enabled: true
+                # -- api (REST) route subdomain
+                host: 'api.{{ .netmaker_hostname }}'
+                # -- api ingress className
+                className: "nginx"
+                # -- annotations for the netmaker API ingress object
+                annotations:
+                  cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
+                # -- ingress api tls list
+                tls:
+                  - secretName: netmaker-api-tls
+                    hosts:
+                      - 'api.{{ .netmaker_hostname }}'
             
             ui:
               # -- how many UI replicas to create
               replicas: 1
+              service:
+                # -- type for netmaker server services
+                type: ClusterIP
+                # -- port for UI service
+                port: 80
+                # -- target port for UI service
+                targetport: 80
+              ingress:
+                # -- attempts to configure ingress if true
+                enabled: true
+                # -- hostname for mqtt ingress
+                host: 'admin.{{ .netmaker_hostname }}'
+                # -- UI ingress className
+                className: "nginx"
+                annotations:
+                  cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
+                  # -- Redirect http to https
+                  # nginx.ingress.kubernetes.io/ssl-redirect: 'true'
+                  # -- destination addr for route
+                  # nginx.ingress.kubernetes.io/rewrite-target: /
+                # -- ingress tls list
+                tls:
+                  - secretName: netmaker-ui-tls
+                    hosts:
+                      - 'admin.{{ .netmaker_hostname }}'
             
             mq:
               # -- how many MQTT replicas to create
               replicas: 1
-              singlenode: false
               username: "netmaker"
-              # password: 3yyerWGdds43yegGR
               existingSecret: 'netmaker-pgsql-credentials'
               secretKey: "MQ_ADMIN_PASSWORD"
-              existingClaim: "netmaker-mq-pvc"
+              persistence:
+                existingClaim: "netmaker-mq-pvc"
+              service:
+                # -- type for netmaker server services
+                type: ClusterIP
+                # -- port for MQTT service
+                port: 443
+                # -- Target port for MQTT service
+                targetPort: 8883
+              ingress:
+                # -- attempts to configure ingress if true
+                enabled: true
+                # -- hostname for mqtt ingress
+                host: 'broker.{{ .netmaker_hostname }}'
+                className: "nginx"
+                # -- annotations for the mqtt ingress object
+                annotations:
+                  cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
+                ## Redirect http to https
+                # nginx.ingress.kubernetes.io/ssl-redirect: 'true'
+                ## destination addr for route
+                # nginx.ingress.kubernetes.io/rewrite-target: /
+                # -- ingress tls list
+                tls:
+                  - secretName: netmaker-mqtt-tls
+                    hosts:
+                      - 'broker.{{ .netmaker_hostname }}'
             
             dns:
               # -- whether or not to deploy coredns
@@ -93,58 +165,12 @@ spec:
             setIpForwarding:
               enabled: true
             
-            service:
-              # -- type for netmaker server services
-              type: ClusterIP
-              # -- port for API service
-              restPort: 8081
-              # -- port for MQTT service
-              mqPort: 443
-              # -- port for UI service
-              uiPort: 80
-            
-            ingress:
-              # -- attempts to configure ingress if true
-              enabled: true
-              tls:
-                enabled: true
-                issuerName: '{{ .global_cluster_issuer }}'
-              annotations:
-                ui: {}
-                rest: {}
-                mq: {}
-                base:
-                  # -- annotation to generate ACME certs if available
-                  kubernetes.io/ingress.allow-http: "false"
-                tls:
-                  # -- use acme cert if available
-                  kubernetes.io/tls-acme: "true"
-                nginx:
-                  # -- Redirect http to https
-                  nginx.ingress.kubernetes.io/ssl-redirect: 'true'
-                  # -- destination addr for route
-                  nginx.ingress.kubernetes.io/rewrite-target: /
-                traefik:
-                  # -- Redirect to https
-                  traefik.ingress.kubernetes.io/redirect-entry-point: https
-                  # -- Redirect to https permanently
-                  traefik.ingress.kubernetes.io/redirect-permanent: "true"
-                  # -- rule type
-                  traefik.ingress.kubernetes.io/rule-type: "PathPrefixStrip"
-              hostPrefix:
-                # -- ui route subdomain
-                ui: 'admin.'
-                # -- api (REST) route subdomain
-                rest: 'api.'
-                # -- mqtt route subdomain
-                broker: 'broker.'
-            
             wireguard:
               # -- whether or not to use WireGuard on server
               enabled: true
               service:
                 annotations: {}
-                serviceType: NodePort
+                type: NodePort
               # -- whether or not to use Kernel WG (should be false unless WireGuard is installed on hosts).
               kernel: true
               # -- max number of networks that Netmaker will support if running with WireGuard enabled
