@@ -79,7 +79,7 @@ spec:
           kind: ClusterSecretStore
       remoteRef:
         key: {{ .Values.netmakerOauthConfigBitwardenID }}
-        property: fronetendUrl
+        property: frontendUrl
 
     - secretKey: endSessionEndpoint
       sourceRef:
