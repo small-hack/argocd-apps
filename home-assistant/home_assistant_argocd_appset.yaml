@@ -75,7 +75,7 @@ spec:
 
             extraVolumeMounts:
               - name: themes
-                mountPaht: /config/themes
+                mountPath: /config/themes
             
             homeAssistant:
               # existingConfigMap: home-assistant
