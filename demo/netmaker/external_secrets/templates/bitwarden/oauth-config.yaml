@@ -12,6 +12,10 @@ spec:
     template:
       type: Opaque
       data:
+        auth_provider: |-
+          {{ `{{ .auth_provider }}` }}
+        serverHttpHost: |-
+          {{ `{{ .serverHttpHost }}` }}
         clientId: |-
           {{ `{{ .username }}` }}
         clientSecret: |-
@@ -45,6 +49,15 @@ spec:
         key: {{ .Values.netmakerOauthConfigBitwardenID }}
         property: password
 
+    - secretKey: auth_provider
+      sourceRef:
+        storeRef:
+          name: bitwarden-fields
+          kind: ClusterSecretStore
+      remoteRef:
+        key: {{ .Values.netmakerOauthConfigBitwardenID }}
+        property: auth_provider
+        
     - secretKey: authUrl
       sourceRef:
         storeRef:
@@ -71,7 +84,7 @@ spec:
       remoteRef:
         key: {{ .Values.netmakerOauthConfigBitwardenID }}
         property: userInfoUrl
-        
+
     - secretKey: frontendUrl
       sourceRef:
         storeRef:
@@ -80,6 +93,15 @@ spec:
       remoteRef:
         key: {{ .Values.netmakerOauthConfigBitwardenID }}
         property: frontendUrl
+
+    - secretKey: serverHttpHost
+      sourceRef:
+        storeRef:
+          name: bitwarden-fields
+          kind: ClusterSecretStore
+      remoteRef:
+        key: {{ .Values.netmakerOauthConfigBitwardenID }}
+        property: serverHttpHost
 
     - secretKey: endSessionEndpoint
       sourceRef:
