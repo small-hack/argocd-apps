@@ -72,10 +72,6 @@ spec:
             
             baseDomain: '{{ .netmaker_hostname }}'
             
-            persistence:
-              sharedData:
-                existingClaim: "netmaker-shared-data-pvc"
-            
             ui:
               # -- how many UI replicas to create
               replicas: 1
@@ -84,21 +80,15 @@ spec:
               # -- how many MQTT replicas to create
               replicas: 1
               singlenode: false
-              storageSize: 128Mi
               username: "netmaker"
               # password: 3yyerWGdds43yegGR
               existingSecret: 'netmaker-pgsql-credentials'
               secretKey: "MQ_ADMIN_PASSWORD"
               existingClaim: "netmaker-mq-pvc"
-              RWX:
-                storageClassName: ""
             
             dns:
               # -- whether or not to deploy coredns
               enabled: false
-              storageSize: 128Mi
-              RWX:
-                storageClassName: ""
             
             setIpForwarding:
               enabled: true
