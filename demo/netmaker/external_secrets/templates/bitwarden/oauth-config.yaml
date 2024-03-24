@@ -16,6 +16,8 @@ spec:
           {{ `{{ .auth_provider }}` }}
         serverHttpHost: |-
           {{ `{{ .serverHttpHost }}` }}
+        serverBrokerEndpoint: |-
+          {{ `{{ .serverBrokerEndpoint }}` }}
         clientId: |-
           {{ `{{ .username }}` }}
         clientSecret: |-
@@ -102,6 +104,15 @@ spec:
       remoteRef:
         key: {{ .Values.netmakerOauthConfigBitwardenID }}
         property: serverHttpHost
+        
+    - secretKey: serverBrokerEndpoint
+      sourceRef:
+        storeRef:
+          name: bitwarden-fields
+          kind: ClusterSecretStore
+      remoteRef:
+        key: {{ .Values.netmakerOauthConfigBitwardenID }}
+        property: serverBrokerEndpoint
 
     - secretKey: endSessionEndpoint
       sourceRef:
