@@ -16,7 +16,7 @@ spec:
     namespace: netmaker
   source:
     repoURL: https://github.com/small-hack/argocd-apps.git
-    path: /demo/netmaker/manifests/persistence/
+    path: demo/netmaker/manifests/persistence/
   syncPolicy:
     syncOptions:
       - ApplyOutOfSyncOnly=true
