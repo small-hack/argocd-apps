@@ -197,3 +197,5 @@ spec:
                 clientSecret: clientSecret
                 issuer: authUrl
                 frontendURL: frontendUrl
+                serverHttpHost: serverHttpHost
+                auth_provider: auth_provider
