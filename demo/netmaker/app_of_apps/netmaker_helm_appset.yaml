@@ -33,9 +33,9 @@ spec:
         server: https://kubernetes.default.svc
         namespace: netmaker
       source:
-        repoURL: 'https://github.com/small-hack/netmaker-helm'
-        targetRevision: fix/posgres
-        path: charts/netmaker/
+        repoURL: 'https://small-hack.github.io/netmaker-helm'
+        targetRevision: 0.10.0
+        chart: netmaker
         helm:
           valuesObject:
             # -- number of netmaker server replicas to create
@@ -99,10 +99,6 @@ spec:
                 className: "nginx"
                 annotations:
                   cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
-                  # -- Redirect http to https
-                  # nginx.ingress.kubernetes.io/ssl-redirect: 'true'
-                  # -- destination addr for route
-                  # nginx.ingress.kubernetes.io/rewrite-target: /
                 # -- ingress tls list
                 tls:
                   - secretName: netmaker-ui-tls
@@ -132,11 +128,6 @@ spec:
                 # -- annotations for the mqtt ingress object
                 annotations:
                   cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
-                ## Redirect http to https
-                # nginx.ingress.kubernetes.io/ssl-redirect: 'true'
-                ## destination addr for route
-                # nginx.ingress.kubernetes.io/rewrite-target: /
-                # -- ingress tls list
                 tls:
                   - secretName: netmaker-mqtt-tls
                     hosts:
@@ -156,7 +147,7 @@ spec:
                 username: netmaker
                 # -- postgress database
                 database: netmaker
-                # SQL_PASS, SQL_HOST, SQL_PORT, SQL_USER, SQL_DB
+                # keys must be: SQL_PASS, SQL_HOST, SQL_PORT, SQL_USER, SQL_DB
                 existingSecret: netmaker-pgsql-credentials
                 secretKeys:
                   userPasswordKey: SQL_PASS
