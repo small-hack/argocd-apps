@@ -6,7 +6,7 @@ metadata:
   name: netmaker-oauth-config
 spec:
   target:
-    # Name for the secret to be created on the cluster
+    # Name for the secret to be created on the cluster.
     name: netmaker-oauth-config
     deletionPolicy: Delete
     template:
