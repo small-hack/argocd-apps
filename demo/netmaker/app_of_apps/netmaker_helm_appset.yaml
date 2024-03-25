@@ -113,7 +113,7 @@ spec:
               # -- how many MQTT replicas to create
               replicas: 1
               # secret keys must be: MQ_PASSWORD, MQ_USERNAME
-              existingSecret: 'netmaker-pgsql-credentials'
+              existingSecret: 'netmaker-mq-credentials'
               persistence:
                 existingClaim: "netmaker-mq-pvc"
               service:
