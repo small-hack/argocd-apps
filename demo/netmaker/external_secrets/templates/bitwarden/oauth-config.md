@@ -18,9 +18,9 @@ spec:
           {{ `{{ .serverHttpHost }}` }}
         serverBrokerEndpoint: |-
           {{ `{{ .serverBrokerEndpoint }}` }}
-        clientId: |-
+        CLIENT_ID: |-
           {{ `{{ .username }}` }}
-        clientSecret: |-
+        CLIENT_SECRET: |-
           {{ `{{ .password }}` }}
         authUrl: |-
           {{ `{{ .authUrl }}` }}
