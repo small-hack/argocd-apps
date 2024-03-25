@@ -38,38 +38,23 @@ spec:
         path: charts/netmaker/
         helm:
           valuesObject:
-            # Default values for netmaker.
-            # This is a YAML-formatted file.
-            # Declare variables to be passed into your templates.
-            
             # -- number of netmaker server replicas to create
             replicas: 1
             
             image:
               # -- The image repo to pull Netmaker image from
               repository: gravitl/netmaker
-            
-            # -- override the name for netmaker objects
-            nameOverride: ""
-            
-            # -- override the full name for netmaker objects
-            fullnameOverride: ""
-            
-            serviceAccount:
-              # -- Specifies whether a service account should be created
-              create: true
-              # -- Annotations to add to the service account
-              annotations: {}
-              # -- Name of SA to use. If not set and create is true, a name is generated using the fullname template
-              name: ""
-            
-            # -- pod annotations to add
-            podAnnotations: {}
-            
-            # -- pod security contect to add
-            podSecurityContext: {}
-            # fsGroup: 2000
 
+            netmaker:
+              serverName: "{{ .netmaker_hostname }}"
+              # keys: MASTER_KEY, optionally: LICENSE_KEY, NETMAKER_TENANT_ID
+              existingSecret: ""
+              
+              oauth:
+                enabled: true
+                provider: "oidc"
+                existingSecret: netmaker-oauth-config
+            
             api:
               service:
                 # -- type for netmaker server services
@@ -127,9 +112,8 @@ spec:
             mq:
               # -- how many MQTT replicas to create
               replicas: 1
-              username: "netmaker"
+              # secret keys must be: MQ_PASSWORD, MQ_USERNAME
               existingSecret: 'netmaker-pgsql-credentials'
-              secretKey: "MQ_ADMIN_PASSWORD"
               persistence:
                 existingClaim: "netmaker-mq-pvc"
               service:
@@ -165,17 +149,6 @@ spec:
             setIpForwarding:
               enabled: true
             
-            wireguard:
-              # -- whether or not to use WireGuard on server
-              enabled: true
-              service:
-                annotations: {}
-                type: NodePort
-              # -- whether or not to use Kernel WG (should be false unless WireGuard is installed on hosts).
-              kernel: true
-              # -- max number of networks that Netmaker will support if running with WireGuard enabled
-              networkLimit: 10
-            
             postgresql:
               enabled: true
               auth:
@@ -183,9 +156,7 @@ spec:
                 username: netmaker
                 # -- postgress database
                 database: netmaker
-                # -- postgres pass to generate, ignored if existingSecret passed in
-                # password: netmaker
-                # -- postgress number of replicas to deploy
+                # SQL_PASS, SQL_HOST, SQL_PORT, SQL_USER, SQL_DB
                 existingSecret: netmaker-pgsql-credentials
                 secretKeys:
                   userPasswordKey: SQL_PASS
@@ -214,15 +185,14 @@ spec:
                 persistence:
                   enabled: true
                   existingClaim: netmaker-postgresql
-            
-            oauth:
-              enabled: true
-              existingSecret: netmaker-oauth-config
-              secretKeys:
-                clientID: clientId
-                clientSecret: clientSecret
-                issuer: authUrl
-                frontendURL: frontendUrl
-                serverHttpHost: serverHttpHost
-                auth_provider: auth_provider
-                serverBrokerEndpoint: serverBrokerEndpoint
+
+            turn:
+              # -- use an external turn server
+              enabled: false
+              host: ""
+              apiHost: ""
+              username: ""
+              password: ""
+              # -- existing secret with turn server info. Must have the following keys:
+              # TURN_SERVER_HOST, TURN_SERVER_API_HOST, TURN_PORT, TURN_USERNAME, TURN_PASSWORD
+              existingSecret: ""
