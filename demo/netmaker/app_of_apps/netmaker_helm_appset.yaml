@@ -18,6 +18,9 @@ spec:
           parameters:
             secret_vars:
               - netmaker_hostname
+              - netmaker_admin_hostname
+              - netmaker_api_hostname
+              - netmaker_broker_hostname
               - global_cluster_issuer
   template:
     metadata:
@@ -68,7 +71,7 @@ spec:
                 # -- attempts to configure ingress if true
                 enabled: true
                 # -- api (REST) route subdomain
-                host: 'api.{{ .netmaker_hostname }}'
+                host: '{{ .netmaker_api_hostname }}'
                 # -- api ingress className
                 className: "nginx"
                 # -- annotations for the netmaker API ingress object
@@ -78,7 +81,7 @@ spec:
                 tls:
                   - secretName: netmaker-api-tls
                     hosts:
-                      - 'api.{{ .netmaker_hostname }}'
+                      - '{{ .netmaker_api_hostname }}'
             
             ui:
               # -- how many UI replicas to create
@@ -94,7 +97,7 @@ spec:
                 # -- attempts to configure ingress if true
                 enabled: true
                 # -- hostname for mqtt ingress
-                host: 'dashboard.{{ .netmaker_hostname }}'
+                host: '{{ .netmaker_admin_hostname }}'
                 # -- UI ingress className
                 className: "nginx"
                 annotations:
@@ -103,7 +106,7 @@ spec:
                 tls:
                   - secretName: netmaker-ui-tls
                     hosts:
-                      - 'dashboard.{{ .netmaker_hostname }}'
+                      - '{{ .netmaker_admin_hostname }}'
             
             mq:
               # -- how many MQTT replicas to create
@@ -123,7 +126,7 @@ spec:
                 # -- attempts to configure ingress if true
                 enabled: true
                 # -- hostname for mqtt ingress
-                host: 'broker.{{ .netmaker_hostname }}'
+                host: '{{ .netmaker_broker_hostname }}'
                 className: "nginx"
                 # -- annotations for the mqtt ingress object
                 annotations:
@@ -131,7 +134,7 @@ spec:
                 tls:
                   - secretName: netmaker-mqtt-tls
                     hosts:
-                      - 'broker.{{ .netmaker_hostname }}'
+                      - '{{ .netmaker_broker_hostname }}'
             
             dns:
               # -- whether or not to deploy coredns
