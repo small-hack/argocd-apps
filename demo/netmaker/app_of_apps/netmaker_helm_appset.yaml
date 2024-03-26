@@ -94,7 +94,7 @@ spec:
                 # -- attempts to configure ingress if true
                 enabled: true
                 # -- hostname for mqtt ingress
-                host: 'admin.{{ .netmaker_hostname }}'
+                host: 'dashboard.{{ .netmaker_hostname }}'
                 # -- UI ingress className
                 className: "nginx"
                 annotations:
@@ -103,7 +103,7 @@ spec:
                 tls:
                   - secretName: netmaker-ui-tls
                     hosts:
-                      - 'admin.{{ .netmaker_hostname }}'
+                      - 'dashboard.{{ .netmaker_hostname }}'
             
             mq:
               # -- how many MQTT replicas to create
