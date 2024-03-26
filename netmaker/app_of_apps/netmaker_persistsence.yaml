@@ -17,7 +17,7 @@ spec:
   source:
     repoURL: https://github.com/small-hack/argocd-apps.git
     path: netmaker/manifests/persistence/
-    targetRevision: move-netmaker-to-prod
+    targetRevision: main
   syncPolicy:
     syncOptions:
       - ApplyOutOfSyncOnly=true
