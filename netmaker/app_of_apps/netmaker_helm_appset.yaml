@@ -24,7 +24,7 @@ spec:
               - global_cluster_issuer
   template:
     metadata:
-      name: netmaker-helm-chart
+      name: netmaker-helm
     spec:
       project: netmaker
       syncPolicy:
@@ -37,9 +37,10 @@ spec:
         namespace: netmaker
       source:
         repoURL: 'https://small-hack.github.io/netmaker-helm'
-        targetRevision: 0.10.1
+        targetRevision: 0.11.7
         chart: netmaker
         helm:
+          releaseName: netmaker
           valuesObject:
             # -- number of netmaker server replicas to create
             replicas: 1
@@ -51,7 +52,11 @@ spec:
             netmaker:
               serverName: "{{ .netmaker_hostname }}"
               # keys: MASTER_KEY, optionally: LICENSE_KEY, NETMAKER_TENANT_ID
-              existingSecret: ""
+              existingSecret: netmaker-admin-credentials
+
+              admin:
+                # keys: ADMIN_USER, ADMIN_PASSWORD
+                existingSecret: netmaker-admin-credentials
               
               oauth:
                 enabled: true
