@@ -10,13 +10,14 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "1"
 spec:
-  project: default
+  project: netmaker
   destination:
     server: "https://kubernetes.default.svc"
     namespace: netmaker
   source:
     repoURL: https://github.com/small-hack/argocd-apps.git
-    path: demo/netmaker/manifests/persistence/
+    path: netmaker/manifests/persistence/
+    targetRevision: move-netmaker-to-prod
   syncPolicy:
     syncOptions:
       - ApplyOutOfSyncOnly=true
