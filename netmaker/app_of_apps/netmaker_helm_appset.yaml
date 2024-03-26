@@ -24,7 +24,7 @@ spec:
               - global_cluster_issuer
   template:
     metadata:
-      name: netmaker-helm-chart
+      name: netmaker-helm
     spec:
       project: netmaker
       syncPolicy:
@@ -40,6 +40,7 @@ spec:
         targetRevision: 0.11.7
         chart: netmaker
         helm:
+          releaseName: netmaker
           valuesObject:
             # -- number of netmaker server replicas to create
             replicas: 1
