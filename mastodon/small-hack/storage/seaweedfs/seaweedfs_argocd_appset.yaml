@@ -37,7 +37,7 @@ spec:
           selfHeal: true 
       source:
         repoURL: 'https://seaweedfs.github.io/seaweedfs/helm'
-        targetRevision: 3.63.0
+        targetRevision: 3.64.0
         chart: seaweedfs
         helm:
           releaseName: mastodon-seaweedfs
