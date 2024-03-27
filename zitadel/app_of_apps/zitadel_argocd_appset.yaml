@@ -39,7 +39,7 @@ spec:
       source:
         repoURL: https://zitadel.github.io/zitadel-charts
         chart: zitadel
-        targetRevision: 7.10.0
+        targetRevision: 7.11.0
         helm:
           releaseName: zitadel
           # https://github.com/zitadel/zitadel-charts/blob/main/charts/zitadel/values.yaml
