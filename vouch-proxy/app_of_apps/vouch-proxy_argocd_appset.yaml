@@ -33,7 +33,7 @@ spec:
           prune: true
           selfHeal: true
       source:
-        repoURL: 'https://jessebot.github.io/vouch-helm-chart'
+        repoURL: 'https://small-hack.github.io/vouch-helm'
         targetRevision: 4.1.2
         chart: vouch
         helm:
