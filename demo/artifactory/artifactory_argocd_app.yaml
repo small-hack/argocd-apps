@@ -8,9 +8,8 @@ spec:
     namespace: artifactory
     server: 'https://kubernetes.default.svc'
   source:
-    path: ''
     repoURL: 'https://charts.jfrog.io'
-    targetRevision: 107.77.7
+    targetRevision: 107.77.8
     chart: artifactory-oss
     helm:
       parameters:
