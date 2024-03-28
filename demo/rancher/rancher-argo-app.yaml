@@ -8,7 +8,7 @@ spec:
   project: default
   sources:
     - repoURL: 'https://releases.rancher.com/server-charts/latest'
-      targetRevision: 2.8.2
+      targetRevision: 2.8.3
       chart: rancher
       helm:
         values: |
