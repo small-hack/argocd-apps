@@ -33,6 +33,9 @@ spec:
               - home_assistant_usb_device_path
               - home_assistant_usb_device_mount_path
               - home_assistant_usb_device_index
+              - home_assistant_bluetooth_device_path
+              - home_assistant_bluetooth_device_mount_path
+              - home_assistant_bluetooth_device_index
   template:
     metadata:
       name: home-assistant-app
@@ -81,6 +84,13 @@ spec:
               storageClass: local-path
 
             extraVolumes:
+              # for an external bluetooth USB device
+              - hostPath:
+                  path: >-
+                    {{ .home_assistant_bluetooth_device_path }}
+                  type: CharDevice
+                name: bluetooth
+
               # for an external USB device
               - hostPath:
                   path: >-
@@ -97,6 +107,10 @@ spec:
               # for an external USB device
               - mountPath: '{{ .home_assistant_usb_device_mount_path }}'
                 name: usb
+
+              # for an external bluetooth USB device
+              - mountPath: '{{ .home_assistant_bluetooth_device_mount_path }}'
+                name: bluetooth
 
               # for the basic themes we provide
               - name: themes
