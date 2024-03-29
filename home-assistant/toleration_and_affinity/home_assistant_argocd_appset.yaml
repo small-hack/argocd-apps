@@ -106,10 +106,12 @@ spec:
               # for an external USB device
               - mountPath: '{{ .home_assistant_usb_device_mount_path }}'
                 name: usb
+                readOnly: true
 
               # for an external bluetooth USB device
               - mountPath: '{{ .home_assistant_bluetooth_device_mount_path }}'
                 name: bluetooth
+                readOnly: true
 
               # for the basic themes we provide
               - name: themes
