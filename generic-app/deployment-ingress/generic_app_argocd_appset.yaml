@@ -1,0 +1,60 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: generic-app-set
+  namespace: argocd
+spec:
+  goTemplate: true
+  # generator allows us to source specific values from an external k8s secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - global_cluster_issuer
+              - generic_app_image_registry
+              - generic_app_image_repo
+              - generic_app_image_tag
+              - generic_app_app_name
+              - generic_app_hostname
+  template:
+    metadata:
+      name: '{{ .generic_app_app_name }}'
+    spec:
+      project: '{{ .generic_app_app_name }}'
+      destination:
+        server: "https://kubernetes.default.svc"
+        namespace: '{{ .generic_app_release_name }}'
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
+          selfHeal: true
+      source:
+        # official generic app helm repo
+        repoURL: 'https://small-hack.github.io/generic-app-helm'
+        chart: generic-app
+        targetRevision: 0.1.1
+        helm:
+          releaseName: '{{ .generic_app_app_name }}'
+          valuesObject:
+            fullnameOverride: '{{ .generic_app_app_name }}'
+            deployment:
+              image:
+                registry: '{{ .generic_app_image_registry }}'
+                repository: '{{ .generic_app_image_repo }}'
+                tag: '{{ .generic_app_image_tag }}'
+
+            ingress:
+              enabled: true
+              className: nginx
+              annotations:
+                cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
+              tls:
+                - secretName: '{{ .generic_app_app_name }}-tls'
+                  hosts:
+                    - '{{ .generic_app_hostname }}'
