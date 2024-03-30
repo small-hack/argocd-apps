@@ -38,7 +38,7 @@ spec:
       source:
         repoURL: https://small-hack.github.io/cloudnative-pg-cluster-chart
         chart: cnpg-cluster
-        targetRevision: 0.3.12
+        targetRevision: 0.3.13
         helm:
           releaseName: mastodon-postgres-cluster
           values: |
