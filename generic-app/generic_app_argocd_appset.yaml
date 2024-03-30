@@ -38,6 +38,7 @@ spec:
         chart: generic-app
         targetRevision: 0.1.1
         helm:
+          releaseName: '{{ .generic_app_app_name }}'
           valuesObject:
             fullnameOverride: '{{ .generic_app_app_name }}'
             deployment:
