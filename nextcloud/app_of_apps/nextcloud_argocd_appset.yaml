@@ -402,7 +402,7 @@ spec:
               maxPods: 10
 
             metrics:
-              enabled: false
+              enabled: true
               https: true
               token: "enabled"
               timeout: 10s
