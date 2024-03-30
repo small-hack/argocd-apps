@@ -15,3 +15,10 @@ This app is a ApplicationSet using the [small-hack/home-assistant-chart](https:/
 - Setups up a USB device, such as conbee II. (NOTE: requires the [generic device plugin](../../generic-device-plugin) to work)
 
 - includes default dark mode catppucin themes ready to go
+
+## installing hacs
+log into the home assistant pod and run:
+
+```
+wget -O - https://get.hacs.xyz | bash -
+```
