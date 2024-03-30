@@ -1,1 +1,3 @@
 .nextcloud-restic-password
+.restic.env
+tmp/**
