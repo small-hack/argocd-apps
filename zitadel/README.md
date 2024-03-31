@@ -33,6 +33,10 @@ To deploy Zitadel and PostgreSQL with an isolated MinIO tenant for PostgreSQL ba
 argocd app create zitadel --upsert --repo https://github.com/small-hack/argocd-apps --path zitadel/app_of_apps --sync-policy automated --self-heal --auto-prune --dest-namespace zitadel --dest-server https://kubernetes.default.svc --directory-recursion
 ```
 
+### No Metrics
+
+We have metrics on by default for zitadel. If you're not deploying prometheus, point your Argo CD add [`zitadel/app_of_apps/no-metrics/`](./app_of_apps/no-metrics).
+
 ## Zitadel OIDC for logging into Argo CD with Zitadel as the SSO
 
 Check out this [PR](https://github.com/argoproj/argo-cd/pull/15029)
