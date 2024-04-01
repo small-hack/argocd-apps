@@ -37,7 +37,7 @@ spec:
   source:
     repoURL: 'registry-1.docker.io'
     chart: bitnamicharts/mongodb
-    targetRevision: 15.1.0
+    targetRevision: 15.1.1
     helm:
       # Docs: https://github.com/bitnami/charts/blob/main/bitnami/mongodb/values.yaml
       values: |
