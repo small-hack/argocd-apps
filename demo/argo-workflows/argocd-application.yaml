@@ -23,7 +23,7 @@ spec:
     chart: argo-workflows
     targetRevision: 0.40.14
     helm:
-      valuesObject:
+      values: |
         images:
           # -- Common tag for Argo Workflows images. Defaults to `.Chart.AppVersion`.
           tag: ""
