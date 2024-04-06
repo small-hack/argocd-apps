@@ -56,8 +56,8 @@ spec:
         targetRevision: touch-automations
         path: charts/home-assistant/
         # repoURL: https://small-hack.github.io/home-assistant-chart
+        # chart: home-assistant
         # targetRevision: 0.6.0
-        chart: home-assistant
         helm:
           releaseName: home-assistant
           valuesObject:
