@@ -1,6 +1,6 @@
 # Vouch Proxy
 
-Vouch is an OAuth / OIDC proxy solution for Nginx using the `auth_request` module. 
+Vouch is an OAuth / OIDC proxy solution for Nginx using the `auth_request` module.
 It forces visitors to login and authenticate with an `Identity Provider` before allowing them access to a website. This is useful as you only need to add some annotations to an ingress-nginx Ingress resource to use vouch on websites that otherwise don't have any authentication (like prometheus).
 
 <img src="./screenshots/vouch_app_of_apps.png">
