@@ -136,7 +136,7 @@ spec:
                 # -- Whether to allow token based registration
                 requiresToken: false
 
-              # ref: https://github.com/element-hq/synapse/blob/develop/docs/openid.md 
+              # ref: https://github.com/element-hq/synapse/blob/develop/docs/openid.md
               oidc:
                 enabled: true
                 existingSecret: "synapse-oidc"
@@ -423,7 +423,7 @@ spec:
                   mountPath: /etc/secrets/ca
 
                 - name: postgres-client-certs
-                  mountPath: /etc/secrets/matrix 
+                  mountPath: /etc/secrets/matrix
 
               extraEnv:
                 - name: PIP_CACHE_DIR

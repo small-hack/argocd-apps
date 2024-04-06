@@ -60,12 +60,12 @@ spec:
                 s3Credentials:
                   accessKeyId:
                     name: postgres-s3-credentials
-                    key : "S3_USER"
+                    key: "S3_USER"
                   secretAccessKey:
                     name: postgres-s3-credentials
-                    key : "S3_PASSWORD"
+                    key: "S3_PASSWORD"
               retentionPolicy: "30d"
-            
+
             certificates:
               server:
                 enabled: true
@@ -76,13 +76,13 @@ spec:
               user:
                 enabled: true
                 username:
-                - nextcloud
+                  - nextcloud
 
             scheduledBackup:
               name: nextcloud-pg-backup
               spec:
                 # hourly backups for postgres data
-                schedule: "0 0 * * * *" 
+                schedule: "0 0 * * * *"
                 backupOwnerReference: self
                 cluster:
                   name: nextcloud-postgres
@@ -91,6 +91,6 @@ spec:
               enablePodMonitor: false
 
             postgresql:
-              pg_hba: 
+              pg_hba:
                 - hostnossl all all 0.0.0.0/0 reject
                 - hostssl all all 0.0.0.0/0 cert clientcert=verify-full
