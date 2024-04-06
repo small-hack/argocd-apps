@@ -19,11 +19,15 @@ spec:
         input:
           parameters:
             secret_vars:
-              - home_assistant_hostname
               - global_cluster_issuer
               - global_time_zone
+              - home_assistant_hostname
+              - home_assistant_name
               - home_assistant_unit_system
               - home_assistant_temperature_unit
+              - home_assistant_latitude
+              - home_assistant_longitude
+              - home_assistant_elevation
               - home_assistant_toleration_key
               - home_assistant_toleration_operator
               - home_assistant_toleration_value
@@ -38,7 +42,7 @@ spec:
               - home_assistant_bluetooth_device_index
   template:
     metadata:
-      name: home-assistant-app
+      name: home-assistant-helm
       annotations:
         argocd.argoproj.io/sync-wave: "2"
     spec:
@@ -52,10 +56,10 @@ spec:
         automated:
           selfHeal: true
       source:
-        # https://github.com/small-hack/home-assistant-chart
+        # repoURL: https://github.com/small-hack/home-assistant-chart
         repoURL: https://small-hack.github.io/home-assistant-chart
         chart: home-assistant
-        targetRevision: 0.5.0
+        targetRevision: 0.6.0
         helm:
           releaseName: home-assistant
           valuesObject:
@@ -97,11 +101,6 @@ spec:
                   type: CharDevice
                 name: usb
 
-              # for the basic themes we provide
-              - name: themes
-                configMap:
-                  name: home-assistant-themes
-
             extraVolumeMounts:
               # for an external USB device
               - mountPath: '{{ .home_assistant_usb_device_mount_path }}'
@@ -112,10 +111,6 @@ spec:
               - mountPath: '{{ .home_assistant_bluetooth_device_mount_path }}'
                 name: bluetooth
                 readOnly: true
-
-              # for the basic themes we provide
-              - name: themes
-                mountPath: /config/themes
 
             resources:
               limits:
@@ -142,10 +137,14 @@ spec:
               configuration: |
                 # basic home assitant config stuff
                 homeassistant:
+                  name: '{{ .home_assistant_name }}'
                   external_url: 'https://{{ .home_assistant_hostname }}'
                   time_zone: '{{ .global_time_zone }}'
-                  temperature_unit: {{ .home_assistant_temperature_unit }}
-                  unit_system: {{ .home_assistant_unit_system }}
+                  temperature_unit: '{{ .home_assistant_temperature_unit }}'
+                  unit_system: '{{ .home_assistant_unit_system }}'
+                  latitude: '{{ .home_assistant_latitude }}'
+                  longitude: '{{ .home_assistant_longitude }}'
+                  elevation: '{{ .home_assistant_elevation }}'
 
                 # reverse proxy for nginx stuff
                 http:
@@ -160,15 +159,16 @@ spec:
                 # enable configuration ui i think
                 config:
 
+                # include themes from another directory
+                frontend:
+                  themes: !include_dir_merge_named themes
+
                 # required for the automations UI to work
                 automation: !include automations.yaml
 
                 # required for the scenes UI to work
                 scene: !include scenes.yaml
-
-                # include themes from another directory
-                frontend:
-                  themes: !include_dir_merge_named themes
+              existingThemesConfigMap: 'home-assistant-themes'
 
             livenessProbe:
               enabled: false
