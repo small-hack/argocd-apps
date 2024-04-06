@@ -35,7 +35,7 @@ spec:
           - ApplyOutOfSyncOnly=true
         automated:
           prune: true
-          selfHeal: true 
+          selfHeal: true
       source:
         repoURL: 'https://seaweedfs.github.io/seaweedfs/helm'
         targetRevision: 3.64.0
