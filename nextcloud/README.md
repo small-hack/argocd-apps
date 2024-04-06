@@ -150,7 +150,7 @@ spec:
 
 ## Video Thumbnails
 
-By default videos won't get thumbnails. 
+By default videos won't get thumbnails.
 
 Requires installing `smbclient` and `ffmpeg` into the web-app container, then edit a file to trigger the thumbnail generation, be patient though it takes a minute or so.
 
@@ -226,7 +226,7 @@ $CONFIG = array (
   'oidc_login_auto_redirect' => false,
 
   // Redirect to this page after logging out the user
-  // we are using gotemplating in the Argo CD ApplicationSet for this one, 
+  // we are using gotemplating in the Argo CD ApplicationSet for this one,
   // but you could easily fill in your nextcloud hostname in plain text here
   'oidc_login_logout_url' => '{{ .nextcloud_hostname }}',
 
@@ -243,8 +243,8 @@ $CONFIG = array (
   // Use ID Token instead of UserInfo
   'oidc_login_use_id_token' => false,
 
-  // Attribute map for OIDC response. 
-  // NOTE: the is_admin key uses the nextcloud_admins group membership 
+  // Attribute map for OIDC response.
+  // NOTE: the is_admin key uses the nextcloud_admins group membership
   //       to determine if the user should be added to the admin group
   'oidc_login_attributes' => array (
       'id' => 'preferred_username',
@@ -255,8 +255,8 @@ $CONFIG = array (
       'is_admin' => 'groups_nextcloud_admins',
   ),
 
-  // Allow only users in configured value(s) to access Nextcloud. In this instance, 
-  // we only allow users that have either the nextcloud_admins or nextcloud_users roles. 
+  // Allow only users in configured value(s) to access Nextcloud. In this instance,
+  // we only allow users that have either the nextcloud_admins or nextcloud_users roles.
   // all other users are denied
   'oidc_login_filter_allowed_values' => array('nextcloud_admins', 'nextcloud_users'),
 
