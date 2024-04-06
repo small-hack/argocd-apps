@@ -25,6 +25,9 @@ spec:
               - home_assistant_name
               - home_assistant_unit_system
               - home_assistant_temperature_unit
+              - home_assistant_latitude
+              - home_assistant_longitude
+              - home_assistant_elevation
               - home_assistant_toleration_key
               - home_assistant_toleration_operator
               - home_assistant_toleration_value
@@ -139,8 +142,11 @@ spec:
                   name: '{{ .home_assistant_name }}'
                   external_url: 'https://{{ .home_assistant_hostname }}'
                   time_zone: '{{ .global_time_zone }}'
-                  temperature_unit: {{ .home_assistant_temperature_unit }}
-                  unit_system: {{ .home_assistant_unit_system }}
+                  temperature_unit: '{{ .home_assistant_temperature_unit }}'
+                  unit_system: '{{ .home_assistant_unit_system }}'
+                  latitude: '{{ .home_assistant_latitude }}'
+                  longitude: '{{ .home_assistant_longitude }}'
+                  elevation: '{{ .home_assistant_elevation }}'
 
                 # reverse proxy for nginx stuff
                 http:
