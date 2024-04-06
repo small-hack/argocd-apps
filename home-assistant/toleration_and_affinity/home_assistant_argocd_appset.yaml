@@ -39,7 +39,7 @@ spec:
               - home_assistant_bluetooth_device_index
   template:
     metadata:
-      name: home-assistant-app
+      name: home-assistant-helm
       annotations:
         argocd.argoproj.io/sync-wave: "2"
     spec:
