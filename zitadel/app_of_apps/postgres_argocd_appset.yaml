@@ -64,12 +64,12 @@ spec:
                 s3Credentials:
                   accessKeyId:
                     name: zitadel-db-credentials
-                    key : "ACCESS_KEY"
+                    key: "ACCESS_KEY"
                   secretAccessKey:
                     name: zitadel-db-credentials
-                    key : "SECRET_KEY"
+                    key: "SECRET_KEY"
               retentionPolicy: "30d"
-            
+
             certificates:
               server:
                 enabled: true
@@ -87,7 +87,7 @@ spec:
               name: zitadel-pg-backup
               spec:
                 # hourly full data backups
-                schedule: "0 0 * * * *" 
+                schedule: "0 0 * * * *"
                 backupOwnerReference: self
                 cluster:
                   name: zitadel-postgres
@@ -96,6 +96,6 @@ spec:
               enablePodMonitor: false
 
             postgresql:
-              pg_hba: 
+              pg_hba:
                 - hostnossl all all 0.0.0.0/0 reject
                 - hostssl all all 0.0.0.0/0 cert clientcert=verify-full

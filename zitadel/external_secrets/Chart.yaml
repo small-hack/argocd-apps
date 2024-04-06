@@ -1,6 +1,6 @@
 apiVersion: v2
 name: zitadel-eso-bitwarden-chart
-description: A Helm chart for Zitadel External Secrets using the Bitwarden ESO provider on Kubernetes 
+description: A Helm chart for Zitadel External Secrets using the Bitwarden ESO provider on Kubernetes
 
 # A chart can be either an 'application' or a 'library' chart.
 #
