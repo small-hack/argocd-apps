@@ -137,7 +137,7 @@ spec:
                         operator: In
                         values:
                           - '{{ .home_assistant_affinity_value }}'
-            
+
             homeAssistant:
               configuration: |
                 # basic home assitant config stuff
@@ -162,7 +162,7 @@ spec:
 
                 # required for the automations UI to work
                 automation: !include automations.yaml
-                
+
                 # required for the scenes UI to work
                 scene: !include scenes.yaml
 
