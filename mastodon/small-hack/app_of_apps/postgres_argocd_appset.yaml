@@ -41,7 +41,7 @@ spec:
         targetRevision: 0.3.14
         helm:
           releaseName: mastodon-postgres-cluster
-          valuesObject: 
+          valuesObject:
             name: mastodon-postgres
             instances: 2
             bootstrap:
@@ -56,10 +56,10 @@ spec:
                 s3Credentials:
                   accessKeyId:
                     name: postgres-s3-credentials
-                    key : "S3_USER"
+                    key: "S3_USER"
                   secretAccessKey:
                     name: postgres-s3-credentials
-                    key : "S3_PASSWORD"
+                    key: "S3_PASSWORD"
               retentionPolicy: "30d"
             certificates:
               server:
@@ -70,19 +70,19 @@ spec:
                 generate: true
               user:
                 enabled: true
-                username: 
+                username:
                   - mastodon
             scheduledBackup:
               name: mastodon-pg-backup
               spec:
                 # hourly backups for postgres data
-                schedule: "0 0 * * * *" 
+                schedule: "0 0 * * * *"
                 backupOwnerReference: self
                 cluster:
                   name: mastodon-postgres
             monitoring:
               enablePodMonitor: false
             postgresql:
-              pg_hba: 
+              pg_hba:
                 - hostnossl all all 0.0.0.0/0 reject
                 - hostssl all all 0.0.0.0/0 cert clientcert=verify-full
