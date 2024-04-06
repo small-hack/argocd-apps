@@ -95,7 +95,7 @@ spec:
                 serviceMonitorNamespaceSelector: {}
 
                 additionalScrapeConfigsSecret:
-                  enabled: true
+                  enabled: false
                   name: additional-scrape-configs
                   key: scrape-targets.yaml
 
