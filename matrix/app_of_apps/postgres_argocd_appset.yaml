@@ -47,11 +47,11 @@ spec:
               initdb:
                 database: matrix
                 owner: matrix
-                secret:
-                  name: matrix-pgsql-credentials
                 # postInitSQL:
                 #  - GRANT ALL PRIVILEGES ON DATABASE matrix TO matrix;
                 #  - GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO matrix;
+                secret:
+                  name: matrix-pgsql-credentials
 
             backup:
               # barman is a utility for backing up postgres to s3
@@ -61,12 +61,12 @@ spec:
                 s3Credentials:
                   accessKeyId:
                     name: postgres-s3-credentials
-                    key : "S3_USER"
+                    key: "S3_USER"
                   secretAccessKey:
                     name: postgres-s3-credentials
-                    key : "S3_PASSWORD"
+                    key: "S3_PASSWORD"
               retentionPolicy: "30d"
-            
+
             certificates:
               server:
                 enabled: true
@@ -82,7 +82,7 @@ spec:
             scheduledBackup:
               name: matrix-pg-backup
               spec:
-                schedule: "0 0 * * * *" 
+                schedule: "0 0 * * * *"
                 backupOwnerReference: self
                 cluster:
                   name: matrix-postgres
@@ -91,6 +91,6 @@ spec:
               enablePodMonitor: false
 
             postgresql:
-              pg_hba: 
+              pg_hba:
                 - hostnossl all all 0.0.0.0/0 reject
                 - hostssl all all 0.0.0.0/0 cert clientcert=verify-full
