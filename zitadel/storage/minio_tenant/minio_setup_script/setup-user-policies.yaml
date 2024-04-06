@@ -62,7 +62,7 @@ spec:
       containers:
         - name: mc
           image: minio/mc
-          command: [ "/start-config/setup.sh" ]
+          command: ["/start-config/setup.sh"]
 
           volumeMounts:
             - name: start-config

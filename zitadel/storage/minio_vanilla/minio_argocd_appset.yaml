@@ -47,7 +47,6 @@ spec:
           ## Use existing Secret that store following variables:
           ## .data.rootUser and .data.rootPassword are mandatory,
           existingSecret: "admin-s3-credentials"
-          
           ## TLS Settings for MinIO
           tls:
             enabled: false
@@ -141,7 +140,7 @@ spec:
                 memory: 128Mi
             # Command to run after the main command on exit
             exitCommand: ""
-          
+
           ## List of users to be created after minio install
           ##
           users:
@@ -157,7 +156,7 @@ spec:
               existingSecret: postgres-s3-credentials
               existingSecretKey: password
               policy: readwrite
-          
+
           ## Additional stuff for the Kubernetes Job makeUserJob
           makeUserJob:
             securityContext:

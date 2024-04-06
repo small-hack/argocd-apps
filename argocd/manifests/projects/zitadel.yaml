@@ -5,22 +5,22 @@ metadata:
   namespace: argocd
 spec:
   clusterResourceWhitelist:
-  - group: '*'
-    kind: '*'
+    - group: '*'
+      kind: '*'
   description: project for zitadel
   destinations:
-  - name: in-cluster
-    namespace: zitadel
-    server: https://kubernetes.default.svc
-  - name: in-cluster
-    namespace: argocd
-    server: https://kubernetes.default.svc
+    - name: in-cluster
+      namespace: zitadel
+      server: https://kubernetes.default.svc
+    - name: in-cluster
+      namespace: argocd
+      server: https://kubernetes.default.svc
   namespaceResourceWhitelist:
-  - group: '*'
-    kind: '*'
+    - group: '*'
+      kind: '*'
   orphanedResources: {}
   sourceRepos:
-  - https://charts.zitadel.com
-  - https://charts.cockroachdb.com/
-  - https://zitadel.github.io/zitadel-charts
-  - https://github.com/small-hack/argocd-apps
+    - https://charts.zitadel.com
+    - https://charts.cockroachdb.com/
+    - https://zitadel.github.io/zitadel-charts
+    - https://github.com/small-hack/argocd-apps
