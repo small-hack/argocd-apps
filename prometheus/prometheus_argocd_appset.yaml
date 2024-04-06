@@ -40,8 +40,9 @@ spec:
         chart: kube-prometheus-stack
         targetRevision: 57.2.0
         helm:
+          releaseName: prom-stack
           values: |
-            fullnameOverride: prometheus
+            fullnameOverride: prom-stack
             global:
               evaluation_interval: 5s
               scrape_interval: 5s
@@ -80,7 +81,7 @@ spec:
                 probeSelectorNilUsesHelmValues: false
                 probeSelector: {}
                 probeNamespaceSelector: {}
-                  
+
                 podMonitorSelectorNilUsesHelmValues: false
                 podMonitorSelector: {}
                 podMonitorNamespaceSelector: {}
@@ -88,16 +89,16 @@ spec:
                 ruleSelectorNilUsesHelmValues: false
                 ruleSelector: {}
                 ruleNamespaceSelector: {}
-                  
+
                 serviceMonitorSelectorNilUsesHelmValues: false
                 serviceMonitorSelector: {}
                 serviceMonitorNamespaceSelector: {}
-                
+
                 additionalScrapeConfigsSecret:
                   enabled: true
                   name: additional-scrape-configs
                   key: scrape-targets.yaml
-                  
+
                 storageSpec:
                   volumeClaimTemplate:
                     spec:
@@ -108,7 +109,7 @@ spec:
                           storage: 32Gi
                 retention: 30d
                 logLevel: info
-                
+
               prometheusOperator:
                 namespaces:
                   releaseNamespace: true
