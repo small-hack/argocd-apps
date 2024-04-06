@@ -103,8 +103,8 @@
       "clientId": "vouch",
       "name": "Vouch",
       "description": "Vouch for keycloak",
-      "rootUrl": "https://***REMOVED***",
-      "adminUrl": "https://***REMOVED***/",
+      "rootUrl": "https://vouch.example.com",
+      "adminUrl": "https://vouch.example.com/",
       "baseUrl": "",
       "surrogateAuthRequired": false,
       "enabled": true,
@@ -113,7 +113,7 @@
       "secret": "8m0c9DhS9jNWskIEgF2CGTsUQGhkmpte",
       "redirectUris": [
         "https://oidcdebugger.com/debug",
-        "https://***REMOVED***/auth"
+        "https://vouch.example.com/auth"
       ],
       "webOrigins": [
         "+"
