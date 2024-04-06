@@ -56,12 +56,10 @@ spec:
         automated:
           selfHeal: true
       source:
-        repoURL: https://github.com/small-hack/home-assistant-chart
-        targetRevision: touch-automations
-        path: charts/home-assistant/
-        # repoURL: https://small-hack.github.io/home-assistant-chart
-        # chart: home-assistant
-        # targetRevision: 0.6.0
+        # repoURL: https://github.com/small-hack/home-assistant-chart
+        repoURL: https://small-hack.github.io/home-assistant-chart
+        chart: home-assistant
+        targetRevision: 0.6.0
         helm:
           releaseName: home-assistant
           valuesObject:
