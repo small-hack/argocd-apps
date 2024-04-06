@@ -164,6 +164,11 @@ spec:
                   value: /etc/secrets/ca/ca.crt
 
               extraVolumes:
+                # - name: before-starting-scripts
+                #   configMap:
+                #     name: before-starting-scripts
+                #     defaultMode: 0550
+
                 - name: postgres-ca
                   secret:
                     secretName: nextcloud-postgres-server-ca-key-pair
@@ -174,20 +179,15 @@ spec:
                     secretName: nextcloud-postgres-nextcloud-cert
                     defaultMode: 0640
 
-                # - name: before-starting-scripts
-                #   configMap:
-                #     name: before-starting-scripts
-                #     defaultMode: 0550
-
               extraVolumeMounts:
+                # - name: before-starting-scripts
+                #   mountPath: /docker-entrypoint-hooks.d/before-starting
+
                 - name: postgres-ca
                   mountPath: /etc/secrets/ca
 
                 - name: postgres-client-certs
                   mountPath: /etc/secrets/nextcloud
-
-                # - name: before-starting-scripts
-                #   mountPath: /docker-entrypoint-hooks.d/before-starting
 
               # defaultConfigs:
               #   redis.config.php: false
@@ -250,7 +250,7 @@ spec:
                 oidc.config.php: |-
                   <?php
                   $CONFIG = array (
-                    // this disables the default login 
+                    // this disables the default login
                     'hide_login_form' => true,
 
                     // Some Nextcloud options that might make sense here
@@ -276,7 +276,7 @@ spec:
                     // Use ID Token instead of UserInfo
                     'oidc_login_use_id_token' => false,
 
-                    // Attribute map for OIDC response. 
+                    // Attribute map for OIDC response.
                     'oidc_login_attributes' => array (
                         'id' => 'preferred_username',
                         'name' => 'name',

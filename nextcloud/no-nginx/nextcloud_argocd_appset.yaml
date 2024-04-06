@@ -332,7 +332,7 @@ spec:
                     // Use ID Token instead of UserInfo
                     'oidc_login_use_id_token' => false,
 
-                    // Attribute map for OIDC response. 
+                    // Attribute map for OIDC response.
                     'oidc_login_attributes' => array (
                         'id' => 'preferred_username',
                         'name' => 'name',
