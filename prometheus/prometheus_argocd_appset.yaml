@@ -117,7 +117,7 @@ spec:
                     - kube-system
                     - nextcloud
                     - k8up
-                    - keycloak
+                    - zitadel
                 admissionWebhooks:
                   certManager:
                     enabled: true
