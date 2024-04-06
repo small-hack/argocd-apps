@@ -61,12 +61,12 @@ spec:
                 s3Credentials:
                   accessKeyId:
                     name: mastodon-s3-credentials
-                    key : "S3_USER"
+                    key: "S3_USER"
                   secretAccessKey:
                     name: mastodon-s3-credentials
-                    key : "S3_PASSWORD"
+                    key: "S3_PASSWORD"
               retentionPolicy: "30d"
-            
+
             certificates:
               server:
                 enabled: true
@@ -81,7 +81,7 @@ spec:
             scheduledBackup:
               name: mastodon-pg-backup
               spec:
-                schedule: "0 0 0 * * *" 
+                schedule: "0 0 0 * * *"
                 backupOwnerReference: self
                 cluster:
                   name: pg-backup
@@ -90,6 +90,6 @@ spec:
               enablePodMonitor: false
 
             postgresql:
-              pg_hba: 
+              pg_hba:
                 - hostnossl all all 0.0.0.0/0 reject
                 - hostssl all all 0.0.0.0/0 cert clientcert=verify-full

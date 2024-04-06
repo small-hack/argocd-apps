@@ -15,7 +15,7 @@ spec:
           name: secret-var-plugin-generator
         input:
           parameters:
-            secret_vars: 
+            secret_vars:
               - "nextcloud-minio-credentials-postgres"
   template:
     metadata:
@@ -47,22 +47,22 @@ spec:
               s3Credentials:
                 accessKeyId:
                   name: {{ .nextcloud-minio-credentials-postgres }}
-                  key : "ACCESS_KEY_ID"
+                  key: "ACCESS_KEY_ID"
                 secretAccessKey:
                   name: {{ .nextcloud-minio-credentials-postgres }}
-                  key : "ACCESS_SECRET_KEY"
+                  key: "ACCESS_SECRET_KEY"
             scheduledBackup:
               name: nextcloud-pg-backup
               spec:
-                schedule: "0 0 0 * * *" 
+                schedule: "0 0 0 * * *"
                 backupOwnerReference: self
                 cluster:
                   name: pg-backup
             monitoring:
               enablePodMonitor: true
             postgresql:
-              pg_hba: 
+              pg_hba:
                 - hostnossl all all 0.0.0.0/0 reject
-                - hostssl all all 0.0.0.0/0 cert clientcert=verify-full            
-            storage: 
+                - hostssl all all 0.0.0.0/0 cert clientcert=verify-full
+            storage:
               size: 1Gi
