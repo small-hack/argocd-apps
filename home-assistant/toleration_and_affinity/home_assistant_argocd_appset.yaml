@@ -19,9 +19,10 @@ spec:
         input:
           parameters:
             secret_vars:
-              - home_assistant_hostname
               - global_cluster_issuer
               - global_time_zone
+              - home_assistant_hostname
+              - home_assistant_name
               - home_assistant_unit_system
               - home_assistant_temperature_unit
               - home_assistant_toleration_key
@@ -135,6 +136,7 @@ spec:
               configuration: |
                 # basic home assitant config stuff
                 homeassistant:
+                  name: '{{ .home_assistant_name }}'
                   external_url: 'https://{{ .home_assistant_hostname }}'
                   time_zone: '{{ .global_time_zone }}'
                   temperature_unit: {{ .home_assistant_temperature_unit }}
@@ -153,15 +155,15 @@ spec:
                 # enable configuration ui i think
                 config:
 
+                # include themes from another directory
+                frontend:
+                  themes: !include_dir_merge_named themes
+
                 # required for the automations UI to work
                 automation: !include automations.yaml
 
                 # required for the scenes UI to work
                 scene: !include scenes.yaml
-
-                # include themes from another directory
-                frontend:
-                  themes: !include_dir_merge_named themes
               existingThemesConfigMap: 'home-assistant-themes'
 
             livenessProbe:
