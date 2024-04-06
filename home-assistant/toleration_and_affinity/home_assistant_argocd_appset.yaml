@@ -99,11 +99,6 @@ spec:
                   type: CharDevice
                 name: usb
 
-              # for the basic themes we provide
-              - name: themes
-                configMap:
-                  name: home-assistant-themes
-
             extraVolumeMounts:
               # for an external USB device
               - mountPath: '{{ .home_assistant_usb_device_mount_path }}'
@@ -114,10 +109,6 @@ spec:
               - mountPath: '{{ .home_assistant_bluetooth_device_mount_path }}'
                 name: bluetooth
                 readOnly: true
-
-              # for the basic themes we provide
-              - name: themes
-                mountPath: /config/themes
 
             resources:
               limits:
@@ -171,6 +162,7 @@ spec:
                 # include themes from another directory
                 frontend:
                   themes: !include_dir_merge_named themes
+              existingThemesConfigMap: 'home-assistant-themes'
 
             livenessProbe:
               enabled: false
