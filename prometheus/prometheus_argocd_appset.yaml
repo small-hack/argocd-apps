@@ -41,8 +41,8 @@ spec:
         targetRevision: 57.2.0
         helm:
           releaseName: prom-stack
-          values: |
-            fullnameOverride: prom-stack
+          valuesObject:
+            # fullnameOverride: prom-stack
             global:
               evaluation_interval: 5s
               scrape_interval: 5s
@@ -56,9 +56,9 @@ spec:
                 enabled: true
                 ingressClassName: nginx
                 annotations:
-                  cert-manager.io/cluster-issuer: "{{ .global_cluster_issuer }}"
-                  nginx.ingress.kubernetes.io/auth-signin: "https://{{ .vouch_hostname }}/login?url=$scheme://$http_host$request_uri&vouch-failcount=$auth_resp_failcount&X-Vouch-Token=$auth_resp_jwt&error=$auth_resp_err"
-                  nginx.ingress.kubernetes.io/auth-url: https://{{ .vouch_hostname }}/validate
+                  cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
+                  nginx.ingress.kubernetes.io/auth-signin: 'https://{{ .vouch_hostname }}/login?url=$scheme://$http_host$request_uri&vouch-failcount=$auth_resp_failcount&X-Vouch-Token=$auth_resp_jwt&error=$auth_resp_err'
+                  nginx.ingress.kubernetes.io/auth-url: 'https://{{ .vouch_hostname }}/validate'
                   nginx.ingress.kubernetes.io/auth-response-headers: X-Vouch-User
                   nginx.ingress.kubernetes.io/auth-snippet: |
                     auth_request_set $auth_resp_jwt $upstream_http_x_vouch_jwt;
@@ -70,13 +70,13 @@ spec:
                     proxy_ssl_verify_depth 2;
                     proxy_ssl_verify on;
                 hosts:
-                  - {{ .prometheus_hostname }}
+                  - '{{ .prometheus_hostname }}'
                 paths:
                   - /
                 tls:
                   - secretName: prometheus-tls
                     hosts:
-                    - {{ .prometheus_hostname }}
+                    - '{{ .prometheus_hostname }}'
               prometheusSpec:
                 probeSelectorNilUsesHelmValues: false
                 probeSelector: {}
@@ -131,28 +131,28 @@ spec:
                 enabled: true
                 ingressClassName: nginx
                 annotations:
-                  cert-manager.io/cluster-issuer: "{{ .global_cluster_issuer }}"
-                  nginx.ingress.kubernetes.io/auth-signin: "https://{{ .vouch_hostname }}/login?url=$scheme://$http_host$request_uri&vouch-failcount=$auth_resp_failcount&X-Vouch-Token=$auth_resp_jwt&error=$auth_resp_err"
-                  nginx.ingress.kubernetes.io/auth-url: https://{{ .vouch_hostname }}/validate
+                  cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
+                  nginx.ingress.kubernetes.io/auth-signin: 'https://{{ .vouch_hostname }}/login?url=$scheme://$http_host$request_uri&vouch-failcount=$auth_resp_failcount&X-Vouch-Token=$auth_resp_jwt&error=$auth_resp_err'
+                  nginx.ingress.kubernetes.io/auth-url: 'https://{{ .vouch_hostname }}/validate'
                   nginx.ingress.kubernetes.io/auth-response-headers: X-Vouch-User
                   nginx.ingress.kubernetes.io/auth-snippet: |
                     auth_request_set $auth_resp_jwt $upstream_http_x_vouch_jwt;
                     auth_request_set $auth_resp_err $upstream_http_x_vouch_err;
                     auth_request_set $auth_resp_failcount $upstream_http_x_vouch_failcount;
                 hosts:
-                  - {{ .prometheus_alert_manager_hostname }}
+                  - '{{ .prometheus_alert_manager_hostname }}'
                 paths:
                   - /
                 tls:
                   - secretName: alertmanager-tls
                     hosts:
-                    - {{ .prometheus_alert_manager_hostname }}
+                    - '{{ .prometheus_alert_manager_hostname }}'
 
             grafana:
               grafana.ini:
                 auth:
                   disable_login_form: false
-                  signout_redirect_url: "https://{{ .prometheus_grafana_hostname }}/login/signout"
+                  signout_redirect_url: 'https://{{ .prometheus_grafana_hostname }}/login/signout'
                 auth.proxy:
                   enabled: true
                   header_name: X-Vouch-User
@@ -166,9 +166,9 @@ spec:
                 enabled: true
                 ingressClassName: nginx
                 annotations:
-                  cert-manager.io/cluster-issuer: "{{ .global_cluster_issuer }}"
-                  nginx.ingress.kubernetes.io/auth-signin: "https://{{ .vouch_hostname }}/login?url=$scheme://$http_host$request_uri&vouch-failcount=$auth_resp_failcount&X-Vouch-Token=$auth_resp_jwt&error=$auth_resp_err"
-                  nginx.ingress.kubernetes.io/auth-url: https://{{ .vouch_hostname }}/validate
+                  cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
+                  nginx.ingress.kubernetes.io/auth-signin: 'https://{{ .vouch_hostname }}/login?url=$scheme://$http_host$request_uri&vouch-failcount=$auth_resp_failcount&X-Vouch-Token=$auth_resp_jwt&error=$auth_resp_err'
+                  nginx.ingress.kubernetes.io/auth-url: 'https://{{ .vouch_hostname }}/validate'
                   nginx.ingress.kubernetes.io/auth-response-headers: X-Vouch-User
                   nginx.ingress.kubernetes.io/auth-snippet: |
                     auth_request_set $auth_resp_jwt $upstream_http_x_vouch_jwt;
@@ -179,11 +179,11 @@ spec:
                     proxy_set_header X-User  $user;
                     proxy_set_header X-Email $email;
                 hosts:
-                  - {{ .prometheus_grafana_hostname }}
+                  - '{{ .prometheus_grafana_hostname }}'
                 tls:
                   - secretName: grafana-tls
                     hosts:
-                    - {{ .prometheus_grafana_hostname }}
+                    - '{{ .prometheus_grafana_hostname }}'
 
             scrape_configs:
             - job_name: ingress
