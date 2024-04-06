@@ -61,7 +61,7 @@ Reference on external secrets labels: https://github.com/external-secrets/extern
 # Creating the Argo CD app
 To deploy this, create a new Argo CD app, and select "Edit as YAML". Copy and paste this into the input field:
 ```yaml
-project: default
+project: argo-cd
 source:
   repoURL: 'https://github.com/small-hack/argocd.git'
   path: argocd/
