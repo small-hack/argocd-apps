@@ -56,10 +56,12 @@ spec:
         automated:
           selfHeal: true
       source:
-        # repoURL: https://github.com/small-hack/home-assistant-chart
-        repoURL: https://small-hack.github.io/home-assistant-chart
-        chart: home-assistant
-        targetRevision: 0.6.0
+        repoURL: https://github.com/small-hack/home-assistant-chart
+        path: charts/home-assistant/
+        targetRevision: create-initial-user
+        # repoURL: https://small-hack.github.io/home-assistant-chart
+        # chart: home-assistant
+        # targetRevision: 0.7.0
         helm:
           releaseName: home-assistant
           valuesObject:
@@ -134,6 +136,9 @@ spec:
                           - '{{ .home_assistant_affinity_value }}'
 
             homeAssistant:
+              owner:
+                create: true
+                existingSecret: home-assistant-credentials
               configuration: |
                 # basic home assitant config stuff
                 homeassistant:
