@@ -137,7 +137,7 @@ spec:
 
             homeAssistant:
               owner:
-                create: true
+                create: false
                 existingSecret: home-assistant-credentials
               configuration: |
                 # basic home assitant config stuff
