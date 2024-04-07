@@ -1,0 +1,5 @@
+## if this is not set to "bitwarden", we will not actually deploy any templates
+# other providers may be supported in the future
+provider: "true"
+
+bitwardenAdminCredentialsID: ""
