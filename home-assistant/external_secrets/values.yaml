@@ -2,4 +2,5 @@
 # other providers may be supported in the future
 provider: "true"
 
+# the item ID of the Bitwarden admin credentials
 bitwardenAdminCredentialsID: ""
