@@ -16,11 +16,17 @@ spec:
         input:
           parameters:
             secret_vars:
-              - home_assistant_hostname
               - global_cluster_issuer
               - global_time_zone
+              - home_assistant_hostname
+              - home_assistant_name
+              - home_assistant_currency
+              - home_assistant_country
               - home_assistant_unit_system
               - home_assistant_temperature_unit
+              - home_assistant_latitude
+              - home_assistant_longitude
+              - home_assistant_elevation
   template:
     metadata:
       name: home-assistant-app
@@ -40,7 +46,7 @@ spec:
         # https://github.com/small-hack/home-assistant-chart
         repoURL: https://small-hack.github.io/home-assistant-chart
         chart: home-assistant
-        targetRevision: 0.6.0
+        targetRevision: 0.7.2
         helm:
           releaseName: home-assistant
           valuesObject:
@@ -67,16 +73,22 @@ spec:
               enabled: true
               # existingClaim: home-assistant
               storageClass: local-path
-            
+
             homeAssistant:
               existingThemesConfigMap: home-assistant-themes
               configuration: |
                 # basic home assitant config stuff
                 homeassistant:
+                  name: '{{ .home_assistant_name }}'
+                  country: '{{ .home_assistant_country }}'
+                  currency: '{{ .home_assistant_currency }}'
+                  unit_system: '{{ .home_assistant_unit_system }}'
+                  temperature_unit: '{{ .home_assistant_temperature_unit }}'
+                  latitude: '{{ .home_assistant_latitude }}'
+                  longitude: '{{ .home_assistant_longitude }}'
+                  elevation: '{{ .home_assistant_elevation }}'
                   external_url: 'https://{{ .home_assistant_hostname }}'
                   time_zone: '{{ .global_time_zone }}'
-                  temperature_unit: {{ .home_assistant_temperature_unit }}
-                  unit_system: {{ .home_assistant_unit_system }}
 
                 # reverse proxy for nginx stuff
                 http:
@@ -93,7 +105,7 @@ spec:
 
                 # required for the automations UI to work
                 automation: !include automations.yaml
-                
+
                 # required for the scenes UI to work
                 scene: !include scenes.yaml
 
