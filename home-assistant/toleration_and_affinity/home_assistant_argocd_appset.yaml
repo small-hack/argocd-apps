@@ -23,6 +23,8 @@ spec:
               - global_time_zone
               - home_assistant_hostname
               - home_assistant_name
+              - home_assistant_currency
+              - home_assistant_country
               - home_assistant_unit_system
               - home_assistant_temperature_unit
               - home_assistant_latitude
@@ -56,12 +58,10 @@ spec:
         automated:
           selfHeal: true
       source:
-        repoURL: https://github.com/small-hack/home-assistant-chart
-        path: charts/home-assistant/
-        targetRevision: create-initial-user
-        # repoURL: https://small-hack.github.io/home-assistant-chart
-        # chart: home-assistant
-        # targetRevision: 0.7.0
+        # repoURL: https://github.com/small-hack/home-assistant-chart
+        repoURL: https://small-hack.github.io/home-assistant-chart
+        chart: home-assistant
+        targetRevision: 0.7.2
         helm:
           releaseName: home-assistant
           valuesObject:
@@ -143,13 +143,15 @@ spec:
                 # basic home assitant config stuff
                 homeassistant:
                   name: '{{ .home_assistant_name }}'
-                  external_url: 'https://{{ .home_assistant_hostname }}'
-                  time_zone: '{{ .global_time_zone }}'
-                  temperature_unit: '{{ .home_assistant_temperature_unit }}'
+                  country: '{{ .home_assistant_country }}'
+                  currency: '{{ .home_assistant_currency }}'
                   unit_system: '{{ .home_assistant_unit_system }}'
+                  temperature_unit: '{{ .home_assistant_temperature_unit }}'
                   latitude: '{{ .home_assistant_latitude }}'
                   longitude: '{{ .home_assistant_longitude }}'
                   elevation: '{{ .home_assistant_elevation }}'
+                  external_url: 'https://{{ .home_assistant_hostname }}'
+                  time_zone: '{{ .global_time_zone }}'
 
                 # reverse proxy for nginx stuff
                 http:
