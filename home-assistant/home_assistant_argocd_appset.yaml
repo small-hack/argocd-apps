@@ -75,6 +75,9 @@ spec:
               storageClass: local-path
 
             homeAssistant:
+              owner:
+                create: true
+                existingSecret: home-assistant-credentials
               existingThemesConfigMap: home-assistant-themes
               configuration: |
                 # basic home assitant config stuff
