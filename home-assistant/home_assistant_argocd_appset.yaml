@@ -40,7 +40,7 @@ spec:
         # https://github.com/small-hack/home-assistant-chart
         repoURL: https://small-hack.github.io/home-assistant-chart
         chart: home-assistant
-        targetRevision: 0.5.0
+        targetRevision: 0.6.0
         helm:
           releaseName: home-assistant
           valuesObject:
@@ -67,18 +67,9 @@ spec:
               enabled: true
               # existingClaim: home-assistant
               storageClass: local-path
-
-            extraVolumes:
-              - name: themes
-                configMap:
-                  name: home-assistant-themes
-
-            extraVolumeMounts:
-              - name: themes
-                mountPath: /config/themes
             
             homeAssistant:
-              # existingConfigMap: home-assistant
+              existingThemesConfigMap: home-assistant-themes
               configuration: |
                 # basic home assitant config stuff
                 homeassistant:
