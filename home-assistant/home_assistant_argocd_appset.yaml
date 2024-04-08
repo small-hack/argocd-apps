@@ -74,17 +74,8 @@ spec:
               # existingClaim: home-assistant
               storageClass: local-path
 
-            extraVolumes:
-              - name: themes
-                configMap:
-                  name: home-assistant-themes
-
-            extraVolumeMounts:
-              - name: themes
-                mountPath: /config/themes
-
             homeAssistant:
-              # existingConfigMap: home-assistant
+              existingThemesConfigMap: home-assistant-themes
               configuration: |
                 # basic home assitant config stuff
                 homeassistant:
