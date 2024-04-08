@@ -1,0 +1,80 @@
+{{- if eq .Values.provider "bitwarden" }}
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: home-assistant-admin-creds
+spec:
+  target:
+    # Name of the kubernetes secret
+    name: home-assistant-credentials
+    deletionPolicy: Delete
+    template:
+      type: Opaque
+      data:
+        ADMIN_USERNAME: |-
+         {{ `{{ .username }}` }}
+        ADMIN_NAME: |-
+         {{ `{{ .name }}` }}
+        ADMIN_PASSWORD: |-
+         {{ `{{ .password }}` }}
+        ADMIN_LANGUAGE: |-
+         {{ `{{ .language }}` }}
+        EXTERNAL_URL: |-
+         {{ `{{ .externalurl }}` }}
+
+  data:
+    - secretKey: username
+      sourceRef:
+        storeRef:
+          name: bitwarden-login
+          kind: ClusterSecretStore
+      remoteRef:
+        # id of the bitwarden secret
+        key: {{ .Values.bitwardenAdminCredentialsID }}
+        # property within the bitwarden secret we want
+        property: username
+
+    - secretKey: name
+      sourceRef:
+        storeRef:
+          name: bitwarden-fields
+          kind: ClusterSecretStore
+      remoteRef:
+        # id of the bitwarden secret
+        key: {{ .Values.bitwardenAdminCredentialsID }}
+        # property within the bitwarden secret we want
+        property: name
+
+    - secretKey: password
+      sourceRef:
+        storeRef:
+          name: bitwarden-login
+          kind: ClusterSecretStore
+      remoteRef:
+        # id of the bitwarden secret
+        key: {{ .Values.bitwardenAdminCredentialsID }}
+        # property within the bitwarden secret we want
+        property: password
+
+    - secretKey: language
+      sourceRef:
+        storeRef:
+          name: bitwarden-fields
+          kind: ClusterSecretStore
+      remoteRef:
+        # id of the bitwarden secret
+        key: {{ .Values.bitwardenAdminCredentialsID }}
+        # property within the bitwarden secret we want
+        property: language
+
+    - secretKey: externalurl
+      sourceRef:
+        storeRef:
+          name: bitwarden-fields
+          kind: ClusterSecretStore
+      remoteRef:
+        # id of the bitwarden secret
+        key: {{ .Values.bitwardenAdminCredentialsID }}
+        # property within the bitwarden secret we want
+        property: externalurl
+{{- end }}
