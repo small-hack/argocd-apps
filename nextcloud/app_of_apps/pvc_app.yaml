@@ -2,7 +2,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: nextcloud-files-pvc
+  name: nextcloud-pvc-appset
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "1"
@@ -25,7 +25,7 @@ spec:
               - nextcloud_config_access_mode
   template:
     metadata:
-      name: nextcloud-s3-pvc
+      name: nextcloud-pvc
       annotations:
         argocd.argoproj.io/sync-wave: "1"
     spec:
