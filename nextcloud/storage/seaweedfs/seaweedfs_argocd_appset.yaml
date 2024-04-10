@@ -170,6 +170,8 @@ spec:
                 createBuckets:
                   - name: nextcloud
                     anonymousRead: false
+                  - name: nextcloud-postgres
+                    anonymousRead: false
               livenessProbe:
                 enabled: true
                 httpGet:
