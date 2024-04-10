@@ -17,10 +17,10 @@ spec:
           parameters:
             secret_vars:
               - global_pvc_storage_class
-              - nextcloud_files_enabled
+              - nextcloud_files_pvc_enabled
               - nextcloud_files_storage
               - nextcloud_files_access_mode
-              - nextcloud_config_enabled
+              - nextcloud_config_pvc_enabled
               - nextcloud_config_storage
               - nextcloud_config_access_mode
   template:
