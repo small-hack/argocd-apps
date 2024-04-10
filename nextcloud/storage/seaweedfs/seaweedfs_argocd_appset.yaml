@@ -17,9 +17,9 @@ spec:
         input:
           parameters:
             secret_vars:
+              - global_cluster_issuer
               - nextcloud_s3_region
               - nextcloud_s3_endpoint
-              - global_cluster_issuer
   template:
     metadata:
       name: nextcloud-seaweedfs-app
