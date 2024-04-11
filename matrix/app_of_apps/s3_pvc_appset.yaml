@@ -21,6 +21,7 @@ spec:
               - matrix_s3_backup_bucket
               - matrix_s3_backup_region
               - matrix_s3_pvc_capacity
+              - matrix_backup_schedule
   template:
     metadata:
       name: matrix-s3-pvc
@@ -75,6 +76,6 @@ spec:
                 runAsUser: 0
 
               schedules:
-                backup: "47 13 * * *"
-                check: "48 13 * * *"
-                prune: "49 13 * * *"
+                backup: "{{ .matrix_backup_schedule }}"
+                check: "0 0 * * *"
+                prune: "0 0 * * *"
