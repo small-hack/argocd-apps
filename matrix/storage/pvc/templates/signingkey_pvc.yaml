@@ -1,0 +1,14 @@
+{{- if .Values.signing_key_pvc.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: matrix
+  name: matrix-signing-key
+spec:
+  storageClassName: {{ .Values.signing_key_pvc.storageClassName }}
+  accessModes:
+    - {{ .Values.signing_key_pvc.accessMode }}
+  resources:
+    requests:
+      storage: {{ .Values.signing_key_pvc.storage }}
+{{- end }}

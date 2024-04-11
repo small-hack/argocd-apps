@@ -1,0 +1,14 @@
+{{- if .Values.media_pvc.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: matrix
+  name: matrix-media
+spec:
+  storageClassName: {{ .Values.media_pvc.storageClassName }}
+  accessModes:
+    - {{ .Values.media_pvc.accessMode }}
+  resources:
+    requests:
+      storage: {{ .Values.media_pvc.storage }}
+{{- end }}
