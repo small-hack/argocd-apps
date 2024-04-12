@@ -1,0 +1,35 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: generic-device-plugin-app
+  namespace: argocd
+spec:
+  project: generic-device-plugin
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: kube-system
+  syncPolicy:
+    syncOptions:
+      - ApplyOutOfSyncOnly=true
+    automated:
+      prune: true
+      selfHeal: true
+  source:
+    # generic-device-plugin repo
+    # repoURL: 'https://github.com/squat/generic-device-plugin'
+    # path: 'manifests/'
+    repoURL: 'https://github.com/jessebot/generic-device-plugin'
+    targetRevision: add-helm-chart
+    path: 'charts/generic-device-plugin/'
+    helm:
+      releaseName: generic-device-plugin
+      valuesObject:
+        # resource requests and limits for the generic-device-plugin pod
+        resources:
+          requests:
+            cpu: 50m
+            memory: 20Mi
+          limits:
+            cpu: 50m
+            memory: 40Mi
