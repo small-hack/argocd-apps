@@ -4,7 +4,7 @@ kind: CronJob
 metadata:
   name: maintanence-mode-on
 spec:
-  schedule: {{ .Values.maintanence_mode_on.schedule }}
+  schedule: {{ .Values.maintenance_mode_on.schedule }}
   successfulJobsHistoryLimit: 0
   failedJobsHistoryLimit: 3
   jobTemplate:
