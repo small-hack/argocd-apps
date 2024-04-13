@@ -215,7 +215,8 @@ spec:
                     'log_type' => 'file',
                     'logfile' => 'nextcloud.log',
                     'loglevel' => 1,
-                    'logdateformat' => 'F d, Y H:i:s'
+                    'logdateformat' => 'F d, Y H:i:s',
+                    'maintenance_window_start' => 23
                     );
 
                 previews.config.php: |-
