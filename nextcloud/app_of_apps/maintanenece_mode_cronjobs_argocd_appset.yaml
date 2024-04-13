@@ -43,8 +43,8 @@ spec:
           valuesObject:
             maintenance_mode_on:
               # -- cron schedule to turn on maintenance mode for nextcloud
-              schedule: ""
+              schedule: '{{ .nextcloud_maintenance_mode_on_schedule }}'
 
             maintenance_mode_off:
               # -- cron schedule to turn off maintenance mode for nextcloud
-              schedule: ""
+              schedule: '{{ .nextcloud_maintenance_mode_off_schedule }}'
