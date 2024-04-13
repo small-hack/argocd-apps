@@ -2,7 +2,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: nextcloud-maintanence-cron-appset
+  name: nextcloud-maintenance-cron-appset
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "4"
