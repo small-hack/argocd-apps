@@ -11,7 +11,7 @@ metadata:
   namespace: argocd
 spec:
   destination:
-    name: ''
+    name: 'k3s-mooie-knuffel'
     namespace: cdi
     server: 'https://kubernetes.default.svc'
   source:
