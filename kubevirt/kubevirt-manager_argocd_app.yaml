@@ -54,7 +54,7 @@ spec:
               serviceName: prometheus-prometheus
               serviceNamespace: promethus
             ingress:
-              enabled: true
+              enabled: false
               className: "nginx"
               hostname: kubevirt.buildstar.online
               annotations:
