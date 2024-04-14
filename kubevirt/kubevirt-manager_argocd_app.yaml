@@ -50,7 +50,7 @@ spec:
               protocol: TCP
               name: http
             prometheus:
-              enabled: true
+              enabled: false
               serviceName: prometheus-prometheus
               serviceNamespace: promethus
             ingress:
