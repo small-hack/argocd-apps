@@ -27,7 +27,7 @@ spec:
     spec:
       project: kubevirt
       destination:
-        server: "https://kubernetes.default.svc"
+        name: 'k3s-mooie-knuffel'
         namespace: kubevirt-manager
       syncPolicy:
         syncOptions:
