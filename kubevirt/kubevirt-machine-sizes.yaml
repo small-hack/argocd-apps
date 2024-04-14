@@ -9,7 +9,7 @@ metadata:
 spec:
   project: kubevirt
   destination:
-    server: "https://kubernetes.default.svc"
+    name: 'k3s-mooie-knuffel'
     namespace: kubevirt
   source:
     repoURL: https://github.com/small-hack/argocd-apps.git
