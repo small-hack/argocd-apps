@@ -13,7 +13,6 @@ spec:
   destination:
     name: 'k3s-mooie-knuffel'
     namespace: cdi
-    server: 'https://kubernetes.default.svc'
   source:
     path: ''
     repoURL: 'https://cloudymax.github.io/kubevirt-community-stack/'
