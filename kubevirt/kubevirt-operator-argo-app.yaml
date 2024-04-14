@@ -13,7 +13,7 @@ spec:
   project: kubevirt
   destination:
     namespace: kubevirt
-    server: 'https://kubernetes.default.svc'
+    name: 'k3s-mooie-knuffel'
   source:
     repoURL: 'https://cloudymax.github.io/kubevirt-community-stack/'
     targetRevision: 0.2.0
