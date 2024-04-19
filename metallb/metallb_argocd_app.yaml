@@ -10,7 +10,7 @@ spec:
   project: metallb
   source:
     repoURL: 'https://github.com/metallb/metallb.git'
-    targetRevision: v0.14.4
+    targetRevision: v0.14.5
     path: config/manifests/
   destination:
     server: "https://kubernetes.default.svc"
