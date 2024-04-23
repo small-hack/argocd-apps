@@ -60,5 +60,5 @@ spec:
               annotations:
                 cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
               tls:
-                enabled: false
+                enabled: true
                 secretName: "tls-kubevirt-manager"
