@@ -54,7 +54,7 @@ spec:
               serviceName: "prometheus-prometheus"
               serviceNamesapce: "prometheus"
             ingress:
-              enabled: false
+              enabled: true
               className: "nginx"
               hostname: '{{ .kubevirt_webui_hostname }}'
               annotations:
