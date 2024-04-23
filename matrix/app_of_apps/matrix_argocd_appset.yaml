@@ -43,7 +43,7 @@ spec:
           selfHeal: true
       source:
         repoURL: 'https://small-hack.github.io/matrix-chart'
-        targetRevision: 7.1.3
+        targetRevision: 7.1.4
         chart: matrix
         helm:
           valuesObject:
