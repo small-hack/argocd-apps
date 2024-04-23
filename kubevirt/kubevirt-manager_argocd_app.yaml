@@ -16,7 +16,7 @@ spec:
         input:
           parameters:
             secret_vars:
-              - kubevirt_manager_hostname
+              - kubevirt_webui_hostname
               - global_cluster_issuer
               - vouch_hostname
   template:
@@ -56,7 +56,7 @@ spec:
             ingress:
               enabled: true
               className: "nginx"
-              hostname: '{{ .kubevirt_manager_hostname }}'
+              hostname: '{{ .kubevirt_webui_hostname }}'
               annotations:
                 cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
               tls:
