@@ -44,7 +44,7 @@ spec:
           valuesObject:
             replicaCount: 1
             service:
-              type: ClusterIP
+              type: LoadBalancer
               port: 8080
               targetPort: 80
               protocol: TCP
@@ -54,7 +54,7 @@ spec:
               serviceName: prometheus-prometheus
               serviceNamespace: promethus
             ingress:
-              enabled: true
+              enabled: false
               className: "nginx"
               hostname: kubevirt.buildstars.online
               annotations:
