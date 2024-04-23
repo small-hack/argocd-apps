@@ -54,9 +54,9 @@ spec:
               serviceName: prometheus-prometheus
               serviceNamespace: promethus
             ingress:
-              enabled: false
+              enabled: true
               className: "nginx"
-              hostname: kubevirt.buildstar.online
+              hostname: kubevirt.buildstars.online
               annotations:
                 cert-manager.io/cluster-issuer: "{{ .global_cluster_issuer }}"
                 nginx.ingress.kubernetes.io/auth-signin: "https://{{ .vouch_hostname }}/login?url=$scheme://$http_host$request_uri&vouch-failcount=$auth_resp_failcount&X-Vouch-Token=$auth_resp_jwt&error=$auth_resp_err"
