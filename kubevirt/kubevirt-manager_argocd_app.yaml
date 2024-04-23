@@ -43,21 +43,25 @@ spec:
         helm:
           valuesObject:
             replicaCount: 1
+
             service:
               type: ClusterIP
               port: 8080
               targetPort: 80
               protocol: TCP
               name: http
+
             prometheus:
               enabled: false
-              serviceName: prometheus-prometheus
-              serviceNamespace: promethus
+              serviceName: "prometheus-prometheus"
+              serviceNamesapce: "prometheus"
+
             ingress:
               enabled: true
               className: "nginx"
-              hostname: kubevirt.buildstars.online
+              hostname: "kubevirt.domain.com"
               annotations:
-                cert-manager.io/cluster-issuer: "{{ .global_cluster_issuer }}"
+                cert-manager.io/cluster-issuer: "letsencrypt-staging"
               tls:
                 enabled: true
+                secretName: "tls-kubevirt-manager"
