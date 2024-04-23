@@ -59,3 +59,5 @@ spec:
               hostname: kubevirt.buildstars.online
               annotations:
                 cert-manager.io/cluster-issuer: "{{ .global_cluster_issuer }}"
+              tls:
+                enabled: true
