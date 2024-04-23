@@ -54,11 +54,11 @@ spec:
               serviceName: "prometheus-prometheus"
               serviceNamesapce: "prometheus"
             ingress:
-              enabled: true
+              enabled: false
               className: "nginx"
               hostname: '{{ .kubevirt_webui_hostname }}'
               annotations:
                 cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
               tls:
-                enabled: true
+                enabled: false
                 secretName: "tls-kubevirt-manager"
