@@ -11,7 +11,7 @@ metadata:
   namespace: argocd
 spec:
   destination:
-    name: 'k3s-mooie-knuffel'
+    name: 'k3s-small-meerkoet'
     namespace: cdi
   source:
     path: ''
