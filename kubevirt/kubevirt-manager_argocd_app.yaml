@@ -27,7 +27,7 @@ spec:
     spec:
       project: kubevirt
       destination:
-        name: 'k3s-mooie-knuffel'
+        name: 'k3s-small-meerkoet'
         namespace: kubevirt-manager
       syncPolicy:
         syncOptions:
