@@ -13,7 +13,7 @@ spec:
   project: kubevirt
   destination:
     namespace: kubevirt
-    name: 'k3s-mooie-knuffel'
+    name: 'k3s-small-meerkoet'
   source:
     repoURL: 'https://cloudymax.github.io/kubevirt-community-stack/'
     targetRevision: 0.2.0
