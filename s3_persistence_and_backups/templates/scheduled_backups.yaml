@@ -8,6 +8,9 @@ metadata:
     "helm.sh/resource-policy": keep
 spec:
   backend:
+    envFrom:
+      - secretRef:
+          name: "k8up-backup-env-secret"
     repoPasswordSecretRef:
       name: {{ .Values.k8up.repoPasswordSecretRef.name }}
       key: {{ .Values.k8up.repoPasswordSecretRef.key }}
