@@ -5,6 +5,7 @@ apiVersion: v1
 metadata:
   name: minio-data
 spec:
+  storageClassName: {{ .Values.pvc_storageClassName }}
   accessModes:
     - ReadWriteOnce
   resources:
