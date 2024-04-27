@@ -1,4 +1,4 @@
-{{- if .Values.config_pvc.enabled }}
+{{- if eq .Values.config_pvc.enabled "true" }}
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1
