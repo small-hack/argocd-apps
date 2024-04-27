@@ -36,7 +36,7 @@ spec:
           selfHeal: true
       source:
         repoURL: 'oci://codeberg.org/'
-        targetRevision: 6.0.0
+        targetRevision: 6.0.1
         chart: forgejo-contrib/forgejo
         helm:
           values: |
