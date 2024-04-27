@@ -58,17 +58,17 @@ spec:
                 bucket: '{{ .nextcloud_s3_backup_bucket }}'
                 endpoint: '{{ .nextcloud_s3_backup_endpoint }}'
                 accessKeyIDSecretRef:
-                  name: 'backups-s3-credentials'
-                  key: 'accessKey'
+                  name: 's3-backups-credentials'
+                  key: 'accessKeyID'
                   optional: false
                 secretAccessKeySecretRef:
-                  name: 'backups-s3-credentials'
-                  key: 'secretKey'
+                  name: 's3-backups-credentials'
+                  key: 'secretAccessKey'
                   optional: false
 
               repoPasswordSecretRef:
-                name: 'backups-s3-credentials'
-                key: 'resticRepoPass'
+                name: 's3-backups-credentials'
+                key: 'resticRepoPassword'
 
               prometheus_url: 'push-gateway.prometheus.svc:9091'
 
