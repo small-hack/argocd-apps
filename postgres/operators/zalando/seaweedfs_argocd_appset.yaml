@@ -157,6 +157,8 @@ spec:
               grpcPort: 18888
               metricsPort: 9327
               encryptVolumeData: true
+              enablePVC: true
+              storage: 10Gi
               data:
                 type: "existingClaim"
                 claimName: "swfs-filer-data"
