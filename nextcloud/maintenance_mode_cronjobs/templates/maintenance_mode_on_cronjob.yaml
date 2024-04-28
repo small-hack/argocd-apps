@@ -4,8 +4,7 @@ kind: CronJob
 metadata:
   name: maintanence-mode-on
 spec:
-  # daily at 1pm Central Europe Time
-  schedule: "30 21 * * *"
+  schedule: {{ .Values.maintanence_mode_on.schedule }}
   successfulJobsHistoryLimit: 0
   failedJobsHistoryLimit: 3
   jobTemplate:

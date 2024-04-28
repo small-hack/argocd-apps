@@ -1,0 +1,7 @@
+maintenance_mode_on:
+  # -- cron schedule to turn on maintenance mode for nextcloud
+  schedule: ""
+
+maintenance_mode_off:
+  # -- cron schedule to turn off maintenance mode for nextcloud
+  schedule: ""

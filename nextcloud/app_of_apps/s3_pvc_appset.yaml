@@ -21,6 +21,7 @@ spec:
               - nextcloud_s3_backup_bucket
               - nextcloud_s3_backup_region
               - nextcloud_s3_pvc_capacity
+              - nextcloud_backup_schedule
   template:
     metadata:
       name: nextcloud-s3-pvc
@@ -48,10 +49,10 @@ spec:
 
             # not in use yet
             k8up:
-              backup_name: "nextcloud-nightly-backup"
+              backup_name: 'nextcloud-nightly-backup'
 
               # -- can be set to 's3' or 'local'
-              backup_type: "s3"
+              backup_type: 's3'
 
               s3:
                 bucket: '{{ .nextcloud_s3_backup_bucket }}'
@@ -75,6 +76,6 @@ spec:
                 runAsUser: 82
 
               schedules:
-                backup: "00 11 * * *"
-                check: "03 11 * * *"
-                prune: "04 11 * * *"
+                backup: '{{ .nextcloud_backup_schedule }}'
+                check: '0 0 * * *'
+                prune: '0 0 * * *'
