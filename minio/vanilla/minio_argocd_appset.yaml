@@ -38,7 +38,7 @@ spec:
         # official minio helm repo
         repoURL: 'https://charts.min.io/'
         chart: minio
-        targetRevision: 5.1.0
+        targetRevision: 5.2.0
         helm:
           releaseName: minio
           values: |
