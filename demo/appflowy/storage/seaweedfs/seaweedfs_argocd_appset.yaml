@@ -200,13 +200,11 @@ spec:
               # minimum free disk space(in percents). If free disk space lower this value - all volumes marks as ReadOnly
               minFreeSpacePercent: 7
 
-              data:
-                type: "existingClaim"
-                claimName: "swfs-volume-data"
-
-              idx:
-                type: "existingClaim"
-                claimName: "swfs-volume-idx"
+              dataDirs:
+                - name: data
+                  type: "existingClaim"
+                  claimName: "swfs-volume-data"
+                  maxVolumes: 0
 
               # limit background compaction or copying speed in mega bytes per second
               compactionMBps: "50"
@@ -323,7 +321,7 @@ spec:
               enablePVC: true
 
               # storage should be set to the disk size of the attached volume.
-              storage: 25Gi
+              storage: 10Gi
 
               # storageClass is the class of storage which defaults to null (the Kube cluster will pick the default).
               storageClass: local-path
