@@ -38,12 +38,15 @@ spec:
         chart: k8up
         targetRevision: 4.6.0
         helm:
-          values: |
+          valuesObject:
             k8up:
               # -- Specifies the timezone K8up is using for scheduling.
               # Empty value defaults to the timezone in which Kubernetes is deployed.
               # Accepts `tz database` compatible entries, e.g. `Europe/Zurich`
-              timezone: {{ .global_time_zone }}
+              timezone: '{{ .global_time_zone }}'
+              envVars:
+                - name: BACKUP_SKIP_WITHOUT_ANNOTATION
+                  value: 'true'
 
             metrics:
               service:
