@@ -88,7 +88,7 @@ spec:
                   name: nextcloud-postgres
 
             monitoring:
-              enablePodMonitor: false
+              enablePodMonitor: true
 
             postgresql:
               pg_hba:
