@@ -81,8 +81,8 @@ spec:
             scheduledBackup:
               name: nextcloud-pg-backup
               spec:
-                # 5min backups for postgres data
-                schedule: "5 * * * * *"
+                # Hourly backups for postgres data
+                schedule: "0 0 * * * *"
                 backupOwnerReference: self
                 cluster:
                   name: nextcloud-postgres
