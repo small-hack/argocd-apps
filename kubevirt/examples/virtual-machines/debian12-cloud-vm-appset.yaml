@@ -29,13 +29,13 @@ spec:
               - vm_debian12_password
   template:
     metadata:
-      name: '{{ .vm_debian_host_node}}-{{ .vm_debian_vm_hostname }}'
+      name: '{{ .vm_debian12_host_node}}-{{ .vm_debian12_vm_hostname }}'
       annotations:
         argocd.argoproj.io/sync-wave: "1"
     spec:
       project: kubevirt
       destination:
-        name: '{{ .vm_debian_host_node }}'
+        name: '{{ .vm_debian12_host_node }}'
       syncPolicy:
         syncOptions:
           - ApplyOutOfSyncOnly=true
@@ -52,8 +52,8 @@ spec:
             ##########################
             # Virtual Machine settings
             virtualMachine:  
-              name: '{{ .vm_debian_vm_hostname }}'
-              namespace: '{{ .vm_debian_namespace }}'
+              name: '{{ .vm_debian12_vm_hostname }}'
+              namespace: '{{ .vm_debian12_namespace }}'
               runStrategy: "RerunOnFailure"
               
               features:
@@ -69,10 +69,10 @@ spec:
               machine:
                 machineType: "q35"
                 cpuPassthrough: false
-                vCores: '{{ .vm_debian_cores }}'
+                vCores: '{{ .vm_debian12_cores }}'
                 pinCores: false
-                hyperThreadingEnabled: '{{ .vm_debian_hyperthreads }}'
-                memory: '{{ .vm_debian_memory }}'
+                hyperThreadingEnabled: '{{ .vm_debian12_hyperthreads }}'
+                memory: '{{ .vm_debian12_memory }}'
             
             #########################
             # Create a Virtual Machine Pool
@@ -104,11 +104,11 @@ spec:
               bus: virtio
               bootorder: 2
               readonly: false
-              pvsize: '{{ .vm_debian_storage }}'
-              pvstorageClass: '{{ .vm_debian_storageClass }}'
+              pvsize: '{{ .vm_debian12_storage }}'
+              pvstorageClass: '{{ .vm_debian12_storageClass }}'
               pvaccessMode: ReadWriteOnce
               source: url
-              url: '{{ .vm_debian_image_url }}'
+              url: '{{ .vm_debian12_image_url }}'
             
             service:
             - name: service
@@ -148,7 +148,7 @@ spec:
             # Not all modules yet supported
             cloudinit:
               # -- Set hostname of VM
-              hostname: '{{ .vm_debian_vm_hostname }}'
+              hostname: '{{ .vm_debian12_vm_hostname }}'
               disable_root: false
               network:
                 config: disabled
@@ -160,12 +160,12 @@ spec:
                 - kvm
               # -- Create users
               users:
-                - name: '{{ .vm_debian_username }}'
+                - name: '{{ .vm_debian12_username }}'
                   groups: users, admin, sudo
                   sudo: ALL=(ALL) NOPASSWD:ALL
                   shell: /bin/bash
                   lock_passwd: false
-                  passwd: '{{ .vm_debian_password }}'
+                  passwd: '{{ .vm_debian12_password }}'
                   # -- import ssh public-keys from github or lanchpad (doesnt work on Debian12)
                   ssh_import_id: []
                   # -- manually add a ssh public-key
@@ -186,5 +186,5 @@ spec:
                 - ssh-import-id
               # -- commands to run in final step
               runcmd:
-                - sudo -u '{{ .vm_debian_username }}' -i ssh-import-id-gh '{{ .vm_debian_github_username }}'
+                - sudo -u '{{ .vm_debian12_username }}' -i ssh-import-id-gh '{{ .vm_debian12_github_username }}'
 
