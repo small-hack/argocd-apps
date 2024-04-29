@@ -2,7 +2,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: debain12-cloud-vm
+  name: debian12-cloud-vm
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "1"
@@ -16,17 +16,17 @@ spec:
         input:
           parameters:
             secret_vars:
-              - vm_debain12_host_node
-              - vm_debain12_image_url
-              - vm_debain12_vm_hostname
-              - vm_debain12_username
-              - vm_debain12_github_username
-              - vm_debain12_storage
-              - vm_debain12_storageClass
-              - vm_debain12_cores
-              - vm_debain12_hyperthreads
-              - vm_debain12_memory
-              - vm_debain12_password
+              - vm_debian12_host_node
+              - vm_debian12_image_url
+              - vm_debian12_vm_hostname
+              - vm_debian12_username
+              - vm_debian12_github_username
+              - vm_debian12_storage
+              - vm_debian12_storageClass
+              - vm_debian12_cores
+              - vm_debian12_hyperthreads
+              - vm_debian12_memory
+              - vm_debian12_password
   template:
     metadata:
       name: '{{ .vm_debian_host_node}}-{{ .vm_debian_vm_hostname }}'
