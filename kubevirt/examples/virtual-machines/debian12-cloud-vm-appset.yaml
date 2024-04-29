@@ -1,0 +1,192 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: debain12-cloud-vm
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  goTemplate: true
+  # generator allows us to source specific values from an external k8s secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - host_node
+              - image_url
+              - vm_hostname
+              - namespace
+              - username
+              - github_username
+              - storage
+              - storageClass
+              - cores
+              - hyperthreads
+              - memory
+              - password
+  template:
+    metadata:
+      name: '{{ .host_node}}-{{ .vm_hostname }}'
+      annotations:
+        argocd.argoproj.io/sync-wave: "1"
+    spec:
+      project: kubevirt
+      destination:
+        name: '{{ .host_node }}'
+        namespace: '{{ .namespace }}'
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+          - CreateNamespace=true
+        automated:
+          prune: true
+          selfHeal: true
+      source:
+        repoURL: 'https://cloudymax.github.io/kubevirt-community-stack/'
+        targetRevision: 0.2.5
+        chart: kubevirt-vm
+        helm:
+          valuesObject:
+            ##########################
+            # Virtual Machine settings
+            virtualMachine:  
+              name: '{{ .vm_hostname }}'
+              namespace: '{{ .namespace }}'
+              runStrategy: "RerunOnFailure"
+              
+              features:
+                kvmEnabled: true
+                acpiEnabled: true
+                smmEnabled: true
+                efiEnabled: false
+                secureBoot: false
+                autoattachPodInterface: true
+                autoattachSerialConsole: true
+                autoattachGraphicsDevice: true
+              
+              machine:
+                machineType: "q35"
+                cpuPassthrough: false
+                vCores: '{{ .cores }}'
+                pinCores: false
+                hyperThreadingEnabled: '{{ .hyperthreads }}'
+                memory: '{{ .memory }}'
+            
+            #########################
+            # Create a Virtual Machine Pool
+            # Vm pools should be used with ephemeral disks or containerdisks
+            # otherwise they would all fight over the same PVC
+            virtualMachinePool:
+              enabled: false
+              size: 3
+            
+            #############################
+            # -- List of disks to create for the VM, Will be used to create Datavolumes or PVCs.
+            disks:
+            #############################
+            # Cloud-init no-cloud example
+            # hold your user-data file
+            # Must be the first boot device
+            - name: cloudinitvolume
+              type: cdrom
+              bus: sata
+              readonly: true
+              bootorder: 1
+              pv-enable: false
+            
+            #################################################
+            # DataVolume disk with URL source example
+            #################################################
+            - name: harddrive
+              type: disk
+              bus: virtio
+              bootorder: 2
+              readonly: false
+              pvsize: '{{ .storage }}'
+              pvstorageClass: '{{ .storageClass }}'
+              pvaccessMode: ReadWriteOnce
+              source: url
+              url: '{{ .image_url }}'
+            
+            service:
+            - name: service
+              type: LoadBalancer
+              externalTrafficPolicy: Cluster
+              ports:
+                - name: vnc
+                  port: 22
+                  targetPort: 22
+                  protocol: TCP
+                - name: vnc
+                  port: 5900
+                  targetPort: 5900
+                  protocol: TCP
+                - name: rdp
+                  port: 3389
+                  targetPort: 3389
+                  protocol: TCP
+                - name: http
+                  port: 80
+                  targetPort: 80
+                  protocol: TCP
+                - name: https
+                  port: 443
+                  targetPort: 443
+                  protocol: TCP
+                  
+            # -- enable or disable usage of cloud-init
+            cloudinitEnabled: true
+            cloudinitFromSecret: false
+            
+            # -- Provide a path to an existing cloud-init file
+            # will be genrated from values below if no file specified
+            cloudinitPath:
+            
+            # -- Values used to generate a cloud-init user-data file
+            # Not all modules yet supported
+            cloudinit:
+              # -- Set hostname of VM
+              hostname: '{{ .vm_hostname }}'
+              disable_root: false
+              network:
+                config: disabled
+              # -- provide a wireguard config
+              wireguard: []
+              # -- Create Groups
+              groups:
+                - docker
+                - kvm
+              # -- Create users
+              users:
+                - name: '{{ .username }}'
+                  groups: users, admin, sudo
+                  sudo: ALL=(ALL) NOPASSWD:ALL
+                  shell: /bin/bash
+                  lock_passwd: false
+                  passwd: '{{ .password }}'
+                  # -- import ssh public-keys from github or lanchpad (doesnt work on Debian12)
+                  ssh_import_id: []
+                  # -- manually add a ssh public-key
+                  ssh_authorized_keys: []
+              ca_certs: []
+              # -- Commands to run early in boot process
+              boot_cmd: []
+              # -- base64 encode content of written files
+              write_as_b64: false
+              # -- list of files to embed in the user-data
+              write_files: []
+              # -- Update apt package cache
+              package_update: true
+              # -- Perform apt package upgrade
+              package_upgrade: false
+              # -- apt packages to install
+              packages: 
+                - ssh-import-id
+              # -- commands to run in final step
+              runcmd:
+                - sudo -u '{{ .username }}' -i ssh-import-id-gh '{{ .github_username }}'
+
