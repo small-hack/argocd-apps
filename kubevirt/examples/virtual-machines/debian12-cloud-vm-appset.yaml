@@ -36,6 +36,7 @@ spec:
       project: kubevirt
       destination:
         name: '{{ .vm_debian12_host_node }}'
+        namespace: '{{ .vm_debian12_vm_hostname }}'
       syncPolicy:
         syncOptions:
           - ApplyOutOfSyncOnly=true
