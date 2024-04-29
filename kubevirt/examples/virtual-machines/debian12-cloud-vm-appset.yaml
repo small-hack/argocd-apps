@@ -19,7 +19,6 @@ spec:
               - host_node
               - image_url
               - vm_hostname
-              - namespace
               - username
               - github_username
               - storage
@@ -37,7 +36,6 @@ spec:
       project: kubevirt
       destination:
         name: '{{ .host_node }}'
-        namespace: '{{ .namespace }}'
       syncPolicy:
         syncOptions:
           - ApplyOutOfSyncOnly=true
