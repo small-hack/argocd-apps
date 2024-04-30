@@ -36,7 +36,7 @@ spec:
         # official k8up helm repo
         repoURL: 'https://k8up-io.github.io/k8up'
         chart: k8up
-        targetRevision: 4.5.0
+        targetRevision: 4.6.0
         helm:
           values: |
             k8up:
