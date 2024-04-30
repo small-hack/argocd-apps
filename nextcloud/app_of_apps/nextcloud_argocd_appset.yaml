@@ -49,11 +49,11 @@ spec:
               annotations:
                 cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
                 nginx.ingress.kubernetes.io/proxy-body-size: 10G
-                # nginx.ingress.kubernetes.io/enable-cors: "false"
+                nginx.ingress.kubernetes.io/enable-cors: "false"
                 # nginx.ingress.kubernetes.io/cors-allow-headers: "X-Forwarded-For"
-                nginx.ingress.kubernetes.io/enable-cors: "true"
-                nginx.ingress.kubernetes.io/cors-allow-methods: "GET HEAD POST OPTIONS PUT PATCH DELETE PROPFIND MKCOL REPORT"
-                nginx.ingress.kubernetes.io/cors-allow-headers: "DNT,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization,X-Forwarded-For"
+                # nginx.ingress.kubernetes.io/enable-cors: "true"
+                # nginx.ingress.kubernetes.io/cors-allow-methods: "GET HEAD POST OPTIONS PUT PATCH DELETE PROPFIND MKCOL REPORT"
+                # nginx.ingress.kubernetes.io/cors-allow-headers: "DNT,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization,X-Forwarded-For"
                 nginx.ingress.kubernetes.io/server-snippet: |-
                   server_tokens off;
                   proxy_hide_header X-Powered-By;
@@ -66,11 +66,6 @@ spec:
                   }
                   location = /.well-known/caldav {
                     return 301 $scheme://$host/remote.php/dav;
-                  }
-                  location = /robots.txt {
-                    allow all;
-                    log_not_found off;
-                    access_log off;
                   }
                   location ~ ^/(?:build|tests|config|lib|3rdparty|templates|data)/ {
                     deny all;
