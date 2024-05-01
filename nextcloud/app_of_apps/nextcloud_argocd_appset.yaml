@@ -354,12 +354,6 @@ spec:
                         # could take several months.
                         #add_header Strict-Transport-Security "max-age=15768000; includeSubDomains; preload;" always;
 
-                        # already behind a load-balancer
-                        real_ip_header X-Forwarded-For;
-                        real_ip_recursive on;
-                        set_real_ip_from 0.0.0.0/0;
-
-
                         # set max upload size
                         client_max_body_size 10G;
                         fastcgi_buffers 64 4K;
@@ -384,6 +378,11 @@ spec:
                         add_header X-Permitted-Cross-Domain-Policies    "none"              always;
                         add_header X-Robots-Tag                         "noindex, nofollow" always;
                         add_header X-XSS-Protection                     "1; mode=block"     always;
+
+                        # already behind a load-balancer
+                        real_ip_header X-Forwarded-For;
+                        real_ip_recursive on;
+                        set_real_ip_from 0.0.0.0/0;
 
                         # Remove X-Powered-By, which is an information leak
                         fastcgi_hide_header X-Powered-By;
