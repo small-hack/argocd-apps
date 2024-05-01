@@ -49,10 +49,12 @@ spec:
               annotations:
                 cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
                 nginx.ingress.kubernetes.io/proxy-body-size: 10G
-                # nginx.ingress.kubernetes.io/enable-cors: "false"
-                nginx.ingress.kubernetes.io/cors-allow-headers: "X-Forwarded-For"
-                nginx.ingress.kubernetes.io/enable-cors: "true"
+                nginx.ingress.kubernetes.io/enable-cors: "false"
+                # nginx.ingress.kubernetes.io/enable-cors: "true"
                 # nginx.ingress.kubernetes.io/cors-allow-methods: "GET, HEAD, POST, OPTIONS, PUT, PATCH, DELETE, PROPFIND, MKCOL, REPORT"
+                # this was originally suggested in nextcloud/helm
+                # nginx.ingress.kubernetes.io/cors-allow-headers: "X-Forwarded-For"
+                # this was a followup solution for dav stuff
                 # nginx.ingress.kubernetes.io/cors-allow-headers: "DNT,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization,X-Forwarded-For"
                 nginx.ingress.kubernetes.io/server-snippet: |-
                   server_tokens off;
