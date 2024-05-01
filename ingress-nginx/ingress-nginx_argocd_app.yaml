@@ -15,6 +15,9 @@ spec:
       values: |
         controller:
           allowSnippetAnnotations: true
+          enable-real-ip: "true"
+          forwarded-for-header: "proxy_protocol"
+          proxy-real-ip-cidr: "0.0.0.0/0"
   destination:
     server: "https://kubernetes.default.svc"
     namespace: ingress-nginx
