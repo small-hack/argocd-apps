@@ -50,10 +50,10 @@ spec:
                 cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
                 nginx.ingress.kubernetes.io/proxy-body-size: 10G
                 # nginx.ingress.kubernetes.io/enable-cors: "false"
-                nginx.ingress.kubernetes.io/cors-allow-headers: "X-Forwarded-For"
+                # nginx.ingress.kubernetes.io/cors-allow-headers: "X-Forwarded-For"
                 nginx.ingress.kubernetes.io/enable-cors: "true"
-                # nginx.ingress.kubernetes.io/cors-allow-methods: "GET, HEAD, POST, OPTIONS, PUT, PATCH, DELETE, PROPFIND, MKCOL, REPORT"
-                # nginx.ingress.kubernetes.io/cors-allow-headers: "DNT,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization,X-Forwarded-For"
+                nginx.ingress.kubernetes.io/cors-allow-methods: "GET, HEAD, POST, OPTIONS, PUT, PATCH, DELETE, PROPFIND, MKCOL, REPORT"
+                nginx.ingress.kubernetes.io/cors-allow-headers: "DNT,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization,X-Forwarded-For"
                 nginx.ingress.kubernetes.io/server-snippet: |-
                   server_tokens off;
                   proxy_hide_header X-Powered-By;
@@ -379,11 +379,6 @@ spec:
                         add_header X-Robots-Tag                         "noindex, nofollow" always;
                         add_header X-XSS-Protection                     "1; mode=block"     always;
 
-                        # already behind a load-balancer
-                        real_ip_header X-Forwarded-For;
-                        real_ip_recursive on;
-                        set_real_ip_from 0.0.0.0/0;
-
                         # Remove X-Powered-By, which is an information leak
                         fastcgi_hide_header X-Powered-By;
 
@@ -483,6 +478,13 @@ spec:
 
                         location / {
                             try_files $uri $uri/ /index.php$request_uri;
+                        }
+
+                        location / {
+                          # already behind a load-balancer
+                          real_ip_header X-Forwarded-For;
+                          real_ip_recursive on;
+                          set_real_ip_from 0.0.0.0/0;
                         }
                     }
 
