@@ -5,8 +5,7 @@ apiVersion: v1
 metadata:
   name: nextcloud-files
   annotations:
-    k8up.io/local-backup: 'true'
-    k8up.io/remote-backup: 'false'
+    k8up.io/backup: 'true'
 spec:
   storageClassName: {{ .Values.files_pvc.storageClassName }}
   accessModes:
