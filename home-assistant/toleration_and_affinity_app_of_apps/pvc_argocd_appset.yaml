@@ -49,7 +49,7 @@ spec:
 
             # not in use yet
             k8up:
-              backup_name: 'home_assistant-nightly-backup'
+              backup_name: 'home-assistant-nightly-backup'
 
               # -- can be set to 's3' or 'local'
               backup_type: 's3'
