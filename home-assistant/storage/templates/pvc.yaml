@@ -5,6 +5,8 @@ kind: PersistentVolumeClaim
 metadata:
   namespace: home-assistant
   name: home-assistant
+  annotations:
+    k8up.io/backup: 'true'
 spec:
   storageClassName: {{ .Values.pvc_storageClassName }}
   accessModes:
