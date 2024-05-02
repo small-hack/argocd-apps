@@ -15,9 +15,10 @@ spec:
         input:
           parameters:
             secret_vars:
+              - global_cluster_issuer
+              - nextcloud_default_phone_region
               - nextcloud_hostname
               - nextcloud_s3_region
-              - global_cluster_issuer
   template:
     metadata:
       name: nextcloud-web-app
@@ -247,6 +248,12 @@ spec:
                       1 => '10.0.0.0/8'
                     ),
                     'forwarded_for_headers' => array('HTTP_X_FORWARDED_FOR'),
+                  );
+
+                extra.config.php: |-
+                  <?php
+                  $CONFIG = array (
+                    'default_phone_region' => '{{ .nextcloud_default_phone_region }}',
                   );
 
                 oidc.config.php: |-
