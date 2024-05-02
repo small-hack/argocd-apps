@@ -72,9 +72,6 @@ spec:
 
               prometheus_url: 'push-gateway.prometheus.svc:9091'
 
-              podSecurityContext:
-                runAsUser: 82
-
               schedules:
                 backup: '{{ .home_assistant_backup_schedule }}'
                 check: '0 0 * * *'
