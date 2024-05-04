@@ -113,10 +113,10 @@ spec:
                 name: bluetooth
                 readOnly: true
 
-            # resources:
-            #   limits:
-            #     # this is from the generic device plugin
-            #     squat.ai/serial: '{{ .home_assistant_usb_device_index }}'
+            resources:
+              limits:
+                # this is from the generic device plugin
+                squat.ai/serial: '{{ .home_assistant_usb_device_index }}'
 
             tolerations:
               - key: '{{ .home_assistant_toleration_key }}'
