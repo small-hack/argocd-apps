@@ -59,11 +59,11 @@ spec:
                 endpoint: '{{ .matrix_s3_backup_endpoint }}'
                 accessKeyIDSecretRef:
                   name: 's3-backups-credentials'
-                  key: 'accessKey'
+                  key: 'accessKeyID'
                   optional: false
                 secretAccessKeySecretRef:
                   name: 's3-backups-credentials'
-                  key: 'secretKey'
+                  key: 'secretAccessKey'
                   optional: false
 
               repoPasswordSecretRef:
