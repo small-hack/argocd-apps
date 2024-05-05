@@ -4,6 +4,8 @@ kind: PersistentVolumeClaim
 metadata:
   namespace: matrix
   name: matrix-signing-key
+  annotations:
+    k8up.io/backup: 'true'
 spec:
   storageClassName: {{ .Values.signing_key_pvc.storageClassName }}
   accessModes:

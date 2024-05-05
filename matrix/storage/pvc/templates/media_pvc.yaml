@@ -4,6 +4,8 @@ kind: PersistentVolumeClaim
 metadata:
   namespace: matrix
   name: matrix-media
+  annotations:
+    k8up.io/backup: 'true'
 spec:
   storageClassName: {{ .Values.media_pvc.storageClassName }}
   accessModes:
