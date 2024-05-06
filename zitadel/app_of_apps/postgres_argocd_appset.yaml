@@ -68,6 +68,10 @@ spec:
                   secretAccessKey:
                     name: zitadel-db-credentials
                     key: "SECRET_KEY"
+                wal:
+                  compression: gzip
+                  maxParallel: 8
+                  encryption: AES256
               retentionPolicy: "30d"
 
             certificates:
