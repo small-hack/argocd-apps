@@ -65,6 +65,10 @@ spec:
                   secretAccessKey:
                     name: s3-postgres-credentials
                     key: "S3_PASSWORD"
+                wal:
+                  compression: gzip
+                  maxParallel: 8
+                  encryption: AES256
               retentionPolicy: "30d"
 
             certificates:
