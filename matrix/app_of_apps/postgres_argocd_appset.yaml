@@ -67,7 +67,7 @@ spec:
                     key: "S3_PASSWORD"
                 wal:
                   maxParallel: 4
-              retentionPolicy: "30d"
+              retentionPolicy: "2d"
 
             certificates:
               server:
