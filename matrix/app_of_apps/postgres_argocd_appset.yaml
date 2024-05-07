@@ -66,7 +66,7 @@ spec:
                     name: s3-postgres-credentials
                     key: "S3_PASSWORD"
                 wal:
-                  maxParallel: 4
+                  maxParallel: 8
               retentionPolicy: "2d"
 
             certificates:
