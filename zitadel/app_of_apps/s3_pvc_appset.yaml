@@ -21,6 +21,7 @@ spec:
               - zitadel_s3_backup_bucket
               - zitadel_s3_backup_region
               - zitadel_s3_pvc_capacity
+              - zitadel_pvc_backup_schedule
   template:
     metadata:
       name: zitadel-s3-pvc
@@ -57,11 +58,11 @@ spec:
                 bucket: '{{ .zitadel_s3_backup_bucket }}'
                 endpoint: '{{ .zitadel_s3_backup_endpoint }}'
                 accessKeyIDSecretRef:
-                  name: 's3-backups-credentials'
-                  key: 'accessKeyID'
+                  name: 's3-postgres-credentials'
+                  key: 'accessKeyId'
                   optional: false
                 secretAccessKeySecretRef:
-                  name: 's3-backups-credentials'
+                  name: 's3-postgres-credentials'
                   key: 'secretAccessKey'
                   optional: false
 
@@ -75,6 +76,6 @@ spec:
                 runAsUser: 0
 
               schedules:
-                backup: "47 15 * * *"
+                backup: '{{ .zitadel_pvc_backup_schedule }}'
                 check: "48 15 * * *"
                 prune: "49 15 * * *"
