@@ -1,0 +1,159 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: haproxy
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: haproxy
+  namespace: haproxy
+spec:
+  selector:
+    matchLabels:
+      app: haproxy
+  template:
+    metadata:
+      labels:
+        app: haproxy
+    spec:
+      containers:
+      - name: haproxy
+        image: haproxy
+        securityContext:
+          allowPrivilegeEscalation: true
+          runAsUser: 0
+          privileged: true
+        ports:
+        - containerPort: 80
+        - containerPort: 443
+        - containerPort: 4244
+        - containerPort: 8404
+        volumeMounts:
+        - name: config
+          mountPath: /usr/local/etc/haproxy/haproxy.cfg
+          subPath: haproxy.cfg
+      volumes:
+        - name: config
+          configMap:
+            name: haproxy-configmap
+            defaultMode: 420
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: haproxy-lb-service
+  namespace: haproxy
+spec:
+  selector:
+    app: haproxy
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 80
+    - name: https
+      protocol: TCP
+      port: 443
+      targetPort: 443
+    - name: hubble
+      protocol: TCP
+      port: 4244
+      targetPort: 4244
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: haproxy-ui-service
+  namespace: haproxy
+spec:
+  selector:
+    app: haproxy
+  ports:
+    - protocol: TCP
+      port: 8404
+      targetPort: 8404
+  type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: haproxy-ui-ingress
+  namespace: haproxy
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: haproxy.buildstars.online
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: haproxy-ui-service
+            port:
+              number: 8404
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: haproxy-configmap
+  namespace: haproxy
+data:
+  haproxy.cfg: |
+    global
+      stats socket /var/run/api.sock user haproxy group haproxy mode 660 level admin expose-fd listeners
+      log stdout format raw local0 info
+
+    ca-base /etc/ssl/certs
+    crt-base /etc/ssl/private
+
+    ssl-default-bind-ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384
+        ssl-default-bind-ciphersuites TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256
+        ssl-default-bind-options prefer-client-ciphers no-sslv3 no-tlsv10 no-tlsv11 no-tls-tickets
+
+    ssl-default-bind-options no-sslv3
+
+    defaults
+      option tcplog
+      mode tcp
+      timeout client 10s
+      timeout connect 5s
+      timeout server 10s
+      timeout http-request 10s
+      log global
+
+    frontend stats
+      bind :8404
+      mode http
+      stats enable
+      stats uri /
+      stats refresh 10s
+
+    frontend http-in
+      bind :80
+      mode tcp
+      default_backend http
+
+    frontend https-in
+      bind :443
+      mode tcp
+      default_backend https
+
+    frontend hubble-in
+      bind :4244
+      mode tcp
+      default_backend https
+
+    backend http
+      mode tcp
+      server s1 10.1.255.254:80 check
+
+    backend https
+      mode tcp
+      server s2 10.1.255.254:443 check
+
+    backend hubble
+      mode tcp
+      server s2 10.1.255.254:4244 check
