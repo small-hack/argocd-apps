@@ -18,7 +18,7 @@ spec:
             secret_vars:
               - global_pvc_storage_class
               - home_assistant_pvc_capacity
-              - home_assistant_backup_schedule
+              - home_assistant_pvc_backup_schedule
               - home_assistant_s3_backup_endpoint
               - home_assistant_s3_backup_bucket
               - home_assistant_s3_backup_region
@@ -73,6 +73,6 @@ spec:
               prometheus_url: 'push-gateway.prometheus.svc:9091'
 
               schedules:
-                backup: '{{ .home_assistant_backup_schedule }}'
+                backup: '{{ .home_assistant_pvc_backup_schedule }}'
                 check: '0 0 * * *'
                 prune: '0 0 * * *'
