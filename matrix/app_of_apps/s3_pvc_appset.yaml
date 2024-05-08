@@ -41,7 +41,7 @@ spec:
       source:
         repoURL: https://github.com/small-hack/argocd-apps.git
         path: s3_persistence_and_backups/
-        targetRevision: main
+        targetRevision: add-pvc-helm-chart-for-nextcloud
         helm:
           valuesObject:
             provider: '{{ .matrix_s3_provider }}'
