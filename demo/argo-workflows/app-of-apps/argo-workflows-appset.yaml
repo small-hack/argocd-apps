@@ -18,11 +18,7 @@ spec:
           parameters:
             secret_vars:
               - workflows_hostname
-              - argo_cd_hostname
-              - argo_cd_oidc_provider
               - argo_cd_oidc_issuer
-              - argo_cd_oidc_client_id
-              - argo_cd_oidc_logout_url
               - global_cluster_issuer
   template:
     metadata:
@@ -43,7 +39,7 @@ spec:
         chart: argo-workflows
         targetRevision: 0.40.14
         helm:
-          values: |
+          valuesObject:
             crds:
               install: true
               keep: true
@@ -60,11 +56,11 @@ spec:
               ingress:
                 enabled: true
                 annotations: 
-                  cert-manager.io/cluster-issuer: "letsencrypt-staging"
+                  cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
                 labels: {}
                 ingressClassName: "nginx"
                 hosts:
-                  - workflows.buildstars.online
+                  - '{{ .workflows_hostname }}'
                 paths:
                   - /
                 pathType: Prefix
@@ -72,18 +68,18 @@ spec:
                 tls:
                   - secretName: argoworkflows-example-tls
                     hosts:
-                      - workflows.buildstars.online
+                      - '{{ .workflows_hostname }}'
             
               sso:
                 enabled: true
-                issuer:  https://zitadel.buildstars.online
+                issuer:  '{{ .argo_cd_oidc_issuer }}'
                 clientId:
                   name: argocd-oidc-credentials 
                   key: oidc.clientID
                 clientSecret:
                   name: argocd-oidc-credentials
                   key: oidc.clientSecret
-                redirectUrl: "https://workflows.buildstars.online/oauth2/callback"
+                redirectUrl: "https://'{{ .workflows_hostname }}'/oauth2/callback"
                 rbac:
                   enabled: true
                   secretWhitelist: []
@@ -119,27 +115,27 @@ spec:
                 #   enableEncryption: true
                          
             persistence:
-            connectionPool:
-              maxIdleConns: 100
-              maxOpenConns: 0
-            # save the entire workflow into etcd and DB
-            nodeStatusOffLoad: false
-            # enable archiving of old workflows
-            archive: true
-            postgresql:
-              host: localhost
-              port: 5432
-              database: postgres
-              tableName: argo_workflows
-              # the database secrets must be in the same namespace of the controller
-              userNameSecret:
-                name: argo-postgres-config
-                key: username
-              passwordSecret:
-                name: argo-postgres-config
-                key: password
-              ssl: true
-              # sslMode must be one of: disable, require, verify-ca, verify-full
-              # you can find more information about those ssl options here: https://godoc.org/github.com/lib/pq
-              sslMode: require
+              connectionPool:
+                maxIdleConns: 100
+                maxOpenConns: 0
+              # save the entire workflow into etcd and DB
+              nodeStatusOffLoad: false
+              # enable archiving of old workflows
+              archive: true
+              postgresql:
+                host: localhost
+                port: 5432
+                database: postgres
+                tableName: argo_workflows
+                # the database secrets must be in the same namespace of the controller
+                userNameSecret:
+                  name: argo-postgres-config
+                  key: username
+                passwordSecret:
+                  name: argo-postgres-config
+                  key: password
+                ssl: true
+                # sslMode must be one of: disable, require, verify-ca, verify-full
+                # you can find more information about those ssl options here: https://godoc.org/github.com/lib/pq
+                sslMode: require
 
