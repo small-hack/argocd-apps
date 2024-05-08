@@ -21,7 +21,7 @@ spec:
               - nextcloud_s3_backup_bucket
               - nextcloud_s3_backup_region
               - nextcloud_s3_pvc_capacity
-              - nextcloud_backup_schedule
+              - nextcloud_pvc_backup_schedule
               - global_pvc_storage_class
   template:
     metadata:
@@ -78,6 +78,6 @@ spec:
                 runAsUser: 82
 
               schedules:
-                backup: '{{ .nextcloud_backup_schedule }}'
+                backup: '{{ .nextcloud_pvc_backup_schedule }}'
                 check: '0 0 * * *'
                 prune: '0 0 * * *'
