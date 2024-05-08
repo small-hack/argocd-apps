@@ -21,6 +21,7 @@ spec:
               - mastodon_s3_backup_bucket
               - mastodon_s3_backup_region
               - mastodon_s3_pvc_capacity
+              - mastodon_pvc_backup_schedule
   template:
     metadata:
       name: mastodon-s3-pvc
@@ -58,7 +59,7 @@ spec:
                 endpoint: '{{ .mastodon_s3_backup_endpoint }}'
                 accessKeyIDSecretRef:
                   name: 's3-backups-credentials'
-                  key: 'accessKeyID'
+                  key: 'accessKeyId'
                   optional: false
                 secretAccessKeySecretRef:
                   name: 's3-backups-credentials'
@@ -75,6 +76,6 @@ spec:
                 runAsUser: 0
 
               schedules:
-                backup: "47 13 * * *"
+                backup: '{{ .mastodon_pvc_backup_schedule }}'
                 check: "48 13 * * *"
                 prune: "49 13 * * *"
