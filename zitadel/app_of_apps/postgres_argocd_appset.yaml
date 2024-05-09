@@ -64,11 +64,11 @@ spec:
                 endpointURL: "https://{{ .zitadel_s3_endpoint }}"
                 s3Credentials:
                   accessKeyId:
-                    name: zitadel-db-credentials
-                    key: "ACCESS_KEY"
+                    name: s3-postgres-credentials
+                    key: "accessKeyId"
                   secretAccessKey:
-                    name: zitadel-db-credentials
-                    key: "SECRET_KEY"
+                    name: s3-postgres-credentials
+                    key: "secretAccessKey"
                 wal:
                   compression: gzip
                   maxParallel: 8
