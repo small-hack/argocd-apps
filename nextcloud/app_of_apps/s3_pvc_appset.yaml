@@ -61,7 +61,7 @@ spec:
                 endpoint: '{{ .nextcloud_s3_backup_endpoint }}'
                 accessKeyIDSecretRef:
                   name: 's3-backups-credentials'
-                  key: 'accessKeyID'
+                  key: 'accessKeyId'
                   optional: false
                 secretAccessKeySecretRef:
                   name: 's3-backups-credentials'
