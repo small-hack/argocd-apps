@@ -51,7 +51,7 @@ spec:
               name: http
             prometheus:
               enabled: true
-              serviceName: prometheus-prometheus
+              serviceName: prom-stack-kube-prometheus-prometheus
               serviceNamespace: promethus
             ingress:
               enabled: true
