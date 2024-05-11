@@ -17,9 +17,7 @@ spec:
         input:
           parameters:
             secret_vars:
-              - seaweedfs_hostname
               - seaweedfs_s3_endpoint
-              - seaweedfs_s3_region
               - global_cluster_issuer
   template:
     metadata:
@@ -61,7 +59,7 @@ spec:
                   volumeRead: false
                   filerWrite: false
                   filerRead: false
-              serviceAccountName: "seaweedfs"
+              serviceAccountName: "seaweedfs-sa"
               certificates:
                 alphacrds: false
               monitoring:
@@ -176,6 +174,9 @@ spec:
                 domainName: '{{ .seaweedfs_s3_endpoint }}'
                 enableAuth: true
                 existingConfigSecret: seaweedfs-s3-secret
+                createBuckets:
+                  - name: zitadel-postgres
+                    anonymousRead: false
               livenessProbe:
                 enabled: true
                 httpGet:
@@ -198,3 +199,16 @@ spec:
                 timeoutSeconds: 10
             s3:
               enabled: false
+              ingress:
+                enabled: true
+                className: "nginx"
+                # host: false for "*" hostname
+                host: '{{ .seaweedfs_s3_endpoint }}'
+                # additional ingress annotations for the s3 endpoint
+                annotations:
+                  cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
+                  nginx.ingress.kubernetes.io/proxy-body-size: "64m"
+                tls:
+                  - secretName: zitadel-seaweedfs-tls
+                    hosts:
+                      - '{{ .seaweedfs_s3_endpoint }}'
