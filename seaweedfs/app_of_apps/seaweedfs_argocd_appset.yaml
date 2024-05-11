@@ -18,6 +18,7 @@ spec:
           parameters:
             secret_vars:
               - seaweedfs_s3_endpoint
+              - seaweedfs_s3_hostname
               - global_cluster_issuer
   template:
     metadata:
