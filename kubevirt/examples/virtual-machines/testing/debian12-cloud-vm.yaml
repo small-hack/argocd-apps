@@ -69,7 +69,7 @@ spec:
                 nodePort: 30001
         
         cloudinitPath:
-        cloudinitFromSecret:
+        cloudinitFromSecret: false
         cloudinit:
           hostname: scrapmetal
           disable_root: false
