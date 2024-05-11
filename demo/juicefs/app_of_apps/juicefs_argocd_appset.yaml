@@ -43,7 +43,7 @@ spec:
                 name: "juicefs"
                 metaurl: "redis://:{{ .juicefs_redis_password }}@juicefs-redis-master.juicefs.svc.cluster.local:6379/1"
                 storage: "s3"
-                bucket: "http://seaweedfs-s3.juicefs.svc.cluster.local:8333/juicefs"
+                bucket: "http://seaweedfs-s3.seaweedfs.svc.cluster.local:8333/juicefs"
                 accessKey: {{ .juicefs_s3_key_id }}
                 secretKey: {{ .juicefs_s3_secret_key }}
                 envs: ""
