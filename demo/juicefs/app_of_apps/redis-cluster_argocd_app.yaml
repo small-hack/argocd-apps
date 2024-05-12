@@ -40,7 +40,7 @@ spec:
         chart: bitnamicharts/redis-cluster
         targetRevision: 2.19.1
         helm:
-          releaseName: juicefs-redis
+          releaseName: redis
           valuesObject:
             fullNameOverride: "redis"
             global:
