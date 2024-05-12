@@ -132,6 +132,8 @@ spec:
               fileSizeLimitMB: null
               minFreeSpacePercent: 7
               compactionMBps: "250"
+              extraEnvironmentVars:
+                GOMEMLIMIT: "1024MiB"
               dataDirs:
                 - name: data
                   type: "existingClaim"
