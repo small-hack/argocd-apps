@@ -20,7 +20,7 @@ spec:
               - juicefs_redis_password
   template:
     metadata:
-      name: juicefs-redis-appset
+      name: juicefs-redis-cluster-appset
       annotations:
         argocd.argoproj.io/sync-wave: "1"
     spec:
