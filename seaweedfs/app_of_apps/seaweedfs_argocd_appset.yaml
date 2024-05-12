@@ -188,7 +188,7 @@ spec:
                 WEED_MYSQL_ENABLED: "false"
                 WEED_LEVELDB2_ENABLED: "false"
                 WEED_REDIS_CLUSTER2_ENABLED: "true"
-                WEED_REDIS_CLUSTER2_ADDRESSES: '{["redis-redis-cluster.juicefs.svc.cluster.local"]}'
+                WEED_REDIS_CLUSTER2_ADDRESSES: '{["redis-redis-cluster.juicefs.svc.cluster.local:6379"]}'
                 WEED_REDIS_CLUSTER2_PASSWORD: "ChangeMe!"
                 WEED_FILER_OPTIONS_RECURSIVE_DELETE: "true"
                 WEED_FILER_BUCKETS_FOLDER: "/buckets"
