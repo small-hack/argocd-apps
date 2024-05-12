@@ -73,6 +73,7 @@ spec:
                 WEED_CLUSTER_DEFAULT: "sw"
                 WEED_CLUSTER_SW_MASTER: "seaweedfs-master.seaweedfs:9333"
                 WEED_CLUSTER_SW_FILER: "seaweedfs-filer-client.seaweedfs:8888"
+                GOMEMLIMIT: "1GiB"
             image:
               registry: ""
               repository: ""
@@ -132,8 +133,6 @@ spec:
               fileSizeLimitMB: null
               minFreeSpacePercent: 7
               compactionMBps: "250"
-              extraEnvironmentVars:
-                GOMEMLIMIT: "1024MiB"
               dataDirs:
                 - name: data
                   type: "existingClaim"
