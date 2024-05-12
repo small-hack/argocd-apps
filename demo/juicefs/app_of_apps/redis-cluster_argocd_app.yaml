@@ -36,9 +36,9 @@ spec:
           prune: true
           selfHeal: true
       source:
-        repoURL: 'registry-1.docker.io'
-        chart: bitnamicharts/redis-cluster
-        targetRevision: 6.2.7
+        repoURL: 'https://charts.bitnami.com/bitnami'
+        chart: bitnami/redis-cluster
+        targetRevision: 7.6.4
         helm:
           releaseName: redis
           valuesObject:
