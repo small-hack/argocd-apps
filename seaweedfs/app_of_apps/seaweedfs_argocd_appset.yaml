@@ -126,7 +126,7 @@ spec:
               grpcPort: 18080
               metricsPort: 9327
               ipBind: "0.0.0.0"
-              index: leveldbLarge
+              index: leveldb
               replicas: 1
               loggingOverrideLevel: null
               fileSizeLimitMB: null
