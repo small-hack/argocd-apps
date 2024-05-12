@@ -41,8 +41,37 @@ spec:
         targetRevision: 19.3.0
         helm:
           releaseName: juicefs-redis
-          values: |
+          valuesObject:
             global:
               storageClass: "local-path"
               redis:
                 password: "{{ .juicefs_redis_password }}"
+            master:
+              disableCommands:
+                - FLUSHDB
+                - FLUSHALL
+              persistence:
+                enabled: true
+                storageClass: "local-path"
+                size: 8Gi
+             resourcesPreset: "none"
+             resources:
+               requests:
+                 cpu: 150m
+                 memory: 128Mi
+               limits: {}
+            replica:
+              disableCommands:
+                - FLUSHDB
+                - FLUSHALL
+              persistence:
+                enabled: true
+                storageClass: "local-path"
+                size: 8Gi
+             resourcesPreset: "none"
+             resources:
+               requests:
+                 cpu: 150m
+                 memory: 128Mi
+               limits: {}
+            
