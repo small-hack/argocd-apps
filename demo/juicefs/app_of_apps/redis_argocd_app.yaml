@@ -54,12 +54,12 @@ spec:
                 enabled: true
                 storageClass: "local-path"
                 size: 8Gi
-             resourcesPreset: "none"
-             resources:
-               requests:
-                 cpu: 150m
-                 memory: 128Mi
-               limits: {}
+              resourcesPreset: "none"
+              resources:
+                requests:
+                  cpu: 150m
+                  memory: 128Mi
+                limits: {}
             replica:
               disableCommands:
                 - FLUSHDB
@@ -68,10 +68,10 @@ spec:
                 enabled: true
                 storageClass: "local-path"
                 size: 8Gi
-             resourcesPreset: "none"
-             resources:
-               requests:
-                 cpu: 150m
-                 memory: 128Mi
-               limits: {}
-            
+              resourcesPreset: "none"
+              resources:
+                requests:
+                  cpu: 150m
+                  memory: 128Mi
+                limits: {}
+
