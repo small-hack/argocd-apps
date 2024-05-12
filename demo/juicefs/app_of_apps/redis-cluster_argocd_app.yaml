@@ -37,7 +37,7 @@ spec:
           selfHeal: true
       source:
         repoURL: 'registry-1.docker.io'
-        chart: bitnamicharts/redis
+        chart: bitnamicharts/redis-cluster
         targetRevision: 19.3.0
         helm:
           releaseName: juicefs-redis
