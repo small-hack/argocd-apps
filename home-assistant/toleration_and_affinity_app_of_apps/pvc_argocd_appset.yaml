@@ -41,7 +41,7 @@ spec:
       source:
         repoURL: https://github.com/small-hack/argocd-apps.git
         path: home-assistant/storage/
-        targetRevision: add-pvc-helm-chart-for-nextcloud
+        targetRevision: main
         helm:
           valuesObject:
             pvc_capacity: '{{ .home_assistant_pvc_capacity }}'

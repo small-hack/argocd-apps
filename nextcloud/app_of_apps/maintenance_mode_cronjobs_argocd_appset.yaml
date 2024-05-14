@@ -37,7 +37,7 @@ spec:
       source:
         repoURL: https://github.com/small-hack/argocd-apps.git
         path: nextcloud/maintenance_mode_cronjobs/
-        targetRevision: add-pvc-helm-chart-for-nextcloud
+        targetRevision: main
         helm:
           releaseName: maintenance-mode-cronjobs
           valuesObject:
