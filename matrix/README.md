@@ -6,8 +6,11 @@
 
 <details>
   <summary>Click for more Argo CD App screenshots</summary>
-  
+
+  ### Helm chart view
   <img width="900" alt="matrix-web-app" src="https://github.com/small-hack/argocd-apps/assets/2389292/f3940d42-46aa-4f90-9215-037364a5e8b5">
+
+  ### Networking view
   <img width="1390" alt="matrix-networking" src="https://github.com/small-hack/argocd-apps/assets/2389292/07217b21-4945-4426-8ea9-d5f41f6ca7f7">
   
 </details>
