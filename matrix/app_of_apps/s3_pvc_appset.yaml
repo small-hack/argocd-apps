@@ -21,6 +21,7 @@ spec:
               - matrix_s3_backup_bucket
               - matrix_s3_backup_region
               - matrix_s3_pvc_capacity
+              - matrix_pvc_backup_schedule
   template:
     metadata:
       name: matrix-s3-pvc
@@ -57,17 +58,17 @@ spec:
                 bucket: '{{ .matrix_s3_backup_bucket }}'
                 endpoint: '{{ .matrix_s3_backup_endpoint }}'
                 accessKeyIDSecretRef:
-                  name: 'backups-s3-credentials'
-                  key: 'accessKey'
+                  name: 's3-backups-credentials'
+                  key: 'accessKeyID'
                   optional: false
                 secretAccessKeySecretRef:
-                  name: 'backups-s3-credentials'
-                  key: 'secretKey'
+                  name: 's3-backups-credentials'
+                  key: 'secretAccessKey'
                   optional: false
 
               repoPasswordSecretRef:
-                name: 'backups-s3-credentials'
-                key: 'resticRepoPass'
+                name: 's3-backups-credentials'
+                key: 'resticRepoPassword'
 
               prometheus_url: 'push-gateway.prometheus.svc:9091'
 
@@ -75,6 +76,6 @@ spec:
                 runAsUser: 0
 
               schedules:
-                backup: "47 13 * * *"
-                check: "48 13 * * *"
-                prune: "49 13 * * *"
+                backup: "{{ .matrix_pvc_backup_schedule }}"
+                check: "0 0 * * *"
+                prune: "0 0 * * *"

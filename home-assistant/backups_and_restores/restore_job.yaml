@@ -1,0 +1,67 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: home-assistant-restic-restore-TIMESTAMP
+spec:
+  template:
+    metadata:
+      name: restic-restore-job
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: home-assistant
+                operator: In
+                values:
+                - true
+      tolerations:
+        - effect: NoSchedule
+          key: home-assistant
+          operator: Equal
+          value: true
+      volumes:
+        - name: restic-repo-password
+          secret:
+            secretName: s3-backups-credentials
+        - name: home-assistant
+          persistentVolumeClaim:
+            claimName: home-assistant
+      containers:
+        - name: restic-restore
+          image: instrumentisto/restic:latest
+          # runs: restic restore $SNAPSHOT_ID:/data/pvc-name --target config/
+          command:
+            - restic
+            - restore
+            - $SNAPSHOT_ID:/data/$PVC
+            - --target
+            - /config
+          volumeMounts:
+            - name: restic-repo-password
+              readOnly: true
+              mountPath: "/secrets/"
+            - name: home-assistant
+              mountPath: /config
+          env:
+            - name: SNAPSHOT_ID
+              value: latest
+            - name: PVC
+              value: home-assistant
+            - name: RESTIC_REPOSITORY
+              value: s3:my.s3.endpoint/my-home-assistant-bucket
+            - name: RESTIC_PASSWORD_FILE
+              value: "/secrets/resticRepoPassword"
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  key: accessKeyID
+                  name: s3-backups-credentials
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: secretAccessKey
+                  name: s3-backups-credentials
+      restartPolicy: Never

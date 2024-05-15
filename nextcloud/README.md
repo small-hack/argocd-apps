@@ -41,6 +41,13 @@ argocd app create nextcloud -f nextcloud_argocd_template.yaml
 
 ## Tips
 
+
+## Login with Zitadel button not showing up at /login page
+
+This sometimes happens when the argocd postSync hook job for installing apps doesn't run or runs too early. You can just hit sync on the main nextcloud Argo CD app called `nextcloud` and it will rerun the job and install the OIDC login nextcloud app.
+
+
+## OCC
 `occ` is the Nextcloud admin CLI. It can only be run on the system running Nextcloud, so in this case that would the pod in the deployment that gets deployed via the helm chart that our Argo CD ApplicationSet .
 
 Check out the Nextcloud `occ` [docs](https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/occ_command.html#scan) for more info.

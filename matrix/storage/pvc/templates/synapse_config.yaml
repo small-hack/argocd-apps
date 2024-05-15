@@ -1,0 +1,16 @@
+{{- if .Values.synapse_config_pvc.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: matrix
+  name: matrix-synapse-config
+  annotations:
+    k8up.io/backup: 'true'
+spec:
+  storageClassName: {{ .Values.synapse_config_pvc.storageClassName }}
+  accessModes:
+    - {{ .Values.synapse_config_pvc.accessMode }}
+  resources:
+    requests:
+      storage: {{ .Values.synapse_config_pvc.storage }}
+{{- end }}

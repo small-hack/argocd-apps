@@ -1,0 +1,16 @@
+{{- if eq .Values.files_pvc.enabled "true" }}
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: nextcloud-files
+  annotations:
+    k8up.io/backup: 'true'
+spec:
+  storageClassName: {{ .Values.files_pvc.storageClassName }}
+  accessModes:
+    - {{ .Values.files_pvc.accessMode }}
+  resources:
+    requests:
+      storage: {{ .Values.files_pvc.storage }}
+{{- end }}

@@ -18,6 +18,7 @@ spec:
           parameters:
             secret_vars:
               - mastodon_s3_endpoint
+              - mastodon_postgres_backup_schedule
   template:
     metadata:
       name: mastodon-postgres-cluster
@@ -76,7 +77,7 @@ spec:
               name: mastodon-pg-backup
               spec:
                 # hourly backups for postgres data
-                schedule: "0 0 0 * * *"
+                schedule: '{{ .mastodon_pvc_backup_schedule }}'
                 backupOwnerReference: self
                 cluster:
                   name: mastodon-postgres

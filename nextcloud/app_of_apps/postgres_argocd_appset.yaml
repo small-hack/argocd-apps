@@ -18,6 +18,7 @@ spec:
           parameters:
             secret_vars:
               - nextcloud_s3_endpoint
+              - nextcloud_postgres_backup_schedule
   template:
     metadata:
       name: nextcloud-postgres-cluster
@@ -59,11 +60,15 @@ spec:
                 endpointURL: "https://{{ .nextcloud_s3_endpoint }}"
                 s3Credentials:
                   accessKeyId:
-                    name: postgres-s3-credentials
-                    key: "S3_USER"
+                    name: s3-postgres-credentials
+                    key: "accessKeyId"
                   secretAccessKey:
-                    name: postgres-s3-credentials
-                    key: "S3_PASSWORD"
+                    name: s3-postgres-credentials
+                    key: "secretAccessKey"
+                wal:
+                  compression: gzip
+                  maxParallel: 8
+                  encryption: AES256
               retentionPolicy: "30d"
 
             certificates:
@@ -82,7 +87,7 @@ spec:
               name: nextcloud-pg-backup
               spec:
                 # Midnight daily backups for postgres data
-                schedule: "0 0 0 0 * *"
+                schedule: '{{ .nextcloud_postgres_backup_schedule }}'
                 backupOwnerReference: self
                 cluster:
                   name: nextcloud-postgres

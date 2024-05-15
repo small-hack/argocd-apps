@@ -1,0 +1,29 @@
+synapse_config_pvc:
+  # -- enable matrix synapse_config pvc
+  enabled: true
+  # -- default storage class name to use for synapse_config pvc
+  storageClassName: "local-path"
+  # -- default access mode for the synapse_config pvc
+  accessMode: "ReadWriteOnce"
+  # -- storage capacity for the matrix synapse_config pvc
+  storage: "10Mi"
+
+signing_key_pvc:
+  # -- enable matrix signing_key pvc
+  enabled: true
+  # -- default storage class name to use for signing_key pvc
+  storageClassName: "local-path"
+  # -- default access mode for the signing_key pvc
+  accessMode: "ReadWriteOnce"
+  # -- storage capacity for the matrix signing_key pvc
+  storage: "1Mi"
+
+media_pvc:
+  # -- enable matrix media pvc
+  enabled: true
+  # -- default storage class name to use for media pvc
+  storageClassName: "local-path"
+  # -- default access mode for the media pvc
+  accessMode: "ReadWriteOnce"
+  # -- storage capacity for the matrix media pvc
+  storage: "2Gi"

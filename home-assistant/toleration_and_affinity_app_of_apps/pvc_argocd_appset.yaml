@@ -1,0 +1,78 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: home-assistant-pvc-appset
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  goTemplate: true
+  # generator allows us to source specific values from an external k8s secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - global_pvc_storage_class
+              - home_assistant_pvc_capacity
+              - home_assistant_pvc_backup_schedule
+              - home_assistant_s3_backup_endpoint
+              - home_assistant_s3_backup_bucket
+              - home_assistant_s3_backup_region
+  template:
+    metadata:
+      name: home-assistant-pvc
+      annotations:
+        argocd.argoproj.io/sync-wave: "1"
+    spec:
+      project: home-assistant
+      destination:
+        server: "https://kubernetes.default.svc"
+        namespace: home-assistant
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
+          selfHeal: true
+      source:
+        repoURL: https://github.com/small-hack/argocd-apps.git
+        path: home-assistant/storage/
+        targetRevision: main
+        helm:
+          valuesObject:
+            pvc_capacity: '{{ .home_assistant_pvc_capacity }}'
+            pvc_storageClassName: '{{ .global_pvc_storage_class }}'
+
+            # not in use yet
+            k8up:
+              backup_name: 'home-assistant-nightly-backup'
+
+              # -- can be set to 's3' or 'local'
+              backup_type: 's3'
+
+              s3:
+                bucket: '{{ .home_assistant_s3_backup_bucket }}'
+                endpoint: '{{ .home_assistant_s3_backup_endpoint }}'
+                accessKeyIDSecretRef:
+                  name: 's3-backups-credentials'
+                  key: 'accessKeyID'
+                  optional: false
+                secretAccessKeySecretRef:
+                  name: 's3-backups-credentials'
+                  key: 'secretAccessKey'
+                  optional: false
+
+              repoPasswordSecretRef:
+                name: 's3-backups-credentials'
+                key: 'resticRepoPassword'
+
+              prometheus_url: 'push-gateway.prometheus.svc:9091'
+
+              schedules:
+                backup: '{{ .home_assistant_pvc_backup_schedule }}'
+                check: '0 0 * * *'
+                prune: '0 0 * * *'

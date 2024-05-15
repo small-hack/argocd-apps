@@ -16,9 +16,21 @@ s3PostgresCredentialsBitwardenID: ""
 s3BackupCredentialsBitwardenID: ""
 
 # other nextcloud specific secrets
+
+# -- nextcloud admin Credentials
 adminCredentialsBitwardenID: ""
-serverInfoBitwardenID: ""
+
+# -- nextcloud server info token for metrics
+serverInfoTokenBitwardenID: ""
+
+# -- nextcloud smtp Credentials
 smtpCredentialsBitwardenID: ""
+
+# -- nextcloud postgres Credentials
 postgresqlBitwardenID: ""
+
+# -- nextcloud redis Credentials
 redisBitwardenID: ""
+
+# -- nextcloud OIDC Credentials
 oidcCredentialsBitwardenID: ""
