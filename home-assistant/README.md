@@ -3,14 +3,14 @@
 [Home Assistant](https://home-assistant.io) is a home IOT management solution.
 
 <a href="https://github.com/small-hack/argocd-apps/assets/2389292/57a88af0-6124-41e1-a7e2-9195c944dea7">
-<img width="850" alt="home-assistant" src="https://github.com/small-hack/argocd-apps/assets/2389292/57a88af0-6124-41e1-a7e2-9195c944dea7">
+<img width="900" alt="home-assistant" src="https://github.com/small-hack/argocd-apps/assets/2389292/57a88af0-6124-41e1-a7e2-9195c944dea7">
 </a>
 
 <details>
   <summary>Home Assistant Argo CD helm chart app</summary>
 
 <a href="https://github.com/small-hack/argocd-apps/assets/2389292/24832836-d17e-46a9-9d5a-a134bc6d8359">
-<img width="850" alt="home-assistant-helm" src="https://github.com/small-hack/argocd-apps/assets/2389292/24832836-d17e-46a9-9d5a-a134bc6d8359">
+<img width="900" alt="home-assistant-helm" src="https://github.com/small-hack/argocd-apps/assets/2389292/24832836-d17e-46a9-9d5a-a134bc6d8359">
 </a>
 
 </details>
