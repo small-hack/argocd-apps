@@ -6,8 +6,11 @@ A NextCloud k8s repo for those who want to get started quickly with nextcloud on
 <details>
   <summary>More Nextcloud Argo CD App screenshots</summary>
 
-   <img width="1392" alt="nextcloud-networking" src="https://github.com/small-hack/argocd-apps/assets/2389292/0907707b-cbf0-4767-8a0d-29920a43e112">
+   ### Helm chart app view
    <img width="900" alt="nextcloud-web-app" src="https://github.com/small-hack/argocd-apps/assets/2389292/9a9827d9-240b-471b-bce4-9c0c403e051f">
+
+   ### Networking view
+   <img width="1392" alt="nextcloud-networking" src="https://github.com/small-hack/argocd-apps/assets/2389292/0907707b-cbf0-4767-8a0d-29920a43e112">
 
 </details>
 
