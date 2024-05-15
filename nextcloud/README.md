@@ -1,6 +1,16 @@
 # NextCloud ArgoCD App of Apps
 A NextCloud k8s repo for those who want to get started quickly with nextcloud on k3s the way we use it :) This project uses the official [nextcloud helm chart](https://github.com/nextcloud/helm/tree/main/charts/nextcloud). See the current version in [nextcloud_argocd_appset.yaml](./nextcloud_argocd_appset.yaml).
 
+<img width="900" alt="nextcloud-web-app" src="https://github.com/small-hack/argocd-apps/assets/2389292/9a9827d9-240b-471b-bce4-9c0c403e051f">
+
+<details>
+  <summary>More Nextcloud Argo CD App screenshots</summary>
+
+   <img width="900" alt="nextcloud" src="https://github.com/small-hack/argocd-apps/assets/2389292/f70fdbf9-b3a0-4837-b606-d0de8fb6f73a">
+   <img width="1392" alt="nextcloud-networking" src="https://github.com/small-hack/argocd-apps/assets/2389292/0907707b-cbf0-4767-8a0d-29920a43e112">
+
+</details>
+
 # Tech Stack
 
 NextCloud would be running ontop of Kubernetes (we use k3s) and using the following additional k8s apps:
@@ -28,9 +38,6 @@ Here's a quick peak at what we're deploying with Argo CD.
 - **K8up B2 Backups** are the cronjobs needed for putting nextcloud into maintanence mode, as well as custom resource for backups, using Restic.
 
 The Nextcloud WebApp also includes a metrics pod, postgres statefulset, and a redis cluster.
-
-<img src='./screenshots/nextcloud_app.png' width='800'>
-
 
 ## Quick start (with a k8s cluster already running Argo CD)
 You should be able to just set argo to use this repo. There's an example template, `nextcloud_argocd_template.yaml`, for you to get started :) You can run this from the cli:
@@ -317,3 +324,4 @@ $CONFIG = array (
 [smol-k8s-lab]: https://github.com/small-hack/smol-k8s-lab
 [External Secrets Operator]: https://external-secrets.io/v0.9.0/examples/bitwarden/
 [k8up]: https://k8up.io
+[Ingress Nginx controller]: https://kubernetes.github.io/ingress-nginx/
