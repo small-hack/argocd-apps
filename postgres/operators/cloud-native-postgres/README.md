@@ -1,6 +1,6 @@
 # Cloud-Native Postgres Operator
 
-CloudNativePG is the Kubernetes operator that covers the full lifecycle of a highly available PostgreSQL database cluster with a primary/standby architecture, using native streaming replication. 
+CloudNativePG is the Kubernetes operator that covers the full lifecycle of a highly available PostgreSQL database cluster with a primary/standby architecture, using native streaming replication.
 
 | Description | Link                                             |
 |-------------|--------------------------------------------------|
@@ -10,7 +10,7 @@ CloudNativePG is the Kubernetes operator that covers the full lifecycle of a hig
 | Docs        | https://cloudnative-pg.io/documentation/1.21/.   |
 
 ## Connecting with TLS
- 
+
   1. Create a user certificate
 
 ```bash
@@ -25,7 +25,7 @@ kubectl cnpg certificate cluster-app \
 
   3. Connect to the database using the certificates
 
-```bash 
+```bash
 psql sslkey=tls.key \
       sslcert=tls.crt \
       sslrootcert=ca.crt \

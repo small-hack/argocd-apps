@@ -21,6 +21,7 @@ spec:
               - mastodon_s3_backup_bucket
               - mastodon_s3_backup_region
               - mastodon_s3_pvc_capacity
+              - mastodon_pvc_backup_schedule
   template:
     metadata:
       name: mastodon-s3-pvc
@@ -42,7 +43,7 @@ spec:
         path: s3_persistence_and_backups/
         targetRevision: main
         helm:
-          values: |
+          valuesObject:
             provider: "{{ .mastodon_s3_provider }}"
             pvc_capacity: "{{ .mastodon_s3_pvc_capacity }}"
 
@@ -54,20 +55,20 @@ spec:
               backup_type: "s3"
 
               s3:
-                bucket: {{ .mastodon_s3_backup_bucket }}
-                endpoint: {{ .mastodon_s3_backup_endpoint }}
+                bucket: '{{ .mastodon_s3_backup_bucket }}'
+                endpoint: '{{ .mastodon_s3_backup_endpoint }}'
                 accessKeyIDSecretRef:
-                  name: 'backups-s3-credentials'
-                  key: 'accessKey'
+                  name: 's3-backups-credentials'
+                  key: 'accessKeyId'
                   optional: false
                 secretAccessKeySecretRef:
-                  name: 'backups-s3-credentials'
-                  key: 'secretKey'
+                  name: 's3-backups-credentials'
+                  key: 'secretAccessKey'
                   optional: false
 
               repoPasswordSecretRef:
                 name: 'backups-s3-credentials'
-                key: 'resticRepoPass'
+                key: 'resticRepoPassword'
 
               prometheus_url: 'push-gateway.prometheus.svc:9091'
 
@@ -75,6 +76,6 @@ spec:
                 runAsUser: 0
 
               schedules:
-                backup: "47 13 * * *"
+                backup: '{{ .mastodon_pvc_backup_schedule }}'
                 check: "48 13 * * *"
                 prune: "49 13 * * *"

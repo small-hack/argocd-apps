@@ -154,7 +154,7 @@ spec:
               existingSecretKey: password
               policy: readwrite
             - accessKey: nextcloud-postgres
-              existingSecret: postgres-s3-credentials
+              existingSecret: s3-postgres-credentials
               existingSecretKey: password
               policy: readwrite
 

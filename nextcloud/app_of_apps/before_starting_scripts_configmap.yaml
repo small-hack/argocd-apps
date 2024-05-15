@@ -6,6 +6,8 @@ metadata:
 data:
   install-apps.sh: |
     #!/bin/sh
+    echo "Switching to the beta channel"
+    php /var/www/html/occ config:system:set updater.release.channel --value=beta
     echo "Installing Nextcloud apps..."
     php /var/www/html/occ app:install oidc_login
     php /var/www/html/occ app:install notes

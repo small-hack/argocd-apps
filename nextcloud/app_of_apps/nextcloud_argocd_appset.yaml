@@ -15,9 +15,10 @@ spec:
         input:
           parameters:
             secret_vars:
+              - global_cluster_issuer
+              - nextcloud_default_phone_region
               - nextcloud_hostname
               - nextcloud_s3_region
-              - global_cluster_issuer
   template:
     metadata:
       name: nextcloud-web-app
@@ -41,7 +42,7 @@ spec:
         helm:
           valuesObject:
             image:
-              flavor: fpm-alpine
+              tag: 29-fpm-alpine
 
             ingress:
               enabled: true
@@ -49,8 +50,13 @@ spec:
               annotations:
                 cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
                 nginx.ingress.kubernetes.io/proxy-body-size: 10G
-                # nginx.ingress.kubernetes.io/enable-cors: "false"
-                nginx.ingress.kubernetes.io/cors-allow-headers: "X-Forwarded-For"
+                nginx.ingress.kubernetes.io/enable-cors: "false"
+                # nginx.ingress.kubernetes.io/enable-cors: "true"
+                # nginx.ingress.kubernetes.io/cors-allow-methods: "GET, HEAD, POST, OPTIONS, PUT, PATCH, DELETE, PROPFIND, MKCOL, REPORT"
+                # this was originally suggested in nextcloud/helm
+                # nginx.ingress.kubernetes.io/cors-allow-headers: "X-Forwarded-For"
+                # this was a followup solution for dav stuff
+                # nginx.ingress.kubernetes.io/cors-allow-headers: "DNT,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization,X-Forwarded-For"
                 nginx.ingress.kubernetes.io/server-snippet: |-
                   server_tokens off;
                   proxy_hide_header X-Powered-By;
@@ -64,17 +70,13 @@ spec:
                   location = /.well-known/caldav {
                     return 301 $scheme://$host/remote.php/dav;
                   }
-                  location = /robots.txt {
-                    allow all;
-                    log_not_found off;
-                    access_log off;
-                  }
                   location ~ ^/(?:build|tests|config|lib|3rdparty|templates|data)/ {
                     deny all;
                   }
                   location ~ ^/(?:autotest|occ|issue|indie|db_|console) {
                     deny all;
                   }
+
               tls:
                 - secretName: nextcloud-tls
                   hosts:
@@ -215,7 +217,8 @@ spec:
                     'log_type' => 'file',
                     'logfile' => 'nextcloud.log',
                     'loglevel' => 1,
-                    'logdateformat' => 'F d, Y H:i:s'
+                    'logdateformat' => 'F d, Y H:i:s',
+                    'maintenance_window_start' => 23
                     );
 
                 previews.config.php: |-
@@ -245,6 +248,12 @@ spec:
                       1 => '10.0.0.0/8'
                     ),
                     'forwarded_for_headers' => array('HTTP_X_FORWARDED_FOR'),
+                  );
+
+                extra.config.php: |-
+                  <?php
+                  $CONFIG = array (
+                    'default_phone_region' => '{{ .nextcloud_default_phone_region }}',
                   );
 
                 oidc.config.php: |-
@@ -335,6 +344,9 @@ spec:
 
             nginx:
               enabled: true
+              config:
+                # This generates the default nginx config as per the nextcloud documentation
+                default: true
 
             internalDatabase:
               enabled: false

@@ -18,6 +18,7 @@ spec:
           parameters:
             secret_vars:
               - zitadel_s3_endpoint
+              - zitadel_postgres_backup_schedule
   template:
     metadata:
       name: zitadel-postgres-cluster
@@ -63,12 +64,15 @@ spec:
                 endpointURL: "https://{{ .zitadel_s3_endpoint }}"
                 s3Credentials:
                   accessKeyId:
-                    name: zitadel-db-credentials
-                    key: "ACCESS_KEY"
+                    name: s3-postgres-credentials
+                    key: "accessKeyId"
                   secretAccessKey:
-                    name: zitadel-db-credentials
-                    key: "SECRET_KEY"
-              retentionPolicy: "30d"
+                    name: s3-postgres-credentials
+                    key: "secretAccessKey"
+                wal:
+                  compression: gzip
+                  maxParallel: 8
+              retentionPolicy: "3d"
 
             certificates:
               server:
@@ -87,7 +91,7 @@ spec:
               name: zitadel-pg-backup
               spec:
                 # hourly full data backups
-                schedule: "0 0 0 * * *"
+                schedule: '{{ .zitadel_postgres_backup_schedule }}'
                 backupOwnerReference: self
                 cluster:
                   name: zitadel-postgres

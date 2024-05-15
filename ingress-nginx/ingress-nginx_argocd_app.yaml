@@ -15,6 +15,7 @@ spec:
       values: |
         controller:
           allowSnippetAnnotations: true
+          externalTrafficPolicy: Local
   destination:
     server: "https://kubernetes.default.svc"
     namespace: ingress-nginx
