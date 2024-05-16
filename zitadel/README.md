@@ -2,15 +2,24 @@
 
 [ZITADEL](https://github.com/zitadel/zitadel/tree/main) is an identity management and provider application similar to Keycloak. It helps you manage your users across apps and acts as your OIDC provider. The Zitadel community and maintainers have been really nice, so we'll be supporting some Argo CD apps here instead of using Keycloak. Here's the [Zitadel helm chart](https://github.com/zitadel/zitadel-charts/tree/main) that we're deploying here.
 
+<img width="900" alt="screenshot of Argo CD web interface's tree view of a zitadel app of apps. The main app of apps branches off into the following appsets: external secrets, postgres, s3 provider, s3 PVC, and zitadel web app. Each of those then branches off into a similarly named app." src="https://github.com/small-hack/argocd-apps/assets/2389292/467fd0cf-36a7-47fd-80b8-4bd051ec0157">
+
+<details>
+  <summary>More Argo CD Zitadel screenshots</summary>
+  
+  ### Zitadel web app (official zitadel helm chart)
+  <img width="900" alt="screenshot of Argo CD web interface's tree view of a zitadel web app in tree view mode. Includes the following child resources: zitadel config map, zitadel service, zitadel service account, zitadel deployment, zitadel init job, zitadel setup job, zitadel service monitor, zitadel ingress, zitadel role, zitadel role binding. The zitadel service then branches off into zitadel endpoint and zitadel endpointslice. The zitadel deployment branches off into a zitadel replica set which branches off into a zitadel pod. The zitadel init and setup jobs also branch off into their own completed pods, and finally, the zitadel ingress resource branches off into a zitadel TLS certificate" src="https://github.com/small-hack/argocd-apps/assets/2389292/e2bf4838-85cf-4f5b-9e1a-b98756fc357c">
+
+  ### Postgresql cluster
+  <img src="./screenshots/zitadel_postgresql.png">
+     
+</details>
+
 It's important to take a look at the [`defaults.yaml`](https://github.com/zitadel/zitadel/blob/main/cmd/defaults.yaml) to see what the default `ConfigMap` will look like for Zitadel.
 
 This Argo CD app of apps is designed to be pretty locked down to allow you to use **only** a default service account (that can't log in through the UI) to do all the heavy lifting with openTofu, Pulumi, or your own self service script. We support only PostgreSQL as the database backend. PostgreSQL is backed up by [barman]() to a local s3 instance using SeaweedFS. That SeaweedFS instance is then backed up to a remote s3 endpoint of your choosing.
 
 The main magic happens in the [app_of_apps](./app_of_apps) directory.
-
-<img src="./screenshots/zitadel_app_of_apps.png">
-<img src="./screenshots/zitadel_web_appset.png">
-<img src="./screenshots/zitadel_postgresql.png">
 
 ## Sync waves
 
