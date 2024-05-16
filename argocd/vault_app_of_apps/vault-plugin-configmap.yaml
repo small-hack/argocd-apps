@@ -3,6 +3,73 @@ kind: ConfigMap
 metadata:
   name: cmp-plugin
 data:
+  # https://github.com/argoproj-labs/argocd-vault-plugin/issues/566#issue-1952329142
+  avp-helm.yaml: |
+    apiVersion: argoproj.io/v1alpha1
+    kind: ConfigManagementPlugin
+    metadata:
+      name: avp-helm
+    spec:
+      allowConcurrency: true
+      init:
+        command:
+          - /bin/sh
+          - -c
+          - |
+            #!/usr/bin/env bash
+            set -Eeuo pipefail
+
+            # add all repositories from dependencies of this chart
+            for REPO_URL in $(helm dependency list | tail -n+2 | tr -s '[:space:]' | cut -f3)
+            do
+              helm repo add $(echo -n "${REPO_URL}" | base64) "${REPO_URL}"
+            done
+
+            # finally download the charts dependencies
+            helm dependency build
+      generate:
+        command:
+          - /bin/sh
+          - -c
+          - |
+            #!/usr/bin/env bash
+            set -Eeuo pipefail
+
+            # parse parameters from plugin config block in application resource
+            # https://github.com/argoproj/argo-cd/blob/master/docs/proposals/parameterized-config-management-plugins.md#how-will-the-cmp-know-what-parameter-values-are-set
+            HELM_RELEASE_NAME=$(echo "${ARGOCD_APP_PARAMETERS}" | yq -r eval '.[] | select(.name == "releaseName") | (.string // "${ARGOCD_APP_NAME}") | envsubst | trim')
+            HELM_VALUE_FILES=$(echo "${ARGOCD_APP_PARAMETERS}" | yq -r eval '.[] | select(.name == "valueFiles") | .array | map("--values " + .) | join(" ") | trim')
+
+            HELM_VALUES=$(echo "${ARGOCD_APP_PARAMETERS}" | yq -r eval '.[] | select(.name == "values") | .string | envsubst | trim')
+            if [ ! -z "${HELM_VALUES}" ]; then
+              echo "${HELM_VALUES}" > /tmp/${ARGOCD_APP_NAMESPACE}-${ARGOCD_APP_NAME}-values.yaml
+              HELM_VALUE_FILES="${HELM_VALUE_FILES} --values /tmp/${ARGOCD_APP_NAMESPACE}-${ARGOCD_APP_NAME}-values.yaml"
+            fi
+
+            HELM_VALUES_OBJECT=$(echo "${ARGOCD_APP_PARAMETERS}" | yq -r -P eval '.[] | select(.name == "valuesObject") | .map | . |= (.. | select(. | type == "!!str") |= envsubst)')
+            if [ ! -z "${HELM_VALUES_OBJECT}" ]; then
+              echo "${HELM_VALUES_OBJECT}" > /tmp/${ARGOCD_APP_NAMESPACE}-${ARGOCD_APP_NAME}-values-object.yaml
+              HELM_VALUE_FILES="${HELM_VALUE_FILES} --values /tmp/${ARGOCD_APP_NAMESPACE}-${ARGOCD_APP_NAME}-values-object.yaml"
+            fi
+
+            HELM_PARAMETERS=$(echo "${ARGOCD_APP_PARAMETERS}" | yq -r eval '.[] | select(.name == "parameters") | .array | map("--set " + (. | envsubst)) | join(" ") | trim')
+            HELM_EXTRA_PARAMETERS=""
+            if [ "${PARAM_PASSCREDENTIALS:-false}" == "true" ]; then
+              HELM_EXTRA_PARAMETERS="${HELM_EXTRA_PARAMETERS} --pass-credentials"
+            fi
+            if [ "${PARAM_SKIPCRDS:-false}" == "true" ]; then
+              HELM_EXTRA_PARAMETERS="${HELM_EXTRA_PARAMETERS} --skip-crds"
+            fi
+
+            helm template ${HELM_RELEASE_NAME} \
+              --namespace ${ARGOCD_APP_NAMESPACE} \
+              ${HELM_VALUE_FILES} \
+              ${HELM_PARAMETERS} \
+              ${HELM_EXTRA_PARAMETERS} \
+              ./ |
+            argocd-vault-plugin generate - -c /run/secrets/vault-configuration/config.yaml
+      lockRepo: false
+
   avp.yaml: |
     apiVersion: argoproj.io/v1alpha1
     kind: ConfigManagementPlugin
