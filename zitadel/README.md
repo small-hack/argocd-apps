@@ -24,7 +24,7 @@ The main magic happens in the [app_of_apps](./app_of_apps) directory.
 
 ## Sync waves
 
-1. - External Secrets for both your database postgresql and zitadel:
+1. External Secrets for both your database postgresql and zitadel:
      - Zitadel database credentials
      - Zitadel `masterkey` Secrets
 2. SeaweedFS instance.
