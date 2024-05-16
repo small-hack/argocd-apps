@@ -9,7 +9,7 @@ metadata:
 spec:
   project: kubevirt
   destination:
-    name: 'k3s-small-meerkoet'
+    name: 'in-cluster'
     namespace: kubevirt
   source:
     repoURL: https://github.com/small-hack/argocd-apps.git
