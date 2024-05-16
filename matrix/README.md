@@ -2,16 +2,16 @@
 
 [Matrix](https://matrix.org/) is an open network for secure, decentralised communication :)
 
-<img width="900" alt="matrix" src="https://github.com/small-hack/argocd-apps/assets/2389292/a31499f2-a12b-4c8c-b19f-018f68e53acc">
+<img width="900" alt="screenshot of the Argo CD web interface showing the matrix app of apps in tree view mode, which shows the following children: external secrets appset, postgres appset, matrix PVC appset, s3 provider appset, s3 pvc app set, and matrix web app set." src="https://github.com/small-hack/argocd-apps/assets/2389292/a31499f2-a12b-4c8c-b19f-018f68e53acc">
 
 <details>
   <summary>Click for more Argo CD App screenshots</summary>
 
   ### Helm chart view
-  <img width="900" alt="matrix-web-app" src="https://github.com/small-hack/argocd-apps/assets/2389292/f3940d42-46aa-4f90-9215-037364a5e8b5">
+  <img width="900" alt="screenshot of the Argo CD web interface showing the matrix web app in tree view mode." src="https://github.com/small-hack/argocd-apps/assets/2389292/f3940d42-46aa-4f90-9215-037364a5e8b5">
 
   ### Networking view
-  <img width="1390" alt="matrix-networking" src="https://github.com/small-hack/argocd-apps/assets/2389292/07217b21-4945-4426-8ea9-d5f41f6ca7f7">
+  <img width="1390" alt="screenshot of the Argo CD web interface showing the matrix web app in networking view mode. It shows a cloud on the left flowing into a box that says 192.168.168.168 which branches off into three ingress resources: matrix stack element, matrix stack synapse, and matrix stack synapse federation. The ingress resource for element, branches off into a service of the same name and then a pod of the same name. The synapse and synapse federation ingress resources branch off into two respective services that branch off into one shared pod called matrix stack synapse." src="https://github.com/small-hack/argocd-apps/assets/2389292/07217b21-4945-4426-8ea9-d5f41f6ca7f7">
   
 </details>
 
