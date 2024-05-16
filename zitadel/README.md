@@ -11,7 +11,8 @@
   <img width="900" alt="screenshot of Argo CD web interface's tree view of a zitadel web app in tree view mode. Includes the following child resources: zitadel config map, zitadel service, zitadel service account, zitadel deployment, zitadel init job, zitadel setup job, zitadel service monitor, zitadel ingress, zitadel role, zitadel role binding. The zitadel service then branches off into zitadel endpoint and zitadel endpointslice. The zitadel deployment branches off into a zitadel replica set which branches off into a zitadel pod. The zitadel init and setup jobs also branch off into their own completed pods, and finally, the zitadel ingress resource branches off into a zitadel TLS certificate" src="https://github.com/small-hack/argocd-apps/assets/2389292/e2bf4838-85cf-4f5b-9e1a-b98756fc357c">
 
   ### Postgresql cluster
-  <img src="./screenshots/zitadel_postgresql.png">
+  <img width="900" alt="screenshot of Argo CD web interface's tree view of a zitadel postgresql cluster in tree view. It shows the following secrets and coorsponding certificates: client cert, postgres cert, server secret, zitadel cert. Each of those then has their own cert request resource. Afte rthat there's 3 tls issuers: client ca, selfsigned, and server ca. Next there is the cluster, which branches off into a pvc, pod, secret for the app, secret for the super user, service for read, service for read only, service for read write, service account, pod disruption budget for the primary, role, and role binding" src="https://github.com/small-hack/argocd-apps/assets/2389292/366d40e5-2720-4cd8-a5e0-08025909a60d">
+
      
 </details>
 
