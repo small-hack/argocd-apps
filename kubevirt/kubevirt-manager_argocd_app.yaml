@@ -27,7 +27,7 @@ spec:
     spec:
       project: kubevirt
       destination:
-        name: 'k3s-small-meerkoet'
+        name: 'in-cluster'
         namespace: kubevirt-manager
       syncPolicy:
         syncOptions:
