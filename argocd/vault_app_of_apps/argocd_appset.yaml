@@ -642,8 +642,16 @@ spec:
               # -- Repo server name
               name: repo-server
 
-              # this is an init container for argocd vault plugin to download
-              # the argocd-vault-plugin
+              # this is an init container for configmap volumes
+              # https://argocd-vault-plugin.readthedocs.io/en/stable/installation/#initcontainer-and-configuration-via-sidecar
+              volumes:
+                - name: cmp-plugin
+                  configMap:
+                    name: cmp-plugin
+                - name: custom-tools
+                  emptyDir: {}
+
+              # for argocd vault plugin to download argocd-vault-plugin
               # https://argocd-vault-plugin.readthedocs.io/en/stable/installation/#initcontainer-and-configuration-via-sidecar
               initContainers:
                 - name: download-tools
@@ -681,6 +689,30 @@ spec:
                     # Register plugins into sidecar
                     - mountPath: /home/argocd/cmp-server/config/plugin.yaml
                       subPath: avp.yaml
+                      name: cmp-plugin
+
+                    # Important: Mount tools into $PATH
+                    - name: custom-tools
+                      subPath: argocd-vault-plugin
+                      mountPath: /usr/local/bin/argocd-vault-plugin
+
+                - name: avp-helm
+                  command: [/var/run/argocd/argocd-cmp-server]
+                  image: alpine/helm:3.12.3
+                  securityContext:
+                    runAsNonRoot: true
+                    runAsUser: 999
+                  volumeMounts:
+                    - mountPath: /var/run/argocd
+                      name: var-files
+                    - mountPath: /home/argocd/cmp-server/plugins
+                      name: plugins
+                    - mountPath: /tmp
+                      name: tmp
+
+                    # Register plugins into sidecar
+                    - mountPath: /home/argocd/cmp-server/config/plugin.yaml
+                      subPath: avp-helm.yaml
                       name: cmp-plugin
 
                     # Important: Mount tools into $PATH
