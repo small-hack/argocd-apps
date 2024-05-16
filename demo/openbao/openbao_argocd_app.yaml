@@ -1,0 +1,31 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: openbao-app
+  namespace: argocd
+spec:
+  project: openbao
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: openbao
+
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+      - ApplyOutOfSyncOnly=true
+    automated:
+      prune: true
+      selfHeal: true
+
+  ignoreDifferences:
+    - group: apps
+      kind: MutatingWebhookConfiguration
+      name: vault-app-agent-injector-cfg
+      jqPathExpressions:
+        - '.webhooks[]?.clientConfig.caBundle'
+
+  source:
+    repoURL: 'https://github.com/jessebot/openbao-helm'
+    targetRevision: feature/github-releases
+    path: charts/openbao/
