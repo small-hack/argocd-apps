@@ -11,7 +11,7 @@ metadata:
   namespace: argocd
 spec:
   destination:
-    name: 'k3s-small-meerkoet'
+    name: 'in-cluster'
     namespace: cdi
   source:
     path: ''
