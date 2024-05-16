@@ -34,12 +34,14 @@ The main magic happens in the [app_of_apps](./app_of_apps) directory.
 ## Usage
 
 To deploy Zitadel and PostgreSQL _without_ an isolated MinIO tenant for PostgreSQL backups:
-```bash
+
+```console
 argocd app create zitadel --upsert --repo https://github.com/small-hack/argocd-apps --path zitadel/app_of_apps --sync-policy automated --self-heal --auto-prune --dest-namespace zitadel --dest-server https://kubernetes.default.svc
 ```
 
 To deploy Zitadel and PostgreSQL with an isolated MinIO tenant for PostgreSQL backups:
-```bash
+
+```console
 argocd app create zitadel --upsert --repo https://github.com/small-hack/argocd-apps --path zitadel/app_of_apps --sync-policy automated --self-heal --auto-prune --dest-namespace zitadel --dest-server https://kubernetes.default.svc --directory-recursion
 ```
 
