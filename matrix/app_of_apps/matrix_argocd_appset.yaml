@@ -162,9 +162,8 @@ spec:
 
               # Settings for the URL preview crawler
               urlPreviews:
-                # -- Enable URL previews. WARN: Make sure to review default rules below to
-                # ensure that users cannot crawl sensitive internal endpoints on yr cluster
-                enabled: false
+                # -- Enable URL previews. WARN: Make sure to review default rules below to ensure that users cannot crawl sensitive internal endpoints on yr cluster
+                enabled: true
 
                 # Blacklists and whitelists for the URL preview crawler
                 rules:
