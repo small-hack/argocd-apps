@@ -357,6 +357,10 @@ spec:
                     proxy_intercept_errors off;
                   # -- required for TLS certs issued by cert-manager
                   cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
+                  nginx.ingress.kubernetes.io/server-snippet: |-
+                    location = /.well-known/matrix/client {
+                        return 200 {"m.homeserver": {"base_url": "https://{{ .matrix_hostname }}"},"org.matrix.msc3575.proxy": {"url": "https://{{ .matrix_hostname }}"}}
+                    }
 
               replicaCount: 1
               resources: {}
