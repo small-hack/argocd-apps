@@ -535,29 +535,18 @@ spec:
               integrations:
                 # -- enables the Integrations menu, including:
                 #    widgets, bots, and other plugins to Element
-                enabled: true
-                # -- UI to load when a user selects the Integrations button at the top-right
-                #    of a room
-                ui: "https://scalar.vector.im/"
-                # -- API for the integration server
-                api: "https://scalar.vector.im/api"
-                # -- Array of API paths providing widgets
-                widgets:
-                  - "https://scalar.vector.im/_matrix/integrations/v1"
-                  - "https://scalar.vector.im/api"
-                  - "https://scalar-staging.vector.im/_matrix/integrations/v1"
-                  - "https://scalar-staging.vector.im/api"
-                  - "https://scalar-staging.element.im/scalar/api"
+                enabled: false
 
               # -- Experimental features in Element, see:
               # https://github.com/vector-im/element-web/blob/develop/docs/labs.md
               labs:
                 - feature_report_to_moderators
                 - feature_pinning
-                - feature_state_counters
                 - feature_mjolnir
+                - feature_disable_call_per_sender_encryption
                 - feature_dm_verification
                 - feature_bridge_state
+                - feature_html_topic
                 - feature_custom_themes
                 - feature_jump_to_date
                 - feature_video_rooms
@@ -589,10 +578,6 @@ spec:
                 port: 80
               replicaCount: 1
               resources: {}
-              probes:
-                readiness: {}
-                startup: {}
-                liveness: {}
 
               # -- Element specific labels
               labels:
@@ -623,9 +608,6 @@ spec:
             bridges:
               irc:
                 # -- Set to true to enable the IRC bridge
-                enabled: false
-              whatsapp:
-                # -- Set to true to enable the WhatsApp bridge
                 enabled: false
               discord:
                 # -- Set to true to enable the Discord bridge
