@@ -1,0 +1,954 @@
+---
+# webapp is deployed 2nd because we need secrets and persistent volumes up 1st
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: matrix-web-app-set
+  namespace: argocd
+spec:
+  goTemplate: true
+  # generator allows us to source specific values from an external k8s secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              # - matrix_idp_id
+              # - matrix_idp_name
+              - matrix_hostname
+              - matrix_element_hostname
+              - matrix_federation_hostname
+              - matrix_admin_email
+              - matrix_s3_bucket
+              - matrix_s3_region
+              - matrix_s3_endpoint
+              - global_cluster_issuer
+  template:
+    metadata:
+      name: matrix-web-app
+      annotations:
+        argocd.argoproj.io/sync-wave: "3"
+    spec:
+      project: matrix
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: matrix
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
+          selfHeal: true
+      source:
+        repoURL: 'https://github.com/small-hack/matrix-chart'
+        targetRevision: add-sliding-sync-subchart
+        path: charts/matrix/
+        helm:
+          valuesObject:
+            fullnameOverride: matrix-stack
+
+            # Runtime configuration for Synapse and settings related to the Matrix protocol
+            matrix:
+              # -- Domain name of the server
+              serverName: "{{ .matrix_hostname }}"
+              # -- Enable anonymous telemetry to matrix.org
+              telemetry: false
+              # -- Set to false to disable presence (online/offline indicators)
+              presence: true
+              # -- Set to true to block non-admins from inviting users to any rooms
+              blockNonAdminInvites: false
+
+              # -- Set to false to disable message searching
+              search: true
+
+              # Which types of rooms to enable end-to-end encryption on by default
+              # off:    none
+              # all:    all rooms
+              # invite: private msg/room created w/ private_chat or trusted_private_chat
+              #         room presets
+              encryptByDefault: all
+
+              # -- Email address of the administrator
+              adminEmail: '{{ .matrix_admin_email }}'
+
+              # -- Settings related to image and multimedia uploads
+              uploads:
+                # -- Max upload size in bytes
+                maxSize: 10M
+
+                # -- Max image size in pixels
+                maxPixels: 32M
+
+              # Settings related to federation
+              federation:
+                # -- Set to false to disable federation and run an isolated homeserver
+                enabled: true
+
+                # -- Allow members of other homeservers to fetch *public* rooms
+                allowPublicRooms: true
+
+                # -- IP addresses to blacklist federation requests to
+                blacklist:
+                  - '127.0.0.0/8'
+                  - '10.0.0.0/8'
+                  - '172.16.0.0/12'
+                  - '192.168.0.0/16'
+                  - '100.64.0.0/10'
+                  - '169.254.0.0/16'
+                  - '::1/128'
+                  - 'fe80::/64'
+                  - 'fc00::/7'
+                ingress:
+                  enabled: true
+                  tls:
+                    enabled: true
+                  host: '{{ .matrix_federation_hostname }}'
+                  annotations:
+                    # -- required for the Nginx ingress provider. You can remove it if you
+                    # use a different ingress provider
+                    nginx.ingress.kubernetes.io/configuration-snippet: |
+                      proxy_intercept_errors off;
+                    # -- required for TLS certs issued by cert-manager
+                    cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
+
+              # User registration settings
+              registration:
+                # -- Allow new users to register an account
+                enabled: false
+
+                existingSecret: "matrix-registration"
+                secretKey: "registrationSharedSecret"
+
+                # -- Allow users to join rooms as a guest
+                allowGuests: false
+
+                # Required "3PIDs" - third-party identifiers such as email or msisdn (SMS)
+                # required3Pids:
+                #   - email
+                #   - msisdn
+
+                # -- Rooms to automatically join all new users to
+                autoJoinRooms: []
+                # - "#welcome:{{ .matrix_hostname }}"
+
+                # -- Whether to allow token based registration
+                requiresToken: false
+
+              # ref: https://github.com/element-hq/synapse/blob/develop/docs/openid.md
+              oidc:
+                enabled: false
+
+              # Settings for the URL preview crawler
+              urlPreviews:
+                # -- Enable URL previews. WARN: Make sure to review default rules below to ensure that users cannot crawl sensitive internal endpoints on yr cluster
+                enabled: true
+
+                # Blacklists and whitelists for the URL preview crawler
+                rules:
+                  # -- Max size of a crawlable page. Keep this low to prevent a DOS vector
+                  maxSize: 10M
+
+                  # Whitelist and blacklist for crawlable IP addresses
+                  ip:
+                    whitelist: []
+                    blacklist:
+                      - '127.0.0.0/8'
+                      - '10.0.0.0/8'
+                      - '172.16.0.0/12'
+                      - '192.168.0.0/16'
+                      - '100.64.0.0/10'
+                      - '169.254.0.0/16'
+                      - '::1/128'
+                      - 'fe80::/64'
+                      - 'fc00::/7'
+
+                  # -- Whitelist and blacklist based on URL pattern matching
+                  url: {}
+                  # whitelist:
+                  # blacklist:
+                  #  # blacklist any URL with a username in its URI
+                  #  - username: '*'
+                  #
+                  #  # blacklist all *.google.com URLs
+                  #  - netloc: 'google.com'
+                  #  - netloc: '*.google.com'
+                  #
+                  #  # blacklist all plain HTTP URLs
+                  #  - scheme: 'http'
+                  #
+                  #  # blacklist http(s)://www.acme.com/foo
+                  #  - netloc: 'www.acme.com'
+                  #    path: '/foo'
+                  #
+                  #  # blacklist any URL with a literal IPv4 address
+                  #  - netloc: '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$'
+
+              # -- How long to keep redacted events in unredacted form in the database
+              retentionPeriod: 7d
+
+              security:
+                # This disables the warning that is emitted when the
+                # trustedKeyServers include 'matrix.org'. See below.
+                # Set to false to re-enable the warning.
+                #
+                surpressKeyServerWarning: true
+
+                # The trusted servers to download signing keys from.
+                #
+                # When we need to fetch a signing key, each server is tried in parallel.
+                #
+                # Normally, the connection to the key server is validated via TLS certs.
+                # Additional security can be provided by configuring a `verify key`, which
+                # will make synapse check that the response is signed by that key.
+                #
+                # This setting supercedes an older setting named `perspectives`. Old format
+                # is still supported for backwards-compatibility, but it is deprecated.
+                #
+                # 'trustedKeyServers' defaults to matrix.org, but using it will generate a
+                # warning on start-up. To suppress this warning, set
+                # 'surpressKeyServerWarning' to true.
+                #
+                # Options for each entry in the list include:
+                #
+                #  serverName: the name of the server. required.
+                #
+                #  verifyKeys: an optional map from key id to base64-encoded public key.
+                #     If specified, we will check that the response is signed by at least
+                #     one of the given keys.
+                #
+                #  acceptKeysInsecurely: a boolean. Normally, if `verify_keys` is unset,
+                #    and federation_verify_certificates is not `true`, synapse will refuse
+                #    to start, because this would allow anyone who can spoof DNS responses
+                #    to masquerade as the trusted key server. If you know what you are doing
+                #    and are sure that your network environment provides a secure connection
+                #    to the key server, you can set this to `true` to override this
+                #    behaviour.
+                #
+                # An example configuration might look like:
+                #
+                # trustedKeyServers:
+                #   - serverName: 'my_trusted_server.{{ .matrix_hostname }}'
+                #     verifyKeys:
+                #       - id: "ed25519:auto"
+                #         key: "abcdefghijklmnopqrstuvwxyzabcdefghijklmopqr"
+                #     acceptKeysInsecurely: false
+                #   - serverName: 'my_other_trusted_server.{{ .matrix_hostname }}'
+
+              # -- Set to true to globally block access to the homeserver
+              disabled: false
+              # -- Human readable reason for why the homeserver is blocked
+              disabledMessage: ""
+
+              logging:
+                # -- Root log level is the default log level for log outputs that don't
+                # have more specific settings.
+                rootLogLevel: WARNING
+                # -- beware: increasing this to DEBUG will make synapse log sensitive
+                # information such as access tokens.
+                sqlLogLevel: WARNING
+                # -- The log level for the synapse server
+                synapseLogLevel: WARNING
+
+              experimental_features:
+                msc3861:
+                  # -- experimental_feature msc3861 - enable this if you want to use the matrix authentication service
+                  # Likely needed if using OIDC on synapse and you want to allow usage of Element-X (the beta of element)
+                  # See: [Matrix authentication service home server docs](https://matrix-org.github.io/matrix-authentication-service/setup/homeserver.html#configure-the-homeserver-to-delegate-authentication-to-the-service), [full matrix authentication service docs](https://matrix-org.github.io/matrix-authentication-service/index.html), and [issue#1915](https://github.com/element-hq/element-meta/issues/1915#issuecomment-2119297748) where this is being discussed
+                  enabled: true
+
+                  # -- Synapse will call `{issuer}/.well-known/openid-configuration` to get the OIDC configuration
+                  issuer: http://localhost:8080/
+
+                  # -- Matches the `client_id` in the auth service config
+                  client_id: 0000000000000000000SYNAPSE
+
+                  # -- Matches the `client_auth_method` in the auth service config
+                  client_auth_method: client_secret_basic
+
+                  # -- Matches the `client_secret` in the auth service config
+                  client_secret: ""
+
+                  # -- Matches the `matrix.secret` in the auth service config
+                  admin_token: ""
+
+                  # -- URL to advertise to clients where users can self-manage their account
+                  account_management_url: "http://localhost:8080/account"
+
+                  # -- use an existing secret for all msc3861 (matrix authentication service) related values
+                  # if set, all other msc3861 values are ignored (issuer, client_id, client_auth_method, client_secret, admin_token, account_management_url)
+                  existingSecret: ""
+
+            s3:
+              # -- enable s3 storage via https://github.com/matrix-org/synapse-s3-storage-provider
+              enabled: true
+              endpoint: 'https://{{ .matrix_s3_endpoint }}'
+              bucket: '{{ .matrix_s3_bucket }}'
+              region: '{{ .matrix_s3_region }}'
+              existingSecret: "matrix-s3-credentials"
+              secretKeys:
+                accessKey: "S3_ACCESS_KEY"
+                secretKey: "S3_SECRET_KEY"
+              cronjob:
+                # -- enable a regular cleanup k8s cronjob to automatically backup everything
+                # to your s3 bucket for you and delete it from local disk ref:
+                # https://github.com/matrix-org/synapse-s3-storage-provider/tree/main#regular-cleanup-job
+                enabled: false
+                schedule: "0 0 * * *"
+                # -- this is the age of files you'd like to clean up, defaults files not used
+                # within two months (2m)
+                file_age: 2m
+
+            # Persistent volumes configuration
+            volumes:
+              media:
+                existingClaim: "matrix-media"
+              signingKey:
+                existingClaim: "matrix-signing-key"
+              synapseConfig:
+                existingClaim: "matrix-synapse-config"
+
+            externalDatabase:
+              enabled: true
+              sslmode: verify-full
+              sslrootcert: /etc/secrets/ca/ca.crt
+              sslcert: /etc/secrets/matrix/tls.crt
+              sslkey: /etc/secrets/matrix/tls.key
+              port: 5432
+              # -- Name of existing secret to use for PostgreSQL credentials
+              existingSecret: "matrix-pgsql-credentials"
+              # secretKeys to grab from existingSecret
+              # if postgresql.existingSecret is provided, the following are ignored
+              # postgresql.password/username/hostname/database/port
+              secretKeys:
+                # -- key in existingSecret with hostname of the database
+                databaseHostname: hostname
+                # -- key in existingSecret with username for matrix to connect to db
+                databaseUsername: username
+                # -- key in existingSecret with password for matrix to connect to db
+                userPasswordKey: password
+                # -- key in existingSecret with the admin postgresql password
+                adminPasswordKey: password
+
+            # PostgreSQL Database configuration, for more options:
+            # https://github.com/bitnami/charts/tree/main/bitnami/postgresql
+            postgresql:
+              enabled: false
+
+            # Synapse Kubernetes resource settings
+            synapse:
+              image:
+                # -- image registry and repository to use for synapse
+                repository: "matrixdotorg/synapse"
+                # -- pullPolicy for synapse image, Use Always if using image.tag: latest
+                pullPolicy: IfNotPresent
+
+              service:
+                # -- service type for synpase
+                type: ClusterIP
+                # -- service port for synapse
+                port: 80
+                federation:
+                  type: ClusterIP
+                  port: 80
+
+              ingress:
+                enabled: true
+                host: '{{ .matrix_hostname }}'
+                tls:
+                  enabled: true
+                annotations:
+                  nginx.ingress.kubernetes.io/proxy-body-size: 1G
+                  # -- This annotation is required for the Nginx ingress provider. You can
+                  # remove it if you use a different ingress provider
+                  nginx.ingress.kubernetes.io/configuration-snippet: |
+                    proxy_intercept_errors off;
+                  # -- required for TLS certs issued by cert-manager
+                  cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
+
+              replicaCount: 1
+              resources: {}
+              # Configure timings for readiness, startup, and liveness probes here
+              probes:
+                readiness:
+                  # -- readiness probe seconds before timing out
+                  timeoutSeconds: 5
+                  # -- readiness probe seconds trying again
+                  periodSeconds: 10
+                startup:
+                  # -- startup probe seconds before timing out
+                  timeoutSeconds: 5
+                  # -- startup probe seconds trying again
+                  periodSeconds: 5
+                  # -- startup probe times to try and fail before giving up
+                  failureThreshold: 6
+                liveness:
+                  # -- liveness probe seconds before timing out
+                  timeoutSeconds: 5
+                  # -- liveness probe seconds trying again
+                  periodSeconds: 10
+
+              # Does not work by default in all cloud providers, disable by default
+              securityContext:
+                # -- user to run the synapse container as
+                runAsUser: 1000
+                # -- group to run the synapse container as
+                runAsGroup: 1000
+                fsGroup: 1000
+                runAsNonRoot: true
+
+                # -- Enable if your k8s environment allows containers to chuser/setuid
+                # https://github.com/matrix-org/synapse/blob/96cf81e312407f0caba1b45ba9899906b1dcc098/docker/start.py#L196
+                env: false
+
+              # -- Labels to be appended to all Synapse resources
+              labels:
+                component: synapse
+
+              # Prometheus metrics for Synapse
+              # https://github.com/matrix-org/synapse/blob/develop/docs/metrics-howto.md
+              metrics:
+                # -- Whether Synapse should capture metrics on an additional endpoint
+                enabled: true
+                # -- Port to listen on for metrics scraping
+                port: 9092
+                annotations: true
+
+              extraVolumes:
+                - name: postgres-ca
+                  secret:
+                    secretName: matrix-postgres-server-ca-key-pair
+                    defaultMode: 0640
+
+                - name: postgres-client-certs
+                  secret:
+                    secretName: matrix-postgres-matrix-cert
+                    defaultMode: 0640
+
+              extraVolumeMounts:
+                - name: postgres-ca
+                  mountPath: /etc/secrets/ca
+
+                - name: postgres-client-certs
+                  mountPath: /etc/secrets/matrix
+
+              extraEnv:
+                - name: PIP_CACHE_DIR
+                  value: /tmp
+
+            # values for https://github.com/small-hack/matrix-sliding-sync-chart
+            matrix-sliding-sync:
+              enabled: false
+              postgresql:
+                # -- Whether to deploy the Bitnami Postgresql sub chart
+                # If postgresql.enabled is set to true, externalDatabase.enabled must be set to false
+                # else if externalDatabase.enabled is set to true, postgresql.enabled must be set to false
+                enabled: false
+
+              externalDatabase:
+                # -- enable using an external database *instead of* the Bitnami PostgreSQL sub-chart
+                # if externalDatabase.enabled is set to true, postgresql.enabled must be set to false
+                enabled: false
+                # optional SSL parameters for postgresql, if using your own db instead of the subchart
+                # ref: https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PARAMKEYWORDS
+                # -- sslmode to use, example: verify-full
+                sslmode: ""
+                # make sure any paths here are reflected in synapse.extraVolumes and synapse.extraVolumeMounts
+                # -- optional: tls/ssl root cert for postgresql connections
+                sslrootcert: ""
+                # -- optional: tls/ssl cert for postgresql connections
+                sslcert: ""
+                # -- optional: tls/ssl key for postgresql connections
+                sslkey: ""
+                # -- Name of existing secret to use for PostgreSQL credentials
+                existingSecret: ""
+                # if externalDatabase.existingSecret is provided, the following are ignored
+                # password, username, hostname, database
+                # secretKeys to grab from existingSecret
+                secretKeys:
+                  # -- key in existingSecret with hostname of the database
+                  databaseHostname: hostname
+                  # -- key in existingSecret with name of the database
+                  database: database
+                  # -- key in existingSecret with username for matrix to connect to db
+                  databaseUsername: username
+                  # -- key in existingSecret with password for matrix to connect to db
+                  userPasswordKey: password
+                  # -- key in existingSecret with the admin postgresql password
+                  adminPasswordKey: postgresPassword
+
+              syncv3:
+                # -- existing kubernetes secret for ALL syncv3 env vars listed below. if set, ignores all values below, everything under syncv3 including syncvc.otlp.
+                existingSecret: ""
+                # -- SYNCV3_SERVER - Required. The destination homeserver to talk to (CS API HTTPS URL) e.g 'https://matrix-client.matrix.org' (Supports unix socket: /path/to/socket)
+                server: "https://{{ .matrix_hostname }}"
+                # -- SYNCV3_SECRET - Required. A secret to use to encrypt access tokens. Must remain the same for the lifetime of the database. If both syncv3.secret and syncv3.existingSecret are not set, we will autogenerate this value
+                secret: ""
+                # -- SYNCV3_BINDADDR - The interface and port to listen on. (Supports unix socket: /path/to/socket)
+                bindaddr: "0.0.0.0:8008"
+                # -- SYNCV3_TLS_CERT - Default: unset. Path to a certificate file to serve to HTTPS clients. Specifying this enables TLS on the bound address.
+                tlsCert: ""
+                # -- SYNCV3_TLS_KEY - Default: unset. Path to a key file for the certificate. Must be provided along with the certificate file.
+                tlsKey: ""
+                # -- SYNCV3_PPROF - Default: unset. The bind addr for pprof debugging e.g ':6060'. If not set, does not listen.
+                pprof: ""
+                # -- SYNCV3_PROM - Default: unset. The bind addr for Prometheus metrics, which will be accessible at /metrics at this address.
+                prom: ""
+                otlp:
+                  # -- SYNCV3_OTLP_URL - Default: unset. The OTLP HTTP URL to send spans to e.g https://localhost:4318 - if unset does not send OTLP traces.
+                  # -- SYNCV3_OTLP_USERNAME - Default: unset. The OTLP username for Basic auth. If unset, does not send an Authorization header.
+                  # -- SYNCV3_OTLP_PASSWORD - Default: unset. The OTLP password for Basic auth. If unset, does not send an Authorization header.
+                  existingSecret: ""
+
+            matrixAuthenticationService:
+              # PostgreSQL Database configuration for matrix-authentication-service, for more options:
+              # https://github.com/bitnami/charts/tree/main/bitnami/postgresql
+              postgresql:
+                # -- Whether to deploy the Bitnami Postgresql sub chart
+                # If postgresql.enabled is set to true, externalDatabase.enabled must be set to false
+                # else if externalDatabase.enabled is set to true, postgresql.enabled must be set to false
+                enabled: true
+                # persistence:
+                #   enabled: false
+                volumePermissions:
+                  # -- Enable init container that changes the owner and group of the PVC
+                  enabled: true
+
+                tls:
+                  # -- Enable TLS traffic support for postgresql, see [bitnami/charts/postgresql#securing-traffic-using-tls](https://github.com/bitnami/charts/tree/main/bitnami/postgresql#securing-traffic-using-tls)
+                  enabled: false
+                  # -- Generate automatically self-signed TLS certificates
+                  autoGenerated: false
+                  # -- Whether to use the server's TLS cipher preferences rather than the client's
+                  preferServerCiphers: true
+                  # -- Name of an existing secret that contains the certificates
+                  certificatesSecret: ""
+                  # -- Certificate filename
+                  certFilename: ""
+                  # -- Certificate key filename
+                  certKeyFilename: ""
+                  # -- CA Certificate filename
+                  certCAFilename: ""
+                  # -- File containing a Certificate Revocation List
+                  crlFilename: ""
+
+                global:
+                  postgresql:
+                    # global.postgresql.auth overrides postgresql.auth
+                    auth:
+                      # database credentials to use if you don't use an existingSecret
+                      # -- username of matrix-authentication-service postgres user
+                      username: mas
+                      # -- password of matrix-authentication-service postgres user - ignored using exsitingSecret
+                      password: changeme
+                      # -- which port to use to connect to your database server
+                      port: 5432
+                      # -- name of the database
+                      database: mas
+                      # -- Name of existing secret to use for PostgreSQL credentials
+                      existingSecret: ""
+                      # secretKeys to grab from existingSecret
+                      # if postgresql.existingSecret is provided, the following are ignored
+                      # postgresql.password/username/hostname/database
+                      secretKeys:
+                        # -- key in existingSecret with hostname of the database
+                        databaseHostname: hostname
+                        # -- key in existingSecret with name of the database
+                        database: database
+                        # -- key in existingSecret with username for matrix-authentication-service to connect to db
+                        databaseUsername: username
+                        # -- key in existingSecret with password for matrix-authentication-service to connect to db
+                        userPasswordKey: password
+                        # -- key in existingSecret with the admin postgresql password
+                        adminPasswordKey: postgresPassword
+
+                # primary database node config
+                primary:
+                  # -- run the scripts in templates/postgresql/initdb-configmap.yaml
+                  # If using an external Postgres server, make sure to configure the database
+                  # ref: https://github.com/matrix-org/synapse/blob/master/docs/postgres.md
+                  initdb:
+                    scriptsConfigMap: "{{ .Release.Name }}-postgresql-initdb"
+
+                  podSecurityContext:
+                    enabled: true
+                    runAsUser: 1000
+                    fsGroup: 1000
+
+              externalDatabase:
+                # -- enable using an external database *instead of* the Bitnami PostgreSQL sub-chart
+                # if externalDatabase.enabled is set to true, postgresql.enabled must be set to false
+                enabled: false
+                # optional SSL parameters for postgresql, if using your own db instead of the subchart
+                # ref: https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PARAMKEYWORDS
+                # -- sslmode to use, example: verify-full
+                sslmode: ""
+                # make sure any paths here are reflected in extraVolumes and extraVolumeMounts
+                # -- optional: tls/ssl root cert for postgresql connections
+                sslrootcert: ""
+                # -- optional: tls/ssl cert for postgresql connections
+                sslcert: ""
+                # -- optional: tls/ssl key for postgresql connections
+                sslkey: ""
+                # database credentials to use if you don't use an existingSecret
+                # -- username of matrix-authentication-service postgres user
+                username: mas
+                # -- password of matrix-authentication-service postgres user - ignored using exsitingSecret
+                password: changeme
+                # -- which port to use to connect to your database server
+                port: 5432
+                # -- hostname of db server. Can be left blank if using postgres subchart
+                hostname: ""
+                # -- name of the database to try and connect to
+                database: "mas"
+                # -- Name of existing secret to use for PostgreSQL credentials
+                existingSecret: ""
+                # if externalDatabase.existingSecret is provided, the following are ignored
+                # password, username, hostname, database
+                # secretKeys to grab from existingSecret
+                secretKeys:
+                  # -- key in existingSecret with hostname of the database
+                  databaseHostname: hostname
+                  # -- key in existingSecret with name of the database
+                  database: database
+                  # -- key in existingSecret with username for matrix to connect to db
+                  databaseUsername: username
+                  # -- key in existingSecret with password for matrix to connect to db
+                  userPasswordKey: password
+                  # -- key in existingSecret with the admin postgresql password
+                  adminPasswordKey: postgresPassword
+
+              networkPolicies:
+                enabled: true
+
+              # this is for storing your matrix authentication service config file
+              configVolume:
+                # -- name of an existing persistent volume claim to use for matrix-authentication-service config. If provided, ignores mas parameter map
+                existingClaim: ""
+                # -- name of storage class for the persistent volume
+                storageClassName: "default"
+                # -- storage capacity for creating a persistent volume
+                storage: "500Mi"
+
+              # this stands for Matrix Authentication Service
+              mas:
+                masClientSecret:
+                  # -- use an existing secret for clients section of config.yaml for:
+                  # mas.clients[0].client_id, mas.clients[0].client_secret
+                  # if set, ignores mas.clients[0].client_id, mas.clients[0].client_secret
+                  existingSecret: ""
+
+                  secretKeys:
+                    # -- key in secret with the client_id
+                    client_id: "client_id"
+                    # -- key in secret with the client_secret
+                    client_secret: "client_secret"
+
+                # see more info here:  https://matrix-org.github.io/matrix-authentication-service/reference/configuration.html#clients
+                clients:
+                    # -- a unique identifier for the client. It must be a valid ULID, and it happens that 0000000000000000000SYNAPSE is a valid ULID.
+                  - client_id: ""
+                    # -- set to client_secret_basic. Other methods are possible, such as client_secret_post, but this is the easiest to set up.
+                    client_auth_method: client_secret_basic
+                    # -- a shared secret used for the homeserver to authenticate
+                    client_secret: ""
+
+                matrix:
+                  # -- name of your matrix home server (synapse or dendrite) with port if needed
+                  homeserver: "localhost:8008"
+                  # -- a shared secret the service will use to call the homeserver admin API
+                  secret: "test"
+                  # -- endpoint of your matrix home server (synapse or dendrite) with port if needed
+                  endpoint: "https://localhost:8008"
+                  # -- grab the above secret from an existing k8s secret. if set, ignores mas.matrix.secret
+                  existingSecret: ""
+                  # -- name of the key in existing secret to grab matrix.secret from
+                  secretKey: "secret"
+
+                policy:
+                  data:
+                    # -- Users which are allowed to ask for admin access. If possible, use the
+                    # can_request_admin flag on users instead.
+                    admin_users: []
+                    #  - person1
+                    #  - person2
+
+                    # -- Client IDs which are allowed to ask for admin access with a
+                    # client_credentials grant
+                    admin_clients: []
+                    #  - 01H8PKNWKKRPCBW4YGH1RWV279
+                    #  - 01HWQCPA5KF10FNCETY9402WGF
+
+                    # Dynamic Client Registration
+                    client_registration:
+                      # -- don't require URIs to be on the same host. default: false
+                      allow_host_mismatch: true
+                      # -- allow non-SSL and localhost URIs. default: false
+                      allow_insecure_uris: true
+
+                    # Registration using passwords
+                    passwords:
+                      # -- minimum length of a password. default: 0
+                      min_length: 16
+                      # -- require at least one lowercase character in a password. default: false
+                      require_lowercase: true
+                      # -- require at least one uppercase character in a password. default: false
+                      require_uppercase: true
+                      # -- require at least one number in a password. default: false
+                      require_number: true
+
+                # see: https://matrix-org.github.io/matrix-authentication-service/setup/sso.html?highlight=ulid#general-configuration
+                # and also see: https://matrix-org.github.io/matrix-authentication-service/setup/sso.html#keycloak
+                upstream_oauth2:
+
+                  # -- use an existing k8s secret for upstream oauth2 client_id and client_secret
+                  existingSecret: ""
+                  secretKeys:
+                    # -- key in secret with the issuer
+                    issuer: "issuer"
+                    # -- key in secret with the client_id
+                    client_id: "client_id"
+                    # -- key in secret with the client_secret
+                    client_secret: "client_secret"
+                    # -- key in secret with the authorization_endpoint if discovery is disabled
+                    authorization_endpoint: ""
+                    # -- key in secret with the token_endpoint if discovery is disabled
+                    token_endpoint: ""
+                    # -- key in secret with the userinfo_endpoint if discovery is disabled
+                    userinfo_endpoint: ""
+
+                  # only one provider supported at this time, but if you want more, feel free to submit a PR
+                  providers:
+                    # -- A unique identifier for the provider
+                    # Must be a valid ULID, and can be generated using online tools like:
+                    # https://www.ulidtools.com
+                    - id: ""
+                      # -- The issuer URL, which will be used to discover the provider's configuration.
+                      # If discovery is enabled, this *must* exactly match the `issuer` field
+                      # advertised in `<issuer>/.well-known/openid-configuration`.
+                      issuer: https://example.com/
+                      # -- A human-readable name for the provider, which will be displayed on the login page
+                      human_name: zitadel
+                      # -- A brand identifier for the provider, which will be used to display a logo
+                      # on the login page. Values supported by the default template are:
+                      #  - `apple`
+                      #  - `google`
+                      #  - `facebook`
+                      #  - `github`
+                      #  - `gitlab`
+                      #  - `twitter`
+                      brand_name: zitadel
+                      client_id: ""
+                      # This is only used by the `client_secret_post`, `client_secret_basic`
+                      # and `client_secret_jwk` authentication methods
+                      client_secret: ""
+
+                      # Supported methods are:
+                      #   - `client_secret_basic`
+                      #   - `client_secret_post`
+                      #   - `client_secret_jwt`
+                      #   - `private_key_jwt` (using the keys defined in the `secrets.keys` section)
+                      token_endpoint_auth_method: client_secret_basic
+
+                      # -- Which signing algorithm to use to sign the authentication request when using
+                      # the `private_key_jwt` or the `client_secret_jwt` authentication methods
+                      # token_endpoint_auth_signing_alg: RS256
+                      scope: "openid email profile"
+                      discovery_mode: oidc
+                      # other Possible values are:
+                      #  - `always`: always use PKCE (with the S256 method)
+                      #  - `never`: never use PKCE
+                      pkce_method: auto
+                      # This takes precedence over the discovery mechanism
+                      authorization_endpoint: https://example.com/oauth2/authorize
+                      # This takes precedence over the discovery mechanism
+                      # token_endpoint: https://example.com/oauth2/token
+                      # This takes precedence over the discovery mechanism
+                      # jwks_uri: https://example.com/oauth2/keys
+
+                      # How user attributes should be mapped
+                      #
+                      # Most of those attributes have two main properties:
+                      #   - `action`: what to do with the attribute. Possible values are:
+                      #      - `ignore`: ignore the attribute
+                      #      - `suggest`: suggest the attribute to the user, but let them opt out
+                      #      - `force`: always import the attribute, and don't fail if it's missing
+                      #      - `require`: always import the attribute, and fail if it's missing
+                      #   - `template`: a Jinja2 template used to generate the value. In this template,
+                      #      the `user` variable is available, which contains the user's attributes
+                      #      retrieved from the `id_token` given by the upstream provider.
+                      #
+                      # Each attribute has a default template which follows the well-known OIDC claims.
+                      #
+                      claims_imports:
+                        # -- The subject is an internal identifier used to link the
+                        # user's provider identity to local accounts.
+                        # By default it uses the `sub` claim as per the OIDC spec,
+                        # which should fit most use cases.
+                        subject:
+                          template: "{{ user.sub }}"
+
+                        # -- The localpart is the local part of the user's Matrix ID.
+                        # For example, on the `example.com` server, if the localpart is `alice`,
+                        #  the user's Matrix ID will be `@alice:example.com`.
+                        localpart:
+                          action: require
+                          template: "{{ user.preferred_username }}"
+
+                        # -- The display name is the user's display name.
+                        displayname:
+                          action: suggest
+                          template: "{{ user.name }}"
+
+                        # -- An email address to import.
+                        email:
+                          action: suggest
+                          template: "{{ user.email }}"
+                          # -- Whether the email address must be marked as verified.
+                          # Possible values are:
+                          #  - `import`: mark the email address as verified if the upstream provider
+                          #     has marked it as verified, using the `email_verified` claim.
+                          #     This is the default.
+                          #   - `always`: mark the email address as verified
+                          #   - `never`: mark the email address as not verified
+                          set_email_verification: always
+
+            # Element client configuration. see: https://element.io/
+            element:
+              # -- Set to false to disable a deployment of Element. Users will still be able
+              # to connect via any other instances of Element e.g. https://app.element.io,
+              # Element Desktop, or any other Matrix clients
+              enabled: true
+
+              ingress:
+                # -- enable ingress for element
+                enabled: true
+                tls:
+                  enabled: true
+                # -- the hostname to use for element
+                host: '{{ .matrix_element_hostname }}'
+                annotations:
+                  # This annotation is required for the Nginx ingress provider. You can
+                  # remove it if you use a different ingress provider
+                  nginx.ingress.kubernetes.io/configuration-snippet: |
+                    proxy_intercept_errors off;
+                  # -- required for TLS certs issued by cert-manager
+                  cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
+
+              # Organization/enterprise branding
+              branding:
+                # -- brand shown in email notifications
+                brand: "{{ .matrix_hostname }}"
+                # -- Background of login splash screen
+                welcomeBackgroundUrl: "https://i.imgur.com/VpFquY4.png"
+                # -- Logo shown at top of login screen
+                authHeaderLogoUrl: "https://raw.githubusercontent.com/jessebot/dot_files/main/.local/share/fastfetch/logos/dogontheinternet.png"
+                # -- Array of links to show at the bottom of the login screen
+                authFooterLinks: []
+                #  - text:
+                #    url:
+
+              # Element integrations configuration
+              integrations:
+                # -- enables the Integrations menu, including:
+                #    widgets, bots, and other plugins to Element
+                enabled: true
+                # -- UI to load when a user selects the Integrations button at the top-right
+                #    of a room
+                ui: "https://scalar.vector.im/"
+                # -- API for the integration server
+                api: "https://scalar.vector.im/api"
+                # -- Array of API paths providing widgets
+                widgets:
+                  - "https://scalar.vector.im/_matrix/integrations/v1"
+                  - "https://scalar.vector.im/api"
+                  - "https://scalar-staging.vector.im/_matrix/integrations/v1"
+                  - "https://scalar-staging.vector.im/api"
+                  - "https://scalar-staging.element.im/scalar/api"
+
+              # -- Experimental features in Element, see:
+              # https://github.com/vector-im/element-web/blob/develop/docs/labs.md
+              labs:
+                - feature_report_to_moderators
+                - feature_pinning
+                - feature_state_counters
+                - feature_mjolnir
+                - feature_dm_verification
+                - feature_bridge_state
+                - feature_custom_themes
+                - feature_jump_to_date
+                - feature_video_rooms
+                - feature_element_call_video_rooms
+                - feature_group_calls
+
+              # -- Servers to show in the Explore menu (the current server is always shown)
+              roomDirectoryServers:
+                - matrix.org
+
+              # -- Set to the user ID (@username:domain.tld) of a bot to invite all new
+              # users to a DM with the bot upon registration
+              welcomeUserId: ""
+
+              # -- Prefix before permalinks generated when users share links to rooms,
+              # users, or messages. If running an unfederated Synapse, set the below to the
+              # URL of your Element instance.
+              permalinkPrefix: "https://matrix.to"
+
+              # Element Kubernetes resource settings
+              image:
+                # -- registry and repository to use for element docker image
+                repository: "vectorim/element-web"
+                # -- tag to use for element docker image
+                # -- pullPolicy to use for element image, set to Always if using latest tag
+                pullPolicy: IfNotPresent
+              service:
+                type: ClusterIP
+                port: 80
+              replicaCount: 1
+              resources: {}
+              probes:
+                readiness: {}
+                startup: {}
+                liveness: {}
+
+              # -- Element specific labels
+              labels:
+                component: element
+
+            # Settings for Coturn TURN relay, used for routing voice calls
+            coturn:
+              # -- Set to false to disable the included deployment of Coturn
+              enabled: false
+
+            # Settings for email notifications
+            mail:
+              enabled: true
+              # disable exim relay
+              relay:
+                enabled: false
+              # External mail server
+              external:
+                # INSECURE: 25, SSL: 465, STARTTLS: 587
+                port: 587
+                requireTransportSecurity: true
+                existingSecret: "matrix-smtp-credentials"
+                secretKeys:
+                  host: "host"
+                  username: "username"
+                  password: "password"
+
+            bridges:
+              irc:
+                # -- Set to true to enable the IRC bridge
+                enabled: false
+              whatsapp:
+                # -- Set to true to enable the WhatsApp bridge
+                enabled: false
+              discord:
+                # -- Set to true to enable the Discord bridge
+                enabled: false
+
+            networkPolicies:
+              # -- whether to enable kubernetes network policies or not
+              enabled: true
