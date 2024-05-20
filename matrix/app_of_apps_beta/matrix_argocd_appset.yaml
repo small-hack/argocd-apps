@@ -55,10 +55,10 @@ spec:
               serverName: "{{ .matrix_hostname }}"
               # -- Enable anonymous telemetry to matrix.org
               telemetry: false
-              # -- Set to false to disable presence (online/offline indicators)
+              # -- Set to false to disable (online/offline indicators)
               presence: true
               # -- Set to true to block non-admins from inviting users to any rooms
-              blockNonAdminInvites: false
+              blockNonAdminInvites: true
 
               # -- Set to false to disable message searching
               search: true
@@ -68,7 +68,7 @@ spec:
               # all:    all rooms
               # invite: private msg/room created w/ private_chat or trusted_private_chat
               #         room presets
-              encryptByDefault: all
+              encryptByDefault: invite
 
               # -- Email address of the administrator
               adminEmail: '{{ .matrix_admin_email }}'
@@ -77,18 +77,14 @@ spec:
               uploads:
                 # -- Max upload size in bytes
                 maxSize: 10M
-
                 # -- Max image size in pixels
                 maxPixels: 32M
 
               # Settings related to federation
               federation:
-                # -- Set to false to disable federation and run an isolated homeserver
                 enabled: true
-
                 # -- Allow members of other homeservers to fetch *public* rooms
                 allowPublicRooms: true
-
                 # -- IP addresses to blacklist federation requests to
                 blacklist:
                   - '127.0.0.0/8'
@@ -110,7 +106,6 @@ spec:
                     # use a different ingress provider
                     nginx.ingress.kubernetes.io/configuration-snippet: |
                       proxy_intercept_errors off;
-                    # -- required for TLS certs issued by cert-manager
                     cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
 
               # User registration settings
@@ -142,9 +137,7 @@ spec:
 
               # Settings for the URL preview crawler
               urlPreviews:
-                # -- Enable URL previews. WARN: Make sure to review default rules below to ensure that users cannot crawl sensitive internal endpoints on yr cluster
                 enabled: true
-
                 # Blacklists and whitelists for the URL preview crawler
                 rules:
                   # -- Max size of a crawlable page. Keep this low to prevent a DOS vector
@@ -192,7 +185,6 @@ spec:
                 # This disables the warning that is emitted when the
                 # trustedKeyServers include 'matrix.org'. See below.
                 # Set to false to re-enable the warning.
-                #
                 surpressKeyServerWarning: true
 
                 # The trusted servers to download signing keys from.
@@ -814,26 +806,18 @@ spec:
                           #   - `never`: mark the email address as not verified
                           set_email_verification: always
 
-            # Element client configuration. see: https://element.io/
             element:
-              # -- Set to false to disable a deployment of Element. Users will still be able
-              # to connect via any other instances of Element e.g. https://app.element.io,
-              # Element Desktop, or any other Matrix clients
               enabled: true
-
               ingress:
-                # -- enable ingress for element
                 enabled: true
                 tls:
                   enabled: true
-                # -- the hostname to use for element
                 host: '{{ .matrix_element_hostname }}'
                 annotations:
                   # This annotation is required for the Nginx ingress provider. You can
                   # remove it if you use a different ingress provider
                   nginx.ingress.kubernetes.io/configuration-snippet: |
                     proxy_intercept_errors off;
-                  # -- required for TLS certs issued by cert-manager
                   cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
 
               # Organization/enterprise branding
@@ -853,29 +837,18 @@ spec:
               integrations:
                 # -- enables the Integrations menu, including:
                 #    widgets, bots, and other plugins to Element
-                enabled: true
-                # -- UI to load when a user selects the Integrations button at the top-right
-                #    of a room
-                ui: "https://scalar.vector.im/"
-                # -- API for the integration server
-                api: "https://scalar.vector.im/api"
-                # -- Array of API paths providing widgets
-                widgets:
-                  - "https://scalar.vector.im/_matrix/integrations/v1"
-                  - "https://scalar.vector.im/api"
-                  - "https://scalar-staging.vector.im/_matrix/integrations/v1"
-                  - "https://scalar-staging.vector.im/api"
-                  - "https://scalar-staging.element.im/scalar/api"
+                enabled: false
 
               # -- Experimental features in Element, see:
               # https://github.com/vector-im/element-web/blob/develop/docs/labs.md
               labs:
                 - feature_report_to_moderators
                 - feature_pinning
-                - feature_state_counters
                 - feature_mjolnir
+                - feature_disable_call_per_sender_encryption
                 - feature_dm_verification
                 - feature_bridge_state
+                - feature_html_topic
                 - feature_custom_themes
                 - feature_jump_to_date
                 - feature_video_rooms
@@ -893,7 +866,8 @@ spec:
               # -- Prefix before permalinks generated when users share links to rooms,
               # users, or messages. If running an unfederated Synapse, set the below to the
               # URL of your Element instance.
-              permalinkPrefix: "https://matrix.to"
+              # permalinkPrefix: "https://matrix.to"
+              permalinkPrefix: "https://{{ .matrix_element_hostname }}"
 
               # Element Kubernetes resource settings
               image:
@@ -907,10 +881,6 @@ spec:
                 port: 80
               replicaCount: 1
               resources: {}
-              probes:
-                readiness: {}
-                startup: {}
-                liveness: {}
 
               # -- Element specific labels
               labels:
@@ -918,7 +888,6 @@ spec:
 
             # Settings for Coturn TURN relay, used for routing voice calls
             coturn:
-              # -- Set to false to disable the included deployment of Coturn
               enabled: false
 
             # Settings for email notifications
@@ -941,9 +910,6 @@ spec:
             bridges:
               irc:
                 # -- Set to true to enable the IRC bridge
-                enabled: false
-              whatsapp:
-                # -- Set to true to enable the WhatsApp bridge
                 enabled: false
               discord:
                 # -- Set to true to enable the Discord bridge
