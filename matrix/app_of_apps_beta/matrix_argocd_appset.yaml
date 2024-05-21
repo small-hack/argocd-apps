@@ -272,6 +272,18 @@ spec:
                   # if set, all other msc3861 values are ignored (issuer, client_id, client_auth_method, client_secret, admin_token, account_management_url)
                   existingSecret: ""
 
+                  secretKeys:
+                    # -- secret key to use in existing secret for masc3861 issuer
+                    issuer: ""
+                    # -- secret key to use in existing secret for masc3861 client id
+                    client_id: ""
+                    # -- secret key to use in existing secret for masc3861 client secret
+                    client_secret: ""
+                    # -- secret key to use in existing secret for masc3861 admin_token
+                    admin_token: ""
+                    # -- secret key to use in existing secret for masc3861 account_management_url
+                    account_management_url: ""
+
             s3:
               # -- enable s3 storage via https://github.com/matrix-org/synapse-s3-storage-provider
               enabled: true
@@ -695,7 +707,7 @@ spec:
                 upstream_oauth2:
 
                   # -- use an existing k8s secret for upstream oauth2 client_id and client_secret
-                  existingSecret: ""
+                  existingSecret: "synapse-oidc"
                   secretKeys:
                     # -- key in secret with the issuer
                     issuer: "issuer"
