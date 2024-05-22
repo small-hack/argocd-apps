@@ -1,0 +1,15 @@
+{{- if .Values.matrix_authentication_service_config_pvc.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mas-config
+  annotations:
+    k8up.io/backup: 'true'
+spec:
+  storageClassName: {{ .Values.matrix_authentication_service_config_pvc.storageClassName }}
+  accessModes:
+    - {{ .Values.matrix_authentication_service_config_pvc.accessMode }}
+  resources:
+    requests:
+      storage: {{ .Values.matrix_authentication_service_config_pvc.storage }}
+{{- end }}
