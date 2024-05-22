@@ -68,3 +68,13 @@ spec:
               storageClassName: '{{ .global_pvc_storage_class }}'
               accessMode: '{{ .matrix_signing_key_access_mode }}'
               storage: '{{ .matrix_signing_key_storage }}'
+
+            # this is for storing the config of mas (matrix authentication service)
+            matrix_authentication_service_config_pvc:
+              enabled: true
+              # -- default storage class name to use for mas pvc
+              storageClassName: '{{ .global_pvc_storage_class }}'
+              # -- default access mode for the mas pvc
+              accessMode: '{{ .matrix_synapse_config_access_mode }}'
+              # -- storage capacity for the matrix mas pvc
+              storage: "500Mi"

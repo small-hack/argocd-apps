@@ -27,3 +27,13 @@ media_pvc:
   accessMode: "ReadWriteOnce"
   # -- storage capacity for the matrix media pvc
   storage: "2Gi"
+
+# this is for storing the config of mas (matrix authentication service)
+matrix_authentication_service_config_pvc:
+  enabled: false
+  # -- default storage class name to use for mas pvc
+  storageClassName: "local-path"
+  # -- default access mode for the mas pvc
+  accessMode: "ReadWriteOnce"
+  # -- storage capacity for the matrix mas pvc
+  storage: "1Gi"
