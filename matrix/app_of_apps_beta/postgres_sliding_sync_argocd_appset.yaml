@@ -46,7 +46,7 @@ spec:
 
             bootstrap:
               initdb:
-                database: syncv3
+                database: syncv3-postgres
                 owner: syncv3
                 # postInitSQL:
                 #  - GRANT ALL PRIVILEGES ON DATABASE matrix TO matrix;
