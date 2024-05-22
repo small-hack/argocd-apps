@@ -622,11 +622,11 @@ spec:
                     # -- key in secret with the client_secret
                     client_secret: "client_secret"
                     # -- key in secret with the authorization_endpoint if discovery is disabled
-                    authorization_endpoint: ""
+                    # authorization_endpoint: ""
                     # -- key in secret with the token_endpoint if discovery is disabled
-                    token_endpoint: ""
+                    # token_endpoint: ""
                     # -- key in secret with the userinfo_endpoint if discovery is disabled
-                    userinfo_endpoint: ""
+                    # userinfo_endpoint: ""
 
                   # only one provider supported at this time, but if you want more, feel free to submit a PR
                   providers:
@@ -638,7 +638,7 @@ spec:
                       # If discovery is enabled, this *must* exactly match the `issuer` field
                       # advertised in `<issuer>/.well-known/openid-configuration`.
                       issuer: https://example.com/
-                      # -- A human-readable name for the provider, which will be displayed on the login page
+                      # -- A human-readable name for the provider, displayed on the login page
                       human_name: zitadel
                       # -- A brand identifier for the provider, which will be used to display a logo
                       # on the login page. Values supported by the default template are:
@@ -671,7 +671,7 @@ spec:
                       #  - `never`: never use PKCE
                       pkce_method: auto
                       # This takes precedence over the discovery mechanism
-                      authorization_endpoint: https://example.com/oauth2/authorize
+                      # authorization_endpoint: https://example.com/oauth2/authorize
                       # This takes precedence over the discovery mechanism
                       # token_endpoint: https://example.com/oauth2/token
                       # This takes precedence over the discovery mechanism
@@ -732,8 +732,7 @@ spec:
                   enabled: true
                 host: '{{ .matrix_element_hostname }}'
                 annotations:
-                  # This annotation is required for the Nginx ingress provider. You can
-                  # remove it if you use a different ingress provider
+                  # required for the Nginx ingress provider
                   nginx.ingress.kubernetes.io/configuration-snippet: |
                     proxy_intercept_errors off;
                   cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
