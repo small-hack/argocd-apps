@@ -41,12 +41,12 @@ spec:
         helm:
           releaseName: syncv3-postgres-cluster
           valuesObject:
-            name: syncv3
+            name: syncv3-postgres
             instances: 1
 
             bootstrap:
               initdb:
-                database: syncv3-postgres
+                database: syncv3
                 owner: syncv3
                 # postInitSQL:
                 #  - GRANT ALL PRIVILEGES ON DATABASE matrix TO matrix;
