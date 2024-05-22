@@ -244,45 +244,36 @@ spec:
                 synapseLogLevel: WARNING
 
               experimental_features:
-                msc3861:
-                  # -- experimental_feature msc3861 - enable this if you want to use the matrix authentication service
-                  # Likely needed if using OIDC on synapse and you want to allow usage of Element-X (the beta of element)
-                  # See: [Matrix authentication service home server docs](https://matrix-org.github.io/matrix-authentication-service/setup/homeserver.html#configure-the-homeserver-to-delegate-authentication-to-the-service), [full matrix authentication service docs](https://matrix-org.github.io/matrix-authentication-service/index.html), and [issue#1915](https://github.com/element-hq/element-meta/issues/1915#issuecomment-2119297748) where this is being discussed
-                  enabled: true
+                # -- use an existing secret for all msc3861 (matrix authentication service) related values
+                # if set, all other msc3861 values are ignored (issuer, client_id, client_auth_method, client_secret, admin_token, account_management_url)
+                msc3861ExistingSecret: "matrix-authentication-service"
+                msc3861SecretKeys:
+                  # -- secret key to use in existing secret for masc3861 issuer
+                  issuer: "issuer"
+                  # -- secret key to use in existing secret for masc3861 client id
+                  client_id: "client_id"
+                  # -- secret key to use in existing secret for masc3861 client secret
+                  client_secret: "client_secret"
+                  # -- secret key to use in existing secret for masc3861 admin_token
+                  admin_token: "admin_token"
+                  # -- secret key to use in existing secret for masc3861 account_management_url
+                  account_management_url: ""
 
+                # experimental_feature msc3861 - enable this if you want to use the matrix authentication service
+                msc3861:
+                  enabled: true
                   # -- Synapse will call `{issuer}/.well-known/openid-configuration` to get the OIDC configuration
                   issuer: http://localhost:8080/
-
                   # -- Matches the `client_id` in the auth service config
                   client_id: 0000000000000000000SYNAPSE
-
                   # -- Matches the `client_auth_method` in the auth service config
                   client_auth_method: client_secret_basic
-
                   # -- Matches the `client_secret` in the auth service config
                   client_secret: ""
-
                   # -- Matches the `matrix.secret` in the auth service config
                   admin_token: ""
-
                   # -- URL to advertise to clients where users can self-manage their account
                   account_management_url: "http://localhost:8080/account"
-
-                  # -- use an existing secret for all msc3861 (matrix authentication service) related values
-                  # if set, all other msc3861 values are ignored (issuer, client_id, client_auth_method, client_secret, admin_token, account_management_url)
-                  existingSecret: ""
-
-                  secretKeys:
-                    # -- secret key to use in existing secret for masc3861 issuer
-                    issuer: ""
-                    # -- secret key to use in existing secret for masc3861 client id
-                    client_id: ""
-                    # -- secret key to use in existing secret for masc3861 client secret
-                    client_secret: ""
-                    # -- secret key to use in existing secret for masc3861 admin_token
-                    admin_token: ""
-                    # -- secret key to use in existing secret for masc3861 account_management_url
-                    account_management_url: ""
 
             s3:
               # -- enable s3 storage via https://github.com/matrix-org/synapse-s3-storage-provider
