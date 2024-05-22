@@ -488,7 +488,7 @@ spec:
                   # -- SYNCV3_OTLP_PASSWORD - Default: unset. The OTLP password for Basic auth. If unset, does not send an Authorization header.
                   existingSecret: ""
 
-            matrixAuthenticationService:
+            matrix-authentication-service:
               enabled: true
               postgresql:
                 enabled: false
