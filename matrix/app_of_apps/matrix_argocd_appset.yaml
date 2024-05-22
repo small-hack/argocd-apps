@@ -42,9 +42,12 @@ spec:
           prune: true
           selfHeal: true
       source:
-        repoURL: 'https://github.com/small-hack/matrix-chart'
-        targetRevision: add-sliding-sync-subchart
-        path: charts/matrix/
+        repoURL: 'https://small-hack.github.io/matrix-chart'
+        # repoURL: 'https://github.com/small-hack/matrix-chart'
+        targetRevision: 8.2.0
+        # targetRevision: add-sliding-sync-subchart
+        # path: charts/matrix/
+        chart: matrix
         helm:
           valuesObject:
             fullnameOverride: matrix-stack
@@ -162,7 +165,7 @@ spec:
 
               # Settings for the URL preview crawler
               urlPreviews:
-                # -- Enable URL previews. WARN: Make sure to review default rules below to ensure that users cannot crawl sensitive internal endpoints on yr cluster
+                # WARNING: review rules below
                 enabled: true
 
                 # Blacklists and whitelists for the URL preview crawler
@@ -357,10 +360,6 @@ spec:
                     proxy_intercept_errors off;
                   # -- required for TLS certs issued by cert-manager
                   cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
-                  nginx.ingress.kubernetes.io/server-snippet: |-
-                    location = /.well-known/matrix/client {
-                        return 200 '{"m.homeserver": {"base_url": "https://{{ .matrix_hostname }}"},"org.matrix.msc3575.proxy": {"url": "https://slide.{{ .matrix_hostname }}"}}';
-                    }
 
               replicaCount: 1
               resources: {}
@@ -431,70 +430,6 @@ spec:
               extraEnv:
                 - name: PIP_CACHE_DIR
                   value: /tmp
-
-            # values for https://github.com/small-hack/matrix-sliding-sync-chart
-            matrix-sliding-sync:
-              enabled: false
-              postgresql:
-                # -- Whether to deploy the Bitnami Postgresql sub chart
-                # If postgresql.enabled is set to true, externalDatabase.enabled must be set to false
-                # else if externalDatabase.enabled is set to true, postgresql.enabled must be set to false
-                enabled: false
-
-              externalDatabase:
-                # -- enable using an external database *instead of* the Bitnami PostgreSQL sub-chart
-                # if externalDatabase.enabled is set to true, postgresql.enabled must be set to false
-                enabled: false
-                # optional SSL parameters for postgresql, if using your own db instead of the subchart
-                # ref: https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PARAMKEYWORDS
-                # -- sslmode to use, example: verify-full
-                sslmode: ""
-                # make sure any paths here are reflected in synapse.extraVolumes and synapse.extraVolumeMounts
-                # -- optional: tls/ssl root cert for postgresql connections
-                sslrootcert: ""
-                # -- optional: tls/ssl cert for postgresql connections
-                sslcert: ""
-                # -- optional: tls/ssl key for postgresql connections
-                sslkey: ""
-                # -- Name of existing secret to use for PostgreSQL credentials
-                existingSecret: ""
-                # if externalDatabase.existingSecret is provided, the following are ignored
-                # password, username, hostname, database
-                # secretKeys to grab from existingSecret
-                secretKeys:
-                  # -- key in existingSecret with hostname of the database
-                  databaseHostname: hostname
-                  # -- key in existingSecret with name of the database
-                  database: database
-                  # -- key in existingSecret with username for matrix to connect to db
-                  databaseUsername: username
-                  # -- key in existingSecret with password for matrix to connect to db
-                  userPasswordKey: password
-                  # -- key in existingSecret with the admin postgresql password
-                  adminPasswordKey: postgresPassword
-
-              syncv3:
-                # -- existing kubernetes secret for ALL syncv3 env vars listed below. if set, ignores all values below, everything under syncv3 including syncvc.otlp.
-                existingSecret: ""
-                # -- SYNCV3_SERVER - Required. The destination homeserver to talk to (CS API HTTPS URL) e.g 'https://matrix-client.matrix.org' (Supports unix socket: /path/to/socket)
-                server: "https://{{ .matrix_hostname }}"
-                # -- SYNCV3_SECRET - Required. A secret to use to encrypt access tokens. Must remain the same for the lifetime of the database. If both syncv3.secret and syncv3.existingSecret are not set, we will autogenerate this value
-                secret: ""
-                # -- SYNCV3_BINDADDR - The interface and port to listen on. (Supports unix socket: /path/to/socket)
-                bindaddr: "0.0.0.0:8008"
-                # -- SYNCV3_TLS_CERT - Default: unset. Path to a certificate file to serve to HTTPS clients. Specifying this enables TLS on the bound address.
-                tlsCert: ""
-                # -- SYNCV3_TLS_KEY - Default: unset. Path to a key file for the certificate. Must be provided along with the certificate file.
-                tlsKey: ""
-                # -- SYNCV3_PPROF - Default: unset. The bind addr for pprof debugging e.g ':6060'. If not set, does not listen.
-                pprof: ""
-                # -- SYNCV3_PROM - Default: unset. The bind addr for Prometheus metrics, which will be accessible at /metrics at this address.
-                prom: ""
-                otlp:
-                  # -- SYNCV3_OTLP_URL - Default: unset. The OTLP HTTP URL to send spans to e.g https://localhost:4318 - if unset does not send OTLP traces.
-                  # -- SYNCV3_OTLP_USERNAME - Default: unset. The OTLP username for Basic auth. If unset, does not send an Authorization header.
-                  # -- SYNCV3_OTLP_PASSWORD - Default: unset. The OTLP password for Basic auth. If unset, does not send an Authorization header.
-                  existingSecret: ""
 
             # Element client configuration. see: https://element.io/
             element:
@@ -578,6 +513,10 @@ spec:
                 port: 80
               replicaCount: 1
               resources: {}
+              probes:
+                readiness: {}
+                startup: {}
+                liveness: {}
 
               # -- Element specific labels
               labels:
