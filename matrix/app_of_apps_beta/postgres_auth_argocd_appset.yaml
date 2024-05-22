@@ -41,12 +41,12 @@ spec:
         helm:
           releaseName: mas-postgres-cluster
           valuesObject:
-            name: mas
+            name: mas-postgres
             instances: 1
 
             bootstrap:
               initdb:
-                database: mas-postgres
+                database: mas
                 owner: mas
                 # postInitSQL:
                 #  - GRANT ALL PRIVILEGES ON DATABASE matrix TO matrix;
