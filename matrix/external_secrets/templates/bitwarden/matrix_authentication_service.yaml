@@ -1,0 +1,64 @@
+{{- if and (eq .Values.provider "bitwarden") .Values.matrixAuthenticationServiceBitwardenID }}
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: matrix-authentication-service
+spec:
+  target:
+    # Name for the secret to be created on the cluster
+    name: matrix-authentication-service
+    deletionPolicy: Delete
+    template:
+      type: Opaque
+      data:
+        issuer: |-
+          {{ `{{ .issuer }}` }}
+        client_id: |-
+          {{ `{{ .username }}` }}
+        client_secret: |-
+          {{ `{{ .password }}` }}
+        token: |-
+          {{ `{{ .token }}` }}
+
+  data:
+    # zitadel client Issuer
+    - secretKey: issuer
+      sourceRef:
+        storeRef:
+          name: bitwarden-fields
+          kind: ClusterSecretStore
+      remoteRef:
+        key: {{ .Values.matrixAuthenticationServiceBitwardenID }}
+        property: issuer
+
+    # zitadel client ID
+    - secretKey: username
+      sourceRef:
+        storeRef:
+          name: bitwarden-login
+          kind: ClusterSecretStore
+      remoteRef:
+        key: {{ .Values.matrixAuthenticationServiceBitwardenID }}
+        property: username
+
+    # zitadel client secret
+    - secretKey: password
+      sourceRef:
+        storeRef:
+          name: bitwarden-login
+          kind: ClusterSecretStore
+      remoteRef:
+        key: {{ .Values.matrixAuthenticationServiceBitwardenID }}
+        property: password
+
+    # zitadel client token
+    - secretKey: token
+      sourceRef:
+        storeRef:
+          name: bitwarden-fields
+          kind: ClusterSecretStore
+      remoteRef:
+        key: {{ .Values.matrixAuthenticationServiceBitwardenID }}
+        property: token
+{{- end }}
