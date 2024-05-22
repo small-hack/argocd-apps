@@ -697,24 +697,24 @@ spec:
                         # By default it uses the `sub` claim as per the OIDC spec,
                         # which should fit most use cases.
                         subject:
-                          template: "{{ user.sub }}"
+                          template: "{{`{{ user.sub }}`}}"
 
                         # -- The localpart is the local part of the user's Matrix ID.
                         # For example, on the `example.com` server, if the localpart is `alice`,
                         #  the user's Matrix ID will be `@alice:example.com`.
                         localpart:
                           action: require
-                          template: "{{ user.preferred_username }}"
+                          template: "{{`{{ user.preferred_username }}`}}"
 
                         # -- The display name is the user's display name.
                         displayname:
                           action: suggest
-                          template: "{{ user.name }}"
+                          template: "{{`{{ user.name }}`}}"
 
                         # -- An email address to import.
                         email:
                           action: suggest
-                          template: "{{ user.email }}"
+                          template: "{{`{{ user.email }}`}}"
                           # -- Whether the email address must be marked as verified.
                           # Possible values are:
                           #  - `import`: mark the email address as verified if the upstream provider
