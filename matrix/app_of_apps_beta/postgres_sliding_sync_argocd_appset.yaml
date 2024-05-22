@@ -3,7 +3,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: matrix-postgres-app-set
+  name: sliding-sync-postgres-app-set
   namespace: argocd
 spec:
   goTemplate: true
@@ -19,7 +19,7 @@ spec:
               - matrix_postgres_backup_schedule
   template:
     metadata:
-      name: matrix-postgres-cluster
+      name: sliding-sync-postgres-cluster
       namespace: matrix
       annotations:
         argocd.argoproj.io/sync-wave: "2"
@@ -39,25 +39,25 @@ spec:
         chart: cnpg-cluster
         targetRevision: 0.3.15
         helm:
-          releaseName: matrix-postgres-cluster
+          releaseName: sliding-sync-postgres-cluster
           valuesObject:
-            name: matrix-postgres
-            instances: 2
+            name: sliding-sync
+            instances: 1
 
             bootstrap:
               initdb:
-                database: matrix
-                owner: matrix
+                database: syncv3
+                owner: syncv3
                 # postInitSQL:
                 #  - GRANT ALL PRIVILEGES ON DATABASE matrix TO matrix;
                 #  - GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO matrix;
                 secret:
-                  name: matrix-pgsql-credentials
+                  name: sliding-sync-pgsql-credentials
 
             backup:
               # barman is a utility for backing up postgres to s3
               barmanObjectStore:
-                destinationPath: "s3://matrix-postgres"
+                destinationPath: "s3://sliding-sync"
                 endpointURL: "https://{{ .matrix_s3_endpoint }}"
                 s3Credentials:
                   accessKeyId:
@@ -80,15 +80,15 @@ spec:
               user:
                 enabled: true
                 username:
-                  - matrix
+                  - syncv3
 
             scheduledBackup:
-              name: matrix-pg-backup
+              name: sliding-sync-pg-backup
               spec:
                 schedule: '{{ .matrix_postgres_backup_schedule }}'
                 backupOwnerReference: self
                 cluster:
-                  name: matrix-postgres
+                  name: sliding-sync
 
             monitoring:
               enablePodMonitor: false
