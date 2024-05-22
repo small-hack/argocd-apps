@@ -26,3 +26,5 @@ We're using [small-hack/matrix-chart](https://github.com/small-hack/matrix-chart
 ## Notes
 
 To use the stable version of synapse and element, use the [`app_of_apps`](./app_of_apps) directory, however if you'd like to try to the new [element-x](https://matrix.org/ecosystem/clients/element-x/), you'll want to use the [`app_of_apps_beta`](./app_of_apps_beta) directory until all is declared live and stable.
+
+`app_of_apps_beta` will use [matrix authentication service](https://matrix-org.github.io/matrix-authentication-service) for OIDC instead of the current OIDC implementation baked into synapse, which you can read more about on the [matrix.org blog](https://matrix.org/blog/2023/09/better-auth/#upgrading-to-use-matrix-authentication-service). It also uses [sliding sync](https://github.com/matrix-org/sliding-sync/tree/main) which is supposed to be faster at syncing large rooms.
