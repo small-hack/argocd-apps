@@ -489,6 +489,7 @@ spec:
                   existingSecret: ""
 
             matrixAuthenticationService:
+              enabled: true
               postgresql:
                 enabled: false
 
