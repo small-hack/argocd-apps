@@ -60,5 +60,5 @@ spec:
           kind: ClusterSecretStore
       remoteRef:
         key: {{ .Values.matrixAuthenticationServiceBitwardenID }}
-        property: token
+        property: admin_token
 {{- end }}
