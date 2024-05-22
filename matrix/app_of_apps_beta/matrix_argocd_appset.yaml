@@ -533,11 +533,7 @@ spec:
               # this is for storing your matrix authentication service config file
               configVolume:
                 # -- name of an existing persistent volume claim to use for matrix-authentication-service config. If provided, ignores mas parameter map
-                existingClaim: ""
-                # -- name of storage class for the persistent volume
-                storageClassName: "default"
-                # -- storage capacity for creating a persistent volume
-                storage: "500Mi"
+                existingClaim: "mas-config"
 
               # this stands for Matrix Authentication Service
               mas:
