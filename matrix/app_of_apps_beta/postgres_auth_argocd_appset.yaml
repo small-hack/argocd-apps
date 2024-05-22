@@ -46,7 +46,7 @@ spec:
 
             bootstrap:
               initdb:
-                database: mas
+                database: mas-postgres
                 owner: mas
                 # postInitSQL:
                 #  - GRANT ALL PRIVILEGES ON DATABASE matrix TO matrix;
