@@ -255,7 +255,7 @@ spec:
                   # -- secret key to use in existing secret for masc3861 client secret
                   client_secret: "client_secret"
                   # -- secret key to use in existing secret for masc3861 admin_token
-                  admin_token: "admin_token"
+                  admin_token: "token"
                   # -- secret key to use in existing secret for masc3861 account_management_url
                   account_management_url: ""
 
