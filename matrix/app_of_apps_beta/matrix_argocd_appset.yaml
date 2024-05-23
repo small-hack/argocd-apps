@@ -506,12 +506,10 @@ spec:
                 username: mas
                 # -- password of matrix-authentication-service postgres user - ignored using exsitingSecret
                 password: changeme
-                # -- hostname of db server. Can be left blank if using postgres subchart
-                hostname: ""
                 # -- name of the database to try and connect to
                 database: "mas"
                 # -- Name of existing secret to use for PostgreSQL credentials
-                existingSecret: ""
+                existingSecret: "mas-pgsql-credentials"
                 # if externalDatabase.existingSecret is provided, the following are ignored
                 # password, username, hostname, database
                 # secretKeys to grab from existingSecret
