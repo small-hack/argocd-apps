@@ -1,4 +1,4 @@
-{{- if and (eq .Values.provider "bitwarden") .Values.matrixAuthenticationServiceBitwardenID }}
+{{- if and (eq .Values.provider "bitwarden") .Values.matrix_authentication_service.mas_bitwarden_ID }}
 ---
 apiVersion: external-secrets.io/v1beta1
 kind: ExternalSecret
@@ -29,7 +29,7 @@ spec:
           name: bitwarden-fields
           kind: ClusterSecretStore
       remoteRef:
-        key: {{ .Values.matrixAuthenticationServiceBitwardenID }}
+        key: {{ .Values.matrix_authentication_service.mas_bitwarden_ID }}
         property: issuer
 
     # zitadel client ID
@@ -39,7 +39,7 @@ spec:
           name: bitwarden-login
           kind: ClusterSecretStore
       remoteRef:
-        key: {{ .Values.matrixAuthenticationServiceBitwardenID }}
+        key: {{ .Values.matrix_authentication_service.mas_bitwarden_ID }}
         property: username
 
     # zitadel client secret
@@ -49,7 +49,7 @@ spec:
           name: bitwarden-login
           kind: ClusterSecretStore
       remoteRef:
-        key: {{ .Values.matrixAuthenticationServiceBitwardenID }}
+        key: {{ .Values.matrix_authentication_service.mas_bitwarden_ID }}
         property: password
 
     # zitadel client token
@@ -59,6 +59,6 @@ spec:
           name: bitwarden-fields
           kind: ClusterSecretStore
       remoteRef:
-        key: {{ .Values.matrixAuthenticationServiceBitwardenID }}
+        key: {{ .Values.matrix_authentication_service.mas_bitwarden_ID }}
         property: admin_token
 {{- end }}
