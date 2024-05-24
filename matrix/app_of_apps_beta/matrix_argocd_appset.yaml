@@ -15,8 +15,7 @@ spec:
         input:
           parameters:
             secret_vars:
-              # - matrix_idp_id
-              # - matrix_idp_name
+              - zitadel_hostname
               - matrix_hostname
               - matrix_element_hostname
               - matrix_federation_hostname
@@ -490,10 +489,7 @@ spec:
 
             mas:
               enabled: true
-              postgresql:
-                enabled: false
 
-              # if externalDatabase.enabled is set to true, postgresql.enabled must be set to false
               externalDatabase:
                 enabled: true
                 sslmode: verify-full
@@ -501,40 +497,61 @@ spec:
                 sslcert: /etc/secrets/matrix/tls.crt
                 sslkey: /etc/secrets/matrix/tls.key
                 port: 5432
-                # database credentials to use if you don't use an existingSecret
-                # -- username of matrix-authentication-service postgres user
                 username: mas
-                # -- password of matrix-authentication-service postgres user - ignored using exsitingSecret
-                password: changeme
-                # -- name of the database to try and connect to
-                database: "mas"
-                # -- Name of existing secret to use for PostgreSQL credentials
+                database: mas
                 existingSecret: "mas-pgsql-credentials"
-                # if externalDatabase.existingSecret is provided, the following are ignored
-                # password, username, hostname, database
-                # secretKeys to grab from existingSecret
                 secretKeys:
-                  # -- key in existingSecret with hostname of the database
                   databaseHostname: hostname
-                  # -- key in existingSecret with name of the database
                   database: database
-                  # -- key in existingSecret with username for matrix to connect to db
                   databaseUsername: username
-                  # -- key in existingSecret with password for matrix to connect to db
                   userPasswordKey: password
-                  # -- key in existingSecret with the admin postgresql password
                   adminPasswordKey: postgresPassword
 
               networkPolicies:
                 enabled: false
 
-              # this is for storing your matrix authentication service config file
+              # for storing your matrix authentication service config file
               configVolume:
-                # -- name of an existing persistent volume claim to use for matrix-authentication-service config. If provided, ignores mas parameter map
                 existingClaim: "mas-config"
 
-              # this stands for Matrix Authentication Service
+              # templates out the Matrix Authentication Service config file
               mas:
+                http:
+                  # -- Public URL base used when building absolute public URLs
+                  public_base: "https://{{ .zitadel_hostname }}"
+                  # -- OIDC issuer advertised by the service. Defaults to `public_base`
+                  issuer: ""
+                  # List of HTTP listeners, see below
+                  listeners:
+                    # The name of the listener, used in logs and metrics
+                    - name: web
+                      # List of resources to serve
+                      resources:
+                        # Serves the .well-known/openid-configuration document
+                        - name: discovery
+                        # Serves the human-facing pages, such as the login page
+                        - name: human
+                        # Serves the OAuth 2.0/OIDC endpoints
+                        - name: oauth
+                        # Serves the Matrix C-S API compatibility endpoints
+                        - name: compat
+                        # Serve the GraphQL API used by the frontend,
+                        # and optionally the GraphQL playground
+                        - name: graphql
+                          playground: true
+                        # Serve the given folder on the /assets/ path
+                        - name: assets
+                        #   path: ./share/assets/
+                      # List of addresses and ports to listen to
+                      binds:
+                        # First option: listen to the given address
+                        # - address: "[::]:8080"
+                        # Second option: listen on the given host and port combination
+                        - host: localhost
+                          port: 8080
+                      # Whether to enable the PROXY protocol on the listener
+                      proxy_protocol: false
+
                 masClientSecret:
                   # -- use an existing secret for clients section of config.yaml for:
                   # mas.clients[0].client_id, mas.clients[0].client_secret
@@ -546,7 +563,6 @@ spec:
                     # -- key in secret with the client_secret
                     client_secret: "client_secret"
 
-                # see more info here:  https://matrix-org.github.io/matrix-authentication-service/reference/configuration.html#clients
                 # this is mostly ignored in favor of the above masClientSecret variable
                 clients:
                   - client_id: ""
@@ -555,50 +571,11 @@ spec:
 
                 matrix:
                   homeserver: "{{ .matrix_hostname }}"
-                  # -- a shared secret the service will use to call the homeserver admin API
-                  secret: "example"
                   endpoint: "https://{{ .matrix_hostname }}"
-                  # -- grab the above secret from an existing k8s secret. if set, ignores mas.matrix.secret
                   existingSecret: "matrix-authentication-service"
                   secretKey: "token"
 
-                policy:
-                  data:
-                    # -- Users which are allowed to ask for admin access. If possible, use the
-                    # can_request_admin flag on users instead.
-                    admin_users: []
-                    #  - person1
-                    #  - person2
-
-                    # -- Client IDs which are allowed to ask for admin access with a
-                    # client_credentials grant
-                    admin_clients: []
-                    #  - 01H8PKNWKKRPCBW4YGH1RWV279
-                    #  - 01HWQCPA5KF10FNCETY9402WGF
-
-                    # Dynamic Client Registration
-                    client_registration:
-                      # -- don't require URIs to be on the same host. default: false
-                      allow_host_mismatch: true
-                      # -- allow non-SSL and localhost URIs. default: false
-                      allow_insecure_uris: true
-
-                    # Registration using passwords
-                    passwords:
-                      # -- minimum length of a password. default: 0
-                      min_length: 16
-                      # -- require at least one lowercase character in a password. default: false
-                      require_lowercase: true
-                      # -- require at least one uppercase character in a password. default: false
-                      require_uppercase: true
-                      # -- require at least one number in a password. default: false
-                      require_number: true
-
-                # see: https://matrix-org.github.io/matrix-authentication-service/setup/sso.html?highlight=ulid#general-configuration
-                # and also see: https://matrix-org.github.io/matrix-authentication-service/setup/sso.html#keycloak
                 upstream_oauth2:
-
-                  # -- use an existing k8s secret for upstream oauth2 client_id and client_secret
                   existingSecret: "synapse-oidc"
                   secretKeys:
                     # -- key in secret with the issuer
@@ -607,107 +584,46 @@ spec:
                     client_id: "client_id"
                     # -- key in secret with the client_secret
                     client_secret: "client_secret"
-                    # -- key in secret with the authorization_endpoint if discovery is disabled
-                    # authorization_endpoint: ""
-                    # -- key in secret with the token_endpoint if discovery is disabled
-                    # token_endpoint: ""
-                    # -- key in secret with the userinfo_endpoint if discovery is disabled
-                    # userinfo_endpoint: ""
 
-                  # only one provider supported at this time, but if you want more, feel free to submit a PR
                   providers:
                     # -- A unique identifier for the provider
                     # Must be a valid ULID, and can be generated using online tools like:
                     # https://www.ulidtools.com
                     - id: ""
-                      # -- The issuer URL, which will be used to discover the provider's configuration.
-                      # If discovery is enabled, this *must* exactly match the `issuer` field
-                      # advertised in `<issuer>/.well-known/openid-configuration`.
                       issuer: https://example.com/
-                      # -- A human-readable name for the provider, displayed on the login page
                       human_name: zitadel
-                      # -- A brand identifier for the provider, which will be used to display a logo
-                      # on the login page. Values supported by the default template are:
-                      #  - `apple`
-                      #  - `google`
-                      #  - `facebook`
-                      #  - `github`
-                      #  - `gitlab`
-                      #  - `twitter`
                       brand_name: zitadel
                       client_id: ""
-                      # This is only used by the `client_secret_post`, `client_secret_basic`
-                      # and `client_secret_jwk` authentication methods
                       client_secret: ""
 
-                      # Supported methods are:
-                      #   - `client_secret_basic`
+                      # owth Supported methods are:
                       #   - `client_secret_post`
                       #   - `client_secret_jwt`
                       #   - `private_key_jwt` (using the keys defined in the `secrets.keys` section)
                       token_endpoint_auth_method: client_secret_basic
-
-                      # -- Which signing algorithm to use to sign the authentication request when using
-                      # the `private_key_jwt` or the `client_secret_jwt` authentication methods
+                      # for `private_key_jwt` or the `client_secret_jwt` auth methods
                       # token_endpoint_auth_signing_alg: RS256
                       scope: "openid email profile"
                       discovery_mode: oidc
-                      # other Possible values are:
-                      #  - `always`: always use PKCE (with the S256 method)
-                      #  - `never`: never use PKCE
+                      # other values: always (use PKCE with the S256 method) or never
                       pkce_method: auto
                       # This takes precedence over the discovery mechanism
-                      # authorization_endpoint: https://example.com/oauth2/authorize
-                      # This takes precedence over the discovery mechanism
-                      # token_endpoint: https://example.com/oauth2/token
-                      # This takes precedence over the discovery mechanism
                       # jwks_uri: https://example.com/oauth2/keys
-
-                      # How user attributes should be mapped
-                      #
-                      # Most of those attributes have two main properties:
-                      #   - `action`: what to do with the attribute. Possible values are:
-                      #      - `ignore`: ignore the attribute
-                      #      - `suggest`: suggest the attribute to the user, but let them opt out
-                      #      - `force`: always import the attribute, and don't fail if it's missing
-                      #      - `require`: always import the attribute, and fail if it's missing
-                      #   - `template`: a Jinja2 template used to generate the value. In this template,
-                      #      the `user` variable is available, which contains the user's attributes
-                      #      retrieved from the `id_token` given by the upstream provider.
-                      #
-                      # Each attribute has a default template which follows the well-known OIDC claims.
-                      #
                       claims_imports:
-                        # -- The subject is an internal identifier used to link the
-                        # user's provider identity to local accounts.
-                        # By default it uses the `sub` claim as per the OIDC spec,
-                        # which should fit most use cases.
                         subject:
                           template: "{{`{{ user.sub }}`}}"
 
-                        # -- The localpart is the local part of the user's Matrix ID.
-                        # For example, on the `example.com` server, if the localpart is `alice`,
-                        #  the user's Matrix ID will be `@alice:example.com`.
                         localpart:
                           action: require
                           template: "{{`{{ user.preferred_username }}`}}"
 
-                        # -- The display name is the user's display name.
                         displayname:
                           action: suggest
                           template: "{{`{{ user.name }}`}}"
 
-                        # -- An email address to import.
                         email:
                           action: suggest
                           template: "{{`{{ user.email }}`}}"
-                          # -- Whether the email address must be marked as verified.
-                          # Possible values are:
-                          #  - `import`: mark the email address as verified if the upstream provider
-                          #     has marked it as verified, using the `email_verified` claim.
-                          #     This is the default.
-                          #   - `always`: mark the email address as verified
-                          #   - `never`: mark the email address as not verified
                           set_email_verification: always
 
             element:
