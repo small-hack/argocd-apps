@@ -435,33 +435,41 @@ spec:
             matrix-sliding-sync:
               enabled: true
               postgresql:
-                # -- Whether to deploy the Bitnami Postgresql sub chart
-                # If postgresql.enabled is set to true, externalDatabase.enabled must be set to false
-                # else if externalDatabase.enabled is set to true, postgresql.enabled must be set to false
                 enabled: false
 
+              extraVolumes:
+                - name: postgres-ca
+                  secret:
+                    secretName: syncv3-postgres-server-ca-key-pair
+                    defaultMode: 0640
+
+                - name: postgres-client-certs
+                  secret:
+                    secretName: syncv3-postgres-matrix-cert
+                    defaultMode: 0640
+
+              extraVolumeMounts:
+                - name: postgres-ca
+                  mountPath: /etc/secrets/ca
+
+                - name: postgres-client-certs
+                  mountPath: /etc/secrets/sliding-sync
+
+              # sliding sync external database - cloud native postgres with tls
               externalDatabase:
                 enabled: true
                 sslmode: verify-full
                 sslrootcert: /etc/secrets/ca/ca.crt
-                sslcert: /etc/secrets/matrix/tls.crt
-                sslkey: /etc/secrets/matrix/tls.key
+                sslcert: /etc/secrets/sliding-sync/tls.crt
+                sslkey: /etc/secrets/sliding-sync/tls.key
                 port: 5432
                 # -- Name of existing secret to use for sliding sync PostgreSQL credentials
                 existingSecret: "matrix-pgsql-credentials"
-                # if externalDatabase.existingSecret is provided, the following are ignored
-                # password, username, hostname, database
-                # secretKeys to grab from existingSecret
                 secretKeys:
-                  # -- key in existingSecret with hostname of the database
                   databaseHostname: hostname
-                  # -- key in existingSecret with name of the database
                   database: database
-                  # -- key in existingSecret with username for matrix to connect to db
                   databaseUsername: username
-                  # -- key in existingSecret with password for matrix to connect to db
                   userPasswordKey: password
-                  # -- key in existingSecret with the admin postgresql password
                   adminPasswordKey: postgresPassword
 
               syncv3:
@@ -472,7 +480,7 @@ spec:
                 # -- SYNCV3_SECRET - Required. A secret to use to encrypt access tokens. Must remain the same for the lifetime of the database. If both syncv3.secret and syncv3.existingSecret are not set, we will autogenerate this value
                 secret: ""
                 # -- SYNCV3_BINDADDR - The interface and port to listen on. (Supports unix socket: /path/to/socket)
-                bindaddr: "0.0.0.0:8008"
+                bindaddr: "127.0.0.1:8008"
                 # -- SYNCV3_TLS_CERT - Default: unset. Path to a certificate file to serve to HTTPS clients. Specifying this enables TLS on the bound address.
                 tlsCert: ""
                 # -- SYNCV3_TLS_KEY - Default: unset. Path to a key file for the certificate. Must be provided along with the certificate file.
@@ -490,12 +498,30 @@ spec:
             mas:
               enabled: true
 
+              extraVolumes:
+                - name: postgres-ca
+                  secret:
+                    secretName: mas-postgres-server-ca-key-pair
+                    defaultMode: 0640
+
+                - name: postgres-client-certs
+                  secret:
+                    secretName: mas-postgres-matrix-cert
+                    defaultMode: 0640
+
+              extraVolumeMounts:
+                - name: postgres-ca
+                  mountPath: /etc/secrets/ca
+
+                - name: postgres-client-certs
+                  mountPath: /etc/secrets/mas
+
               externalDatabase:
                 enabled: true
                 sslmode: verify-full
                 sslrootcert: /etc/secrets/ca/ca.crt
-                sslcert: /etc/secrets/matrix/tls.crt
-                sslkey: /etc/secrets/matrix/tls.key
+                sslcert: /etc/secrets/mas/tls.crt
+                sslkey: /etc/secrets/mas/tls.key
                 port: 5432
                 username: mas
                 database: mas
