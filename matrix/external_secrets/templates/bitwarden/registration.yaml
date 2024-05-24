@@ -22,6 +22,6 @@ spec:
           name: bitwarden-login
           kind: ClusterSecretStore
       remoteRef:
-        key: {{ .Values.registrationBitwardenID }}
+        key: {{ .Values.synapse.registration_bitwarden_ID }}
         property: password
 {{- end }}

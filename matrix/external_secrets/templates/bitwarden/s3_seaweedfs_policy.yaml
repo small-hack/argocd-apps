@@ -43,7 +43,7 @@ spec:
           name: bitwarden-login
           kind: ClusterSecretStore
       remoteRef:
-        key: {{ .Values.s3AdminCredentialsBitwardenID }} 
+        key: {{ .Values.s3_admin_credentials_bitwarden_ID }}
         property: username
 
     - secretKey: adminSecretKey
@@ -52,7 +52,7 @@ spec:
           name: bitwarden-login
           kind: ClusterSecretStore
       remoteRef:
-        key: {{ .Values.s3AdminCredentialsBitwardenID }}
+        key: {{ .Values.s3_admin_credentials_bitwarden_ID }}
         property: password
 
     - secretKey: userAccessKey
@@ -61,7 +61,7 @@ spec:
           name: bitwarden-login
           kind: ClusterSecretStore
       remoteRef:
-        key: {{ .Values.s3MatrixCredentialsBitwardenID }} 
+        key: {{ .Values.s3_matrix_credentials_bitwarden_ID }}
         property: username
 
     - secretKey: userSecretKey
@@ -70,7 +70,7 @@ spec:
           name: bitwarden-login
           kind: ClusterSecretStore
       remoteRef:
-        key: {{ .Values.s3MatrixCredentialsBitwardenID }}
+        key: {{ .Values.s3_matrix_credentials_bitwarden_ID }}
         property: password
 
     - secretKey: dbUserAccessKey
@@ -79,7 +79,7 @@ spec:
           name: bitwarden-login
           kind: ClusterSecretStore
       remoteRef:
-        key: {{ .Values.s3PostgresCredentialsBitwardenID }} 
+        key: {{ .Values.s3_postgres_credentials_bitwarden_ID }}
         property: username
 
     - secretKey: dbUserSecretKey
@@ -88,6 +88,6 @@ spec:
           name: bitwarden-login
           kind: ClusterSecretStore
       remoteRef:
-        key: {{ .Values.s3PostgresCredentialsBitwardenID }}
+        key: {{ .Values.s3_postgres_credentials_bitwarden_ID }}
         property: password
 {{- end }}
