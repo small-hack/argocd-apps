@@ -1,0 +1,38 @@
+{{- if and (eq .Values.provider "bitwarden") .Values.sliding_sync.sliding_sync_bitwarden_ID }}
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: sliding-sync-secret
+spec:
+  target:
+    name: sliding-sync-secret
+    deletionPolicy: Delete
+    template:
+      type: Opaque
+      data:
+        SYNCV3_SECRET:  |-
+          {{ `{{ .secret }}` }}
+        SYNCV3_DB: |-
+          {{ `{{ .db }}` }}
+  data:
+    # SYNCV3_SECRET
+    - secretKey: secret
+      sourceRef:
+        storeRef:
+          name: bitwarden-login
+          kind: ClusterSecretStore
+      remoteRef:
+        key: {{ .Values.sliding_sync.sliding_sync_bitwarden_ID }}
+        property: password
+
+    # SYNCV3_DB
+    - secretKey: db
+      sourceRef:
+        storeRef:
+          name: bitwarden-login
+          kind: ClusterSecretStore
+      remoteRef:
+        key: {{ .Values.sliding_sync.sliding_sync_bitwarden_ID }}
+        property: username
+{{- end }}
