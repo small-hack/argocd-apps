@@ -513,33 +513,37 @@ spec:
                 prom: ""
 
             mas:
-              fullnameOverride: "mas"
               enabled: true
+              fullnameOverride: "mas"
 
-              extraVolumes:
-                - name: postgres-ca
-                  secret:
-                    secretName: mas-postgres-server-ca-key-pair
-                    defaultMode: 0640
+              # ssl must be disabled till this is fixed:
+              # https://github.com/matrix-org/matrix-authentication-service/issues/2799
+              # extraVolumes:
+              #   - name: postgres-ca
+              #     secret:
+              #       secretName: mas-postgres-server-ca-key-pair
+              #       defaultMode: 0640
 
-                - name: postgres-client-certs
-                  secret:
-                    secretName: mas-postgres-mas-cert
-                    defaultMode: 0640
+              #   - name: postgres-client-certs
+              #     secret:
+              #       secretName: mas-postgres-mas-cert
+              #       defaultMode: 0640
 
-              extraVolumeMounts:
-                - name: postgres-ca
-                  mountPath: /etc/secrets/ca
+              # extraVolumeMounts:
+              #   - name: postgres-ca
+              #     mountPath: /etc/secrets/ca
 
-                - name: postgres-client-certs
-                  mountPath: /etc/secrets/mas
+              #   - name: postgres-client-certs
+              #     mountPath: /etc/secrets/mas
 
               externalDatabase:
                 enabled: true
+                # ssl must be disabled till this is fixed:
+                # https://github.com/matrix-org/matrix-authentication-service/issues/2799
+                # sslrootcert: /etc/secrets/ca/ca.crt
+                # sslcert: /etc/secrets/mas/tls.crt
+                # sslkey: /etc/secrets/mas/tls.key
                 sslmode: disable
-                sslrootcert: /etc/secrets/ca/ca.crt
-                sslcert: /etc/secrets/mas/tls.crt
-                sslkey: /etc/secrets/mas/tls.key
                 port: 5432
                 username: mas
                 database: mas
