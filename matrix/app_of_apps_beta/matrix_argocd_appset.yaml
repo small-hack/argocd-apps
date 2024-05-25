@@ -554,8 +554,6 @@ spec:
                 className: "nginx"
                 annotations:
                   annotations:
-                    nginx.ingress.kubernetes.io/configuration-snippet: |
-                      proxy_intercept_errors off;
                     cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
                 hosts:
                   - host: '{{ .matrix_auth_hostname }}'
