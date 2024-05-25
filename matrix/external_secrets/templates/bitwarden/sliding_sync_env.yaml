@@ -13,8 +13,6 @@ spec:
       data:
         SYNCV3_SECRET:  |-
           {{ `{{ .secret }}` }}
-        SYNCV3_DB: |-
-          {{ `{{ .db }}` }}
   data:
     # SYNCV3_SECRET
     - secretKey: secret
@@ -25,14 +23,4 @@ spec:
       remoteRef:
         key: {{ .Values.sliding_sync.sliding_sync_bitwarden_ID }}
         property: password
-
-    # SYNCV3_DB
-    - secretKey: db
-      sourceRef:
-        storeRef:
-          name: bitwarden-login
-          kind: ClusterSecretStore
-      remoteRef:
-        key: {{ .Values.sliding_sync.sliding_sync_bitwarden_ID }}
-        property: username
 {{- end }}
