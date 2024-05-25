@@ -3,10 +3,10 @@
 apiVersion: external-secrets.io/v1beta1
 kind: ExternalSecret
 metadata:
-  name: sliding-sync-secret
+  name: syncv3-secret
 spec:
   target:
-    name: sliding-sync-secret
+    name: syncv3-secret
     deletionPolicy: Delete
     template:
       type: Opaque
