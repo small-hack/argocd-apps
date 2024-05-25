@@ -48,16 +48,13 @@ spec:
               initdb:
                 database: syncv3
                 owner: syncv3
-                # postInitSQL:
-                #  - GRANT ALL PRIVILEGES ON DATABASE matrix TO matrix;
-                #  - GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO matrix;
                 secret:
                   name: sliding-sync-pgsql-credentials
 
             backup:
               # barman is a utility for backing up postgres to s3
               barmanObjectStore:
-                destinationPath: "s3://sliding-sync"
+                destinationPath: "s3://synvcv3"
                 endpointURL: "https://{{ .matrix_s3_endpoint }}"
                 s3Credentials:
                   accessKeyId:
@@ -83,12 +80,12 @@ spec:
                   - syncv3
 
             scheduledBackup:
-              name: sliding-sync-pg-backup
+              name: synvcv3-pg-backup
               spec:
                 schedule: '{{ .matrix_postgres_backup_schedule }}'
                 backupOwnerReference: self
                 cluster:
-                  name: sliding-sync
+                  name: syncv3
 
             monitoring:
               enablePodMonitor: false
