@@ -435,6 +435,7 @@ spec:
 
             # values for https://github.com/small-hack/matrix-sliding-sync-chart
             syncv3:
+              fullnameOverride: "syncv3"
               enabled: true
               postgresql:
                 enabled: false
@@ -512,6 +513,7 @@ spec:
                 prom: ""
 
             mas:
+              fullnameOverride: "mas"
               enabled: true
 
               extraVolumes:
