@@ -48,9 +48,6 @@ spec:
               initdb:
                 database: mas
                 owner: mas
-                # postInitSQL:
-                #  - GRANT ALL PRIVILEGES ON DATABASE matrix TO matrix;
-                #  - GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO matrix;
                 secret:
                   name: mas-pgsql-credentials
 

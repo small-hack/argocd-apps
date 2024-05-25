@@ -40,9 +40,9 @@ spec:
                          "Read:mas",
                          "Write:mas",
                          "List:mas",
-                         "Read:sliding-sync",
-                         "Write:sliding-sync",
-                         "List:sliding-sync"]}
+                         "Read:syncv3",
+                         "Write:syncv3",
+                         "List:syncv3"]}
           ]}
   data:
     - secretKey: adminAccessKey
