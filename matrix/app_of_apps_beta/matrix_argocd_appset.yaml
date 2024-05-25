@@ -370,7 +370,17 @@ spec:
                   # see more info here: https://github.com/matrix-org/sliding-sync/blob/693587ef7e1c47cd04a667332ef133146132a713/README.md?plain=1#L51-L61
                   nginx.ingress.kubernetes.io/server-snippet: |-
                     location = /.well-known/matrix/client {
-                    return 200 '{"m.homeserver": {"base_url": "https://{{ .matrix_hostname }}"},"org.matrix.msc3575.proxy": {"url": "https://{{ .matrix_sliding_sync_hostname }}"},"org.matrix.msc2965.authentication": {"issuer": "https://{{ .zitadel_hostname }}", "account": "https://{{ .zitadel_hostname }}/account"}}';
+                      return 200 '{"m.homeserver": {"base_url": "https://{{ .matrix_hostname }}"},"org.matrix.msc3575.proxy": {"url": "https://{{ .matrix_sliding_sync_hostname }}"},"org.matrix.msc2965.authentication": {"issuer": "https://{{ .zitadel_hostname }}", "account": "https://{{ .zitadel_hostname }}/account"}}';
+                    }
+
+                    # Forward to the auth service
+                    location ~ ^/_matrix/client/(.*)/(login|logout|refresh) {
+                      proxy_pass https://{{ .matrix_auth_hostname }};
+
+                      proxy_http_version 1.1;
+
+                      # Optional: use the PROXY protocol
+                      # proxy_protocol on;
                     }
 
               replicaCount: 1
