@@ -265,6 +265,7 @@ spec:
                   enabled: true
                   # -- Synapse will call `{issuer}/.well-known/openid-configuration` to get the OIDC configuration
                   issuer: "https://{{ .zitadel_hostname }}/"
+                  # public_base: "https://{{ .matrix_auth_hostname }}/"
                   # -- Matches the `client_id` in the auth service config
                   client_id: ""
                   # -- Matches the `client_auth_method` in the auth service config
@@ -594,7 +595,7 @@ spec:
 
                 http:
                   # -- Public URL base used when building absolute public URLs
-                  # public_base: "https://{{ .matrix_auth_hostname }}/"
+                  public_base: "https://{{ .matrix_auth_hostname }}/"
                   # -- OIDC issuer advertised by the service. Defaults to `public_base`
                   issuer: "https://{{ .zitadel_hostname }}/"
                   # List of HTTP listeners, see below
