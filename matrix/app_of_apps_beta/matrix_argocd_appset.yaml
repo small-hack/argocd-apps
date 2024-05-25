@@ -439,6 +439,7 @@ spec:
                   value: /tmp
 
             # values for https://github.com/small-hack/matrix-sliding-sync-chart
+            # it's called syncv3 because that's what the directory in the official repo calls it
             syncv3:
               fullnameOverride: "syncv3"
               enabled: true
@@ -486,7 +487,7 @@ spec:
                   mountPath: /etc/secrets/ca
 
                 - name: postgres-client-certs
-                  mountPath: /etc/secrets/synvcv3
+                  mountPath: /etc/secrets/syncv3
 
               # sliding sync external database - cloud native postgres with tls
               externalDatabase:
@@ -494,18 +495,18 @@ spec:
                 sslmode: verify-full
                 sslrootcert: /etc/secrets/ca/ca.crt
                 sslcert: /etc/secrets/syncv3/tls.crt
-                sslkey: /etc/secrets/synvcv3/tls.key
+                sslkey: /etc/secrets/syncv3/tls.key
                 port: 5432
 
               syncv3:
                 # -- use an existing kubernetes secret for the db connection string.
-                existingDbSecret: "sliding-sync-pgsql-credentials"
+                existingDbSecret: "syncv3-pgsql-credentials"
                 # -- db key in existing Db Secret for
                 dbSecretKey: "SYNCV3_DB"
                 # -- SYNCV3_SERVER - Required. The destination homeserver to talk to (CS API HTTPS URL) e.g 'https://matrix-client.matrix.org' (Supports unix socket: /path/to/socket)
                 server: "https://{{ .matrix_hostname }}"
                 # -- if set, we'll grab your SYNCV3_SECRET from an existing kubernetes secret and ignore syncv3.secret
-                existingSyncv3Secret: "sliding-sync-secret"
+                existingSyncv3Secret: "syncv3-secret"
                 # -- secret key to get synvcv3 secret from in existing kubernetes secret.
                 syncv3SecretKey: "SYNCV3_SECRET"
                 # -- SYNCV3_BINDADDR - The interface and port to listen on. (Supports unix socket: /path/to/socket)
