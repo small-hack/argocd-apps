@@ -17,6 +17,8 @@ spec:
             secret_vars:
               - zitadel_hostname
               - matrix_hostname
+              - matrix_sliding_sync_hostname
+              - matrix_auth_hostname
               - matrix_element_hostname
               - matrix_federation_hostname
               - matrix_admin_email
@@ -432,12 +434,12 @@ spec:
                   value: /tmp
 
             # values for https://github.com/small-hack/matrix-sliding-sync-chart
-            matrix-sliding-sync:
+            slidingSync:
               enabled: true
               postgresql:
                 enabled: false
 
-              extraVolumes:
+              volumes:
                 - name: postgres-ca
                   secret:
                     secretName: syncv3-postgres-server-ca-key-pair
@@ -448,12 +450,30 @@ spec:
                     secretName: syncv3-postgres-matrix-cert
                     defaultMode: 0640
 
-              extraVolumeMounts:
+              volumeMounts:
                 - name: postgres-ca
                   mountPath: /etc/secrets/ca
 
                 - name: postgres-client-certs
                   mountPath: /etc/secrets/sliding-sync
+
+              ingress:
+                enabled: true
+                className: "nginx"
+                annotations:
+                  annotations:
+                    nginx.ingress.kubernetes.io/configuration-snippet: |
+                      proxy_intercept_errors off;
+                    cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
+                hosts:
+                  - host: '{{ .matrix_sliding_sync_hostname }}'
+                    paths:
+                      - path: /
+                        pathType: ImplementationSpecific
+                tls:
+                  - secretName: matrix-authentication-service-tls
+                    hosts:
+                      - '{{ .matrix_sliding_sync_hostname }}'
 
               # sliding sync external database - cloud native postgres with tls
               externalDatabase:
@@ -463,37 +483,26 @@ spec:
                 sslcert: /etc/secrets/sliding-sync/tls.crt
                 sslkey: /etc/secrets/sliding-sync/tls.key
                 port: 5432
-                # -- Name of existing secret to use for sliding sync PostgreSQL credentials
-                existingSecret: "matrix-pgsql-credentials"
-                secretKeys:
-                  databaseHostname: hostname
-                  database: database
-                  databaseUsername: username
-                  userPasswordKey: password
-                  adminPasswordKey: postgresPassword
 
               syncv3:
-                # -- existing kubernetes secret for ALL syncv3 env vars listed below. if set, ignores all values below, everything under syncv3 including syncvc.otlp.
-                existingSecret: ""
+                # -- use an existing kubernetes secret for the db connection string.
+                existingDbSecret: "sliding-sync-pgsql-credentials"
+                # -- db key in existing Db Secret for
+                dbSecretKey: "SYNCV3_DB"
                 # -- SYNCV3_SERVER - Required. The destination homeserver to talk to (CS API HTTPS URL) e.g 'https://matrix-client.matrix.org' (Supports unix socket: /path/to/socket)
-                server: "https://{{ .matrix_hostname }}"
-                # -- SYNCV3_SECRET - Required. A secret to use to encrypt access tokens. Must remain the same for the lifetime of the database. If both syncv3.secret and syncv3.existingSecret are not set, we will autogenerate this value
-                secret: ""
+                server: "https://{{ .matrix_sliding_sync_hostname }}"
+                # -- if set, we'll grab your SYNCV3_SECRET from an existing kubernetes secret and ignore syncv3.secret
+                existingSyncv3Secret: "sliding-sync-secret"
+                # -- secret key to get synvcv3 secret from in existing kubernetes secret.
+                syncv3SecretKey: "SYNCV3_SECRET"
                 # -- SYNCV3_BINDADDR - The interface and port to listen on. (Supports unix socket: /path/to/socket)
                 bindaddr: "127.0.0.1:8008"
                 # -- SYNCV3_TLS_CERT - Default: unset. Path to a certificate file to serve to HTTPS clients. Specifying this enables TLS on the bound address.
                 tlsCert: ""
                 # -- SYNCV3_TLS_KEY - Default: unset. Path to a key file for the certificate. Must be provided along with the certificate file.
                 tlsKey: ""
-                # -- SYNCV3_PPROF - Default: unset. The bind addr for pprof debugging e.g ':6060'. If not set, does not listen.
-                pprof: ""
                 # -- SYNCV3_PROM - Default: unset. The bind addr for Prometheus metrics, which will be accessible at /metrics at this address.
                 prom: ""
-                otlp:
-                  # -- SYNCV3_OTLP_URL - Default: unset. The OTLP HTTP URL to send spans to e.g https://localhost:4318 - if unset does not send OTLP traces.
-                  # -- SYNCV3_OTLP_USERNAME - Default: unset. The OTLP username for Basic auth. If unset, does not send an Authorization header.
-                  # -- SYNCV3_OTLP_PASSWORD - Default: unset. The OTLP password for Basic auth. If unset, does not send an Authorization header.
-                  existingSecret: ""
 
             mas:
               enabled: true
@@ -540,13 +549,31 @@ spec:
               configVolume:
                 existingClaim: "mas-config"
 
+              ingress:
+                enabled: true
+                className: "nginx"
+                annotations:
+                  annotations:
+                    nginx.ingress.kubernetes.io/configuration-snippet: |
+                      proxy_intercept_errors off;
+                    cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
+                hosts:
+                  - host: '{{ .matrix_auth_hostname }}'
+                    paths:
+                      - path: /
+                        pathType: ImplementationSpecific
+                tls:
+                  - secretName: matrix-authentication-service-tls
+                    hosts:
+                      - '{{ .matrix_auth_hostname }}'
+
               # templates out the Matrix Authentication Service config file
               mas:
                 http:
                   # -- Public URL base used when building absolute public URLs
-                  public_base: "https://{{ .zitadel_hostname }}"
+                  public_base: "https://{{ .matrix_auth_hostname }}"
                   # -- OIDC issuer advertised by the service. Defaults to `public_base`
-                  issuer: ""
+                  issuer: "https://{{ .zitadel_hostname }}"
                   # List of HTTP listeners, see below
                   listeners:
                     # The name of the listener, used in logs and metrics
