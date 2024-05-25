@@ -524,7 +524,7 @@ spec:
 
                 - name: postgres-client-certs
                   secret:
-                    secretName: mas-postgres-matrix-cert
+                    secretName: mas-postgres-mas-cert
                     defaultMode: 0640
 
               extraVolumeMounts:
