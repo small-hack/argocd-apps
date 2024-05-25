@@ -362,6 +362,11 @@ spec:
                     proxy_intercept_errors off;
                   # -- required for TLS certs issued by cert-manager
                   cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
+                  # see more info here: https://github.com/matrix-org/sliding-sync/blob/693587ef7e1c47cd04a667332ef133146132a713/README.md?plain=1#L51-L61
+                  # nginx.ingress.kubernetes.io/server-snippet: |-
+                  #   location = /.well-known/matrix/client {
+                  #       return 200 '{"m.homeserver": {"base_url": "https://{{ .matrix_hostname }}"},"org.matrix.msc3575.proxy": {"url": "https://{{ .matrix_sliding_sync_hostname }}"}}';
+                  #   }
 
               replicaCount: 1
               resources: {}
@@ -498,7 +503,7 @@ spec:
                 # -- db key in existing Db Secret for
                 dbSecretKey: "SYNCV3_DB"
                 # -- SYNCV3_SERVER - Required. The destination homeserver to talk to (CS API HTTPS URL) e.g 'https://matrix-client.matrix.org' (Supports unix socket: /path/to/socket)
-                server: "https://{{ .matrix_sliding_sync_hostname }}"
+                server: "https://{{ .matrix_hostname }}"
                 # -- if set, we'll grab your SYNCV3_SECRET from an existing kubernetes secret and ignore syncv3.secret
                 existingSyncv3Secret: "sliding-sync-secret"
                 # -- secret key to get synvcv3 secret from in existing kubernetes secret.
