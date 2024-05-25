@@ -264,9 +264,9 @@ spec:
                 msc3861:
                   enabled: true
                   # -- Synapse will call `{issuer}/.well-known/openid-configuration` to get the OIDC configuration
-                  issuer: http://localhost:8080/
+                  issuer: "https://{{ .zitadel_hostname }}"
                   # -- Matches the `client_id` in the auth service config
-                  client_id: 0000000000000000000SYNAPSE
+                  client_id: ""
                   # -- Matches the `client_auth_method` in the auth service config
                   client_auth_method: client_secret_basic
                   # -- Matches the `client_secret` in the auth service config
@@ -274,7 +274,11 @@ spec:
                   # -- Matches the `matrix.secret` in the auth service config
                   admin_token: ""
                   # -- URL to advertise to clients where users can self-manage their account
-                  account_management_url: "http://localhost:8080/account"
+                  account_management_url: "https://{{ .zitadel_hostname }}"
+
+                # experimental_feature
+                msc3575:
+                  enabled: true
 
             s3:
               # -- enable s3 storage via https://github.com/matrix-org/synapse-s3-storage-provider
