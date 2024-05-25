@@ -12,6 +12,8 @@ spec:
     template:
       type: Opaque
       data:
+        provider_id: |-
+          {{ `{{ .providerId }}` }}
         issuer: |-
           {{ `{{ .issuer }}` }}
         client_id: |-
@@ -61,4 +63,14 @@ spec:
       remoteRef:
         key: {{ .Values.matrix_authentication_service.mas_bitwarden_ID }}
         property: admin_token
+
+    # unique identity provider id for oidc, is a ulid
+    - secretKey: providerId
+      sourceRef:
+        storeRef:
+          name: bitwarden-fields
+          kind: ClusterSecretStore
+      remoteRef:
+        key: {{ .Values.matrix_authentication_service.mas_bitwarden_ID }}
+        property: provider_id
 {{- end }}

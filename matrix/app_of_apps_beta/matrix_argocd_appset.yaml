@@ -650,6 +650,8 @@ spec:
                     client_id: "client_id"
                     # -- key in secret with the client_secret
                     client_secret: "client_secret"
+                    # -- ulid for id
+                    id: "provider_id"
 
                   providers:
                     # -- A unique identifier for the provider
