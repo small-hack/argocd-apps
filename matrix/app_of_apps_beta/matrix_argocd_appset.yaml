@@ -434,13 +434,12 @@ spec:
                   value: /tmp
 
             # values for https://github.com/small-hack/matrix-sliding-sync-chart
-            slidingSync:
+            syncv3:
               enabled: true
               postgresql:
                 enabled: false
 
               serviceAccount:
-                # -- Specifies whether a service account should be created
                 create: true
                 # -- Automatically mount a ServiceAccount's API credentials?
                 automount: true
@@ -448,7 +447,7 @@ spec:
                 annotations: {}
                 # -- The name of the service account to use.
                 # If not set and create is true, a name is generated using the fullname template
-                name: "matrix-sliding-sync"
+                name: ""
 
               volumes:
                 - name: postgres-ca
