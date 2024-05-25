@@ -34,7 +34,15 @@ spec:
                {"accessKey": "{{ `{{ .dbUserAccessKey }}` }}",
                 "secretKey": "{{ `{{ .dbUserSecretKey }}` }}"}
              ],
-             "actions": ["Read:matrix-postgres","Write:matrix-postgres","List:matrix-postgres"]}
+             "actions": ["Read:matrix-postgres",
+                         "Write:matrix-postgres",
+                         "List:matrix-postgres",
+                         "Read:mas",
+                         "Write:mas",
+                         "List:mas",
+                         "Read:sliding-sync",
+                         "Write:sliding-sync",
+                         "List:sliding-sync"]}
           ]}
   data:
     - secretKey: adminAccessKey

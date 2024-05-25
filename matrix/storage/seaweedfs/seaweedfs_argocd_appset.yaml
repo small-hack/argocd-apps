@@ -173,6 +173,10 @@ spec:
                     anonymousRead: false
                   - name: matrix-postgres
                     anonymousRead: false
+                  - name: mas
+                    anonymousRead: false
+                  - name: sliding-sync
+                    anonymousRead: false
               livenessProbe:
                 enabled: true
                 httpGet:
