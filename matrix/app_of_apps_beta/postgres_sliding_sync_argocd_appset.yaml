@@ -48,8 +48,6 @@ spec:
               initdb:
                 database: syncv3
                 owner: syncv3
-                secret:
-                  name: sliding-sync-pgsql-credentials
 
             backup:
               # barman is a utility for backing up postgres to s3
