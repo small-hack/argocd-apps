@@ -442,7 +442,7 @@ spec:
             # it's called syncv3 because that's what the directory in the official repo calls it
             syncv3:
               fullnameOverride: "syncv3"
-              enabled: true
+              enabled: false
               postgresql:
                 enabled: false
 
