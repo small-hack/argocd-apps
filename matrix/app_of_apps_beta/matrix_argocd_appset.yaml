@@ -461,10 +461,7 @@ spec:
                 enabled: true
                 className: "nginx"
                 annotations:
-                  annotations:
-                    nginx.ingress.kubernetes.io/configuration-snippet: |
-                      proxy_intercept_errors off;
-                    cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
+                  cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
                 hosts:
                   - host: '{{ .matrix_sliding_sync_hostname }}'
                     paths:
@@ -553,8 +550,7 @@ spec:
                 enabled: true
                 className: "nginx"
                 annotations:
-                  annotations:
-                    cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
+                  cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
                 hosts:
                   - host: '{{ .matrix_auth_hostname }}'
                     paths:
