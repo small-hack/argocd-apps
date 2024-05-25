@@ -575,6 +575,9 @@ spec:
 
               # templates out the Matrix Authentication Service config file
               mas:
+                database:
+                  uri: ""
+
                 http:
                   # -- Public URL base used when building absolute public URLs
                   public_base: "https://{{ .matrix_auth_hostname }}"
