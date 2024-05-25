@@ -514,7 +514,7 @@ spec:
 
             mas:
               fullnameOverride: "mas"
-              enabled: false
+              enabled: true
 
               extraVolumes:
                 - name: postgres-ca
@@ -536,7 +536,7 @@ spec:
 
               externalDatabase:
                 enabled: true
-                sslmode: require
+                sslmode: verify-full
                 sslrootcert: /etc/secrets/ca/ca.crt
                 sslcert: /etc/secrets/mas/tls.crt
                 sslkey: /etc/secrets/mas/tls.key
