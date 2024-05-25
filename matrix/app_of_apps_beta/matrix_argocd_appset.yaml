@@ -536,7 +536,7 @@ spec:
 
               externalDatabase:
                 enabled: true
-                sslmode: verify-full
+                sslmode: disable
                 sslrootcert: /etc/secrets/ca/ca.crt
                 sslcert: /etc/secrets/mas/tls.crt
                 sslkey: /etc/secrets/mas/tls.key
