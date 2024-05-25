@@ -594,9 +594,9 @@ spec:
 
                 http:
                   # -- Public URL base used when building absolute public URLs
-                  public_base: "https://{{ .matrix_auth_hostname }}"
+                  public_base: "https://{{ .zitadel_hostname }}"
                   # -- OIDC issuer advertised by the service. Defaults to `public_base`
-                  issuer: "https://{{ .zitadel_hostname }}"
+                  # issuer: "https://{{ .zitadel_hostname }}"
                   # List of HTTP listeners, see below
                   listeners:
                     # The name of the listener, used in logs and metrics
