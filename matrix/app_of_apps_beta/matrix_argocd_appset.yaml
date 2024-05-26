@@ -638,7 +638,7 @@ spec:
                         # First option: listen to the given address
                         # - address: "[::]:8080"
                         # Second option: listen on the given host and port combination
-                        - host: localhost
+                        - host: 0.0.0.0
                           port: 8080
                       # Whether to enable the PROXY protocol on the listener
                       proxy_protocol: false
