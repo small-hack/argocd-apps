@@ -236,7 +236,7 @@ spec:
                 rootLogLevel: DEBUG
                 # -- beware: increasing this to DEBUG will make synapse log sensitive
                 # information such as access tokens.
-                sqlLogLevel: DEBUG
+                sqlLogLevel: WARNING
                 # -- The log level for the synapse server
                 synapseLogLevel: DEBUG
 
