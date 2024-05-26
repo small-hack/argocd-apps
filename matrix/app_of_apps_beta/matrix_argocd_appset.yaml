@@ -373,14 +373,14 @@ spec:
                     }
 
                     # Forward to the auth service
-                    # location ~ ^/_matrix/client/(.*)/(login|logout|refresh) {
-                    #  proxy_pass https://{{ .matrix_auth_hostname }};
+                    location ~ ^/_matrix/client/(.*)/(login|logout|refresh) {
+                     proxy_pass https://{{ .matrix_auth_hostname }};
 
-                    #  proxy_http_version 1.1;
+                     proxy_http_version 1.1;
 
                       # Optional: use the PROXY protocol
                       # proxy_protocol on;
-                    # }
+                    }
 
               replicaCount: 1
               resources: {}
