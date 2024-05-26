@@ -237,29 +237,29 @@ spec:
               logging:
                 # -- Root log level is the default log level for log outputs that don't
                 # have more specific settings.
-                rootLogLevel: WARNING
+                rootLogLevel: DEBUG
                 # -- beware: increasing this to DEBUG will make synapse log sensitive
                 # information such as access tokens.
-                sqlLogLevel: WARNING
+                sqlLogLevel: DEBUG
                 # -- The log level for the synapse server
-                synapseLogLevel: WARNING
+                synapseLogLevel: DEBUG
+
+              # -- use an existing secret for all msc3861 (matrix authentication service) related values
+              # if set, all other msc3861 values are ignored (issuer, client_id, client_auth_method, client_secret, admin_token, account_management_url)
+              msc3861ExistingSecret: "matrix-authentication-service"
+              msc3861SecretKeys:
+                # -- secret key to use in existing secret for masc3861 issuer
+                issuer: "issuer"
+                # -- secret key to use in existing secret for masc3861 client id
+                client_id: "client_id"
+                # -- secret key to use in existing secret for masc3861 client secret
+                client_secret: "client_secret"
+                # -- secret key to use in existing secret for masc3861 admin_token
+                admin_token: "token"
+                # -- secret key to use in existing secret for masc3861 account_management_url
+                account_management_url: ""
 
               experimental_features:
-                # -- use an existing secret for all msc3861 (matrix authentication service) related values
-                # if set, all other msc3861 values are ignored (issuer, client_id, client_auth_method, client_secret, admin_token, account_management_url)
-                msc3861ExistingSecret: "matrix-authentication-service"
-                msc3861SecretKeys:
-                  # -- secret key to use in existing secret for masc3861 issuer
-                  issuer: "issuer"
-                  # -- secret key to use in existing secret for masc3861 client id
-                  client_id: "client_id"
-                  # -- secret key to use in existing secret for masc3861 client secret
-                  client_secret: "client_secret"
-                  # -- secret key to use in existing secret for masc3861 admin_token
-                  admin_token: "token"
-                  # -- secret key to use in existing secret for masc3861 account_management_url
-                  account_management_url: ""
-
                 # experimental_feature msc3861 - enable this if you want to use the matrix authentication service
                 msc3861:
                   enabled: true
