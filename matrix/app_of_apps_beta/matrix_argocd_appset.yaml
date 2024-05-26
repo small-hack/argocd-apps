@@ -482,7 +482,7 @@ spec:
                       - path: /
                         pathType: ImplementationSpecific
                 tls:
-                  - secretName: matrix-authentication-service-tls
+                  - secretName: syncv3-tls
                     hosts:
                       - '{{ .matrix_sliding_sync_hostname }}'
 
@@ -522,7 +522,7 @@ spec:
                 server: "https://{{ .matrix_hostname }}"
                 # -- if set, we'll grab your SYNCV3_SECRET from an existing kubernetes secret and ignore syncv3.secret
                 existingSyncv3Secret: "syncv3-secret"
-                # -- secret key to get synvcv3 secret from in existing kubernetes secret.
+                # -- secret key to get syncv3 secret from in existing kubernetes secret.
                 syncv3SecretKey: "SYNCV3_SECRET"
                 # -- SYNCV3_BINDADDR - The interface and port to listen on. (Supports unix socket: /path/to/socket)
                 bindaddr: "127.0.0.1:8008"
