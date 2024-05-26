@@ -112,7 +112,7 @@ spec:
               # User registration settings
               registration:
                 # -- Allow new users to register an account
-                enabled: false
+                enabled: true
 
                 existingSecret: "matrix-registration"
                 secretKey: "registrationSharedSecret"
