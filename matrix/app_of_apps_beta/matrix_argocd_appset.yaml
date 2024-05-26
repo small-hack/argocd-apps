@@ -111,7 +111,7 @@ spec:
 
               # User registration settings
               registration:
-                # -- Allow new users to register an account. 
+                # -- Allow new users to register an account.
                 # Cannot be enabled when when OAuth delegation is enabled
                 enabled: false
 
@@ -628,8 +628,8 @@ spec:
                         - name: graphql
                         #   playground: true
                         # Serve the given folder on the /assets/ path
-                        # - name: assets
-                        #   path: ./share/assets/
+                        - name: assets
+                          path: ./share/assets/
                       # List of addresses and ports to listen to
                       binds:
                         # First option: listen to the given address
