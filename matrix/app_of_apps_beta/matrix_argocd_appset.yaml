@@ -81,6 +81,10 @@ spec:
                 # -- Max image size in pixels
                 maxPixels: 32M
 
+              password_config:
+                enabled: false
+                localdb_enabled: false
+
               # Settings related to federation
               federation:
                 enabled: true
