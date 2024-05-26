@@ -354,7 +354,7 @@ spec:
                     proxy_intercept_errors off;
                   # -- required for TLS certs issued by cert-manager
                   cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
-                  nginx.ingress.kubernetes.io/cors-allow-origin: "https://{{ .matrix_hostname }}, https://{{ .matrix_auth_hostname }}, https://{{ .matrix_sliding_sync_hostname }}"
+                  # nginx.ingress.kubernetes.io/cors-allow-origin: "https://{{ .matrix_hostname }}, https://{{ .matrix_auth_hostname }}, https://{{ .matrix_sliding_sync_hostname }}"
                   # see more info here: https://github.com/matrix-org/sliding-sync/blob/693587ef7e1c47cd04a667332ef133146132a713/README.md?plain=1#L51-L61
                   nginx.ingress.kubernetes.io/server-snippet: |-
                     location = /.well-known/matrix/client {
@@ -363,15 +363,15 @@ spec:
                       add_header Access-Control-Allow-Origin *;
                     }
 
-                  # Forward to the auth service
-                  # location ~ ^/_matrix/client/(.*)/(login|logout|refresh) {
-                  #   proxy_pass https://{{ .matrix_auth_hostname }};
+                    # Forward to the auth service
+                    location ~ ^/_matrix/client/(.*)/(login|logout|refresh) {
+                      proxy_pass https://{{ .matrix_auth_hostname }};
 
-                  #   proxy_http_version 1.1;
+                      proxy_http_version 1.1;
 
-                  #   # Optional: use the PROXY protocol
-                  #   # proxy_protocol on;
-                  # }
+                      # Optional: use the PROXY protocol
+                      # proxy_protocol on;
+                    }
 
               replicaCount: 1
               resources: {}
@@ -569,6 +569,17 @@ spec:
                 className: "nginx"
                 annotations:
                   cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
+                  nginx.ingress.kubernetes.io/server-snippet: |-
+                    # Forward to synapse
+                    location ~ ^(/_matrix|/_synapse/client) {
+                      proxy_pass http://{{ .matrix_hostname }};
+                      proxy_set_header X-Forwarded-For $remote_addr;
+                      proxy_set_header X-Forwarded-Proto $scheme;
+                      proxy_set_header Host $host;
+
+                      client_max_body_size 50M;
+                      proxy_http_version 1.1;
+                    }
                 hosts:
                   - host: '{{ .matrix_auth_hostname }}'
                     paths:
@@ -707,8 +718,8 @@ spec:
                   # required for the Nginx ingress provider
                   nginx.ingress.kubernetes.io/configuration-snippet: |
                     proxy_intercept_errors off;
-                  nginx.ingress.kubernetes.io/enable-cors: "true"
-                  nginx.ingress.kubernetes.io/cors-allow-origin: "https://{{ .matrix_hostname }}, https://{{ .matrix_auth_hostname }}, https://{{ .matrix_sliding_sync_hostname }}"
+                  # nginx.ingress.kubernetes.io/enable-cors: "true"
+                  # nginx.ingress.kubernetes.io/cors-allow-origin: "https://{{ .matrix_hostname }}, https://{{ .matrix_auth_hostname }}, https://{{ .matrix_sliding_sync_hostname }}"
                   # nginx.ingress.kubernetes.io/server-snippet: |-
                   cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
 
