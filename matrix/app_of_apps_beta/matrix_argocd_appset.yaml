@@ -272,7 +272,7 @@ spec:
                   # -- Matches the `client_auth_method` in the auth service config
                   client_auth_method: client_secret_basic
                   # -- URL to advertise to clients where users can self-manage their account
-                  account_management_url: "https://{{ .zitadel_hostname }}"
+                  account_management_url: "https://{{ .matrix_auth_hostname }}"
 
                 # experimental_feature
                 msc3575:
