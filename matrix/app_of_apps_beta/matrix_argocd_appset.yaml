@@ -365,35 +365,24 @@ spec:
                     location = /.well-known/matrix/client {
                       return 200 '{"m.homeserver": {"base_url": "https://{{ .matrix_hostname }}"},"org.matrix.msc3575.proxy": {"url": "https://{{ .matrix_sliding_sync_hostname }}"},"org.matrix.msc2965.authentication": {"issuer": "https://{{ .matrix_auth_hostname }}/", "account": "https://{{ .matrix_auth_hostname }}/account"}}';
                       default_type application/json;
-                      # add_header Content-Type application/json;
                       add_header Access-Control-Allow-Origin *;
                     }
 
                     location = /.well-known/matrix/server {
                       return 200 '{"m.server": "https://{{ .matrix_hostname }}"}';
                       default_type application/json;
-                      # add_header Content-Type application/json;
                       add_header Access-Control-Allow-Origin *;
                     }
 
                     # Forward to the auth service
                     location ~ ^/_matrix/client/(.*)/(login|logout|refresh) {
                      proxy_pass https://{{ .matrix_auth_hostname }};
-
                      proxy_http_version 1.1;
-
-                      # Optional: use the PROXY protocol
-                      # proxy_protocol on;
                     }
 
                     # forward to the auth server for sso compatibility
                     location ~ /complete-compat-sso/(.*) {
-                     proxy_pass https://{{ .matrix_auth_hostname }};
-
-                     proxy_http_version 1.1;
-
-                      # Optional: use the PROXY protocol
-                      # proxy_protocol on;
+                     return 301 https://{{ .matrix_auth_hostname }}$request_uri;
                     }
 
               replicaCount: 1
