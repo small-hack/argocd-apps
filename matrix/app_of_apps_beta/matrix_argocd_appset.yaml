@@ -247,33 +247,30 @@ spec:
               # -- use an existing secret for all msc3861 (matrix authentication service) related values
               # if set, all other msc3861 values are ignored (issuer, client_id, client_auth_method, client_secret, admin_token, account_management_url)
               msc3861ExistingSecret: "matrix-authentication-service"
+              # from mas config: public_base: "https://{{ .matrix_auth_hostname }}/"
               msc3861SecretKeys:
                 # -- secret key to use in existing secret for masc3861 issuer
+                # -- Synapse will call `{issuer}/.well-known/openid-configuration` to get the OIDC configuration
                 issuer: "issuer"
                 # -- secret key to use in existing secret for masc3861 client id
+                # -- Matches the `client_id` in the auth service config
                 client_id: "client_id"
                 # -- secret key to use in existing secret for masc3861 client secret
+                # -- Matches the `client_secret` in the auth service config
                 client_secret: "client_secret"
                 # -- secret key to use in existing secret for masc3861 admin_token
+                # -- Matches the `matrix.secret` in the auth service config
                 admin_token: "token"
                 # -- secret key to use in existing secret for masc3861 account_management_url
+                # -- URL to advertise to clients where users can self-manage their account
                 account_management_url: ""
 
               experimental_features:
                 # experimental_feature msc3861 - enable this if you want to use the matrix authentication service
                 msc3861:
                   enabled: true
-                  # -- Synapse will call `{issuer}/.well-known/openid-configuration` to get the OIDC configuration
-                  issuer: "https://{{ .zitadel_hostname }}/"
-                  # public_base: "https://{{ .matrix_auth_hostname }}/"
-                  # -- Matches the `client_id` in the auth service config
-                  client_id: ""
                   # -- Matches the `client_auth_method` in the auth service config
                   client_auth_method: client_secret_basic
-                  # -- Matches the `client_secret` in the auth service config
-                  client_secret: ""
-                  # -- Matches the `matrix.secret` in the auth service config
-                  admin_token: ""
                   # -- URL to advertise to clients where users can self-manage their account
                   account_management_url: "https://{{ .zitadel_hostname }}"
 
