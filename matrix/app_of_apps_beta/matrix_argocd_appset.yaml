@@ -681,8 +681,8 @@ spec:
                     # https://www.ulidtools.com
                     - id: ""
                       issuer: https://example.com/
-                      human_name: zitadel
-                      brand_name: zitadel
+                      # human_name: zitadel
+                      # brand_name: zitadel
                       client_id: ""
                       client_secret: ""
 
