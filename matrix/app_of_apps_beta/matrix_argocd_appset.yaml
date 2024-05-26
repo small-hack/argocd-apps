@@ -359,7 +359,7 @@ spec:
                   # see more info here: https://github.com/matrix-org/sliding-sync/blob/693587ef7e1c47cd04a667332ef133146132a713/README.md?plain=1#L51-L61
                   nginx.ingress.kubernetes.io/server-snippet: |-
                     location = /.well-known/matrix/client {
-                      return 200 '{"m.homeserver": {"base_url": "https://{{ .matrix_hostname }}"},"org.matrix.msc3575.proxy": {"url": "https://{{ .matrix_sliding_sync_hostname }}"},"org.matrix.msc2965.authentication": {"issuer": "https://{{ .zitadel_hostname }}", "account": "https://{{ .zitadel_hostname }}/account"}}';
+                      return 200 '{"m.homeserver": {"base_url": "https://{{ .matrix_hostname }}"},"org.matrix.msc3575.proxy": {"url": "https://{{ .matrix_sliding_sync_hostname }}"},"org.matrix.msc2965.authentication": {"issuer": "https://{{ .zitadel_hostname }}", "account": "https://{{ .matrix_auth_hostname }}/account"}}';
                       default_type application/json;
                       # add_header Content-Type application/json;
                       add_header Access-Control-Allow-Origin *;
