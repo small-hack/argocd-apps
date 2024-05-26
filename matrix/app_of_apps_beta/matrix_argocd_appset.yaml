@@ -386,6 +386,16 @@ spec:
                       # proxy_protocol on;
                     }
 
+                    # forward to the auth server for sso compatibility
+                    location ~ /complete-compat-sso/(.*) {
+                     proxy_pass https://{{ .matrix_auth_hostname }};
+
+                     proxy_http_version 1.1;
+
+                      # Optional: use the PROXY protocol
+                      # proxy_protocol on;
+                    }
+
               replicaCount: 1
               resources: {}
               # Configure timings for readiness, startup, and liveness probes here
@@ -629,9 +639,6 @@ spec:
                         # and optionally the GraphQL playground
                         - name: graphql
                         #   playground: true
-                        # Serve the given folder on the /assets/ path
-                        # - name: assets
-                        #   path: ./share/assets/
                         - name: health
                       # List of addresses and ports to listen to
                       binds:
