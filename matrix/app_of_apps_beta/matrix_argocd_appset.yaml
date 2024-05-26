@@ -249,19 +249,19 @@ spec:
               msc3861ExistingSecret: "matrix-authentication-service"
               # from mas config: public_base: "https://{{ .matrix_auth_hostname }}/"
               msc3861SecretKeys:
-                # -- secret key to use in existing secret for masc3861 issuer
+                # -- secret key to use in existing secret for msc3861 issuer
                 # -- Synapse will call `{issuer}/.well-known/openid-configuration` to get the OIDC configuration
                 issuer: "issuer"
-                # -- secret key to use in existing secret for masc3861 client id
+                # -- secret key to use in existing secret for msc3861 client id
                 # -- Matches the `client_id` in the auth service config
                 client_id: "client_id"
-                # -- secret key to use in existing secret for masc3861 client secret
+                # -- secret key to use in existing secret for msc3861 client secret
                 # -- Matches the `client_secret` in the auth service config
                 client_secret: "client_secret"
-                # -- secret key to use in existing secret for masc3861 admin_token
+                # -- secret key to use in existing secret for msc3861 admin_token
                 # -- Matches the `matrix.secret` in the auth service config
                 admin_token: "token"
-                # -- secret key to use in existing secret for masc3861 account_management_url
+                # -- secret key to use in existing secret for msc3861 account_management_url
                 # -- URL to advertise to clients where users can self-manage their account
                 account_management_url: ""
 
@@ -611,8 +611,6 @@ spec:
                 http:
                   # -- Public URL base used when building absolute public URLs
                   public_base: "https://{{ .matrix_auth_hostname }}/"
-                  # -- OIDC issuer advertised by the service. Defaults to `public_base`
-                  # issuer: "https://{{ .zitadel_hostname }}/"
                   # List of HTTP listeners, see below
                   listeners:
                     # The name of the listener, used in logs and metrics
