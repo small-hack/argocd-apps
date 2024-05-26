@@ -640,6 +640,13 @@ spec:
                       # Whether to enable the PROXY protocol on the listener
                       proxy_protocol: false
 
+                policy:
+                  client_registration:
+                    # don't require URIs to be on the same host. default: false
+                    allow_host_mismatch: true
+                    # allow non-SSL and localhost URIs. default: false
+                    allow_insecure_uris: true
+
                 masClientSecret:
                   # -- use an existing secret for clients section of config.yaml for:
                   # mas.clients[0].client_id, mas.clients[0].client_secret
