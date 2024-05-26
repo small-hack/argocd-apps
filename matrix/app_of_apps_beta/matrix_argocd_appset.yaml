@@ -120,11 +120,6 @@ spec:
                 # -- Allow users to join rooms as a guest
                 allowGuests: false
 
-                # Required "3PIDs" - third-party identifiers such as email or msisdn (SMS)
-                # required3Pids:
-                #   - email
-                #   - msisdn
-
                 # -- Rooms to automatically join all new users to
                 autoJoinRooms: []
                 # - "#welcome:{{ .matrix_hostname }}"
@@ -317,8 +312,6 @@ spec:
               # -- Name of existing secret to use for PostgreSQL credentials
               existingSecret: "matrix-pgsql-credentials"
               # secretKeys to grab from existingSecret
-              # if postgresql.existingSecret is provided, the following are ignored
-              # postgresql.password/username/hostname/database/port
               secretKeys:
                 # -- key in existingSecret with hostname of the database
                 databaseHostname: hostname
@@ -329,17 +322,14 @@ spec:
                 # -- key in existingSecret with the admin postgresql password
                 adminPasswordKey: password
 
-            # PostgreSQL Database configuration, for more options:
-            # https://github.com/bitnami/charts/tree/main/bitnami/postgresql
+            # PostgreSQL Database configuration is disabled to use externalDatabase
             postgresql:
               enabled: false
 
             # Synapse Kubernetes resource settings
             synapse:
               image:
-                # -- image registry and repository to use for synapse
                 repository: "matrixdotorg/synapse"
-                # -- pullPolicy for synapse image, Use Always if using image.tag: latest
                 pullPolicy: IfNotPresent
 
               service:
@@ -385,28 +375,19 @@ spec:
               # Configure timings for readiness, startup, and liveness probes here
               probes:
                 readiness:
-                  # -- readiness probe seconds before timing out
                   timeoutSeconds: 5
-                  # -- readiness probe seconds trying again
                   periodSeconds: 10
                 startup:
-                  # -- startup probe seconds before timing out
                   timeoutSeconds: 5
-                  # -- startup probe seconds trying again
                   periodSeconds: 5
-                  # -- startup probe times to try and fail before giving up
                   failureThreshold: 6
                 liveness:
-                  # -- liveness probe seconds before timing out
                   timeoutSeconds: 5
-                  # -- liveness probe seconds trying again
                   periodSeconds: 10
 
               # Does not work by default in all cloud providers, disable by default
               securityContext:
-                # -- user to run the synapse container as
                 runAsUser: 1000
-                # -- group to run the synapse container as
                 runAsGroup: 1000
                 fsGroup: 1000
                 runAsNonRoot: true
@@ -723,6 +704,9 @@ spec:
                   # required for the Nginx ingress provider
                   nginx.ingress.kubernetes.io/configuration-snippet: |
                     proxy_intercept_errors off;
+                  nginx.ingress.kubernetes.io/enable-cors: "true"
+                  nginx.ingress.kubernetes.io/cors-allow-origin: "https://{{ .matrix_hostname }}, https://{{ .matrix_auth_hostname }}, https://{{ .matrix_sliding_sync_hostname }}"
+                  # nginx.ingress.kubernetes.io/server-snippet: |-
                   cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
 
               # Organization/enterprise branding
