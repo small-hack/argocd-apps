@@ -118,7 +118,7 @@ spec:
                 secretKey: "registrationSharedSecret"
 
                 # -- Allow users to join rooms as a guest
-                allowGuests: false
+                allowGuests: true
 
                 # -- Rooms to automatically join all new users to
                 autoJoinRooms: []
