@@ -54,6 +54,7 @@ spec:
             matrix:
               # -- Domain name of the server
               serverName: "{{ .matrix_hostname }}"
+              hostname: "{{ .matrix_hostname }}"
               # -- Enable anonymous telemetry to matrix.org
               telemetry: false
               # -- Set to false to disable (online/offline indicators)
@@ -339,10 +340,9 @@ spec:
                 repository: "matrixdotorg/synapse"
                 pullPolicy: IfNotPresent
 
+              # -- service for synapse
               service:
-                # -- service type for synpase
                 type: ClusterIP
-                # -- service port for synapse
                 port: 80
                 federation:
                   type: ClusterIP
