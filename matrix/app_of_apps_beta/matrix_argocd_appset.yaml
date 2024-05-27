@@ -350,7 +350,7 @@ spec:
 
               ingress:
                 # synapse ingress
-                enabled: false
+                enabled: true
                 annotations:
                   nginx.ingress.kubernetes.io/use-regex: "true"
                   nginx.ingress.kubernetes.io/proxy-body-size: 1G
@@ -584,7 +584,7 @@ spec:
 
               ingress:
                 # MAS ingress
-                enabled: false
+                enabled: true
                 className: "nginx"
                 annotations:
                   cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
