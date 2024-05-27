@@ -352,6 +352,7 @@ spec:
                 # synapse ingress
                 enabled: true
                 annotations:
+                  nginx.ingress.kubernetes.io/use-regex: "true"
                   nginx.ingress.kubernetes.io/proxy-body-size: 1G
                   # -- This annotation is required for the Nginx ingress provider
                   nginx.ingress.kubernetes.io/configuration-snippet: |
