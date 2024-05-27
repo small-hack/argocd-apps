@@ -101,7 +101,9 @@ spec:
                   - '::1/128'
                   - 'fe80::/64'
                   - 'fc00::/7'
+
                 ingress:
+                  # federation ingress
                   enabled: true
                   tls:
                     enabled: true
@@ -347,6 +349,7 @@ spec:
                   port: 80
 
               ingress:
+                # synapse ingress
                 enabled: true
                 host: '{{ .matrix_hostname }}'
                 tls:
@@ -452,6 +455,7 @@ spec:
                 name: ""
 
               ingress:
+                # syncv3 ingress
                 enabled: true
                 className: "nginx"
                 annotations:
@@ -564,6 +568,7 @@ spec:
                 existingClaim: "mas-config"
 
               ingress:
+                # MAS ingress
                 enabled: true
                 className: "nginx"
                 annotations:
@@ -709,6 +714,7 @@ spec:
             element:
               enabled: true
               ingress:
+                # element ingress
                 enabled: true
                 tls:
                   enabled: true
