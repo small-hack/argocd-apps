@@ -374,7 +374,7 @@ spec:
                 hosts:
                   - host: '{{ .matrix_hostname }}'
                     paths:
-                      - path: /_matrix/client/(r0|v3)/(refresh|login|logout).*
+                      - path: "/_matrix/client/(r0|v3)/(refresh|login|logout).*"
                         pathType: ImplementationSpecific
                         backend:
                           service:
