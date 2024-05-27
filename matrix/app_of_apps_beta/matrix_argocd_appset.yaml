@@ -623,6 +623,7 @@ spec:
                         - name: graphql
                         #   playground: true
                         - name: health
+                        - name: assets
                       # List of addresses and ports to listen to
                       binds:
                         # First option: listen to the given address
