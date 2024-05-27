@@ -75,6 +75,11 @@ spec:
               # -- Email address of the administrator
               adminEmail: '{{ .matrix_admin_email }}'
 
+              # -- needed for sliding sync to work
+              extra_well_known_client_content:
+                "org.matrix.msc3575.proxy":
+                  "url": "https://{{ .matrix_sliding_sync_hostname }}"
+
               # -- Settings related to image and multimedia uploads
               uploads:
                 # -- Max upload size in bytes
@@ -354,17 +359,10 @@ spec:
                 annotations:
                   nginx.ingress.kubernetes.io/use-regex: "true"
                   nginx.ingress.kubernetes.io/proxy-body-size: 1G
-                  # -- This annotation is required for the Nginx ingress provider
+                  # annotation is required for the Nginx ingress provider
                   nginx.ingress.kubernetes.io/configuration-snippet: |
                     proxy_intercept_errors off;
-                  # see more info here: https://github.com/matrix-org/sliding-sync/blob/693587ef7e1c47cd04a667332ef133146132a713/README.md?plain=1#L51-L61
                   nginx.ingress.kubernetes.io/server-snippet: |-
-                    location = /.well-known/matrix/client {
-                      return 200 '{"m.homeserver": {"base_url": "https://{{ .matrix_hostname }}"},"org.matrix.msc3575.proxy": {"url": "https://{{ .matrix_sliding_sync_hostname }}"},"org.matrix.msc2965.authentication": {"issuer": "https://{{ .matrix_auth_hostname }}/", "account": "https://{{ .matrix_auth_hostname }}/account"}}';
-                      default_type application/json;
-                      add_header Access-Control-Allow-Origin *;
-                    }
-
                     location = /.well-known/matrix/server {
                       return 200 '{"m.server": "https://{{ .matrix_hostname }}"}';
                       default_type application/json;
