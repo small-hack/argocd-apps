@@ -351,7 +351,6 @@ spec:
               ingress:
                 # synapse ingress
                 enabled: true
-                host: '{{ .matrix_hostname }}'
                 tls:
                   enabled: true
                 annotations:
@@ -373,6 +372,19 @@ spec:
                       add_header Access-Control-Allow-Origin *;
                     }
                   cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
+                hosts:
+                  - host: '{{ .matrix_hostname }}'
+                    paths:
+                      - path: /_matrix/client/(r0|v3)/(refresh|login|logout).*
+                        pathType: ImplementationSpecific
+                        backend:
+                          service:
+                            name: mas
+                            port:
+                              name: http
+
+                      - path: /
+                        pathType: Prefix
 
               replicaCount: 1
 
