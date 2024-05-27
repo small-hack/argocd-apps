@@ -584,10 +584,9 @@ spec:
 
               ingress:
                 # MAS ingress
-                enabled: true
+                enabled: false
                 className: "nginx"
                 annotations:
-                  nginx.ingress.kubernetes.io/use-regex: "true"
                   cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
                 hosts:
                   - host: '{{ .matrix_auth_hostname }}'
