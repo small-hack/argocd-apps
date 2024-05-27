@@ -351,8 +351,6 @@ spec:
               ingress:
                 # synapse ingress
                 enabled: true
-                tls:
-                  enabled: true
                 annotations:
                   nginx.ingress.kubernetes.io/proxy-body-size: 1G
                   # -- This annotation is required for the Nginx ingress provider
@@ -385,6 +383,10 @@ spec:
 
                       - path: /
                         pathType: Prefix
+                tls:
+                  - secretName: matrix-tls
+                    hosts:
+                      - '{{ .matrix_hostname }}'
 
               replicaCount: 1
 
