@@ -587,20 +587,13 @@ spec:
                 enabled: true
                 className: "nginx"
                 annotations:
+                  nginx.ingress.kubernetes.io/use-regex: "true"
                   cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
                 hosts:
                   - host: '{{ .matrix_auth_hostname }}'
                     paths:
-                      - path: /_matrix/client/(r0|v3)/(refresh|login|logout).*
-                        pathType: ImplementationSpecific
-
                       - path: /
                         pathType: Prefix
-                        backend:
-                          service:
-                            name: matrix-stack-synapse
-                            port:
-                              name: http
                 tls:
                   - secretName: matrix-authentication-service-tls
                     hosts:
