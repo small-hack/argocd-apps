@@ -43,9 +43,12 @@ spec:
           prune: true
           selfHeal: true
       source:
-        repoURL: 'https://github.com/small-hack/matrix-chart'
-        targetRevision: add-sliding-sync-subchart
-        path: charts/matrix/
+        repoURL: 'https://small-hack.github.io/matrix-chart'
+        # repoURL: 'https://github.com/small-hack/matrix-chart'
+        targetRevision: 9.0.1
+        # targetRevision: add-sliding-sync-subchart
+        # path: charts/matrix/
+        chart: matrix
         helm:
           valuesObject:
             fullnameOverride: matrix-stack
