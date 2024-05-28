@@ -21,7 +21,7 @@ ArgoCD app for ArgoCD so that ArgoCD can manage itself, ArgoCD 🧡
 
 For the Argo CD App of Apps in [./app_of_apps](./app_of_apps):
 
-1. External Secret and [Argo CD appset secret plugin](https://jessebot.github.io/argocd-appset-secret-plugin)
+1. External Secret and [Argo CD appset secret plugin](https://small-hack.github.io/argocd-appset-secret-plugin)
 2. Argo CD
 
 
