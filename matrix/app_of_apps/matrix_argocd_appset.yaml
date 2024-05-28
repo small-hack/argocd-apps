@@ -15,8 +15,6 @@ spec:
         input:
           parameters:
             secret_vars:
-              # - matrix_idp_id
-              # - matrix_idp_name
               - matrix_hostname
               - matrix_element_hostname
               - matrix_federation_hostname
@@ -44,7 +42,7 @@ spec:
       source:
         repoURL: 'https://small-hack.github.io/matrix-chart'
         # repoURL: 'https://github.com/small-hack/matrix-chart'
-        targetRevision: 8.2.0
+        targetRevision: 9.0.1
         # targetRevision: add-sliding-sync-subchart
         # path: charts/matrix/
         chart: matrix
@@ -56,6 +54,7 @@ spec:
             matrix:
               # -- Domain name of the server
               serverName: "{{ .matrix_hostname }}"
+              hostname: "{{ .matrix_hostname }}"
               # -- Enable anonymous telemetry to matrix.org
               telemetry: false
               # -- Set to false to disable presence (online/offline indicators)
@@ -350,8 +349,6 @@ spec:
               ingress:
                 enabled: true
                 host: '{{ .matrix_hostname }}'
-                tls:
-                  enabled: true
                 annotations:
                   nginx.ingress.kubernetes.io/proxy-body-size: 1G
                   # -- This annotation is required for the Nginx ingress provider. You can
@@ -360,6 +357,10 @@ spec:
                     proxy_intercept_errors off;
                   # -- required for TLS certs issued by cert-manager
                   cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
+                tls:
+                  - secretName: matrix-tls
+                    hosts:
+                      - '{{ .matrix_hostname }}'
 
               replicaCount: 1
               resources: {}
