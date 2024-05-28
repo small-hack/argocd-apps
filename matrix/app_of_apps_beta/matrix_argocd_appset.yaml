@@ -54,6 +54,7 @@ spec:
             matrix:
               # -- Domain name of the server
               serverName: "{{ .matrix_hostname }}"
+              hostname: "{{ .matrix_hostname }}"
               # -- Enable anonymous telemetry to matrix.org
               telemetry: false
               # -- Set to false to disable (online/offline indicators)
@@ -74,12 +75,21 @@ spec:
               # -- Email address of the administrator
               adminEmail: '{{ .matrix_admin_email }}'
 
+              # -- needed for sliding sync to work
+              extra_well_known_client_content:
+                "org.matrix.msc3575.proxy":
+                  "url": "https://{{ .matrix_sliding_sync_hostname }}"
+
               # -- Settings related to image and multimedia uploads
               uploads:
                 # -- Max upload size in bytes
                 maxSize: 10M
                 # -- Max image size in pixels
                 maxPixels: 32M
+
+              password_config:
+                enabled: false
+                localdb_enabled: false
 
               # Settings related to federation
               federation:
@@ -97,7 +107,9 @@ spec:
                   - '::1/128'
                   - 'fe80::/64'
                   - 'fc00::/7'
+
                 ingress:
+                  # federation ingress
                   enabled: true
                   tls:
                     enabled: true
@@ -111,7 +123,8 @@ spec:
 
               # User registration settings
               registration:
-                # -- Allow new users to register an account
+                # -- Allow new users to register an account.
+                # Cannot be enabled when when OAuth delegation is enabled
                 enabled: false
 
                 existingSecret: "matrix-registration"
@@ -119,11 +132,6 @@ spec:
 
                 # -- Allow users to join rooms as a guest
                 allowGuests: false
-
-                # Required "3PIDs" - third-party identifiers such as email or msisdn (SMS)
-                # required3Pids:
-                #   - email
-                #   - msisdn
 
                 # -- Rooms to automatically join all new users to
                 autoJoinRooms: []
@@ -237,44 +245,46 @@ spec:
               logging:
                 # -- Root log level is the default log level for log outputs that don't
                 # have more specific settings.
-                rootLogLevel: WARNING
+                rootLogLevel: DEBUG
                 # -- beware: increasing this to DEBUG will make synapse log sensitive
                 # information such as access tokens.
                 sqlLogLevel: WARNING
                 # -- The log level for the synapse server
-                synapseLogLevel: WARNING
+                synapseLogLevel: DEBUG
+
+              # -- use an existing secret for all msc3861 (matrix authentication service) related values
+              # if set, all other msc3861 values are ignored (issuer, client_id, client_auth_method, client_secret, admin_token, account_management_url)
+              msc3861ExistingSecret: "matrix-authentication-service"
+              # from mas config: public_base: "https://{{ .matrix_auth_hostname }}/"
+              msc3861SecretKeys:
+                # -- secret key to use in existing secret for msc3861 issuer
+                # -- Synapse will call `{issuer}/.well-known/openid-configuration` to get the OIDC configuration
+                issuer: "issuer"
+                # -- secret key to use in existing secret for msc3861 client id
+                # -- Matches the `client_id` in the auth service config
+                client_id: "client_id"
+                # -- secret key to use in existing secret for msc3861 client secret
+                # -- Matches the `client_secret` in the auth service config
+                client_secret: "client_secret"
+                # -- secret key to use in existing secret for msc3861 admin_token
+                # -- Matches the `matrix.secret` in the auth service config
+                admin_token: "token"
+                # -- secret key to use in existing secret for msc3861 account_management_url
+                # -- URL to advertise to clients where users can self-manage their account
+                account_management_url: ""
 
               experimental_features:
-                # -- use an existing secret for all msc3861 (matrix authentication service) related values
-                # if set, all other msc3861 values are ignored (issuer, client_id, client_auth_method, client_secret, admin_token, account_management_url)
-                msc3861ExistingSecret: "matrix-authentication-service"
-                msc3861SecretKeys:
-                  # -- secret key to use in existing secret for masc3861 issuer
-                  issuer: "issuer"
-                  # -- secret key to use in existing secret for masc3861 client id
-                  client_id: "client_id"
-                  # -- secret key to use in existing secret for masc3861 client secret
-                  client_secret: "client_secret"
-                  # -- secret key to use in existing secret for masc3861 admin_token
-                  admin_token: "token"
-                  # -- secret key to use in existing secret for masc3861 account_management_url
-                  account_management_url: ""
-
                 # experimental_feature msc3861 - enable this if you want to use the matrix authentication service
                 msc3861:
                   enabled: true
-                  # -- Synapse will call `{issuer}/.well-known/openid-configuration` to get the OIDC configuration
-                  issuer: http://localhost:8080/
-                  # -- Matches the `client_id` in the auth service config
-                  client_id: 0000000000000000000SYNAPSE
                   # -- Matches the `client_auth_method` in the auth service config
                   client_auth_method: client_secret_basic
-                  # -- Matches the `client_secret` in the auth service config
-                  client_secret: ""
-                  # -- Matches the `matrix.secret` in the auth service config
-                  admin_token: ""
                   # -- URL to advertise to clients where users can self-manage their account
-                  account_management_url: "http://localhost:8080/account"
+                  account_management_url: "https://{{ .matrix_auth_hostname }}/account"
+
+                # experimental_feature
+                msc3575:
+                  enabled: true
 
             s3:
               # -- enable s3 storage via https://github.com/matrix-org/synapse-s3-storage-provider
@@ -315,8 +325,6 @@ spec:
               # -- Name of existing secret to use for PostgreSQL credentials
               existingSecret: "matrix-pgsql-credentials"
               # secretKeys to grab from existingSecret
-              # if postgresql.existingSecret is provided, the following are ignored
-              # postgresql.password/username/hostname/database/port
               secretKeys:
                 # -- key in existingSecret with hostname of the database
                 databaseHostname: hostname
@@ -327,69 +335,77 @@ spec:
                 # -- key in existingSecret with the admin postgresql password
                 adminPasswordKey: password
 
-            # PostgreSQL Database configuration, for more options:
-            # https://github.com/bitnami/charts/tree/main/bitnami/postgresql
+            # PostgreSQL Database configuration is disabled to use externalDatabase
             postgresql:
               enabled: false
 
             # Synapse Kubernetes resource settings
             synapse:
               image:
-                # -- image registry and repository to use for synapse
                 repository: "matrixdotorg/synapse"
-                # -- pullPolicy for synapse image, Use Always if using image.tag: latest
                 pullPolicy: IfNotPresent
 
+              # -- service for synapse
               service:
-                # -- service type for synpase
                 type: ClusterIP
-                # -- service port for synapse
                 port: 80
                 federation:
                   type: ClusterIP
                   port: 80
 
               ingress:
+                # synapse ingress
                 enabled: true
-                host: '{{ .matrix_hostname }}'
-                tls:
-                  enabled: true
                 annotations:
+                  nginx.ingress.kubernetes.io/use-regex: "true"
                   nginx.ingress.kubernetes.io/proxy-body-size: 1G
-                  # -- This annotation is required for the Nginx ingress provider. You can
-                  # remove it if you use a different ingress provider
+                  # annotation is required for the Nginx ingress provider
                   nginx.ingress.kubernetes.io/configuration-snippet: |
                     proxy_intercept_errors off;
-                  # -- required for TLS certs issued by cert-manager
+                  nginx.ingress.kubernetes.io/server-snippet: |-
+                    location = /.well-known/matrix/server {
+                      return 200 '{"m.server": "https://{{ .matrix_hostname }}"}';
+                      default_type application/json;
+                      add_header Access-Control-Allow-Origin *;
+                    }
                   cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
+                hosts:
+                  - host: '{{ .matrix_hostname }}'
+                    paths:
+                      - path: "/_matrix/client/(r0|v3)/(refresh|login|logout).*"
+                        pathType: ImplementationSpecific
+                        backend:
+                          service:
+                            name: mas
+                            port:
+                              name: http
+
+                      - path: /
+                        pathType: Prefix
+                tls:
+                  - secretName: matrix-tls
+                    hosts:
+                      - '{{ .matrix_hostname }}'
 
               replicaCount: 1
+
               resources: {}
+
               # Configure timings for readiness, startup, and liveness probes here
               probes:
                 readiness:
-                  # -- readiness probe seconds before timing out
                   timeoutSeconds: 5
-                  # -- readiness probe seconds trying again
                   periodSeconds: 10
                 startup:
-                  # -- startup probe seconds before timing out
                   timeoutSeconds: 5
-                  # -- startup probe seconds trying again
                   periodSeconds: 5
-                  # -- startup probe times to try and fail before giving up
                   failureThreshold: 6
                 liveness:
-                  # -- liveness probe seconds before timing out
                   timeoutSeconds: 5
-                  # -- liveness probe seconds trying again
                   periodSeconds: 10
 
-              # Does not work by default in all cloud providers, disable by default
               securityContext:
-                # -- user to run the synapse container as
                 runAsUser: 1000
-                # -- group to run the synapse container as
                 runAsGroup: 1000
                 fsGroup: 1000
                 runAsNonRoot: true
@@ -434,6 +450,7 @@ spec:
                   value: /tmp
 
             # values for https://github.com/small-hack/matrix-sliding-sync-chart
+            # it's called syncv3 because that's what the directory in the official repo calls it
             syncv3:
               fullnameOverride: "syncv3"
               enabled: true
@@ -451,6 +468,7 @@ spec:
                 name: ""
 
               ingress:
+                # syncv3 ingress
                 enabled: true
                 className: "nginx"
                 annotations:
@@ -461,7 +479,7 @@ spec:
                       - path: /
                         pathType: ImplementationSpecific
                 tls:
-                  - secretName: matrix-authentication-service-tls
+                  - secretName: syncv3-tls
                     hosts:
                       - '{{ .matrix_sliding_sync_hostname }}'
 
@@ -481,7 +499,7 @@ spec:
                   mountPath: /etc/secrets/ca
 
                 - name: postgres-client-certs
-                  mountPath: /etc/secrets/synvcv3
+                  mountPath: /etc/secrets/syncv3
 
               # sliding sync external database - cloud native postgres with tls
               externalDatabase:
@@ -489,19 +507,19 @@ spec:
                 sslmode: verify-full
                 sslrootcert: /etc/secrets/ca/ca.crt
                 sslcert: /etc/secrets/syncv3/tls.crt
-                sslkey: /etc/secrets/synvcv3/tls.key
+                sslkey: /etc/secrets/syncv3/tls.key
                 port: 5432
 
               syncv3:
                 # -- use an existing kubernetes secret for the db connection string.
-                existingDbSecret: "sliding-sync-pgsql-credentials"
+                existingDbSecret: "syncv3-pgsql-credentials"
                 # -- db key in existing Db Secret for
                 dbSecretKey: "SYNCV3_DB"
                 # -- SYNCV3_SERVER - Required. The destination homeserver to talk to (CS API HTTPS URL) e.g 'https://matrix-client.matrix.org' (Supports unix socket: /path/to/socket)
-                server: "https://{{ .matrix_sliding_sync_hostname }}"
+                server: "https://{{ .matrix_hostname }}"
                 # -- if set, we'll grab your SYNCV3_SECRET from an existing kubernetes secret and ignore syncv3.secret
-                existingSyncv3Secret: "sliding-sync-secret"
-                # -- secret key to get synvcv3 secret from in existing kubernetes secret.
+                existingSyncv3Secret: "syncv3-secret"
+                # -- secret key to get syncv3 secret from in existing kubernetes secret.
                 syncv3SecretKey: "SYNCV3_SECRET"
                 # -- SYNCV3_BINDADDR - The interface and port to listen on. (Supports unix socket: /path/to/socket)
                 bindaddr: "127.0.0.1:8008"
@@ -563,6 +581,7 @@ spec:
                 existingClaim: "mas-config"
 
               ingress:
+                # MAS ingress
                 enabled: true
                 className: "nginx"
                 annotations:
@@ -571,7 +590,7 @@ spec:
                   - host: '{{ .matrix_auth_hostname }}'
                     paths:
                       - path: /
-                        pathType: ImplementationSpecific
+                        pathType: Prefix
                 tls:
                   - secretName: matrix-authentication-service-tls
                     hosts:
@@ -584,9 +603,7 @@ spec:
 
                 http:
                   # -- Public URL base used when building absolute public URLs
-                  public_base: "https://{{ .matrix_auth_hostname }}"
-                  # -- OIDC issuer advertised by the service. Defaults to `public_base`
-                  issuer: "https://{{ .zitadel_hostname }}"
+                  public_base: "https://{{ .matrix_auth_hostname }}/"
                   # List of HTTP listeners, see below
                   listeners:
                     # The name of the listener, used in logs and metrics
@@ -604,19 +621,25 @@ spec:
                         # Serve the GraphQL API used by the frontend,
                         # and optionally the GraphQL playground
                         - name: graphql
-                          playground: true
-                        # Serve the given folder on the /assets/ path
+                        #   playground: true
+                        - name: health
                         - name: assets
-                        #   path: ./share/assets/
                       # List of addresses and ports to listen to
                       binds:
                         # First option: listen to the given address
                         # - address: "[::]:8080"
                         # Second option: listen on the given host and port combination
-                        - host: localhost
+                        - host: 0.0.0.0
                           port: 8080
                       # Whether to enable the PROXY protocol on the listener
                       proxy_protocol: false
+
+                policy:
+                  client_registration:
+                    # don't require URIs to be on the same host. default: false
+                    allow_host_mismatch: true
+                    # allow non-SSL and localhost URIs. default: false
+                    allow_insecure_uris: true
 
                 masClientSecret:
                   # -- use an existing secret for clients section of config.yaml for:
@@ -650,6 +673,8 @@ spec:
                     client_id: "client_id"
                     # -- key in secret with the client_secret
                     client_secret: "client_secret"
+                    # -- ulid for id
+                    id: "provider_id"
 
                   providers:
                     # -- A unique identifier for the provider
@@ -657,8 +682,8 @@ spec:
                     # https://www.ulidtools.com
                     - id: ""
                       issuer: https://example.com/
-                      human_name: zitadel
-                      brand_name: zitadel
+                      # human_name: zitadel
+                      # brand_name: zitadel
                       client_id: ""
                       client_secret: ""
 
@@ -695,6 +720,7 @@ spec:
             element:
               enabled: true
               ingress:
+                # element ingress
                 enabled: true
                 tls:
                   enabled: true
