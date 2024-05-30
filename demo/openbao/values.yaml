@@ -47,7 +47,7 @@ injector:
   # required.
   agentImage:
     repository: "hashicorp/vault"
-    tag: "1.16.2"
+    tag: "1.16.3"
 
   # Configures the log verbosity of the injector.
   # Supported log levels include: trace, debug, info, warn, error
@@ -286,7 +286,7 @@ server:
 
   image:
     repository: "hashicorp/vault"
-    tag: "1.16.2"
+    tag: "1.16.3"
     # Overrides the default Image Pull Policy
     pullPolicy: IfNotPresent
 
@@ -981,7 +981,7 @@ csi:
 
     image:
       repository: "hashicorp/vault"
-      tag: "1.16.2"
+      tag: "1.16.3"
       pullPolicy: IfNotPresent
 
     logFormat: standard
