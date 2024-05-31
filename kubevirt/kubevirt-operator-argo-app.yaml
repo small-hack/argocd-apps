@@ -16,10 +16,14 @@ spec:
     server: 'https://kubernetes.default.svc'
   source:
     repoURL: 'https://cloudymax.github.io/kubevirt-community-stack/'
-    targetRevision: 0.2.1
+    targetRevision: 0.2.2
     chart: kubevirt
     helm:
       values: |
+        cluster-api-operator:
+          enabled: true
+          infrastructure: "kubevirt"
+        
         replicaCount: 1
         
         image:
