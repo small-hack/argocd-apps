@@ -23,6 +23,10 @@ spec:
         cluster-api-operator:
           enabled: true
           infrastructure: "kubevirt"
+          image:
+            manager:
+              repository: gcr.io/k8s-staging-capi-operator/cluster-api-operator
+              tag: main
         
         replicaCount: 1
         
