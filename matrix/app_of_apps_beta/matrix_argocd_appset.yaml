@@ -45,7 +45,7 @@ spec:
       source:
         repoURL: 'https://small-hack.github.io/matrix-chart'
         # repoURL: 'https://github.com/small-hack/matrix-chart'
-        targetRevision: 9.2.0
+        targetRevision: 10.1.0
         # targetRevision: add-sliding-sync-subchart
         # path: charts/matrix/
         chart: matrix
