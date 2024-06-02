@@ -19,18 +19,7 @@ spec:
     targetRevision: 0.2.5
     chart: kubevirt
     helm:
-      values: |
-        cluster-api-operator:
-          enabled: true
-          image:
-            manager:
-              repository: gcr.io/k8s-staging-capi-operator/cluster-api-operator
-              tag: main
-          core: "cluster-api:v1.4.2"
-          bootstrap: "kubeadm:v1.4.2 "
-          controlPlane: "kubeadm:v1.4.2 "
-          infrastructure: "kubevirt"
-        
+      values: |        
         replicaCount: 1
         
         image:
