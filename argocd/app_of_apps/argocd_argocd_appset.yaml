@@ -576,7 +576,7 @@ spec:
               ## Server metrics service configuration
               metrics:
                 # -- Deploy metrics service
-                enabled: true
+                enabled: false
                 service:
                   # -- Metrics service type
                   type: ClusterIP
@@ -586,7 +586,7 @@ spec:
                   portName: http-metrics
                 serviceMonitor:
                   # -- Enable a prometheus ServiceMonitor
-                  enabled: true
+                  enabled: false
                   # -- Prometheus ServiceMonitor tlsConfig
                   tlsConfig: {}
                   # -- Prometheus ServiceMonitor namespace
@@ -699,7 +699,7 @@ spec:
               ## Repo server metrics service configuration
               metrics:
                 # -- Deploy metrics service
-                enabled: true
+                enabled: false
                 service:
                   # -- Metrics service type
                   type: ClusterIP
@@ -709,7 +709,7 @@ spec:
                   portName: http-metrics
                 serviceMonitor:
                   # -- Enable a prometheus ServiceMonitor
-                  enabled: true
+                  enabled: false
                   # -- Prometheus ServiceMonitor tlsConfig
                   tlsConfig: {}
                   # -- Prometheus ServiceMonitor namespace
@@ -746,7 +746,7 @@ spec:
                 enabled: false
                 serviceMonitor:
                   # -- Enable a prometheus ServiceMonitor
-                  enabled: true
+                  enabled: false
                   # -- Prometheus ServiceMonitor tlsConfig
                   tlsConfig: {}
                   # -- Prometheus ServiceMonitor namespace
