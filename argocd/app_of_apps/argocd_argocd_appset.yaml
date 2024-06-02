@@ -709,11 +709,11 @@ spec:
                   portName: http-metrics
                 serviceMonitor:
                   # -- Enable a prometheus ServiceMonitor
-                  enabled: false
+                  enabled: true
                   # -- Prometheus ServiceMonitor tlsConfig
                   tlsConfig: {}
                   # -- Prometheus ServiceMonitor namespace
-                  namespace: "" # "monitoring"
+                  namespace: "prometheus"
 
               ## Enable Custom Rules for the Repo server's Cluster Role resource
               ## Enable this and set the rules: to whatever custom rules you want for the Cluster Role resource.
@@ -746,7 +746,11 @@ spec:
                 enabled: false
                 serviceMonitor:
                   # -- Enable a prometheus ServiceMonitor
-                  enabled: false
+                  enabled: true
+                  # -- Prometheus ServiceMonitor tlsConfig
+                  tlsConfig: {}
+                  # -- Prometheus ServiceMonitor namespace
+                  namespace: "prometheus" # "monitoring"
 
               # -- Resource limits and requests for the ApplicationSet controller pods.
               resources: {}
