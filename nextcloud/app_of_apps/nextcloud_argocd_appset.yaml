@@ -59,11 +59,6 @@ spec:
                 # this was originally suggested in nextcloud/helm
                 nginx.ingress.kubernetes.io/cors-allow-methods: "GET, HEAD, POST, OPTIONS, PUT, PATCH, DELETE, PROPFIND, MKCOL, REPORT"
                 nginx.ingress.kubernetes.io/cors-allow-headers: "DNT,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization,X-Forwarded-For"
-                # location = / {
-                #   if ( $http_user_agent ~* "^DAVx5.*" ) {
-                #       return 301 /remote.php/dav/$is_args$args;
-                #   }
-                # }
                 nginx.ingress.kubernetes.io/server-snippet: |-
                   server_tokens off;
                   proxy_hide_header X-Powered-By;
@@ -71,20 +66,31 @@ spec:
                   rewrite ^/.well-known/nodeinfo /index.php/.well-known/nodeinfo last;
                   rewrite ^/.well-known/host-meta /public.php?service=host-meta last;
                   rewrite ^/.well-known/host-meta.json /public.php?service=host-meta-json;
+
                   location = /.well-known/carddav {
                     return 301 $scheme://$host/remote.php/dav;
                   }
+
                   location = /.well-known/caldav {
                     return 301 $scheme://$host/remote.php/dav;
                   }
+
+                  location = / {
+                    if ( $http_user_agent ~* "^DAVx5.*" ) {
+                        return 301 $scheme://$host/remote.php/dav;
+                    }
+                  }
+
                   location = /robots.txt {
                     allow all;
                     log_not_found off;
                     access_log off;
                   }
+
                   location ~ ^/(?:build|tests|config|lib|3rdparty|templates|data)/ {
                     deny all;
                   }
+
                   location ~ ^/(?:autotest|occ|issue|indie|db_|console) {
                     deny all;
                   }
@@ -419,14 +425,15 @@ spec:
                       index index.php index.html /index.php$request_uri;
 
                       # Rule borrowed from `.htaccess` to handle Microsoft DAV clients
-                      # and DAVx5
                       location = / {
                           if ( $http_user_agent ~ ^DavClnt ) {
                               return 302 /remote.php/webdav/$is_args$args;
                           }
-                          if ( $http_user_agent ~* "^DAVx5.*" ) {
-                              return 301 /remote.php/dav/$is_args$args;
-                          }
+
+                          # and DAVx5
+                          # if ( $http_user_agent ~* "^DAVx5.*" ) {
+                          #      return 301 /remote.php/dav/$is_args$args;
+                          #  }
                       }
 
                       location = /robots.txt {
