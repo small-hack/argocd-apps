@@ -10,12 +10,6 @@ spec:
     repoURL: 'https://kubernetes.github.io/ingress-nginx'
     chart: ingress-nginx
     targetRevision: 4.10.1
-    helm:
-      releaseName: 'ingress-nginx'
-      values: |
-        controller:
-          allowSnippetAnnotations: true
-          externalTrafficPolicy: Local
   destination:
     server: "https://kubernetes.default.svc"
     namespace: ingress-nginx
@@ -25,3 +19,94 @@ spec:
     automated:
       prune: true
       selfHeal: true
+    helm:
+      releaseName: 'ingress-nginx'
+      valuesObject:
+        controller:
+          name: controller
+          enableAnnotationValidations: false
+          containerPort:
+            http: 80
+            https: 443
+          # -- Annotations to be added to the controller config configuration configmap.
+          configAnnotations:
+            allow-snippet-annotations: "true"
+            forwarded-for-header: X-Forwarded-For
+            proxy-real-ip-cidr: 0.0.0.0/0
+            real-ip-header: X-Real-IP
+            use-forwarded-headers: "true"
+          # -- This configuration defines if Ingress Controller should allow users to set
+          # their own *-snippet annotations, otherwise this is forbidden / dropped
+          # when users add those annotations.
+          # Global snippets in ConfigMap are still respected
+          allowSnippetAnnotations: true
+          ingressClass: nginx
+          # -- Annotations to be added to the controller Deployment or DaemonSet
+          annotations: {}
+          healthCheckPath: "/healthz"
+          resources:
+            requests:
+              cpu: 100m
+              memory: 90Mi
+          # Mutually exclusive with keda autoscaling
+          autoscaling:
+            enabled: false
+            annotations: {}
+            minReplicas: 1
+            maxReplicas: 11
+            targetCPUUtilizationPercentage: 50
+            targetMemoryUtilizationPercentage: 50
+            behavior: {}
+          keda:
+            apiVersion: "keda.sh/v1alpha1"
+            enabled: false
+            minReplicas: 1
+            maxReplicas: 11
+            pollingInterval: 30
+            cooldownPeriod: 300
+            restoreToOriginalReplicaCount: false
+            scaledObject:
+              annotations: {}
+            triggers: []
+            behavior: {}
+          enableMimalloc: true
+          service:
+            enabled: true
+            external:
+              enabled: true
+            type: LoadBalancer
+            externalTrafficPolicy: "Local"
+            enableHttp: true
+            enableHttps: true
+            ports:
+              http: 80
+              https: 443
+            targetPorts:
+              http: http
+              https: https
+          metrics:
+            port: 10254
+            portName: metrics
+            # if this port is changed, change healthz-port: in extraArgs: accordingly
+            enabled: false
+            service:
+              annotations: {}
+            serviceMonitor:
+              enabled: false
+              additionalLabels: {}
+              annotations: {}
+              namespace: ""
+              namespaceSelector: {}
+              scrapeInterval: 30s
+              targetLabels: []
+              relabelings: []
+              metricRelabelings: []
+            prometheusRule:
+              enabled: false
+              additionalLabels: {}
+        # -- TCP service key-value pairs
+        tcp: {}
+        #  "8080": "default/example-tcp-svc:9000"
+        # -- UDP service key-value pairs
+        udp: {}
+        #  "53": "kube-system/kube-dns:53"
