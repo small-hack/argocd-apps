@@ -245,7 +245,8 @@ spec:
                   $CONFIG = array (
                     'trusted_proxies' => array(
                       0 => '127.0.0.1',
-                      1 => '10.0.0.0/8'
+                      1 => '10.0.0.0/8',
+                      2 => '192.168.0.0/16',
                     ),
                     'forwarded_for_headers' => array('HTTP_X_FORWARDED_FOR'),
                   );
@@ -253,6 +254,7 @@ spec:
                 extra.config.php: |-
                   <?php
                   $CONFIG = array (
+                    'allow_local_remote_servers' => true,
                     'default_phone_region' => '{{ .nextcloud_default_phone_region }}',
                   );
 
