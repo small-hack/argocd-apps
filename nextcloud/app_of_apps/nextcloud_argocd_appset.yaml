@@ -59,6 +59,11 @@ spec:
                 # this was originally suggested in nextcloud/helm
                 nginx.ingress.kubernetes.io/cors-allow-methods: "GET, HEAD, POST, OPTIONS, PUT, PATCH, DELETE, PROPFIND, MKCOL, REPORT"
                 nginx.ingress.kubernetes.io/cors-allow-headers: "DNT,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization,X-Forwarded-For"
+                # location = / {
+                #   if ( $http_user_agent ~* "^DAVx5.*" ) {
+                #       return 301 /remote.php/dav/$is_args$args;
+                #   }
+                # }
                 nginx.ingress.kubernetes.io/server-snippet: |-
                   server_tokens off;
                   proxy_hide_header X-Powered-By;
@@ -420,7 +425,7 @@ spec:
                               return 302 /remote.php/webdav/$is_args$args;
                           }
                           if ( $http_user_agent ~* "^DAVx5.*" ) {
-                              return 302 /remote.php/dav/$is_args$args;
+                              return 301 /remote.php/dav/$is_args$args;
                           }
                       }
 
