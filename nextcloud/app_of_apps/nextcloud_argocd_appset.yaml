@@ -365,6 +365,8 @@ spec:
               enabled: true
               config:
                 default: true
+              image:
+                pullPolicy: Always
 
             internalDatabase:
               enabled: false
