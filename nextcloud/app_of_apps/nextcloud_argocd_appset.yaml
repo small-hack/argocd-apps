@@ -49,14 +49,16 @@ spec:
               className: nginx
               annotations:
                 cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
+                nginx.ingress.kubernetes.io/connection-proxy-header: keep-alive
                 nginx.ingress.kubernetes.io/proxy-body-size: 10G
-                nginx.ingress.kubernetes.io/enable-cors: "false"
-                # nginx.ingress.kubernetes.io/enable-cors: "true"
-                # nginx.ingress.kubernetes.io/cors-allow-methods: "GET, HEAD, POST, OPTIONS, PUT, PATCH, DELETE, PROPFIND, MKCOL, REPORT"
+                nginx.ingress.kubernetes.io/proxy-max-temp-file-size: 10485760m
+                nginx.ingress.kubernetes.io/proxy-read-timeout: "86400"
+                nginx.ingress.kubernetes.io/proxy-send-timeout: "86400"
+                nginx.ingress.kubernetes.io/proxy-connect-timeout: "120s"
+                nginx.ingress.kubernetes.io/enable-cors: "true"
                 # this was originally suggested in nextcloud/helm
-                # nginx.ingress.kubernetes.io/cors-allow-headers: "X-Forwarded-For"
-                # this was a followup solution for dav stuff
-                # nginx.ingress.kubernetes.io/cors-allow-headers: "DNT,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization,X-Forwarded-For"
+                nginx.ingress.kubernetes.io/cors-allow-methods: "GET, HEAD, POST, OPTIONS, PUT, PATCH, DELETE, PROPFIND, MKCOL, REPORT"
+                nginx.ingress.kubernetes.io/cors-allow-headers: "DNT,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization,X-Forwarded-For"
                 nginx.ingress.kubernetes.io/server-snippet: |-
                   server_tokens off;
                   proxy_hide_header X-Powered-By;
@@ -69,6 +71,11 @@ spec:
                   }
                   location = /.well-known/caldav {
                     return 301 $scheme://$host/remote.php/dav;
+                  }
+                  location = /robots.txt {
+                    allow all;
+                    log_not_found off;
+                    access_log off;
                   }
                   location ~ ^/(?:build|tests|config|lib|3rdparty|templates|data)/ {
                     deny all;
@@ -253,6 +260,7 @@ spec:
                 extra.config.php: |-
                   <?php
                   $CONFIG = array (
+                    'allow_local_remote_servers' => true,
                     'default_phone_region' => '{{ .nextcloud_default_phone_region }}',
                   );
 
@@ -431,6 +439,10 @@ spec:
               serviceMonitor:
                 enabled: true
                 namespace: "nextcloud"
+
+            phpClientHttpsFix:
+              enabled: true
+              protocol: https
 
             rbac:
               enabled: true
