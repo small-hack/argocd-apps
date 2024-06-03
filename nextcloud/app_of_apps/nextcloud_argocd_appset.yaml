@@ -420,7 +420,7 @@ spec:
                               return 302 /remote.php/webdav/$is_args$args;
                           }
                           if ( $http_user_agent ~* "^DAVx5.*" ) {
-                              return 302 /remote.php/webdav/$is_args$args;
+                              return 302 /remote.php/dav/$is_args$args;
                           }
                       }
 
