@@ -59,6 +59,11 @@ spec:
                 # this was originally suggested in nextcloud/helm
                 nginx.ingress.kubernetes.io/cors-allow-methods: "GET, HEAD, POST, OPTIONS, PUT, PATCH, DELETE, PROPFIND, MKCOL, REPORT"
                 nginx.ingress.kubernetes.io/cors-allow-headers: "DNT,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization,X-Forwarded-For"
+                # location = / {
+                #   if ( $http_user_agent ~* "^DAVx5.*" ) {
+                #       return 301 $scheme://$host/remote.php/dav;
+                #   }
+                # }
                 nginx.ingress.kubernetes.io/server-snippet: |-
                   server_tokens off;
                   proxy_hide_header X-Powered-By;
@@ -73,12 +78,6 @@ spec:
 
                   location = /.well-known/caldav {
                     return 301 $scheme://$host/remote.php/dav;
-                  }
-
-                  location = / {
-                    if ( $http_user_agent ~* "^DAVx5.*" ) {
-                        return 301 $scheme://$host/remote.php/dav;
-                    }
                   }
 
                   location = /robots.txt {
@@ -502,6 +501,16 @@ spec:
                       location / {
                          try_files $uri $uri/ /index.php$request_uri;
                       }
+
+                      # try to always allow propfind
+                      location / {
+                         if ($request_method = 'PROPFIND') {
+                            add_header 'Access-Control-Allow-Origin' '*';
+                            add_header 'Access-Control-Allow-Methods' 'GET, HEAD, POST, OPTIONS, PUT, PATCH, DELETE, PROPFIND, MKCOL, REPORT';
+                            add_header 'Access-Control-Allow-Headers' 'DNT,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization,X-Forwarded-For';
+                            return 204;
+                         }
+                      }
                   }
 
                 #   location / {
@@ -513,20 +522,6 @@ spec:
                 #         add_header 'Content-Type' 'text/plain; charset=utf-8';
                 #         add_header 'Content-Length' 0;
                 #         return 204;
-                #      }
-
-                #      if ($request_method = 'POST') {
-                #         add_header 'Access-Control-Allow-Origin' '*' always;
-                #         add_header 'Access-Control-Allow-Methods' 'GET, HEAD, POST, OPTIONS, PUT, PATCH, DELETE, PROPFIND, MKCOL, REPORT' always;
-                #         add_header 'Access-Control-Allow-Headers' 'DNT,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization,X-Forwarded-For' always;
-                #         add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range' always;
-                #      }
-
-                #      if ($request_method = 'GET') {
-                #         add_header 'Access-Control-Allow-Origin' '*' always;
-                #         add_header 'Access-Control-Allow-Methods' 'GET, HEAD, POST, OPTIONS, PUT, PATCH, DELETE, PROPFIND, MKCOL, REPORT' always;
-                #         add_header 'Access-Control-Allow-Headers' 'DNT,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization,X-Forwarded-For' always;
-                #         add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range' always;
                 #      }
                 #   }
 
