@@ -23,11 +23,6 @@ spec:
       releaseName: 'ingress-nginx'
       valuesObject:
         controller:
-          name: controller
-          enableAnnotationValidations: false
-          containerPort:
-            http: 80
-            https: 443
           # -- Annotations to be added to the controller config configuration configmap.
           configAnnotations:
             allow-snippet-annotations: "true"
@@ -41,64 +36,19 @@ spec:
           # Global snippets in ConfigMap are still respected
           allowSnippetAnnotations: true
           ingressClass: nginx
-          healthCheckPath: "/healthz"
           resources:
             requests:
               cpu: 100m
               memory: 90Mi
-          # Mutually exclusive with keda autoscaling
-          autoscaling:
-            enabled: false
-            annotations: {}
-            minReplicas: 1
-            maxReplicas: 11
-            targetCPUUtilizationPercentage: 50
-            targetMemoryUtilizationPercentage: 50
-            behavior: {}
-          keda:
-            apiVersion: "keda.sh/v1alpha1"
-            enabled: false
-            minReplicas: 1
-            maxReplicas: 11
-            pollingInterval: 30
-            cooldownPeriod: 300
-            restoreToOriginalReplicaCount: false
-            scaledObject:
-              annotations: {}
-            triggers: []
-            behavior: {}
-          enableMimalloc: true
           service:
             enabled: true
             external:
               enabled: true
             type: LoadBalancer
             externalTrafficPolicy: "Local"
-            enableHttp: true
-            enableHttps: true
-            ports:
-              http: 80
-              https: 443
-            targetPorts:
-              http: http
-              https: https
           metrics:
-            port: 10254
-            portName: metrics
-            # if this port is changed, change healthz-port: in extraArgs: accordingly
             enabled: false
-            service:
-              annotations: {}
             serviceMonitor:
               enabled: false
-              additionalLabels: {}
-              annotations: {}
-              namespace: ""
-              namespaceSelector: {}
-              scrapeInterval: 30s
-              targetLabels: []
-              relabelings: []
-              metricRelabelings: []
             prometheusRule:
               enabled: false
-              additionalLabels: {}
