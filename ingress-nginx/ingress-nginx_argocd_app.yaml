@@ -36,6 +36,7 @@ spec:
             forwarded-for-header: X-Forwarded-For
             proxy-real-ip-cidr: 0.0.0.0/0
             real-ip-header: X-Real-IP
+            enable-real-ip: "true"
             use-forwarded-headers: "true"
             # testing https://stackoverflow.com/a/69186184
             # this one breaks breaks everything, don't enable
