@@ -53,6 +53,7 @@ spec:
                 cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
                 nginx.ingress.kubernetes.io/proxy-body-size: 10G
                 nginx.ingress.kubernetes.io/enable-cors: "false"
+                nginx.ingress.kubernetes.io/enable-real-ip: "true"
                 nginx.ingress.kubernetes.io/server-snippet: |-
                   server_tokens off;
                   proxy_hide_header X-Powered-By;
