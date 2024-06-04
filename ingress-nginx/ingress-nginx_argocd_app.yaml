@@ -104,9 +104,3 @@ spec:
             prometheusRule:
               enabled: false
               additionalLabels: {}
-        # -- TCP service key-value pairs
-        tcp: {}
-        #  "8080": "default/example-tcp-svc:9000"
-        # -- UDP service key-value pairs
-        udp: {}
-        #  "53": "kube-system/kube-dns:53"
