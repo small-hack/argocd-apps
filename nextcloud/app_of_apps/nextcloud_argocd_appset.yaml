@@ -73,6 +73,11 @@ spec:
                   location ~ ^/(?:autotest|occ|issue|indie|db_|console) {
                     deny all;
                   }
+                  location / {
+                    if ($http_user_agent = "") {
+                      return 403;
+                    }
+                  }
 
               tls:
                 - secretName: nextcloud-tls
