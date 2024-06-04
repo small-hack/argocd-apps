@@ -41,8 +41,6 @@ spec:
           # Global snippets in ConfigMap are still respected
           allowSnippetAnnotations: true
           ingressClass: nginx
-          # -- Annotations to be added to the controller Deployment or DaemonSet
-          annotations: {}
           healthCheckPath: "/healthz"
           resources:
             requests:
