@@ -73,7 +73,7 @@ spec:
                   location ~ ^/(?:autotest|occ|issue|indie|db_|console) {
                     deny all;
                   }
-                  location / {
+                  location = / {
                     if ($http_user_agent = "") {
                       return 403;
                     }
