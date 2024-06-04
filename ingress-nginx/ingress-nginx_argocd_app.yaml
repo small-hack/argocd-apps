@@ -35,7 +35,8 @@ spec:
           # attempt to get the real ip
           config:
             use-forwarded-headers: "true"
-            use-proxy-protocol: "true"
+            # this one breaks it I think
+            # use-proxy-protocol: "true"
 
           # -- This configuration defines if Ingress Controller should allow users to set
           # their own *-snippet annotations, otherwise this is forbidden / dropped
