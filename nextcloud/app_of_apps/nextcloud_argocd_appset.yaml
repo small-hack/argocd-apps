@@ -57,6 +57,16 @@ spec:
                 nginx.ingress.kubernetes.io/server-snippet: |-
                   server_tokens off;
                   proxy_hide_header X-Powered-By;
+
+                  location ^~ / {
+                    if ($http_user_agent = "") {
+                      return 403;
+                    }
+                    if ($http_user_agent = "-") {
+                      return 403;
+                    }
+                  }
+
                   rewrite ^/.well-known/webfinger /index.php/.well-known/webfinger last;
                   rewrite ^/.well-known/nodeinfo /index.php/.well-known/nodeinfo last;
                   rewrite ^/.well-known/host-meta /public.php?service=host-meta last;
@@ -72,14 +82,6 @@ spec:
                   }
                   location ~ ^/(?:autotest|occ|issue|indie|db_|console) {
                     deny all;
-                  }
-                  location = / {
-                    if ($http_user_agent = "") {
-                      return 403;
-                    }
-                    if ($http_user_agent = "-") {
-                      return 403;
-                    }
                   }
 
               tls:
