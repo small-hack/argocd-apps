@@ -6,10 +6,6 @@ metadata:
   namespace: argocd
 spec:
   project: ingress-nginx
-  source:
-    repoURL: 'https://kubernetes.github.io/ingress-nginx'
-    chart: ingress-nginx
-    targetRevision: 4.10.1
   destination:
     server: "https://kubernetes.default.svc"
     namespace: ingress-nginx
@@ -19,6 +15,10 @@ spec:
     automated:
       prune: true
       selfHeal: true
+  source:
+    repoURL: 'https://kubernetes.github.io/ingress-nginx'
+    chart: ingress-nginx
+    targetRevision: 4.10.1
     helm:
       releaseName: 'ingress-nginx'
       valuesObject:
@@ -35,7 +35,6 @@ spec:
           # when users add those annotations.
           # Global snippets in ConfigMap are still respected
           allowSnippetAnnotations: true
-          ingressClass: nginx
           resources:
             requests:
               cpu: 100m
