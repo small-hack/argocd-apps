@@ -25,16 +25,20 @@ spec:
         controller:
           # -- Annotations to be added to the controller config configuration configmap.
           configAnnotations:
-            allow-snippet-annotations: "true"
+            # allow-snippet-annotations: "true"
             forwarded-for-header: X-Forwarded-For
             proxy-real-ip-cidr: 0.0.0.0/0
             real-ip-header: X-Real-IP
             use-forwarded-headers: "true"
 
-          # testing https://stackoverflow.com/a/69186184
           # attempt to get the real ip
           config:
+            forwarded-for-header: X-Forwarded-For
+            proxy-real-ip-cidr: 0.0.0.0/0
+            real-ip-header: X-Real-IP
             use-forwarded-headers: "true"
+            # testing https://stackoverflow.com/a/69186184
+            # use-forwarded-headers: "true"
             # this one breaks it I think
             # use-proxy-protocol: "true"
 
