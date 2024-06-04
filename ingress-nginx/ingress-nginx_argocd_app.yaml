@@ -49,6 +49,6 @@ spec:
           metrics:
             enabled: false
             serviceMonitor:
-              enabled: false
+              enabled: true
             prometheusRule:
               enabled: false
