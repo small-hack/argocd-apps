@@ -23,21 +23,13 @@ spec:
       releaseName: 'ingress-nginx'
       valuesObject:
         controller:
-          # -- Annotations to be added to the controller config configuration configmap.
-          # configAnnotations:
-          #   # allow-snippet-annotations: "true"
-          #   forwarded-for-header: X-Forwarded-For
-          #   proxy-real-ip-cidr: 0.0.0.0/0
-          #   real-ip-header: X-Real-IP
-          #   use-forwarded-headers: "true"
-
           # attempt to get the real ip
           config:
-            forwarded-for-header: X-Forwarded-For
-            proxy-real-ip-cidr: 0.0.0.0/0
-            real-ip-header: X-Real-IP
             enable-real-ip: "true"
             use-forwarded-headers: "true"
+            proxy-real-ip-cidr: 0.0.0.0/0
+            # forwarded-for-header: X-Forwarded-For
+            # real-ip-header: X-Real-IP
             # testing https://stackoverflow.com/a/69186184
             # this one breaks breaks everything, don't enable
             # use-proxy-protocol: "true"
