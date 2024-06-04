@@ -38,9 +38,8 @@ spec:
             real-ip-header: X-Real-IP
             use-forwarded-headers: "true"
             # testing https://stackoverflow.com/a/69186184
-            # use-forwarded-headers: "true"
             # this one breaks it I think
-            # use-proxy-protocol: "true"
+            use-proxy-protocol: "true"
 
           # -- This configuration defines if Ingress Controller should allow users to set
           # their own *-snippet annotations, otherwise this is forbidden / dropped
