@@ -43,7 +43,7 @@ spec:
           valuesObject:
             image:
               repository: nextcloud
-              tag: 29-fpm-alpine
+              tag: 29.0.1-fpm-alpine
               pullPolicy: IfNotPresent
 
             ingress:
