@@ -213,7 +213,7 @@ spec:
                   <?php
                   $CONFIG = array (
                     'log_type' => 'file',
-                    'logfile' => 'nextcloud.log',
+                    'logfile' => '/var/log/nextcloud.log',
                     'loglevel' => 1,
                     'logdateformat' => 'F d, Y H:i:s',
                     'maintenance_window_start' => 23
