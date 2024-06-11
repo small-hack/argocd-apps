@@ -78,7 +78,7 @@ spec:
               owner:
                 create: true
                 existingSecret: home-assistant-credentials
-              timezone: '{{ global_time_zone }}'
+              timezone: '{{ .global_time_zone }}'
               existingThemesConfigMap: home-assistant-themes
               configuration: |
                 # basic home assitant config stuff
