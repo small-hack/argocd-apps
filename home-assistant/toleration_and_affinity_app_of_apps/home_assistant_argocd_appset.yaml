@@ -138,6 +138,7 @@ spec:
               owner:
                 create: true
                 existingSecret: home-assistant-credentials
+              timezone: '{{ global_time_zone }}'
               configuration: |
                 # basic home assitant config stuff
                 homeassistant:
