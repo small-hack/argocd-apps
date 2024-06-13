@@ -406,8 +406,8 @@ spec:
 
                       # can't be used because turning on proxy protocol breaks this container
                       # real_ip_header X-Forwarded_for;
-                      real_ip_recursive on;
                       set_real_ip_from 10.0.0.0/8;
+                      real_ip_recursive on;
 
                       # Add .mjs as a file extension for javascript
                       # Either include it in the default mime.types list
