@@ -54,10 +54,6 @@ spec:
                 cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
                 nginx.ingress.kubernetes.io/proxy-body-size: 10G
                 nginx.ingress.kubernetes.io/enable-cors: "false"
-                # none of these seem to make a difference?
-                # nginx.ingress.kubernetes.io/enable-real-ip: "true"
-                # nginx.ingress.kubernetes.io/use-forwarded-headers: "true"
-                # nginx.ingress.kubernetes.io/proxy-real-ip-cidr: 0.0.0.0/0
                 nginx.ingress.kubernetes.io/server-snippet: |-
                   server_tokens off;
                   proxy_hide_header X-Powered-By;
@@ -399,13 +395,14 @@ spec:
                       # Remove X-Powered-By, which is an information leak
                       fastcgi_hide_header X-Powered-By;
 
-                      # to be tried next...
-                      # enable-real-ip: "true"
-                      # use-forwarded-headers: "true"
-                      # proxy-real-ip-cidr: 0.0.0.0/0
+                      # If the user agent is missing, empty, or contains a single hyphen
+                      # return forbidden http code
+                      if ($http_user_agent ~ "^-?$") {
+                        return 403;
+                      }
 
-                      # can't be used because turning on proxy protocol breaks this container
-                      # real_ip_header X-Forwarded_for;
+                      # set the real ip in the logs
+                      set_real_ip_from 192.168.0.0/16;
                       set_real_ip_from 10.0.0.0/8;
                       real_ip_recursive on;
 
