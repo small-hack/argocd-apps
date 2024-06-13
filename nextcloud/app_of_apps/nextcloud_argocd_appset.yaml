@@ -16,6 +16,7 @@ spec:
           parameters:
             secret_vars:
               - global_cluster_issuer
+              - global_time_zone
               - nextcloud_default_phone_region
               - nextcloud_hostname
               - nextcloud_s3_region
@@ -77,7 +78,6 @@ spec:
                   location ~ ^/(?:autotest|occ|issue|indie|db_|console) {
                     deny all;
                   }
-
               tls:
                 - secretName: nextcloud-tls
                   hosts:
@@ -138,6 +138,9 @@ spec:
                       type: RuntimeDefault
 
               extraEnv:
+                # fix time in nextcloud container
+                - name: "TZ"
+                  value: '{{ .global_time_zone }}'
                 # OIDC parameters
                 - name: "NC_oidc_login_provider_url"
                   valueFrom:
@@ -350,6 +353,11 @@ spec:
               config:
                 # This generates the default nginx config as per the nextcloud documentation
                 default: true
+
+              extraEnv:
+                # fix time in nginx container
+                - name: "TZ"
+                  value: '{{ .global_time_zone }}'
 
             internalDatabase:
               enabled: false

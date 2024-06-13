@@ -43,7 +43,7 @@ spec:
           #   - name: nextcloud-maintanence-perm-fix
           containers:
             - name: nextcloud-maintanence
-              image: nextcloud:27.1.3-fpm-alpine
+              image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
               imagePullPolicy: IfNotPresent
               command:
                 - /bin/sh
@@ -110,6 +110,10 @@ spec:
                   name: nextcloud-phpconfig
                   subPath: www.conf
               env:
+                {{- with .Values.timezone }}
+                - name: "TZ"
+                  value: {{ . }}
+                {{- end }}
                 - name: POSTGRES_HOST
                   value: nextcloud-postgres-rw.nextcloud.svc:5432;sslmode=verify-full;sslrootcert=/etc/secrets/ca/ca.crt;sslcert=/etc/secrets/nextcloud/tls.crt;sslkey=/etc/secrets/nextcloud/tls.key
                 - name: POSTGRES_DB

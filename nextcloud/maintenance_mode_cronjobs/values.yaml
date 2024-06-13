@@ -1,3 +1,14 @@
+# -- timezone you want to use for TZ env var, must be identifier from this list:
+# https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List
+# example could be "Europe/Amsterdam"
+timezone: ""
+
+image:
+  # -- docker image repo
+  repository: "nextcloud"
+  # -- docker image tag
+  tag: "29.0.1-fpm-alpine"
+
 maintenance_mode_on:
   # -- cron schedule to turn on maintenance mode for nextcloud
   schedule: ""
