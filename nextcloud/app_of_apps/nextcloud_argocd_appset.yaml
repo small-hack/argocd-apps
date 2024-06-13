@@ -361,7 +361,7 @@ spec:
                   }
 
                   server {
-                      listen 80;
+                      listen 80 proxy_protocol;
 
                       # HSTS settings
                       # WARNING: Only add the preload option once you read about
@@ -398,6 +398,11 @@ spec:
 
                       # Remove X-Powered-By, which is an information leak
                       fastcgi_hide_header X-Powered-By;
+
+                      # to be tried next...
+                      # enable-real-ip: "true"
+                      # use-forwarded-headers: "true"
+                      # proxy-real-ip-cidr: 0.0.0.0/0
 
                       # use forwarded real ip
                       real_ip_header X-Forwarded_for;
