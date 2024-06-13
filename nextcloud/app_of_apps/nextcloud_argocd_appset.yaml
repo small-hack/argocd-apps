@@ -54,8 +54,8 @@ spec:
                 cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
                 nginx.ingress.kubernetes.io/proxy-body-size: 10G
                 nginx.ingress.kubernetes.io/enable-cors: "false"
+                # none of these seem to make a difference?
                 # nginx.ingress.kubernetes.io/enable-real-ip: "true"
-                # maybe try these two by server snippets if they break stuff?
                 # nginx.ingress.kubernetes.io/use-forwarded-headers: "true"
                 # nginx.ingress.kubernetes.io/proxy-real-ip-cidr: 0.0.0.0/0
                 nginx.ingress.kubernetes.io/server-snippet: |-
@@ -406,6 +406,7 @@ spec:
 
                       # use forwarded real ip
                       # real_ip_header X-Forwarded_for;
+                      real_ip_recursive on;
 
                       # Add .mjs as a file extension for javascript
                       # Either include it in the default mime.types list
