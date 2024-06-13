@@ -54,6 +54,9 @@ spec:
                 nginx.ingress.kubernetes.io/proxy-body-size: 10G
                 nginx.ingress.kubernetes.io/enable-cors: "false"
                 nginx.ingress.kubernetes.io/enable-real-ip: "true"
+                # maybe try these two by server snippets if they break stuff?
+                nginx.ingress.kubernetes.io/use-forwarded-headers: "true"
+                nginx.ingress.kubernetes.io/proxy-real-ip-cidr: 0.0.0.0/0
                 nginx.ingress.kubernetes.io/server-snippet: |-
                   server_tokens off;
                   proxy_hide_header X-Powered-By;
