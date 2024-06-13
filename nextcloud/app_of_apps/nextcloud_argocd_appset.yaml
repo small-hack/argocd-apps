@@ -221,6 +221,7 @@ spec:
                     'log_type' => 'file',
                     'logfile' => '/var/log/nextcloud.log',
                     'loglevel' => 1,
+                    'logtimezone' => '{{ .global_time_zone }}',
                     'logdateformat' => 'F d, Y H:i:s',
                     'maintenance_window_start' => 23
                     );
@@ -260,6 +261,7 @@ spec:
                   $CONFIG = array (
                     'allow_local_remote_servers' => true,
                     'default_phone_region' => '{{ .nextcloud_default_phone_region }}',
+                    'default_timezone' => '{{ .global_time_zone }}',
                   );
 
                 oidc.config.php: |-
