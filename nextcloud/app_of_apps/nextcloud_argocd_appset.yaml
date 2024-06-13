@@ -54,10 +54,10 @@ spec:
                 cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
                 nginx.ingress.kubernetes.io/proxy-body-size: 10G
                 nginx.ingress.kubernetes.io/enable-cors: "false"
-                nginx.ingress.kubernetes.io/enable-real-ip: "true"
+                # nginx.ingress.kubernetes.io/enable-real-ip: "true"
                 # maybe try these two by server snippets if they break stuff?
-                nginx.ingress.kubernetes.io/use-forwarded-headers: "true"
-                nginx.ingress.kubernetes.io/proxy-real-ip-cidr: 0.0.0.0/0
+                # nginx.ingress.kubernetes.io/use-forwarded-headers: "true"
+                # nginx.ingress.kubernetes.io/proxy-real-ip-cidr: 0.0.0.0/0
                 nginx.ingress.kubernetes.io/server-snippet: |-
                   server_tokens off;
                   proxy_hide_header X-Powered-By;
@@ -361,7 +361,7 @@ spec:
                   }
 
                   server {
-                      listen 80 proxy_protocol;
+                      listen 80;
 
                       # HSTS settings
                       # WARNING: Only add the preload option once you read about
@@ -405,7 +405,7 @@ spec:
                       # proxy-real-ip-cidr: 0.0.0.0/0
 
                       # use forwarded real ip
-                      real_ip_header X-Forwarded_for;
+                      # real_ip_header X-Forwarded_for;
 
                       # Add .mjs as a file extension for javascript
                       # Either include it in the default mime.types list
