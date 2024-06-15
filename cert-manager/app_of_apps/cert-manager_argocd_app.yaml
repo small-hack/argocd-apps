@@ -5,7 +5,7 @@ metadata:
   name: cert-manager-helm-chart
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "1"
+    argocd.argoproj.io/sync-wave: "2"
 spec:
   project: cert-manager
   source:
