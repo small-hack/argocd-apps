@@ -203,7 +203,7 @@ spec:
                   pm.max_children = 350
                   pm.start_servers = 100
                   pm.min_spare_servers = 100
-                  pm.max_spare_servers = 268
+                  pm.max_spare_servers = 280
 
               #  www.conf: |-
               #    [www]
