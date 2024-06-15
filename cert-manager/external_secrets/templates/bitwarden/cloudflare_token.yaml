@@ -1,0 +1,27 @@
+{{- if eq .Values.provider "bitwarden" }}
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: cloudflare-api-token
+spec:
+  target:
+    # Name for the secret to be created on the cluster
+    name: cloudflare-api-token
+    deletionPolicy: Delete
+    template:
+      type: Opaque
+      data:
+        token: |-
+          {{ `{{ .token }}` }}
+  data:
+    # Key given to the secret to be created on the cluster
+    - secretKey: token
+      sourceRef:
+        storeRef:
+          name: bitwarden-login
+          kind: ClusterSecretStore
+      remoteRef:
+        key: {{ .Values.cloudflareBitwardenID }}
+        property: password
+{{- end }}
