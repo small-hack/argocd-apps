@@ -1,0 +1,25 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cert-manager-helm-chart
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  project: cert-manager
+  source:
+    repoURL: 'https://charts.jetstack.io'
+    chart: cert-manager
+    targetRevision: v1.15.0
+    helm:
+      releaseName: cert-manager
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: cert-manager
+  syncPolicy:
+    syncOptions:
+      - ApplyOutOfSyncOnly=true
+    automated:
+      prune: true
+      selfHeal: true
