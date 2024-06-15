@@ -16,6 +16,7 @@ spec:
         input:
           parameters:
             secret_vars:
+              - global_time_zone
               - nextcloud_maintenance_mode_on_schedule
               - nextcloud_maintenance_mode_off_schedule
   template:
@@ -41,6 +42,9 @@ spec:
         helm:
           releaseName: maintenance-mode-cronjobs
           valuesObject:
+            # -- timezone for nextcloud container
+            timezone: '{{ .global_time_zone }}'
+
             maintenance_mode_on:
               # -- cron schedule to turn on maintenance mode for nextcloud
               schedule: '{{ .nextcloud_maintenance_mode_on_schedule }}'

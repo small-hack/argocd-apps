@@ -1,0 +1,77 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: ingress-nginx-helm-appset
+  namespace: argocd
+spec:
+  goTemplate: true
+  # generator allows us to source specific values from an external k8s secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - global_time_zone
+  template:
+    metadata:
+      name: ingress-nginx-helm
+    spec:
+      project: ingress-nginx
+      destination:
+        server: 'https://kubernetes.default.svc'
+        namespace: ingress-nginx
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
+          selfHeal: true
+      source:
+        repoURL: 'https://kubernetes.github.io/ingress-nginx'
+        chart: ingress-nginx
+        targetRevision: 4.10.1
+        helm:
+          releaseName: 'ingress-nginx'
+          valuesObject:
+            controller:
+              # note: checkout controller.keda variables in the future
+              replicaCount: 2
+
+              # attempt to get the real ip
+              config:
+                enable-real-ip: 'true'
+                use-forwarded-headers: 'true'
+                proxy-real-ip-cidr: 0.0.0.0/0
+
+                # we set the timezone on the pod, to make logs easier to read
+                extraEnvs:
+                  - name: TZ
+                    value: '{{ .global_time_zone }}'
+
+              # -- This configuration defines if Ingress Controller should allow users to set
+              # their own *-snippet annotations, otherwise this is forbidden / dropped
+              # when users add those annotations.
+              # Global snippets in ConfigMap are still respected
+              allowSnippetAnnotations: true
+
+              resources:
+                requests:
+                  cpu: 100m
+                  memory: 90Mi
+
+              service:
+                enabled: true
+                type: LoadBalancer
+                externalTrafficPolicy: 'Local'
+                external:
+                  enabled: true
+
+              metrics:
+                enabled: false
+                serviceMonitor:
+                  enabled: true
+                prometheusRule:
+                  enabled: false
