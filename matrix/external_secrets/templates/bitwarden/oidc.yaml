@@ -12,14 +12,16 @@ spec:
     template:
       type: Opaque
       data:
-        provider_id: |-
-          {{ `{{ .providerId }}` }}
         issuer: |-
           {{ `{{ .issuer }}` }}
         client_id: |-
           {{ `{{ .username }}` }}
         client_secret: |-
           {{ `{{ .password }}` }}
+        {{- if .Values.matrix_authentication_service.mas_bitwarden_ID }}
+        provider_id: |-
+          {{ `{{ .providerId }}` }}
+        {{- end }}
   data:
     # keycloak client Issuer
     - secretKey: issuer
@@ -51,6 +53,7 @@ spec:
         key: {{ .Values.matrix_authentication_service.oidc_credentials_bitwarden_ID }}
         property: password
 
+    {{- if .Values.matrix_authentication_service.mas_bitwarden_ID }}
     # unique identity provider id for oidc, is a ulid
     - secretKey: providerId
       sourceRef:
@@ -60,4 +63,5 @@ spec:
       remoteRef:
         key: {{ .Values.matrix_authentication_service.mas_bitwarden_ID }}
         property: provider_id
+    {{- end }}
 {{- end }}
