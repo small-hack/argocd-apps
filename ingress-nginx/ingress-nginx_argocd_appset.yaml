@@ -42,13 +42,13 @@ spec:
 
               config:
                 # block all requests with no user-agent to kick out the annoying script kiddies
-                block-user-agents: "-"
+                block-user-agents: ""
                 # show real ip in the logs
-                enable-real-ip: 'true'
-                use-forwarded-headers: 'true'
-                proxy-real-ip-cidr: 0.0.0.0/0
+                enable-real-ip: "true"
+                use-forwarded-headers: "true"
+                proxy-real-ip-cidr: "0.0.0.0/0"
                 # restrict old versions of tls, could break old browsers/phones
-                ssl-protocols: 'TLSv1.3'
+                ssl-protocols: "TLSv1.3"
                 # Enables Online Certificate Status Protocol stapling (OCSP) support.
                 enable-ocsp: "true"
                 # reject SSL handshake to an unknown virtualhost. helps to
