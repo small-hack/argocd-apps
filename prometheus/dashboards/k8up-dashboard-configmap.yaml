@@ -17,7 +17,7 @@ data:
           "pluginName": "Prometheus"
         },
         {
-          "name": "VAR_DS_PROMETHEUS",
+          "name": "DS_PROMETHEUS",
           "type": "constant",
           "label": "DS_PROMETHEUS",
           "value": "prometheus",
@@ -2279,18 +2279,18 @@ data:
           {
             "hide": 2,
             "name": "DS_PROMETHEUS",
-            "query": "${VAR_DS_PROMETHEUS}",
+            "query": "${DS_PROMETHEUS}",
             "skipUrlSync": false,
             "type": "constant",
             "current": {
-              "value": "${VAR_DS_PROMETHEUS}",
-              "text": "${VAR_DS_PROMETHEUS}",
+              "value": "${DS_PROMETHEUS}",
+              "text": "${DS_PROMETHEUS}",
               "selected": false
             },
             "options": [
               {
-                "value": "${VAR_DS_PROMETHEUS}",
-                "text": "${VAR_DS_PROMETHEUS}",
+                "value": "${DS_PROMETHEUS}",
+                "text": "${DS_PROMETHEUS}",
                 "selected": false
               }
             ]
