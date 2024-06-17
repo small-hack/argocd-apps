@@ -19,6 +19,8 @@ spec:
               - global_time_zone
               - nextcloud_default_phone_region
               - nextcloud_hostname
+              - nextcloud_mail_domain
+              - nextcloud_mail_from_address
               - nextcloud_s3_region
   template:
     metadata:
@@ -105,6 +107,8 @@ spec:
               # for sending notifications
               mail:
                 enabled: true
+                fromAddress: '{{ .nextcloud_mail_from_address }}'
+                domain: '{{ .nextcloud_mail_domain }}'
 
               extraInitContainers:
                 - name: change-data-dir-permissions
