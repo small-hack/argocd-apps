@@ -2279,21 +2279,9 @@ data:
           {
             "hide": 2,
             "name": "DS_PROMETHEUS",
-            "query": "${DS_PROMETHEUS}",
+            "query": "prometheus",
             "skipUrlSync": false,
-            "type": "constant",
-            "current": {
-              "value": "prometheus",
-              "text": "${DS_PROMETHEUS}",
-              "selected": false
-            },
-            "options": [
-              {
-                "value": "prometheus",
-                "text": "${DS_PROMETHEUS}",
-                "selected": false
-              }
-            ]
+            "type": "constant"
           }
         ]
       },
