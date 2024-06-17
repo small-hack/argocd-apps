@@ -49,6 +49,9 @@ spec:
                 ssl-protocols: 'TLSv1.3'
                 # Enables Online Certificate Status Protocol stapling (OCSP) support.
                 enable-ocsp: "true"
+                # reject SSL handshake to an unknown virtualhost. helps to
+                # mitigate the fingerprinting using default certificate of ingress
+                ssl-reject-handshake: "true"
                 # Enable Modsecurity and the OWASP Core rule set
                 enable-modsecurity: "true"
                 enable-owasp-modsecurity-crs: "true"
