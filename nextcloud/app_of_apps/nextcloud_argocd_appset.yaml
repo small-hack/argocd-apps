@@ -210,7 +210,6 @@ spec:
                   pm.max_spare_servers = 280
 
                 opcache.conf: |
-                  php_admin_value[opcache.enable] = 1
                   php_admin_value[opcache.save_comments] = 1
                   php_admin_value[opcache.jit_buffer_size] = 8M
                   php_admin_value[opcache.interned_strings_buffer] = 64
