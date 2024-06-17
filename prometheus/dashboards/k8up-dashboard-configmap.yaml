@@ -56,8 +56,8 @@ data:
           {
             "builtIn": 1,
             "datasource": {
-              "type": "datasource",
-              "uid": "grafana"
+              "type": "grafana",
+              "uid": "-- Grafana --"
             },
             "enable": true,
             "hide": true,
@@ -2298,14 +2298,14 @@ data:
         ]
       },
       "time": {
-        "from": "now-24h",
+        "from": "now-7d",
         "to": "now"
       },
       "timeRangeUpdatedDuringEditOrView": false,
       "timepicker": {},
       "timezone": "browser",
-      "title": "K8up backup",
-      "uid": "k8up",
-      "version": 1,
+      "title": "K8up backups",
+      "uid": "adp2mzw5g81z4c",
+      "version": 2,
       "weekStart": ""
     }
