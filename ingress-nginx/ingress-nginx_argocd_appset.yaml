@@ -42,6 +42,8 @@ spec:
 
               # attempt to get the real ip
               config:
+                # restrict old versions of tls, could break old browsers/phones
+                ssl-protocols: 'TLSv1.3'
                 enable-real-ip: 'true'
                 use-forwarded-headers: 'true'
                 proxy-real-ip-cidr: 0.0.0.0/0
