@@ -41,6 +41,8 @@ spec:
               replicaCount: 2
 
               config:
+                # block all requests with no user-agent to kick out the annoying script kiddies
+                block-user-agents: "-"
                 # show real ip in the logs
                 enable-real-ip: 'true'
                 use-forwarded-headers: 'true'
