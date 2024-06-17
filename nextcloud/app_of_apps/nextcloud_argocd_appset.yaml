@@ -212,6 +212,8 @@ spec:
                   pm.start_servers = 100
                   pm.min_spare_servers = 100
                   pm.max_spare_servers = 280
+                  upload_max_filesize = 5G
+                  memory_limit = 1024M
 
                 opcache.conf: |
                   php_admin_value[opcache.save_comments] = 1
@@ -521,8 +523,6 @@ spec:
                 # fix time in nginx container
                 - name: "TZ"
                   value: '{{ .global_time_zone }}'
-                - name: PHP_MEMORY_LIMIT
-                  value: "1024M"
 
             internalDatabase:
               enabled: false
