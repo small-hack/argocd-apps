@@ -224,7 +224,7 @@ spec:
                   <?php
                   $CONFIG = array (
                     'log_type' => 'file',
-                    'logfile' => '/var/log/nextcloud.log',
+                    'logfile' => '/var/www/html/nextcloud.log',
                     'loglevel' => 1,
                     'logtimezone' => '{{ .global_time_zone }}',
                     'logdateformat' => 'F d, Y H:i:s',
