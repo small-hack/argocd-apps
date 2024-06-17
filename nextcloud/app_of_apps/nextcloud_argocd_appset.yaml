@@ -589,7 +589,7 @@ spec:
 
             metrics:
               enabled: true
-              https: true
+              https: false
               token: "enabled"
               timeout: 10s
               podLabels:
