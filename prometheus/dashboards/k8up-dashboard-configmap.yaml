@@ -2283,13 +2283,13 @@ data:
             "skipUrlSync": false,
             "type": "constant",
             "current": {
-              "value": "${DS_PROMETHEUS}",
+              "value": "prometheus",
               "text": "${DS_PROMETHEUS}",
               "selected": false
             },
             "options": [
               {
-                "value": "${DS_PROMETHEUS}",
+                "value": "prometheus",
                 "text": "${DS_PROMETHEUS}",
                 "selected": false
               }
