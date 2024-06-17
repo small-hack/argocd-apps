@@ -23,7 +23,7 @@ data:
           "type": "grafana",
           "id": "grafana",
           "name": "Grafana",
-          "version": "10.4.1"
+          "version": "10.4.3"
         },
         {
           "type": "datasource",
@@ -49,8 +49,8 @@ data:
           {
             "builtIn": 1,
             "datasource": {
-              "type": "grafana",
-              "uid": "-- Grafana --"
+              "type": "datasource",
+              "uid": "grafana"
             },
             "enable": true,
             "hide": true,
@@ -2272,7 +2272,7 @@ data:
       "timepicker": {},
       "timezone": "browser",
       "title": "K8up backups",
-      "uid": "fdjq2cwi6fmyob",
-      "version": 27,
+      "uid": "k8up",
+      "version": 28,
       "weekStart": ""
     }
