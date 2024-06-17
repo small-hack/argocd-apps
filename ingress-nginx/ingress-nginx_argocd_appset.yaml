@@ -46,10 +46,10 @@ spec:
                 use-forwarded-headers: 'true'
                 proxy-real-ip-cidr: 0.0.0.0/0
 
-                # we set the timezone on the pod, to make logs easier to read
-                extraEnvs:
-                  - name: TZ
-                    value: '{{ .global_time_zone }}'
+              # we set the timezone on the pod, to make logs easier to read
+              extraEnvs:
+                - name: TZ
+                  value: '{{ .global_time_zone }}'
 
               # -- This configuration defines if Ingress Controller should allow users to set
               # their own *-snippet annotations, otherwise this is forbidden / dropped
