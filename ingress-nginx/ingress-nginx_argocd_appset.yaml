@@ -45,6 +45,32 @@ spec:
                 enable-real-ip: 'true'
                 use-forwarded-headers: 'true'
                 proxy-real-ip-cidr: 0.0.0.0/0
+                # Enable Modsecurity and the OWASP Core rule set
+                enable-modsecurity: "true"
+                enable-owasp-modsecurity-crs: "true"
+                # Update ModSecurity config and rules
+                # modsecurity-snippet: |
+                #   # Enable prevention mode. Can be any of: DetectionOnly,On,Off (default is DetectionOnly)
+                #   SecRuleEngine On
+                #
+                #   # Enable scanning of the request body
+                #   SecRequestBodyAccess On      # Enable XML and JSON parsing
+                #   SecRule REQUEST_HEADERS:Content-Type "(?:application(?:/soap\+|/)|text/)xml" \
+                #       "id:'200000',phase:1,t:none,t:lowercase,pass,nolog,\
+                #       ctl:requestBodyProcessor=XML"
+                #   SecRule REQUEST_HEADERS:Content-Type "application/json" \
+                #       "id:'200001',phase:1,t:none,t:lowercase,pass,nolog,\
+                #       ctl:requestBodyProcessor=JSON"      # Max request sizes in bytes (with/without files)
+
+                #   # Note NGINX Ingress has its own annotations, keep in sync!
+                #   SecRequestBodyLimit 20971520 # 20Mb (default is 12.5Mb)
+                #   SecRequestBodyNoFilesLimit 262144 # 250Kb (default is 128Kb)
+                #   SecRequestBodyLimitAction Reject # Reject if larger (we could also let it pass with ProcessPartial)      # Update config to include PUT/PATCH/DELETE in the allowed HTTP methods (instead of fully disabling 911100)
+                #   SecAction "id:900200,phase:1,nolog,pass,t:none,\
+                #     setvar:tx.allowed_methods=GET HEAD POST OPTIONS PUT PATCH DELETE"      # Send ModSecurity audit logs to the stdout (only for rejected requests)
+                #   SecAuditLog /dev/stdout
+                #   SecAuditLogFormat JSON
+                #   SecAuditEngine RelevantOnly # could be On/Off/RelevantOnly
 
               # we set the timezone on the pod, to make logs easier to read
               extraEnvs:
