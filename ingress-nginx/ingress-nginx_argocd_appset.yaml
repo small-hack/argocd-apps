@@ -105,7 +105,7 @@ spec:
                   enabled: true
 
               metrics:
-                enabled: false
+                enabled: true
                 serviceMonitor:
                   enabled: true
                 prometheusRule:
