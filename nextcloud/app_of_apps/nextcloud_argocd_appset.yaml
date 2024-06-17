@@ -213,8 +213,8 @@ spec:
                   php_admin_value[opcache.enable] = 1
                   php_admin_value[opcache.save_comments] = 1
                   php_admin_value[opcache.jit_buffer_size] = 8M
-                  php_admin_value[opcache.interned_strings_buffer] = 32
-                  php_admin_value[opcache.memory_consumption] = 2048
+                  php_admin_value[opcache.interned_strings_buffer] = 64
+                  php_admin_value[opcache.memory_consumption] = 3072
                   php_admin_value[opcache.max_accelerated_files] = 30000
                   php_admin_value[opcache.validate_timestamps] = 0
                   php_admin_value[opcache.revalidate_freq] = 60
