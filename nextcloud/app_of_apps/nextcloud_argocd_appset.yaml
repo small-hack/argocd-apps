@@ -221,7 +221,6 @@ spec:
                   php_admin_value[opcache.max_accelerated_files] = 30000
                   php_admin_value[opcache.validate_timestamps] = 0
                   php_admin_value[opcache.revalidate_freq] = 60
-                  php_admin_value[memory_limit] = -1
 
               configs:
                 logging.config.php: |-
@@ -522,6 +521,8 @@ spec:
                 # fix time in nginx container
                 - name: "TZ"
                   value: '{{ .global_time_zone }}'
+                - name: PHP_MEMORY_LIMIT
+                  value: "1024M"
 
             internalDatabase:
               enabled: false
