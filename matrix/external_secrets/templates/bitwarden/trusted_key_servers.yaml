@@ -18,9 +18,9 @@ spec:
     - secretKey: trustedKeyServers
       sourceRef:
         storeRef:
-          name: bitwarden-fields
+          name: bitwarden-login
           kind: ClusterSecretStore
       remoteRef:
         key: {{ .Values.synapse.trusted_key_servers_bitwarden_ID }}
-        property: issuer
+        property: password
 {{- end }}
