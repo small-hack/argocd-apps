@@ -260,7 +260,7 @@ spec:
 
                 # -- use an existing Kubernetes Secret for trusted server list
                 # instead of matrix.security.trustedKeyServers
-                trustedKeyServersExistingSecret: "trusted-keys-servers"
+                trustedKeyServersExistingSecret: "trusted-key-servers"
 
                 # -- key in existing Kubernetes Secret for trusted server list
                 trustedKeyServersSecretKey: "trustedKeyServers"
