@@ -1,4 +1,4 @@
-{{- if and (eq .Values.external_secrets_provider "bitwarden") .Values.synapse.trusted_key_servers_bitwarden_ID }}
+{{- if and (eq .Values.external_secrets_provider "bitwarden") (not eq .Values.synapse.trusted_key_servers_bitwarden_ID "not applicable") }}
 ---
 apiVersion: external-secrets.io/v1beta1
 kind: ExternalSecret

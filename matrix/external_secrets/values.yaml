@@ -31,7 +31,7 @@ synapse:
   # -- existing bitwarden items with s3_ matrix credentials
   s3_matrix_credentials_bitwarden_ID: ""
   # -- trusted key servers list bitwarden ID
-  trusted_key_servers_bitwarden_ID: ""
+  trusted_key_servers_bitwarden_ID: "not applicable"
 
 sliding_sync:
   # -- postgresql credentials bitwarden item _ID
