@@ -41,7 +41,7 @@ spec:
           selfHeal: true
       source:
         repoURL: 'https://small-hack.github.io/matrix-chart'
-        targetRevision: 10.1.1
+        targetRevision: 11.0.0
         chart: matrix
         helm:
           valuesObject:
@@ -100,7 +100,7 @@ spec:
                   - 'fe80::/64'
                   - 'fc00::/7'
                 ingress:
-                  enabled: true
+                  enabled: false
                   tls:
                     enabled: true
                   host: '{{ .matrix_federation_hostname }}'
@@ -255,6 +255,13 @@ spec:
                 #     acceptKeysInsecurely: false
                 #   - serverName: 'my_other_trusted_server.{{ .matrix_hostname }}'
 
+                # -- use an existing Kubernetes Secret for trusted server list
+                # instead of matrix.security.trustedKeyServers
+                trustedKeyServersExistingSecret: "trusted-key-servers"
+
+                # -- key in existing Kubernetes Secret for trusted server list
+                trustedKeyServersSecretKey: "trustedKeyServers"
+
               # -- Set to true to globally block access to the homeserver
               disabled: false
               # -- Human readable reason for why the homeserver is blocked
@@ -352,6 +359,10 @@ spec:
                   # remove it if you use a different ingress provider
                   nginx.ingress.kubernetes.io/configuration-snippet: |
                     proxy_intercept_errors off;
+                    location /.well-known/matrix/server {
+                      return 200 '{"m.server": "{{ .matrix_hostname }}:443"}';
+                      add_header Content-Type application/json;
+                    }
                   # -- required for TLS certs issued by cert-manager
                   cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
                 tls:

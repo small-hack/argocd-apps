@@ -1,0 +1,26 @@
+{{- if and (eq .Values.external_secrets_provider "bitwarden") (not (eq .Values.synapse.trusted_key_servers_bitwarden_ID "not applicable")) }}
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: trusted-key-servers
+spec:
+  target:
+    # Name for the secret to be created on the cluster
+    name: trusted-key-servers
+    deletionPolicy: Delete
+    template:
+      type: Opaque
+      data:
+        trustedKeyServers: |-
+          {{ `{{ .trustedKeyServers }}` }}
+  data:
+    - secretKey: trustedKeyServers
+      sourceRef:
+        storeRef:
+          name: bitwarden-login
+          kind: ClusterSecretStore
+      remoteRef:
+        key: {{ .Values.synapse.trusted_key_servers_bitwarden_ID }}
+        property: password
+{{- end }}
