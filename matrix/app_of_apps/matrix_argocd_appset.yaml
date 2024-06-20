@@ -103,7 +103,7 @@ spec:
                   - 'fe80::/64'
                   - 'fc00::/7'
                 ingress:
-                  enabled: true
+                  enabled: false
                   tls:
                     enabled: true
                   host: '{{ .matrix_federation_hostname }}'
