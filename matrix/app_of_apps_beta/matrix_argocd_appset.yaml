@@ -44,11 +44,11 @@ spec:
           selfHeal: true
       source:
         repoURL: 'https://small-hack.github.io/matrix-chart'
+        targetRevision: 11.0.0
+        chart: matrix
         # repoURL: 'https://github.com/small-hack/matrix-chart'
-        targetRevision: 10.1.1
         # targetRevision: add-sliding-sync-subchart
         # path: charts/matrix/
-        chart: matrix
         helm:
           valuesObject:
             fullnameOverride: matrix-stack
@@ -113,7 +113,7 @@ spec:
 
                 ingress:
                   # federation ingress
-                  enabled: true
+                  enabled: false
                   tls:
                     enabled: true
                   host: '{{ .matrix_federation_hostname }}'
