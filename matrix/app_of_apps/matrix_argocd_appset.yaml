@@ -40,12 +40,9 @@ spec:
           prune: true
           selfHeal: true
       source:
-        repoURL: 'https://github.com/small-hack/matrix-chart'
-        path: charts/matrix/
-        targetRevision: update-black-list
-        # repoURL: 'https://small-hack.github.io/matrix-chart'
-        # targetRevision: 10.2.0
-        # chart: matrix
+        repoURL: 'https://small-hack.github.io/matrix-chart'
+        targetRevision: 11.0.0
+        chart: matrix
         helm:
           valuesObject:
             fullnameOverride: matrix-stack
