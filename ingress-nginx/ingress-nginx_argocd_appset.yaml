@@ -41,6 +41,8 @@ spec:
               replicaCount: 2
 
               config:
+                # always use 301 instead of a 308 redirect
+                http-redirect-code: "301"
                 # block all requests with no user-agent to kick out the annoying script kiddies
                 block-user-agents: ""
                 # show real ip in the logs
