@@ -80,7 +80,7 @@ spec:
                 # -- Max image size in pixels
                 maxPixels: 32M
 
-              server_server_wellknown: true
+              serve_server_wellknown: true
 
               # Settings related to federation
               federation:
