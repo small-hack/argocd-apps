@@ -270,12 +270,12 @@ spec:
               logging:
                 # -- Root log level is the default log level for log outputs that don't
                 # have more specific settings.
-                rootLogLevel: WARNING
+                rootLogLevel: INFO
                 # -- beware: increasing this to DEBUG will make synapse log sensitive
                 # information such as access tokens.
-                sqlLogLevel: WARNING
+                sqlLogLevel: INFO
                 # -- The log level for the synapse server
-                synapseLogLevel: WARNING
+                synapseLogLevel: INFO
 
             s3:
               # -- enable s3 storage via https://github.com/matrix-org/synapse-s3-storage-provider
