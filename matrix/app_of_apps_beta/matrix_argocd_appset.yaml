@@ -44,7 +44,7 @@ spec:
           selfHeal: true
       source:
         repoURL: 'https://small-hack.github.io/matrix-chart'
-        targetRevision: 11.0.0
+        targetRevision: 11.1.1
         chart: matrix
         # repoURL: 'https://github.com/small-hack/matrix-chart'
         # targetRevision: add-sliding-sync-subchart
