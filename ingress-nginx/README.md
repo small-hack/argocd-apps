@@ -1,5 +1,8 @@
 # Ingress Nginx Controller
-This installs [ingress-nginx](https://github.com/kubernetes/ingress-nginx) which is the Kubernetes hosted ingress controller using nginx, not to be confused with nginx-ingress, which is the ingress controller using nginx that is hosted _by nginx itself_.
+This installs [ingress-nginx](https://github.com/kubernetes/ingress-nginx) which is the Kubernetes hosted ingress controller using nginx, not to be confused with _nginx_-ingress, which is the ingress controller using nginx that is hosted _by nginx itself_.
+
+<img width="906" alt="Screenshot 2024-06-21 at 16 57 53" src="https://github.com/small-hack/argocd-apps/assets/2389292/52d2cc0b-1dd5-4859-8b7e-a44a4da076fe">
+
 
 We pass in values to helm chart to:
 
