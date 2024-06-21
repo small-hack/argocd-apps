@@ -41,7 +41,7 @@ spec:
           selfHeal: true
       source:
         repoURL: 'https://small-hack.github.io/matrix-chart'
-        targetRevision: 11.0.0
+        targetRevision: 11.1.0
         chart: matrix
         helm:
           valuesObject:
@@ -79,6 +79,8 @@ spec:
 
                 # -- Max image size in pixels
                 maxPixels: 32M
+
+              server_server_wellknown: true
 
               # Settings related to federation
               federation:
@@ -359,10 +361,6 @@ spec:
                   # remove it if you use a different ingress provider
                   nginx.ingress.kubernetes.io/configuration-snippet: |
                     proxy_intercept_errors off;
-                    location /.well-known/matrix/server {
-                      return 200 '{"m.server": "{{ .matrix_hostname }}:443"}';
-                      add_header Content-Type application/json;
-                    }
                   # -- required for TLS certs issued by cert-manager
                   cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
                 tls:
