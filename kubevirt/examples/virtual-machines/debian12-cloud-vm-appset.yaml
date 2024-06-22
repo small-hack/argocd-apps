@@ -36,7 +36,7 @@ spec:
       project: kubevirt
       destination:
         name: in-cluster
-        namespace: '{{ .vm_hostame }}'
+        namespace: '{{ .vm_namespace }}'
       syncPolicy:
         syncOptions:
           - ApplyOutOfSyncOnly=true
