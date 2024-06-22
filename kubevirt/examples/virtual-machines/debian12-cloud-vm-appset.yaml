@@ -27,6 +27,7 @@ spec:
               - vm_hyperthreads
               - vm_memory
               - vm_password
+              - vm_namespace
   template:
     metadata:
       name: '{{ .vm_hostname }}'
