@@ -39,8 +39,8 @@ spec:
             deviceName: nvidia.com/GRID_M60-2Q
         
         virtualMachinePool:
-          enabled: false
-          size: 3
+          enabled: true
+          size: 1
         
         disks:
           - name: harddrive
