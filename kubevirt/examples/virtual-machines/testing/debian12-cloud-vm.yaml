@@ -17,7 +17,7 @@ spec:
       values: |
         virtualMachine:
           name: debian12
-          namespace: debian12
+          namespace: kubevirt
           runStrategy: "RerunOnFailure"
           features:
              kvmEnabled: true
@@ -36,7 +36,7 @@ spec:
             memory: 8Gi
           gpus:
           - name: gpu0
-            deviceName: nvidia.com/GM200GL_Tesla_M40
+            deviceName: nvidia.com/GRID_M60-2Q
         
         virtualMachinePool:
           enabled: false
@@ -59,14 +59,21 @@ spec:
         
         service:
           - name: vm0-service
-            type: NodePort
+            type: LoadBalancer
             externalTrafficPolicy: Cluster
             ports:
               - name: ssh
                 port: 22
                 targetPort: 22
                 protocol: TCP
-                nodePort: 30001
+              - name: vnc
+                port: 5900
+                targetPort: 5900
+                protocol: TCP
+              - name: https
+                port: 443
+                targetPort: 443
+                protocol: TCP
         
         cloudinitPath:
         cloudinitFromSecret: false
