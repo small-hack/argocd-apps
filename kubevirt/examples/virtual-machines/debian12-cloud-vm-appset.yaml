@@ -35,7 +35,7 @@ spec:
     spec:
       project: kubevirt
       destination:
-        name: '{{ .vm_host_node }}'
+        name: in-cluster
         namespace: '{{ .vm_hostame }}'
       syncPolicy:
         syncOptions:
