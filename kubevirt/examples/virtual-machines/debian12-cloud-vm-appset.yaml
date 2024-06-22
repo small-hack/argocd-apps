@@ -16,27 +16,27 @@ spec:
         input:
           parameters:
             secret_vars:
-              - max-vm_host_node
-              - max-vm_image_url
-              - max-vm_vm_hostname
-              - max-vm_username
-              - max-vm_github_username
-              - max-vm_storage
-              - max-vm_storageClass
-              - max-vm_cores
-              - max-vm_hyperthreads
-              - max-vm_memory
-              - max-vm_password
+              - vm_host_node
+              - vm_image_url
+              - vm_hostname
+              - vm_username
+              - vm_github_username
+              - vm_storage
+              - vm_storageClass
+              - vm_cores
+              - vm_hyperthreads
+              - vm_memory
+              - vm_password
   template:
     metadata:
-      name: '{{ .max-vm_host_node}}-{{ .max-vm_hostname }}'
+      name: '{{ .vm_host_node}}-{{ .vm_hostname }}'
       annotations:
         argocd.argoproj.io/sync-wave: "1"
     spec:
       project: kubevirt
       destination:
-        name: '{{ .max-vm_host_node }}'
-        namespace: '{{ .max-vm_hostame }}'
+        name: '{{ .vm_host_node }}'
+        namespace: '{{ .vm_hostame }}'
       syncPolicy:
         syncOptions:
           - ApplyOutOfSyncOnly=true
@@ -53,8 +53,8 @@ spec:
             ##########################
             # Virtual Machine settings
             virtualMachine:  
-              name: '{{ .max-vm_vm_hostname }}'
-              namespace: '{{ .max-vm_namespace }}'
+              name: '{{ .vm_vm_hostname }}'
+              namespace: '{{ .vm_namespace }}'
               runStrategy: "RerunOnFailure"
               
               features:
@@ -70,10 +70,10 @@ spec:
               machine:
                 machineType: "q35"
                 cpuPassthrough: false
-                vCores: '{{ .max-vm_cores }}'
+                vCores: '{{ .vm_cores }}'
                 pinCores: false
-                hyperThreadingEnabled: '{{ .max-vm_hyperthreads }}'
-                memory: '{{ .max-vm_memory }}'
+                hyperThreadingEnabled: '{{ .vm_hyperthreads }}'
+                memory: '{{ .vm_memory }}'
             
             #########################
             # Create a Virtual Machine Pool
@@ -105,11 +105,11 @@ spec:
               bus: virtio
               bootorder: 2
               readonly: false
-              pvsize: '{{ .max-vm_storage }}'
-              pvstorageClass: '{{ .max-vm_storageClass }}'
+              pvsize: '{{ .vm_storage }}'
+              pvstorageClass: '{{ .vm_storageClass }}'
               pvaccessMode: ReadWriteOnce
               source: url
-              url: '{{ .max-vm_image_url }}'
+              url: '{{ .vm_image_url }}'
             
             service:
             - name: service
@@ -149,7 +149,7 @@ spec:
             # Not all modules yet supported
             cloudinit:
               # -- Set hostname of VM
-              hostname: '{{ .max-vm_vm_hostname }}'
+              hostname: '{{ .vm_vm_hostname }}'
               disable_root: false
               network:
                 config: disabled
@@ -161,12 +161,12 @@ spec:
                 - kvm
               # -- Create users
               users:
-                - name: '{{ .max-vm_username }}'
+                - name: '{{ .vm_username }}'
                   groups: users, admin, sudo
                   sudo: ALL=(ALL) NOPASSWD:ALL
                   shell: /bin/bash
                   lock_passwd: false
-                  passwd: '{{ .max-vm_password }}'
+                  passwd: '{{ .vm_password }}'
                   # -- import ssh public-keys from github or lanchpad (doesnt work on Debian12)
                   ssh_import_id: []
                   # -- manually add a ssh public-key
@@ -187,5 +187,5 @@ spec:
                 - ssh-import-id
               # -- commands to run in final step
               runcmd:
-                - sudo -u '{{ .max-vm_username }}' -i ssh-import-id-gh '{{ .max-vm_github_username }}'
+                - sudo -u '{{ .vm_username }}' -i ssh-import-id-gh '{{ .vm_github_username }}'
 
