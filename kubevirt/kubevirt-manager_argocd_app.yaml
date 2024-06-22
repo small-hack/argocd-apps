@@ -44,8 +44,8 @@ spec:
           valuesObject:
             replicaCount: 1
             service:
-              type: ClusterIP
-              port: 8080
+              type: LoadBalancer
+              port: 80
               targetPort: 80
               protocol: TCP
               name: http
