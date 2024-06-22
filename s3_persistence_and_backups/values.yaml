@@ -3,6 +3,10 @@ provider: seaweedfs
 pvc_capacity: 10Gi
 pvc_storageClassName: "local-path"
 
+seaweedfs:
+  # -- deploy a master data PVC for seaweedfs
+  master_pvc: false
+
 # -- for enabling backups to a remote s3 provider or local disk backup
 k8up:
   backup_name: ""

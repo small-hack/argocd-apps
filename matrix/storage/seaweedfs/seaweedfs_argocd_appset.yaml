@@ -86,8 +86,8 @@ spec:
                 # Enter any extra configuration for master.toml here.
                 # It may be be a multi-line string.
               data:
-                type: "existingClaim"
-                claimName: "swfs-master-data"
+                type: "emptyDir"
+                # claimName: "swfs-master-data"
               logs:
                 type: "hostPath"
                 size: ""
