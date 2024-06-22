@@ -114,6 +114,9 @@ spec:
                     # -- required for TLS certs issued by cert-manager
                     cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
 
+              password_config:
+                enabled: false
+
               # User registration settings
               registration:
                 # -- Allow new users to register an account
