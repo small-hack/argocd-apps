@@ -84,8 +84,8 @@ spec:
             # Vm pools should be used with ephemeral disks or containerdisks
             # otherwise they would all fight over the same PVC
             virtualMachinePool:
-              enabled: false
-              size: 3
+              enabled: true
+              size: 1
             
             #############################
             # -- List of disks to create for the VM, Will be used to create Datavolumes or PVCs.
