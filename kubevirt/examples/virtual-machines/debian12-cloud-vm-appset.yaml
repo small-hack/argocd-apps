@@ -16,17 +16,17 @@ spec:
         input:
           parameters:
             secret_vars:
-              - vm_debian12_host_node
-              - vm_debian12_image_url
-              - vm_debian12_vm_hostname
-              - vm_debian12_username
-              - vm_debian12_github_username
-              - vm_debian12_storage
-              - vm_debian12_storageClass
-              - vm_debian12_cores
-              - vm_debian12_hyperthreads
-              - vm_debian12_memory
-              - vm_debian12_password
+              - max-vm_host_node
+              - max-vm_image_url
+              - max-vm_vm_hostname
+              - max-vm_username
+              - max-vm_github_username
+              - max-vm_storage
+              - max-vm_storageClass
+              - max-vm_cores
+              - max-vm_hyperthreads
+              - max-vm_memory
+              - max-vm_password
   template:
     metadata:
       name: '{{ .vm_debian12_host_node}}-{{ .vm_debian12_vm_hostname }}'
