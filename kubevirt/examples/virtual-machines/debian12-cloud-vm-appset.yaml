@@ -29,7 +29,7 @@ spec:
               - vm_password
   template:
     metadata:
-      name: '{{ .vm_host_node}}-{{ .vm_hostname }}'
+      name: '{{ .vm_hostname }}'
       annotations:
         argocd.argoproj.io/sync-wave: "1"
     spec:
@@ -53,7 +53,7 @@ spec:
             ##########################
             # Virtual Machine settings
             virtualMachine:  
-              name: '{{ .vm_vm_hostname }}'
+              name: '{{ .vm_hostname }}'
               namespace: '{{ .vm_namespace }}'
               runStrategy: "RerunOnFailure"
               
@@ -149,7 +149,7 @@ spec:
             # Not all modules yet supported
             cloudinit:
               # -- Set hostname of VM
-              hostname: '{{ .vm_vm_hostname }}'
+              hostname: '{{ .vm_hostname }}'
               disable_root: false
               network:
                 config: disabled
