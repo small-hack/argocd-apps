@@ -241,6 +241,7 @@ spec:
                     'enabledPreviewProviders' => array (
                       'OC\Preview\Movie',
                       'OC\Preview\PNG',
+                      'OC\Preview\SVG',
                       'OC\Preview\JPEG',
                       'OC\Preview\GIF',
                       'OC\Preview\BMP',
