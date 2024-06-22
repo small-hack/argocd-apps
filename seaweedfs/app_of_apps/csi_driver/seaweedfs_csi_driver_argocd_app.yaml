@@ -19,7 +19,7 @@ spec:
       selfHeal: true
   source:
     repoURL: "https://seaweedfs.github.io/seaweedfs-csi-driver/helm"
-    targetRevision: 0.2.1
+    targetRevision: 0.2.2
     chart: seaweedfs-csi-driver
     helm:
       valuesObject:
