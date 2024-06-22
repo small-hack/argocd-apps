@@ -49,6 +49,10 @@ spec:
             pvc_capacity: '{{ .nextcloud_s3_pvc_capacity }}'
             pvc_storageClassName: '{{ .global_pvc_storage_class }}'
 
+            seaweedfs:
+              # -- deploy a master data PVC for seaweedfs
+              master_pvc: false
+
             # not in use yet
             k8up:
               backup_name: 'nextcloud-nightly-backup'
