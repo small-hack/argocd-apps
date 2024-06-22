@@ -20,6 +20,7 @@ spec:
             secret_vars:
               - zitadel_hostname
               - global_cluster_issuer
+              - global_time_zone
   template:
     metadata:
       name: zitadel-web-app
@@ -45,6 +46,10 @@ spec:
           # https://github.com/zitadel/zitadel-charts/blob/main/charts/zitadel/values.yaml
           valuesObject:
             replicaCount: 1
+
+            env:
+              - name: TZ
+                value: '{{ .global_time_zone }}'
 
             zitadel:
               # See all defaults here:
