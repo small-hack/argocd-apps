@@ -13,6 +13,7 @@ spec:
   resources:
     requests:
       storage: {{ .Values.pvc_capacity }}
+{{- if .Values.seaweedfs.master_pvc }}
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1
@@ -27,6 +28,7 @@ spec:
   resources:
     requests:
       storage: 1Gi
+{{- end }}{{/* end master data pvc */}}
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1
