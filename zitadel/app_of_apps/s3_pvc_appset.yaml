@@ -61,11 +61,11 @@ spec:
                 bucket: '{{ .zitadel_s3_backup_bucket }}'
                 endpoint: '{{ .zitadel_s3_backup_endpoint }}'
                 accessKeyIDSecretRef:
-                  name: 's3-postgres-credentials'
+                  name: 's3-backups-credentials'
                   key: 'accessKeyId'
                   optional: false
                 secretAccessKeySecretRef:
-                  name: 's3-postgres-credentials'
+                  name: 's3-backups-credentials'
                   key: 'secretAccessKey'
                   optional: false
 
