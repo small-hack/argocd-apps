@@ -10,3 +10,6 @@ s3_provider: "seaweedfs"
 s3AdminCredentialsBitwardenID: ""
 s3PostgresCredentialsBitwardenID: ""
 s3BackupsCredentialsBitwardenID: ""
+
+# fake postgresql credentials
+postgresqlBitwardenID: ""

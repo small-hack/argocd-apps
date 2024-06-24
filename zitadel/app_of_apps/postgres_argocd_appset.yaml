@@ -50,6 +50,8 @@ spec:
               initdb:
                 database: zitadel
                 owner: zitadel
+                secret:
+                  name: zitadel-pgsql-credentials
                 # postInitApplicationSQLRefs:
                 #   secretRefs:
                 #     - name: zitadel-postgres-init-script
