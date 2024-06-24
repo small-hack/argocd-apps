@@ -1,35 +1,41 @@
-.github/* @jessebot
+# This file gives a maintainer to add to Pull Request reviewers for each file/directory
 
-demo/artifactory/* @cloudymax
-demo/cilium/* @jessebot @cloudymax
-demo/diagrams/* @cloudymax
-demo/home-assistant/* @jessebot
-demo/k8tz/* @cloudymax
-demo/kepler/* @jessebot
-demo/longhorn/* @cloudymax
-demo/netmaker/* @jessebot
-demo/oauth2-proxy/* @jessebot
-demo/wg-access-server/* @jessebot @cloudymax
+# Directories of untested/unsupported demo Argo CD Applications
+/demo/artifactory/ @cloudymax
+/demo/cilium/ @jessebot @cloudymax
+/demo/diagrams/ @cloudymax
+/demo/kepler/ @jessebot @cloudymax
+/demo/longhorn/ @cloudymax
+/demo/netmaker/ @jessebot
+/demo/oauth2-proxy/ @jessebot
+/demo/wg-access-server/ @jessebot @cloudymax
 
-argocd/* @jessebot
-coturn/* @cloudymax
-external-secrets-operator/* @cloudymax @jessebot
-harbor/* @cloudymax
-ingress/* @cloudymax @jessebot
-k8up/* @jessebot
-keycloak/* @cloudymax @jessebot
-kubevirt/* @cloudymax
-kyverno/* @jessebot
-mastodon/* @jessebot
-metallb/* @cloudymax @jessebot
-matrix/* @jessebot
-nextcloud/* @jessebot
-postgres/* @cloudymax
-prometheus/* @cloudymax
-test-app/* @cloudymax
-vouch-proxy/* @cloudymax @jessebot
+# Directories of live supported Argo CD Applications
+/argocd/ @jessebot
+/coturn/ @cloudymax
+/external-secrets-operator/ @cloudymax @jessebot
+/harbor/ @cloudymax
+/home-assistant/ @jessebot
+/ingress/ @cloudymax @jessebot
+/k8up/ @jessebot
+/k8tz/ @cloudymax
+/keycloak/ @cloudymax @jessebot
+/kubevirt/ @cloudymax
+/kyverno/ @jessebot
+/mastodon/ @jessebot
+/metallb/ @cloudymax @jessebot
+/matrix/ @jessebot
+/nextcloud/ @jessebot
+/postgres/ @cloudymax
+/prometheus/ @cloudymax
+/test-app/ @cloudymax
+/vouch-proxy/ @cloudymax @jessebot
 
-renovate.json @jessebot
-CONTRIBUTING.md @jessebot @cloudymax
-LICENSE @jessebot @cloudymax
-README.md @jessebot @cloudymax
+# Workflows and ci/cd
+/.github/ @jessebot
+/renovate.json @jessebot
+
+# Repo metadata
+/CONTRIBUTING.md @jessebot @cloudymax
+/LICENSE @jessebot @cloudymax
+/README.md @jessebot @cloudymax
