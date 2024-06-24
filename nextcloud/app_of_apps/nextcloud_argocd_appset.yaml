@@ -231,7 +231,7 @@ spec:
                     'loglevel' => 1,
                     'logtimezone' => '{{ .global_time_zone }}',
                     'logdateformat' => 'F d, Y H:i:s',
-                    'maintenance_window_start' => 23
+                    'maintenance_window_start' => 23,
                     );
 
                 previews.config.php: |-
@@ -250,7 +250,7 @@ spec:
                       'OC\Preview\MP4',
                       'OC\Preview\TXT',
                       'OC\Preview\MarkDown',
-                      'OC\Preview\PDF'
+                      'OC\Preview\PDF',
                     ),
                   );
 
