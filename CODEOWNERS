@@ -2,11 +2,13 @@
 
 # Directories of untested/unsupported demo Argo CD Applications
 /demo/artifactory/ @cloudymax
+/argo-workflows/ @cloudymax
 /demo/cilium/ @jessebot @cloudymax
 /demo/diagrams/ @cloudymax
+/demo/forgejo/ @jessebot
 /demo/kepler/ @jessebot @cloudymax
 /demo/longhorn/ @cloudymax
-/demo/netmaker/ @jessebot
+/openbao/ @jessebot
 /demo/oauth2-proxy/ @jessebot
 /demo/wg-access-server/ @jessebot @cloudymax
 
@@ -25,11 +27,13 @@
 /mastodon/ @jessebot
 /metallb/ @cloudymax @jessebot
 /matrix/ @jessebot
+/netmaker/ @cloudymax
 /nextcloud/ @jessebot
 /postgres/ @cloudymax
 /prometheus/ @cloudymax
 /test-app/ @cloudymax
 /vouch-proxy/ @cloudymax @jessebot
+/zitadel/ @jessebot
 
 # Workflows and ci/cd
 /.github/ @jessebot
