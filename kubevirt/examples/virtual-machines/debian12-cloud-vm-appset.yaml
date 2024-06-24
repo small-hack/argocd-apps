@@ -85,7 +85,7 @@ spec:
             # otherwise they would all fight over the same PVC
             virtualMachinePool:
               enabled: true
-              size: 1
+              size: 2
             
             #############################
             # -- List of disks to create for the VM, Will be used to create Datavolumes or PVCs.
