@@ -46,8 +46,8 @@ spec:
           valuesObject:
             image:
               repository: jessebot/nextcloud
-              tag: 29.0.2-fpm-alpine
-              pullPolicy: IfNotPresent
+              tag: main
+              pullPolicy: Always
 
             ingress:
               enabled: true
@@ -241,6 +241,7 @@ spec:
                     'enabledPreviewProviders' => array (
                       'OC\Preview\Movie',
                       'OC\Preview\PNG',
+                      'OC\Preview\SVG',
                       'OC\Preview\JPEG',
                       'OC\Preview\GIF',
                       'OC\Preview\BMP',
