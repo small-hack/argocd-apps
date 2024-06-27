@@ -65,20 +65,24 @@ spec:
                   SecRuleEngine On
 
                   # Enable scanning of the request body
-                  SecRequestBodyAccess On      # Enable XML and JSON parsing
+                  SecRequestBodyAccess On
 
+                  # Enable XML and JSON parsing
                   SecRule REQUEST_HEADERS:Content-Type "(?:application(?:/soap\+|/)|text/)xml" \
                       "id:'200000',phase:1,t:none,t:lowercase,pass,nolog,\
                       ctl:requestBodyProcessor=XML"
 
+                  # Max request sizes in bytes (with/without files)
                   SecRule REQUEST_HEADERS:Content-Type "application/json" \
                       "id:'200001',phase:1,t:none,t:lowercase,pass,nolog,\
-                      ctl:requestBodyProcessor=JSON"      # Max request sizes in bytes (with/without files)
+                      ctl:requestBodyProcessor=JSON"
 
                   # Note NGINX Ingress has its own annotations, keep in sync!
-                  SecRequestBodyLimit 268400000 # 2Gb (default is 12.5Mb)
+                  # 2Gb (default is 12.5Mb)
+                  SecRequestBodyLimit 268400000
 
-                  SecRequestBodyNoFilesLimit 20971520 # 20Mb (default is 128Kb)
+                  # 20Mb (default is 128Kb)
+                  SecRequestBodyNoFilesLimit 20971520
 
                   # Reject if larger (we could also let it pass with ProcessPartial)
                   # Update config to include PUT/PATCH/DELETE in the allowed HTTP methods (instead of fully disabling 911100)
