@@ -44,7 +44,7 @@ spec:
           selfHeal: true
       source:
         repoURL: 'https://small-hack.github.io/matrix-chart'
-        targetRevision: 11.1.1
+        targetRevision: 12.0.0
         chart: matrix
         # repoURL: 'https://github.com/small-hack/matrix-chart'
         # targetRevision: add-sliding-sync-subchart
@@ -73,7 +73,7 @@ spec:
               # all:    all rooms
               # invite: private msg/room created w/ private_chat or trusted_private_chat
               #         room presets
-              encryptByDefault: invite
+              encryptByDefault: all
 
               # -- Email address of the administrator
               adminEmail: '{{ .matrix_admin_email }}'
@@ -90,29 +90,19 @@ spec:
                 # -- Max image size in pixels
                 maxPixels: 32M
 
-              password_config:
-                enabled: false
-                localdb_enabled: false
-
               # Settings related to federation
               federation:
                 enabled: true
-                # -- Allow members of other homeservers to fetch *public* rooms
-                allowPublicRooms: true
-                # -- IP addresses to blacklist federation requests to
-                blacklist:
-                  - '127.0.0.0/8'
-                  - '10.0.0.0/8'
-                  - '172.16.0.0/12'
-                  - '192.168.0.0/16'
-                  - '100.64.0.0/10'
-                  - '169.254.0.0/16'
-                  - '::1/128'
-                  - 'fe80::/64'
-                  - 'fc00::/7'
+                client_timeout: 180s
+                max_short_retry_delay: 5s
+                max_long_retry_delay: 100s
+                max_short_retries: 3
+                max_long_retries: 10
+                destination_min_retry_interval: 30s
+                destination_retry_multiplier: 2
+                destination_max_retry_interval: 6h
 
                 ingress:
-                  # federation ingress
                   enabled: false
                   tls:
                     enabled: true
@@ -122,7 +112,48 @@ spec:
                     # use a different ingress provider
                     nginx.ingress.kubernetes.io/configuration-snippet: |
                       proxy_intercept_errors off;
+                    # -- required for TLS certs issued by cert-manager
                     cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
+
+              # -- Allow members of other homeservers to fetch *public* rooms
+              allow_public_rooms_over_federation: true
+
+              # -- If set to true, removes the need for authentication to access the server's public rooms directory through the client API, meaning that anyone can query the room directory
+              allow_public_rooms_without_auth: false
+
+              # -- Restrict federation to the given whitelist of domains. N.B. we recommend also firewalling your federation listener to limit inbound federation traffic as early as possible, rather than relying purely on this application-layer restriction. If not specified, the default is to whitelist everythingNote
+              # Note: this does not stop a server from joining rooms that servers not on the whitelist are in. As such, this option is really only useful to establish a "private federation", where a group of servers all whitelist each other and have the same whitelist.
+              federation_domain_whitelist: []
+
+              # -- This option prevents outgoing requests from being sent to the specified blacklisted IP address CIDR ranges. If this option is not specified then it defaults to private IP address ranges (see the example below). The blacklist applies to the outbound requests for federation, identity servers, push servers, and for checking key validity for third-party invite events.
+              # (0.0.0.0 and :: are always blacklisted, whether or not they are explicitly listed here, since they correspond to unroutable addresses.)
+              # This option replaces federation_ip_range_blacklist in Synapse v1.25.0.
+              # Note: The value is ignored when an HTTP proxy is in use.
+              ip_range_blacklist:
+                - '127.0.0.0/8'
+                - '10.0.0.0/8'
+                - '172.16.0.0/12'
+                - '192.168.0.0/16'
+                - '100.64.0.0/10'
+                - '192.0.0.0/24'
+                - '169.254.0.0/16'
+                - '192.88.99.0/24'
+                - '198.18.0.0/15'
+                - '192.0.2.0/24'
+                - '198.51.100.0/24'
+                - '203.0.113.0/24'
+                - '224.0.0.0/4'
+                - '::1/128'
+                - 'fe80::/10'
+                - 'fc00::/7'
+                - '2001:db8::/32'
+                - 'ff00::/8'
+                - 'fec0::/10'
+
+              password_config:
+                enabled: false
+                localdb_enabled: false
+
 
               # User registration settings
               registration:
