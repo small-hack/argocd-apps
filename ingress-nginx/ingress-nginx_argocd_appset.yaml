@@ -68,9 +68,11 @@ spec:
                   SecRequestBodyAccess On
 
                   # Enable XML and JSON parsing
-                  SecRule REQUEST_HEADERS:Content-Type "(?:application(?:/soap\+|/)|text/)xml" "id:'200000',phase:1,t:none,t:lowercase,pass,nolog,ctl:requestBodyProcessor=XML"
+                  SecRule REQUEST_HEADERS:Content-Type "(?:text|application(?:/soap\+|/)|application/xml)/" \
+                    "id:200000,phase:1,t:none,t:lowercase,pass,nolog,ctl:requestBodyProcessor=XML"
 
-                  SecRule REQUEST_HEADERS:Content-Type "application/json" "id:'200001',phase:1,t:none,t:lowercase,pass,nolog,ctl:requestBodyProcessor=JSON"
+                  SecRule REQUEST_HEADERS:Content-Type "application/json" \
+                    "id:200001,phase:1,t:none,t:lowercase,pass,nolog,ctl:requestBodyProcessor=JSON"
 
                   # Note NGINX Ingress has its own annotations, keep in sync!
                   #
@@ -92,7 +94,8 @@ spec:
 
                   SecAuditLogFormat JSON
 
-                  SecAuditEngine RelevantOnly # could be On/Off/RelevantOnly
+                  # could be On/Off/RelevantOnly
+                  SecAuditEngine RelevantOnly
 
               # we set the timezone on the pod, to make logs easier to read
               extraEnvs:
