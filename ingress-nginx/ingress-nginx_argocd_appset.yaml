@@ -71,15 +71,23 @@ spec:
                     nolog,\
                     ctl:ruleRemoveById=920340"
 
-                  SecRule REQUEST_URI "@beginsWith /nextcloud-postgresl/nextcloud-postgresl/wals/" \
+                  SecRule REQUEST_URI "@beginsWith /zitadel-postgres/zitadel-postgres/base/" \
                     "id:20001,\
                     phase:1,\
                     pass,\
                     nolog,\
                     ctl:ruleRemoveById=920340"
 
-                  SecRule REQUEST_URI "@beginsWith /matrix-postgresl/matrix-postgresl/wals/" \
+
+                  SecRule REQUEST_URI "@beginsWith /nextcloud-postgresl/nextcloud-postgresl/wals/" \
                     "id:20002,\
+                    phase:1,\
+                    pass,\
+                    nolog,\
+                    ctl:ruleRemoveById=920340"
+
+                  SecRule REQUEST_URI "@beginsWith /matrix-postgresl/matrix-postgresl/wals/" \
+                    "id:20003,\
                     phase:1,\
                     pass,\
                     nolog,\
