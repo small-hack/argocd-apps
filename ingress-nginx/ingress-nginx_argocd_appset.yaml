@@ -103,7 +103,7 @@ spec:
                   # could be On/Off/RelevantOnly
                   SecAuditEngine RelevantOnly
 
-                  Include /etc/nginx/owasp-modsecurity-crs/plugins/custom_plugins/*conf
+                  Include /etc/nginx/owasp-modsecurity-crs/plugins/*conf
 
                   Include /etc/nginx/owasp-modsecurity-crs/nginx-modsecurity.conf
 
@@ -119,7 +119,7 @@ spec:
 
               extraVolumeMounts:
                 - name: plugins
-                  mountPath: /etc/nginx/owasp-modsecurity-crs/plugins/custom_plugins
+                  mountPath: /etc/nginx/owasp-modsecurity-crs/plugins
 
               # -- This configuration defines if Ingress Controller should allow users to set
               # their own *-snippet annotations, otherwise this is forbidden / dropped

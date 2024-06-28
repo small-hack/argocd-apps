@@ -3,4 +3,7 @@ kind: Kustomization
 configMapGenerator:
 - name: modsecurity-plugins
   files:
+  - empty-config.conf
+  - empty-before.conf
+  - empty-after.conf
   - nextcloud-rule-exclusions-before.conf
