@@ -62,7 +62,8 @@ spec:
                 # Update ModSecurity config and rules
                 modsecurity-snippet: |
                   Include /etc/nginx/owasp-modsecurity-crs/plugins/nextcloud-rule-exclusions-before.conf
-                  # allow postgresql to upload it's wal archives to s3
+
+                  # allow postgresql to upload wal archives to s3
                   SecRule REQUEST_URI "@beginsWith /zitadel-postgresl/zitadel-postgresl/wals/" \
                     "id:20000,\
                     phase:1,\
@@ -84,6 +85,7 @@ spec:
                     nolog,\
                     ctl:ruleRemoveById=920340"
 
+                  # nextcloud exclusion plugin
                   Include /etc/nginx/owasp-modsecurity-crs/nginx-modsecurity.config
 
                   # Enable prevention mode. Can be any of: DetectionOnly,On,Off (default is DetectionOnly)
