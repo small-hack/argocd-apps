@@ -67,12 +67,11 @@ spec:
                 enable-modsecurity: "true"
                 # Update ModSecurity config and rules
                 modsecurity-snippet: |
+                  Include /etc/nginx/owasp-modsecurity-crs/plugins/nextcloud-rule-exclusions-before.conf
+                  Include /etc/nginx/owasp-modsecurity-crs/nginx-modsecurity.conf
+
                   # Enable prevention mode. Can be any of: DetectionOnly,On,Off (default is DetectionOnly)
                   SecRuleEngine On
-
-                  Include /etc/nginx/owasp-modsecurity-crs/plugins/*conf
-
-                  Include /etc/nginx/owasp-modsecurity-crs/nginx-modsecurity.conf
 
                   # Enable scanning of the request body
                   SecRequestBodyAccess On
