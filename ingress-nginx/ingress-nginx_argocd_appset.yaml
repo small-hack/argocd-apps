@@ -43,9 +43,9 @@ spec:
 
               image:
                 registry: docker.io
-                image: jessebot/nginx-1.25
-                tag: "v1.11.0"
-                digest: sha256:b0e99838ea57435c277df277f6434cbc7b3eef778ae199ddaab4d1895df81187
+                image: jessebot/nginx-controller
+                tag: "1.0.0-dev"
+                digest: sha256:b10a059449e2c31ace66562b60a34e1770f28fbd2f940f0d9f0a3d9ab8184cf8
                 # digestChroot: sha256:c155954116b397163c88afcb3252462771bd7867017e8a17623e83601bab7ac7
                 pullPolicy: IfNotPresent
                 runAsNonRoot: true
