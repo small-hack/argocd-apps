@@ -41,20 +41,11 @@ spec:
               # decreased to 1 during testing
               replicaCount: 1
 
-              image:
-                registry: docker.io
-                image: jessebot/nginx-controller
-                tag: "1.0.0-dev"
-                digest: sha256:b10a059449e2c31ace66562b60a34e1770f28fbd2f940f0d9f0a3d9ab8184cf8
-                # digestChroot: sha256:c155954116b397163c88afcb3252462771bd7867017e8a17623e83601bab7ac7
-                pullPolicy: IfNotPresent
-                runAsNonRoot: true
-                # www-data -> uid 101
-                runAsUser: 101
-                allowPrivilegeEscalation: false
-                seccompProfile:
-                  type: RuntimeDefault
-                readOnlyRootFilesystem: false
+              # image:
+              #   registry: docker.io
+              #   image: jessebot/nginx-controller
+              #   tag: "1.0.0-dev"
+              #   digest: sha256:b10a059449e2c31ace66562b60a34e1770f28fbd2f940f0d9f0a3d9ab8184cf8
 
               config:
                 # always use 301 instead of a 308 redirect
