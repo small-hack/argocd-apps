@@ -70,6 +70,10 @@ spec:
                   # Enable prevention mode. Can be any of: DetectionOnly,On,Off (default is DetectionOnly)
                   SecRuleEngine On
 
+                  Include /etc/nginx/owasp-modsecurity-crs/plugins/*conf
+
+                  Include /etc/nginx/owasp-modsecurity-crs/nginx-modsecurity.conf
+
                   # Enable scanning of the request body
                   SecRequestBodyAccess On
 
@@ -102,10 +106,6 @@ spec:
 
                   # could be On/Off/RelevantOnly
                   SecAuditEngine RelevantOnly
-
-                  Include /etc/nginx/owasp-modsecurity-crs/plugins/*conf
-
-                  Include /etc/nginx/owasp-modsecurity-crs/nginx-modsecurity.conf
 
               # we set the timezone on the pod, to make logs easier to read
               extraEnvs:
