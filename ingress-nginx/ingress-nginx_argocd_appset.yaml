@@ -41,12 +41,6 @@ spec:
               # decreased to 1 during testing
               replicaCount: 1
 
-              # image:
-              #   registry: docker.io
-              #   image: jessebot/nginx-controller
-              #   tag: "1.0.0-dev"
-              #   digest: sha256:b10a059449e2c31ace66562b60a34e1770f28fbd2f940f0d9f0a3d9ab8184cf8
-
               config:
                 # always use 301 instead of a 308 redirect
                 http-redirect-code: "301"
@@ -68,7 +62,29 @@ spec:
                 # Update ModSecurity config and rules
                 modsecurity-snippet: |
                   Include /etc/nginx/owasp-modsecurity-crs/plugins/nextcloud-rule-exclusions-before.conf
-                  Include /etc/nginx/owasp-modsecurity-crs/nginx-modsecurity.conf
+                  # allow postgresql to upload it's wal archives to s3
+                  SecRule REQUEST_URI "@beginsWith /zitadel-postgresl/zitadel-postgresl/wals/" \
+                    "id:20000,\
+                    phase:1,\
+                    pass,\
+                    nolog,\
+                    ctl:ruleRemoveById=920340"
+
+                  SecRule REQUEST_URI "@beginsWith /nextcloud-postgresl/nextcloud-postgresl/wals/" \
+                    "id:20001,\
+                    phase:1,\
+                    pass,\
+                    nolog,\
+                    ctl:ruleRemoveById=920340"
+
+                  SecRule REQUEST_URI "@beginsWith /matrix-postgresl/matrix-postgresl/wals/" \
+                    "id:20002,\
+                    phase:1,\
+                    pass,\
+                    nolog,\
+                    ctl:ruleRemoveById=920340"
+
+                  Include /etc/nginx/owasp-modsecurity-crs/nginx-modsecurity.config
 
                   # Enable prevention mode. Can be any of: DetectionOnly,On,Off (default is DetectionOnly)
                   SecRuleEngine On
