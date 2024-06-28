@@ -107,7 +107,7 @@ spec:
                     ctl:ruleRemoveById=920340"
 
                   # nextcloud exclusion plugin
-                  Include /etc/nginx/owasp-modsecurity-crs/nginx-modsecurity.config
+                  Include /etc/nginx/owasp-modsecurity-crs/nginx-modsecurity.conf
 
                   # Enable prevention mode. Can be any of: DetectionOnly,On,Off (default is DetectionOnly)
                   SecRuleEngine On
