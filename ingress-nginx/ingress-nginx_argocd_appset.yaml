@@ -43,7 +43,7 @@ spec:
 
               registry: docker.io
               image: jessebot/nginx-1.25
-              tag: "testing-owasp-4"
+              tag: "v1.11.0"
               digest: sha256:b0e99838ea57435c277df277f6434cbc7b3eef778ae199ddaab4d1895df81187
               # digestChroot: sha256:c155954116b397163c88afcb3252462771bd7867017e8a17623e83601bab7ac7
               pullPolicy: IfNotPresent
