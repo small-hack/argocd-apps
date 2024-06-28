@@ -38,7 +38,22 @@ spec:
           valuesObject:
             controller:
               # note: checkout controller.keda variables in the future
-              replicaCount: 2
+              # decreased to 1 during testing
+              replicaCount: 1
+
+              registry: docker.io
+              image: jessebot/nginx-1.25
+              tag: "testing-owasp-4"
+              digest: sha256:b0e99838ea57435c277df277f6434cbc7b3eef778ae199ddaab4d1895df81187
+              # digestChroot: sha256:c155954116b397163c88afcb3252462771bd7867017e8a17623e83601bab7ac7
+              pullPolicy: IfNotPresent
+              runAsNonRoot: true
+              # www-data -> uid 101
+              runAsUser: 101
+              allowPrivilegeEscalation: false
+              seccompProfile:
+                type: RuntimeDefault
+              readOnlyRootFilesystem: false
 
               config:
                 # always use 301 instead of a 308 redirect
