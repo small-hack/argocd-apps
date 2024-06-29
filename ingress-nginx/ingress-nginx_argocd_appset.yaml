@@ -64,7 +64,7 @@ spec:
                   Include /etc/nginx/owasp-modsecurity-crs/plugins/nextcloud-rule-exclusions-before.conf
 
                   # allow postgresql to upload wal archives to s3
-                  SecRule REQUEST_URI "@beginsWith /zitadel-postgresl/zitadel-postgresl/wals/" \
+                  SecRule REQUEST_URI "@beginsWith /zitadel-postgres/zitadel-postgres/wals/" \
                     "id:20000,\
                     phase:1,\
                     pass,\
