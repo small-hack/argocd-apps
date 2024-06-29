@@ -61,8 +61,6 @@ spec:
                 enable-modsecurity: "true"
                 # Update ModSecurity config and rules
                 modsecurity-snippet: |
-                  Include /etc/nginx/owasp-modsecurity-crs/plugins/nextcloud-rule-exclusions-before.conf
-
                   # allow postgresql to upload wal archives to s3
                   SecRule REQUEST_URI "@beginsWith /zitadel-postgres/zitadel-postgres/wals/" \
                     "id:20000,\
@@ -148,9 +146,6 @@ spec:
                     nolog,\
                     ctl:ruleRemoveById=921110"
 
-                  # nextcloud exclusion plugin
-                  Include /etc/nginx/owasp-modsecurity-crs/nginx-modsecurity.conf
-
                   # Enable prevention mode. Can be any of: DetectionOnly,On,Off (default is DetectionOnly)
                   SecRuleEngine On
 
@@ -176,8 +171,8 @@ spec:
                   # Reject if larger (we could also let it pass with ProcessPartial)
                   SecRequestBodyLimitAction Reject
 
-                  # Update config to include nextcloud dav methods in the allowed HTTP methods (instead of fully disabling 911100)
-                  SecAction "id:900200,phase:1,nolog,pass,t:none,setvar:tx.allowed_methods=GET HEAD POST OPTIONS PUT PATCH DELETE PROPFIND REPORT SEARCH MKCOL MOVE COPY"
+                  # Update config to include methods in the allowed HTTP methods (instead of fully disabling 911100)
+                  SecAction "id:900200,phase:1,nolog,pass,t:none,setvar:tx.allowed_methods=GET HEAD POST OPTIONS PUT PATCH DELETE"
 
                   # Send ModSecurity audit logs to the stdout (only for rejected requests)
                   SecAuditLog /dev/stdout
