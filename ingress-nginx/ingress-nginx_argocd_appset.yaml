@@ -177,7 +177,7 @@ spec:
                   SecRequestBodyLimitAction Reject
 
                   # Update config to include nextcloud dav methods in the allowed HTTP methods (instead of fully disabling 911100)
-                  SecAction "id:900200,phase:1,nolog,pass,t:none,setvar:tx.allowed_methods=GET HEAD POST OPTIONS PUT PATCH DELETE PROPFIND REPORT SEARCH MKCOL MOVE"
+                  SecAction "id:900200,phase:1,nolog,pass,t:none,setvar:tx.allowed_methods=GET HEAD POST OPTIONS PUT PATCH DELETE PROPFIND REPORT SEARCH MKCOL MOVE COPY"
 
                   # Send ModSecurity audit logs to the stdout (only for rejected requests)
                   SecAuditLog /dev/stdout
