@@ -47,7 +47,7 @@ injector:
   # required.
   agentImage:
     repository: "hashicorp/vault"
-    tag: "1.17.1"
+    tag: "1.9.8"
 
   # Configures the log verbosity of the injector.
   # Supported log levels include: trace, debug, info, warn, error
