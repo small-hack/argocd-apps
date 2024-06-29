@@ -92,19 +92,61 @@ spec:
                     nolog,\
                     ctl:ruleRemoveById=921110"
 
-                  SecRule REQUEST_URI "@beginsWith /nextcloud-postgresl/nextcloud-postgresl/wals/" \
+                  SecRule REQUEST_URI "@beginsWith /matrix-postgres/matrix-postgres/wals/" \
                     "id:20004,\
                     phase:1,\
                     pass,\
                     nolog,\
                     ctl:ruleRemoveById=920340"
 
-                  SecRule REQUEST_URI "@beginsWith /matrix-postgresl/matrix-postgresl/wals/" \
+                  SecRule REQUEST_URI "@beginsWith /matrix-postgres/matrix-postgres/base/" \
                     "id:20005,\
                     phase:1,\
                     pass,\
                     nolog,\
                     ctl:ruleRemoveById=920340"
+
+                  SecRule REQUEST_URI "@beginsWith /matrix-postgres/matrix-postgres/base/" \
+                    "id:20006,\
+                    phase:1,\
+                    pass,\
+                    nolog,\
+                    ctl:ruleRemoveById=949110"
+
+                  SecRule REQUEST_URI "@beginsWith /matrix-postgres/matrix-postgres/base/" \
+                    "id:20007,\
+                    phase:1,\
+                    pass,\
+                    nolog,\
+                    ctl:ruleRemoveById=921110"
+
+                  SecRule REQUEST_URI "@beginsWith /nextcloud-postgres/nextcloud-postgres/wals/" \
+                    "id:20008,\
+                    phase:1,\
+                    pass,\
+                    nolog,\
+                    ctl:ruleRemoveById=920340"
+
+                  SecRule REQUEST_URI "@beginsWith /nextcloud-postgres/nextcloud-postgres/base/" \
+                    "id:20009,\
+                    phase:1,\
+                    pass,\
+                    nolog,\
+                    ctl:ruleRemoveById=920340"
+
+                  SecRule REQUEST_URI "@beginsWith /nextcloud-postgres/nextcloud-postgres/base/" \
+                    "id:20010,\
+                    phase:1,\
+                    pass,\
+                    nolog,\
+                    ctl:ruleRemoveById=949110"
+
+                  SecRule REQUEST_URI "@beginsWith /nextcloud-postgres/nextcloud-postgres/base/" \
+                    "id:20011,\
+                    phase:1,\
+                    pass,\
+                    nolog,\
+                    ctl:ruleRemoveById=921110"
 
                   # nextcloud exclusion plugin
                   Include /etc/nginx/owasp-modsecurity-crs/nginx-modsecurity.conf
