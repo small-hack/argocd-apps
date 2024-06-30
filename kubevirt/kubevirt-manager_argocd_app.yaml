@@ -38,15 +38,14 @@ spec:
           selfHeal: true
       source:
         repoURL: 'https://cloudymax.github.io/kubevirt-community-stack/'
-        targetRevision: 0.1.8
+        targetRevision: 0.1.9
         chart: kubevirt-manager
         helm:
           valuesObject:
             replicaCount: 1
             service:
-              type: LoadBalancer
-              port: 80
-              targetPort: 8001
+              type: ClusterIP
+              port: 8080
               protocol: TCP
               name: http
             prometheus:
