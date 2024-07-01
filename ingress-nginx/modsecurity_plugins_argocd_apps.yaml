@@ -10,7 +10,7 @@ metadata:
 spec:
   project: ingress-nginx
   source:
-    repoURL: https://github.com/argocd-apps
+    repoURL: https://github.com/small-hack/argocd-apps
     path: ingress-nginx/plugins/
     targetRevision: main
   destination:
