@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   labels:
     grafana_dashboard: "1"
-  name: ingress-nginx-dashboard-configmap
+  name: modsecurity-dashboard-configmap
 data:
   modsecurity-dashboard.json: |-
     {
