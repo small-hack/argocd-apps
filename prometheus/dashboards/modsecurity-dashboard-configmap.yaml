@@ -232,6 +232,7 @@ data:
             "type": "loki",
             "uid": "${DS_LOKI}"
           },
+          "description": "",
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -318,8 +319,10 @@ data:
               },
               "editorMode": "code",
               "expr": "sum by (severity) (count_over_time({job=\"ingress-nginx/ingress-nginx\"} \n|~ `ModSecurity` != `http_referrer` \n| json messages_details_match=\"transaction.messages[0].details.match\", \nmessages_details_reference=\"transaction.messages[0].details.reference\", \nmessages_details_ruleId=\"transaction.messages[0].details.ruleId\", \nmessages_details_file=\"transaction.messages[0].details.file\", \nmessages_details_lineNumber=\"transaction.messages[0].details.lineNumber\", \nmessages_details_data=\"transaction.messages[0].details.data\", \nseverity=\"transaction.messages[0].details.severity\", \nmessages_details_ver=\"transaction.messages[0].details.ver\", \nmessages_details_rev=\"transaction.messages[0].details.rev\", \nmessages_details_tags=\"transaction.messages[0].details.tags\", \nmessages_details_maturity=\"transaction.messages[0].details.maturity\", \nmessages_details_accuracy=\"transaction.messages[0].details.accuracy\", \ntransaction_date=\"transaction.time_stamp\", \ntransaction_client_ip=\"transaction.client_ip\", \ntransaction_host_ip=\"transaction.host_ip\", \ntransaction_host_port=\"transaction.host_port\", \ntranaction_request_uri=\"transaction.request.uri\" | __error__=\"\" [$__interval]))",
+              "legendFormat": "{{severity}}",
               "queryType": "range",
-              "refId": "A"
+              "refId": "A",
+              "step": ""
             },
             {
               "datasource": {
@@ -332,7 +335,16 @@ data:
             }
           ],
           "thresholds": [],
-          "title": "Detection Activity",
+          "title": "🔎  Detection of Activity by Severity",
+          "transformations": [
+            {
+              "id": "renameByRegex",
+              "options": {
+                "regex": "Value",
+                "renamePattern": "1"
+              }
+            }
+          ],
           "type": "timeseries"
         },
         {
@@ -373,7 +385,7 @@ data:
           "type": "logs"
         }
       ],
-      "refresh": "5m",
+      "refresh": "2m",
       "schemaVersion": 39,
       "tags": [
         "nginx"
