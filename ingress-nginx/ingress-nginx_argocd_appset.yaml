@@ -41,6 +41,8 @@ spec:
               replicaCount: 2
 
               config:
+                # set log format to json
+                log-format-escape-json: "true"
                 # always use 301 instead of a 308 redirect
                 http-redirect-code: "301"
                 # block all requests with no user-agent to kick out the annoying script kiddies
