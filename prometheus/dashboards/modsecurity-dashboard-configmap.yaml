@@ -463,6 +463,13 @@ data:
             "queryValue": "",
             "skipUrlSync": false,
             "type": "custom"
+          },
+          {
+            "hide": 2,
+            "name": "DS_LOKI",
+            "query": "loki",
+            "skipUrlSync": false,
+            "type": "constant"
           }
         ]
       },
@@ -472,7 +479,7 @@ data:
       },
       "timepicker": {},
       "timezone": "",
-      "title": "NGINX ModSecurity OWASP CRS for JSON formatted logs",
+      "title": "ModSecurity OWASP CRS",
       "uid": "Ur3f16c7z",
       "version": 17,
       "weekStart": ""
