@@ -34,7 +34,6 @@ data:
       "fiscalYearStartMonth": 0,
       "gnetId": 15495,
       "graphTooltip": 0,
-      "id": 37,
       "links": [
         {
           "asDropdown": true,
@@ -56,12 +55,23 @@ data:
             "type": "loki",
             "uid": "${DS_LOKI}"
           },
+          "description": "",
           "fieldConfig": {
             "defaults": {
               "color": {
                 "mode": "continuous-BlYlRd"
               },
-              "mappings": [],
+              "mappings": [
+                {
+                  "options": {
+                    "Value": {
+                      "index": 0,
+                      "text": "no ip"
+                    }
+                  },
+                  "type": "value"
+                }
+              ],
               "thresholds": {
                 "mode": "absolute",
                 "steps": [
@@ -112,13 +122,24 @@ data:
                 "type": "loki",
                 "uid": "${DS_LOKI}"
               },
-              "editorMode": "code",
+              "editorMode": "builder",
               "expr": "sum by (client_ip) (count_over_time({job=\"ingress-nginx/ingress-nginx\"} \n|~ `ModSecurity` != `http_referrer` \n| json messages_details_match=\"transaction.messages[0].details.match\", \nmessages_details_reference=\"transaction.messages[0].details.reference\", \nmessages_details_ruleId=\"transaction.messages[0].details.ruleId\", \nmessages_details_file=\"transaction.messages[0].details.file\", \nmessages_details_lineNumber=\"transaction.messages[0].details.lineNumber\", \nmessages_details_data=\"transaction.messages[0].details.data\", \nmessages_details_severity=\"transaction.messages[0].details.severity\", \nmessages_details_ver=\"transaction.messages[0].details.ver\", \nmessages_details_rev=\"transaction.messages[0].details.rev\", \nmessages_details_tags=\"transaction.messages[0].details.tags\", \nmessages_details_maturity=\"transaction.messages[0].details.maturity\",\nmessages_details_accuracy=\"transaction.messages[0].details.accuracy\", \ntransaction_date=\"transaction.time_stamp\", \nclient_ip=\"transaction.client_ip\", \ntransaction_host_ip=\"transaction.host_ip\", \ntransaction_host_port=\"transaction.host_port\", \ntranaction_request_uri=\"transaction.request.uri\" | __error__=\"\" [$__interval]))",
+              "legendFormat": "{{client_ip}}",
               "queryType": "range",
-              "refId": "A"
+              "refId": "A",
+              "step": ""
             }
           ],
-          "title": "Top Attackers",
+          "title": "Top Attackers - Client IP",
+          "transformations": [
+            {
+              "id": "renameByRegex",
+              "options": {
+                "regex": "Value",
+                "renamePattern": "No IP"
+              }
+            }
+          ],
           "type": "bargauge"
         },
         {
@@ -337,7 +358,7 @@ data:
           "type": "logs"
         }
       ],
-      "refresh": "5s",
+      "refresh": "30s",
       "schemaVersion": 39,
       "tags": [],
       "templating": {
@@ -359,7 +380,7 @@ data:
         ]
       },
       "time": {
-        "from": "now-24h",
+        "from": "now-7d",
         "to": "now"
       },
       "timeRangeUpdatedDuringEditOrView": false,
