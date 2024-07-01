@@ -148,6 +148,8 @@ spec:
                     nolog,\
                     ctl:ruleRemoveById=921110"
 
+                  Include /etc/nginx/owasp-modsecurity-crs/plugins/nextcloud-rule-exclusions-before.conf
+
                   # Enable prevention mode. Can be any of: DetectionOnly,On,Off (default is DetectionOnly)
                   SecRuleEngine On
 
@@ -160,6 +162,9 @@ spec:
 
                   SecRule REQUEST_HEADERS:Content-Type "application/json" \
                     "id:200001,phase:1,t:none,t:lowercase,pass,nolog,ctl:requestBodyProcessor=JSON"
+                  # Update config to include nextcloud dav methods in the allowed HTTP methods (instead of fully disabling 911100)
+                  SecAction "id:900200,phase:1,nolog,pass,t:none,setvar:tx.allowed_methods=GET HEAD POST OPTIONS PUT PATCH DELETE PROPFIND REPORT SEARCH MKCOL MOVE COPY"
+
 
                   # Note NGINX Ingress has its own annotations, keep in sync!
                   #
