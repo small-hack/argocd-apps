@@ -12,7 +12,7 @@ spec:
   source:
     repoURL: https://github.com/small-hack/argocd-apps
     path: ingress-nginx/plugins/
-    targetRevision: enable-mod-security
+    targetRevision: main
   destination:
     server: "https://kubernetes.default.svc"
     namespace: ingress-nginx
