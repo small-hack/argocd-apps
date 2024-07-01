@@ -15,6 +15,13 @@ data:
           "type": "datasource",
           "pluginId": "loki",
           "pluginName": "Loki"
+        },
+        {
+          "name": "DS_LOKI",
+          "type": "constant",
+          "label": "DS_LOKI",
+          "value": "loki",
+          "description": ""
         }
       ],
       "__elements": {},
@@ -29,7 +36,7 @@ data:
           "type": "grafana",
           "id": "grafana",
           "name": "Grafana",
-          "version": "9.3.8"
+          "version": "11.0.0"
         },
         {
           "type": "panel",
