@@ -3,7 +3,6 @@ This installs [ingress-nginx](https://github.com/kubernetes/ingress-nginx) which
 
 <img width="906" alt="Screenshot 2024-06-21 at 16 57 53" src="https://github.com/small-hack/argocd-apps/assets/2389292/52d2cc0b-1dd5-4859-8b7e-a44a4da076fe">
 
-
 We pass in values to helm chart to:
 
 - use 2 ingress replicas, for increasing availability during high traffic times

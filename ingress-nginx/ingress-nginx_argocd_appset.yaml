@@ -38,7 +38,8 @@ spec:
           valuesObject:
             controller:
               # note: checkout controller.keda variables in the future
-              replicaCount: 2
+              # decreased to 1 during testing
+              replicaCount: 1
 
               config:
                 # always use 301 instead of a 308 redirect
@@ -58,35 +59,142 @@ spec:
                 ssl-reject-handshake: "true"
                 # Enable Modsecurity and the OWASP Core rule set
                 enable-modsecurity: "true"
-                enable-owasp-modsecurity-crs: "true"
                 # Update ModSecurity config and rules
-                # modsecurity-snippet: |
-                #   # Enable prevention mode. Can be any of: DetectionOnly,On,Off (default is DetectionOnly)
-                #   SecRuleEngine On
-                #
-                #   # Enable scanning of the request body
-                #   SecRequestBodyAccess On      # Enable XML and JSON parsing
-                #   SecRule REQUEST_HEADERS:Content-Type "(?:application(?:/soap\+|/)|text/)xml" \
-                #       "id:'200000',phase:1,t:none,t:lowercase,pass,nolog,\
-                #       ctl:requestBodyProcessor=XML"
-                #   SecRule REQUEST_HEADERS:Content-Type "application/json" \
-                #       "id:'200001',phase:1,t:none,t:lowercase,pass,nolog,\
-                #       ctl:requestBodyProcessor=JSON"      # Max request sizes in bytes (with/without files)
+                modsecurity-snippet: |
+                  # allow postgresql to upload wal archives to s3
+                  SecRule REQUEST_URI "@beginsWith /zitadel-postgres/zitadel-postgres/wals/" \
+                    "id:20000,\
+                    phase:1,\
+                    pass,\
+                    nolog,\
+                    ctl:ruleRemoveById=920340"
 
-                #   # Note NGINX Ingress has its own annotations, keep in sync!
-                #   SecRequestBodyLimit 20971520 # 20Mb (default is 12.5Mb)
-                #   SecRequestBodyNoFilesLimit 262144 # 250Kb (default is 128Kb)
-                #   SecRequestBodyLimitAction Reject # Reject if larger (we could also let it pass with ProcessPartial)      # Update config to include PUT/PATCH/DELETE in the allowed HTTP methods (instead of fully disabling 911100)
-                #   SecAction "id:900200,phase:1,nolog,pass,t:none,\
-                #     setvar:tx.allowed_methods=GET HEAD POST OPTIONS PUT PATCH DELETE"      # Send ModSecurity audit logs to the stdout (only for rejected requests)
-                #   SecAuditLog /dev/stdout
-                #   SecAuditLogFormat JSON
-                #   SecAuditEngine RelevantOnly # could be On/Off/RelevantOnly
+                  SecRule REQUEST_URI "@beginsWith /zitadel-postgres/zitadel-postgres/base/" \
+                    "id:20001,\
+                    phase:1,\
+                    pass,\
+                    nolog,\
+                    ctl:ruleRemoveById=920340"
+
+                  SecRule REQUEST_URI "@beginsWith /zitadel-postgres/zitadel-postgres/base/" \
+                    "id:20002,\
+                    phase:1,\
+                    pass,\
+                    nolog,\
+                    ctl:ruleRemoveById=949110"
+
+                  SecRule REQUEST_URI "@beginsWith /zitadel-postgres/zitadel-postgres/base/" \
+                    "id:20003,\
+                    phase:1,\
+                    pass,\
+                    nolog,\
+                    ctl:ruleRemoveById=921110"
+
+                  SecRule REQUEST_URI "@beginsWith /matrix-postgres/matrix-postgres/wals/" \
+                    "id:20004,\
+                    phase:1,\
+                    pass,\
+                    nolog,\
+                    ctl:ruleRemoveById=920340"
+
+                  SecRule REQUEST_URI "@beginsWith /matrix-postgres/matrix-postgres/base/" \
+                    "id:20005,\
+                    phase:1,\
+                    pass,\
+                    nolog,\
+                    ctl:ruleRemoveById=920340"
+
+                  SecRule REQUEST_URI "@beginsWith /matrix-postgres/matrix-postgres/base/" \
+                    "id:20006,\
+                    phase:1,\
+                    pass,\
+                    nolog,\
+                    ctl:ruleRemoveById=949110"
+
+                  SecRule REQUEST_URI "@beginsWith /matrix-postgres/matrix-postgres/base/" \
+                    "id:20007,\
+                    phase:1,\
+                    pass,\
+                    nolog,\
+                    ctl:ruleRemoveById=921110"
+
+                  SecRule REQUEST_URI "@beginsWith /nextcloud-postgres/nextcloud-postgres/wals/" \
+                    "id:20008,\
+                    phase:1,\
+                    pass,\
+                    nolog,\
+                    ctl:ruleRemoveById=920340"
+
+                  SecRule REQUEST_URI "@beginsWith /nextcloud-postgres/nextcloud-postgres/base/" \
+                    "id:20009,\
+                    phase:1,\
+                    pass,\
+                    nolog,\
+                    ctl:ruleRemoveById=920340"
+
+                  SecRule REQUEST_URI "@beginsWith /nextcloud-postgres/nextcloud-postgres/base/" \
+                    "id:20010,\
+                    phase:1,\
+                    pass,\
+                    nolog,\
+                    ctl:ruleRemoveById=949110"
+
+                  SecRule REQUEST_URI "@beginsWith /nextcloud-postgres/nextcloud-postgres/base/" \
+                    "id:20011,\
+                    phase:1,\
+                    pass,\
+                    nolog,\
+                    ctl:ruleRemoveById=921110"
+
+                  # Enable prevention mode. Can be any of: DetectionOnly,On,Off (default is DetectionOnly)
+                  SecRuleEngine On
+
+                  # Enable scanning of the request body
+                  SecRequestBodyAccess On
+
+                  # Enable XML and JSON parsing
+                  SecRule REQUEST_HEADERS:Content-Type "(?:text|application(?:/soap\+|/)|application/xml)/" \
+                    "id:200000,phase:1,t:none,t:lowercase,pass,nolog,ctl:requestBodyProcessor=XML"
+
+                  SecRule REQUEST_HEADERS:Content-Type "application/json" \
+                    "id:200001,phase:1,t:none,t:lowercase,pass,nolog,ctl:requestBodyProcessor=JSON"
+
+                  # Note NGINX Ingress has its own annotations, keep in sync!
+                  #
+                  # Max request sizes in bytes (with/without files)
+                  # 2Gb (default is 12.5Mb)
+                  SecRequestBodyLimit 268400000
+
+                  # 20Mb (default is 128Kb)
+                  SecRequestBodyNoFilesLimit 20971520
+
+                  # Reject if larger (we could also let it pass with ProcessPartial)
+                  SecRequestBodyLimitAction Reject
+
+                  # Update config to include methods in the allowed HTTP methods (instead of fully disabling 911100)
+                  SecAction "id:900200,phase:1,nolog,pass,t:none,setvar:tx.allowed_methods=GET HEAD POST OPTIONS PUT PATCH DELETE"
+
+                  # Send ModSecurity audit logs to the stdout (only for rejected requests)
+                  SecAuditLog /dev/stdout
+
+                  SecAuditLogFormat JSON
+
+                  # could be On/Off/RelevantOnly
+                  SecAuditEngine RelevantOnly
 
               # we set the timezone on the pod, to make logs easier to read
               extraEnvs:
                 - name: TZ
                   value: '{{ .global_time_zone }}'
+
+              extraVolumes:
+                - name: plugins
+                  configMap:
+                    name: modsecurity-plugins
+
+              extraVolumeMounts:
+                - name: plugins
+                  mountPath: /etc/nginx/owasp-modsecurity-crs/plugins
 
               # -- This configuration defines if Ingress Controller should allow users to set
               # their own *-snippet annotations, otherwise this is forbidden / dropped

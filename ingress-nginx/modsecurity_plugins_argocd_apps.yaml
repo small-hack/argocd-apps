@@ -1,0 +1,25 @@
+---
+# CRDs for backups
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: modsecurity-plugins
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+spec:
+  project: ingress-nginx
+  source:
+    repoURL: https://github.com/small-hack/argocd-apps
+    path: ingress-nginx/plugins/
+    targetRevision: main
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: ingress-nginx
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+      - Replace=true
+    automated:
+      prune: true
+      selfHeal: true

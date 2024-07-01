@@ -76,6 +76,15 @@ spec:
                   location ~ ^/(?:autotest|occ|issue|indie|db_|console) {
                     deny all;
                   }
+                # Update ModSecurity config and rules
+                nginx.ingress.kubernetes.io/modsecurity-snippet: |
+                  Include /etc/nginx/owasp-modsecurity-crs/plugins/nextcloud-rule-exclusions-before.conf
+
+                  # Enable prevention mode. Can be any of: DetectionOnly,On,Off (default is DetectionOnly)
+                  SecRuleEngine On
+
+                  # Update config to include nextcloud dav methods in the allowed HTTP methods (instead of fully disabling 911100)
+                  SecAction "id:900200,phase:1,nolog,pass,t:none,setvar:tx.allowed_methods=GET HEAD POST OPTIONS PUT PATCH DELETE PROPFIND REPORT SEARCH MKCOL MOVE COPY"
               tls:
                 - secretName: nextcloud-tls
                   hosts:
