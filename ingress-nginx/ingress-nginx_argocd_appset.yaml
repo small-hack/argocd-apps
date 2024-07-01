@@ -190,7 +190,7 @@ spec:
               extraVolumes:
                 - name: plugins
                   configMap:
-                    name: modsecurity-plugins-6bdd54g74h
+                    name: modsecurity-plugins
 
               extraVolumeMounts:
                 - name: plugins

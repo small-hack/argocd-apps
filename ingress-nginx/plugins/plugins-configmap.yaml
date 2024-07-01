@@ -1,0 +1,2679 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    grafana_dashboard: "1"
+  name: modsecurity-plugins
+data:
+  empty-after.conf: |
+    # no data
+  empty-before.conf: |
+    # no data
+  empty-config.conf: |
+    # no data
+  nextcloud-rule-exclusions-before.conf: |-
+    # ------------------------------------------------------------------------
+    # OWASP CRS Plugin
+    # Copyright (c) 2021-2024 CRS project. All rights reserved.
+    #
+    # The OWASP CRS plugins are distributed under
+    # Apache Software License (ASL) version 2
+    # Please see the enclosed LICENSE file for full details.
+    # ------------------------------------------------------------------------
+
+    # OWASP CRS Plugin
+    # Plugin name: nextcloud-rule-exclusions
+    # Plugin description:
+    # Rule ID block base: 9,508,000 - 9,508,999
+    # Plugin version: 1.2.0
+
+    # Documentation can be found here:
+    # https://github.com/coreruleset/nextcloud-rule-exclusions-plugin
+
+    # Generic rule to disable plugin
+    SecRule TX:nextcloud-rule-exclusions-plugin_enabled "@eq 0" "id:9508099,phase:1,pass,nolog,ctl:ruleRemoveById=9508100-9508999"
+
+
+    # These exclusions remedy false positives in a default Nextcloud install.
+    # They will likely work with OwnCloud too, but you may have to modify them.
+    #
+    # To relax upload restrictions for only the php files that need it,
+    # you put something like this in crs-setup.conf:
+    #
+    # SecRule REQUEST_FILENAME "@rx /(?:remote\.php|index\.php)/" \
+    #     "id:9508600,\
+    #     phase:2,\
+    #     t:none,\
+    #     nolog,\
+    #     pass,\
+    #     ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+    #     setvar:'tx.restricted_extensions=.bak/ .config/ .conf/'"
+    #
+    # Large uploads can be modified with SecRequestBodyLimit. Or they
+    # can be more controlled by using the following:
+    #
+    # SecRule REQUEST_URI "@endsWith /index.php/apps/files/ajax/upload.php" \
+    #     "id:9508610,\
+    #     phase:1,\
+    #     t:none,\
+    #     nolog,\
+    #     ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+    #     ctl:requestBodyLimit=1073741824"
+    #
+    # ctl:requestBodyLimit is not supported in libmodsecurity3, Nginx users can increase max upload size
+    # by using the following:
+    # location /index.php/apps/files/ajax/upload.php { modsecurity_rules 'SecRequestBodyLimit 1073741824'; }
+    #
+    # Apache libmodsecurity3 Example:
+    # <location "/index.php/apps/files/ajax/upload.php">
+    #    modsecurity_rules 'SecRequestBodyLimit 1073741824'
+    # </location>
+    #
+    #
+    # The Nextcloud desktop client occasionally sends large request bodies not containing any uploaded files.
+    # ModSecurity will block request bodies larger than 131KB, adjusting SecRequestBodyNoFilesLimit to
+    # 141KB works for all scenarios tested.
+    #
+    # Nginx libmodsecurity3 Example:
+    # location /remote.php/dav/files/ { modsecurity_rules 'SecRequestBodyNoFilesLimit 144384'; }
+    #
+    # Apache modsecurity2 Example:
+    # <location "/remote.php/dav/files/">
+    #     SecRequestBodyNoFilesLimit 144384
+    # </location>
+    #
+    # Apache libmodsecurity3 Example:
+    # <location "/remote.php/dav/files/">
+    #    modsecurity_rules 'SecRequestBodyNoFilesLimit 144384'
+    # </location>
+
+
+    # [ Local CRS initialization ]
+    #
+    # We need to initialize some of the CRS variables also here because plugin setup runs before
+    # CRS initialization (this is a known limitation of the current plugin architecture). Must be
+    # kept in sync with CRS default setting.
+
+
+    # Copy of CRS rule 901160.
+    SecRule &TX:allowed_methods "@eq 0" \
+        "id:9508100,\
+        phase:1,\
+        pass,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=GET HEAD POST OPTIONS'"
+
+
+    # Copy of CRS rule 901162.
+    SecRule &TX:allowed_request_content_type "@eq 0" \
+        "id:9508101,\
+        phase:1,\
+        pass,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_request_content_type=|application/x-www-form-urlencoded| |multipart/form-data| |multipart/related| |text/xml| |application/xml| |application/soap+xml| |application/json| |application/cloudevents+json| |application/cloudevents-batch+json|'"
+
+
+    #
+    # [ File Manager ]
+    #
+
+    # The web interface uploads files, and interacts with the user.
+    SecRule REQUEST_FILENAME "@contains /remote.php/webdav" \
+        "id:9508102,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveById=920420,\
+        ctl:ruleRemoveById=920440,\
+        ctl:ruleRemoveById=941000-942999,\
+        ctl:ruleRemoveById=951000-951999,\
+        ctl:ruleRemoveById=953100-953130,\
+        ctl:ruleRemoveByTag=attack-injection-php"
+
+    # Skip PUT parsing for invalid encoding / protocol violations in binary files.
+    SecRule REQUEST_METHOD "@streq PUT" \
+        "id:9508105,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        chain"
+        SecRule REQUEST_FILENAME "@rx /remote\.php/(?:webdav|dav)" \
+            "t:none,\
+            ctl:ruleRemoveById=921150,\
+            ctl:ruleRemoveById=930110,\
+            ctl:ruleRemoveById=930120,\
+            ctl:ruleRemoveById=920000-920999,\
+            ctl:ruleRemoveById=932000-932999"
+
+    # Fix for Nextcloud Desktop Client / Allow sending source code
+    SecRule REQUEST_METHOD "@pm PROPFIND PUT" \
+        "id:9508106,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        chain"
+        SecRule REQUEST_FILENAME "@rx /remote\.php/(?:webdav|dav/files)" \
+            "t:none,\
+            ctl:ruleRemoveById=921110"
+
+    # Allow the data type 'text/vcard'
+    # Allow path traversal characters like /../ in file paths.
+    # Allow all filetypes.
+    # Allow source code.
+    # Allow arbitrary filenames.
+    # Allow upload of files containing code
+    SecRule REQUEST_FILENAME "@contains /remote.php/dav/files/" \
+        "id:9508110,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveById=920440,\
+        ctl:ruleRemoveById=930100-930110,\
+        ctl:ruleRemoveById=951000-951999,\
+        ctl:ruleRemoveById=953100-953130,\
+        ctl:ruleRemoveTargetById=921110;REQUEST_BODY,\
+        ctl:ruleRemoveTargetById=933210;REQUEST_FILENAME,\
+        ctl:ruleRemoveTargetById=944120;REQUEST_BODY,\
+        ctl:ruleRemoveTargetById=944130;REQUEST_BODY,\
+        ctl:ruleRemoveTargetById=944240;REQUEST_BODY,\
+        setvar:'tx.allowed_request_content_type=%{tx.allowed_request_content_type} |text/plain| |text/vcard|'"
+
+    # File manager: versioning
+    # Allow the data type 'text/plain'
+    # Since the content is actually XML, we switch on the XML parser
+    SecRule REQUEST_FILENAME "@beginsWith /remote.php/dav/versions/" \
+        "id:9508111,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        chain"
+        SecRule REQUEST_HEADERS:Content-Type "@beginsWith text/plain" \
+            "t:none,\
+            ctl:requestBodyProcessor=XML,\
+            setvar:'tx.allowed_request_content_type=%{tx.allowed_request_content_type} |text/plain|'"
+
+    # File manager: system tags
+    # Allow the data type 'text/plain'
+    # Since the content is actually XML, we switch on the XML parser
+    SecRule REQUEST_FILENAME "@rx /remote\.php/dav/systemtags(?:-relations/files/[0-9]+|-assigned/image)?/$" \
+        "id:9508112,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        chain"
+        SecRule REQUEST_HEADERS:Content-Type "@beginsWith text/plain" \
+            "t:none,\
+            ctl:requestBodyProcessor=XML,\
+            ctl:ruleRemoveTargetById=921110;REQUEST_BODY,\
+            ctl:ruleRemoveTargetById=920272;REQUEST_BODY,\
+            ctl:ruleRemoveTargetById=920273;REQUEST_BODY,\
+            setvar:'tx.allowed_request_content_type=%{tx.allowed_request_content_type} |text/plain|'"
+
+    # Allow the data type 'application/octet-stream'
+    SecRule REQUEST_METHOD "@pm PUT MOVE" \
+        "id:9508115,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        chain"
+        SecRule REQUEST_FILENAME "@rx /remote\.php/dav/(?:files|uploads)/" \
+            "setvar:'tx.allowed_request_content_type=%{tx.allowed_request_content_type} |application/octet-stream| |application/pdf|'"
+
+    # Allow data types like video/mp4
+    SecRule REQUEST_METHOD "@streq PUT" \
+        "id:9508116,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        chain"
+        SecRule REQUEST_FILENAME "@rx /(?:public\.php/webdav|remote\.php/dav/uploads)/" \
+            "t:none,\
+            ctl:ruleRemoveById=920340,\
+            ctl:ruleRemoveById=920420"
+
+    # Allow REPORT requests without Content-Type header (at least the iOS app does this)
+    SecRule REQUEST_METHOD "@streq REPORT" \
+        "id:9508121,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        chain"
+        SecRule REQUEST_FILENAME "@contains /remote.php/dav/files/" \
+            "t:none,\
+            ctl:ruleRemoveById=920340"
+
+    # FP when NextCloud default app "Text" detects text files in file manager.
+    # PUT - When the "Text" app tries to create a session in file manager.
+    # Opening/creating a text file
+    # Nextcloud 28 and newer will include the document ID after session
+    SecRule REQUEST_FILENAME "@rx /apps/text/(?:public/)?session(?:/[0-9]+)?/create$" \
+        "id:9508122,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} PUT'"
+
+    # FP while trying to open text files in file manager
+    # Adding/editing comments to files
+    # The content of comments could be anything
+    SecRule REQUEST_FILENAME "@rx /remote\.php/dav/comments/files(?:/[0-9]+)+$" \
+        "id:9508123,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:message,\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:json.message,\
+        setvar:'tx.allowed_request_content_type=%{tx.allowed_request_content_type} |text/plain|'"
+
+    # When trying to change the "Show recommendations" option in file settings
+    SecRule REQUEST_FILENAME "@endsWith /apps/recommendations/settings/enabled" \
+        "id:9508124,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} PUT'"
+
+    # Autosaving/syncing a text document, content could be anything
+    # Manually saving a text document
+    # As of Nextcloud 28, the document ID is included in the URL path
+    SecRule REQUEST_URI "@rx /apps/text/(?:public/)?session(?:/[0-9]+)?/(?:sync|save)$" \
+        "id:9508126,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveTargetById=920272;REQUEST_BODY,\
+        ctl:ruleRemoveTargetById=920273;REQUEST_BODY,\
+        ctl:ruleRemoveTargetById=921110;REQUEST_BODY,\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:autosaveContent,\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:json.autosaveContent"
+
+    # Text app content can be anything
+    # We disable CRS for all ARGS since the paramater keeps on changing and can't be predicted
+    SecRule REQUEST_FILENAME "@rx /apps/text/(?:public/)?session/push$" \
+        "id:9508128,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS"
+
+    # Viewing files within the trashbin
+    # Content is XML so the XML parser is switched on
+    SecRule REQUEST_FILENAME "@rx /remote\.php/dav/trashbin/[^/]+/trash/" \
+        "id:9508170,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        chain"
+        SecRule REQUEST_HEADERS:Content-Type "@beginsWith text/plain" \
+            "t:none,\
+            chain"
+            SecRule REQUEST_METHOD "@streq PROPFIND" \
+                "t:none,\
+                ctl:requestBodyProcessor=XML,\
+                setvar:'tx.allowed_request_content_type=%{tx.allowed_request_content_type} |text/plain|'"
+
+    # Entering a password for a password protected share
+    SecRule REQUEST_FILENAME "@rx /s/[^/]+/authenticate/showShare$" \
+        "id:9508171,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:password,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0'"
+
+    # Sharing a file/folder
+    # Fix FP when creating a share with a password
+    SecRule REQUEST_FILENAME "@rx /ocs/v[0-9]\.php/apps/files_sharing/api/v[0-9]/shares(?:/[0-9]+)?$" \
+        "id:9508172,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ctl:ruleRemoveTargetById=930120;ARGS:json.path,\
+        ctl:ruleRemoveTargetById=930120;ARGS:path,\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:password,\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:json.password,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} PUT DELETE'"
+
+    # Syncing files with Nextcloud desktop app
+    # Matches:
+    # - /remote.php/dav/files/username/
+    # - /remote.php/dav/files/path/to/example.txt (does not assume that
+    #   all files must have an extension)
+    SecRule REQUEST_FILENAME "@contains /remote.php/dav/files/" \
+        "id:9508173,\
+        phase:3,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        chain"
+        SecRule RESPONSE_STATUS "@rx ^50[023]$" \
+            "t:none,\
+            ctl:ruleRemoveById=950100"
+
+    # Uploading files to Nextcloud
+    # This FP is usually triggered when uploading via the mobile app
+    SecRule REQUEST_FILENAME "@rx /remote\.php/dav/uploads/[^/]+/[a-z0-9]+/[0-9]+$" \
+        "id:9508174,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveById=920341,\
+        ctl:ruleRemoveTargetById=921110;REQUEST_BODY,\
+        ctl:ruleRemoveTargetById=944100;REQUEST_BODY,\
+        ctl:ruleRemoveTargetById=944110;REQUEST_BODY,\
+        ctl:ruleRemoveTargetById=944120;REQUEST_BODY,\
+        ctl:ruleRemoveTargetById=944130;REQUEST_BODY,\
+        ctl:ruleRemoveTargetById=944200;REQUEST_BODY,\
+        ctl:ruleRemoveTargetById=944240;REQUEST_BODY,\
+        ctl:ruleRemoveTargetById=944250;REQUEST_BODY"
+
+    # Uploading files in bulk
+    SecRule REQUEST_FILENAME "@endsWith /remote.php/dav/bulk" \
+        "id:9508175,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveById=921422,\
+        ctl:ruleRemoveTargetById=920260;REQUEST_BODY,\
+        ctl:ruleRemoveTargetById=921110;REQUEST_BODY,\
+        ctl:ruleRemoveTargetById=931110;REQUEST_BODY,\
+        ctl:ruleRemoveTargetById=944100;REQUEST_BODY,\
+        ctl:ruleRemoveTargetById=944110;REQUEST_BODY,\
+        ctl:ruleRemoveTargetById=944120;REQUEST_BODY,\
+        ctl:ruleRemoveTargetById=944130;REQUEST_BODY,\
+        ctl:ruleRemoveTargetById=944240;REQUEST_BODY,\
+        ctl:ruleRemoveTargetById=944210;REQUEST_BODY,\
+        ctl:ruleRemoveTargetById=944250;REQUEST_BODY,\
+        ctl:ruleRemoveTargetById=944260;REQUEST_BODY"
+
+    # Uploading files via Windows desktop client
+    SecRule REQUEST_FILENAME "@rx /remote\.php/dav/uploads/[^/]+/[0-9]+/\.file$" \
+        "id:9508176,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        chain"
+        SecRule &REQUEST_HEADERS:if "@eq 1" \
+            "t:none,\
+            ctl:ruleRemoveById=920450"
+
+    # 200002 will trigger if a request with a content type is sent with an empty request body.
+    # This typically happens when creating a file/folder in a public share.
+    SecRule REQUEST_FILENAME "@contains /public.php/dav/files/" \
+        "id:9508177,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        chain"
+        SecRule REQUEST_HEADERS:Content-Type "@beginsWith text/plain" \
+            "t:none,\
+            chain"
+            SecRule REQUEST_BODY_LENGTH "@eq 0" \
+                "t:none,\
+                ctl:ruleRemoveById=200002"
+
+    # When uploading files via public shares, the content type header will be set to whatever file type is being uploaded.
+    # This rule allows all content types for public shares since it could be anything.
+    # Rules 920420, 920480, and 920530 should catch any injection attacks on the content-type header.
+    SecRule REQUEST_FILENAME "@contains /public.php/dav/files/" \
+        "id:9508178,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveById=920420"
+
+    #
+    # [ Searchengine ]
+    #
+
+    # Nextcloud uses a search field for filename or content queries.
+    SecRule REQUEST_FILENAME "@contains /index.php/core/search" \
+        "id:9508125,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveTargetById=941000-942999;ARGS:query,\
+        ctl:ruleRemoveTargetById=932000-932999;ARGS:query,\
+        ctl:ruleRemoveTargetByTag=attack-injection-php;ARGS:query"
+
+    # Searching for files, folders, contacts, tasks, emails, etc.
+    SecRule REQUEST_FILENAME "@rx /ocs/v[0-9]\.php/search/providers(?:/[^/]+/search)?$" \
+        "id:9508132,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveTargetById=920230;ARGS:from,\
+        ctl:ruleRemoveTargetById=932190;ARGS:from,\
+        ctl:ruleRemoveTargetById=932200;ARGS:from,\
+        ctl:ruleRemoveTargetById=942200;ARGS:from,\
+        ctl:ruleRemoveTargetById=942210;ARGS:from,\
+        ctl:ruleRemoveTargetById=942430;ARGS:from,\
+        ctl:ruleRemoveTargetById=942440;ARGS:from"
+
+    #
+    # [ DAV ]
+    #
+
+    # Nextcloud uses DAV methods with index.php and remote.php to do many things
+    # The default ones in ModSecurity are: GET HEAD POST OPTIONS
+    #
+    # Looking through the code, and via testing, I found these:
+    #
+    # File manager: PUT DELETE MOVE PROPFIND PROPPATCH
+    # Calendars: REPORT
+    # Others in the code or js files: PATCH MKCOL MOVE TRACE
+    # Others that I added just in case, and they seem related:
+    #   CHECKOUT COPY LOCK MERGE MKACTIVITY UNLOCK.
+    SecRule REQUEST_FILENAME "@rx /(?:remote|index|public)\.php/" \
+        "id:9508130,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} PUT PATCH CHECKOUT COPY DELETE LOCK MERGE MKACTIVITY MKCOL MOVE PROPFIND PROPPATCH SEARCH UNLOCK REPORT TRACE jsonp'"
+
+    # Allow CalDav/CarDav clients to scan for CalDav CarDav path
+    SecRule REQUEST_FILENAME "@streq /" \
+        "id:9508131,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveTargetById=921110;REQUEST_BODY,\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} PROPFIND'"
+
+    #
+    # [ Preview and Thumbnails ]
+    #
+
+    # Preview
+    SecRule REQUEST_FILENAME "@contains /index.php/core/preview.png" \
+        "id:9508150,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveTargetById=932150;ARGS:file"
+
+    # Filepreview for trashbin
+    SecRule REQUEST_FILENAME "@contains /index.php/apps/files_trashbin/ajax/preview.php" \
+        "id:9508155,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveTargetById=932150;ARGS:file,\
+        ctl:ruleRemoveTargetById=942190;ARGS:file"
+
+    #
+    # [ Ownnote ]
+    #
+
+    SecRule REQUEST_FILENAME "@contains /index.php/apps/ownnote/" \
+        "id:9508300,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveById=941150"
+
+    #
+    # [ Text Editor ]
+    #
+
+    # This file can save anything, and it's name could be lots of things.
+    SecRule REQUEST_FILENAME "@contains /index.php/apps/files_texteditor/" \
+        "id:9508310,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveTargetById=920370-920390;ARGS:filecontents,\
+        ctl:ruleRemoveTargetById=920370-920390;ARGS_COMBINED_SIZE,\
+        ctl:ruleRemoveTargetById=921110-921160;ARGS:filecontents,\
+        ctl:ruleRemoveTargetById=932150;ARGS:filename,\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:filecontents"
+
+    # Keeping track of client session within a text editor
+    # Nextcloud 28 and newer will include the document ID in the Request URI after session
+    # Matches:
+    # /apps/text/session/sync
+    # /apps/text/session/close
+    # /apps/text/session/push
+    # /apps/text/public/session/sync
+    # /apps/text/public/session/close
+    # /apps/text/public/session/push
+    # /apps/text/attachments
+    SecRule REQUEST_FILENAME "@rx /apps/text/(?:public/)?(?:session/(?:[0-9]+/)?(?:sync|close|push|save)|attachments)$" \
+        "id:9508311,\
+        phase:2,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        chain"
+        SecRule ARGS:sessionToken|ARGS:json.sessionToken "@rx (?i)^[a-z0-9+/]+$" \
+            "t:none,\
+            ctl:ruleRemoveTargetById=920273;ARGS:sessionToken,\
+            ctl:ruleRemoveTargetById=932236;ARGS:sessionToken,\
+            ctl:ruleRemoveTargetById=942390;ARGS:sessionToken,\
+            ctl:ruleRemoveTargetById=942432;ARGS:sessionToken,\
+            ctl:ruleRemoveTargetById=942450;ARGS:sessionToken,\
+            ctl:ruleRemoveTargetById=920273;ARGS:json.sessionToken,\
+            ctl:ruleRemoveTargetById=932236;ARGS:json.sessionToken,\
+            ctl:ruleRemoveTargetById=942390;ARGS:json.sessionToken,\
+            ctl:ruleRemoveTargetById=942432;ARGS:json.sessionToken,\
+            ctl:ruleRemoveTargetById=942450;ARGS:json.sessionToken,\
+            ctl:ruleRemoveTargetById=920273;REQUEST_BODY"
+
+    # Syncing client side document state
+    # Nextcloud 28 and newer will include the document ID in the Request URI after session
+    SecRule REQUEST_FILENAME "@rx /apps/text/(?:public/)?session/(?:[0-9]+/)?(?:sync|close|push|save)$" \
+        "id:9508312,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveTargetById=920273;ARGS:documentState,\
+        ctl:ruleRemoveTargetById=932236;ARGS:documentState,\
+        ctl:ruleRemoveTargetById=932250;ARGS:documentState,\
+        ctl:ruleRemoveTargetById=941100;ARGS:documentState,\
+        ctl:ruleRemoveTargetById=942210;ARGS:documentState,\
+        ctl:ruleRemoveTargetById=942390;ARGS:documentState,\
+        ctl:ruleRemoveTargetById=942432;ARGS:documentState,\
+        ctl:ruleRemoveTargetById=942450;ARGS:documentState,\
+        ctl:ruleRemoveTargetById=920273;ARGS:json.documentState,\
+        ctl:ruleRemoveTargetById=932236;ARGS:json.documentState,\
+        ctl:ruleRemoveTargetById=932250;ARGS:json.documentState,\
+        ctl:ruleRemoveTargetById=941100;ARGS:json.documentState,\
+        ctl:ruleRemoveTargetById=942210;ARGS:json.documentState,\
+        ctl:ruleRemoveTargetById=942390;ARGS:json.documentState,\
+        ctl:ruleRemoveTargetById=942432;ARGS:json.documentState,\
+        ctl:ruleRemoveTargetById=942450;ARGS:json.documentState,\
+        ctl:ruleRemoveTargetById=920273;REQUEST_BODY"
+
+    # Guest Token
+    # This value is null for non public shares, so only remove the target for public ones
+    # Nextcloud 28 and newer will include the document ID in the Request URI after session
+    SecRule REQUEST_FILENAME "@rx /apps/text/public/session/(?:[0-9]+/)?(?:sync|close|push)$" \
+        "id:9508313,\
+        phase:2,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        chain"
+        SecRule ARGS:token|ARGS:json.token "@rx (?i)^[a-z0-9]+$" \
+            "t:none,\
+            ctl:ruleRemoveTargetById=932236;ARGS:token,\
+            ctl:ruleRemoveTargetById=932250;ARGS:token,\
+            ctl:ruleRemoveTargetById=942450;ARGS:token,\
+            ctl:ruleRemoveTargetById=932236;ARGS:json.token,\
+            ctl:ruleRemoveTargetById=932250;ARGS:json.token,\
+            ctl:ruleRemoveTargetById=942450;ARGS:json.token"
+
+    # Sending awareness messages
+    # This is used for document collaboration
+    # Nextcloud 28 and newer will include the document ID in the Request URI after session
+    SecRule REQUEST_FILENAME "@rx /apps/text/(?:public/)?session/(?:[0-9]+/)?push$" \
+        "id:9508314,\
+        phase:2,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        chain"
+        SecRule ARGS:awareness|ARGS:json.awareness "@rx (?i)^[a-z0-9=+/]+$" \
+            "t:none,\
+            ctl:ruleRemoveTargetById=920273;ARGS:awareness,\
+            ctl:ruleRemoveTargetById=932236;ARGS:awareness,\
+            ctl:ruleRemoveTargetById=942390;ARGS:awareness,\
+            ctl:ruleRemoveTargetById=942432;ARGS:awareness,\
+            ctl:ruleRemoveTargetById=942450;ARGS:awareness,\
+            ctl:ruleRemoveTargetById=920273;ARGS:json.awareness,\
+            ctl:ruleRemoveTargetById=932236;ARGS:json.awareness,\
+            ctl:ruleRemoveTargetById=942390;ARGS:json.awareness,\
+            ctl:ruleRemoveTargetById=942432;ARGS:json.awareness,\
+            ctl:ruleRemoveTargetById=942450;ARGS:json.awareness,\
+            ctl:ruleRemoveTargetById=920273;REQUEST_BODY"
+
+    # Checking for attachemnts on public shares
+    SecRule REQUEST_FILENAME "@endsWith /apps/text/attachments" \
+        "id:9508315,\
+        phase:2,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        chain"
+        SecRule ARGS:shareToken|ARGS:json.shareToken "@rx (?i)^[a-z0-9]+$" \
+            "t:none,\
+            ctl:ruleRemoveTargetById=932236;ARGS:shareToken,\
+            ctl:ruleRemoveTargetById=942450;ARGS:shareToken,\
+            ctl:ruleRemoveTargetById=932236;ARGS:json.shareToken,\
+            ctl:ruleRemoveTargetById=942450;ARGS:json.shareToken,\
+            ctl:ruleRemoveTargetById=932236;ARGS_NAMES:shareToken,\
+            ctl:ruleRemoveTargetById=932250;ARGS_NAMES:shareToken"
+
+    # This rule tries to avoid disabling the following rules for all paramaters since typically,
+    # there will only ever be very few items within the array.
+    SecRule REQUEST_FILENAME "@rx /apps/text/(?:public/)?session/(?:[0-9]+)?/push$" \
+        "id:9508316,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveTargetById=920273;ARGS:json.steps.array_0,\
+        ctl:ruleRemoveTargetById=932236;ARGS:json.steps.array_0,\
+        ctl:ruleRemoveTargetById=932250;ARGS:json.steps.array_0,\
+        ctl:ruleRemoveTargetById=941100;ARGS:json.steps.array_0,\
+        ctl:ruleRemoveTargetById=942210;ARGS:json.steps.array_0,\
+        ctl:ruleRemoveTargetById=942390;ARGS:json.steps.array_0,\
+        ctl:ruleRemoveTargetById=942432;ARGS:json.steps.array_0,\
+        ctl:ruleRemoveTargetById=942450;ARGS:json.steps.array_0,\
+        ctl:ruleRemoveTargetById=920273;ARGS:json.steps.array_1,\
+        ctl:ruleRemoveTargetById=932236;ARGS:json.steps.array_1,\
+        ctl:ruleRemoveTargetById=932250;ARGS:json.steps.array_1,\
+        ctl:ruleRemoveTargetById=941100;ARGS:json.steps.array_1,\
+        ctl:ruleRemoveTargetById=942210;ARGS:json.steps.array_1,\
+        ctl:ruleRemoveTargetById=942390;ARGS:json.steps.array_1,\
+        ctl:ruleRemoveTargetById=942432;ARGS:json.steps.array_1,\
+        ctl:ruleRemoveTargetById=942450;ARGS:json.steps.array_1,\
+        ctl:ruleRemoveTargetById=920273;ARGS:json.steps.array_2,\
+        ctl:ruleRemoveTargetById=932236;ARGS:json.steps.array_2,\
+        ctl:ruleRemoveTargetById=932250;ARGS:json.steps.array_2,\
+        ctl:ruleRemoveTargetById=941100;ARGS:json.steps.array_2,\
+        ctl:ruleRemoveTargetById=942210;ARGS:json.steps.array_2,\
+        ctl:ruleRemoveTargetById=942390;ARGS:json.steps.array_2,\
+        ctl:ruleRemoveTargetById=942432;ARGS:json.steps.array_2,\
+        ctl:ruleRemoveTargetById=942450;ARGS:json.steps.array_2,\
+        ctl:ruleRemoveTargetById=920273;ARGS:json.steps.array_3,\
+        ctl:ruleRemoveTargetById=932236;ARGS:json.steps.array_3,\
+        ctl:ruleRemoveTargetById=932250;ARGS:json.steps.array_3,\
+        ctl:ruleRemoveTargetById=941100;ARGS:json.steps.array_3,\
+        ctl:ruleRemoveTargetById=942210;ARGS:json.steps.array_3,\
+        ctl:ruleRemoveTargetById=942390;ARGS:json.steps.array_3,\
+        ctl:ruleRemoveTargetById=942432;ARGS:json.steps.array_3,\
+        ctl:ruleRemoveTargetById=942450;ARGS:json.steps.array_3,\
+        ctl:ruleRemoveTargetById=920273;ARGS:steps.steps,\
+        ctl:ruleRemoveTargetById=932236;ARGS:steps.steps,\
+        ctl:ruleRemoveTargetById=932250;ARGS:steps.steps,\
+        ctl:ruleRemoveTargetById=941100;ARGS:steps.steps,\
+        ctl:ruleRemoveTargetById=942210;ARGS:steps.steps,\
+        ctl:ruleRemoveTargetById=942390;ARGS:steps.steps,\
+        ctl:ruleRemoveTargetById=942432;ARGS:steps.steps,\
+        ctl:ruleRemoveTargetById=942450;ARGS:steps.steps"
+
+    #
+    # [ Address Book ]
+    #
+
+    # Allow the data type 'text/vcard'
+    SecRule REQUEST_FILENAME "@contains /remote.php/dav/addressbooks/" \
+        "id:9508320,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_request_content_type=%{tx.allowed_request_content_type} |text/vcard|'"
+
+    # Allow modifying contacts via the web interface
+    # XML content may sometimes fail to parse
+    SecRule REQUEST_HEADERS:Content-Type "@streq application/xml; charset=utf-8" \
+        "id:9508321,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        chain"
+        SecRule REQUEST_FILENAME "@contains /remote.php/dav/addressbooks/" \
+            "t:none,\
+            ctl:ruleRemoveById=200002"
+
+    # When enabling "Update avatar from social media" setting in Nextcloud Contacts
+    SecRule REQUEST_FILENAME "@rx /apps/contacts/api/v[0-9]/social/config/user/enableSocialSync$" \
+        "id:9508322,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} PUT'"
+
+    # Loading Contact profile pictures
+    SecRule REQUEST_FILENAME "@rx /remote\.php/dav/addressbooks/users/(?:[^/]+/){2}[0-9]+$" \
+        "id:9508323,\
+        phase:3,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        chain"
+        SecRule RESPONSE_STATUS "@streq 501" \
+            "t:none,\
+            ctl:ruleRemoveById=950100"
+
+    #
+    # [ Calendar ]
+    #
+
+    # Allow the data type 'text/calendar'
+    SecRule REQUEST_FILENAME "@rx /remote\.php/(?:cal)?dav/calendars/" \
+        "id:9508330,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_request_content_type=%{tx.allowed_request_content_type} |text/calendar| |text/plain|'"
+
+    # Allow modifying calendar events via the web interface
+    SecRule REQUEST_METHOD "@streq PUT" \
+        "id:9508331,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        chain"
+        SecRule REQUEST_FILENAME "@contains /remote.php/dav/calendars/" \
+            "t:none,\
+            ctl:ruleRemoveById=200002"
+
+    # Fix for iOS Calender not syncing
+    SecRule REQUEST_METHOD "@streq PROPFIND" \
+        "id:9508332,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        chain"
+        SecRule REQUEST_FILENAME "@rx /remote\.php/dav/(?:principals/users|calendars)/" \
+            "t:none,\
+            ctl:ruleRemoveById=921110"
+
+    # Syncing calendars
+    SecRule REQUEST_FILENAME "@rx /remote\.php/dav/calendars/(?:[^/]+/){2}[^/]+\.ics$" \
+        "id:9508333,\
+        phase:3,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        chain"
+        SecRule RESPONSE_STATUS "@streq 500" \
+            "t:none,\
+            ctl:ruleRemoveById=950100"
+
+    # Editing/deleting existing calendar appointments
+    # Calendar description can be anything
+    SecRule REQUEST_FILENAME "@rx /apps/calendar/v[0-9]/appointment_configs/[0-9]+$" \
+        "id:9508334,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:description,\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:json.description,\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} PUT DELETE'"
+
+    # Calendar description can be anything
+    SecRule REQUEST_FILENAME "@rx /apps/calendar/v[0-9]/appointment_configs$" \
+        "id:9508335,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:description,\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:json.description"
+
+    # XML Parser fails when emptying calendar trashbin
+    SecRule REQUEST_FILENAME "@rx /remote\.php/dav/calendars/[^/]+/trashbin/objects/[0-9]+\.ics$" \
+        "id:9508336,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        chain"
+        SecRule REQUEST_HEADERS:Content-Type "@streq application/xml; charset=utf-8" \
+            "t:none,\
+            ctl:ruleRemoveById=200002"
+
+    # Creating new calendar groups in web GUI
+    # The / at the end is sometimes not included
+    SecRule REQUEST_FILENAME "@rx ^/remote\.php/dav/calendars/[^/]+/[^/]+/?$" \
+        "id:9508339,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        chain"
+        SecRule REQUEST_METHOD "@pm REPORT MKCOL" \
+            "t:none,\
+            ctl:ruleRemoveTargetById=920272;REQUEST_BODY,\
+            ctl:ruleRemoveTargetById=920273;REQUEST_BODY,\
+            ctl:ruleRemoveTargetById=932236;XML:/*,\
+            ctl:ruleRemoveTargetById=942430;XML:/*,\
+            ctl:ruleRemoveTargetById=942431;XML:/*,\
+            ctl:ruleRemoveTargetById=942432;XML:/*,\
+            ctl:ruleRemoveTargetById=942440;XML:/*"
+
+    # Enabling/disabling "Enable birthday calendar setting
+    # Deleting an calendar group
+    # The / at the end is sometimes not included
+    # XML parser fails because there's no request body, even though a content type header is sent.
+    SecRule REQUEST_FILENAME "@rx /remote\.php/dav/calendars/[^/]+/[^/]+/?$" \
+        "id:9508360,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        chain"
+        SecRule REQUEST_METHOD "@pm DELETE" \
+            "t:none,\
+            chain"
+            SecRule REQUEST_BODY_LENGTH "@eq 0" \
+                "t:none,\
+                ctl:ruleRemoveById=200002"
+
+    # Deleting Calendar tasks
+    # Moving a Calendar task
+    # XML parser fails because there's no request body, even though a content type header is sent.
+    SecRule REQUEST_FILENAME "@rx /remote\.php/dav/calendars/(?:[^/]+/){2}[^/]+\.ics$" \
+        "id:9508361,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        chain"
+        SecRule REQUEST_METHOD "@pm DELETE MOVE" \
+            "t:none,\
+            chain"
+            SecRule REQUEST_BODY_LENGTH "@eq 0" \
+                "t:none,\
+                ctl:ruleRemoveById=200002"
+
+    # Signing into caldav via iPhone
+    SecRule REQUEST_FILENAME "@rx /remote.php/dav/calendars/[^/]+/[^/]+/$" \
+        "id:9508362,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveTargetById=942430;XML:/*,\
+        ctl:ruleRemoveTargetById=942431;XML:/*,\
+        ctl:ruleRemoveTargetById=942432;XML:/*,\
+        ctl:ruleRemoveTargetById=942440;XML:/*,\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} MKCALENDAR'"
+
+    #
+    # [ Notes ]
+    #
+
+    # We want to allow a lot of things as the user is
+    # allowed to note on anything.
+    SecRule REQUEST_FILENAME "@contains /index.php/apps/notes/" \
+        "id:9508340,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveByTag=attack-injection-php"
+
+    #
+    # [ Bookmarks ]
+    #
+
+    # Allow urls in data.
+    SecRule REQUEST_FILENAME "@contains /index.php/apps/bookmarks/" \
+        "id:9508350,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveById=931130"
+
+    #
+    # [ Login forms and Logout ]
+    #
+    # This removes checks on the 'password' and related fields:
+
+    # User login password.
+    # Being redirected to login page via desktop app
+    SecRule REQUEST_FILENAME "@endsWith /login" \
+        "id:9508400,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveTargetById=920230;ARGS:redirect_url,\
+        ctl:ruleRemoveTargetById=932200;ARGS:redirect_url,\
+        ctl:ruleRemoveTargetById=932190;ARGS:redirect_url,\
+        ctl:ruleRemoveTargetById=942431;ARGS:redirect_url,\
+        ctl:ruleRemoveTargetById=942432;ARGS:redirect_url,\
+        ctl:ruleRemoveTargetById=920272;REQUEST_BODY,\
+        ctl:ruleRemoveTargetById=920273;REQUEST_BODY,\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:password"
+
+    # Asking an admin to reauthenticate when performing administrative changes
+    # Asking an user to reauthenticate when making changes to account settings
+    SecRule REQUEST_FILENAME "@endsWith /login/confirm" \
+        "id:9508401,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveTargetById=920272;REQUEST_BODY,\
+        ctl:ruleRemoveTargetById=920273;REQUEST_BODY,\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:password,\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:json.password"
+
+    # When logging in via FIDO2
+    SecRule REQUEST_FILENAME "@endsWith /login/webauthn/finish" \
+        "id:9508402,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveTargetById=920273;ARGS:data,\
+        ctl:ruleRemoveTargetById=932236;ARGS:data,\
+        ctl:ruleRemoveTargetById=920273;ARGS:json.data,\
+        ctl:ruleRemoveTargetById=932236;ARGS:json.data,\
+        ctl:ruleRemoveTargetById=920272;REQUEST_BODY,\
+        ctl:ruleRemoveTargetById=920273;REQUEST_BODY,\
+        ctl:ruleRemoveTargetByTag=attack-sqli;ARGS:data,\
+        ctl:ruleRemoveTargetByTag=attack-sqli;ARGS:json.data"
+
+    # Logging in via desktop app
+    SecRule REQUEST_FILENAME "@rx /login/v[0-9\.]+/grant$" \
+        "id:9508403,\
+        phase:2,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        chain"
+        SecRule ARGS:stateToken "@rx (?i)^[a-z0-9]+$" \
+            "t:none,\
+            ctl:ruleRemoveTargetById=932236;ARGS:stateToken,\
+            ctl:ruleRemoveTargetById=942450;ARGS:stateToken"
+
+    # Reset password.
+    SecRule REQUEST_FILENAME "@endsWith /login" \
+        "id:9508410,\
+        phase:2,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        chain"
+        SecRule ARGS:action "@streq resetpass" \
+            "t:none,\
+            chain"
+            SecRule &ARGS:action "@eq 1" \
+                "t:none,\
+                ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:pass1,\
+                ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:pass1-text,\
+                ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:pass2"
+
+    # Password reset used in newer versions of Nextcloud
+    SecRule REQUEST_FILENAME "@rx /lostpassword/set/[^/]+/[^/]+$" \
+        "id:9508411,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:password,\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:json.password"
+
+    # Logging in with webauthn
+    # HTTP 500 error code may sometimes be returned when authenticating
+    SecRule REQUEST_FILENAME "@endsWith /login/webauthn/finish" \
+        "id:9508421,\
+        phase:3,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        chain"
+        SecRule RESPONSE_STATUS "@streq 500" \
+            "t:none,\
+            ctl:ruleRemoveById=950100"
+
+    # Sometimes there will be a double // at the end
+    # Signing into the Nextcloud Desktop App
+    SecRule REQUEST_FILENAME "@rx /remote\.php/dav/files//?$" \
+        "id:9508422,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        chain"
+        SecRule REQUEST_METHOD "@streq PROPFIND" \
+            "t:none,\
+            chain"
+            SecRule REQUEST_HEADERS:Content-Type "@streq text/xml; charset=utf-8" \
+                "t:none,\
+                ctl:ruleRemoveById=200002"
+
+    # Change Password and Setting up a new user/password
+    SecRule REQUEST_FILENAME "@endsWith /settings/users" \
+        "id:9508500,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:newuserpassword,\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:password"
+
+    # Nextcloud administrator setting/changing a user's password
+    SecRule REQUEST_FILENAME "@rx /ocs/v[0-9]\.php/cloud/users(?:/[^/]+)?$" \
+        "id:9508501,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:password,\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:value,\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:json.password,\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:json.value"
+
+    #
+    # [ General rule exclusions ]
+    #
+
+    # Fix Nextcloud Cookie FPs
+    # Operator @unconditionalMatch is used instead of a SecAction because of a bug
+    # in ModSecurity v3 which prevents SecActions to be removed using ctl action.
+    # Fix FP with requesttoken used for various requests in Nextcloud.
+    SecRule REQUEST_FILENAME "@unconditionalMatch" \
+        "id:9508510,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveTargetById=920273;ARGS:requesttoken,\
+        ctl:ruleRemoveTargetById=932236;ARGS:requesttoken,\
+        ctl:ruleRemoveTargetById=941100;ARGS:requesttoken,\
+        ctl:ruleRemoveTargetById=941120;ARGS:requesttoken,\
+        ctl:ruleRemoveTargetById=942390;ARGS:requesttoken,\
+        ctl:ruleRemoveTargetById=942432;ARGS:requesttoken,\
+        ctl:ruleRemoveTargetById=942450;ARGS:requesttoken,\
+        ctl:ruleRemoveTargetById=932236;REQUEST_COOKIES:nc_session_id,\
+        ctl:ruleRemoveTargetById=942450;REQUEST_COOKIES:nc_session_id,\
+        ctl:ruleRemoveTargetById=932236;REQUEST_COOKIES:nc_token,\
+        ctl:ruleRemoveTargetById=942450;REQUEST_COOKIES:nc_token,\
+        ctl:ruleRemoveTargetById=932236;REQUEST_COOKIES:oc_sessionPassphrase,\
+        ctl:ruleRemoveTargetById=942210;REQUEST_COOKIES:oc_sessionPassphrase,\
+        ctl:ruleRemoveTargetById=942450;REQUEST_COOKIES:oc_sessionPassphrase"
+
+    # Fix false positives with static files
+    SecRule REQUEST_FILENAME "@rx (?i)\.(?:avif|bmp|brotli|bvr|css|eot|gif|gz|ico|jpeg|jpg|map|m?js|mp[34]|otf|png|svg|swf|ts|ttf|txt|wav|webp|woff2?)$" \
+        "id:9508511,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveTargetById=932236;ARGS:v"
+
+    #
+    # [ Nextcloud Setup ]
+    #
+
+    # Setting up a fresh Nextcloud Server with a dedicated database
+    SecRule REQUEST_FILENAME "@endsWith /index.php" \
+        "id:9508520,\
+        phase:2,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        chain"
+        SecRule ARGS:dbtype "@rx ^(?:my|pg)sql$" \
+            "t:none,\
+            ctl:ruleRemoveTargetById=932236;ARGS:dbtype,\
+            ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:adminpass,\
+            ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:dbpass,\
+            ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:dbpass-clone"
+
+    # Setting up a fresh Nextcloud Server with sqlite database
+    SecRule REQUEST_FILENAME "@endsWith /index.php" \
+        "id:9508521,\
+        phase:2,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        chain"
+        SecRule ARGS:dbtype "@streq sqlite" \
+            "t:none,\
+            ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:adminpass"
+
+    #
+    # [ Nextcloud Office - Connector ]
+    #
+
+    # Creating/modifying documents in Nextcloud Office
+    SecRule REQUEST_FILENAME "@rx /index\.php/apps/richdocuments/wopi/files/[^/]+/contents$" \
+        "id:9508530,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveTargetById=920272;REQUEST_BODY,\
+        ctl:ruleRemoveTargetById=920273;REQUEST_BODY,\
+        setvar:'tx.allowed_request_content_type=%{tx.allowed_request_content_type} |application/octet-stream|'"
+
+    # Generating nextcloud office document previews
+    SecRule REQUEST_FILENAME "@endsWith /lool/convert-to/png" \
+        "id:9508531,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveTargetById=920120;FILES_NAMES,\
+        ctl:ruleRemoveTargetById=920121;FILES_NAMES,\
+        ctl:ruleRemoveTargetById=920272;REQUEST_BODY,\
+        ctl:ruleRemoveTargetById=920273;REQUEST_BODY"
+
+    # Copying and pasting from clipboard within Nextcloud Office
+    SecRule REQUEST_FILENAME "@endsWith /cool/clipboard" \
+        "id:9508532,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveTargetById=921110;REQUEST_BODY"
+
+    # Sending access token to Nextcloud Office connector
+    SecRule REQUEST_FILENAME "@rx /index\.php/apps/richdocuments/wopi/files/[^/]+(?:/contents)?$" \
+        "id:9508533,\
+        phase:2,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        chain"
+        SecRule ARGS:access_token "@rx (?i)^[a-z0-9]+$" \
+            "t:none,\
+            ctl:ruleRemoveTargetById=932236;ARGS:access_token,\
+            ctl:ruleRemoveTargetById=942450;ARGS:access_token"
+
+    #
+    # [ Nextcloud Office - Built in Code Server ]
+    #
+
+    # Checking document state with built in collabora CODE Server
+    SecRule REQUEST_FILENAME "@endsWith /apps/richdocumentscode/proxy.php" \
+        "id:9508540,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_request_content_type=%{tx.allowed_request_content_type} |text/plain|'"
+
+    # Nextcloud Office advertisement with built in collabora CODE Server
+    SecRule REQUEST_FILENAME "@endsWith /apps/richdocumentscode/proxy.php" \
+        "id:9508541,\
+        phase:2,\
+        pass,\
+        t:none,\
+        nolog,\
+        chain"
+        SecRule ARGS:buy_product "@streq https://nextcloud.com/pricing" \
+            "t:none,\
+            ctl:ruleRemoveTargetById=931130;ARGS:buy_product"
+
+    # Making changes to a document using built in collabora CODE Server
+    SecRule REQUEST_FILENAME "@endsWith /apps/richdocumentscode/proxy.php" \
+        "id:9508542,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveTargetById=920272;ARGS:css_variables,\
+        ctl:ruleRemoveTargetById=920273;ARGS:css_variables,\
+        ctl:ruleRemoveTargetById=942422;ARGS:css_variables,\
+        ctl:ruleRemoveTargetById=942430;ARGS:css_variables,\
+        ctl:ruleRemoveTargetById=942431;ARGS:css_variables,\
+        ctl:ruleRemoveTargetById=942432;ARGS:css_variables,\
+        ctl:ruleRemoveTargetById=942440;ARGS:css_variables,\
+        ctl:ruleRemoveTargetById=942460;ARGS:css_variables,\
+        ctl:ruleRemoveTargetById=932236;ARGS:req,\
+        ctl:ruleRemoveTargetById=932190;ARGS:req,\
+        ctl:ruleRemoveTargetById=942431;ARGS:req,\
+        ctl:ruleRemoveTargetById=942432;ARGS:req,\
+        ctl:ruleRemoveTargetById=942430;ARGS:ui_defaults,\
+        ctl:ruleRemoveTargetById=942431;ARGS:ui_defaults,\
+        ctl:ruleRemoveTargetById=942432;ARGS:ui_defaults,\
+        ctl:ruleRemoveTargetById=920272;REQUEST_BODY,\
+        ctl:ruleRemoveTargetById=920273;REQUEST_BODY,\
+        ctl:ruleRemoveTargetById=921110;REQUEST_BODY"
+
+    #
+    # [ Nextcloud Office - Dedicated Collabora Server ]
+    #
+
+    # Checking document state with dedicated Collabora Server
+    SecRule REQUEST_FILENAME "@rx /browser/[^/]+/cool\.html$" \
+        "id:9508550,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        chain"
+        SecRule REQUEST_HEADERS:Content-Type "@beginsWith text/plain" \
+            "t:none,\
+            ctl:requestBodyProcessor=XML,\
+            setvar:'tx.allowed_request_content_type=%{tx.allowed_request_content_type} |text/plain|'"
+
+    # Nextcloud Office advertisement
+    SecRule REQUEST_FILENAME "@rx /browser/[^/]+/cool\.html$" \
+        "id:9508551,\
+        phase:2,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        chain"
+        SecRule ARGS:buy_product "@streq https://nextcloud.com/pricing" \
+            "t:none,\
+            ctl:ruleRemoveTargetById=931130;ARGS:buy_product"
+
+    # Making changes to a document using dedicated Collabora Server
+    SecRule REQUEST_FILENAME "@rx /browser/[^/]+/cool\.html$" \
+        "id:9508552,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveTargetById=920272;ARGS:css_variables,\
+        ctl:ruleRemoveTargetById=920273;ARGS:css_variables,\
+        ctl:ruleRemoveTargetById=942422;ARGS:css_variables,\
+        ctl:ruleRemoveTargetById=942430;ARGS:css_variables,\
+        ctl:ruleRemoveTargetById=942431;ARGS:css_variables,\
+        ctl:ruleRemoveTargetById=942432;ARGS:css_variables,\
+        ctl:ruleRemoveTargetById=942440;ARGS:css_variables,\
+        ctl:ruleRemoveTargetById=942460;ARGS:css_variables,\
+        ctl:ruleRemoveTargetById=932236;ARGS:req,\
+        ctl:ruleRemoveTargetById=932190;ARGS:req,\
+        ctl:ruleRemoveTargetById=942431;ARGS:req,\
+        ctl:ruleRemoveTargetById=942432;ARGS:req,\
+        ctl:ruleRemoveTargetById=942430;ARGS:ui_defaults,\
+        ctl:ruleRemoveTargetById=942431;ARGS:ui_defaults,\
+        ctl:ruleRemoveTargetById=942432;ARGS:ui_defaults,\
+        ctl:ruleRemoveTargetById=920272;REQUEST_BODY,\
+        ctl:ruleRemoveTargetById=920273;REQUEST_BODY,\
+        ctl:ruleRemoveTargetById=921110;REQUEST_BODY"
+
+    # Sending access token to dedicated Collabora Server
+    SecRule REQUEST_FILENAME "@rx /browser/[^/]+/cool\.html$" \
+        "id:9508553,\
+        phase:2,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        chain"
+        SecRule ARGS:access_token "@rx (?i)^[a-z0-9]+$" \
+            "t:none,\
+            ctl:ruleRemoveTargetById=932236;ARGS:access_token,\
+            ctl:ruleRemoveTargetById=942450;ARGS:access_token"
+
+    #
+    # [ Settings pages ]
+    #
+    # This removes checks on multiple settings pages
+
+    # Personal: Security
+
+    # Fixes deletion and allow/disallow of filesystem access for auth tokens
+    SecRule REQUEST_FILENAME "@rx /settings/personal/authtokens/[0-9]+$" \
+        "id:9508601,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} PUT DELETE'"
+
+    # When trying to remove a WebAuthn device
+    SecRule REQUEST_FILENAME "@rx /settings/api/personal/webauthn/registration/[0-9]+$" \
+        "id:9508606,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} DELETE'"
+
+    # While going through the first run setup wizard
+    SecRule REQUEST_FILENAME "@endsWith /apps/firstrunwizard/wizard" \
+        "id:9508607,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} DELETE'"
+
+    # When trying to update Personal --> Sharing --> Sharing --> Accept user and groups shares by default
+    SecRule REQUEST_FILENAME "@rx /apps/files_sharing/settings/(?:defaultAccept|shareFolder)$" \
+        "id:9508608,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} PUT DELETE'"
+
+    # When trying to delete profile picture in Personal --> Personal info
+    SecRule REQUEST_FILENAME "@endsWith /avatar" \
+        "id:9508611,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} DELETE'"
+
+    # When trying to delete users with data access(Personal --> Privacy --> Who has access to your data?)
+    SecRule REQUEST_FILENAME "@rx /apps/privacy/api/admins/[0-9]+$" \
+        "id:9508614,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} DELETE'"
+
+    # Personal --> Availability
+    # When trying to "Automatically set user status to Do no disturb"
+    SecRule REQUEST_FILENAME "@rx /ocs/v[0-9]+\.php/apps/provisioning_api/api/v[0-9]+/config/users/dav/user_status_automation" \
+        "id:9508615,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} DELETE'"
+
+
+    # Administration: Overview
+
+    # Fixed "Security & setup warnings" test
+    SecRule REQUEST_FILENAME "@contains /.well-known/caldav" \
+        "id:9508602,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} PROPFIND'"
+
+    SecRule REQUEST_FILENAME "@contains /.well-known/carddav" \
+        "id:9508603,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} PROPFIND'"
+
+    # Also for WebDAV (not listed on Security & setup warnings, but needed)
+    SecRule REQUEST_FILENAME "@contains /.well-known/webdav" \
+        "id:9508616,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} PROPFIND'"
+
+    # Administration --> Sharing --> Federated cloud sharing
+    # When trying to delete a trusted server
+    SecRule REQUEST_FILENAME "@contains /apps/federation/trusted-servers/" \
+        "id:9508609,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} DELETE'"
+
+    # When trying to change cron method in Administration --> Basic settings --> Background jobs
+    SecRule REQUEST_FILENAME "@rx /ocs/v[0-9]+\.php/apps/provisioning_api/api/v[0-9]+/config/apps/core/cronErrors" \
+        "id:9508612,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} DELETE'"
+
+    # When trying to enforce Two-Factor Authentication for a group(Administration --> Security --> Two-Factor Authentication)
+    SecRule REQUEST_FILENAME "@contains /settings/api/admin/twofactorauth" \
+        "id:9508613,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} PUT'"
+
+    # When trying to change log levels and live update in (Administration --> Logging)
+    SecRule REQUEST_FILENAME "@rx /apps/logreader/(?:live|levels)" \
+        "id:9508610,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} PUT'"
+
+    # Appearance and accessibility
+
+    # Enabling any default theme requires the PUT method.
+    SecRule REQUEST_FILENAME "@rx /ocs/v[0-9]+\.php/apps/theming/api/v[0-9]+/theme/.*?/enable" \
+        "id:9508604,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} PUT'"
+
+    # When trying to enable keyboard shortcuts
+    SecRule REQUEST_FILENAME "@rx /ocs/v[0-9]+\.php/apps/provisioning_api/api/v[0-9]+/config/users/theming/shortcuts_disabled" \
+        "id:9508605,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} DELETE'"
+
+    # Disabling background
+    SecRule REQUEST_FILENAME "@endsWith /apps/theming/background/custom" \
+        "id:9508617,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} DELETE'"
+
+    # When disabling settings under Settings --> Availability
+    SecRule REQUEST_FILENAME "@rx /ocs/v[0-9]\.php/apps/provisioning_api/api/v[0-9]/config/users/dav/user_status_automation$" \
+        "id:9508619,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} DELETE'"
+
+    # When configurating an SMTP server under Administration --> Basic Settings --> Email Server
+    SecRule REQUEST_FILENAME "@endsWith /settings/admin/mailsettings/credentials" \
+        "id:9508620,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:mail_smtppassword"
+
+    # When removing whitelisted IPs under Administration --> Security --> Brute Force IP whitelsit
+    SecRule REQUEST_FILENAME "@rx /apps/bruteforcesettings/ipwhitelist/[0-9]+$" \
+        "id:9508621,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} DELETE'"
+
+    # When adding legal notices and privacy policy under Administration --> Theming --> Advanced Options
+    SecRule REQUEST_FILENAME "@endsWith /apps/theming/ajax/updateStylesheet" \
+        "id:9508622,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveTargetById=931130;ARGS:value,\
+        ctl:ruleRemoveTargetById=931130;ARGS:json.value"
+
+    # Disabling Dyslexia font under Settings --> Appearance and Accessibility --> Dyslexia font
+    SecRule REQUEST_FILENAME "@rx /ocs/v[0-9]\.php/apps/theming/api/v[0-9]/theme/opendyslexic$" \
+        "id:9508623,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} DELETE'"
+
+    # Registering webauthn devices under Settings --> Personal --> Security --> Passwordless Authentication
+    SecRule REQUEST_FILENAME "@endsWith /settings/api/personal/webauthn/registration" \
+        "id:9508624,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveTargetById=920273;ARGS:data,\
+        ctl:ruleRemoveTargetById=932236;ARGS:data,\
+        ctl:ruleRemoveTargetById=920273;ARGS:json.data,\
+        ctl:ruleRemoveTargetById=932236;ARGS:json.data,\
+        ctl:ruleRemoveTargetById=920273;REQUEST_BODY,\
+        ctl:ruleRemoveTargetByTag=attack-sqli;ARGS:data,\
+        ctl:ruleRemoveTargetByTag=attack-sqli;ARGS:json.data"
+
+    # When a user is changing their password under settings --> Personal --> Security --> Password
+    SecRule REQUEST_FILENAME "@endsWith /settings/personal/changepassword" \
+        "id:9508625,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:oldpassword,\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:newpassword,\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:json.oldpassword,\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:json.newpassword"
+
+    # Validating password against password policy
+    SecRule REQUEST_FILENAME "@rx /ocs/v[0-9]\.php/apps/password_policy/api/v[0-9]/validate$" \
+        "id:9508626,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:password,\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:json.password"
+
+    # Adjusting the amount of cores used for AI facial recognition under Settings --> Administration --> Recognize --> CPU Cores
+    # This rule doesn't try to enumerate all endpoints and uses a contains instead, there's simply WAY too many to enumerate.
+    # If you try, then the regex becomes unreadable and painful to work with.
+    SecRule REQUEST_FILENAME "@contains /apps/recognize/admin/settings/" \
+        "id:9508627,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveTargetById=932160;ARGS:value,\
+        ctl:ruleRemoveTargetById=932160;ARGS:json.value,\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} PUT'"
+
+    # When configuring OAuth 2 clients under Administration --> Security --> OAuth 2.0 clients
+    # DELETE - Deleting an OAuth client
+    SecRule REQUEST_FILENAME "@rx /apps/oauth2/clients(?:/[0-9]+)?$" \
+        "id:9508628,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveTargetById=931130;ARGS:redirectUri,\
+        ctl:ruleRemoveTargetById=932236;ARGS:name,\
+        ctl:ruleRemoveTargetById=931130;ARGS:json.redirectUri,\
+        ctl:ruleRemoveTargetById=932236;ARGS:json.name,\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} DELETE'"
+
+    # Disabling automatic deletion of a tag type under Administration --> Flow --> File retention & automatic deletion
+    SecRule REQUEST_FILENAME "@rx /ocs/v[0-9]\.php/apps/files_retention/api/v[0-9]/retentions/[0-9]+$" \
+        "id:9508629,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} DELETE'"
+
+    # When enabling / disabling Microsoft / Gmail email integration via OAuth 2 under Settings --> Administration
+    # --> Groupware --> Mail app --> Microsoft integration
+    SecRule REQUEST_FILENAME "@rx /apps/mail/api/integration/(?:google|microsoft)$" \
+        "id:9508630,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} DELETE'"
+
+    # Viewing Nextcloud logs
+    # Settings --> Administration --> Log Reader
+    SecRule REQUEST_FILENAME "@rx /apps/logreader(?:/api)?/poll$" \
+        "id:9508631,\
+        phase:2,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        chain"
+        SecRule ARGS:lastReqId "@rx (?i)^[a-z0-9]+$" \
+            "t:none,\
+            ctl:ruleRemoveTargetById=932236;ARGS:lastReqId,\
+            ctl:ruleRemoveTargetById=942450;ARGS:lastReqId"
+
+    # When disabling 2FA email under Settings --> Personal --> Security
+    SecRule REQUEST_FILENAME "@endsWith /apps/twofactor_email/settings/disable" \
+        "id:9508632,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} DELETE'"
+
+    # Configuring WOPI URL for dedicated Collabora Server
+    SecRule REQUEST_FILENAME "@endsWith /index.php/apps/richdocuments/ajax/admin.php" \
+        "id:9508633,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveTargetById=931130;ARGS:wopi_url,\
+        ctl:ruleRemoveTargetById=931130;ARGS:json.wopi_url"
+
+    # Enabling/disabling log reader live view
+    # Administration --> Logging
+    SecRule REQUEST_FILENAME "@endsWith /apps/logreader/api/settings" \
+        "id:9508634,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} PUT'"
+
+    # Configuring custom default app
+    # Administration --> Theming --> Navigation bar settings
+    SecRule REQUEST_FILENAME "@endsWith /apps/theming/ajax/updateAppMenu" \
+        "id:9508635,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} PUT'"
+
+    # Deleting out of office message under
+    # Personal Settings --> Availability --> Absence
+    SecRule REQUEST_FILENAME "@rx /ocs/v[0-9\.]+\.php/apps/dav/api/v[0-9\.]+/outOfOffice/[^/]+$" \
+        "id:9508636,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} DELETE'"
+
+    # Adjusting availability hours
+    # Personal Settings --> Availability --> Availability
+    SecRule REQUEST_FILENAME "@rx /remote.php/dav/calendars/[^/]+/inbox$" \
+        "id:9508637,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveTargetById=932236;XML:/*,\
+        ctl:ruleRemoveTargetById=942430;XML:/*,\
+        ctl:ruleRemoveTargetById=942431;XML:/*,\
+        ctl:ruleRemoveTargetById=942432;XML:/*"
+
+    # Deleting email addresses from personal info
+    SecRule REQUEST_FILENAME "@rx /ocs/v[0-9\.]+\.php/cloud/users/test/additional_mail$" \
+        "id:9508638,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} PUT'"
+
+    # Customizing apps load order in the menu
+    SecRule REQUEST_FILENAME "@rx /ocs/v[0-9]+\.php/apps/provisioning_api/api/v[0-9\.]+/config/users/core/apporder$" \
+        "id:9508639,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveTargetById=932240;ARGS:configValue,\
+        ctl:ruleRemoveTargetById=942200;ARGS:configValue,\
+        ctl:ruleRemoveTargetById=942430;ARGS:configValue,\
+        ctl:ruleRemoveTargetById=942431;ARGS:configValue,\
+        ctl:ruleRemoveTargetById=942432;ARGS:configValue,\
+        ctl:ruleRemoveTargetById=942340;ARGS:configValue,\
+        ctl:ruleRemoveTargetById=942370;ARGS:configValue,\
+        ctl:ruleRemoveTargetById=932240;ARGS:json.configValue,\
+        ctl:ruleRemoveTargetById=942200;ARGS:json.configValue,\
+        ctl:ruleRemoveTargetById=942430;ARGS:json.configValue,\
+        ctl:ruleRemoveTargetById=942431;ARGS:json.configValue,\
+        ctl:ruleRemoveTargetById=942432;ARGS:json.configValue,\
+        ctl:ruleRemoveTargetById=942340;ARGS:json.configValue,\
+        ctl:ruleRemoveTargetById=942370;ARGS:json.configValue"
+
+    #
+    # [ App Store ]
+    #
+
+    SecRule REQUEST_FILENAME "@endsWith /settings/api/apps/media" \
+        "id:9508650,\
+        phase:2,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        chain"
+        SecRule ARGS:fileName "@rx ^https://(?:github|nextcloud)\.com/" \
+            "t:none,\
+            ctl:ruleRemoveTargetById=931130;ARGS:fileName"
+
+    #
+    # [ Notifications ]
+    #
+    # Nextcloud uses notifictions to inform the user of important new details.
+
+    # Dismissing notifications
+    SecRule REQUEST_FILENAME "@rx /ocs/v[0-9]+\.php/apps/notifications/api/v[0-9]/notifications(?:/[0-9]+)?$" \
+        "id:9508701,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} DELETE'"
+
+    # Sometimes a 502 error is returned when viewing/dismissing a notification
+    SecRule REQUEST_FILENAME "@rx /ocs/v[0-9]\.php/apps/notifications/api/v[0-9]/notifications$" \
+        "id:9508702,\
+        phase:3,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        chain"
+        SecRule RESPONSE_STATUS "@streq 502" \
+            "t:none,\
+            ctl:ruleRemoveById=950100"
+
+    #
+    # [ API ]
+    #
+
+    # Allow access to the shares API URL from mobile app
+    SecRule REQUEST_FILENAME "@rx /ocs/v[0-9]+\.php/apps/files_sharing/api/v1/shares" \
+        "id:9508800,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        chain"
+        SecRule REQUEST_METHOD "@streq GET" \
+            "t:none,\
+            ctl:ruleRemoveById=200002"
+
+    # NextCloud session keep-alive functionality sends a "heartbeat" to the server to keep it from timing out.
+    # This is enabled by default whenever a user is logged in to NextCloud Web UI.
+    # https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/config_sample_php_parameters.html#user-experience
+    SecRule REQUEST_FILENAME "@rx /ocs/v[0-9]+\.php/apps/user_status/api/v[0-9]+/heartbeat" \
+        "id:9508801,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} PUT'"
+
+    # while trying to update the Weather location, mode or add favorites
+    SecRule REQUEST_FILENAME "@rx /ocs/v[0-9]+\.php/apps/weather_status/api/v[0-9]+" \
+        "id:9508802,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} PUT'"
+
+    # When trying to update user status or status message
+    SecRule REQUEST_FILENAME "@rx /ocs/v[0-9]+\.php/apps/user_status/api/v[0-9]+/user_status" \
+        "id:9508803,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} PUT DELETE'"
+
+    #
+    # [ Nextcloud Deck ]
+    #
+
+    # When updating a card
+    # Moving a card in deck
+    # Unassigning a user from a card
+    # Setting a due date on a card
+    SecRule REQUEST_FILENAME "@rx /apps/deck/cards/[0-9]+(?:/reorder|/unassign)?$" \
+        "id:9508810,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:description,\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} PUT'"
+
+    #
+    # [ Dashboard ]
+    #
+
+    # Enabling/disabling weather/status widgets in dashboard
+    SecRule REQUEST_FILENAME "@endsWith /apps/dashboard/statuses" \
+        "id:9508830,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveTargetById=932240;ARGS:json.statuses,\
+        ctl:ruleRemoveTargetById=942260;ARGS:json.statuses,\
+        ctl:ruleRemoveTargetById=942431;ARGS:json.statuses,\
+        ctl:ruleRemoveTargetById=942432;ARGS:json.statuses,\
+        ctl:ruleRemoveTargetById=932240;ARGS:statuses,\
+        ctl:ruleRemoveTargetById=942260;ARGS:statuses,\
+        ctl:ruleRemoveTargetById=942431;ARGS:statuses,\
+        ctl:ruleRemoveTargetById=942432;ARGS:statuses"
+
+
+    #
+    # [ Users ]
+    #
+
+    # Allow users to be deleted and user profile settings to be updated
+    # Matches:
+    #  /ocs/v2.php/cloud/<user group>/username
+    #  /ocs/v2.php/cloud/<user group>/username/groups
+    #  /ocs/v2.php/cloud/<user group>/username/disable
+    #  /ocs/v2.php/cloud/<user group>/username/enable
+    SecRule REQUEST_FILENAME "@rx /ocs/v[0-9]\.php/cloud/[^/]+/[^/]+(?:/groups|/disable|/enable)?$" \
+        "id:9508850,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} PUT DELETE'"
+
+    # Allow users Profile visibility settings to be updated in Personal info
+    SecRule REQUEST_FILENAME "@rx /ocs/v[0-9]+\.php/profile" \
+        "id:9508851,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} PUT'"
+
+    # When adding a link to your own user profile
+    SecRule REQUEST_FILENAME "@rx /ocs/v[0-9]\.php/cloud/users/$" \
+        "id:9508852,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveTargetById=931130;ARGS:value,\
+        ctl:ruleRemoveTargetById=931130;ARGS:json.value"
+
+    #
+    # [ Survey Client ]
+    #
+
+    # When trying to reject metrics sharing
+    SecRule REQUEST_FILENAME "@rx /ocs/v[0-9]+\.php/apps/survey_client/api" \
+        "id:9508860,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} DELETE'"
+
+    #
+    # [ Mobile App ]
+    #
+
+    # When trying to remove account from Mobile App
+    SecRule REQUEST_FILENAME "@rx /ocs/v[0-9]+\.php/core/apppassword" \
+        "id:9508870,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} DELETE'"
+
+    #
+    # [ Smart Picker ]
+    #
+
+    # Adding hyperlinks
+    SecRule REQUEST_FILENAME "@rx /ocs/v[0-9\.]+\.php/references/resolve$" \
+        "id:9508880,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveTargetById=920230;ARGS:reference,\
+        ctl:ruleRemoveTargetById=931130;ARGS:reference,\
+        ctl:ruleRemoveTargetById=932200;ARGS:reference,\
+        ctl:ruleRemoveTargetById=942430;ARGS:reference,\
+        ctl:ruleRemoveTargetById=942431;ARGS:reference,\
+        ctl:ruleRemoveTargetById=942432;ARGS:reference"
+
+    # Referencing a hyperlink/file within Nextcloud Notes
+    SecRule REQUEST_FILENAME "@rx /ocs/v[0-9\.]+\.php/references/provider/(?:any-link|files)$" \
+        "id:9508881,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} PUT'"
+
+    #
+    # [ Extensions ]
+    #
+
+    # Extension: Ransomware protection
+
+    # Allow configure file extensions fields
+    SecRule REQUEST_FILENAME "@contains /config/apps/ransomware_protection/extension_additions" \
+        "id:9508900,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveTargetById=932130;ARGS:value"
+
+    #
+    # [ Nextcloud Notes ]
+    #
+
+    # Note name and content can be anything
+    SecRule REQUEST_FILENAME "@rx /index\.php/apps/notes/api/v[0-9]/notes(?:/[0-9]+)?$" \
+        "id:9508910,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:content,\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:title,\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:json.content,\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:json.title"
+
+    # Creating/renaming note catagories
+    SecRule REQUEST_FILENAME "@rx /apps/notes/notes/[0-9]+/(?:category|title|favorite)$" \
+        "id:9508911,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} PUT'"
+
+    # Note name and content can be anything
+    # PUT - when making changes/creating notes
+    # DELETE - when notes are deleted
+    SecRule REQUEST_FILENAME "@rx /apps/notes/notes/[0-9]+(?:/autotitle)?$" \
+        "id:9508920,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:content,\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:title,\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:json.content,\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:json.title,\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} PUT DELETE'"
+
+    # When changing settings within Nextcloud Notes
+    SecRule REQUEST_FILENAME "@endsWith /apps/notes/settings" \
+        "id:9508921,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} PUT'"
+
+    #
+    # [ Custom CSS ]
+    #
+
+    # Allow admin to add custom CSS code
+    SecRule REQUEST_FILENAME "@rx /ocs/v[0-9]\.php/apps/provisioning_api/api/v[0-9]/config/apps/theming_customcss/customcss$" \
+        "id:9508930,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:value"
+
+    #
+    # [ Nextcloud Circles ]
+    #
+
+    # When using Nextcloud circles
+    # PUT - When editing/creating a circle
+    # DELETE - When deleting an existing circle
+    SecRule REQUEST_FILENAME "@rx /ocs/v[0-9]\.php/apps/circles/circles/" \
+        "id:9508940,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} PUT DELETE'"
+
+    # When setting a unique password for all shares to a circle
+    SecRule REQUEST_FILENAME "@rx /ocs/v[0-9]\.php/apps/circles/circles/[^/]+/setting$" \
+        "id:9508941,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:value,\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:json.value"
+
+    #
+    # [ Nextcloud Photos ]
+    #
+
+    # When changing settings for Nextcloud photos
+    SecRule REQUEST_FILENAME "@rx /apps/photos/api/v[0-9]/config/config/(?:croppedLayout|photosLocation)$" \
+        "id:9508950,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} PUT'"
+
+    # Loading image preview in Nextcloud Photos
+    SecRule REQUEST_FILENAME "@rx /apps/photos/api/v[0-9]+/preview/[0-9]+$" \
+        "id:9508951,\
+        phase:3,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        chain"
+        SecRule RESPONSE_STATUS "@streq 500" \
+            "t:none,\
+            ctl:ruleRemoveById=950100"
+
+    # Photos: Albums, Shared Albums, Places
+    # Allow the data type 'text/plain'
+    # Since the content is actually XML, we switch on the XML parser
+    SecRule REQUEST_FILENAME "@rx /remote\.php/dav/photos/[^/]+/(?:albums|sharedalbums|places)(?:/[^/]+)?/$" \
+        "id:9508952,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        chain"
+        SecRule REQUEST_HEADERS:Content-Type "@beginsWith text/plain" \
+            "t:none,\
+            ctl:requestBodyProcessor=XML,\
+            ctl:ruleRemoveTargetById=921110;REQUEST_BODY,\
+            setvar:'tx.allowed_request_content_type=%{tx.allowed_request_content_type} |text/plain|'"
+
+    # Sorting photos based upon faces in Nextcloud Photos
+    # Text/plain content is actually XML so we switch on XML parser for text/plain
+    SecRule REQUEST_FILENAME "@rx /remote\.php/dav/recognize/[^/]+/faces/(?:[0-9]+/)?$" \
+        "id:9508953,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        chain"
+        SecRule REQUEST_HEADERS:Content-Type "@beginsWith text/plain" \
+            "t:none,\
+            ctl:requestBodyProcessor=XML,\
+            ctl:ruleRemoveTargetById=921110;REQUEST_BODY,\
+            setvar:'tx.allowed_request_content_type=%{tx.allowed_request_content_type} |text/plain|'"
+
+    # Enabling/Disabling squared photos view
+    SecRule REQUEST_FILENAME "@rx /apps/photos/api/v[0-9\.]+/config/croppedLayout$" \
+        "id:9508954,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} PUT'"
+
+    # File manager: Public share
+    # Fix FP when opening photo
+    # Allow the data type 'text/plain'
+    # Since the content is actually XML, we switch on the XML parser
+    SecRule REQUEST_FILENAME "@rx /public\.php/(?:web)?dav/" \
+        "id:9508955,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        chain"
+        SecRule REQUEST_HEADERS:Content-Type "@beginsWith text/plain" \
+            "t:none,\
+            ctl:requestBodyProcessor=XML,\
+            setvar:'tx.allowed_request_content_type=%{tx.allowed_request_content_type} |text/plain|'"
+
+    # Browsing Nextcloud Photos by people
+    # Text/plain content is actually XML
+    # Sometimes the / at the end won't be present
+    SecRule REQUEST_FILENAME "@rx /remote\.php/dav/recognize/[^/]+/unassigned-faces/?$" \
+        "id:9508956,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        chain"
+        SecRule REQUEST_HEADERS:Content-Type "@beginsWith text/plain" \
+            "t:none,\
+            ctl:requestBodyProcessor=XML,\
+            setvar:'tx.allowed_request_content_type=%{tx.allowed_request_content_type} |text/plain|'"
+
+    # Configuring folders for Nextcloud Photos to scan
+    # Configuring "Upload folder" location
+    SecRule REQUEST_FILENAME "@rx /apps/photos/api/v[0-9\.]+/config/(?:photosLocation|photosSourceFolders)$" \
+        "id:9508957,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveTargetById=942100;ARGS:json.value,\
+        ctl:ruleRemoveTargetById=942200;ARGS:json.value,\
+        ctl:ruleRemoveTargetById=942370;ARGS:json.value,\
+        ctl:ruleRemoveTargetById=942520;ARGS:json.value,\
+        ctl:ruleRemoveTargetById=942100;ARGS:value,\
+        ctl:ruleRemoveTargetById=942200;ARGS:value,\
+        ctl:ruleRemoveTargetById=942370;ARGS:value,\
+        ctl:ruleRemoveTargetById=942520;ARGS:value,\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} PUT'"
+
+    #
+    # [ Nextcloud Files ]
+    #
+
+    # Expanding share menus under Files --> Shares
+    SecRule REQUEST_FILENAME "@rx /apps/files/api/v[0-9]/views/shareoverview/expanded$" \
+        "id:9508960,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} PUT'"
+
+    # Changing settings within Nextcloud Files
+    # Enabling/disabling grid view
+    # Enabling/disabling "Sort folders before files"
+    # Enabling/disabling "Sort Favorites First"
+    # Enabling/disabling "Show hidden files"
+    # Enabling/disabling "Crop Image Previews"
+    SecRule REQUEST_FILENAME "@rx /apps/files/api/v[0-9\.]+/config/(?:crop_image_previews|grid_view|show_hidden|sort_favorites_first|sort_folders_first)$" \
+        "id:9508961,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} PUT'"
+
+    # Changing sorting direction in Nextcloud Files
+    SecRule REQUEST_FILENAME "@rx /apps/files/api/v[0-9]/views/(?:trashbin|files)/sorting_(?:direction|mode)$" \
+        "id:9508962,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} PUT'"
+
+    # Rejecting a file ownership transfer
+    SecRule REQUEST_FILENAME "@rx /ocs/v[0-9]\.php/apps/files/api/v[0-9]/transferownership/[0-9]+$" \
+        "id:9508963,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} DELETE'"
+
+    #
+    # [ Nextcloud Mail ]
+    #
+
+    # Some email addresses end in .com or .inc
+    # Obtaining configuration for an email address
+    SecRule REQUEST_FILENAME "@rx /apps/mail/api/autoconfig/(?:ispdb|mx)/(?:[^/]+/)?[^/]+\.(?:com|inc)$" \
+        "id:9508970,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveById=920440"
+
+    # Loading a mailbox avatar from an email address ending in com or inc
+    SecRule REQUEST_FILENAME "@rx /apps/mail/api/avatars/(?:url|image)/[^/]+\.(?:com|inc)$" \
+        "id:9508971,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveById=920440"
+
+    # When logging into an email account
+    SecRule REQUEST_FILENAME "@endsWith /apps/mail/api/accounts" \
+        "id:9508972,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:imapPassword,\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:smtpPassword,\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:json.imapPassword,\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:json.smtpPassword"
+
+    # Loading images in an email message from remote location
+    SecRule REQUEST_FILENAME "@endsWith /apps/mail/proxy" \
+        "id:9508973,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveTargetById=920230;ARGS:src,\
+        ctl:ruleRemoveTargetById=920273;ARGS:src,\
+        ctl:ruleRemoveTargetById=931130;ARGS:src,\
+        ctl:ruleRemoveTargetById=932200;ARGS:src,\
+        ctl:ruleRemoveTargetById=942421;ARGS:src,\
+        ctl:ruleRemoveTargetById=942430;ARGS:src,\
+        ctl:ruleRemoveTargetById=942431;ARGS:src,\
+        ctl:ruleRemoveTargetById=942432;ARGS:src"
+
+    # Changing the order of mail accounts
+    SecRule REQUEST_FILENAME "@rx /apps/mail/api/(?:accounts|mailboxes)/[0-9]+$" \
+        "id:9508974,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} PATCH'"
+
+    # Deleting an email message
+    SecRule REQUEST_FILENAME "@rx /apps/mail/api/(?:thread|outbox)/[0-9]+$" \
+        "id:9508975,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} DELETE'"
+
+    # Writing a draft email
+    SecRule REQUEST_FILENAME "@rx /apps/mail/api/accounts/[0-9]+/draft$" \
+        "id:9508976,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:editorBody,\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:body,\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:json.editorBody,\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:json.body"
+
+    # Sending an email
+    SecRule REQUEST_FILENAME "@rx /apps/mail/api/outbox(?:/[0-9]+)?$" \
+        "id:9508977,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:editorBody,\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:body,\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:json.editorBody,\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:json.body,\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} PUT'"
+
+    # Assigning/removing flags for emails
+    # Marking an email as junk/not-junk
+    SecRule REQUEST_FILENAME "@rx /apps/mail/api/messages/[0-9]+/flags$" \
+        "id:9508978,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveTargetById=942290;ARGS_NAMES:flags.$notjunk,\
+        ctl:ruleRemoveTargetById=942290;ARGS_NAMES:json.flags.$notjunk,\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} PUT'"
+
+    # When clicking on an email address within Nextcloud Mail
+    SecRule REQUEST_FILENAME "@rx /apps/mail/api/contactIntegration/match/[^/]+\.(?:com|inc)$" \
+        "id:9508979,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveById=920440"
+
+    # When creating a new contact from Nextcloud Mail
+    SecRule REQUEST_FILENAME "@endsWith /apps/mail/api/contactIntegration/new" \
+        "id:9508980,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} PUT'"
+
+    # Changing Nextcloud Mail Settings
+    # Sorting email from oldest/newest
+    # Adjusting placement of reply (top / bottom)
+    # Enabling/disabling external avatars from Gravatar
+    # Enabling/disabling search for message body within priority inbox
+    # Adjusting the layout of Nextcloud Mail
+    # Adjusting size of email message compose box
+    SecRule REQUEST_FILENAME "@rx /apps/mail/api/preferences/(?:tag-classified-messages|collect-data|account-settings|start-mailbox-id|sort-order|reply-a?mode|external-avatars|search-priority-body|layout-mode|modalSize)$" \
+        "id:9508981,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveTargetById=920273;ARGS:value,\
+        ctl:ruleRemoveTargetById=932236;ARGS:value,\
+        ctl:ruleRemoveTargetById=942200;ARGS:value,\
+        ctl:ruleRemoveTargetById=942260;ARGS:value,\
+        ctl:ruleRemoveTargetById=942421;ARGS:value,\
+        ctl:ruleRemoveTargetById=942430;ARGS:value,\
+        ctl:ruleRemoveTargetById=942431;ARGS:value,\
+        ctl:ruleRemoveTargetById=942432;ARGS:value,\
+        ctl:ruleRemoveTargetById=920273;ARGS:json.value,\
+        ctl:ruleRemoveTargetById=932236;ARGS:json.value,\
+        ctl:ruleRemoveTargetById=942200;ARGS:json.value,\
+        ctl:ruleRemoveTargetById=942260;ARGS:json.value,\
+        ctl:ruleRemoveTargetById=942421;ARGS:json.value,\
+        ctl:ruleRemoveTargetById=942430;ARGS:json.value,\
+        ctl:ruleRemoveTargetById=942431;ARGS:json.value,\
+        ctl:ruleRemoveTargetById=942432;ARGS:json.value,\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} PUT'"
+
+    # When configuring mail account provisioning
+    # DELETE - When deleting a provisioning config
+    SecRule REQUEST_FILENAME "@rx /apps/mail/api/settings/provisioning(?:/[0-9]+)?$" \
+        "id:9508982,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveTargetById=920230;ARGS:data.sieveUser,\
+        ctl:ruleRemoveTargetById=920230;ARGS:data.imapUser,\
+        ctl:ruleRemoveTargetById=920230;ARGS:data.smtpUser,\
+        ctl:ruleRemoveTargetById=920230;ARGS:data.emailTemplate,\
+        ctl:ruleRemoveTargetById=920230;ARGS:json.data.sieveUser,\
+        ctl:ruleRemoveTargetById=920230;ARGS:json.data.imapUser,\
+        ctl:ruleRemoveTargetById=920230;ARGS:json.data.smtpUser,\
+        ctl:ruleRemoveTargetById=920230;ARGS:json.data.emailTemplate,\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} DELETE'"
+
+    # When deleting an email from trash
+    SecRule REQUEST_FILENAME "@rx /apps/mail/api/messages/[0-9]+$" \
+        "id:9508983,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} DELETE'"
+
+    # Adding/removing tags from an email
+    SecRule REQUEST_FILENAME "@rx /apps/mail/api/messages/[0-9]+/tags/[^/]+$" \
+        "id:9508984,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} PUT DELETE'"
+
+    # Resetting Anti Spam reporting service under Administration --> Groupware --> Anti Spam Service
+    SecRule REQUEST_FILENAME "@endsWith /apps/mail/api/settings/antispam" \
+        "id:9508985,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} DELETE'"
+
+    # Enabling/Disabling sieve filters under Nextcloud Mail --> Account settings --> Sieve Filter
+    # Allow setting custom password for sieve filter
+    SecRule REQUEST_FILENAME "@rx /apps/mail/api/sieve/account/[0-9]+$" \
+        "id:9508986,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:sievePassword,\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:json.sievePassword,\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} PUT'"
+
+    # Adding/Removing trusted senders in Nextcloud Mail --> Account settings --> Trusted senders
+    SecRule REQUEST_FILENAME "@rx /apps/mail/api/trustedsenders/[^/]+$" \
+        "id:9508987,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} PUT DELETE'"
+
+    # Adding/Removing trusted senders ending in com or inc under Nextcloud Mail --> Account settings --> Trusted senders
+    SecRule REQUEST_FILENAME "@rx /apps/mail/api/trustedsenders/[^/]+\.(?:com|inc)$" \
+        "id:9508988,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveById=920440"
+
+    # When creating an email signature for Nextcloud Mail
+    SecRule REQUEST_FILENAME "@rx /apps/mail/api/accounts/[0-9]+/signature$" \
+        "id:9508989,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:json.signature,\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:signature,\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} PUT'"
+
+    # Deleting Mailboxes in Nextcloud Mail
+    SecRule REQUEST_FILENAME "@rx /apps/mail/api/mailboxes/[0-9]+$" \
+        "id:9508990,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} DELETE'"
+
+    # Writing an draft email
+    # Email subject/body could be anything
+    # PUT - Composing an draft email
+    # DELETE - Discarding a draft email
+    SecRule REQUEST_FILENAME "@rx /apps/mail/api/drafts(?:/[0-9]+|/\{id\})?$" \
+        "id:9508991,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:body,\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:data.body.value,\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:data.editorBody,\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:editorBody,\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:subject,\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:json.body,\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:json.data.body.value,\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:json.data.editorBody,\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:json.editorBody,\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:json.subject,\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} PUT DELETE'"
+
+    # Sending an email
+    # Editing an email from outbox
+    # Email subject/body could be anything
+    SecRule REQUEST_FILENAME "@rx /apps/mail/api/outbox/(?:from-draft/)?[0-9]+$" \
+        "id:9508992,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:body,\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:editorBody,\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:subject,\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:json.body,\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:json.editorBody,\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:json.subject"
+
+    # Deleting/signing out of mail accounts
+    SecRule REQUEST_FILENAME "@rx /apps/mail/api/accounts/[0-9]+$" \
+        "id:9508993,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} DELETE'"
