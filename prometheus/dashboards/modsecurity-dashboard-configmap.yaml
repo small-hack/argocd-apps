@@ -130,7 +130,7 @@ data:
               "step": ""
             }
           ],
-          "title": "Top Attackers - Client IP",
+          "title": "👿 Top Attackers - Client IP",
           "transformations": [
             {
               "id": "renameByRegex",
@@ -147,6 +147,7 @@ data:
             "type": "loki",
             "uid": "${DS_LOKI}"
           },
+          "description": "",
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -208,20 +209,20 @@ data:
                 "uid": "${DS_LOKI}"
               },
               "editorMode": "builder",
-              "expr": "sum by(message, ruleId, client_ip) (count_over_time({job=\"ingress-nginx/ingress-nginx\"} |~ `ModSecurity` != `http_referrer` | json messages_details_match=\"transaction.messages[0].details.match\", messages_details_reference=\"transaction.messages[0].details.reference\", ruleId=\"transaction.messages[0].details.ruleId\", messages_details_file=\"transaction.messages[0].details.file\", messages_details_lineNumber=\"transaction.messages[0].details.lineNumber\", messages_details_data=\"transaction.messages[0].details.data\", messages_details_severity=\"transaction.messages[0].details.severity\", messages_details_ver=\"transaction.messages[0].details.ver\", messages_details_rev=\"transaction.messages[0].details.rev\", messages_details_tags=\"transaction.messages[0].details.tags\", messages_details_maturity=\"transaction.messages[0].details.maturity\", messages_details_accuracy=\"transaction.messages[0].details.accuracy\", transaction_date=\"transaction.time_stamp\", client_ip=\"transaction.client_ip\", transaction_host_port=\"transaction.host_port\", tranaction_request_uri=\"transaction.request.uri\", message=\"transaction.messages[0].message\" | __error__=`` [$__interval]))",
-              "legendFormat": "{{client_ip}}: {{message}}",
+              "expr": "sum by(message, ruleId, vhost) (count_over_time({job=\"ingress-nginx/ingress-nginx\"} |~ `ModSecurity` != `http_referrer` | json messages_details_match=\"transaction.messages[0].details.match\", messages_details_reference=\"transaction.messages[0].details.reference\", ruleId=\"transaction.messages[0].details.ruleId\", messages_details_file=\"transaction.messages[0].details.file\", messages_details_lineNumber=\"transaction.messages[0].details.lineNumber\", messages_details_data=\"transaction.messages[0].details.data\", messages_details_severity=\"transaction.messages[0].details.severity\", messages_details_ver=\"transaction.messages[0].details.ver\", messages_details_rev=\"transaction.messages[0].details.rev\", messages_details_tags=\"transaction.messages[0].details.tags\", messages_details_maturity=\"transaction.messages[0].details.maturity\", messages_details_accuracy=\"transaction.messages[0].details.accuracy\", transaction_date=\"transaction.time_stamp\", client_ip=\"transaction.client_ip\", transaction_host_port=\"transaction.host_port\", tranaction_request_uri=\"transaction.request.uri\", message=\"transaction.messages[0].message\", vhost=\"transaction.request.headers.host\" | __error__=`` [$__interval]))",
+              "legendFormat": "{{vhost}}: {{message}}",
               "queryType": "range",
               "refId": "A",
               "step": ""
             }
           ],
-          "title": "Rules by Client IP",
+          "title": "Rule Hits by Hostname",
           "transformations": [
             {
               "id": "renameByRegex",
               "options": {
                 "regex": "/^(:)/",
-                "renamePattern": "All"
+                "renamePattern": "No hostname:"
               }
             }
           ],
