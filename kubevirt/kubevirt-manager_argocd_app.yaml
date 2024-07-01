@@ -70,3 +70,6 @@ spec:
                   proxy_ssl_session_reuse on;
                   proxy_ssl_verify_depth 2;
                   proxy_ssl_verify on;
+              tls:
+                enabled: true
+                secretName: "tls-kubevirt-manager"
