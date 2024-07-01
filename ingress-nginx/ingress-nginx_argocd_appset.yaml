@@ -37,8 +37,41 @@ spec:
           releaseName: 'ingress-nginx'
           valuesObject:
             controller:
-              # note: checkout controller.keda variables in the future
-              replicaCount: 2
+              # replicaCount: 2
+              #
+              # Mutually exclusive with keda autoscaling
+              autoscaling:
+                enabled: true
+                annotations: {}
+                minReplicas: 2
+                maxReplicas: 4
+                targetCPUUtilizationPercentage: 50
+                targetMemoryUtilizationPercentage: 50
+                behavior: {}
+                # scaleDown:
+                #   stabilizationWindowSeconds: 300
+                #   policies:
+                #   - type: Pods
+                #     value: 1
+                #     periodSeconds: 180
+                # scaleUp:
+                #   stabilizationWindowSeconds: 300
+                #   policies:
+                #   - type: Pods
+                #     value: 2
+                #     periodSeconds: 60
+
+                ## Define requests resources to avoid probe issues due to CPU utilization in busy nodes
+                ## ref: https://github.com/kubernetes/ingress-nginx/issues/4735#issuecomment-551204903
+                ## Ideally, there should be no limits.
+                ## https://engineering.indeedblog.com/blog/2019/12/cpu-throttling-regression-fix/
+                resources:
+                  limits:
+                    cpu: 1000m
+                    memory: 1024Mi
+                  requests:
+                    cpu: 100m
+                    memory: 128Mi
 
               config:
                 # set log format to json
