@@ -47,19 +47,19 @@ spec:
                 maxReplicas: 4
                 targetCPUUtilizationPercentage: 500
                 targetMemoryUtilizationPercentage: 500
-                behavior: {}
-                # scaleDown:
-                #   stabilizationWindowSeconds: 300
-                #   policies:
-                #   - type: Pods
-                #     value: 1
-                #     periodSeconds: 180
-                # scaleUp:
-                #   stabilizationWindowSeconds: 300
-                #   policies:
-                #   - type: Pods
-                #     value: 2
-                #     periodSeconds: 60
+                behavior:
+                  scaleDown:
+                    stabilizationWindowSeconds: 60
+                    policies:
+                    - type: Pods
+                      value: 1
+                      periodSeconds: 30
+                  scaleUp:
+                    stabilizationWindowSeconds: 60
+                    policies:
+                    - type: Pods
+                      value: 1
+                      periodSeconds: 30
 
                 ## Define requests resources to avoid probe issues due to CPU utilization in busy nodes
                 ## ref: https://github.com/kubernetes/ingress-nginx/issues/4735#issuecomment-551204903
