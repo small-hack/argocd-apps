@@ -343,16 +343,23 @@ data:
       "templating": {
         "list": [
           {
-            "hide": 2,
+            "description": "loki",
+            "hide": 0,
+            "includeAll": false,
+            "label": "loki",
+            "multi": false,
             "name": "DS_LOKI",
+            "options": [],
             "query": "loki",
+            "refresh": 1,
+            "regex": "",
             "skipUrlSync": false,
-            "type": "constant"
+            "type": "datasource"
           }
         ]
       },
       "time": {
-        "from": "now-15m",
+        "from": "now-24h",
         "to": "now"
       },
       "timeRangeUpdatedDuringEditOrView": false,
