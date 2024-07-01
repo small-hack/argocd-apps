@@ -196,7 +196,7 @@ data:
             "sizing": "manual",
             "text": {
               "titleSize": 10,
-              "valueSize": 15
+              "valueSize": 20
             },
             "valueMode": "color"
           },
