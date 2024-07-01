@@ -38,8 +38,7 @@ spec:
           valuesObject:
             controller:
               # note: checkout controller.keda variables in the future
-              # decreased to 1 during testing
-              replicaCount: 1
+              replicaCount: 2
 
               config:
                 # always use 301 instead of a 308 redirect
