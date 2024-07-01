@@ -375,7 +375,9 @@ data:
       ],
       "refresh": "1m",
       "schemaVersion": 39,
-      "tags": [],
+      "tags": [
+        "nginx"
+      ],
       "templating": {
         "list": [
           {
