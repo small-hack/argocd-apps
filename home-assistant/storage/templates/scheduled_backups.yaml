@@ -7,8 +7,6 @@ metadata:
     "helm.sh/hook": post-install
     "helm.sh/resource-policy": keep
 spec:
-  podConfigRef:
-    name: home-assistant-podconfig
   backend:
     repoPasswordSecretRef:
       name: {{ .Values.k8up.repoPasswordSecretRef.name }}
@@ -32,6 +30,8 @@ spec:
     {{- end }}
   # Backup nightly at scheduled time (Central Europe Time)
   backup:
+    podConfigRef:
+      name: home-assistant-podconfig
     schedule: {{ .Values.k8up.schedules.backup }}
     failedJobsHistoryLimit: 5
     successfulJobsHistoryLimit: 2
