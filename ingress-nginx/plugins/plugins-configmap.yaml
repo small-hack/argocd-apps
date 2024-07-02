@@ -61,21 +61,7 @@ data:
       phase:1,\
       pass,\
       nolog,\
-      ctl:ruleRemoveById=920340"
-
-    SecRule REQUEST_URI "@beginsWith /zitadel-postgres/zitadel-postgres/base/" \
-      "id:20002,\
-      phase:1,\
-      pass,\
-      nolog,\
-      ctl:ruleRemoveById=949110"
-
-    SecRule REQUEST_URI "@beginsWith /zitadel-postgres/zitadel-postgres/base/" \
-      "id:20003,\
-      phase:1,\
-      pass,\
-      nolog,\
-      ctl:ruleRemoveById=921110"
+      ctl:ruleRemoveById=920340,ctl:ruleRemoveById=949110,ctl:ruleRemoveById=921110"
 
     SecRule REQUEST_URI "@beginsWith /matrix-postgres/matrix-postgres/wals/" \
       "id:20004,\
@@ -89,21 +75,7 @@ data:
       phase:1,\
       pass,\
       nolog,\
-      ctl:ruleRemoveById=920340"
-
-    SecRule REQUEST_URI "@beginsWith /matrix-postgres/matrix-postgres/base/" \
-      "id:20006,\
-      phase:1,\
-      pass,\
-      nolog,\
-      ctl:ruleRemoveById=949110"
-
-    SecRule REQUEST_URI "@beginsWith /matrix-postgres/matrix-postgres/base/" \
-      "id:20007,\
-      phase:1,\
-      pass,\
-      nolog,\
-      ctl:ruleRemoveById=921110"
+      ctl:ruleRemoveById=920340,ctl:ruleRemoveById=949110,ctl:ruleRemoveById=921110"
 
     SecRule REQUEST_URI "@beginsWith /nextcloud-postgres/nextcloud-postgres/wals/" \
       "id:20008,\
@@ -117,21 +89,7 @@ data:
       phase:1,\
       pass,\
       nolog,\
-      ctl:ruleRemoveById=920340"
-
-    SecRule REQUEST_URI "@beginsWith /nextcloud-postgres/nextcloud-postgres/base/" \
-      "id:20010,\
-      phase:1,\
-      pass,\
-      nolog,\
-      ctl:ruleRemoveById=949110"
-
-    SecRule REQUEST_URI "@beginsWith /nextcloud-postgres/nextcloud-postgres/base/" \
-      "id:20011,\
-      phase:1,\
-      pass,\
-      nolog,\
-      ctl:ruleRemoveById=921110"
+      ctl:ruleRemoveById=920340,ctl:ruleRemoveById=949110,ctl:ruleRemoveById=921110"
   nextcloud-rule-exclusions-before.conf: |-
     # ------------------------------------------------------------------------
     # OWASP CRS Plugin
