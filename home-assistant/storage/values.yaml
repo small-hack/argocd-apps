@@ -14,6 +14,10 @@ k8up:
     key: ""
     value: ""
 
+  # -- set the pod security context for the backup job
+  securityContext:
+    runAsUser: 0
+
   backup_name: "home-assistant-nightly"
 
   # -- can be set to 's3' or 'local'
