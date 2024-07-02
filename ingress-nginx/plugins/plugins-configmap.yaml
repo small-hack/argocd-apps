@@ -68,7 +68,7 @@ data:
       phase:1,\
       pass,\
       nolog,\
-      ctl:ruleRemoveById=920340"
+      ctl:ruleRemoveById=920340,ctl:ruleRemoveById=921110,ctl:ruleRemoveById=920440"
 
     SecRule REQUEST_URI "@beginsWith /matrix-postgres/matrix-postgres/base/" \
       "id:20005,\
