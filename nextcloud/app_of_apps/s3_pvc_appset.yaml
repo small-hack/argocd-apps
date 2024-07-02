@@ -55,6 +55,10 @@ spec:
 
             # not in use yet
             k8up:
+              # -- user to run the backups as
+              securityContext:
+                runAsUser: 82
+
               backup_name: 'nextcloud-nightly-backup'
 
               # -- can be set to 's3' or 'local'
@@ -77,9 +81,6 @@ spec:
                 key: 'resticRepoPassword'
 
               prometheus_url: 'push-gateway.prometheus.svc:9091'
-
-              podSecurityContext:
-                runAsUser: 82
 
               schedules:
                 backup: '{{ .nextcloud_pvc_backup_schedule }}'

@@ -53,6 +53,9 @@ spec:
 
             # not in use yet
             k8up:
+              securityContext:
+                runAsUser: 0
+
               backup_name: "matrix-nightly-backup"
 
               # -- can be set to 's3' or 'local'
@@ -75,9 +78,6 @@ spec:
                 key: 'resticRepoPassword'
 
               prometheus_url: 'push-gateway.prometheus.svc:9091'
-
-              podSecurityContext:
-                runAsUser: 0
 
               schedules:
                 backup: "{{ .matrix_pvc_backup_schedule }}"

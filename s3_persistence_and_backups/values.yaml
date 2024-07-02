@@ -9,6 +9,10 @@ seaweedfs:
 
 # -- for enabling backups to a remote s3 provider or local disk backup
 k8up:
+  # -- user to run the backups as
+  securityContext:
+    runAsUser: 0
+
   backup_name: ""
 
   # -- can be set to 's3' or 'local'
@@ -46,10 +50,6 @@ k8up:
 
   # -- url to push to for prometheus gateway
   prometheus_url: ''
-
-  # -- user to run the backups as
-  podSecurityContext:
-    runAsUser: 0
 
   # -- schedules for backups, checks, and prunes
   schedules:
