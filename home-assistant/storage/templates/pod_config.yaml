@@ -1,4 +1,4 @@
-{{- if or .Values.tolerations.key .Values.affinity.key }}
+{{- if or .Values.k8up.tolerations.key .Values.affinity.key }}
 apiVersion: k8up.io/v1
 kind: PodConfig
 metadata:
@@ -7,17 +7,17 @@ spec:
   template:
     spec:
       tolerations:
-        - key: {{ .Values.tolerations.key }}
-          operator: {{ .Values.tolerations.operator }}
-          value: {{ .Values.tolerations.value }}
-          effect: {{ .Values.tolerations.effect }}
+        - key: {{ .Values.k8up.tolerations.key }}
+          operator: {{ .Values.k8up.tolerations.operator }}
+          value: {{ .Values.k8up.tolerations.value }}
+          effect: {{ .Values.k8up.tolerations.effect }}
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
               - matchExpressions:
-                - key: {{ .Values.affinity.key }}
+                - key: {{ .Values.k8up.affinity.key }}
                   operator: In
                   values:
-                    - {{ .Values.affinity.value }}
+                    - {{ .Values.k8up.affinity.value }}
 {{- end }}
