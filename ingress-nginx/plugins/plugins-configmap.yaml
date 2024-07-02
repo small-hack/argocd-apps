@@ -2073,21 +2073,21 @@ data:
 
     # allow adding code blocks to deck cards
     SecRule REQUEST_URI "@beginsWith /apps/deck/cards" \
-      "id:9508900,\
+      "id:9598900,\
       phase:1,\
       pass,\
       nolog,\
       ctl:ruleRemoveById=921110"
 
     SecRule REQUEST_URI "@beginsWith /apps/deck/cards" \
-        "id:9508901,\
+        "id:9598901,\
         phase:1,\
         pass,\
         nolog,\
         ctl:ruleRemoveById=921130"
 
     SecRule REQUEST_URI "@beginsWith /apps/deck/cards" \
-        "id:9508902,\
+        "id:9598902,\
         phase:1,\
         pass,\
         nolog,\
