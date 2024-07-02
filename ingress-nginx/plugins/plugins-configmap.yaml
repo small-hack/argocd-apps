@@ -2071,6 +2071,28 @@ data:
         ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:description,\
         setvar:'tx.allowed_methods=%{tx.allowed_methods} PUT'"
 
+    # allow adding code blocks to deck cards
+    SecRule REQUEST_URI "@beginsWith /apps/deck/cards" \
+      "id:1000,\
+      phase:1,\
+      pass,\
+      nolog,\
+      ctl:ruleRemoveById=921110"
+
+    SecRule REQUEST_URI "@beginsWith /apps/deck/cards" \
+        "id:1000,\
+        phase:1,\
+        pass,\
+        nolog,\
+        ctl:ruleRemoveById=921130"
+
+    SecRule REQUEST_URI "@beginsWith /apps/deck/cards" \
+        "id:1000,\
+        phase:1,\
+        pass,\
+        nolog,\
+        ctl:ruleRemoveById=949110"
+
     #
     # [ Dashboard ]
     #
