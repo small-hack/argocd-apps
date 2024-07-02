@@ -22,6 +22,12 @@ spec:
               - home_assistant_s3_backup_endpoint
               - home_assistant_s3_backup_bucket
               - home_assistant_s3_backup_region
+              - home_assistant_toleration_key
+              - home_assistant_toleration_operator
+              - home_assistant_toleration_value
+              - home_assistant_toleration_effect
+              - home_assistant_affinity_key
+              - home_assistant_affinity_value
   template:
     metadata:
       name: home-assistant-pvc
@@ -49,6 +55,18 @@ spec:
 
             # not in use yet
             k8up:
+              # -- for setting tolerations of node taints
+              tolerations:
+                key: '{{ .home_assistant_toleration_key }}'
+                operator: '{{ .home_assistant_toleration_operator }}'
+                value: '{{ .home_assistant_toleration_value }}'
+                effect: '{{ .home_assistant_toleration_effect }}'
+
+              # -- for setting affinity to a specific node by matchExpressions
+              affinity:
+                key: '{{ .home_assistant_affinity_key }}'
+                value: '{{ .home_assistant_affinity_value }}'
+
               backup_name: 'home-assistant-nightly-backup'
 
               # -- can be set to 's3' or 'local'
