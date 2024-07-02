@@ -21,7 +21,8 @@ spec:
                   values:
                     - {{ .Values.k8up.affinity.value }}
       containers:
-        - env:
+        - name: test
+          env:
           - name: HOME_ASSISTANT
             value: 'true'
 {{- end }}
