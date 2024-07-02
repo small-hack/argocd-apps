@@ -1,7 +1,7 @@
 apiVersion: k8up.io/v1
 kind: PodConfig
 metadata:
-  name: security-context-podconfig
+  name: backups-podconfig
 spec:
   template:
     spec:
