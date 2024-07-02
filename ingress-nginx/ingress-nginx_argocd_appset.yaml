@@ -37,8 +37,6 @@ spec:
           releaseName: 'ingress-nginx'
           valuesObject:
             controller:
-              # replicaCount: 2
-              #
               # Mutually exclusive with keda autoscaling
               autoscaling:
                 enabled: true
@@ -96,107 +94,13 @@ spec:
                 enable-modsecurity: "true"
                 # Update ModSecurity config and rules
                 modsecurity-snippet: |
-                  # allow postgresql to upload wal archives to s3
-                  SecRule REQUEST_URI "@beginsWith /zitadel-postgres/zitadel-postgres/wals/" \
-                    "id:20000,\
-                    phase:1,\
-                    pass,\
-                    nolog,\
-                    ctl:ruleRemoveById=920340"
-
-                  SecRule REQUEST_URI "@beginsWith /zitadel-postgres/zitadel-postgres/base/" \
-                    "id:20001,\
-                    phase:1,\
-                    pass,\
-                    nolog,\
-                    ctl:ruleRemoveById=920340"
-
-                  SecRule REQUEST_URI "@beginsWith /zitadel-postgres/zitadel-postgres/base/" \
-                    "id:20002,\
-                    phase:1,\
-                    pass,\
-                    nolog,\
-                    ctl:ruleRemoveById=949110"
-
-                  SecRule REQUEST_URI "@beginsWith /zitadel-postgres/zitadel-postgres/base/" \
-                    "id:20003,\
-                    phase:1,\
-                    pass,\
-                    nolog,\
-                    ctl:ruleRemoveById=921110"
-
-                  SecRule REQUEST_URI "@beginsWith /matrix-postgres/matrix-postgres/wals/" \
-                    "id:20004,\
-                    phase:1,\
-                    pass,\
-                    nolog,\
-                    ctl:ruleRemoveById=920340"
-
-                  SecRule REQUEST_URI "@beginsWith /matrix-postgres/matrix-postgres/base/" \
-                    "id:20005,\
-                    phase:1,\
-                    pass,\
-                    nolog,\
-                    ctl:ruleRemoveById=920340"
-
-                  SecRule REQUEST_URI "@beginsWith /matrix-postgres/matrix-postgres/base/" \
-                    "id:20006,\
-                    phase:1,\
-                    pass,\
-                    nolog,\
-                    ctl:ruleRemoveById=949110"
-
-                  SecRule REQUEST_URI "@beginsWith /matrix-postgres/matrix-postgres/base/" \
-                    "id:20007,\
-                    phase:1,\
-                    pass,\
-                    nolog,\
-                    ctl:ruleRemoveById=921110"
-
-                  SecRule REQUEST_URI "@beginsWith /nextcloud-postgres/nextcloud-postgres/wals/" \
-                    "id:20008,\
-                    phase:1,\
-                    pass,\
-                    nolog,\
-                    ctl:ruleRemoveById=920340"
-
-                  SecRule REQUEST_URI "@beginsWith /nextcloud-postgres/nextcloud-postgres/base/" \
-                    "id:20009,\
-                    phase:1,\
-                    pass,\
-                    nolog,\
-                    ctl:ruleRemoveById=920340"
-
-                  SecRule REQUEST_URI "@beginsWith /nextcloud-postgres/nextcloud-postgres/base/" \
-                    "id:20010,\
-                    phase:1,\
-                    pass,\
-                    nolog,\
-                    ctl:ruleRemoveById=949110"
-
-                  SecRule REQUEST_URI "@beginsWith /nextcloud-postgres/nextcloud-postgres/base/" \
-                    "id:20011,\
-                    phase:1,\
-                    pass,\
-                    nolog,\
-                    ctl:ruleRemoveById=921110"
-
-                  SecRule REQUEST_URI "@beginsWith /api/ds/query?ds_type=loki" \
-                    "id:20013,\
-                    phase:1,\
-                    pass,\
-                    nolog,\
-                    ctl:ruleRemoveById=933210"
-
-                  SecRule REQUEST_URI "@beginsWith /api/ds/query?ds_type=prometheus" \
-                    "id:20014,\
-                    phase:1,\
-                    pass,\
-                    nolog,\
-                    ctl:ruleRemoveById=933210"
-
+                  # plugins for rule exclusions
                   Include /etc/nginx/owasp-modsecurity-crs/plugins/nextcloud-rule-exclusions-before.conf
+                  Include /etc/nginx/owasp-modsecurity-crs/plugins/matrix-rule-exclusions-before.conf
+                  Include /etc/nginx/owasp-modsecurity-crs/plugins/grafana-rule-exclusions-before.conf
+                  Include /etc/nginx/owasp-modsecurity-crs/plugins/postgres-s3-rule-exclusions-before.conf
 
+                  # OWASP Core Rule Set
                   Include /etc/nginx/owasp-modsecurity-crs/nginx-modsecurity.conf
 
                   # Enable prevention mode. Can be any of: DetectionOnly,On,Off (default is DetectionOnly)
