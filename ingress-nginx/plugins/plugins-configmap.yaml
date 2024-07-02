@@ -37,14 +37,14 @@ data:
       phase:1,\
       pass,\
       nolog,\
-      ctl:ruleRemoveById=933210"
+      ctl:ruleRemoveById=933210,ctl:ruleRemoveById=942100""
 
     SecRule REQUEST_URI "@beginsWith /api/ds/query?ds_type=prometheus" \
       "id:20014,\
       phase:1,\
       pass,\
       nolog,\
-      ctl:ruleRemoveById=933210"
+    ctl:ruleRemoveById=933210,ctl:ruleRemoveById=942100"
   postgres-s3-rule-exclusions-before.conf: |-
     # ---------------------------------------------
     # allow postgresql to upload wal archives to s3
