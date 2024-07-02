@@ -1,8 +1,19 @@
 pvc_capacity: 10Gi
 pvc_storageClassName: "local-path"
 
-# -- for enabling backups to a remote s3 provider or local disk backup
+# for enabling backups to a remote s3 provider or local disk backup
 k8up:
+  # -- for setting tolerations of node taints
+  tolerations:
+    key: ""
+    operator: ""
+    value: ""
+    effect: ""
+  # -- for setting affinity to a specific node by matchExpressions
+  affinity:
+    key: ""
+    value: ""
+
   backup_name: "home-assistant-nightly"
 
   # -- can be set to 's3' or 'local'

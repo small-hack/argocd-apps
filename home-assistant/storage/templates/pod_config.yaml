@@ -1,0 +1,23 @@
+{{- if or .Values.tolerations.key .Values.affinity.key }}
+apiVersion: k8up.io/v1
+kind: PodConfig
+metadata:
+  name: home-assistant-podconfig
+spec:
+  template:
+    spec:
+      tolerations:
+        - key: {{ .Values.tolerations.key }}
+          operator: {{ .Values.tolerations.operator }}
+          value: {{ .Values.tolerations.value }}
+          effect: {{ .Values.tolerations.effect }}
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                - key: {{ .Values.affinity.key }}
+                  operator: In
+                  values:
+                    - {{ .Values.affinity.value }}
+{{- end }}
