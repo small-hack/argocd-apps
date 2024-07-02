@@ -20,7 +20,7 @@ data:
       phase:1,\
       pass,\
       nolog,\
-      ctl:ruleRemoveById=920420"
+      ctl:ruleRemoveById=920420,ctl:ruleRemoveById=949110"
   grafana-rule-exclusions-before.conf: |-
     # -------------------------------------------------
     # update rules for loki and prometheus via grafana
