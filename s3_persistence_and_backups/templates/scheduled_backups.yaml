@@ -34,10 +34,6 @@ spec:
     failedJobsHistoryLimit: 5
     successfulJobsHistoryLimit: 2
     promURL: {{ .Values.k8up.prometheus_url }}
-    {{- if .Values.k8up.podSecurityContext }}
-    podSecurityContext:
-      runAsUser: {{ .Values.k8up.podSecurityContext.runAsUser }}
-    {{- end }}
   # verify the backups are ok
   check:
     schedule: {{ .Values.k8up.schedules.check }}

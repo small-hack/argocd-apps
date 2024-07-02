@@ -1,0 +1,16 @@
+apiVersion: k8up.io/v1
+kind: PodConfig
+metadata:
+  name: security-context-podconfig
+spec:
+  template:
+    spec:
+      {{- with .Values.k8up.securityContext }}
+      securityContext:
+        runAsUser: {{ .runAsUser }}
+      {{- end }}
+      containers:
+        - name: test
+          env:
+          - name: APP_POD_CONFIG_EXAMPLE
+            value: 'true'
