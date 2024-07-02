@@ -44,7 +44,7 @@ data:
       phase:1,\
       pass,\
       nolog,\
-    ctl:ruleRemoveById=933210,ctl:ruleRemoveById=942100"
+      ctl:ruleRemoveById=933210,ctl:ruleRemoveById=942100"
   postgres-s3-rule-exclusions-before.conf: |-
     # ---------------------------------------------
     # allow postgresql to upload wal archives to s3
