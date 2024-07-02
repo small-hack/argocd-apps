@@ -20,4 +20,8 @@ spec:
                   operator: In
                   values:
                     - {{ .Values.k8up.affinity.value }}
+      containers:
+        - env:
+          - name: HOME_ASSISTANT
+            value: 'true'
 {{- end }}
