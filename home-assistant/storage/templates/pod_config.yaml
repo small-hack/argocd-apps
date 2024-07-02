@@ -6,6 +6,10 @@ metadata:
 spec:
   template:
     spec:
+      {{- with .Values.k8up.securityContext }}
+      securityContext:
+        runAsUser: {{ .runAsUser }}
+      {{- end }}
       tolerations:
         - key: {{ .Values.k8up.tolerations.key }}
           operator: {{ .Values.k8up.tolerations.operator }}
