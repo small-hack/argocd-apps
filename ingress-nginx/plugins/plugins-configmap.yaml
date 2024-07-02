@@ -12,15 +12,21 @@ data:
   empty-config.conf: |
     # no data
   matrix-rule-exclusions-before.conf: |-
-    # -------------------------------------------------
-    # allow uploads for matrix
-    # -------------------------------------------------
+    # ----------------------------------------------------
+    # allow uploads for matrix via element web and mobile
+    # ----------------------------------------------------
     SecRule REQUEST_URI "@beginsWith /_matrix/media/v3/upload" \
       "id:20015,\
       phase:1,\
       pass,\
       nolog,\
-      ctl:ruleRemoveById=920420,ctl:ruleRemoveById=949110"
+      ctl:ruleRemoveById=920420"
+    SecRule REQUEST_URI "@beginsWith /_matrix/media/r0/upload" \
+      "id:20016,\
+      phase:1,\
+      pass,\
+      nolog,\
+      ctl:ruleRemoveById=949110"
   grafana-rule-exclusions-before.conf: |-
     # -------------------------------------------------
     # update rules for loki and prometheus via grafana
