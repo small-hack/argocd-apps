@@ -2043,7 +2043,8 @@ data:
         ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:description,\
         setvar:'tx.allowed_methods=%{tx.allowed_methods} PUT'"
 
-    # allow adding code blocks to deck cards
+    # allow adding code blocks to deck cards, can be removed after this is merged:
+    # https://github.com/coreruleset/nextcloud-rule-exclusions-plugin/pull/81
     SecRule REQUEST_URI "@beginsWith /apps/deck/cards" \
       "id:9598900,\
       phase:1,\
