@@ -27,7 +27,7 @@ data:
       phase:1,\
       pass,\
       nolog,\
-      ctl:ruleRemoveById=949110,ctl:ruleRemoveById=920420"
+      ctl:ruleRemoveById=920420"
   grafana-rule-exclusions-before.conf: |-
     # -------------------------------------------------
     # update rules for loki and prometheus via grafana
@@ -68,7 +68,7 @@ data:
       phase:1,\
       pass,\
       nolog,\
-      ctl:ruleRemoveById=920340,ctl:ruleRemoveById=949110,ctl:ruleRemoveById=921110"
+      ctl:ruleRemoveById=920340,ctl:ruleRemoveById=921110"
 
     SecRule REQUEST_URI "@beginsWith /matrix-postgres/matrix-postgres/wals/" \
       "id:20004,\
@@ -82,7 +82,7 @@ data:
       phase:1,\
       pass,\
       nolog,\
-      ctl:ruleRemoveById=920340,ctl:ruleRemoveById=949110,ctl:ruleRemoveById=921110"
+      ctl:ruleRemoveById=920340,ctl:ruleRemoveById=921110"
 
     SecRule REQUEST_URI "@beginsWith /nextcloud-postgres/nextcloud-postgres/wals/" \
       "id:20008,\
@@ -96,7 +96,7 @@ data:
       phase:1,\
       pass,\
       nolog,\
-      ctl:ruleRemoveById=920340,ctl:ruleRemoveById=949110,ctl:ruleRemoveById=921110"
+      ctl:ruleRemoveById=920340,ctl:ruleRemoveById=921110"
   nextcloud-rule-exclusions-before.conf: |-
     # ------------------------------------------------------------------------
     # OWASP CRS Plugin
@@ -2049,21 +2049,7 @@ data:
       phase:1,\
       pass,\
       nolog,\
-      ctl:ruleRemoveById=921110"
-
-    SecRule REQUEST_URI "@beginsWith /apps/deck/cards" \
-        "id:9598901,\
-        phase:1,\
-        pass,\
-        nolog,\
-        ctl:ruleRemoveById=921130"
-
-    SecRule REQUEST_URI "@beginsWith /apps/deck/cards" \
-        "id:9598902,\
-        phase:1,\
-        pass,\
-        nolog,\
-        ctl:ruleRemoveById=949110"
+      ctl:ruleRemoveById=921110,ctl:ruleRemoveById=921130"
 
     #
     # [ Dashboard ]
