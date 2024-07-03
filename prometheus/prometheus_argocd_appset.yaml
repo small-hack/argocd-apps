@@ -32,6 +32,7 @@ spec:
           - ApplyOutOfSyncOnly=true
         automated:
           selfHeal: true
+          prune: true
       destination:
         server: https://kubernetes.default.svc
         namespace: prometheus
