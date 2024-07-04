@@ -63,15 +63,13 @@ data:
     #   nolog,\
     #   setvar:'tx.allowed_request_content_type=%{tx.allowed_request_content_type} |application/octet-stream|'"
 
-    SecRule REQUEST_METHOD "@pm POST" \
+    SecRule REQUEST_FILENAME "@rx /_matrix/media/(?:v3|r0)/upload" \
         "id:20015,\
         phase:1,\
         pass,\
         t:none,\
         nolog,\
-        chain"
-        SecRule REQUEST_FILENAME "@rx /_matrix/media/(?:v3|r0)/upload" \
-            "setvar:'tx.allowed_request_content_type=|application/octet-stream|'"
+        setvar:'tx.allowed_request_content_type=|application/octet-stream|'"
   postgres-s3-rule-exclusions-before.conf: |-
     # -------------------------------------------------------------------------
     # allow postgresql to upload wal archives to s3
