@@ -18,8 +18,12 @@ spec:
           parameters:
             secret_vars:
               - juicefs_redis_password
+              - juicefs_redis_url
+              - juicefs_redis_port
               - juicefs_s3_key_id
               - juicefs_s3_secret_key
+              - juicefs_s3_bucket_url
+              - juicefs_s3_dshboard_url
   template:
     metadata:
       name: juicefs-csi-driver-app
@@ -31,9 +35,36 @@ spec:
       source:
         repoURL: 'https://juicedata.github.io/charts/'
         chart: juicefs-csi-driver
-        targetRevision: 0.20.4
+        targetRevision: 0.24.2
         helm:
           values: |
+            metrics:
+              enabled: true
+
+            dashboard:
+            # CSI Dashboard helps with CSI Driver observation, disabled by default
+              enabled: true
+              # Basic auth for dashboard
+              auth:
+                enabled: true
+                username: admin
+                password: admin
+
+            ingress:
+              enabled: true
+              className: "nginx"
+              annotations:
+                kubernetes.io/tls-acme: "true"
+              hosts:
+              - host: "{{ .juicefs_s3_dshboard_url }}"
+                paths:
+                - path: /
+                  pathType: ImplementationSpecific
+              tls:
+                - secretName: juicefs-tls
+                  hosts:
+                    - "{{ .juicefs_s3_dshboard_url }}"
+    
             storageClasses:
             - name: "juicefs-sc"
               enabled: true
@@ -41,9 +72,9 @@ spec:
               allowVolumeExpansion: true
               backend:
                 name: "juicefs"
-                metaurl: "redis://:{{ .juicefs_redis_password }}@redis-redis-cluster.juicefs.svc.cluster.local:6379/1"
+                metaurl: "redis://:{{ .juicefs_redis_password }}@{{ .juicefs_redis_url }}:{{ .juicefs_redis_port }}/1"
                 storage: "s3"
-                bucket: "http://seaweedfs-s3.seaweedfs.svc.cluster.local:8333/juicefs"
+                bucket: "{{ .juicefs_s3_bucket_url }}"
                 accessKey: {{ .juicefs_s3_key_id }}
                 secretKey: {{ .juicefs_s3_secret_key }}
                 envs: ""
