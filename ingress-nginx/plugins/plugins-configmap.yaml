@@ -59,6 +59,7 @@ data:
         "id:20015,\
         phase:1,\
         pass,\
+        nolog,\
         t:none,\
         setvar:'tx.allowed_request_content_type=|application/octet-stream|'"
 
@@ -67,6 +68,7 @@ data:
         "id:20016,\
         phase:1,\
         pass,\
+        nolog,\
         t:none,\
         setvar:'tx.allowed_methods=POST PUT OPTIONS'"
 
@@ -104,6 +106,7 @@ data:
         "id:20021,\
         phase:1,\
         pass,\
+        nolog,\
         t:none,\
         setvar:'tx.allowed_methods=GET HEAD POST PUT'"
 
