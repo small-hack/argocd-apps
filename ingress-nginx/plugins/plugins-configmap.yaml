@@ -98,6 +98,15 @@ data:
         nolog,\
         setvar:'tx.allowed_methods=GET HEAD POST PUT DELETE OPTIONS'"
 
+    # allow PUT method for sending read recipets
+    SecRule REQUEST_URI "@beginsWith /_matrix/federation/v1/send/" \
+        "id:20020,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        setvar:'tx.allowed_methods=GET HEAD POST PUT OPTIONS'"
+
     # allow matrix to upload it's contents to s3
     # SecRule REQUEST_URI "@beginsWith /matrix/local_content/" \
     #     "id:20017,\
