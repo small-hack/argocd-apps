@@ -107,13 +107,17 @@ data:
         nolog,\
         setvar:'tx.allowed_methods=GET HEAD POST PUT OPTIONS'"
 
+    # this is actually for a local s3 server that you have dedicated to matrix
+    # can be commented out if not running local s3 server such as seaweedfs
+    SecRule REQUEST_URI "@beginsWith /matrix/local_content/" \
+        "id:20021,\
+        phase:1,\
+        pass,\
+        t:none,\
+        setvar:'tx.allowed_methods=GET HEAD POST PUT'"
+
     # allow matrix to upload it's contents to s3
     # SecRule REQUEST_URI "@beginsWith /matrix/local_content/" \
-    #     "id:20017,\
-    #     phase:1,\
-    #     pass,\
-    #     t:none,\
-    #     nolog,\
     #     setvar:'tx.allowed_request_content_type=|application/octet-stream|'"
 
   postgres-s3-rule-exclusions-before.conf: |-
