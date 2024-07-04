@@ -51,7 +51,7 @@ data:
     # ----------------------------------------------------
     # might try this later:
     # SecRule REQUEST_URI "@beginsWith /_matrix/media/v3/upload" \
-    SecRule REQUEST_URI "@rx /_matrix/media/(?:v3|r0)/upload/" \
+    SecRule REQUEST_URI "@rx /_matrix/media/(?:v3|r0)/upload" \
       "id:20015,\
       phase:1,\
       pass,\
