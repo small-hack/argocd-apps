@@ -55,6 +55,7 @@ data:
         chain"
         SecRule REQUEST_HEADERS:Content-Type "application/grpc-web+proto" \
             "t:none,\
+            pass,\
             setvar:'tx.allowed_request_content_type=%{tx.allowed_request_content_type} |application/grpc-web+proto|'"
 
     SecRule REQUEST_URI "@beginsWith /zitadel.admin.v1.AdminService" \
@@ -66,6 +67,7 @@ data:
         chain"
         SecRule REQUEST_HEADERS:Content-Type "application/grpc-web+proto" \
             "t:none,\
+            pass,\
             setvar:'tx.allowed_request_content_type=%{tx.allowed_request_content_type} |application/grpc-web+proto|'"
 
     SecRule REQUEST_URI "@beginsWith /zitadel.management.v1.ManagementService" \
@@ -77,6 +79,7 @@ data:
         chain"
         SecRule REQUEST_HEADERS:Content-Type "application/grpc-web+proto" \
             "t:none,\
+            pass,\
             setvar:'tx.allowed_request_content_type=%{tx.allowed_request_content_type} |application/grpc-web+proto|'"
   matrix-rule-exclusions-before.conf: |-
     # ----------------------------------------------------
