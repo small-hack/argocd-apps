@@ -53,7 +53,7 @@ data:
         t:none,\
         nolog,\
         chain"
-        SecRule REQUEST_HEADERS:Content-Type "application/grpc-web+proto" \
+        SecRule REQUEST_HEADERS:Content-Type "@streq application/grpc-web+proto" \
             "t:none,\
             pass,\
             setvar:'tx.allowed_request_content_type=%{tx.allowed_request_content_type} |application/grpc-web+proto|'"
@@ -65,7 +65,7 @@ data:
         t:none,\
         nolog,\
         chain"
-        SecRule REQUEST_HEADERS:Content-Type "application/grpc-web+proto" \
+        SecRule REQUEST_HEADERS:Content-Type "@streq application/grpc-web+proto" \
             "t:none,\
             pass,\
             setvar:'tx.allowed_request_content_type=%{tx.allowed_request_content_type} |application/grpc-web+proto|'"
@@ -77,7 +77,7 @@ data:
         t:none,\
         nolog,\
         chain"
-        SecRule REQUEST_HEADERS:Content-Type "application/grpc-web+proto" \
+        SecRule REQUEST_HEADERS:Content-Type "@streq application/grpc-web+proto" \
             "t:none,\
             pass,\
             setvar:'tx.allowed_request_content_type=%{tx.allowed_request_content_type} |application/grpc-web+proto|'"
