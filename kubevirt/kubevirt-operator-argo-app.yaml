@@ -51,6 +51,10 @@ spec:
             operator: Exists
             
         monitorNamespace: "prometheus"
+        prometheus: 
+          enabled: true
+          serviceName: "prometheus-prometheus"
+          serviceNamesapce: "prometheus"
         
         affinity:
           podAntiAffinity:
