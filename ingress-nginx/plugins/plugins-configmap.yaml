@@ -87,7 +87,7 @@ data:
 
     # allow PUT, OPTIONS to allow sending room key data:
     # /_matrix/client/unstable/room_keys/keys?version=1
-    SecRule REQUEST_URI "@rx ^/_matrix/client/unstable/room_keys/keys?version=[0-9]+" \
+    SecRule REQUEST_URI "@rx ^/_matrix/client/unstable/room_keys/keys.*$" \
         "id:20019,\
         phase:1,\
         pass,\
