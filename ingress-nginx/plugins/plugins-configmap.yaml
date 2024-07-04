@@ -70,14 +70,14 @@ data:
         t:none,\
         setvar:'tx.allowed_request_content_type=|application/octet-stream|'"
 
-    # allow PUT to allow sending via federation, e.g. url:
+    # allow PUT, OPTIONS to allow sending via federation, e.g. url:
     # /_matrix/client/v3/rooms/!someserver/send/m.room.encrypted/123456.0
     SecRule REQUEST_URI "@beginsWith /_matrix/client/v3/rooms/" \
         "id:20018,\
         phase:1,\
         pass,\
         t:none,\
-        setvar:'tx.allowed_methods=GET HEAD POST PUT DELETE'"
+        setvar:'tx.allowed_methods=GET HEAD POST PUT DELETE OPTIONS'"
 
     # allow matrix to upload it's contents to s3
     # SecRule REQUEST_URI "@beginsWith /matrix/local_content/" \
