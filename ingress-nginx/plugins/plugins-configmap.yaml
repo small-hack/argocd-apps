@@ -11,6 +11,40 @@ data:
     # no data
   empty-config.conf: |
     # no data
+  zitadel-rule-exclusions-before.conf: |
+    # Enable grpc parsing
+    SecRule REQUEST_URI "@beginsWith /zitadel.auth.v1.AuthService" \
+        "id:200003,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        chain"
+        SecRule REQUEST_HEADERS:Content-Type "application/grpc-web+proto" \
+            "t:none,\
+            setvar:'tx.allowed_request_content_type=%{tx.allowed_request_content_type} |application/grpc-web+proto|'"
+
+    SecRule REQUEST_URI "@beginsWith /zitadel.admin.v1.AdminService" \
+        "id:200004,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        chain"
+        SecRule REQUEST_HEADERS:Content-Type "application/grpc-web+proto" \
+            "t:none,\
+            setvar:'tx.allowed_request_content_type=%{tx.allowed_request_content_type} |application/grpc-web+proto|'"
+
+    SecRule REQUEST_URI "@beginsWith /zitadel.management.v1.ManagementService" \
+        "id:200005,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        chain"
+        SecRule REQUEST_HEADERS:Content-Type "application/grpc-web+proto" \
+            "t:none,\
+            setvar:'tx.allowed_request_content_type=%{tx.allowed_request_content_type} |application/grpc-web+proto|'"
   matrix-rule-exclusions-before.conf: |-
     # ----------------------------------------------------
     # allow uploads for matrix via element web and mobile
@@ -150,28 +184,12 @@ data:
     # by using the following:
     # location /index.php/apps/files/ajax/upload.php { modsecurity_rules 'SecRequestBodyLimit 1073741824'; }
     #
-    # Apache libmodsecurity3 Example:
-    # <location "/index.php/apps/files/ajax/upload.php">
-    #    modsecurity_rules 'SecRequestBodyLimit 1073741824'
-    # </location>
-    #
-    #
     # The Nextcloud desktop client occasionally sends large request bodies not containing any uploaded files.
     # ModSecurity will block request bodies larger than 131KB, adjusting SecRequestBodyNoFilesLimit to
     # 141KB works for all scenarios tested.
     #
     # Nginx libmodsecurity3 Example:
     # location /remote.php/dav/files/ { modsecurity_rules 'SecRequestBodyNoFilesLimit 144384'; }
-    #
-    # Apache modsecurity2 Example:
-    # <location "/remote.php/dav/files/">
-    #     SecRequestBodyNoFilesLimit 144384
-    # </location>
-    #
-    # Apache libmodsecurity3 Example:
-    # <location "/remote.php/dav/files/">
-    #    modsecurity_rules 'SecRequestBodyNoFilesLimit 144384'
-    # </location>
 
 
     # [ Local CRS initialization ]
@@ -608,6 +626,9 @@ data:
         nolog,\
         ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
         setvar:'tx.allowed_methods=%{tx.allowed_methods} PUT PATCH CHECKOUT COPY DELETE LOCK MERGE MKACTIVITY MKCOL MOVE PROPFIND PROPPATCH SEARCH UNLOCK REPORT TRACE jsonp'"
+    # Update config to include nextcloud dav methods in the allowed HTTP methods (instead of fully disabling 911100)
+    # this was before we found the exclusion plugin
+    # SecAction "id:900200,phase:1,nolog,pass,t:none,setvar:tx.allowed_methods=GET HEAD POST OPTIONS PUT PATCH DELETE PROPFIND REPORT SEARCH MKCOL MOVE COPY"
 
     # Allow CalDav/CarDav clients to scan for CalDav CarDav path
     SecRule REQUEST_FILENAME "@streq /" \
