@@ -77,6 +77,7 @@ data:
         phase:1,\
         pass,\
         t:none,\
+        nolog,\
         setvar:'tx.allowed_methods=GET HEAD POST PUT DELETE OPTIONS'"
 
     # allow matrix to upload it's contents to s3
