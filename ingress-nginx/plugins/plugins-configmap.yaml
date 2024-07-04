@@ -48,22 +48,23 @@ data:
   matrix-rule-exclusions-before.conf: |-
     # ----------------------------------------------------
     # allow uploads for matrix via element web and mobile
+    # to avoid rule 920420 which doesn't allow |application/octet-stream|
     # ----------------------------------------------------
-    # might try this later:
-    # SecRule REQUEST_URI "@beginsWith /_matrix/media/v3/upload" \
-    SecRule REQUEST_URI "@rx /_matrix/media/(?:v3|r0)/upload" \
+    # might try this later to combine both routes:
+    # SecRule REQUEST_URI "@rx /_matrix/media/(?:v3|r0)/upload" \
+    SecRule REQUEST_URI "@beginsWith /_matrix/media/v3/upload" \
       "id:20015,\
       phase:1,\
       pass,\
       nolog,\
-      ctl:ruleRemoveById=920420"
+      setvar:'tx.allowed_request_content_type=|application/octet-stream|'"
 
-    # SecRule REQUEST_URI "@beginsWith /_matrix/media/r0/upload" \
-    #   "id:20016,\
-    #   phase:1,\
-    #   pass,\
-    #   nolog,\
-    #   ctl:ruleRemoveById=920420"
+    SecRule REQUEST_URI "@beginsWith /_matrix/media/r0/upload" \
+      "id:20016,\
+      phase:1,\
+      pass,\
+      nolog,\
+      setvar:'tx.allowed_request_content_type=|application/octet-stream|'"
   grafana-rule-exclusions-before.conf: |-
     # -------------------------------------------------
     # update rules for loki and prometheus via grafana
