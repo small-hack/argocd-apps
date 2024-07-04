@@ -61,7 +61,6 @@ data:
         phase:1,\
         pass,\
         t:none,\
-        nolog,\
         setvar:'tx.allowed_request_content_type=|application/octet-stream|'"
 
     SecRule REQUEST_URI "@beginsWith /_matrix/media/r0/upload" \
@@ -69,8 +68,17 @@ data:
         phase:1,\
         pass,\
         t:none,\
-        nolog,\
         setvar:'tx.allowed_request_content_type=|application/octet-stream|'"
+
+    # allow matrix to upload it's contents to s3
+    # SecRule REQUEST_URI "@beginsWith /matrix/local_content/" \
+    #     "id:20017,\
+    #     phase:1,\
+    #     pass,\
+    #     t:none,\
+    #     nolog,\
+    #     setvar:'tx.allowed_request_content_type=|application/octet-stream|'"
+
   postgres-s3-rule-exclusions-before.conf: |-
     # -------------------------------------------------------------------------
     # allow postgresql to upload wal archives to s3
@@ -81,7 +89,7 @@ data:
       phase:1,\
       pass,\
       nolog,\
-      ctl:ruleRemoveById=920340"
+      ctl:ruleRemoveById=920340,ctl:ruleRemoveById=911100"
 
     SecRule REQUEST_URI "@beginsWith /zitadel-postgres/zitadel-postgres/base/" \
       "id:20001,\
@@ -95,7 +103,7 @@ data:
       phase:1,\
       pass,\
       nolog,\
-      ctl:ruleRemoveById=920340,ctl:ruleRemoveById=921110,ctl:ruleRemoveById=920440"
+      ctl:ruleRemoveById=920340,ctl:ruleRemoveById=921110,ctl:ruleRemoveById=920440,ctl:ruleRemoveById=911100"
 
     SecRule REQUEST_URI "@beginsWith /matrix-postgres/matrix-postgres/base/" \
       "id:20005,\
@@ -109,7 +117,7 @@ data:
       phase:1,\
       pass,\
       nolog,\
-      ctl:ruleRemoveById=920340"
+      ctl:ruleRemoveById=920340,ctl:ruleRemoveById=911100"
 
     SecRule REQUEST_URI "@beginsWith /nextcloud-postgres/nextcloud-postgres/base/" \
       "id:20009,\
