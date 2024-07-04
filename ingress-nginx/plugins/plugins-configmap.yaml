@@ -12,7 +12,10 @@ data:
   empty-config.conf: |
     # no data
   argocd-rule-exclusions-before.conf: |
+    # -------------------------------------------------------------------------
     # allow deletions from the argocd web ui
+    # TODO: can maybe prune the methods here a bit more
+    # -------------------------------------------------------------------------
     SecRule REQUEST_FILENAME "@beginsWith /api/v1/applications/" \
         "id:30004,\
         phase:1,\
@@ -20,55 +23,11 @@ data:
         t:none,\
         nolog,\
         setvar:'tx.allowed_methods=GET HEAD POST PUT DELETE'"
-  zitadel-rule-exclusions-before.conf: |
-    # Enable grpc parsing for zitadle only, avoids hitting ruleID 920420"
-    SecRule REQUEST_URI "@beginsWith /zitadel.auth.v1.AuthService" \
-        "id:30001,\
-        phase:1,\
-        pass,\
-        t:none,\
-        nolog,\
-        setvar:'tx.allowed_request_content_type=|application/grpc-web+proto|'"
-
-    SecRule REQUEST_URI "@beginsWith /zitadel.admin.v1.AdminService" \
-        "id:30002,\
-        phase:1,\
-        pass,\
-        t:none,\
-        nolog,\
-        setvar:'tx.allowed_request_content_type=|application/grpc-web+proto|'"
-
-    SecRule REQUEST_URI "@beginsWith /zitadel.management.v1.ManagementService" \
-        "id:30003,\
-        phase:1,\
-        pass,\
-        t:none,\
-        nolog,\
-        setvar:'tx.allowed_request_content_type=|application/grpc-web+proto|'"
-  matrix-rule-exclusions-before.conf: |-
-    # ----------------------------------------------------
-    # allow uploads for matrix via element web and mobile
-    # to avoid rule 920420 which doesn't allow |application/octet-stream|
-    # ----------------------------------------------------
-    # might try this later to combine both routes:
-    # SecRule REQUEST_URI "@rx /_matrix/media/(?:v3|r0)/upload" \
-    SecRule REQUEST_URI "@beginsWith /_matrix/media/v3/upload" \
-      "id:20015,\
-      phase:1,\
-      pass,\
-      nolog,\
-      setvar:'tx.allowed_request_content_type=|application/octet-stream|'"
-
-    SecRule REQUEST_URI "@beginsWith /_matrix/media/r0/upload" \
-      "id:20016,\
-      phase:1,\
-      pass,\
-      nolog,\
-      setvar:'tx.allowed_request_content_type=|application/octet-stream|'"
   grafana-rule-exclusions-before.conf: |-
-    # -------------------------------------------------
-    # update rules for loki and prometheus via grafana
-    # -------------------------------------------------
+    # -------------------------------------------------------------------------
+    # allow exceptions for rules 933210, 942100, 932110 for using datasources
+    # loki and prometheus via grafana, should try to make these more granular later
+    # -------------------------------------------------------------------------
     SecRule REQUEST_URI "@beginsWith /api/ds/query?ds_type=loki" \
       "id:20013,\
       phase:1,\
@@ -89,10 +48,43 @@ data:
       pass,\
       nolog,\
       ctl:ruleRemoveById=932110"
+  matrix-rule-exclusions-before.conf: |-
+    # -------------------------------------------------------------------------
+    # allow uploads for matrix via element web and mobile
+    # to avoid rule 920420 which doesn't allow |application/octet-stream|
+    #
+    # might try this later to combine both routes:
+    # SecRule REQUEST_URI "@rx /_matrix/media/(?:v3|r0)/upload" \
+    # -------------------------------------------------------------------------
+    SecRule REQUEST_URI "@beginsWith /_matrix/media/v3/upload" \
+      "id:20015,\
+      phase:1,\
+      pass,\
+      nolog,\
+      setvar:'tx.allowed_request_content_type=%{tx.allowed_request_content_type} |application/octet-stream|'"
+
+    SecRule REQUEST_URI "@beginsWith /_matrix/media/r0/upload" \
+      "id:20016,\
+      phase:1,\
+      pass,\
+      nolog,\
+      setvar:'tx.allowed_request_content_type=%{tx.allowed_request_content_type} |application/octet-stream|'"
+
+    SecRule REQUEST_METHOD "@pm PUT MOVE" \
+        "id:9508115,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        chain"
+        SecRule REQUEST_FILENAME "@rx /remote\.php/dav/(?:files|uploads)/" \
+            "setvar:'tx.allowed_request_content_type=%{tx.allowed_request_content_type} |application/octet-stream| |application/pdf|'"
   postgres-s3-rule-exclusions-before.conf: |-
-    # ---------------------------------------------
+    # -------------------------------------------------------------------------
     # allow postgresql to upload wal archives to s3
-    # ---------------------------------------------
+    # TODO: make more granular rule exception
+    # -------------------------------------------------------------------------
     SecRule REQUEST_URI "@beginsWith /zitadel-postgres/zitadel-postgres/wals/" \
       "id:20000,\
       phase:1,\
@@ -134,6 +126,31 @@ data:
       pass,\
       nolog,\
       ctl:ruleRemoveById=920340,ctl:ruleRemoveById=921110"
+  zitadel-rule-exclusions-before.conf: |
+    # Enable grpc parsing for zitadle only, avoids hitting ruleID 920420"
+    SecRule REQUEST_URI "@beginsWith /zitadel.auth.v1.AuthService" \
+        "id:30001,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        setvar:'tx.allowed_request_content_type=|application/grpc-web+proto|'"
+
+    SecRule REQUEST_URI "@beginsWith /zitadel.admin.v1.AdminService" \
+        "id:30002,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        setvar:'tx.allowed_request_content_type=|application/grpc-web+proto|'"
+
+    SecRule REQUEST_URI "@beginsWith /zitadel.management.v1.ManagementService" \
+        "id:30003,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        setvar:'tx.allowed_request_content_type=|application/grpc-web+proto|'"
   nextcloud-rule-exclusions-before.conf: |-
     # ------------------------------------------------------------------------
     # OWASP CRS Plugin
