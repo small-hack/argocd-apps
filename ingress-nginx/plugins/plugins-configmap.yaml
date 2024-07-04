@@ -54,13 +54,13 @@ data:
     # to avoid rule 920420 which doesn't allow |application/octet-stream|
     # -------------------------------------------------------------------------
     # allow PUT, OPTIONS to allow uploads
-    SecRule REQUEST_URI "@beginsWith /_matrix/media/v3/upload" \
-        "id:20015,\
-        phase:1,\
-        pass,\
-        t:none,\
-        setvar:'tx.allowed_request_content_type=|application/octet-stream|',\
-        setvar:'tx.allowed_methods=POST PUT OPTIONS'"
+    # SecRule REQUEST_URI "@beginsWith /_matrix/media/v3/upload" \
+    #     "id:20015,\
+    #     phase:1,\
+    #     pass,\
+    #     t:none,\
+    #     setvar:'tx.allowed_request_content_type=|application/octet-stream|',\
+    #     setvar:'tx.allowed_methods=POST PUT OPTIONS'"
 
     # allow PUT, OPTIONS to allow uploads
     SecRule REQUEST_URI "@beginsWith /_matrix/media/r0/upload" \
