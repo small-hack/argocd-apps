@@ -26,6 +26,7 @@ data:
         "id:30001,\
         phase:1,\
         pass,\
+        t:none,\
         nolog,\
         setvar:'tx.allowed_request_content_type=application/grpc-web+proto'"
 
@@ -33,6 +34,7 @@ data:
         "id:30002,\
         phase:1,\
         pass,\
+        t:none,\
         nolog,\
         setvar:'tx.allowed_request_content_type=application/grpc-web+proto'"
 
@@ -40,6 +42,7 @@ data:
         "id:30003,\
         phase:1,\
         pass,\
+        t:none,\
         nolog,\
         setvar:'tx.allowed_request_content_type=application/grpc-web+proto'"
   matrix-rule-exclusions-before.conf: |-
