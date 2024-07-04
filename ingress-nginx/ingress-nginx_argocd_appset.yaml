@@ -109,10 +109,11 @@ spec:
                   # Enable scanning of the request body
                   SecRequestBodyAccess On
 
-                  # Enable XML and JSON parsing
+                  # Enable XML parsing
                   SecRule REQUEST_HEADERS:Content-Type "(?:text|application(?:/soap\+|/)|application/xml)/" \
                     "id:200000,phase:1,t:none,t:lowercase,pass,nolog,ctl:requestBodyProcessor=XML"
 
+                  # Enable JSON parsing
                   SecRule REQUEST_HEADERS:Content-Type "application/json" \
                     "id:200001,phase:1,t:none,t:lowercase,pass,nolog,ctl:requestBodyProcessor=JSON"
 
@@ -127,9 +128,6 @@ spec:
 
                   # Reject if larger (we could also let it pass with ProcessPartial)
                   SecRequestBodyLimitAction Reject
-
-                  # Update config to include nextcloud dav methods in the allowed HTTP methods (instead of fully disabling 911100)
-                  SecAction "id:900200,phase:1,nolog,pass,t:none,setvar:tx.allowed_methods=GET HEAD POST OPTIONS PUT PATCH DELETE PROPFIND REPORT SEARCH MKCOL MOVE COPY"
 
                   # Send ModSecurity audit logs to the stdout (only for rejected requests)
                   SecAuditLog /dev/stdout
