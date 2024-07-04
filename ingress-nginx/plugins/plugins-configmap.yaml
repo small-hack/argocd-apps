@@ -56,30 +56,22 @@ data:
     # might try this later to combine both routes:
     # SecRule REQUEST_URI "@rx /_matrix/media/(?:v3|r0)/upload" \
     # -------------------------------------------------------------------------
-    SecRule REQUEST_URI "@beginsWith /_matrix/media/v3/upload" \
-      "id:20015,\
-      phase:1,\
-      pass,\
-      nolog,\
-      setvar:'tx.allowed_request_content_type=%{tx.allowed_request_content_type} |application/octet-stream|'"
+    # SecRule REQUEST_URI "@beginsWith /_matrix/media/v3/upload" \
+    #   "id:20015,\
+    #   phase:1,\
+    #   pass,\
+    #   nolog,\
+    #   setvar:'tx.allowed_request_content_type=%{tx.allowed_request_content_type} |application/octet-stream|'"
 
-    SecRule REQUEST_URI "@beginsWith /_matrix/media/r0/upload" \
-      "id:20016,\
-      phase:1,\
-      pass,\
-      nolog,\
-      setvar:'tx.allowed_request_content_type=%{tx.allowed_request_content_type} |application/octet-stream|'"
-
-    SecRule REQUEST_METHOD "@pm PUT MOVE" \
-        "id:9508115,\
+    SecRule REQUEST_METHOD "@pm POST" \
+        "id:20015,\
         phase:1,\
         pass,\
         t:none,\
         nolog,\
-        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
         chain"
-        SecRule REQUEST_FILENAME "@rx /remote\.php/dav/(?:files|uploads)/" \
-            "setvar:'tx.allowed_request_content_type=%{tx.allowed_request_content_type} |application/octet-stream| |application/pdf|'"
+        SecRule REQUEST_FILENAME "@rx /_matrix/media/(?:v3|r0)/upload" \
+            "setvar:'tx.allowed_request_content_type=|application/octet-stream|'"
   postgres-s3-rule-exclusions-before.conf: |-
     # -------------------------------------------------------------------------
     # allow postgresql to upload wal archives to s3
