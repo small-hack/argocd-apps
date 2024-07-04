@@ -14,38 +14,40 @@ data:
   argocd-rule-exclusions-before.conf: |
     # allow deletions from the argocd web ui
     SecRule REQUEST_FILENAME "@beginsWith /api/v1/applications/" \
-        "id:200008,\
+        "id:30004,\
         phase:1,\
         pass,\
         t:none,\
         nolog,\
-        setvar:'tx.allowed_methods=%{tx.allowed_methods} DELETE'"
+        setvar:'tx.allowed_methods=GET HEAD POST PUT DELETE'"
   zitadel-rule-exclusions-before.conf: |
     # Enable grpc parsing
     SecRule REQUEST_URI "@beginsWith /zitadel.auth.v1.AuthService" \
-        "id:200004,\
+        "id:30001,\
         phase:1,\
         pass,\
         nolog,\
-        setvar:'tx.allowed_request_content_type=%{tx.allowed_request_content_type} |application/grpc-web+proto|'"
+        setvar:'tx.allowed_request_content_type=application/grpc-web+proto'"
 
     SecRule REQUEST_URI "@beginsWith /zitadel.admin.v1.AdminService" \
-        "id:200005,\
+        "id:30002,\
         phase:1,\
         pass,\
         nolog,\
-        setvar:'tx.allowed_request_content_type=%{tx.allowed_request_content_type} |application/grpc-web+proto|'"
+        setvar:'tx.allowed_request_content_type=application/grpc-web+proto'"
 
     SecRule REQUEST_URI "@beginsWith /zitadel.management.v1.ManagementService" \
-        "id:200007,\
+        "id:30003,\
         phase:1,\
         pass,\
         nolog,\
-        setvar:'tx.allowed_request_content_type=%{tx.allowed_request_content_type} |application/grpc-web+proto|'"
+        setvar:'tx.allowed_request_content_type=application/grpc-web+proto'"
   matrix-rule-exclusions-before.conf: |-
     # ----------------------------------------------------
     # allow uploads for matrix via element web and mobile
     # ----------------------------------------------------
+    # might try this later:
+    # SecRule REQUEST_URI "@rx /_matrix/media/(?:v3|r0)/upload/" \
     SecRule REQUEST_URI "@beginsWith /_matrix/media/v3/upload" \
       "id:20015,\
       phase:1,\
