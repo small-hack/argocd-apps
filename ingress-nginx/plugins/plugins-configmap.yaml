@@ -20,7 +20,7 @@ data:
         t:none,\
         nolog,\
         setvar:'tx.allowed_methods=GET HEAD POST PUT DELETE'"
-  1-zitadel-rule-exclusions-before.conf: |
+  zitadel-rule-exclusions-before.conf: |
     # Enable grpc parsing
     # maybe try this in the future:
     # setvar:'tx.allowed_request_content_type=application/grpc-web+proto'"
