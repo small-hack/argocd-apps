@@ -83,7 +83,7 @@ data:
 
     # allow PUT, OPTIONS for updating breadcrumbs of recent rooms visited:
     # /_matrix/client/v3/user/username/account_data/im.vector.setting.breadcrumbs
-    SecRule REQUEST_URI "@beginsWith /_matrix/client/(?:v3|r0)/user/" \
+    SecRule REQUEST_URI "@beginsWith /_matrix/client/(?:v3|r0)/user/.*$" \
         "id:20019,\
         phase:1,\
         pass,\
