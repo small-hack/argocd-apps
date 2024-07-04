@@ -49,11 +49,10 @@ data:
     SecRule REQUEST_URI "@beginsWith /zitadel.auth.v1.AuthService" \
         "id:2000001,\
         phase:1,\
-        pass,\
         t:none,\
         nolog,\
         chain"
-        SecRule REQUEST_HEADERS:Content-Type "@streq application/grpc-web+proto" \
+        SecRule REQUEST_HEADERS:Content-Type "@beginsWith application/grpc-web" \
             "t:none,\
             pass,\
             setvar:'tx.allowed_request_content_type=%{tx.allowed_request_content_type} |application/grpc-web+proto|'"
@@ -61,11 +60,10 @@ data:
     SecRule REQUEST_URI "@beginsWith /zitadel.admin.v1.AdminService" \
         "id:2000002,\
         phase:1,\
-        pass,\
         t:none,\
         nolog,\
         chain"
-        SecRule REQUEST_HEADERS:Content-Type "@streq application/grpc-web+proto" \
+        SecRule REQUEST_HEADERS:Content-Type "@beginsWith application/grpc-web" \
             "t:none,\
             pass,\
             setvar:'tx.allowed_request_content_type=%{tx.allowed_request_content_type} |application/grpc-web+proto|'"
@@ -73,11 +71,10 @@ data:
     SecRule REQUEST_URI "@beginsWith /zitadel.management.v1.ManagementService" \
         "id:2000003,\
         phase:1,\
-        pass,\
         t:none,\
         nolog,\
         chain"
-        SecRule REQUEST_HEADERS:Content-Type "@streq application/grpc-web+proto" \
+        SecRule REQUEST_HEADERS:Content-Type "@beginsWith application/grpc-web" \
             "t:none,\
             pass,\
             setvar:'tx.allowed_request_content_type=%{tx.allowed_request_content_type} |application/grpc-web+proto|'"
