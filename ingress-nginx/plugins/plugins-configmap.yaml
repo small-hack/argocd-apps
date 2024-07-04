@@ -53,14 +53,6 @@ data:
     # allow uploads for matrix via element web and mobile
     # to avoid rule 920420 which doesn't allow |application/octet-stream|
     # -------------------------------------------------------------------------
-    # allow PUT, OPTIONS to allow uploads
-    # SecRule REQUEST_URI "@beginsWith /_matrix/media/v3/upload" \
-    #     "id:20015,\
-    #     phase:1,\
-    #     pass,\
-    #     t:none,\
-    #     setvar:'tx.allowed_request_content_type=|application/octet-stream|',\
-    #     setvar:'tx.allowed_methods=POST PUT OPTIONS'"
 
     # allow octet-stream content type for uploads
     SecRule REQUEST_URI "@beginsWith /_matrix/media/r0/upload" \
@@ -78,9 +70,8 @@ data:
         t:none,\
         setvar:'tx.allowed_methods=POST PUT OPTIONS'"
 
-    # allow PUT, OPTIONS to allow sending via federation, e.g. url:
-    # /_matrix/client/v3/rooms/!someserver/send/m.room.encrypted/123456.0
-    SecRule REQUEST_URI "@beginsWith /_matrix/client/v3/rooms/" \
+    # allow PUT, OPTIONS to allow sending all sorts of room data
+    SecRule REQUEST_URI "@rx ^/_matrix/client/(?:v3|r0)/rooms/.*$" \
         "id:20018,\
         phase:1,\
         pass,\
