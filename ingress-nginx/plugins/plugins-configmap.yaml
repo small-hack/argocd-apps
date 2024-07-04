@@ -59,7 +59,7 @@ data:
         phase:1,\
         pass,\
         t:none,\
-        setvar:'tx.allowed_request_content_type=|application/octet-stream|',
+        setvar:'tx.allowed_request_content_type=|application/octet-stream|',\
         setvar:'tx.allowed_methods=POST PUT OPTIONS'"
 
     # allow PUT, OPTIONS to allow uploads
@@ -68,7 +68,7 @@ data:
         phase:1,\
         pass,\
         t:none,\
-        setvar:'tx.allowed_request_content_type=|application/octet-stream|',
+        setvar:'tx.allowed_request_content_type=|application/octet-stream|',\
         setvar:'tx.allowed_methods=POST PUT OPTIONS'"
 
     # allow PUT, OPTIONS to allow sending via federation, e.g. url:
