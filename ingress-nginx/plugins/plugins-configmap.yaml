@@ -39,7 +39,7 @@ data:
     #
     # Copy of CRS rule 901162, and nextcloud rule 9508101
     SecRule &TX:allowed_request_content_type "@eq 0" \
-        "id:200000,\
+        "id:2000000,\
         phase:1,\
         pass,\
         nolog,\
@@ -47,7 +47,7 @@ data:
 
     # Enable grpc parsing
     SecRule REQUEST_URI "@beginsWith /zitadel.auth.v1.AuthService" \
-        "id:200003,\
+        "id:2000001,\
         phase:1,\
         pass,\
         t:none,\
@@ -59,7 +59,7 @@ data:
             setvar:'tx.allowed_request_content_type=%{tx.allowed_request_content_type} |application/grpc-web+proto|'"
 
     SecRule REQUEST_URI "@beginsWith /zitadel.admin.v1.AdminService" \
-        "id:200004,\
+        "id:2000002,\
         phase:1,\
         pass,\
         t:none,\
@@ -71,7 +71,7 @@ data:
             setvar:'tx.allowed_request_content_type=%{tx.allowed_request_content_type} |application/grpc-web+proto|'"
 
     SecRule REQUEST_URI "@beginsWith /zitadel.management.v1.ManagementService" \
-        "id:200005,\
+        "id:2000003,\
         phase:1,\
         pass,\
         t:none,\
