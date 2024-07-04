@@ -41,7 +41,7 @@ spec:
               autoscaling:
                 enabled: true
                 annotations: {}
-                minReplicas: 2
+                minReplicas: 1
                 maxReplicas: 4
                 targetCPUUtilizationPercentage: 500
                 targetMemoryUtilizationPercentage: 500
