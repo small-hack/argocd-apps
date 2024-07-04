@@ -53,7 +53,7 @@ spec:
         monitorNamespace: "prometheus"
         prometheus: 
           enabled: true
-          serviceName: "prometheus-prometheus"
+          serviceName: "prom-stack-kube-prometheus-prometheus"
           serviceNamesapce: "prometheus"
         
         affinity:
