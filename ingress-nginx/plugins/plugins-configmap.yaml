@@ -55,7 +55,7 @@ data:
     # -------------------------------------------------------------------------
 
     # allow octet-stream content type for uploads
-    SecRule REQUEST_URI "@beginsWith /_matrix/media/r0/upload" \
+    SecRule REQUEST_URI "@rx ^/_matrix/media/(?:v3|r0)/upload" \
         "id:20015,\
         phase:1,\
         pass,\
@@ -63,7 +63,7 @@ data:
         setvar:'tx.allowed_request_content_type=|application/octet-stream|'"
 
     # allow PUT, OPTIONS to allow uploads
-    SecRule REQUEST_URI "@beginsWith /_matrix/media/r0/upload" \
+    SecRule REQUEST_URI "@rx ^/_matrix/media/(?:v3|r0)/upload" \
         "id:20016,\
         phase:1,\
         pass,\
@@ -81,7 +81,7 @@ data:
 
     # allow PUT, OPTIONS for updating breadcrumbs of recent rooms visited:
     # /_matrix/client/v3/user/username/account_data/im.vector.setting.breadcrumbs
-    SecRule REQUEST_URI "@beginsWith /_matrix/client/v3/user/" \
+    SecRule REQUEST_URI "@beginsWith /_matrix/client/(?:v3|r0)/user/" \
         "id:20019,\
         phase:1,\
         pass,\
@@ -106,10 +106,6 @@ data:
         pass,\
         t:none,\
         setvar:'tx.allowed_methods=GET HEAD POST PUT'"
-
-    # allow matrix to upload it's contents to s3
-    # SecRule REQUEST_URI "@beginsWith /matrix/local_content/" \
-    #     setvar:'tx.allowed_request_content_type=|application/octet-stream|'"
 
   postgres-s3-rule-exclusions-before.conf: |-
     # -------------------------------------------------------------------------
