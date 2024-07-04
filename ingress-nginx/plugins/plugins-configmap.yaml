@@ -12,15 +12,39 @@ data:
   empty-config.conf: |
     # no data
   argocd-rule-exclusions-before.conf: |
+    # We need to initialize some of the CRS variables also here because plugin setup runs before
+    # CRS initialization (this is a known limitation of the current plugin architecture). Must be
+    # kept in sync with CRS default setting.
+    #
+    # Copy of CRS rule 901160 and nextcloud 9508100
+    SecRule &TX:allowed_methods "@eq 0" \
+        "id:200006,\
+        phase:1,\
+        pass,\
+        nolog,\
+        setvar:'tx.allowed_methods=GET HEAD POST OPTIONS'"
+
     # allow deletions from the argocd web ui
     SecRule REQUEST_FILENAME "@beginsWith /api/v1/applications/" \
-        "id:200006,\
+        "id:200007,\
         phase:1,\
         pass,\
         t:none,\
         nolog,\
         setvar:'tx.allowed_methods=%{tx.allowed_methods} DELETE'"
   zitadel-rule-exclusions-before.conf: |
+    # We need to initialize some of the CRS variables also here because plugin setup runs before
+    # CRS initialization (this is a known limitation of the current plugin architecture). Must be
+    # kept in sync with CRS default setting.
+    #
+    # Copy of CRS rule 901162, and nextcloud rule 9508101
+    SecRule &TX:allowed_request_content_type "@eq 0" \
+        "id:200000,\
+        phase:1,\
+        pass,\
+        nolog,\
+        setvar:'tx.allowed_request_content_type=|application/x-www-form-urlencoded| |multipart/form-data| |multipart/related| |text/xml| |application/xml| |application/soap+xml| |application/json| |application/cloudevents+json| |application/cloudevents-batch+json|'"
+
     # Enable grpc parsing
     SecRule REQUEST_URI "@beginsWith /zitadel.auth.v1.AuthService" \
         "id:200003,\
