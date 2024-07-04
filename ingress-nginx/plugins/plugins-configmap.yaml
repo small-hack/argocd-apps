@@ -75,7 +75,8 @@ data:
     # allow PUT, OPTIONS to allow sending all sorts of room data or account data:
     # /_matrix/client/v3/user/username/account_data/im.vector.setting.breadcrumbs
     # /_matrix/client/r0/user/username/account_data
-    SecRule REQUEST_URI "@rx ^/_matrix/client/(?:v3|r0)/(?:rooms|user)/.*$" \
+    # /_matrix/client/v3/sendToDevice/m.room.encrypted
+    SecRule REQUEST_URI "@rx ^/_matrix/client/(?:v3|r0)/(?:rooms|user|sendToDevice)/.*$" \
         "id:20018,\
         phase:1,\
         pass,\
