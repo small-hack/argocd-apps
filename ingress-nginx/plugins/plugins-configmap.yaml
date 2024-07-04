@@ -80,6 +80,16 @@ data:
         nolog,\
         setvar:'tx.allowed_methods=GET HEAD POST PUT DELETE OPTIONS'"
 
+    # allow PUT for updating breadcrumbs of recent rooms visited:
+    # /_matrix/client/v3/user/username/account_data/im.vector.setting.breadcrumbs
+    SecRule REQUEST_URI "@beginsWith /_matrix/client/v3/user/" \
+        "id:20019,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        setvar:'tx.allowed_methods=GET HEAD POST PUT DELETE'"
+
     # allow matrix to upload it's contents to s3
     # SecRule REQUEST_URI "@beginsWith /matrix/local_content/" \
     #     "id:20017,\
