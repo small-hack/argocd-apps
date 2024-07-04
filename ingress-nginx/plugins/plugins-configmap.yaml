@@ -77,7 +77,8 @@ data:
     # /_matrix/client/r0/user/username/account_data
     # /_matrix/client/v3/sendToDevice/m.room.encrypted
     # /_matrix/client/v3/room_keys/keys?version=1
-    SecRule REQUEST_URI "@rx ^/_matrix/client/(?:v3|r0)/(?:rooms|user|sendToDevice|room_keys)/.*$" \
+    # /_matrix/client/unstable/room_keys/keys?version=1
+    SecRule REQUEST_URI "@rx ^/_matrix/client/(?:v3|r0)/(?:rooms|user|sendToDevice|unstable/room_keys|room_keys)/.*$" \
         "id:20018,\
         phase:1,\
         pass,\
