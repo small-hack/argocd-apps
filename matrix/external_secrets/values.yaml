@@ -38,3 +38,7 @@ sliding_sync:
   postgresql_credentials_bitwarden_ID: ""
   # -- sliding sync credentials
   sliding_sync_bitwarden_ID: ""
+
+bridges:
+  # -- bitwarden id containing secret with passkey.pem for hookshot bridge
+  hookshot_pem_bitwarden_ID: ""
