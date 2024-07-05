@@ -131,7 +131,7 @@ data:
       "id:20000,\
       phase:1,\
       pass,\
-      setvar:'tx.allowed_methods=DELETE POST'"
+      setvar:'tx.allowed_methods=DELETE POST PUT'"
 
     SecRule REQUEST_URI "@beginsWith /zitadel-postgres/zitadel-postgres/base/" \
       "id:20001,\
@@ -144,7 +144,7 @@ data:
       "id:20004,\
       phase:1,\
       pass,\
-      setvar:'tx.allowed_methods=DELETE POST'"
+      setvar:'tx.allowed_methods=DELETE POST PUT'"
 
     SecRule REQUEST_URI "@beginsWith /matrix-postgres/matrix-postgres/base/" \
       "id:20005,\
@@ -157,7 +157,7 @@ data:
       "id:20008,\
       phase:1,\
       pass,\
-      setvar:'tx.allowed_methods=DELETE POST'"
+      setvar:'tx.allowed_methods=DELETE POST PUT'"
 
     SecRule REQUEST_URI "@beginsWith /nextcloud-postgres/nextcloud-postgres/base/" \
       "id:20009,\
