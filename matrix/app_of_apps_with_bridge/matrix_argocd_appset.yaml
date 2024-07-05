@@ -774,7 +774,7 @@ spec:
                   permissions:
                    - actor: '{{ .matrix_hostname }}'
                      services:
-                       - service: "*"
+                       - service: webhooks
                          level: admin
               discord:
                 enabled: false
