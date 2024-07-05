@@ -125,14 +125,13 @@ data:
   postgres-s3-rule-exclusions-before.conf: |-
     # -------------------------------------------------------------------------
     # allow postgresql to upload wal archives to s3
-    # allow put and post methods for base backups
-    # TODO: make more granular rule exception
+    # allow PUT, DELETE, and POST methods for base backups
     # -------------------------------------------------------------------------
     SecRule REQUEST_URI "@beginsWith /zitadel-postgres/zitadel-postgres/wals/" \
       "id:20000,\
       phase:1,\
       pass,\
-      setvar:'tx.allowed_methods=DELETE'"
+      setvar:'tx.allowed_methods=DELETE POST'"
 
     SecRule REQUEST_URI "@beginsWith /zitadel-postgres/zitadel-postgres/base/" \
       "id:20001,\
@@ -145,7 +144,7 @@ data:
       "id:20004,\
       phase:1,\
       pass,\
-      setvar:'tx.allowed_methods=DELETE'"
+      setvar:'tx.allowed_methods=DELETE POST'"
 
     SecRule REQUEST_URI "@beginsWith /matrix-postgres/matrix-postgres/base/" \
       "id:20005,\
@@ -158,7 +157,7 @@ data:
       "id:20008,\
       phase:1,\
       pass,\
-      setvar:'tx.allowed_methods=DELETE'"
+      setvar:'tx.allowed_methods=DELETE POST'"
 
     SecRule REQUEST_URI "@beginsWith /nextcloud-postgres/nextcloud-postgres/base/" \
       "id:20009,\
