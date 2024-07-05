@@ -28,6 +28,7 @@ data:
     # allow exceptions for rules 933210, 942100, 932110 for using datasources
     # loki and prometheus via grafana, should try to make these more granular later
     # -------------------------------------------------------------------------
+    # needs tuning
     SecRule REQUEST_URI "@beginsWith /api/ds/query?ds_type=loki" \
       "id:20013,\
       phase:1,\
@@ -35,6 +36,7 @@ data:
       nolog,\
       ctl:ruleRemoveById=933210,ctl:ruleRemoveById=942100,ctl:ruleRemoveById=932110"
 
+    # needs tuning
     SecRule REQUEST_URI "@beginsWith /api/ds/query?ds_type=prometheus" \
       "id:20014,\
       phase:1,\
@@ -42,6 +44,7 @@ data:
       nolog,\
       ctl:ruleRemoveById=933210,ctl:ruleRemoveById=942100,ctl:ruleRemoveById=932110"
 
+    # needs tuning
     SecRule REQUEST_URI "@beginsWith /api/datasources/uid/prometheus/resources/api/v1/label" \
       "id:20017,\
       phase:1,\
