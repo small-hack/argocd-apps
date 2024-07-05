@@ -771,11 +771,11 @@ spec:
 
                   # -- (Optional) Permissions for using the bridge. See
                   # [docs](https://matrix-org.github.io/matrix-hookshot/latest/setup.html#permissions)
-                  permissions: []
-                  #  - actor: example.com
-                  #    services:
-                  #      - service: "*"
-                  #        level: admin
+                  permissions:
+                   - actor: {{ .matrix_hostname }}
+                     services:
+                       - service: "*"
+                         level: admin
               discord:
                 enabled: false
               irc:
