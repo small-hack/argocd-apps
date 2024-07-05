@@ -588,6 +588,12 @@ spec:
                   password: "password"
 
             bridges:
+              affinity: true
+
+              volume:
+                storageClass: local-path
+                accessMode: ReadWriteOnce
+
               # see: https://matrix-org.github.io/matrix-hookshot/latest/setup/sample-configuration.html
               hookshot:
                 enabled: true
