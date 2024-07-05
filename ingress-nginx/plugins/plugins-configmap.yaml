@@ -153,7 +153,8 @@ data:
       phase:1,\
       pass,\
       nolog,\
-      ctl:ruleRemoveById=920340,ctl:ruleRemoveById=921110"
+      ctl:ruleRemoveById=920340,ctl:ruleRemoveById=921110,\
+      setvar:'tx.allowed_methods=PUT'"
 
     SecRule REQUEST_URI "@beginsWith /nextcloud-postgres/nextcloud-postgres/wals/" \
       "id:20008,\
