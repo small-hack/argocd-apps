@@ -140,6 +140,7 @@ data:
       phase:1,\
       pass,\
       nolog,\
+      ctl:ruleRemoveById=920340,\
       setvar:'tx.allowed_methods=PUT POST GET'"
 
     SecRule REQUEST_URI "@beginsWith /matrix-postgres/matrix-postgres/wals/" \
@@ -155,6 +156,7 @@ data:
       phase:1,\
       pass,\
       nolog,\
+      ctl:ruleRemoveById=920340,\
       setvar:'tx.allowed_methods=PUT POST GET'"
 
     SecRule REQUEST_URI "@beginsWith /nextcloud-postgres/nextcloud-postgres/wals/" \
@@ -170,6 +172,7 @@ data:
       phase:1,\
       pass,\
       nolog,\
+      ctl:ruleRemoveById=920340,\
       setvar:'tx.allowed_methods=PUT POST GET'"
   zitadel-rule-exclusions-before.conf: |
     # Enable grpc parsing for zitadle only, avoids hitting ruleID 920420"
