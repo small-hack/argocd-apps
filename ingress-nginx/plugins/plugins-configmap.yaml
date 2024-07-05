@@ -48,6 +48,14 @@ data:
       pass,\
       nolog,\
       ctl:ruleRemoveById=932110"
+
+    # this avoids issues when users change the default dashboard view
+    SecRule REQUEST_URI "@rx /api/user/helpflags/.*$" \
+      "id:20012,\
+      phase:1,\
+      pass,\
+      nolog,\
+      setvar:'tx.allowed_methods=PUT'"
   matrix-rule-exclusions-before.conf: |-
     # -------------------------------------------------------------------------
     # allow uploads for matrix via element web and mobile
