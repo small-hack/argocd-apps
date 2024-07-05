@@ -128,12 +128,11 @@ data:
     # allow put and post methods for base backups
     # TODO: make more granular rule exception
     # -------------------------------------------------------------------------
-    # SecRule REQUEST_URI "@beginsWith /zitadel-postgres/zitadel-postgres/wals/" \
-    #   "id:20000,\
-    #   phase:1,\
-    #   pass,\
-    #   nolog,\
-    #   ctl:ruleRemoveById=920340,ctl:ruleRemoveById=911100"
+    SecRule REQUEST_URI "@beginsWith /zitadel-postgres/zitadel-postgres/wals/" \
+      "id:20000,\
+      phase:1,\
+      pass,\
+      setvar:'tx.allowed_methods=DELETE'"
 
     SecRule REQUEST_URI "@beginsWith /zitadel-postgres/zitadel-postgres/base/" \
       "id:20001,\
@@ -142,12 +141,11 @@ data:
       nolog,\
       setvar:'tx.allowed_methods=PUT POST GET'"
 
-    # SecRule REQUEST_URI "@beginsWith /matrix-postgres/matrix-postgres/wals/" \
-    #   "id:20004,\
-    #   phase:1,\
-    #   pass,\
-    #   nolog,\
-    #   ctl:ruleRemoveById=920340,ctl:ruleRemoveById=921110,ctl:ruleRemoveById=920440,ctl:ruleRemoveById=911100"
+    SecRule REQUEST_URI "@beginsWith /matrix-postgres/matrix-postgres/wals/" \
+      "id:20004,\
+      phase:1,\
+      pass,\
+      setvar:'tx.allowed_methods=DELETE'"
 
     SecRule REQUEST_URI "@beginsWith /matrix-postgres/matrix-postgres/base/" \
       "id:20005,\
@@ -156,12 +154,11 @@ data:
       nolog,\
       setvar:'tx.allowed_methods=PUT POST GET'"
 
-    # SecRule REQUEST_URI "@beginsWith /nextcloud-postgres/nextcloud-postgres/wals/" \
-    #   "id:20008,\
-    #   phase:1,\
-    #   pass,\
-    #   nolog,\
-    #   ctl:ruleRemoveById=920340,ctl:ruleRemoveById=911100"
+    SecRule REQUEST_URI "@beginsWith /nextcloud-postgres/nextcloud-postgres/wals/" \
+      "id:20008,\
+      phase:1,\
+      pass,\
+      setvar:'tx.allowed_methods=DELETE'"
 
     SecRule REQUEST_URI "@beginsWith /nextcloud-postgres/nextcloud-postgres/base/" \
       "id:20009,\
