@@ -409,7 +409,7 @@ spec:
                         pathType: ImplementationSpecific
                         backend:
                           service:
-                            value: matrix-stack-bridge-hookshot
+                            name: matrix-stack-bridge-hookshot
                             port:
                               name: http
                 tls:
