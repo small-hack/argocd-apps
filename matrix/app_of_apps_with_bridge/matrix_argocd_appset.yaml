@@ -390,7 +390,6 @@ spec:
 
               ingress:
                 enabled: true
-                host: '{{ .matrix_hostname }}'
                 annotations:
                   nginx.ingress.kubernetes.io/proxy-body-size: 1G
                   # -- This annotation is required for the Nginx ingress provider. You can
@@ -399,6 +398,20 @@ spec:
                     proxy_intercept_errors off;
                   # -- required for TLS certs issued by cert-manager
                   cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
+                hosts:
+                  - host: '{{ .matrix_hostname }}'
+                    paths:
+                      - path: /
+                        pathType: Prefix
+
+                      # if bridges.hookshot.generic.enabled, you want to uncomment the following:
+                      - path: /_hookshot_webhook
+                        pathType: ImplementationSpecific
+                        backend:
+                          service:
+                            value: matrix-stack-bridge-hookshot
+                            port:
+                              name: http
                 tls:
                   - secretName: matrix-tls
                     hosts:
@@ -713,13 +726,13 @@ spec:
                     # if your load balancer redirected webhook requests from
                     # https://example.com/mywebhookspath to the bridge (on /webhook), an
                     # example webhook URL would look like: https://example.com/mywebhookspath/abcdef.
-                    urlPrefix: ""
+                    urlPrefix: "https://{{ .matrix_hostname }}/_hookshot_webhook"
                     # -- create a specific user for each new webhook connection in a room.
                     # For example, a connection with a name like example for a prefix of
                     # webhook_ will create a user called @webhook_example:example.com. If you
                     # enable this option, you need to configure the user to be part of your
                     # registration file
-                    userIdPrefix: ""
+                    userIdPrefix: "webhook_"
                     # -- will allow users to write short transformation snippets in code,
                     # and thus is unsafe in untrusted environments
                     allowJsTransformationFunctions: false
