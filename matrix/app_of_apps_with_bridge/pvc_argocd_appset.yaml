@@ -1,0 +1,70 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: matrix-pvc-appset
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  goTemplate: true
+  # generator allows us to source specific values from an external k8s secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - global_pvc_storage_class
+              - matrix_media_pvc_enabled
+              - matrix_media_storage
+              - matrix_media_access_mode
+              - matrix_synapse_config_pvc_enabled
+              - matrix_synapse_config_storage
+              - matrix_synapse_config_access_mode
+              - matrix_signing_key_pvc_enabled
+              - matrix_signing_key_storage
+              - matrix_signing_key_access_mode
+  template:
+    metadata:
+      name: matrix-pvc
+      annotations:
+        argocd.argoproj.io/sync-wave: "1"
+    spec:
+      project: matrix
+      destination:
+        server: "https://kubernetes.default.svc"
+        namespace: matrix
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
+          selfHeal: true
+      source:
+        repoURL: https://github.com/small-hack/argocd-apps.git
+        path: matrix/storage/pvc/
+        targetRevision: main
+        helm:
+          valuesObject:
+            # -- enable matrix media pvc
+            media_pvc:
+              enabled: '{{ .matrix_media_pvc_enabled }}'
+              storageClassName: '{{ .global_pvc_storage_class }}'
+              accessMode: '{{ .matrix_media_access_mode }}'
+              storage: '{{ .matrix_media_storage }}'
+
+            # -- enable matrix synapse configuration pvc
+            synapse_config_pvc:
+              enabled: '{{ .matrix_synapse_config_pvc_enabled }}'
+              storageClassName: '{{ .global_pvc_storage_class }}'
+              accessMode: '{{ .matrix_synapse_config_access_mode }}'
+              storage: '{{ .matrix_synapse_config_storage }}'
+
+            # -- enable matrix signing key pvc
+            signing_key_pvc:
+              enabled: '{{ .matrix_signing_key_pvc_enabled }}'
+              storageClassName: '{{ .global_pvc_storage_class }}'
+              accessMode: '{{ .matrix_signing_key_access_mode }}'
+              storage: '{{ .matrix_signing_key_storage }}'

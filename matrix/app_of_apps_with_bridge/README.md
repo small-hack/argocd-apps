@@ -1,0 +1,1 @@
+This is an example matrix ArgoCD app of apps, which matches the other matrix app of apps, however this one includes the [hookshot bridge](https://matrix-org.github.io/matrix-hookshot/latest/metrics.html).
