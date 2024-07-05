@@ -125,6 +125,7 @@ data:
   postgres-s3-rule-exclusions-before.conf: |-
     # -------------------------------------------------------------------------
     # allow postgresql to upload wal archives to s3
+    # allow put and post methods for base backups
     # TODO: make more granular rule exception
     # -------------------------------------------------------------------------
     SecRule REQUEST_URI "@beginsWith /zitadel-postgres/zitadel-postgres/wals/" \
@@ -139,7 +140,8 @@ data:
       phase:1,\
       pass,\
       nolog,\
-      ctl:ruleRemoveById=920340,ctl:ruleRemoveById=921110"
+      ctl:ruleRemoveById=920340,ctl:ruleRemoveById=921110,\
+      setvar:'tx.allowed_methods=PUT POST'"
 
     SecRule REQUEST_URI "@beginsWith /matrix-postgres/matrix-postgres/wals/" \
       "id:20004,\
@@ -154,7 +156,7 @@ data:
       pass,\
       nolog,\
       ctl:ruleRemoveById=920340,ctl:ruleRemoveById=921110,\
-      setvar:'tx.allowed_methods=PUT'"
+      setvar:'tx.allowed_methods=PUT POST'"
 
     SecRule REQUEST_URI "@beginsWith /nextcloud-postgres/nextcloud-postgres/wals/" \
       "id:20008,\
@@ -168,7 +170,8 @@ data:
       phase:1,\
       pass,\
       nolog,\
-      ctl:ruleRemoveById=920340,ctl:ruleRemoveById=921110"
+      ctl:ruleRemoveById=920340,ctl:ruleRemoveById=921110,\
+      setvar:'tx.allowed_methods=PUT POST'"
   zitadel-rule-exclusions-before.conf: |
     # Enable grpc parsing for zitadle only, avoids hitting ruleID 920420"
     SecRule REQUEST_URI "@beginsWith /zitadel.auth.v1.AuthService" \
