@@ -405,7 +405,7 @@ spec:
                         pathType: Prefix
 
                       # if bridges.hookshot.generic.enabled, you want to uncomment the following:
-                      - path: /_hookshot_webhook
+                      - path: /webhook
                         pathType: ImplementationSpecific
                         backend:
                           service:
@@ -726,7 +726,7 @@ spec:
                     # if your load balancer redirected webhook requests from
                     # https://example.com/mywebhookspath to the bridge (on /webhook), an
                     # example webhook URL would look like: https://example.com/mywebhookspath/abcdef.
-                    urlPrefix: "https://{{ .matrix_hostname }}/_hookshot_webhook"
+                    urlPrefix: "https://{{ .matrix_hostname }}/webhook"
                     # -- create a specific user for each new webhook connection in a room.
                     # For example, a connection with a name like example for a prefix of
                     # webhook_ will create a user called @webhook_example:example.com. If you
