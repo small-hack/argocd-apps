@@ -92,7 +92,6 @@ data:
       t:none,\
       nolog,\
       ctl:ruleRemoveById=930130"
-
   matrix-rule-exclusions-before.conf: |-
     # -------------------------------------------------------------------------
     # allow uploads for matrix via element web and mobile
@@ -158,7 +157,6 @@ data:
         nolog,\
         t:none,\
         setvar:'tx.allowed_methods=GET HEAD POST PUT'"
-
   postgres-s3-rule-exclusions-before.conf: |-
     # -------------------------------------------------------------------------
     # allow postgresql to upload wal archives to s3
@@ -289,12 +287,28 @@ data:
     # by using the following:
     # location /index.php/apps/files/ajax/upload.php { modsecurity_rules 'SecRequestBodyLimit 1073741824'; }
     #
+    # Apache libmodsecurity3 Example:
+    # <location "/index.php/apps/files/ajax/upload.php">
+    #    modsecurity_rules 'SecRequestBodyLimit 1073741824'
+    # </location>
+    #
+    #
     # The Nextcloud desktop client occasionally sends large request bodies not containing any uploaded files.
     # ModSecurity will block request bodies larger than 131KB, adjusting SecRequestBodyNoFilesLimit to
     # 141KB works for all scenarios tested.
     #
     # Nginx libmodsecurity3 Example:
     # location /remote.php/dav/files/ { modsecurity_rules 'SecRequestBodyNoFilesLimit 144384'; }
+    #
+    # Apache modsecurity2 Example:
+    # <location "/remote.php/dav/files/">
+    #     SecRequestBodyNoFilesLimit 144384
+    # </location>
+    #
+    # Apache libmodsecurity3 Example:
+    # <location "/remote.php/dav/files/">
+    #    modsecurity_rules 'SecRequestBodyNoFilesLimit 144384'
+    # </location>
 
 
     # [ Local CRS initialization ]
@@ -923,7 +937,7 @@ data:
 
     # This rule tries to avoid disabling the following rules for all paramaters since typically,
     # there will only ever be very few items within the array.
-    SecRule REQUEST_FILENAME "@rx /apps/text/(?:public/)?session/(?:[0-9]+)?/push$" \
+    SecRule REQUEST_FILENAME "@rx /apps/text/(?:public/)?session(?:/[0-9]+)?/push$" \
         "id:9508316,\
         phase:1,\
         pass,\
@@ -1177,6 +1191,10 @@ data:
         t:none,\
         nolog,\
         ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveTargetById=942430;XML,\
+        ctl:ruleRemoveTargetById=942431;XML,\
+        ctl:ruleRemoveTargetById=942432;XML,\
+        ctl:ruleRemoveTargetById=942440;XML,\
         ctl:ruleRemoveTargetById=942430;XML:/*,\
         ctl:ruleRemoveTargetById=942431;XML:/*,\
         ctl:ruleRemoveTargetById=942432;XML:/*,\
@@ -1372,6 +1390,7 @@ data:
     # Operator @unconditionalMatch is used instead of a SecAction because of a bug
     # in ModSecurity v3 which prevents SecActions to be removed using ctl action.
     # Fix FP with requesttoken used for various requests in Nextcloud.
+    # Fix FP with timezone
     SecRule REQUEST_FILENAME "@unconditionalMatch" \
         "id:9508510,\
         phase:1,\
@@ -1386,6 +1405,7 @@ data:
         ctl:ruleRemoveTargetById=942390;ARGS:requesttoken,\
         ctl:ruleRemoveTargetById=942432;ARGS:requesttoken,\
         ctl:ruleRemoveTargetById=942450;ARGS:requesttoken,\
+        ctl:ruleRemoveTargetById=920273;ARGS:timezone,\
         ctl:ruleRemoveTargetById=932236;REQUEST_COOKIES:nc_session_id,\
         ctl:ruleRemoveTargetById=942450;REQUEST_COOKIES:nc_session_id,\
         ctl:ruleRemoveTargetById=932236;REQUEST_COOKIES:nc_token,\
@@ -2010,7 +2030,7 @@ data:
 
     # Adjusting availability hours
     # Personal Settings --> Availability --> Availability
-    SecRule REQUEST_FILENAME "@rx /remote.php/dav/calendars/[^/]+/inbox$" \
+    SecRule REQUEST_FILENAME "@rx /remote\.php/dav/calendars/[^/]+/inbox$" \
         "id:9508637,\
         phase:1,\
         pass,\
@@ -2020,7 +2040,8 @@ data:
         ctl:ruleRemoveTargetById=932236;XML:/*,\
         ctl:ruleRemoveTargetById=942430;XML:/*,\
         ctl:ruleRemoveTargetById=942431;XML:/*,\
-        ctl:ruleRemoveTargetById=942432;XML:/*"
+        ctl:ruleRemoveTargetById=942432;XML:/*,\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} PROPPATCH'"
 
     # Deleting email addresses from personal info
     SecRule REQUEST_FILENAME "@rx /ocs/v[0-9\.]+\.php/cloud/users/test/additional_mail$" \
@@ -2156,7 +2177,7 @@ data:
     # Moving a card in deck
     # Unassigning a user from a card
     # Setting a due date on a card
-    SecRule REQUEST_FILENAME "@rx /apps/deck/cards/[0-9]+(?:/reorder|/unassign)?$" \
+    SecRule REQUEST_FILENAME "@rx /apps/deck/cards(?:/[0-9]+(?:/reorder|/unassign)?)?$" \
         "id:9508810,\
         phase:1,\
         pass,\
@@ -2164,16 +2185,50 @@ data:
         nolog,\
         ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
         ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:description,\
+        ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:json.description,\
         setvar:'tx.allowed_methods=%{tx.allowed_methods} PUT'"
 
-    # allow adding code blocks to deck cards, can be removed after this is merged:
-    # https://github.com/coreruleset/nextcloud-rule-exclusions-plugin/pull/81
-    SecRule REQUEST_URI "@beginsWith /apps/deck/cards" \
-      "id:9598900,\
-      phase:1,\
-      pass,\
-      nolog,\
-      ctl:ruleRemoveById=921110,ctl:ruleRemoveById=921130"
+    # Deleting stacks, boards, labels, and cards
+    # Deleting a label from a card
+    SecRule REQUEST_FILENAME "@rx /apps/deck/(?:boards|cards|cards/[0-9]+/label|labels|stacks)/[0-9]+$" \
+        "id:9508811,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} DELETE'"
+
+    # Marking a card as done/not done
+    # Archiving/unarchiving a card
+    SecRule REQUEST_FILENAME "@rx /apps/deck/cards/[0-9]+(?:/archive|/done|/unarchive|/undone)?$" \
+        "id:9508812,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} PUT'"
+
+    # Editing an existing board
+    SecRule REQUEST_FILENAME "@rx /apps/deck/(?:boards|labels)/[0-9]+(?:/acl/[0-9]+)?$" \
+        "id:9508813,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} PUT'"
+
+    # Unsharing a deck/label
+    SecRule REQUEST_FILENAME "@rx /apps/deck/(?:boards|labels)/[0-9]+/acl/[0-9]+$" \
+        "id:9508814,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} DELETE'"
 
     #
     # [ Dashboard ]
