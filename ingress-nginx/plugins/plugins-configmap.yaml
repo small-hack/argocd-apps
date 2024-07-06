@@ -64,7 +64,7 @@ data:
     # home assistant rule exclusions
     # -------------------------------------------------------------------------
     # Allow PUT method to login endpoint
-    SecRule REQUEST_URI "/auth/login_flow" \
+    SecRule REQUEST_URI "@streq /auth/login_flow" \
       "id:20022,\
       phase:1,\
       pass,\
