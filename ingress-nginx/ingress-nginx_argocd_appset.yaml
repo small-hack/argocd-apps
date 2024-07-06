@@ -97,6 +97,7 @@ spec:
                   # plugins for rule exclusions
                   Include /etc/nginx/owasp-modsecurity-crs/plugins/argocd-rule-exclusions-before.conf
                   Include /etc/nginx/owasp-modsecurity-crs/plugins/grafana-rule-exclusions-before.conf
+                  Include /etc/nginx/owasp-modsecurity-crs/plugins/home-assistant-rule-exclusions-before.conf
                   Include /etc/nginx/owasp-modsecurity-crs/plugins/matrix-rule-exclusions-before.conf
                   Include /etc/nginx/owasp-modsecurity-crs/plugins/nextcloud-rule-exclusions-before.conf
                   Include /etc/nginx/owasp-modsecurity-crs/plugins/postgres-s3-rule-exclusions-before.conf
