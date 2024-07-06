@@ -85,7 +85,7 @@ data:
 
 
     # this is a legit endpoint for home assistant for some reason
-    SecRule REQUEST_URI "@rx /frontend_latest/[0-9]+.nsr.*.js" \
+    SecRule REQUEST_URI "@rx /frontend_latest/.*.js$" \
       "id:20024,\
       phase:1,\
       pass,\
