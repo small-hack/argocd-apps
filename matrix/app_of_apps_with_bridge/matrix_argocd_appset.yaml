@@ -635,7 +635,7 @@ spec:
                 # optionally use existing kubernetes Secrets for passkey.pem, registration.yml, config.yml
                 existingSecret:
                   # optionally use existing kubernetes Secret for passkey.pem, ignores hookshot.passkey
-                  passkey: "matrix-bridge-hookshot-pem"
+                  passkey: ""
                   # optionally use existing kubernetes Secret for registration
                   registration: ""
                   # optionally use existing kubernetes Secret for config.yml, ignores hookshot.config
