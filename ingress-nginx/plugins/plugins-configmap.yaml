@@ -69,7 +69,9 @@ data:
       phase:1,\
       pass,\
       nolog,\
-      setvar:'tx.allowed_methods=PUT POST'"
+      setvar:'tx.allowed_methods=PUT POST',\
+      setvar:'tx.allowed_request_content_type=|text/plain|',\
+      ctl:requestBodyProcessor=JSON"
   matrix-rule-exclusions-before.conf: |-
     # -------------------------------------------------------------------------
     # allow uploads for matrix via element web and mobile
@@ -708,9 +710,6 @@ data:
         nolog,\
         ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
         setvar:'tx.allowed_methods=%{tx.allowed_methods} PUT PATCH CHECKOUT COPY DELETE LOCK MERGE MKACTIVITY MKCOL MOVE PROPFIND PROPPATCH SEARCH UNLOCK REPORT TRACE jsonp'"
-    # Update config to include nextcloud dav methods in the allowed HTTP methods (instead of fully disabling 911100)
-    # this was before we found the exclusion plugin
-    # SecAction "id:900200,phase:1,nolog,pass,t:none,setvar:tx.allowed_methods=GET HEAD POST OPTIONS PUT PATCH DELETE PROPFIND REPORT SEARCH MKCOL MOVE COPY"
 
     # Allow CalDav/CarDav clients to scan for CalDav CarDav path
     SecRule REQUEST_FILENAME "@streq /" \
