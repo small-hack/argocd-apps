@@ -36,9 +36,9 @@ spec:
       syncPolicy:
         syncOptions:
           - ApplyOutOfSyncOnly=true
-        automated:
-          prune: true
-          selfHeal: true
+        # automated:
+        #   prune: true
+        #   selfHeal: true
       source:
         repoURL: 'https://github.com/small-hack/matrix-chart'
         path: charts/matrix/
