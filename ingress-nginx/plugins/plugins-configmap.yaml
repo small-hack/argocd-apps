@@ -75,13 +75,24 @@ data:
 
 
     # Allow PUT method to login endpoint
-    SecRule REQUEST_URI "@streq /auth/login_flow" \
+    SecRule REQUEST_URI "@beginsWith /auth/login_flow" \
       "id:20023,\
       phase:1,\
       pass,\
       nolog,\
       t:none,\
-      setvar:'tx.allowed_methods=PUT POST'"
+      setvar:'tx.allowed_methods=PUT POST DELETE'"
+
+
+    # this is a legit endpoint for home assistant for some reason
+    SecRule REQUEST_URI "@rx /frontend_latest/[0-9]+.nsr.*.js" \
+      "id:20024,\
+      phase:1,\
+      pass,\
+      t:none,\
+      nolog,\
+      ctl:ruleRemoveById=930130"
+
   matrix-rule-exclusions-before.conf: |-
     # -------------------------------------------------------------------------
     # allow uploads for matrix via element web and mobile
