@@ -63,15 +63,25 @@ data:
     # -------------------------------------------------------------------------
     # home assistant rule exclusions
     # -------------------------------------------------------------------------
-    # Allow PUT method to login endpoint
+    # allow content type of text/plain, but process the body as JSON
     SecRule REQUEST_URI "@streq /auth/login_flow" \
       "id:20022,\
       phase:1,\
       pass,\
       nolog,\
-      setvar:'tx.allowed_methods=PUT POST',\
-      setvar:'tx.allowed_request_content_type=|text/plain|',\
-      ctl:requestBodyProcessor=JSON"
+      t:none,\
+      ctl:requestBodyProcessor=JSON,\
+      setvar:'tx.allowed_request_content_type=|text/plain|'"
+
+
+    # Allow PUT method to login endpoint
+    SecRule REQUEST_URI "@streq /auth/login_flow" \
+      "id:20023,\
+      phase:1,\
+      pass,\
+      nolog,\
+      t:none,\
+      setvar:'tx.allowed_methods=PUT POST'"
   matrix-rule-exclusions-before.conf: |-
     # -------------------------------------------------------------------------
     # allow uploads for matrix via element web and mobile
