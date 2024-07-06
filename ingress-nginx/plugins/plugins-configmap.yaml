@@ -69,7 +69,7 @@ data:
       phase:1,\
       pass,\
       nolog,\
-      setvar:'tx.allowed_methods=PUT'"
+      setvar:'tx.allowed_methods=PUT POST'"
   matrix-rule-exclusions-before.conf: |-
     # -------------------------------------------------------------------------
     # allow uploads for matrix via element web and mobile
