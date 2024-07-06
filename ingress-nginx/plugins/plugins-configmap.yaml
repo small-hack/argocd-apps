@@ -59,6 +59,17 @@ data:
       pass,\
       nolog,\
       setvar:'tx.allowed_methods=PUT'"
+  home-assistant-rule-exclusions-before.conf: |
+    # -------------------------------------------------------------------------
+    # home assistant rule exclusions
+    # -------------------------------------------------------------------------
+    # Allow PUT method to login endpoint
+    SecRule REQUEST_URI "/auth/login_flow" \
+      "id:20022,\
+      phase:1,\
+      pass,\
+      nolog,\
+      setvar:'tx.allowed_methods=PUT'"
   matrix-rule-exclusions-before.conf: |-
     # -------------------------------------------------------------------------
     # allow uploads for matrix via element web and mobile
