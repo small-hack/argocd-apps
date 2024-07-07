@@ -757,7 +757,7 @@ spec:
                     # -- Define profile display name for the bot user
                     displayname: Hookshot Bot
                     # -- Define profile avatar for the bot user
-                    avatar: mxc://half-shot.uk/2876e89ccade4cb615e210c458e2a7a6883fe17d
+                    avatar: https://raw.githubusercontent.com/small-hack/argocd-apps/main/badargoart_small.png
 
                   # -- (Optional) Define additional bot users for specific services
                   serviceBots: []
