@@ -652,7 +652,7 @@ spec:
                     # -- example is https://example.com, but if left blank, we don't include it
                     mediaUrl: ""
                     port: 9993
-                    bindAddress: 127.0.0.1
+                    bindAddress: 0.0.0.0
 
                   # -- A passkey used to encrypt tokens stored inside the bridge.
                   passFile: /data/passkey.pem
@@ -679,7 +679,7 @@ spec:
                         - webhooks
 
                     - port: 9001
-                      bindAddress: 127.0.0.1
+                      bindAddress: 0.0.0.0
                       resources:
                         - metrics
                         - provisioning
