@@ -121,13 +121,14 @@ data:
     # /_matrix/client/v3/sendToDevice/m.room.encrypted
     # /_matrix/client/v3/room_keys/keys?version=1
     # /_matrix/client/v3/profile
-    SecRule REQUEST_URI "@rx ^/_matrix/client/(?:v3|r0)/(?:rooms|user|profile|sendToDevice|room_keys)/.*$" \
+    # /_matrix/client/v3/directory/room/
+    SecRule REQUEST_URI "@rx ^/_matrix/client/(?:v3|r0)/(?:rooms|user|profile|sendToDevice|room_keys|directory)/.*$" \
         "id:20018,\
         phase:1,\
         pass,\
         t:none,\
         nolog,\
-        setvar:'tx.allowed_methods=GET HEAD POST PUT DELETE OPTIONS'"
+        setvar:'tx.allowed_methods=GET POST PUT DELETE OPTIONS'"
 
     # allow PUT, OPTIONS to allow sending room key data:
     # /_matrix/client/unstable/room_keys/keys?version=1
@@ -137,7 +138,7 @@ data:
         pass,\
         t:none,\
         nolog,\
-        setvar:'tx.allowed_methods=GET HEAD POST PUT DELETE OPTIONS'"
+        setvar:'tx.allowed_methods=GET POST PUT DELETE OPTIONS'"
 
     # allow PUT method for sending read recipets
     SecRule REQUEST_URI "@beginsWith /_matrix/federation/v1/send/" \
@@ -146,7 +147,7 @@ data:
         pass,\
         t:none,\
         nolog,\
-        setvar:'tx.allowed_methods=GET HEAD POST PUT OPTIONS'"
+        setvar:'tx.allowed_methods=GET POST PUT OPTIONS'"
 
     # this is actually for a local s3 server that you have dedicated to matrix
     # can be commented out if not running local s3 server such as seaweedfs
