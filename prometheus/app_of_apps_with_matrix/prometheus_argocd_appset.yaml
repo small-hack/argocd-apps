@@ -17,6 +17,7 @@ spec:
         input:
           parameters:
             secret_vars:
+              - matrix_hostname
               - prometheus_hostname
               - prometheus_alert_manager_hostname
               - prometheus_grafana_hostname
@@ -163,9 +164,9 @@ spec:
                   group_wait: 30s
                   group_interval: 5m
                   repeat_interval: 12h
-                  receiver: 'null'
+                  receiver: 'matrix'
                   routes:
-                    - receiver: 'null'
+                    - receiver: 'matrix'
                       matchers:
                         - alertname = "Watchdog"
                 receivers:
