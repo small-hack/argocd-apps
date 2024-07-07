@@ -614,6 +614,8 @@ spec:
                   repository: "halfshot/matrix-hookshot"
                   tag: "5.4.1"
 
+                encryption: true
+
                 replicaCount: 1
 
                 resources: {}
