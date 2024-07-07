@@ -164,15 +164,16 @@ spec:
                   group_wait: 30s
                   group_interval: 5m
                   repeat_interval: 12h
-                  receiver: 'matrix'
+                  receiver: 'null'
                   routes:
-                    - receiver: 'matrix'
+                    - receiver: 'null'
                       matchers:
                         - alertname = "Watchdog"
                 receivers:
-                  - name: matrix
+                  - name: 'matrix'
                     webbook_configs:
                       - url: "https://{{ .matrix_hostname }}/webhook"
+                  - name: 'null'
 
                 templates:
                   - '/etc/alertmanager/config/*.tmpl'
