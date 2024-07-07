@@ -85,6 +85,13 @@ spec:
 
               serve_server_wellknown: true
 
+              experimental_features:
+                # these enable encryption for appservices like hookshot:
+                # https://matrix-org.github.io/matrix-hookshot/latest/advanced/encryption.html
+                msc3202_device_masquerading: true
+                msc3202_transaction_extensions: true
+                msc2409_to_device_messages_enabled: true
+
               # Settings related to federation
               federation:
                 # -- Set to false to disable federation and run an isolated homeserver
