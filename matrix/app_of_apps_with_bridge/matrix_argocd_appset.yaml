@@ -659,7 +659,7 @@ spec:
 
                   logging:
                     # -- log severity level. Options: debug, info, warn, error
-                    level: info
+                    level: debug
                     # -- enable text colors in logging
                     colorize: true
                     # -- enable json formatted logging
