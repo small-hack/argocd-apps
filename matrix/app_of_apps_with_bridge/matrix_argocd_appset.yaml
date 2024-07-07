@@ -645,10 +645,9 @@ spec:
 
                 config:
                   bridge:
-                    # -- if not set, defaults to matrix.serverName
-                    domain: ""
-                    # -- url in example is http://localhost:8008, but if not set, we use matrix.baseUrl
-                    url: ""
+                    # -- if not set, defaults to matrix.baseUrl
+                    domain: "{{ .matrix_hostname }}"
+                    url: "https://{{ .matrix_hostname }}"
                     # -- example is https://example.com, but if left blank, we don't include it
                     mediaUrl: ""
                     port: 9993
@@ -683,6 +682,11 @@ spec:
                       resources:
                         - metrics
                         - provisioning
+
+                    - port: 9002
+                      bindAddress: 0.0.0.0
+                      resources:
+                        - widgets
 
                   # https://matrix-org.github.io/matrix-hookshot/latest/setup/github.html
                   github:
