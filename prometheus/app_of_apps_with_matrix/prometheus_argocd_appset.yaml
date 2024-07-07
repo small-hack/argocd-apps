@@ -126,7 +126,7 @@ spec:
                     enabled: false
 
             alertmanager:
-              enabled: true
+              enabled: false
               annotations: {}
               ## Alertmanager configuration directives
               ## ref: https://prometheus.io/docs/alerting/configuration/#configuration-file
