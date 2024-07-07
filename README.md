@@ -214,4 +214,6 @@ This part is just here for fun :) If you have open source fan art, consider subm
 
 ### Argo CD Squid riding a Docker whale
 <img src="https://github.com/small-hack/argocd-apps/assets/2389292/1e7e5902-d48f-440d-98f4-44028f4bd90e" alt="The Argo CD mascot, an orange squid, riding a blue docker whale. The docker whale is holding a package. It's drawn in a simple cute flat style." width="250">
+![same image as above but way smaller](https://github.com/small-hack/argocd-apps/assets/2389292/c82b6284-46f2-449a-99dc-90b1957a8681)
+
 By @jessebot
