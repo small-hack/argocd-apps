@@ -27,7 +27,7 @@ spec:
     spec:
       source:
         helm:
-          valuesObject:
+          values: |-
             bridges:
               discord_mautrix:
                 config:
