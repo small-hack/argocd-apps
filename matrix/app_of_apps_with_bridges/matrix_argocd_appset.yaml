@@ -28,11 +28,11 @@ spec:
       source:
         helm:
           parameters:
-            - name: 'bridges.discord_mautrix.config.bridges.permissions."{{ .matrix_hostname }}"'
+            - name: 'bridges.discord_mautrix.config.bridge.permissions."{{ .matrix_hostname }}"'
               value: user
-            - name: 'bridges.discord_mautrix.config.bridges.permissions."{{ .matrix_hostname }}"'
+            - name: 'bridges.discord_mautrix.config.bridge.permissions."{{ .matrix_hostname }}"'
               value: admin
-            - name: 'bridges.discord_mautrix.config.bridges.permissions."*"'
+            - name: 'bridges.discord_mautrix.config.bridge.permissions."*"'
               value: relay
 
   #       values: |-
