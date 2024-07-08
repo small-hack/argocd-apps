@@ -23,18 +23,18 @@ spec:
               - matrix_s3_region
               - matrix_s3_endpoint
               - global_cluster_issuer
-  templatePatch: |
-    spec:
-      source:
-        helm:
-          parameters:
-            - name: bridges.discord_mautrix.config.bridge.permissions."{{ .matrix_hostname }}"
-              value: user
-            - name: bridges.discord_mautrix.config.bridge.permissions."{{ .matrix_hostname }}"
-              value: admin
-            - name: bridges.discord_mautrix.config.bridge.permissions."*"
-              value: relay
-
+  # templatePatch: |
+  #   spec:
+  #     source:
+  #       helm:
+  #         parameters:
+  #           - name: bridges.discord_mautrix.config.bridge.permissions."{{ .matrix_hostname }}"
+  #             value: user
+  #           - name: bridges.discord_mautrix.config.bridge.permissions."{{ .matrix_hostname }}"
+  #             value: admin
+  #           - name: bridges.discord_mautrix.config.bridge.permissions."*"
+  #             value: relay
+  #
   #       values: |-
   #         bridges:
   #           discord_mautrix:
