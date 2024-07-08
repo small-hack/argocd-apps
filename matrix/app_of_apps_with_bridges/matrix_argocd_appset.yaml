@@ -805,7 +805,7 @@ spec:
 
               discord_mautrix:
                 # -- Set to true to enable the Discord bridge. Learn more in the [docs](https://docs.mau.fi/bridges/go/discord/index.html).
-                enabled: false
+                enabled: true
 
                 image:
                   repository: "dock.mau.dev/mautrix/discord"
