@@ -23,6 +23,19 @@ spec:
               - matrix_s3_region
               - matrix_s3_endpoint
               - global_cluster_issuer
+  templatePatch: |
+    spec:
+      source:
+        helm:
+          valuesObject:
+            bridges:
+              discord_mautrix:
+                config:
+                  bridge:
+                    permissions:
+                      "*": relay
+                      "{{ .matrix_hostname }}": user
+                      "{{ .matrix_hostname }}": admin
   template:
     metadata:
       name: matrix-web-app
@@ -830,14 +843,14 @@ spec:
                     # -- The address that this appservice can use to connect to the homeserver.
                     # this would be something like https://matrix.example.com, but if not set,
                     # we'll try to guess the correct homeserver url :)
-                    address: ""
+                    address: "https://{{ .matrix_hostname }}"
                     # Publicly accessible base URL for media, used for avatars in relay mode.
                     # If not set, the connection address above will be used.
                     public_address: null
                     # -- domain of the homeserver (also known as server_name, used for MXIDs, etc).
                     # if not provided, we'll try to guess the correct one, but if your server is
                     # https://matrix.example.com, it's probably example.com
-                    domain: ""
+                    domain: "{{ .matrix_hostname }}"
 
                     # -- What software is the homeserver running? Standard Matrix homeservers
                     # like Synapse, Dendrite and Conduit should just use "standard" here.
@@ -1189,10 +1202,7 @@ spec:
                     #        * - All Matrix users
                     #   domain - All users on that homeserver
                     #     mxid - Specific user
-                    permissions:
-                      "*": relay
-                      "example.com": user
-                      "@admin:example.com": admin
+                    permissions: []
 
                   # Logging config. See https://github.com/tulir/zeroconfig for details.
                   logging:
