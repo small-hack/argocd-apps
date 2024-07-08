@@ -91,54 +91,54 @@ spec:
                 # mitigate the fingerprinting using default certificate of ingress
                 ssl-reject-handshake: "true"
                 # Enable Modsecurity and the OWASP Core rule set
-                enable-modsecurity: "true"
+                enable-modsecurity: false
                 # Update ModSecurity config and rules
-                modsecurity-snippet: |
-                  # plugins for rule exclusions
-                  Include /etc/nginx/owasp-modsecurity-crs/plugins/argocd-rule-exclusions-before.conf
-                  Include /etc/nginx/owasp-modsecurity-crs/plugins/grafana-rule-exclusions-before.conf
-                  Include /etc/nginx/owasp-modsecurity-crs/plugins/home-assistant-rule-exclusions-before.conf
-                  Include /etc/nginx/owasp-modsecurity-crs/plugins/matrix-rule-exclusions-before.conf
-                  Include /etc/nginx/owasp-modsecurity-crs/plugins/nextcloud-rule-exclusions-before.conf
-                  Include /etc/nginx/owasp-modsecurity-crs/plugins/postgres-s3-rule-exclusions-before.conf
-                  Include /etc/nginx/owasp-modsecurity-crs/plugins/zitadel-rule-exclusions-before.conf
+                # modsecurity-snippet: |
+                #   # plugins for rule exclusions
+                #   Include /etc/nginx/owasp-modsecurity-crs/plugins/argocd-rule-exclusions-before.conf
+                #   Include /etc/nginx/owasp-modsecurity-crs/plugins/grafana-rule-exclusions-before.conf
+                #   Include /etc/nginx/owasp-modsecurity-crs/plugins/home-assistant-rule-exclusions-before.conf
+                #   Include /etc/nginx/owasp-modsecurity-crs/plugins/matrix-rule-exclusions-before.conf
+                #   Include /etc/nginx/owasp-modsecurity-crs/plugins/nextcloud-rule-exclusions-before.conf
+                #   Include /etc/nginx/owasp-modsecurity-crs/plugins/postgres-s3-rule-exclusions-before.conf
+                #   Include /etc/nginx/owasp-modsecurity-crs/plugins/zitadel-rule-exclusions-before.conf
 
-                  # OWASP Core Rule Set
-                  Include /etc/nginx/owasp-modsecurity-crs/nginx-modsecurity.conf
+                #   # OWASP Core Rule Set
+                #   Include /etc/nginx/owasp-modsecurity-crs/nginx-modsecurity.conf
 
-                  # Enable prevention mode. Can be any of: DetectionOnly,On,Off (default is DetectionOnly)
-                  SecRuleEngine On
+                #   # Enable prevention mode. Can be any of: DetectionOnly,On,Off (default is DetectionOnly)
+                #   SecRuleEngine On
 
-                  # Enable scanning of the request body
-                  SecRequestBodyAccess On
+                #   # Enable scanning of the request body
+                #   SecRequestBodyAccess On
 
-                  # Enable XML parsing
-                  SecRule REQUEST_HEADERS:Content-Type "(?:text|application(?:/soap\+|/)|application/xml)/" \
-                    "id:200000,phase:1,t:none,t:lowercase,pass,nolog,ctl:requestBodyProcessor=XML"
+                #   # Enable XML parsing
+                #   SecRule REQUEST_HEADERS:Content-Type "(?:text|application(?:/soap\+|/)|application/xml)/" \
+                #     "id:200000,phase:1,t:none,t:lowercase,pass,nolog,ctl:requestBodyProcessor=XML"
 
-                  # Enable JSON parsing
-                  SecRule REQUEST_HEADERS:Content-Type "application/json" \
-                    "id:200001,phase:1,t:none,t:lowercase,pass,nolog,ctl:requestBodyProcessor=JSON"
+                #   # Enable JSON parsing
+                #   SecRule REQUEST_HEADERS:Content-Type "application/json" \
+                #     "id:200001,phase:1,t:none,t:lowercase,pass,nolog,ctl:requestBodyProcessor=JSON"
 
-                  # Note NGINX Ingress has its own annotations, keep in sync!
-                  #
-                  # Max request sizes in bytes (with/without files)
-                  # 2Gb (default is 12.5Mb)
-                  SecRequestBodyLimit 268400000
+                #   # Note NGINX Ingress has its own annotations, keep in sync!
+                #   #
+                #   # Max request sizes in bytes (with/without files)
+                #   # 2Gb (default is 12.5Mb)
+                #   SecRequestBodyLimit 268400000
 
-                  # 20Mb (default is 128Kb)
-                  SecRequestBodyNoFilesLimit 20971520
+                #   # 20Mb (default is 128Kb)
+                #   SecRequestBodyNoFilesLimit 20971520
 
-                  # Reject if larger (we could also let it pass with ProcessPartial)
-                  SecRequestBodyLimitAction Reject
+                #   # Reject if larger (we could also let it pass with ProcessPartial)
+                #   SecRequestBodyLimitAction Reject
 
-                  # Send ModSecurity audit logs to the stdout (only for rejected requests)
-                  SecAuditLog /dev/stdout
+                #   # Send ModSecurity audit logs to the stdout (only for rejected requests)
+                #   SecAuditLog /dev/stdout
 
-                  SecAuditLogFormat JSON
+                #   SecAuditLogFormat JSON
 
-                  # could be On/Off/RelevantOnly
-                  SecAuditEngine RelevantOnly
+                #   # could be On/Off/RelevantOnly
+                #   SecAuditEngine RelevantOnly
 
               # we set the timezone on the pod, to make logs easier to read
               extraEnvs:
