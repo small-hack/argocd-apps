@@ -28,6 +28,16 @@ media_pvc:
   # -- storage capacity for the matrix media pvc
   storage: "2Gi"
 
+mautrix_discord_bridge_pvc:
+  # -- enable mautrix discord bridge pvc
+  enabled: false
+  # -- default storage class name to use for media pvc
+  storageClassName: "local-path"
+  # -- default access mode for the media pvc
+  accessMode: "ReadWriteOnce"
+  # -- storage capacity for the matrix media pvc
+  storage: "2Gi"
+
 # this is for storing the config of mas (matrix authentication service)
 matrix_authentication_service_config_pvc:
   enabled: false

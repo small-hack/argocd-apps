@@ -1,0 +1,16 @@
+{{- if .Values.mautrix_discord_bridge_pvc.enabled }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mautrix-discord-bridge
+  annotations:
+    k8up.io/backup: 'true'
+spec:
+  storageClassName: {{ .Values.mautrix_discord_bridge_pvc.storageClassName }}
+  accessModes:
+    - {{ .Values.mautrix_discord_bridge_pvc.accessMode }}
+  resources:
+    requests:
+      storage: {{ .Values.mautrix_discord_bridge_pvc.storage }}
+{{- end }}
