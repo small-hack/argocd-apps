@@ -27,15 +27,23 @@ spec:
     spec:
       source:
         helm:
-          values: |-
-            bridges:
-              discord_mautrix:
-                config:
-                  bridge:
-                    permissions:
-                      "*": relay
-                      "{{ .matrix_hostname }}": user
-                      "{{ .matrix_hostname }}": admin
+          parameters:
+            - name: 'bridges.discord_mautrix.config.bridges.permissions."{{ .matrix_hostname }}"'
+              value: user
+            - name: 'bridges.discord_mautrix.config.bridges.permissions."{{ .matrix_hostname }}"'
+              value: admin
+            - name: 'bridges.discord_mautrix.config.bridges.permissions."*"'
+              value: relay
+
+  #       values: |-
+  #         bridges:
+  #           discord_mautrix:
+  #             config:
+  #               bridge:
+  #                 permissions:
+  #                   "*": relay
+  #                   "{{ .matrix_hostname }}": user
+  #                   "{{ .matrix_hostname }}": admin
   template:
     metadata:
       name: matrix-web-app
