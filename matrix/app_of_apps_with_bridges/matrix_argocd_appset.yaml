@@ -838,7 +838,7 @@ spec:
                 extraVolumes:
                   - name: sqllite
                     persistentVolumeClaim:
-                      claimName: mautrix-discord-bridge
+                      claimName: mautrix-discord-bridge-sqlite
 
                 extraVolumeMounts:
                   - name: sqllite
