@@ -817,7 +817,7 @@ spec:
                   bridge:
                     port: 29334
 
-                securityContext:
+                podSecurityContext:
                   runAsUser: 0
                   runAsGroup: 1337
                   fsGroup: 1337
