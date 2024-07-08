@@ -844,6 +844,9 @@ spec:
                   - name: sqllite
                     mountPath: /sql
 
+
+                admin_user: jessebot
+
                 # templates out to config.yaml for the mautrix bridge
                 config:
                   # Homeserver details
