@@ -830,10 +830,6 @@ spec:
                   runAsGroup: 1337
                   fsGroup: 1337
 
-                # -- use an existingSecret for mautrix/discord bridge config.yaml
-                # if set, ignores everything under bridges.discord_mautrix.config
-                existingSecret: ""
-
                 # -- extra volumes for the mautrix/discord deployment
                 extraVolumes:
                   - name: sqllite
@@ -844,7 +840,19 @@ spec:
                   - name: sqllite
                     mountPath: /sql
 
+                registration:
+                  # -- I don't actually know what this does
+                  sender_localpart: "discord"
+                  # To replaces the ENTIRE registration.yaml, use
+                  # bridges.discord_mautrix.existingSecret.registration
+                  existingSecret: "mautrix-discord-bridge-tokens"
+                  existingSecretKeys:
+                    # -- key in existingSecret for as_token (appservice token)
+                    as_token: "as_token"
+                    # -- key in existingSecret for hs_token (home server token)
+                    hs_token: "hs_token"
 
+                # user in discord that that have admin level permissions to the bot
                 admin_user: jessebot
 
                 # templates out to config.yaml for the mautrix bridge
