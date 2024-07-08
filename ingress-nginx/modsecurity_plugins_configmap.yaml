@@ -122,7 +122,8 @@ data:
     # /_matrix/client/v3/room_keys/keys?version=1
     # /_matrix/client/v3/profile
     # /_matrix/client/v3/directory/room/
-    SecRule REQUEST_URI "@rx ^/_matrix/client/(?:v3|r0)/(?:rooms|user|profile|sendToDevice|room_keys|directory)/.*$" \
+    # /_matrix/client/v3/register
+    SecRule REQUEST_URI "@rx ^/_matrix/client/(?:v3|r0)/(?:rooms|user|profile|sendToDevice|room_keys|register|directory)/.*$" \
         "id:20018,\
         phase:1,\
         pass,\
