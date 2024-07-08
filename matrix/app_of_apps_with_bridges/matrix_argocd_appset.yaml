@@ -818,7 +818,7 @@ spec:
                     port: 29334
 
                 securityContext:
-                  runAsUser: 1337
+                  runAsUser: 0
                   runAsGroup: 1337
                   fsGroup: 1337
 
