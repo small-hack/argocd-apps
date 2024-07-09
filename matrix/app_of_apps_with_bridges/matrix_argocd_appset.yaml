@@ -28,26 +28,20 @@ spec:
     spec:
       source:
         helm:
-         values: |-
-           bridges:
-             discord_mautrix:
-               admin_users:
-               {{- range .matrix_admin_users }}
-               - {{ . }}
-               {{- end }}
-  #         parameters:
-  #           - name: bridges.discord_mautrix.config.admin_users
-  #             value: {{{ .matrix_admin_users }}}
-  #
-  #       values: |-
-  #         bridges:
-  #           discord_mautrix:
-  #             config:
-  #               bridge:
-  #                 permissions:
-  #                   "*": relay
-  #                   "{{ .matrix_hostname }}": user
-  #                   "{{ .matrix_hostname }}": admin
+          parameters:
+            {{- range .matrix_admin_users }}
+            {{ $c := 0 | int }}
+            - name: bridges.discord_mautrix.admin_users[{{ $c }}]
+              value: {{ . }}
+            {{ $c = add1 $c }}
+            {{- end }}
+  #      values: |-
+  #        bridges:
+  #          discord_mautrix:
+  #            admin_users:
+  #            {{- range .matrix_admin_users }}
+  #            - {{ . }}
+  #            {{- end }}
   template:
     metadata:
       name: matrix-web-app
