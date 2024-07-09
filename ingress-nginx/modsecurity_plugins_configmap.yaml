@@ -200,13 +200,9 @@ data:
         nolog,\
         setvar:'tx.allowed_request_content_type=|application/grpc-web+proto|'"
 
-    SecRule REQUEST_URI "@beginsWith /ui/console/" \
-        "id:30004,\
-        phase:1,\
-        pass,\
-        t:none,\
-        nolog,\
-        ctl:ruleRemoveTargetById=941120;REQUEST_COOKIES:__Host-zitadel.useragent"
+    # zitadel sends a __Host-zitadel.useragent cookie that sometimes has a = in it
+    SecRuleUpdateTargetById 941120 "!REQUEST_COOKIES:__Host-zitadel.useragent"
+
   nextcloud-rule-exclusions-before.conf: |-
     # ------------------------------------------------------------------------
     # OWASP CRS Plugin
