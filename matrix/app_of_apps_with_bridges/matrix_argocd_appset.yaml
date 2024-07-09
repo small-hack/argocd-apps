@@ -29,11 +29,10 @@ spec:
       source:
         helm:
           parameters:
-            {{- range .matrix_admin_users }}
-            {{ $c := 0 | int }}
-            - name: bridges.discord_mautrix.admin_users[{{ $c }}]
-              value: {{ . }}
-            {{ $c = add1 $c }}
+            {{- $users := .matrix_admin_users }}
+            {{- range $index, $user := $users }}
+            - name: bridges.discord_mautrix.admin_users[{{ $index }}]
+              value: {{ $user }}
             {{- end }}
   #      values: |-
   #        bridges:
