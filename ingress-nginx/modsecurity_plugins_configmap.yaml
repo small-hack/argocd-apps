@@ -164,52 +164,13 @@ data:
     # allow postgresql to upload wal archives to s3
     # allow PUT, DELETE, and POST methods for base backups
     # -------------------------------------------------------------------------
-    SecRule REQUEST_URI "@beginsWith /zitadel-postgres/zitadel-postgres/wals/" \
+    SecRule REQUEST_URI "@rx ^/(?:matrix|zitadel|nextcloud)-postgres/(?:matrix|zitadel|nextcloud)-postgres/(?:wals|base)/.*$" \
       "id:20000,\
       phase:1,\
       pass,\
-      nolog,\
-      ctl:ruleRemoveById=920340,\
-      setvar:'tx.allowed_methods=DELETE POST PUT'"
-
-    SecRule REQUEST_URI "@beginsWith /zitadel-postgres/zitadel-postgres/base/" \
-      "id:20001,\
-      phase:1,\
-      pass,\
-      nolog,\
       ctl:ruleRemoveById=920340,ctl:ruleRemoveById=921110,\
-      setvar:'tx.allowed_methods=PUT POST GET'"
+      setvar:'tx.allowed_methods=DELETE GET POST PUT'"
 
-    SecRule REQUEST_URI "@beginsWith /matrix-postgres/matrix-postgres/wals/" \
-      "id:20004,\
-      phase:1,\
-      pass,\
-      ctl:ruleRemoveById=920340,\
-      setvar:'tx.allowed_methods=DELETE POST PUT'"
-
-    SecRule REQUEST_URI "@beginsWith /matrix-postgres/matrix-postgres/base/" \
-      "id:20005,\
-      phase:1,\
-      pass,\
-      nolog,\
-      ctl:ruleRemoveById=920340,ctl:ruleRemoveById=921110,\
-      setvar:'tx.allowed_methods=PUT POST GET'"
-
-    SecRule REQUEST_URI "@beginsWith /nextcloud-postgres/nextcloud-postgres/wals/" \
-      "id:20008,\
-      phase:1,\
-      pass,\
-      nolog,\
-      ctl:ruleRemoveById=920340,\
-      setvar:'tx.allowed_methods=DELETE POST PUT'"
-
-    SecRule REQUEST_URI "@beginsWith /nextcloud-postgres/nextcloud-postgres/base/" \
-      "id:20009,\
-      phase:1,\
-      pass,\
-      nolog,\
-      ctl:ruleRemoveById=920340,ctl:ruleRemoveById=921110,\
-      setvar:'tx.allowed_methods=PUT POST GET'"
   zitadel-rule-exclusions-before.conf: |
     # Enable grpc parsing for zitadle only, avoids hitting ruleID 920420"
     SecRule REQUEST_URI "@beginsWith /zitadel.auth.v1.AuthService" \
