@@ -17,7 +17,7 @@ data:
     # TODO: can maybe prune the methods here a bit more
     # -------------------------------------------------------------------------
     SecRule REQUEST_FILENAME "@beginsWith /api/v1/applications/" \
-        "id:30004,\
+        "id:30005,\
         phase:1,\
         pass,\
         t:none,\
@@ -199,6 +199,14 @@ data:
         t:none,\
         nolog,\
         setvar:'tx.allowed_request_content_type=|application/grpc-web+proto|'"
+
+    SecRule REQUEST_URI "@rx ^/ui/console/$" \
+        "id:30004,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ctl:ruleRemoveTargetById=941120;REQUEST_COOKIES:__Host-zitadel.useragent"
   nextcloud-rule-exclusions-before.conf: |-
     # ------------------------------------------------------------------------
     # OWASP CRS Plugin
