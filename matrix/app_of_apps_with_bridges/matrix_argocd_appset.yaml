@@ -31,7 +31,10 @@ spec:
          values: |-
            bridges:
              discord_mautrix:
-               admin_users: {{ .matrix_admin_users }}
+               admin_users:
+               {{- range .matrix_admin_users }}
+               - {{ . }}
+               {{- end }}
   #         parameters:
   #           - name: bridges.discord_mautrix.config.admin_users
   #             value: {{{ .matrix_admin_users }}}
