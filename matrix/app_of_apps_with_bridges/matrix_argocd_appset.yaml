@@ -851,70 +851,45 @@ spec:
 
                 # templates out to config.yaml for the mautrix bridge
                 config:
-                  # Homeserver details
                   homeserver:
                     # -- The address that this appservice can use to connect to the homeserver.
                     # this would be something like https://matrix.example.com, but if not set,
                     # we'll try to guess the correct homeserver url :)
                     address: "https://{{ .matrix_hostname }}"
-                    # Publicly accessible base URL for media, used for avatars in relay mode.
-                    # If not set, the connection address above will be used.
-                    public_address: null
                     # -- domain of the homeserver (also known as server_name, used for MXIDs, etc).
                     # if not provided, we'll try to guess the correct one, but if your server is
                     # https://matrix.example.com, it's probably example.com
                     domain: "{{ .matrix_hostname }}"
-
-                    # -- What software is the homeserver running? Standard Matrix homeservers
-                    # like Synapse, Dendrite and Conduit should just use "standard" here.
-                    software: standard
                     # -- The URL to push real-time bridge status to. If set, the bridge
                     # will make POST requests to this URL whenever a user's discord connection state changes.
                     # The bridge will use the appservice as_token to authorize requests.
                     status_endpoint: null
-                    # -- Endpoint for reporting per-message status.
+                    # -- Endpoint for reporting per-message status
                     message_send_checkpoint_endpoint: null
                     # -- Does the homeserver support https://github.com/matrix-org/matrix-spec-proposals/pull/2246?
                     async_media: false
 
-                    # -- Should the bridge use a websocket for connecting to the homeserver?
-                    # The server side is currently not documented anywhere and is only implemented by mautrix-wsproxy,
-                    # mautrix-asmux (deprecated), and hungryserv (proprietary).
-                    websocket: false
-                    # -- How often should the websocket be pinged? Pinging will be disabled if this is zero.
-                    ping_interval_seconds: 0
-
                   # Application service host/registration related details.
                   # Changing these values requires regeneration of the registration.
                   appservice:
-                    # -- The address that the homeserver can use to connect to this appservice.
-                    # example is http://localhost:29334 but if not provided, we guess :)
-                    address: ""
-                    # -- The hostname where this appservice should listen.
-                    hostname: 0.0.0.0
-                    # -- The port where this appservice should listen.
-                    port: 29334
-
                     # Database config.
                     database:
                       # -- The database type. "sqlite3-fk-wal" and "postgres" are supported.
                       type: sqlite3-fk-wal
                       # -- The database URI.
-                      #   SQLite: A raw file path is supported, but `file:<path>?_txlock=immediate` is recommended.
-                      #      https://github.com/mattn/go-sqlite3#connection-string
-                      #   Postgres: Connection string. For example,
-                      #       postgres://user:password@host/database?sslmode=disable
-                      #   To connect via Unix socket, use something like,
-                      #       postgres:///dbname?host=/var/run/postgresql
+                      # SQLite: A raw file path is supported, but `file:<path>?_txlock=immediate` is recommended.
+                      #    https://github.com/mattn/go-sqlite3#connection-string
+                      # Postgres: Connection string. For example,
+                      #     postgres://user:password@host/database?sslmode=disable
+                      # To connect via Unix socket, use something like,
+                      #     postgres:///dbname?host=/var/run/postgresql
                       uri: file:/sql/mautrixdiscord.db?_txlock=immediate
                       # -- Maximum number of connections. Mostly relevant for Postgres.
                       max_open_conns: 20
                       max_idle_conns: 2
-                      # -- Maximum connection idle time before its closed. Disabled if null.
+                      # -- Maximum connection idle time and lifetime before its closed. Disabled if null.
                       # Parsed with https://pkg.go.dev/time#ParseDuration
                       max_conn_idle_time: null
-                      # -- Maximum connection lifetime before its closed. Disabled if null.
-                      # Parsed with https://pkg.go.dev/time#ParseDuration
                       max_conn_lifetime: null
 
                     # -- The unique ID of this appservice.
@@ -936,11 +911,6 @@ spec:
                     # This may be necessary for large public instances with lots of messages going through.
                     # However, messages will not be guaranteed to be bridged in the same order they were sent in.
                     async_transactions: false
-
-                    ## Authentication tokens for AS <-> HS communication. Autogenerated; do not modify.
-                    # as_token: "This value is generated when generating the registration"
-                    ## Authentication tokens for AS <-> HS communication. Autogenerated; do not modify.
-                    # hs_token: "This value is generated when generating the registration"
 
                   # Bridge config
                   bridge:
@@ -975,17 +945,13 @@ spec:
                     # If set to `always`, all DM rooms will have explicit names and avatars set.
                     # If set to `never`, DM rooms will never have names and avatars set.
                     private_chat_portal_meta: always
-
                     portal_message_buffer: 128
-
                     # -- Number of private channel portals to create on bridge startup.
                     # Other portals will be created when receiving messages.
                     startup_private_channel_create_limit: 10
-                    # -- Should the bridge send a read receipt from the bridge bot when a message has been sent to Discord?
+                    # -- Should the bridge send a read receipt from the bridge bot when a msg has been sent to Discord?
                     delivery_receipts: true
-                    # -- Whether the bridge should send the message status as a custom com.beeper.message_send_status event.
-                    # message_status_events: false
-                    # -- Whether the bridge should send error notices via m.notice events when a message fails to bridge.
+                    # -- Whether the bridge should send error notices via m.notice events when a msg fails to bridge.
                     message_error_notices: true
                     # -- Should the bridge use space-restricted join rules instead of invite-only for guild rooms?
                     # This can avoid unnecessary invite events in guild rooms when members are synced in.
@@ -1005,7 +971,7 @@ spec:
                     sync_direct_chat_list: false
                     # -- Set this to true to tell the bridge to re-send m.bridge events to all rooms on the next run.
                     # This field will automatically be changed back to false after it, except if the config file is not writable.
-                    resend_bridge_info: true
+                    resend_bridge_info: false
                     # -- Should incoming custom emoji reactions be bridged as mxc:// URIs?
                     # If set to false, custom emoji reactions will be bridged as the shortcode instead, and the image won't be available.
                     custom_emoji_reactions: true
@@ -1064,9 +1030,6 @@ spec:
                         height: 320
                         # -- fps, only for webm, webp and gif (2, 5, 10, 20 or 25 recommended)
                         fps: 25
-                    # -- Servers to always allow double puppeting from
-                    double_puppet_server_map: {}
-                    #  example.com: https://example.com
                     # -- Allow using double puppeting from any server with a valid client .well-known file.
                     double_puppet_allow_discovery: false
                     # -- Shared secrets for https://github.com/devture/matrix-synapse-shared-secret-auth
