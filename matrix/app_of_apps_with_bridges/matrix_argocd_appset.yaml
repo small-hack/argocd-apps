@@ -34,13 +34,6 @@ spec:
             - name: bridges.discord_mautrix.admin_users[{{ $index }}]
               value: {{ $user }}
             {{- end }}
-  #      values: |-
-  #        bridges:
-  #          discord_mautrix:
-  #            admin_users:
-  #            {{- range .matrix_admin_users }}
-  #            - {{ . }}
-  #            {{- end }}
   template:
     metadata:
       name: matrix-web-app
