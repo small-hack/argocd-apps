@@ -184,7 +184,6 @@ data:
       "id:20004,\
       phase:1,\
       pass,\
-      nolog,\
       ctl:ruleRemoveById=920340,\
       setvar:'tx.allowed_methods=DELETE POST PUT'"
 
