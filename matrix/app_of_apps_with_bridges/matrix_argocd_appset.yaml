@@ -402,6 +402,7 @@ spec:
 
             # Synapse Kubernetes resource settings
             synapse:
+              revisionHistoryLimit: 1
               image:
                 # -- image registry and repository to use for synapse
                 repository: "matrixdotorg/synapse"
@@ -646,6 +647,7 @@ spec:
                 encryption: true
 
                 replicaCount: 1
+                revisionHistoryLimit: 1
 
                 resources: {}
 
@@ -815,6 +817,8 @@ spec:
               discord_mautrix:
                 # -- Set to true to enable the Discord bridge. Learn more in the [docs](https://docs.mau.fi/bridges/go/discord/index.html).
                 enabled: true
+
+                revisionHistoryLimit: 1
 
                 image:
                   repository: "dock.mau.dev/mautrix/discord"
