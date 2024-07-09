@@ -200,7 +200,7 @@ data:
         nolog,\
         setvar:'tx.allowed_request_content_type=|application/grpc-web+proto|'"
 
-    SecRule REQUEST_URI "@rx ^/ui/console/$" \
+    SecRule REQUEST_URI "@beginsWith /ui/console/" \
         "id:30004,\
         phase:1,\
         pass,\
