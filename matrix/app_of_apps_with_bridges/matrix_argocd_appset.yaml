@@ -974,17 +974,17 @@ spec:
                     # If set to `default`, this will be enabled in encrypted rooms and disabled in unencrypted rooms.
                     # If set to `always`, all DM rooms will have explicit names and avatars set.
                     # If set to `never`, DM rooms will never have names and avatars set.
-                    private_chat_portal_meta: default
+                    private_chat_portal_meta: always
 
                     portal_message_buffer: 128
 
                     # -- Number of private channel portals to create on bridge startup.
                     # Other portals will be created when receiving messages.
-                    startup_private_channel_create_limit: 5
+                    startup_private_channel_create_limit: 10
                     # -- Should the bridge send a read receipt from the bridge bot when a message has been sent to Discord?
-                    delivery_receipts: false
+                    delivery_receipts: true
                     # -- Whether the bridge should send the message status as a custom com.beeper.message_send_status event.
-                    message_status_events: false
+                    # message_status_events: false
                     # -- Whether the bridge should send error notices via m.notice events when a message fails to bridge.
                     message_error_notices: true
                     # -- Should the bridge use space-restricted join rules instead of invite-only for guild rooms?
@@ -1005,13 +1005,13 @@ spec:
                     sync_direct_chat_list: false
                     # -- Set this to true to tell the bridge to re-send m.bridge events to all rooms on the next run.
                     # This field will automatically be changed back to false after it, except if the config file is not writable.
-                    resend_bridge_info: false
+                    resend_bridge_info: true
                     # -- Should incoming custom emoji reactions be bridged as mxc:// URIs?
                     # If set to false, custom emoji reactions will be bridged as the shortcode instead, and the image won't be available.
                     custom_emoji_reactions: true
                     # -- Should the bridge attempt to completely delete portal rooms when a channel is deleted on Discord?
                     # If true, the bridge will try to kick Matrix users from the room. Otherwise, the bridge only makes ghosts leave.
-                    delete_portal_on_channel_delete: false
+                    delete_portal_on_channel_delete: true
                     # -- Should the bridge delete all portal rooms when you leave a guild on Discord?
                     # This only applies if the guild has no other Matrix users on this bridge instance.
                     delete_guild_on_leave: true
@@ -1020,7 +1020,7 @@ spec:
                     federate_rooms: true
                     # -- Prefix messages from webhooks with the profile info? This can be used along with a custom displayname_template
                     # to better handle webhooks that change their name all the time (like ones used by bridges).
-                    prefix_webhook_messages: false
+                    prefix_webhook_messages: true
                     # -- Bridge webhook avatars?
                     enable_webhook_avatars: true
                     # -- Should the bridge upload media to the Discord CDN directly before sending the message when using a user token,
@@ -1083,7 +1083,7 @@ spec:
                     # Markdown is supported. The defaults are listed below.
                     management_room_text:
                       # -- Sent when joining a room.
-                      welcome: "Hello, I'm a Discord bridge bot."
+                      welcome: "Hoi, I'm a Discord bridge bot, but more than anything, I'm your friend 💙"
                       # -- Sent when joining a management room and the user is already logged in.
                       welcome_connected: "Use `help` for help."
                       # -- Sent when joining a management room and the user is not logged in.
@@ -1099,17 +1099,17 @@ spec:
                         # A special unlimited value is not supported, you must set a limit. Initial backfill will
                         # fetch all messages first before backfilling anything, so high limits can take a lot of time.
                         initial:
-                          dm: 0
-                          channel: 0
-                          thread: 0
+                          dm: 10
+                          channel: 10
+                          thread: 10
                         # Missed message backfill (on startup).
                         # 0 means backfill is disabled, -1 means fetch all messages since last bridged message.
                         # When using unlimited backfill (-1), messages are backfilled as they are fetched.
                         # With limits, all messages up to the limit are fetched first and backfilled afterwards.
                         missed:
-                          dm: 0
-                          channel: 0
-                          thread: 0
+                          dm: 10
+                          channel: 10
+                          thread: 10
                       # -- Maximum members in a guild to enable backfilling. Set to -1 to disable limit.
                       # This can be used as a rough heuristic to disable backfilling in channels that are too active.
                       # Currently only applies to missed message backfill.
@@ -1130,9 +1130,9 @@ spec:
                       require: false
                       # -- Enable key sharing? If enabled, key requests for rooms where users are in will be fulfilled.
                       # You must use a client that supports requesting keys from other users to use this feature.
-                      allow_key_sharing: false
+                      allow_key_sharing: true
                       # -- Should users mentions be in the event wire content to enable the server to send push notifications?
-                      plaintext_mentions: false
+                      plaintext_mentions: true
                       # Options for deleting megolm sessions from the bridge.
                       delete_keys:
                         # -- Don't store outbound sessions in the inbound table.
