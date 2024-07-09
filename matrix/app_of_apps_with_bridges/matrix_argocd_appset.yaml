@@ -19,6 +19,7 @@ spec:
               - matrix_element_hostname
               - matrix_federation_hostname
               - matrix_admin_email
+              - matrix_admin_users
               - matrix_s3_bucket
               - matrix_s3_region
               - matrix_s3_endpoint
@@ -28,13 +29,13 @@ spec:
   #     source:
   #       helm:
   #         parameters:
-  #           - name: bridges.discord_mautrix.config.bridge.permissions."{{ .matrix_hostname }}"
-  #             value: user
-  #           - name: bridges.discord_mautrix.config.bridge.permissions."{{ .matrix_hostname }}"
-  #             value: admin
-  #           - name: bridges.discord_mautrix.config.bridge.permissions."*"
-  #             value: relay
+  #           - name: bridges.discord_mautrix.config.admin_users
+  #             value: {{{ .matrix_admin_users }}}
   #
+  #       values: |-
+  #         bridges:
+  #           discord_mautrix:
+  #             admin_users: {{ .matrix_admin_users }}
   #       values: |-
   #         bridges:
   #           discord_mautrix:
@@ -853,7 +854,7 @@ spec:
                     hs_token: "hs_token"
 
                 # user in discord that that have admin level permissions to the bot
-                admin_user: jessebot
+                admin_users: "{{ .matrix_admin_users }}"
 
                 # templates out to config.yaml for the mautrix bridge
                 config:
