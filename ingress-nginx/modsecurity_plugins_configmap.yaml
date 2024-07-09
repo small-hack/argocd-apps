@@ -168,7 +168,10 @@ data:
       "id:20000,\
       phase:1,\
       pass,\
-      ctl:ruleRemoveById=920340,ctl:ruleRemoveById=921110,\
+      nolog,\
+      t:none,\
+      ctl:ruleRemoveById=920340,\
+      ctl:ruleRemoveById=921110,\
       setvar:'tx.allowed_methods=DELETE GET POST PUT'"
 
   zitadel-rule-exclusions-before.conf: |
