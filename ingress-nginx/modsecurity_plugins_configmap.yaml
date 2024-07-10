@@ -107,23 +107,33 @@ data:
     # -------------------------------------------------------------------------
     # allow octet-stream content type for uploads
     # url should be like /_matrix/media/v3/upload or /_matrix/media/r0/upload
-    # SecRule REQUEST_URI "@rx ^/_matrix/media/(?:v3|r0)/upload.*$" \
-    #     "id:20015,\
-    #     phase:1,\
-    #     ver:'matrix-rule-exclusions-plugin/1.0.0',\
-    #     pass,\
-    #     t:none,\
-    #     setvar:'tx.allowed_request_content_type=|application/octet-stream|'"
-    #
+    SecRule REQUEST_URI "@rx ^/_matrix/media/(?:v3|r0)/upload.*$" \
+        "id:20015,\
+        phase:1,\
+        ver:'matrix-rule-exclusions-plugin/1.0.0',\
+        pass,\
+        t:none,\
+        setvar:'tx.allowed_request_content_type=|application/octet-stream|'"
+
     # allow PUT, OPTIONS to allow uploads
     # url should be like /_matrix/media/v3/upload or /_matrix/media/r0/upload
-    # SecRule REQUEST_URI "@rx ^/_matrix/media/(?:v3|r0)/upload.*$" \
-    #     "id:20016,\
-    #     phase:1,\
-    #     ver:'matrix-rule-exclusions-plugin/1.0.0',\
-    #     pass,\
-    #     t:none,\
-    #     setvar:'tx.allowed_methods=POST PUT OPTIONS'"
+    SecRule REQUEST_URI "@rx ^/_matrix/media/(?:v3|r0)/upload.*$" \
+        "id:20016,\
+        phase:1,\
+        ver:'matrix-rule-exclusions-plugin/1.0.0',\
+        pass,\
+        t:none,\
+        setvar:'tx.allowed_methods=POST PUT OPTIONS'"
+
+    # allow PUT, OPTIONS to allow uploads
+    # url should be like /_matrix/media/v3/upload or /_matrix/media/r0/upload
+    SecRule REQUEST_URI "@rx ^/_matrix/media/(?:v3|r0)/upload.*$" \
+        "id:20028,\
+        phase:1,\
+        ver:'matrix-rule-exclusions-plugin/1.0.0',\
+        pass,\
+        t:none,\
+        setvar:'tx.content_type=|image/jpeg| |image/png|'"
 
     # allow PUT, OPTIONS to allow sending all sorts of user/room/device data:
     # /_matrix/client/v3/user/username/account_data/im.vector.setting.breadcrumbs
