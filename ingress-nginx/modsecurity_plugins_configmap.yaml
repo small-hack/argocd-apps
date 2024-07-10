@@ -214,6 +214,16 @@ data:
         nolog,\
         t:none,\
         setvar:'tx.allowed_methods=GET HEAD POST PUT'"
+
+    SecRule REQUEST_URI "@rx ^/matrix/local_content/.*$" \
+        "id:20028,\
+        phase:1,\
+        ver:'matrix-rule-exclusions-plugin/1.0.0',\
+        pass,\
+        nolog,\
+        t:none,\
+        ctl:ruleRemoveById=920340"
+
   postgres-s3-rule-exclusions-before.conf: |-
     # -------------------------------------------------------------------------
     # allow postgresql to upload wal archives to s3
