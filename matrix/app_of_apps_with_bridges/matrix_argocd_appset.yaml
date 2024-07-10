@@ -23,6 +23,7 @@ spec:
               - matrix_s3_bucket
               - matrix_s3_region
               - matrix_s3_endpoint
+              - matrix_sliding_sync_bitwarden_id
               - prometheus_alert_manager_hostname
               - prometheus_grafana_hostname
               - global_cluster_issuer
@@ -425,6 +426,14 @@ spec:
                       - path: /
                         pathType: Prefix
 
+                      - path: /alertmanager
+                        pathType: ImplementationSpecific
+                        backend:
+                          service:
+                            name: matrix-stack-bridge-alertmanager
+                            port:
+                              name: http
+
                       # if bridges.hookshot.generic.enabled, you want to uncomment the following:
                       # - path: /webhook
                       #   pathType: ImplementationSpecific
@@ -630,6 +639,7 @@ spec:
 
               alertmanager:
                 enabled: true
+                revisionHistoryLimit: 1
 
                 registration:
                   id: "alertmanager"
@@ -649,7 +659,7 @@ spec:
                   # -- app port?
                   app_port: 3000
                   # -- I don't know what this is
-                  app_alertmanager_secret: ""
+                  app_alertmanager_secret: "{{ .matrix_sliding_sync_bitwarden_id }}"
                   # -- your homeserver url, e.g. https://homeserver.tld
                   matrix_homeserver_url: "https://{{ .matrix_hostname }}"
                   # -- map of rooms to send alerts to. where the key is the reciever in alert manager
