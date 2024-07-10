@@ -18,11 +18,11 @@ spec:
           parameters:
             secret_vars:
               - matrix_hostname
+              - matrix_sliding_sync_bitwarden_id
               - prometheus_hostname
               - prometheus_alert_manager_hostname
               - prometheus_grafana_hostname
               - prometheus_alert_manager_secret
-              - matrix_sliding_sync_bitwarden_id
               - vouch_hostname
               - global_cluster_issuer
   template:
@@ -174,7 +174,7 @@ spec:
                 receivers:
                   - name: 'matrix'
                     webhook_configs:
-                      - url: "https://{{ .matrix_hostname }}/alertmanager/alerts?secret={{ .matrix_sliding_sync_bitwarden_id }}"
+                      - url: "http://matrix-stack-bridge-alertmanager:3000/alertmanager/alerts?secret={{ .matrix_sliding_sync_bitwarden_id }}"
                   - name: 'null'
 
                 templates:
