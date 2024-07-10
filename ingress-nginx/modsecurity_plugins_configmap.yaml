@@ -113,7 +113,6 @@ data:
         phase:1,\
         ver:'matrix-rule-exclusions-plugin/1.0.0',\
         pass,\
-        nolog,\
         t:none,\
         setvar:'tx.allowed_request_content_type=|application/octet-stream|'"
 
@@ -124,7 +123,6 @@ data:
         phase:1,\
         ver:'matrix-rule-exclusions-plugin/1.0.0',\
         pass,\
-        nolog,\
         t:none,\
         setvar:'tx.allowed_methods=POST PUT OPTIONS'"
 
