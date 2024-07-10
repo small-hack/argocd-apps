@@ -150,7 +150,7 @@ data:
         pass,\
         t:none,\
         nolog,\
-        ctl:ruleRemoveTargetById=933210;ARGS:json.formatted_body"
+        ctl:ruleRemoveTargetById=933210;ARGS:json.formatted_body,\
         ctl:ruleRemoveTargetById=930120;ARGS:json.formatted_body"
 
     # allow users to push up their keys from mobile or desktop
