@@ -664,7 +664,7 @@ spec:
                   matrix_homeserver_url: "https://{{ .matrix_hostname }}"
                   # -- map of rooms to send alerts to. where the key is the reciever in alert manager
                   # and the value is the room in matrix.
-                  matrix_rooms: "receiver1/!NSKUaRzeVZpCWqwlQo:{{ .matrix_hostname }}"
+                  matrix_rooms: "matrix/!NSKUaRzeVZpCWqwlQo:{{ .matrix_hostname }}"
                   # -- user in matrix for the the alertmanager bot e.g. @alertmanager:homeserver.tld
                   matrix_user: "alertmanager"
                   # -- Set this to true to make firing alerts do a `@room` mention.
