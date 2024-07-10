@@ -640,14 +640,14 @@ spec:
 
                 resources: {}
 
-                service:
-                  type: ClusterIP
-                  webhook:
-                    port: 9000
-                  metrics:
-                    port: 9001
-                  appservice:
-                    port: 9002
+                # service:
+                #   type: ClusterIP
+                #   webhook:
+                #     port: 9000
+                #   metrics:
+                #     port: 9001
+                #   appservice:
+                #     port: 9993
 
                 securityContext:
                   runAsUser: 1000
@@ -901,7 +901,7 @@ spec:
                       # -- Display name for bot. Set to "remove" to remove display name.
                       displayname: Discord bridge bot
                       # -- Display avatar for bot. Set to "remove" to remove display avatar.
-                      avatar: mxc://maunium.net/nIdEykemnwdisvHbpxflpDlC
+                      avatar: mxc://{{ .matrix_hostname }}/
 
                     # -- Whether or not to receive ephemeral events via appservice transactions.
                     # Requires MSC2409 support (i.e. Synapse 1.22+).
