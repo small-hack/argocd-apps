@@ -939,9 +939,9 @@ spec:
                       # -- Username of the appservice bot
                       username: discordbot
                       # -- Display name for bot. Set to "remove" to remove display name
-                      displayname: Discord Bridge Friend
+                      displayname: Discord Friend Bot
                       # -- Display avatar for bot. Set to "remove" to remove display avatar
-                      avatar: mxc://{{ .matrix_hostname }}/wzWRnhmgdfOueDuhQkiMxMsA
+                      avatar: mxc://{{ .matrix_hostname }}/CMJQVVOSQhjasbipXcdoWSWj
 
                     # -- Whether or not to receive ephemeral events via appservice transactions.
                     # Requires MSC2409 support (i.e. Synapse 1.22+).
