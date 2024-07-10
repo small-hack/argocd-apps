@@ -887,13 +887,12 @@ spec:
                     # -- key in existingSecret for hs_token (home server token)
                     hs_token: "hs_token"
 
-                # user in discord that that have admin level permissions to the bot
+                # users in discord that have admin level permissions to the bot
                 admin_users: []
 
                 # templates out to config.yaml for the mautrix bridge
                 config:
                   homeserver:
-                    # -- The address that this appservice can use to connect to the homeserver.
                     # this would be something like https://matrix.example.com, but if not set,
                     # we'll try to guess the correct homeserver url :)
                     address: "https://{{ .matrix_hostname }}"
@@ -921,9 +920,9 @@ spec:
                       # SQLite: A raw file path is supported, but `file:<path>?_txlock=immediate` is recommended.
                       #    https://github.com/mattn/go-sqlite3#connection-string
                       # Postgres: Connection string. For example,
-                      #     postgres://user:password@host/database?sslmode=disable
+                      #    postgres://user:password@host/database?sslmode=disable
                       # To connect via Unix socket, use something like,
-                      #     postgres:///dbname?host=/var/run/postgresql
+                      #    postgres:///dbname?host=/var/run/postgresql
                       uri: file:/sql/mautrixdiscord.db?_txlock=immediate
                       # -- Maximum number of connections. Mostly relevant for Postgres.
                       max_open_conns: 20
@@ -933,15 +932,15 @@ spec:
                       max_conn_idle_time: null
                       max_conn_lifetime: null
 
-                    # -- The unique ID of this appservice.
+                    # unique ID of this appservice
                     id: discord
                     # Appservice bot details.
                     bot:
-                      # -- Username of the appservice bot.
+                      # -- Username of the appservice bot
                       username: discordbot
-                      # -- Display name for bot. Set to "remove" to remove display name.
-                      displayname: Discord bridge bot
-                      # -- Display avatar for bot. Set to "remove" to remove display avatar.
+                      # -- Display name for bot. Set to "remove" to remove display name
+                      displayname: Discord Bridge Friend
+                      # -- Display avatar for bot. Set to "remove" to remove display avatar
                       avatar: mxc://{{ .matrix_hostname }}/wzWRnhmgdfOueDuhQkiMxMsA
 
                     # -- Whether or not to receive ephemeral events via appservice transactions.
