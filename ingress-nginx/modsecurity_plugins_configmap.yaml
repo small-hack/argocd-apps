@@ -114,7 +114,7 @@ data:
         pass,\
         t:none,\
         nolog,\
-        setvar:'tx.allowed_request_content_type=|application/octet-stream| |image/jpeg| |image/png|'"
+        setvar:'tx.allowed_request_content_type=|application/octet-stream| |image/jpeg| |image/png| |image/gif|'"
 
     # allow PUT, OPTIONS to allow uploads
     # url should be like /_matrix/media/v3/upload or /_matrix/media/r0/upload
