@@ -19,6 +19,7 @@ data:
     SecRule REQUEST_FILENAME "@beginsWith /api/v1/applications/" \
         "id:30005,\
         phase:1,\
+        ver:'argocd-rule-exclusions-plugin/1.0.0',\
         pass,\
         t:none,\
         nolog,\
@@ -32,6 +33,7 @@ data:
     SecRule REQUEST_URI "@beginsWith /api/ds/query?ds_type=loki" \
       "id:20013,\
       phase:1,\
+      ver:'grafana-rule-exclusions-plugin/1.0.0',\
       pass,\
       nolog,\
       ctl:ruleRemoveById=933210,ctl:ruleRemoveById=942100,ctl:ruleRemoveById=932110"
@@ -40,6 +42,7 @@ data:
     SecRule REQUEST_URI "@beginsWith /api/ds/query?ds_type=prometheus" \
       "id:20014,\
       phase:1,\
+      ver:'grafana-rule-exclusions-plugin/1.0.0',\
       pass,\
       nolog,\
       ctl:ruleRemoveById=933210,ctl:ruleRemoveById=942100,ctl:ruleRemoveById=932110"
@@ -49,6 +52,7 @@ data:
       "id:20017,\
       phase:1,\
       pass,\
+      ver:'grafana-rule-exclusions-plugin/1.0.0',\
       nolog,\
       ctl:ruleRemoveById=932110"
 
@@ -56,6 +60,7 @@ data:
     SecRule REQUEST_URI "@rx /api/user/helpflags/.*$" \
       "id:20012,\
       phase:1,\
+      ver:'grafana-rule-exclusions-plugin/1.0.0',\
       pass,\
       nolog,\
       setvar:'tx.allowed_methods=PUT'"
@@ -65,8 +70,9 @@ data:
     # -------------------------------------------------------------------------
     # allow content type of text/plain, but process the body as JSON
     SecRule REQUEST_URI "@beginsWith /auth/login_flow" \
-      "id:20022,\
+      "id:20023,\
       phase:1,\
+      ver:'home-assistant-rule-exclusions-plugin/1.0.0',\
       pass,\
       nolog,\
       t:none,\
@@ -76,8 +82,9 @@ data:
 
     # Allow PUT method to login endpoint
     SecRule REQUEST_URI "@beginsWith /auth/login_flow" \
-      "id:20023,\
+      "id:20024,\
       phase:1,\
+      ver:'home-assistant-rule-exclusions-plugin/1.0.0',\
       pass,\
       nolog,\
       t:none,\
@@ -86,8 +93,9 @@ data:
 
     # this is a legit endpoint for home assistant for some reason
     SecRule REQUEST_URI "@rx /frontend_latest/.*.js$" \
-      "id:20024,\
+      "id:20025,\
       phase:1,\
+      ver:'home-assistant-rule-exclusions-plugin/1.0.0',\
       pass,\
       t:none,\
       nolog,\
@@ -102,6 +110,7 @@ data:
     SecRule REQUEST_URI "@rx ^/_matrix/media/(?:v3|r0)/upload" \
         "id:20015,\
         phase:1,\
+        ver:'matrix-rule-exclusions-plugin/1.0.0',\
         pass,\
         nolog,\
         t:none,\
@@ -111,6 +120,7 @@ data:
     SecRule REQUEST_URI "@rx ^/_matrix/media/(?:v3|r0)/upload" \
         "id:20016,\
         phase:1,\
+        ver:'matrix-rule-exclusions-plugin/1.0.0',\
         pass,\
         nolog,\
         t:none,\
@@ -126,16 +136,29 @@ data:
     SecRule REQUEST_URI "@rx ^/_matrix/client/(?:v3|r0)/(?:rooms|user|profile|sendToDevice|room_keys|register|directory)/.*$" \
         "id:20018,\
         phase:1,\
+        ver:'matrix-rule-exclusions-plugin/1.0.0',\
         pass,\
         t:none,\
         nolog,\
         setvar:'tx.allowed_methods=GET POST PUT DELETE OPTIONS'"
 
+    # this allows mautrix bridges to send things like:
+    # "Unknown command, use the `help` command for help.
+    SecRule REQUEST_URI "@rx ^/_matrix/client/v3/rooms/.*/send/m.room.message/mautrix-go_.*$"\
+        "id:20019,\
+        phase:1,\
+        ver:'matrix-rule-exclusions-plugin/1.0.0',\
+        pass,\
+        t:none,\
+        nolog,\
+        ctl:ruleRemoveTargetById=932100;ARGS:json.body"
+
     # allow PUT, OPTIONS to allow sending room key data:
     # /_matrix/client/unstable/room_keys/keys?version=1
     SecRule REQUEST_URI "@rx ^/_matrix/client/unstable/room_keys/keys.*$" \
-        "id:20019,\
+        "id:20020,\
         phase:1,\
+        ver:'matrix-rule-exclusions-plugin/1.0.0',\
         pass,\
         t:none,\
         nolog,\
@@ -143,8 +166,9 @@ data:
 
     # allow PUT method for sending read recipets
     SecRule REQUEST_URI "@beginsWith /_matrix/federation/v1/send/" \
-        "id:20020,\
+        "id:20021,\
         phase:1,\
+        ver:'matrix-rule-exclusions-plugin/1.0.0',\
         pass,\
         t:none,\
         nolog,\
@@ -153,8 +177,9 @@ data:
     # this is actually for a local s3 server that you have dedicated to matrix
     # can be commented out if not running local s3 server such as seaweedfs
     SecRule REQUEST_URI "@beginsWith /matrix/local_content/" \
-        "id:20021,\
+        "id:20022,\
         phase:1,\
+        ver:'matrix-rule-exclusions-plugin/1.0.0',\
         pass,\
         nolog,\
         t:none,\
@@ -167,6 +192,7 @@ data:
     SecRule REQUEST_URI "@rx ^/(?:matrix|zitadel|nextcloud)-postgres/(?:matrix|zitadel|nextcloud)-postgres/(?:wals|base)/.*$" \
       "id:20000,\
       phase:1,\
+      ver:'postgres-rule-exclusions-plugin/1.0.0',\
       pass,\
       nolog,\
       t:none,\
@@ -179,6 +205,7 @@ data:
     SecRule REQUEST_URI "@beginsWith /zitadel.auth.v1.AuthService" \
         "id:30001,\
         phase:1,\
+        ver:'zitadel-rule-exclusions-plugin/1.0.0',\
         pass,\
         t:none,\
         nolog,\
@@ -187,6 +214,7 @@ data:
     SecRule REQUEST_URI "@beginsWith /zitadel.admin.v1.AdminService" \
         "id:30002,\
         phase:1,\
+        ver:'zitadel-rule-exclusions-plugin/1.0.0',\
         pass,\
         t:none,\
         nolog,\
@@ -194,6 +222,7 @@ data:
 
     SecRule REQUEST_URI "@beginsWith /zitadel.management.v1.ManagementService" \
         "id:30003,\
+        ver:'zitadel-rule-exclusions-plugin/1.0.0',\
         phase:1,\
         pass,\
         t:none,\
