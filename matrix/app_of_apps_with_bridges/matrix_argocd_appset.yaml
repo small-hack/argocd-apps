@@ -636,6 +636,12 @@ spec:
                   rate_limited: false
                   sender_localpart: "alertmanager"
                   port: 9993
+                  existingSecret: "matrix-alertmanager-tokens"
+                  existingSecretKeys:
+                    # -- key in existingSecret for as_token (appservice token)
+                    as_token: "as_token"
+                    # -- key in existingSecret for hs_token (home server token)
+                    hs_token: "hs_token"
 
                 encryption: false
 
