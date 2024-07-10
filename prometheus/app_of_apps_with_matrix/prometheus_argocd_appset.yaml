@@ -174,7 +174,7 @@ spec:
                 receivers:
                   - name: 'matrix'
                     webhook_configs:
-                      - url: "http://matrix-stack-bridge-alertmanager:3000/alertmanager/alerts?secret={{ .matrix_sliding_sync_bitwarden_id }}"
+                      - url: "http://matrix-stack-bridge-alertmanager:3000/alerts?secret={{ .matrix_sliding_sync_bitwarden_id }}"
                   - name: 'null'
 
                 templates:
