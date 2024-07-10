@@ -781,7 +781,7 @@ spec:
                     # -- Define profile display name for the bot user
                     displayname: Hookshot Bot
                     # -- Define profile avatar for the bot user
-                    avatar: https://raw.githubusercontent.com/small-hack/argocd-apps/main/badargoart_small.png
+                    avatar: mxc://{{ .matrix_hostname }}/wzWRnhmgdfOueDuhQkiMxMsA
 
                   # -- (Optional) Define additional bot users for specific services
                   serviceBots: []
@@ -901,7 +901,7 @@ spec:
                       # -- Display name for bot. Set to "remove" to remove display name.
                       displayname: Discord bridge bot
                       # -- Display avatar for bot. Set to "remove" to remove display avatar.
-                      avatar: mxc://{{ .matrix_hostname }}/
+                      avatar: mxc://{{ .matrix_hostname }}/wzWRnhmgdfOueDuhQkiMxMsA
 
                     # -- Whether or not to receive ephemeral events via appservice transactions.
                     # Requires MSC2409 support (i.e. Synapse 1.22+).
