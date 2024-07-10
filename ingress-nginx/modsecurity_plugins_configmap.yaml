@@ -105,7 +105,6 @@ data:
     # allow uploads for matrix via element web and mobile
     # to avoid rule 920420 which doesn't allow |application/octet-stream|
     # -------------------------------------------------------------------------
-
     # allow octet-stream content type for uploads
     # url should be like /_matrix/media/v3/upload or /_matrix/media/r0/upload
     SecRule REQUEST_URI "@rx ^/_matrix/media/(?:v3|r0)/upload.*$" \
@@ -141,6 +140,17 @@ data:
         t:none,\
         nolog,\
         setvar:'tx.allowed_methods=GET POST PUT DELETE OPTIONS'"
+
+    # allow prometheus alerts to be posted
+    # /_matrix/client/r0/rooms/.*/send/m.room.message/.*
+    SecRule REQUEST_URI "@rx ^/_matrix/client/r0/rooms/.*/send/m.room.message/.*$" \
+        "id:933210,\
+        phase:1,\
+        ver:'matrix-rule-exclusions-plugin/1.0.0',\
+        pass,\
+        t:none,\
+        nolog,\
+        ctl:ruleRemoveTargetById=930120;ARGS:json.formatted_body"
 
     # allow users to push up their keys from mobile or desktop
     SecRule REQUEST_URI @rx "^/_matrix/client/(?:r0|v3)/pushers/set.*$"
