@@ -203,7 +203,8 @@ data:
 
     # this is actually for a local s3 server that you have dedicated to matrix
     # can be commented out if not running local s3 server such as seaweedfs
-    SecRule REQUEST_URI "@beginsWith /matrix/local_content/" \
+    # /matrix/local_thumbnails/.*/32-32-image-jpeg-crop
+    SecRule REQUEST_URI "@rx ^/matrix/(?:local_thumbnails|local_content)/.*$" \
         "id:20022,\
         phase:1,\
         ver:'matrix-rule-exclusions-plugin/1.0.0',\
