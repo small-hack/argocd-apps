@@ -23,6 +23,8 @@ spec:
               - matrix_s3_bucket
               - matrix_s3_region
               - matrix_s3_endpoint
+              - prometheus_alert_manager_hostname
+              - prometheus_grafana_hostname
               - global_cluster_issuer
   templatePatch: |
     spec:
@@ -97,7 +99,7 @@ spec:
               serve_server_wellknown: true
 
               experimental_features:
-                # these enable encryption for appservices like hookshot:
+                # these enable encryption for appservices like hookshot and discord:
                 # https://matrix-org.github.io/matrix-hookshot/latest/advanced/encryption.html
                 msc3202_device_masquerading: true
                 msc3202_transaction_extensions: true
@@ -424,13 +426,13 @@ spec:
                         pathType: Prefix
 
                       # if bridges.hookshot.generic.enabled, you want to uncomment the following:
-                      - path: /webhook
-                        pathType: ImplementationSpecific
-                        backend:
-                          service:
-                            name: matrix-stack-bridge-hookshot
-                            port:
-                              name: http
+                      # - path: /webhook
+                      #   pathType: ImplementationSpecific
+                      #   backend:
+                      #     service:
+                      #       name: matrix-stack-bridge-hookshot
+                      #       port:
+                      #         name: http
                 tls:
                   - secretName: matrix-tls
                     hosts:
@@ -626,28 +628,51 @@ spec:
                 storageClass: local-path
                 accessMode: ReadWriteOnce
 
+              alertmanager:
+                enabled: true
+
+                registration:
+                  id: "alertmanager"
+                  rate_limited: false
+                  sender_localpart: "alertmanager"
+                  port: 9993
+
+                encryption: false
+
+                config:
+                  # -- app port?
+                  app_port: 3000
+                  # -- I don't know what this is
+                  app_alertmanager_secret: ""
+                  # -- your homeserver url, e.g. https://homeserver.tld
+                  matrix_homeserver_url: "https://{{ .matrix_hostname }}"
+                  # -- map of rooms to send alerts to. where the key is the reciever in alert manager
+                  # and the value is the room in matrix.
+                  matrix_rooms: "receiver1/!NSKUaRzeVZpCWqwlQo:{{ .matrix_hostname }}"
+                  # -- user in matrix for the the alertmanager bot e.g. @alertmanager:homeserver.tld
+                  matrix_user: "alertmanager"
+                  # -- Set this to true to make firing alerts do a `@room` mention.
+                  # NOTE! Bot should also have enough power in the room for this to be useful.
+                  mention_room: true
+                  # -- set to enable Grafana links, e.g. https://grafana.example.com
+                  grafana_url: "{{ .prometheus_grafana_hostname }}"
+                  # -- grafana data source, e.g. default
+                  grafana_datasource: "default"
+                  # -- set to enable silence link, e.g. https://alertmanager.example.com
+                  alertmanager_url: "{{ .prometheus_alert_manager_hostname }}"
+
               # see: https://matrix-org.github.io/matrix-hookshot/latest/setup/sample-configuration.html
               hookshot:
-                enabled: true
+                enabled: false
                 image:
                   repository: "halfshot/matrix-hookshot"
                   tag: "5.4.1"
 
                 encryption: true
-
                 replicaCount: 1
                 revisionHistoryLimit: 1
 
                 resources: {}
-
-                # service:
-                #   type: ClusterIP
-                #   webhook:
-                #     port: 9000
-                #   metrics:
-                #     port: 9001
-                #   appservice:
-                #     port: 9993
 
                 securityContext:
                   runAsUser: 1000
