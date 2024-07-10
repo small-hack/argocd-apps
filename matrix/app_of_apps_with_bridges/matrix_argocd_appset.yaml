@@ -426,13 +426,13 @@ spec:
                       - path: /
                         pathType: Prefix
 
-                      - path: /alertmanager
-                        pathType: ImplementationSpecific
-                        backend:
-                          service:
-                            name: matrix-stack-bridge-alertmanager
-                            port:
-                              name: http
+                      # - path: /alertmanager
+                      #   pathType: ImplementationSpecific
+                      #   backend:
+                      #     service:
+                      #       name: matrix-stack-bridge-alertmanager
+                      #       port:
+                      #         name: http
 
                       # if bridges.hookshot.generic.enabled, you want to uncomment the following:
                       # - path: /webhook
