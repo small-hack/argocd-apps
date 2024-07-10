@@ -144,7 +144,7 @@ data:
     # allow prometheus alerts to be posted
     # /_matrix/client/r0/rooms/.*/send/m.room.message/.*
     SecRule REQUEST_URI "@rx ^/_matrix/client/r0/rooms/.*/send/m.room.message/.*$" \
-        "id:933210,\
+        "id:20027,\
         phase:1,\
         ver:'matrix-rule-exclusions-plugin/1.0.0',\
         pass,\
