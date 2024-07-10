@@ -154,8 +154,8 @@ data:
         pass,\
         t:none,\
         nolog,\
-        ctl:ruleRemoveTargetById=942190;ARGS:json.body,
-        ctl:ruleRemoveTargetById=942360;ARGS:json.body,
+        ctl:ruleRemoveTargetById=942190;ARGS:json.body,\
+        ctl:ruleRemoveTargetById=942360;ARGS:json.body,\
         ctl:ruleRemoveTargetById=932100;ARGS:json.body"
 
     # allow PUT, OPTIONS to allow sending room key data:
