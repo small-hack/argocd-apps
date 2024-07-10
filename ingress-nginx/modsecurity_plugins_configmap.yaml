@@ -113,6 +113,7 @@ data:
         ver:'matrix-rule-exclusions-plugin/1.0.0',\
         pass,\
         t:none,\
+        nolog,\
         setvar:'tx.allowed_request_content_type=|application/octet-stream| |image/jpeg| |image/png|'"
 
     # allow PUT, OPTIONS to allow uploads
@@ -123,6 +124,7 @@ data:
         ver:'matrix-rule-exclusions-plugin/1.0.0',\
         pass,\
         t:none,\
+        nolog,\
         setvar:'tx.allowed_methods=POST PUT OPTIONS'"
 
     # allow PUT, OPTIONS to allow sending all sorts of user/room/device data:
