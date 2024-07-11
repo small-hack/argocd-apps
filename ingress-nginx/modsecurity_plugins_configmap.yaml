@@ -66,7 +66,7 @@ data:
       setvar:'tx.allowed_methods=PUT'"
 
     # this is for when a user tries to hit the explore link in a prometheus alert link
-    SecRule REQUEST_URI "@rx ^/explore?orgId=.*$" \
+    SecRule REQUEST_URI "@beginsWith /explore?orgId=" \
       "id:20029,\
       phase:1,\
       ver:'grafana-rule-exclusions-plugin/1.0.0',\
