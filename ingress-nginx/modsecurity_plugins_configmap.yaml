@@ -64,6 +64,16 @@ data:
       pass,\
       nolog,\
       setvar:'tx.allowed_methods=PUT'"
+
+    # this is for when a user tries to hit the explore link in a prometheus alert link
+    SecRule REQUEST_URI "@rx ^/explore?orgId=.*$" \
+      "id:20029,\
+      phase:1,\
+      ver:'grafana-rule-exclusions-plugin/1.0.0',\
+      pass,\
+      nolog,\
+      ctl:ruleRemoveTargetById=932125;ARGS:left"
+
   home-assistant-rule-exclusions-before.conf: |
     # -------------------------------------------------------------------------
     # home assistant rule exclusions
