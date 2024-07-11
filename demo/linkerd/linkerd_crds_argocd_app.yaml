@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: linkerd-crds
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  destination:
+    namespace: linkerd
+    server: 'https://kubernetes.default.svc'
+  source:
+    # see more info at:
+    # - https://github.com/linkerd/linkerd2
+    # - https://linkerd.io/2.15/tasks/install-helm/
+    repoURL: 'https://helm.linkerd.io/edge'
+    chart: linkerd-crds
+    targetRevision: 2024.7.1
+  project: linkerd
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+    automated:
+      prune: true
+      selfHeal: true
