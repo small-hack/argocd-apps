@@ -653,7 +653,7 @@ spec:
                   # -- I don't know what this is
                   app_alertmanager_secret: "{{ .matrix_sliding_sync_bitwarden_id }}"
                   # -- your homeserver url, e.g. https://homeserver.tld
-                  matrix_homeserver_url: "https://{{ .matrix_hostname }}"
+                  matrix_homeserver_url: "http://matrix-stack-synapse"
                   # -- map of rooms to send alerts to. where the key is the reciever in alert manager
                   # and the value is the room in matrix.
                   matrix_rooms: "matrix/!NSKUaRzeVZpCWqwlQo:{{ .matrix_hostname }}"
