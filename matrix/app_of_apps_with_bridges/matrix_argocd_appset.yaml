@@ -426,14 +426,6 @@ spec:
                       - path: /
                         pathType: Prefix
 
-                      # - path: /alertmanager
-                      #   pathType: ImplementationSpecific
-                      #   backend:
-                      #     service:
-                      #       name: matrix-stack-bridge-alertmanager
-                      #       port:
-                      #         name: http
-
                       # if bridges.hookshot.generic.enabled, you want to uncomment the following:
                       # - path: /webhook
                       #   pathType: ImplementationSpecific
@@ -671,11 +663,11 @@ spec:
                   # NOTE! Bot should also have enough power in the room for this to be useful.
                   mention_room: true
                   # -- set to enable Grafana links, e.g. https://grafana.example.com
-                  grafana_url: "{{ .prometheus_grafana_hostname }}"
+                  grafana_url: "https://{{ .prometheus_grafana_hostname }}"
                   # -- grafana data source, e.g. default
                   grafana_datasource: "default"
                   # -- set to enable silence link, e.g. https://alertmanager.example.com
-                  alertmanager_url: "{{ .prometheus_alert_manager_hostname }}"
+                  alertmanager_url: "https://{{ .prometheus_alert_manager_hostname }}"
 
               # see: https://matrix-org.github.io/matrix-hookshot/latest/setup/sample-configuration.html
               hookshot:
