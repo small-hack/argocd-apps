@@ -227,11 +227,13 @@ spec:
                   auth_url: https://{{ .zitadel_hostname }}/oauth/v2/authorize
                   token_url: https://{{ .zitadel_hostname }}/oauth/v2/token
                   api_url: https://{{ .zitadel_hostname }}/oauth/v1/userinfo
-
                 users:
                   allow_sign_up: false
                   auto_assign_org: true
                   auto_assign_org_role: Admin
+                server:
+                  domain: "{{ .grafana_hostname }}"
+                  root_url: "https://{{ .grafana_hostname }}"
 
               ingress:
                 enabled: true
