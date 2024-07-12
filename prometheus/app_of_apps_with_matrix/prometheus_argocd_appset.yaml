@@ -47,7 +47,7 @@ spec:
         helm:
           releaseName: prom-stack
           valuesObject:
-            # fullnameOverride: prom-stack
+            fullnameOverride: prom-stack
             global:
               evaluation_interval: 5s
               scrape_interval: 5s
