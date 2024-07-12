@@ -259,6 +259,7 @@ data:
       t:none,\
       ctl:ruleRemoveById=920340,\
       ctl:ruleRemoveById=921110,\
+      ctl:ruleRemoveById=920440,\
       setvar:'tx.allowed_methods=DELETE GET POST PUT'"
 
   zitadel-rule-exclusions-before.conf: |
