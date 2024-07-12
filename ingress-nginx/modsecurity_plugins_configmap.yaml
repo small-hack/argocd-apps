@@ -38,6 +38,7 @@ data:
       pass,\
       nolog,\
       ctl:ruleRemoveTargetById=932125;ARGS:json.queries.array_0.expr,\
+      ctl:ruleRemoveTargetById=942100;ARGS:json.queries.array_0.expr,\
       ctl:ruleRemoveById=933210,ctl:ruleRemoveById=942100,ctl:ruleRemoveById=932110"
 
     # for catching grafana QL passed as ARGS:json.queries.array_0.expr in grafana
