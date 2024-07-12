@@ -20,6 +20,7 @@ spec:
               - prometheus_hostname
               - prometheus_alert_manager_hostname
               - prometheus_grafana_hostname
+              - zitadel_hostname
               - vouch_hostname
               - global_cluster_issuer
   template:
@@ -39,7 +40,7 @@ spec:
       source:
         repoURL: https://prometheus-community.github.io/helm-charts
         chart: kube-prometheus-stack
-        targetRevision: 61.1.1
+        targetRevision: 61.3.1
         helm:
           releaseName: prom-stack
           valuesObject:
@@ -152,33 +153,29 @@ spec:
             grafana:
               grafana.ini:
                 auth:
-                  disable_login_form: false
-                  signout_redirect_url: 'https://{{ .prometheus_grafana_hostname }}/login/signout'
-                auth.proxy:
+                  disable_login_form: true
+                "auth.generic_oauth":
+                  name: Zitadel
                   enabled: true
-                  header_name: X-Vouch-User
-                  header_property: username
-                  auto_sign_up: true
+                  scopes: openid email profile groups
+                  attribute_path: email
+                  login_attribute: preferred_username
+                  name_attribute: name
+                  auth_url: https://{{ .zitadel_hostname }}/oauth/v2/authorize
+                  token_url: https://{{ .zitadel_hostname }}/oauth/v2/token
+                  api_url: https://{{ .zitadel_hostname }}/oauth/v1/userinfo
                 users:
                   allow_sign_up: false
                   auto_assign_org: true
                   auto_assign_org_role: Admin
+                server:
+                  root_url: "https://{{ .prometheus_grafana_hostname }}"
+
               ingress:
                 enabled: true
                 ingressClassName: nginx
                 annotations:
                   cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
-                  nginx.ingress.kubernetes.io/auth-signin: 'https://{{ .vouch_hostname }}/login?url=$scheme://$http_host$request_uri&vouch-failcount=$auth_resp_failcount&X-Vouch-Token=$auth_resp_jwt&error=$auth_resp_err'
-                  nginx.ingress.kubernetes.io/auth-url: 'https://{{ .vouch_hostname }}/validate'
-                  nginx.ingress.kubernetes.io/auth-response-headers: X-Vouch-User
-                  nginx.ingress.kubernetes.io/auth-snippet: |
-                    auth_request_set $auth_resp_jwt $upstream_http_x_vouch_jwt;
-                    auth_request_set $auth_resp_err $upstream_http_x_vouch_err;
-                    auth_request_set $auth_resp_failcount $upstream_http_x_vouch_failcount;
-                    auth_request_set $user   $upstream_http_x_auth_request_user;
-                    auth_request_set $email  $upstream_http_x_auth_request_email;
-                    proxy_set_header X-User  $user;
-                    proxy_set_header X-Email $email;
                 hosts:
                   - '{{ .prometheus_grafana_hostname }}'
                 tls:

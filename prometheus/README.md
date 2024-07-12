@@ -1,5 +1,5 @@
 # Prometheus Stack App of Apps
-Everything you need for a fully functioning monitoring stack managed by renovatebot and Argo CD.
+Everything you need for a fully functioning monitoring stack managed by RenovateBot and Argo CD.
 This doesn't seem like a big deal, but trust me, it is very much a pain to do manually.
 
 This app utilizes the [ApplicationSet Secret Plugin Generator](https://github.com/jessebot/argocd-appset-secret-plugin) so follow the directions there if you haven't already, so that Argo CD can populate the appropriate templated values in the ApplicationSet.
@@ -8,6 +8,12 @@ This app utilizes the [ApplicationSet Secret Plugin Generator](https://github.co
 
 #### Netflow
 <img src="./screenshots/prometheus_stack_network.png" alt="chart of the netflow for this app of apps">
+
+## directory structure
+
+- [crds/](./crds) - Prometheus Operator Custom Resource Definitions
+- [app_of_apps/](./app_of_apps) - main stable prometheus stack
+- [app_of_apps_with_matrix/](./app_of_apps_with_matrix) - experimental prometheus stack utilizing matrix for alerting
 
 ## Sync Waves
 1. Kube Prometheus Stack Custom Resource Definitions
@@ -33,7 +39,7 @@ spec:
   source:
     repoURL: 'https://github.com/small-hack/argocd-apps'
     targetRevision: main
-    path: prometheus/
+    path: prometheus/app_of_apps/
   destination:
     server: "https://kubernetes.default.svc"
     namespace: prometheus
@@ -60,7 +66,7 @@ https://blog.ediri.io/kube-prometheus-stack-and-argocd-23-how-to-remove-a-workar
 
 - [Reccommeneded Ingress Metrics dashboard](https://grafana.com/grafana/dashboards/14314-kubernetes-nginx-ingress-controller-nextgen-devops-nirvana/)
 
-1. Patch the Nginx Ingress controller to enable the metrics exporter 
+1. Patch the Nginx Ingress controller to enable the metrics exporter
 
     ```bash
     helm upgrade ingress-nginx ingress-nginx \
@@ -70,7 +76,7 @@ https://blog.ediri.io/kube-prometheus-stack-and-argocd-23-how-to-remove-a-workar
     --set-string controller.podAnnotations."prometheus\.io/scrape"="true" \
     --set-string controller.podAnnotations."prometheus\.io/port"="10254"
     ```
-    
+
 2. Create a yaml file containing your prometheus scrape configs, for example:
 
       ```yaml
@@ -84,12 +90,12 @@ https://blog.ediri.io/kube-prometheus-stack-and-argocd-23-how-to-remove-a-workar
         static_configs:
         - targets: ["nvidia-dcgm-exporter.default.svc.cluster.local:9400"]
       ```
-  
+
 3. Convert the file to a secret. Name of secret must match what is set in the helm `values.yaml`
-  
+
       ```bash
       wget https://raw.githubusercontent.com/small-hack/argocd-apps/main/prometheus/scrape-targets.yaml
-      
+
       kubectl create secret generic additional-scrape-configs --from-file=scrape-targets.yaml \
       --dry-run=client -oyaml > additional-scrape-configs.yaml
 
@@ -106,7 +112,7 @@ It should be used only for process that run infrequently or too quickly to be sc
 Helm Chart Source:
 - https://github.com/prometheus-community/helm-charts/tree/main/charts/prometheus-pushgateway
 
-When to use the Push Gateway: 
+When to use the Push Gateway:
 - https://prometheus.io/docs/practices/pushing/
 
 Pushing Metrics:
@@ -115,15 +121,15 @@ Pushing Metrics:
 Push metrics from a unix shell:
 - https://github.com/prometheus/pushgateway/blob/master/README.md
 
-Use the push gateway with the kube-prometheus-stack: 
+Use the push gateway with the kube-prometheus-stack:
 - https://github.com/prometheus-community/helm-charts/issues/2030#issuecomment-1585471558
 
 # Loki
 
 like Prometheus, but for logs
 
-- Loki is a horizontally-scalable, highly-available, multi-tenant log aggregation system inspired by Prometheus. 
-- It is designed to be very cost effective and easy to operate. 
+- Loki is a horizontally-scalable, highly-available, multi-tenant log aggregation system inspired by Prometheus.
+- It is designed to be very cost effective and easy to operate.
 - It does not index the contents of the logs, but rather a set of labels for each log stream.
 
 See: https://github.com/grafana/loki
