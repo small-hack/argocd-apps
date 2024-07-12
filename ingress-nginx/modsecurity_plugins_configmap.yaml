@@ -204,7 +204,7 @@ data:
         t:none,\
         nolog,\
         setvar:'tx.allowed_methods=GET POST PUT DELETE OPTIONS',\
-        ctl:ruleRemoveTargetById=930120"
+        ctl:ruleRemoveTargetById=930120;ARGS_NAMES:json.rooms"
 
     # this is for users forwarding room keys
     # /_matrix/client/v3/room_keys/keys?version=1
