@@ -196,7 +196,7 @@ data:
 
     # allow PUT, OPTIONS to allow sending room key data:
     # /_matrix/client/unstable/room_keys/keys?version=1
-    SecRule REQUEST_URI "@beginsWith /_matrix/client/unstable/room_keys/keys?version=1" \
+    SecRule REQUEST_URI "@beginsWith /_matrix/client/unstable/room_keys/keys" \
         "id:20020,\
         phase:1,\
         ver:'matrix-rule-exclusions-plugin/1.0.0',\
@@ -204,7 +204,7 @@ data:
         t:none,\
         nolog,\
         setvar:'tx.allowed_methods=GET POST PUT DELETE OPTIONS',\
-        ctl:ruleRemoveTargetById=930120;ARGS_NAMES:json.rooms"
+        ctl:ruleRemoveById=930120"
 
     # this is for users forwarding room keys
     # /_matrix/client/v3/room_keys/keys?version=1
@@ -247,7 +247,6 @@ data:
         nolog,\
         t:none,\
         ctl:ruleRemoveById=920340"
-
   postgres-s3-rule-exclusions-before.conf: |-
     # -------------------------------------------------------------------------
     # allow postgresql to upload wal archives to s3
@@ -264,7 +263,6 @@ data:
       ctl:ruleRemoveById=921110,\
       ctl:ruleRemoveById=920440,\
       setvar:'tx.allowed_methods=DELETE GET POST PUT'"
-
   zitadel-rule-exclusions-before.conf: |
     # Enable grpc parsing for zitadle only, avoids hitting ruleID 920420"
     SecRule REQUEST_URI "@beginsWith /zitadel.auth.v1.AuthService" \
@@ -296,7 +294,6 @@ data:
 
     # zitadel sends a __Host-zitadel.useragent cookie that sometimes has a = in it
     SecRuleUpdateTargetById 941120 "!REQUEST_COOKIES:__Host-zitadel.useragent"
-
   nextcloud-rule-exclusions-before.conf: |-
     # ------------------------------------------------------------------------
     # OWASP CRS Plugin
