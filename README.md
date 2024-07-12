@@ -99,11 +99,17 @@ Here's some quick guidelines, but you if you'd like to contribute, please read t
 
 ## Monitoring
 
+The main thing we deploy is the Kube Prometheus Stack which includes:
+- prometheus
+- alertmanager
+- grafana
+- loki
+
 | App Directory                                                           | Description                                                                                                                                                                         |
 |:------------------------------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [kube-prometheus-stack](./prometheus/prometheus_argocd_appset.yaml)     | [prometheus](https://prometheus.io/docs/introduction/overview/), alertmanager, [grafana](https://grafana.com) for collecting metrics for monitoring/alerting, and dashboards/charts |
-| [loki-stack](./prometheus/loki_argocd_app.yaml)                         | [loki](https://grafana.com/oss/loki/) and [promtail](https://grafana.com/docs/loki/latest/clients/promtail/) for collecting logs in prometheus                                      |
-| [prometheus-push-gateway](./prometheus/push-gateway_argocd_appset.yaml) | Installs the [Prometheus Push Gateway](https://prometheus.io/docs/instrumenting/pushing/) which enables pushing metrics from jobs that would be difficult or impossible to scrape   |
+| [kube-prometheus-stack](./prometheus/app_of_apps/)     | [prometheus](https://prometheus.io/docs/introduction/overview/), alertmanager, [grafana](https://grafana.com) for collecting metrics for monitoring/alerting, and dashboards/charts |
+| [loki-stack](./prometheus/app_of_apps/loki_argocd_app.yaml)                         | [loki](https://grafana.com/oss/loki/) and [promtail](https://grafana.com/docs/loki/latest/clients/promtail/) for collecting logs in prometheus                                      |
+| [prometheus-push-gateway](./prometheus/app_of_apps/push-gateway_argocd_appset.yaml) | Installs the [Prometheus Push Gateway](https://prometheus.io/docs/instrumenting/pushing/) which enables pushing metrics from jobs that would be difficult or impossible to scrape   |
 
 
 #### Experimental
