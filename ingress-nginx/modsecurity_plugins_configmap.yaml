@@ -187,6 +187,7 @@ data:
         pass,\
         t:none,\
         nolog,\
+        ctl:ruleRemoveTargetById=930120;ARGS_NAMES:json.profile_tag,\
         ctl:ruleRemoveTargetById=930120;ARGS_NAMES:json.profile_tag"
 
     # allows mautrix bridges to send things like:
