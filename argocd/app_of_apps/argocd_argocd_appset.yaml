@@ -18,7 +18,6 @@ spec:
         input:
           parameters:
             secret_vars:
-              # - cluster_issuer
               - argo_cd_hostname
               - argo_cd_oidc_provider
               - argo_cd_oidc_issuer
@@ -428,7 +427,7 @@ spec:
               ## Application controller metrics configuration
               metrics:
                 # -- Deploy metrics service
-                enabled: false
+                enabled: true
                 applicationLabels:
                   # -- Enables additional labels in argocd_app_labels metric
                   enabled: false
@@ -449,7 +448,7 @@ spec:
                   portName: http-metrics
                 serviceMonitor:
                   # -- Enable a prometheus ServiceMonitor
-                  enabled: false
+                  enabled: true
                   # -- Prometheus ServiceMonitor interval
                   interval: 30s
                   # -- Prometheus [RelabelConfigs] to apply to samples before scraping
