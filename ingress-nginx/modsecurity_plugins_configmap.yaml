@@ -156,7 +156,7 @@ data:
         nolog,\
         setvar:'tx.allowed_methods=GET POST PUT DELETE OPTIONS'"
 
-    SecRule REQUEST_URI "@beginsWith /_matrix/client/v3/createRoom" \
+    SecRule REQUEST_URI "@beginsWith /_matrix/client/(?:v3|r0)/createRoom" \
         "id:20032,\
         phase:1,\
         ver:'matrix-rule-exclusions-plugin/1.0.0',\
@@ -168,7 +168,7 @@ data:
     # allow prometheus alerts to be posted
     # also allows key verification with weird keys
     # /_matrix/client/r0/rooms/.*/send/m.room.message/.*
-    SecRule REQUEST_URI "@rx ^/_matrix/client/r0/rooms/.*/send/m.room.message/.*$" \
+    SecRule REQUEST_URI "@rx ^/_matrix/client/(?:v3|r0)/rooms/.*/send/m.room.message/.*$" \
         "id:20027,\
         phase:1,\
         ver:'matrix-rule-exclusions-plugin/1.0.0',\
@@ -194,7 +194,7 @@ data:
     # or
     # "This is your management room: prefixing commands with `!discord` is not required.\n"
     # which are responses from a bridge bot to a matrix user with admin access to the bot
-    SecRule REQUEST_URI "@rx ^/_matrix/client/v3/rooms/.*/send/m.room.message/mautrix-go_.*$"\
+    SecRule REQUEST_URI "@rx ^/_matrix/client/(?:v3|r0)/rooms/.*/send/m.room.message/mautrix-go_.*$"\
         "id:20019,\
         phase:1,\
         ver:'matrix-rule-exclusions-plugin/1.0.0',\
@@ -219,7 +219,7 @@ data:
 
     # this is for users forwarding room keys
     # /_matrix/client/v3/room_keys/keys?version=1
-    SecRule REQUEST_URI "@rx ^/_matrix/client/v3/room_keys/keys.*$" \
+    SecRule REQUEST_URI "@rx ^/_matrix/client/(?:v3|r0)/room_keys/keys.*$" \
         "id:20031,\
         phase:1,\
         ver:'matrix-rule-exclusions-plugin/1.0.0',\
