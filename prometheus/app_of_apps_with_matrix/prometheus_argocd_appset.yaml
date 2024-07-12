@@ -143,8 +143,8 @@ spec:
                         labels:
                           severity: warning
                         annotations:
-                          summary: ArgoCD service not synced (instance {{ $labels.instance }})
-                          description: "Service {{ $labels.name }} run by argo is currently not in sync.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+                          summary: ArgoCD service not synced (instance {`{{ $labels.instance }}`})
+                          description: "Service {`{{ $labels.name }}`} run by argo is currently not in sync.\n  VALUE = {`{{ $value }}`}\n  LABELS = {`{{ $labels }}`}"
 
                       - alert: ArgocdServiceUnhealthy
                         expr: argocd_app_info{health_status!="Healthy"} != 0
@@ -152,8 +152,8 @@ spec:
                         labels:
                           severity: warning
                         annotations:
-                          summary: ArgoCD service unhealthy (instance {{ $labels.instance }})
-                          description: "Service {{ $labels.name }} run by argo is currently not healthy.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+                          summary: ArgoCD service unhealthy (instance {`{{ $labels.instance }}`})
+                          description: "Service {`{{ $labels.name }}`} run by argo is currently not healthy.\n  VALUE = {`{{ $value }}`}\n  LABELS = {`{{ $labels }}`}"
 
               # basic linkerd alerts from awesome prometheus alerts
               #
