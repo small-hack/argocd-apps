@@ -304,6 +304,16 @@ data:
     # zitadel sends a __Host-zitadel.useragent cookie that sometimes has a = in it
     SecRuleUpdateTargetById 941120 "!REQUEST_COOKIES:__Host-zitadel.useragent"
   nextcloud-rule-exclusions-before.conf: |-
+    # allow Gadgetbridge backups and thumbnal creation
+    SecRule REQUEST_URI "@beginsWith ^/index.php/apps/files/api/v1/thumbnail/.*/Gadgetbridge.db$" \
+        "id:30004,\
+        phase:1,\
+        ver:'nextcloud-small-hack-rule-exclusions-plugin/1.0.0',\
+        pass,\
+        t:none,\
+        nolog,\
+        ctl:ruleRemoveTargetById=920440;TX:EXTENSION"
+
     # ------------------------------------------------------------------------
     # OWASP CRS Plugin
     # Copyright (c) 2021-2024 CRS project. All rights reserved.
