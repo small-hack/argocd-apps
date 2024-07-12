@@ -166,6 +166,7 @@ data:
         ctl:ruleRemoveTargetById=933150;ARGS_NAMES:json.is_direct"
 
     # allow prometheus alerts to be posted
+    # also allows key verification with weird keys
     # /_matrix/client/r0/rooms/.*/send/m.room.message/.*
     SecRule REQUEST_URI "@rx ^/_matrix/client/r0/rooms/.*/send/m.room.message/.*$" \
         "id:20027,\
@@ -174,6 +175,7 @@ data:
         pass,\
         t:none,\
         nolog,\
+        ctl:ruleRemoveById=920420,\
         ctl:ruleRemoveTargetById=933210;ARGS:json.formatted_body,\
         ctl:ruleRemoveTargetById=930120;ARGS:json.formatted_body"
 
