@@ -232,7 +232,7 @@ spec:
                   auto_assign_org: true
                   auto_assign_org_role: Admin
                 server:
-                  root_url: "https://{{ .grafana_hostname }}"
+                  root_url: "https://{{ .prometheus_grafana_hostname }}"
 
               ingress:
                 enabled: true
