@@ -129,7 +129,47 @@ spec:
                   patch:
                     enabled: false
 
-            alertmanager:
+            ## Provide custom recording or alerting rules to be deployed into the cluster.
+            ##
+            additionalPrometheusRulesMap:
+              # basic Argo CD alerts from awesome prometheus alerts
+              argo-cd:
+                groups:
+                  - name: argo_cd
+                    rules:
+                      - alert: ArgocdServiceNotSynced
+                        expr: argocd_app_info{sync_status!="Synced"} != 0
+                        for: 15m
+                        labels:
+                          severity: warning
+                        annotations:
+                          summary: ArgoCD service not synced (instance {{ $labels.instance }})
+                          description: "Service {{ $labels.name }} run by argo is currently not in sync.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+
+                      - alert: ArgocdServiceUnhealthy
+                        expr: argocd_app_info{health_status!="Healthy"} != 0
+                        for: 15m
+                        labels:
+                          severity: warning
+                        annotations:
+                          summary: ArgoCD service unhealthy (instance {{ $labels.instance }})
+                          description: "Service {{ $labels.name }} run by argo is currently not healthy.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+
+              # basic linkerd alerts from awesome prometheus alerts
+              #
+              # linkerd:
+              #   groups:
+              #     - name: linkerd
+              #       rules:
+              #         - alert: LinkerdHighErrorRate
+              #           expr: sum(rate(request_errors_total[1m])) by (deployment, statefulset, daemonset) / sum(rate(request_total[1m])) by (deployment, statefulset, daemonset) * 100 > 10
+              #           for: 1m
+              #           labels:
+              #             severity: warning
+              #           annotations:
+              #             summary: Linkerd high error rate (instance {{ $labels.instance }})
+              #             description: "Linkerd error rate for {{ $labels.deployment | $labels.statefulset | $labels.daemonset }} is over 10%\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+
               enabled: true
               annotations: {}
               ## Alertmanager configuration directives
@@ -217,6 +257,7 @@ spec:
               grafana.ini:
                 auth:
                   disable_login_form: true
+
                 "auth.generic_oauth":
                   name: Zitadel
                   enabled: true
@@ -227,10 +268,12 @@ spec:
                   auth_url: https://{{ .zitadel_hostname }}/oauth/v2/authorize
                   token_url: https://{{ .zitadel_hostname }}/oauth/v2/token
                   api_url: https://{{ .zitadel_hostname }}/oauth/v1/userinfo
+
                 users:
                   allow_sign_up: false
                   auto_assign_org: true
                   auto_assign_org_role: Admin
+
                 server:
                   root_url: "https://{{ .prometheus_grafana_hostname }}"
 
