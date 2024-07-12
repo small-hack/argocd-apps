@@ -232,7 +232,6 @@ spec:
                   auto_assign_org: true
                   auto_assign_org_role: Admin
                 server:
-                  domain: "{{ .grafana_hostname }}"
                   root_url: "https://{{ .grafana_hostname }}"
 
               ingress:
