@@ -24,6 +24,7 @@ spec:
               - prometheus_grafana_hostname
               - prometheus_alert_manager_secret
               - vouch_hostname
+              - zitadel_hostname
               - global_cluster_issuer
   template:
     metadata:
@@ -205,12 +206,12 @@ spec:
               envValueFrom:
                 GF_AUTH_GENERIC_OAUTH_CLIENT_ID:
                   secretKeyRef:
-                    name: grafana-oidc
+                    name: grafana-oidc-credentials
                     key: client_id
 
                 GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET:
                   secretKeyRef:
-                    name: grafana-oidc
+                    name: grafana-oidc-credentials
                     key: client_secret
 
               grafana.ini:
@@ -221,9 +222,9 @@ spec:
                   attribute_path: email
                   login_attribute: preferred_username
                   name_attribute: name
-                  auth_url: https://iam.vleermuis.tech/oauth/v2/authorize
-                  token_url: https://iam.vleermuis.tech/oauth/v2/token
-                  api_url: https://iam.vleermuis.tech/oauth/v1/userinfo
+                  auth_url: https://{{ .zitadel_hostname }}/oauth/v2/authorize
+                  token_url: https://{{ .zitadel_hostname }}/oauth/v2/token
+                  api_url: https://{{ .zitadel_hostname }}/oauth/v1/userinfo
 
                 users:
                   allow_sign_up: false
