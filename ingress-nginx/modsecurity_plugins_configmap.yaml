@@ -30,7 +30,8 @@ data:
     # loki and prometheus via grafana, should try to make these more granular later
     # -------------------------------------------------------------------------
     # needs tuning
-    SecRule REQUEST_URI "@rx ^/api/ds/query?ds_type=(?:loki|prometheus).*$" \
+    # for catching grafana QL passed as ARGS:json.queries.array_0.expr in grafana
+    SecRule REQUEST_URI "@beginsWith /api/ds/query?ds_type" \
       "id:20013,\
       phase:1,\
       ver:'grafana-rule-exclusions-plugin/1.0.0',\
