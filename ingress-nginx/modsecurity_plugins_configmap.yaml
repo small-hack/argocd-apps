@@ -203,6 +203,17 @@ data:
         nolog,\
         setvar:'tx.allowed_methods=GET POST PUT DELETE OPTIONS'"
 
+    # this is for users forwarding room keys
+    # /_matrix/client/v3/room_keys/keys?version=1
+    SecRule REQUEST_URI "@rx ^/_matrix/client/v3/room_keys/keys.*$" \
+        "id:20031,\
+        phase:1,\
+        ver:'matrix-rule-exclusions-plugin/1.0.0',\
+        pass,\
+        t:none,\
+        nolog,\
+        ctl:ruleRemoveById=930120"
+
     # allow PUT method for sending read recipets
     SecRule REQUEST_URI "@beginsWith /_matrix/federation/v1/send/" \
         "id:20021,\
