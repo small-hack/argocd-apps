@@ -11,6 +11,7 @@ This app utilizes the [ApplicationSet Secret Plugin Generator](https://github.co
 
 ## directory structure
 
+- [crds/](./crds) - Prometheus Operator Custom Resource Definitions
 - [app_of_apps/](./app_of_apps) - main stable prometheus stack
 - [app_of_apps_with_matrix/](./app_of_apps_with_matrix) - experimental prometheus stack utilizing matrix for alerting
 
@@ -38,7 +39,7 @@ spec:
   source:
     repoURL: 'https://github.com/small-hack/argocd-apps'
     targetRevision: main
-    path: prometheus/
+    path: prometheus/app_of_apps/
   destination:
     server: "https://kubernetes.default.svc"
     namespace: prometheus
