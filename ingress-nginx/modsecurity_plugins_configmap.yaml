@@ -317,15 +317,26 @@ data:
     # zitadel sends a __Host-zitadel.useragent cookie that sometimes has a = in it
     SecRuleUpdateTargetById 941120 "!REQUEST_COOKIES:__Host-zitadel.useragent"
   nextcloud-rule-exclusions-before.conf: |-
-    # allow Gadgetbridge backups and thumbnal creation
-    SecRule REQUEST_URI "@rx ^/index.php/apps/files/api/v1/thumbnail/.*/Gadgetbridge.db$" \
-        "id:30004,\
+    # reorder deck lists
+    SecRule REQUEST_URI "@rx ^/apps/deck/stacks/[0-9]+/reorder$" \
+        "id:30006,\
         phase:1,\
         ver:'nextcloud-small-hack-rule-exclusions-plugin/1.0.0',\
         pass,\
         t:none,\
         nolog,\
-        ctl:ruleRemoveTargetById=920440;TX:EXTENSION"
+        setvar:'tx.allowed_methods=GET HEAD POST PUT'"
+
+    # allow PUT method for sending read re
+    SecRule REQUEST_URI "@beginsWith /_matrix/federation/v1/send/" \
+        "id:20021,\
+        phase:1,\
+        ver:'matrix-rule-exclusions-plugin/1.0.0',\
+        pass,\
+        t:none,\
+        nolog,\
+        setvar:'tx.allowed_methods=GET POST PUT OPTIONS'"
+
 
     # ------------------------------------------------------------------------
     # OWASP CRS Plugin
