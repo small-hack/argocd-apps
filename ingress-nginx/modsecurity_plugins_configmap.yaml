@@ -112,6 +112,16 @@ data:
       t:none,\
       nolog,\
       ctl:ruleRemoveById=930130"
+
+    # register sensor
+    SecRule REQUEST_URI "@beginsWith /api/webhook/" \
+      "id:20033,\
+      phase:1,\
+      ver:'home-assistant-rule-exclusions-plugin/1.0.0',\
+      pass,\
+      t:none,\
+      nolog,\
+      ctl:ruleRemoveTargetById=933150;ARGS:json.data.unique_id"
   matrix-rule-exclusions-before.conf: |-
     # -------------------------------------------------------------------------
     # allow uploads for matrix via element web and mobile
