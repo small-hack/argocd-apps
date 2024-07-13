@@ -308,7 +308,7 @@ data:
     SecRuleUpdateTargetById 941120 "!REQUEST_COOKIES:__Host-zitadel.useragent"
   nextcloud-rule-exclusions-before.conf: |-
     # allow Gadgetbridge backups and thumbnal creation
-    SecRule REQUEST_URI "@beginsWith ^/index.php/apps/files/api/v1/thumbnail/.*/Gadgetbridge.db$" \
+    SecRule REQUEST_URI "@rx ^/index.php/apps/files/api/v1/thumbnail/.*/Gadgetbridge.db$" \
         "id:30004,\
         phase:1,\
         ver:'nextcloud-small-hack-rule-exclusions-plugin/1.0.0',\
