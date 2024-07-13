@@ -336,6 +336,7 @@ data:
         t:none,\
         nolog,\
         setvar:'tx.allowed_methods=GET HEAD POST PUT'"
+
     # ------------------------------------------------------------------------
     # OWASP CRS Plugin
     # Copyright (c) 2021-2024 CRS project. All rights reserved.
@@ -1136,6 +1137,37 @@ data:
         SecRule RESPONSE_STATUS "@streq 501" \
             "t:none,\
             ctl:ruleRemoveById=950100"
+
+    # Deleting a contact from addressbook
+    # XML parser fails because a content type is set without a request body
+    SecRule REQUEST_FILENAME "@rx /remote\.php/dav/addressbooks/users(?:/[^/]+){3}\.vcf$" \
+        "id:9508324,\
+        phase:2,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        chain"
+        SecRule REQUEST_METHOD "@streq DELETE" \
+            "t:none,\
+            chain"
+            SecRule REQUEST_BODY_LENGTH "@eq 0" \
+                "t:none,\
+                ctl:ruleRemoveById=200002"
+
+    # Syncing contacts via a dav client
+    SecRule REQUEST_FILENAME "@rx /remote\.php/dav/addressbooks/users/(?:[^/]+/){1,2}$" \
+        "id:9508325,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:ruleRemoveTargetById=921110;REQUEST_BODY,\
+        ctl:ruleRemoveTargetById=942430;XML:/*,\
+        ctl:ruleRemoveTargetById=942431;XML:/*,\
+        ctl:ruleRemoveTargetById=942432;XML:/*,\
+        ctl:ruleRemoveTargetById=942440;XML:/*"
 
     #
     # [ Calendar ]
@@ -3051,3 +3083,4 @@ data:
         nolog,\
         ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
         setvar:'tx.allowed_methods=%{tx.allowed_methods} DELETE'"
+
