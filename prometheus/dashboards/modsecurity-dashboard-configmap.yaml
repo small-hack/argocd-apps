@@ -410,7 +410,7 @@ data:
         ]
       },
       "time": {
-        "from": "now-24h",
+        "from": "now-12h",
         "to": "now"
       },
       "timeRangeUpdatedDuringEditOrView": false,
