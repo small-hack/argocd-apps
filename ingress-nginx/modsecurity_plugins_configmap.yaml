@@ -201,14 +201,14 @@ data:
         ctl:ruleRemoveTargetById=933150;ARGS:json.ciphertext"
 
     # allow users to push up their keys from mobile or desktop
-    SecRule REQUEST_URI @rx "^/_matrix/client/(?:r0|v3)/pushers/set.*$"
+    # /_matrix/client/r0/pushers/set
+    SecRule REQUEST_URI @rx "^/_matrix/client/(?:r0|v3)/pushers/set$"
         "id:20026,\
         phase:1,\
         ver:'matrix-rule-exclusions-plugin/1.0.0',\
         pass,\
         t:none,\
         nolog,\
-        ctl:ruleRemoveTargetById=930120;ARGS_NAMES:json.profile_tag,\
         ctl:ruleRemoveTargetById=930120;ARGS_NAMES:json.profile_tag"
 
     # allows mautrix bridges to send things like:
