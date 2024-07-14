@@ -633,6 +633,9 @@ spec:
                 enabled: true
                 revisionHistoryLimit: 1
 
+                image:
+                  tag: "0.11.0-dev-1"
+
                 registration:
                   id: "alertmanager"
                   rate_limited: false
@@ -648,20 +651,21 @@ spec:
                 encryption: false
 
                 config:
-                  # -- app port?
-                  app_port: 3000
-                  # -- I don't know what this is
                   app_alertmanager_secret: "{{ .matrix_sliding_sync_bitwarden_id }}"
-                  # -- your homeserver url, e.g. https://homeserver.tld
                   matrix_homeserver_url: "http://matrix-stack-synapse"
-                  # -- map of rooms to send alerts to. where the key is the reciever in alert manager
-                  # and the value is the room in matrix.
-                  matrix_rooms: "matrix/!NSKUaRzeVZpCWqwlQo:{{ .matrix_hostname }}"
-                  # -- user in matrix for the the alertmanager bot e.g. @alertmanager:homeserver.tld
-                  matrix_user: "alertmanager"
-                  # -- Set this to true to make firing alerts do a `@room` mention.
-                  # NOTE! Bot should also have enough power in the room for this to be useful.
-                  mention_room: true
+
+                  bot:
+                    # -- map of rooms to send alerts to. where the key is the reciever in alert manager
+                    # and the value is the room in matrix.
+                    rooms: "matrix/!NSKUaRzeVZpCWqwlQo:{{ .matrix_hostname }}"
+                    # -- user in matrix for the the alertmanager bot e.g. @alertmanager:homeserver.tld
+                    user: "alertmanager"
+                    display_name: "Prometheus Alerts"
+                    avatar: "mxc://{{ .matrix_hostname }}/lDmnZtMCeOBGvdmOpCSiczHx"
+                    # -- Set this to true to make firing alerts do a `@room` mention.
+                    # NOTE! Bot should also have enough power in the room for this to be useful.
+                    mention_room: true
+
                   # -- set to enable Grafana links, e.g. https://grafana.example.com
                   grafana_url: "https://{{ .prometheus_grafana_hostname }}"
                   # -- grafana data source, e.g. default
