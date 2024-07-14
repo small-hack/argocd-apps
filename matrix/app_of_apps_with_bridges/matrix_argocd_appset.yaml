@@ -658,10 +658,9 @@ spec:
                     # -- map of rooms to send alerts to. where the key is the reciever in alert manager
                     # and the value is the room in matrix.
                     rooms: "matrix/!NSKUaRzeVZpCWqwlQo:{{ .matrix_hostname }}"
-                    # -- user in matrix for the the alertmanager bot e.g. @alertmanager:homeserver.tld
                     user: "alertmanager"
                     display_name: "Prometheus Alerts"
-                    avatar: "mxc://{{ .matrix_hostname }}/lDmnZtMCeOBGvdmOpCSiczHx"
+                    avatar_url: "mxc://{{ .matrix_hostname }}/lDmnZtMCeOBGvdmOpCSiczHx"
                     # -- Set this to true to make firing alerts do a `@room` mention.
                     # NOTE! Bot should also have enough power in the room for this to be useful.
                     mention_room: true
