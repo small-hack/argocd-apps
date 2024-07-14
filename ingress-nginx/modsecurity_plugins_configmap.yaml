@@ -177,6 +177,7 @@ data:
 
     # allow prometheus alerts to be posted
     # also allows key verification with weird keys
+    # also allow edits
     # /_matrix/client/r0/rooms/.*/send/m.room.message/.*
     SecRule REQUEST_URI "@rx ^/_matrix/client/(?:v3|r0)/rooms/.*/send/m.room.message/.*$" \
         "id:20027,\
@@ -187,7 +188,8 @@ data:
         nolog,\
         ctl:ruleRemoveById=920420,\
         ctl:ruleRemoveTargetById=933210;ARGS:json.formatted_body,\
-        ctl:ruleRemoveTargetById=930120;ARGS:json.formatted_body"
+        ctl:ruleRemoveTargetById=930120;ARGS:json.formatted_body,\
+        ctl:ruleRemoveTargetById=933150;ARGS:json.ciphertext"
 
     # allow users to push up their keys from mobile or desktop
     SecRule REQUEST_URI @rx "^/_matrix/client/(?:r0|v3)/pushers/set.*$"
