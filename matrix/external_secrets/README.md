@@ -8,6 +8,9 @@ A Helm chart for matrix External Secrets using the Bitwarden ESO provider on Kub
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| bridges.alertmanager_bitwarden_ID | string | `""` | bitwarden id containing secrets for alertmanager bridge |
+| bridges.discord_bitwarden_ID | string | `""` | bitwarden id containing secrets for discord bridge |
+| bridges.hookshot_bitwarden_ID | string | `""` | bitwarden id containing secret with passkey.pem for hookshot bridge |
 | external_secrets_provider | string | `""` | if this is not set to "bitwarden", we will not actually deploy any templates but soon we will also support openbao |
 | matrix_authentication_service.mas_bitwarden_ID | string | `""` | existing bitwarden item with matrix authentication service credentials |
 | matrix_authentication_service.oidc_credentials_bitwarden_ID | string | `""` | oidc credentials bitwarden item _ID |

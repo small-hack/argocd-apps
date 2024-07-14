@@ -41,4 +41,8 @@ sliding_sync:
 
 bridges:
   # -- bitwarden id containing secret with passkey.pem for hookshot bridge
-  hookshot_pem_bitwarden_ID: ""
+  hookshot_bitwarden_ID: ""
+  # -- bitwarden id containing secrets for alertmanager bridge
+  alertmanager_bitwarden_ID: ""
+  # -- bitwarden id containing secrets for discord bridge
+  discord_bitwarden_ID: ""
