@@ -10,11 +10,17 @@ The scheduled backup is created in the app of apps via [s3_pvc_appset.yaml](../a
 - restic
 - postgresql
 
-Assuming the entire cluster is gone, first we'll need a new persistent volume and the secrets for backblaze B2 as well as the restic repo password. In our case, since this is all in GitLab, from the root dir of the repo, we can run:
+Assuming the entire cluster is gone, first we'll need new persistent volumes and the secrets for backblaze B2 as well as the restic repo password. In our case, since this is all in GitHub, from the root dir of the repo, we can run:
 
 ```bash
-kubectl apply -f manifests/persistence/
-kubectl apply -f manifests/external_secrets/
+# setup the PVCs for S3
+kubectl apply -f nextcloud/app_of_apps/s3_pvc_appset.yaml
+
+# setup the PVCs for nextcloud
+kubectl apply -f nextcloud/app_of_apps/pvc_argocd_appset.yaml
+
+# setup the external secrets
+kubectl apply -f nextcloud/app_of_apps/external_secrets_argocd_appset.yaml
 ```
 
 After that, we can run a restore job for the files. You can grab the snapshot ID you want to restore from the `restic snapshots` command. You’ll need the credentials from the secrets and the encryption key. With that information you can configure restic. This example assumes you're using Backblaze B2:
@@ -47,7 +53,7 @@ ID        Time                 Host        Tags        Paths
 If you want the latest snapshot, you can just run this, otherwise, first edit the `spec.snapshot` parameter to be the ID you of your snapshot and uncomment it.
 
 ```bash
-kubectl apply -f k8up_restores/restore_files.yaml
+kubectl apply -f nextcloud/app_of_apps/backups_and_restores/restore_files.yaml
 ```
 
 Then your files should be back, but your database is not yet available, and not as easy to fix. Referencing the database dump snapshot above, you can do...
