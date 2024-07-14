@@ -852,11 +852,6 @@ spec:
                   bridge:
                     port: 29334
 
-                podSecurityContext:
-                  runAsUser: 0
-                  runAsGroup: 1337
-                  fsGroup: 1337
-
                 # -- extra volumes for the mautrix/discord deployment
                 extraVolumes:
                   - name: sqllite
