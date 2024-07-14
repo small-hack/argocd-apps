@@ -2,8 +2,11 @@ apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
   name: slow-raid
+  annotations:
+    defaultVolumeType: local
 provisioner: rancher.io/local-path
 parameters:
   nodePath: /mnt/raid0
-volumeBindingMode: Immediate
+  pathPattern: "{{ .PVC.Namespace }}/{{ .PVC.Name }}"
+volumeBindingMode: WaitForFirstConsumer
 reclaimPolicy: Delete
