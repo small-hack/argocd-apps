@@ -295,7 +295,7 @@ data:
       ctl:ruleRemoveById=920340,\
       ctl:ruleRemoveById=921110,\
       ctl:ruleRemoveById=920440,\
-      setvar:'tx.allowed_methods=DELETE GET POST PUT'"
+      setvar:'tx.allowed_methods=DELETE GET POST HEAD PUT'"
   zitadel-rule-exclusions-before.conf: |
     # Enable grpc parsing for zitadle only, avoids hitting ruleID 920420"
     SecRule REQUEST_URI "@beginsWith /zitadel.auth.v1.AuthService" \
