@@ -1,0 +1,69 @@
+{{- if and (eq .Values.external_secrets_provider "bitwarden") .Values.bridges.hookshot.github_bitwarden_ID }}
+{{- if not (eq .Values.bridges.hookshot.github_bitwarden_ID "Not Applicable") }}
+---
+# secret matrix email stuff
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: matrix-bridge-hookshot-github
+spec:
+  target:
+    # Name of the kubernetes secret to create
+    name: matrix-bridge-hookshot-github
+    deletionPolicy: Delete
+    template:
+      type: Opaque
+      data:
+        # Key names within the kubernetes secret
+        app_id: |-
+          {{ `{{ .appid }}` }}
+        webhook_secret: |-
+          {{ `{{ .webhooksecret }}` }}
+        oauth_client_id: |-
+          {{ `{{ .clientid }}` }}
+        oauth_client_secret: |-
+          {{ `{{ .clientsecret }}` }}
+        private_key: |-
+          {{ `{{ .privatekey }}` }}
+  data:
+    - secretKey: appid
+      sourceRef:
+        storeRef:
+          name: bitwarden-fields
+          kind: ClusterSecretStore
+      remoteRef:
+        # name of the bitwarden secret
+        key: {{ .Values.bridges.hookshot.github_bitwarden_ID }}
+        property: app_id
+
+    - secretKey: webhooksecret
+      sourceRef:
+        storeRef:
+          name: bitwarden-fields
+          kind: ClusterSecretStore
+      remoteRef:
+        # name of the bitwarden secret
+        key: {{ .Values.bridges.hookshot.github_bitwarden_ID }}
+        property: webhook_secret
+
+    - secretKey: clientid
+      sourceRef:
+        storeRef:
+          name: bitwarden-fields
+          kind: ClusterSecretStore
+      remoteRef:
+        # name of the bitwarden secret
+        key: {{ .Values.bridges.hookshot.github_bitwarden_ID }}
+        property: oauth_client_id
+
+    - secretKey: clientsecret
+      sourceRef:
+        storeRef:
+          name: bitwarden-fields
+          kind: ClusterSecretStore
+      remoteRef:
+        # name of the bitwarden secret
+        key: {{ .Values.bridges.hookshot.github_bitwarden_ID }}
+        property: oauth_client_secret
+{{- end }}
+{{- end }}

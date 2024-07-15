@@ -1,5 +1,5 @@
-{{- if and (eq .Values.external_secrets_provider "bitwarden") .Values.bridges.hookshot_bitwarden_ID }}
-{{- if not (eq .Values.bridges.hookshot_bitwarden_ID "Not Applicable") }}
+{{- if and (eq .Values.external_secrets_provider "bitwarden") .Values.bridges.hookshot.bitwarden_ID }}
+{{- if not (eq .Values.bridges.hookshot.bitwarden_ID "Not Applicable") }}
 ---
 # secret matrix email stuff
 apiVersion: external-secrets.io/v1beta1
@@ -21,14 +21,6 @@ spec:
           {{ `{{ .astoken }}` }}
         hs_token: |-
           {{ `{{ .hstoken }}` }}
-        github_app_id: |-
-          {{ `{{ .githubappid }}` }}
-        github_webhook_secret: |-
-          {{ `{{ .githubwebhooksecret }}` }}
-        github_oauth_client_id: |-
-          {{ `{{ .githubclientid }}` }}
-        github_oauth_client_secret: |-
-          {{ `{{ .githubclientsecret }}` }}
   data:
     - secretKey: passkey
       sourceRef:
@@ -37,7 +29,7 @@ spec:
           kind: ClusterSecretStore
       remoteRef:
         # name of the bitwarden secret
-        key: {{ .Values.bridges.hookshot_bitwarden_ID }}
+        key: {{ .Values.bridges.hookshot.bitwarden_ID }}
 
     - secretKey: astoken
       sourceRef:
@@ -46,7 +38,7 @@ spec:
           kind: ClusterSecretStore
       remoteRef:
         # name of the bitwarden secret
-        key: {{ .Values.bridges.hookshot_bitwarden_ID }}
+        key: {{ .Values.bridges.hookshot.bitwarden_ID }}
         # property within the bitwarden secret we want
         property: as_token
 
@@ -57,48 +49,8 @@ spec:
           kind: ClusterSecretStore
       remoteRef:
         # name of the bitwarden secret
-        key: {{ .Values.bridges.hookshot_bitwarden_ID }}
+        key: {{ .Values.bridges.hookshot.bitwarden_ID }}
         # property within the bitwarden secret we want
         property: hs_token
-
-    - secretKey: githubwebhooksecret
-      sourceRef:
-        storeRef:
-          name: bitwarden-fields
-          kind: ClusterSecretStore
-      remoteRef:
-        # name of the bitwarden secret
-        key: {{ .Values.bridges.hookshot_bitwarden_ID }}
-        property: github_webhook_secret
-
-    - secretKey: githubappid
-      sourceRef:
-        storeRef:
-          name: bitwarden-fields
-          kind: ClusterSecretStore
-      remoteRef:
-        # name of the bitwarden secret
-        key: {{ .Values.bridges.hookshot_bitwarden_ID }}
-        property: github_app_id
-
-    - secretKey: githubclientid
-      sourceRef:
-        storeRef:
-          name: bitwarden-fields
-          kind: ClusterSecretStore
-      remoteRef:
-        # name of the bitwarden secret
-        key: {{ .Values.bridges.hookshot_bitwarden_ID }}
-        property: github_oauth_client_id
-
-    - secretKey: githubclientsecret
-      sourceRef:
-        storeRef:
-          name: bitwarden-fields
-          kind: ClusterSecretStore
-      remoteRef:
-        # name of the bitwarden secret
-        key: {{ .Values.bridges.hookshot_bitwarden_ID }}
-        property: github_oauth_client_secret
 {{- end }}
 {{- end }}
