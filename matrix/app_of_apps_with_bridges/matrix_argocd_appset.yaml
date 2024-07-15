@@ -766,7 +766,7 @@ spec:
                       # -- key in existing Kubernetes secret for GitHub oauth client secret
                       oauth_client_secret: "oauth_client_secret"
                       # -- key in existin Kubernetes secret for GitHub privatekey
-                      private_key: "github-key.pem"
+                      private_key: "private_key"
 
                     # -- oauth section should include both the Client ID and Client Secret
                     # on the GitHub App page. The redirect_uri value must be the public path
