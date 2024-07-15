@@ -180,10 +180,10 @@ spec:
                 #   configMap:
                 #     name: before-starting-scripts
                 #     defaultMode: 0550
-                - name: certs
-                  secret:
-                    secretName: valkey-crt
-                    defaultMode: 0640
+                #- name: certs
+                #  secret:
+                #    secretName: valkey-crt
+                #    defaultMode: 0640
 
                 - name: postgres-ca
                   secret:
@@ -198,8 +198,8 @@ spec:
               extraVolumeMounts:
                 # - name: before-starting-scripts
                 #   mountPath: /docker-entrypoint-hooks.d/before-starting
-                - mountPath: /certs
-                  name: certs
+                #- mountPath: /certs
+                #  name: certs
 
                 - name: postgres-ca
                   mountPath: /etc/secrets/ca
