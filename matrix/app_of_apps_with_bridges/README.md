@@ -15,3 +15,15 @@ Using the [admin api](https://element-hq.github.io/synapse/latest/usage/administ
 # access token can be gotten from Element > Settings > Help & About > Advanced > Access Token
 curl --header "Authorization: Bearer <access token here>" http://localhost:8008/_synapse/admin/v1/rooms
 ```
+
+### Deleting rooms
+Sometimes a room gets weird and you have to delete it. You can only do that by room ID, and you have to escape the `!`:
+
+```bash
+# room id can be found in Element > click room > Settings > Advanced
+curl --header "Authorization: Bearer <access token here>" \
+     --header "Content-Type: application/json" \
+     --data '{}' \
+     --request DELETE \
+     http://localhost:8008/_synapse/admin/v1/rooms/\!84fa89phdafjk:matrix.mydomain.com
+```
