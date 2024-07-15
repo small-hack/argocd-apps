@@ -338,6 +338,15 @@ data:
         nolog,\
         ctl:ruleRemoveTargetById=920440;TX:EXTENSION"
 
+    # to allow occ federation:sync-addressbook
+    SecRule REQUEST_URI "@beginsWith /ocm/shares" \
+        "id:30006,\
+        phase:1,\
+        ver:'nextcloud-small-hack-rule-exclusions-plugin/1.0.0',\
+        pass,\
+        t:none,\
+        nolog,\
+        setvar:'tx.allowed_methods=GET HEAD POST PUT DELETE'"
     # ------------------------------------------------------------------------
     # OWASP CRS Plugin
     # Copyright (c) 2021-2024 CRS project. All rights reserved.
