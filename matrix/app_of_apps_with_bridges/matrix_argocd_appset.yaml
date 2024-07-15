@@ -775,7 +775,7 @@ spec:
                     # use the path https://example.com/hookshot/oauth. This value MUST exactly
                     # match the Callback URL on the GitHub App page.
                     oauth:
-                      redirect_uri: ""
+                      redirect_uri: "https://{{ .matrix_hostname }}/webhook/oauth/"
 
                     # -- (Optional) Default options for GitHub connections. see docs for more:
                     # https://matrix-org.github.io/matrix-hookshot/latest/usage/room_configuration/github_repo.html#configuration
