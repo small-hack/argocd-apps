@@ -621,6 +621,9 @@ spec:
                 enabled: true
                 revisionHistoryLimit: 1
 
+                image:
+                  tag: 0.12.0-dev-1
+
                 registration:
                   id: "alertmanager"
                   rate_limited: false
