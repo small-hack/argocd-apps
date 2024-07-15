@@ -251,12 +251,6 @@ spec:
                       'seeds' => [
                         'valkey.nextcloud.svc.cluster.local:6379',
                       ],
-                      'ssl_context' => [
-                        'local_cert' => '/certs/tls.crt',
-                        'local_pk' => '/certs/tls.key',
-                        'cafile' => '/certs/ca.crt',
-                        'verify_peer_name' => false,
-                      ],
                       'timeout' => 0.0,
                       'read_timeout' => 0.0,
                       'failover_mode' => \RedisCluster::FAILOVER_ERROR,
