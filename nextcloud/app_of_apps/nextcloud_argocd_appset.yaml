@@ -160,6 +160,12 @@ spec:
                       name: nextcloud-oidc-credentials
                       key: client_secret
 
+                - name: "REDIS_HOST_PASSWORD"
+                  valueFrom:
+                    secretKeyRef:
+                      name: valkey-credentials
+                      key: valkey_password
+
                 - name: "PGSSLCERT"
                   value: /etc/secrets/nextcloud/tls.crt
 
@@ -174,6 +180,10 @@ spec:
                 #   configMap:
                 #     name: before-starting-scripts
                 #     defaultMode: 0550
+                - name: certs
+                  secret:
+                    secretName: valkey-crt
+                    defaultMode: 0640
 
                 - name: postgres-ca
                   secret:
@@ -188,6 +198,8 @@ spec:
               extraVolumeMounts:
                 # - name: before-starting-scripts
                 #   mountPath: /docker-entrypoint-hooks.d/before-starting
+                - mountPath: /certs
+                  name: certs
 
                 - name: postgres-ca
                   mountPath: /etc/secrets/ca
@@ -195,14 +207,19 @@ spec:
                 - name: postgres-client-certs
                   mountPath: /etc/secrets/nextcloud
 
-              # defaultConfigs:
-              #   redis.config.php: false
+              defaultConfigs:
+                redis.config.php: false
 
               phpConfigs:
                 #  www.conf: |-
                 #    [www]
                 #    user = www-data
                 #    group = www-data
+                redis-cluster.ini: |-
+                  session.locking_enabled=1
+                  session.lock_retries=-1
+                  session.lock_wait_time=10000
+
                 www.conf: |-
                   [www]
                   security.limit_extensions = .php .css .js .html
@@ -223,6 +240,29 @@ spec:
                   php_admin_value[opcache.revalidate_freq] = 60
 
               configs:
+                redis-cluster.config.php: |-
+                  <?php
+                  $CONFIG = [
+                    'memcache.local' => '\OC\Memcache\APCu',
+                    'memcache.distributed' => '\\OC\\Memcache\\Redis',
+                    'memcache.locking' => '\\OC\\Memcache\\Redis',
+                    'redis.cluster' => [
+                      'seeds' => [
+                        'valkey.nextcloud.svc.cluster.local:6379',
+                      ],
+                      'ssl_context' => [
+                        'local_cert' => '/certs/tls.crt',
+                        'local_pk' => '/certs/tls.key',
+                        'cafile' => '/certs/ca.crt',
+                        'verify_peer_name' => false,
+                      ],
+                      'timeout' => 0.0,
+                      'read_timeout' => 0.0,
+                      'failover_mode' => \RedisCluster::FAILOVER_ERROR,
+                      'password' => getenv('REDIS_HOST_PASSWORD')
+                    ],
+                  ];
+
                 logging.config.php: |-
                   <?php
                   $CONFIG = array (
