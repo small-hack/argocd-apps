@@ -850,6 +850,8 @@ spec:
                      services:
                        - service: webhooks
                          level: admin
+                       - service: github
+                         level: admin
 
               discord_mautrix:
                 # -- Set to true to enable the Discord bridge. Learn more in the [docs](https://docs.mau.fi/bridges/go/discord/index.html).
