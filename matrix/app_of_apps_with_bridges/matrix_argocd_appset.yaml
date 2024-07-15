@@ -758,7 +758,7 @@ spec:
                     existingSecret: "matrix-bridge-hookshot-github"
                     existingSecretKeys:
                       # -- key in existing Kubernetes secret for GitHub auth.id which is the GitHub App ID
-                      auth_id: "auth_id"
+                      auth_id: "app_id"
                       # -- key in existing Kubernetes secret for GitHub webhook secret
                       webhook_secret: "webhook_secret"
                       # -- key in existing Kubernetes secret for GitHub oauth client id
