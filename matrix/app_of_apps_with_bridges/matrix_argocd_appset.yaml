@@ -627,7 +627,7 @@ spec:
                 revisionHistoryLimit: 1
 
                 image:
-                  tag: 0.12.0-dev-2
+                  tag: 0.12.0-dev-3
 
                 registration:
                   id: "alertmanager"
