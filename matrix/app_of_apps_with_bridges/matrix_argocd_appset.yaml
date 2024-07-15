@@ -54,9 +54,12 @@ spec:
           prune: true
           selfHeal: true
       source:
-        repoURL: 'https://small-hack.github.io/matrix-chart'
-        targetRevision: 13.0.2
-        chart: matrix
+        # repoURL: 'https://small-hack.github.io/matrix-chart'
+        # targetRevision: 13.0.2
+        # chart: matrix
+        repoURL: 'https://github.com/small-hack/matrix-chart'
+        targetRevision: add-service-monitor
+        path: charts/matrix/
         helm:
           valuesObject:
             fullnameOverride: matrix-stack
@@ -474,6 +477,8 @@ spec:
                 # -- Port to listen on for metrics scraping
                 port: 9092
                 annotations: true
+                serviceMonitor:
+                  enabled: true
 
               extraVolumes:
                 - name: postgres-ca
