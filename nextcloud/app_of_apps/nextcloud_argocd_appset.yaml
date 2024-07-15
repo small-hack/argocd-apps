@@ -138,9 +138,13 @@ spec:
                       type: RuntimeDefault
 
               extraEnv:
+                - name: "OVERWRITECLIURL"
+                  value: 'https://{{ .nextcloud_hostname }}'
+
                 # fix time in nextcloud container
                 - name: "TZ"
                   value: '{{ .global_time_zone }}'
+
                 # OIDC parameters
                 - name: "NC_oidc_login_provider_url"
                   valueFrom:
