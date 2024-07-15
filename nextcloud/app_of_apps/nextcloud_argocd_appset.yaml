@@ -216,10 +216,9 @@ spec:
                 #    user = www-data
                 #    group = www-data
                 redis-cluster.ini: |-
-                  session.locking_enabled = 1
-                  session.lock_retries = -1
-                  session.lock_wait_time = 10000
                   session.save_handler = rediscluster
+                  session.save_path = "seed[]=valkey.nextcloud.svc.cluster.local:6379&timeout=2&read_timeout=2&failover=error&persistent=1&auth[user]=redis-user&auth[pass]=ChangeM3"
+
 
                 www.conf: |-
                   [www]
@@ -244,7 +243,7 @@ spec:
                 redis-cluster.config.php: |-
                   <?php
                   $CONFIG = [
-                    'memcache.local' => '\OC\Memcache\APCu',
+                    'memcache.local' => '\OC\Memcache\Redis',
                     'memcache.distributed' => '\\OC\\Memcache\\Redis',
                     'memcache.locking' => '\\OC\\Memcache\\Redis',
                     'redis.cluster' => [
