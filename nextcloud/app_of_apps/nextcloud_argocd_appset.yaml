@@ -216,9 +216,10 @@ spec:
                 #    user = www-data
                 #    group = www-data
                 redis-cluster.ini: |-
-                  session.locking_enabled=1
-                  session.lock_retries=-1
-                  session.lock_wait_time=10000
+                  session.locking_enabled = 1
+                  session.lock_retries = -1
+                  session.lock_wait_time = 10000
+                  session.save_handler = rediscluster
 
                 www.conf: |-
                   [www]

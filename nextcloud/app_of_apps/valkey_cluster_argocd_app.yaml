@@ -4,6 +4,8 @@ kind: Application
 metadata:
   name: nextcloud-valkey-cluster-app
   namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
 spec:
   project: default
   destination:
