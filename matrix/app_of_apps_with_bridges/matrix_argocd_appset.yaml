@@ -55,7 +55,7 @@ spec:
           selfHeal: true
       source:
         repoURL: 'https://small-hack.github.io/matrix-chart'
-        targetRevision: 13.0.0
+        targetRevision: 13.0.2
         chart: matrix
         helm:
           valuesObject:
@@ -620,10 +620,6 @@ spec:
               alertmanager:
                 enabled: true
                 revisionHistoryLimit: 1
-
-                image:
-                  tag: 0.11.2
-                  pullPolicy: Always
 
                 registration:
                   id: "alertmanager"
