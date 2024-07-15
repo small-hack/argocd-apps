@@ -25,7 +25,7 @@ spec:
     - secretKey: passkey
       sourceRef:
         storeRef:
-          name: bitwarden-login
+          name: bitwarden-notes
           kind: ClusterSecretStore
       remoteRef:
         # name of the bitwarden secret

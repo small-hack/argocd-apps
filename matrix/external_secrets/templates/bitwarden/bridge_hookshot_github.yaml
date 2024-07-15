@@ -65,5 +65,14 @@ spec:
         # name of the bitwarden secret
         key: {{ .Values.bridges.hookshot.github_bitwarden_ID }}
         property: oauth_client_secret
+
+    - secretKey: privatekey
+      sourceRef:
+        storeRef:
+          name: bitwarden-notes
+          kind: ClusterSecretStore
+      remoteRef:
+        # name of the bitwarden secret
+        key: {{ .Values.bridges.hookshot.github_bitwarden_ID }}
 {{- end }}
 {{- end }}
