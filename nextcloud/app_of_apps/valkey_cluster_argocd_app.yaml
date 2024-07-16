@@ -73,7 +73,7 @@ spec:
           containerPorts:
             valkey: 6379
             bus: 16379
-          resourcesPreset: "nano"
+          resourcesPreset: "small"
           resources: {}
 
         cluster:
@@ -92,6 +92,6 @@ spec:
 
         metrics:
           enabled: false
-          resourcesPreset: "nano"
+          resourcesPreset: "micro"
           serviceMonitor:
             enabled: false
