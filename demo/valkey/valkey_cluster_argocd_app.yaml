@@ -34,7 +34,7 @@ spec:
 
           fullnameOverride: "valkey"
 
-          usePassword: true
+          usePassword: false
           password: ""
           existingSecret: "valkey-credentials"
           existingSecretPasswordKey: "valkey_password"
