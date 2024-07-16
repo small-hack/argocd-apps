@@ -244,8 +244,8 @@ spec:
                         'valkey.nextcloud.svc.cluster.local:6379',
                       ],
                       'ssl_context' => [
-                        'local_cert' => '/certs/redis.crt',
-                        'local_pk' => '/certs/redis.key',
+                        'local_cert' => '/certs/tls.crt',
+                        'local_pk' => '/certs/tls.key',
                         'cafile' => '/certs/ca.crt',
                         'verify_peer_name' => false,
                       ],
