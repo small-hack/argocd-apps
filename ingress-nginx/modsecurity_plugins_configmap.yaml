@@ -167,14 +167,14 @@ data:
         setvar:'tx.allowed_methods=GET POST PUT DELETE OPTIONS'"
 
     # allow updating presense indicator
-    SecRule REQUEST_URI "@beginsWith /_matrix/client/r0/presence/
+    SecRule REQUEST_URI "@beginsWith /_matrix/client/r0/presence/" \
         "id:20040,\
         phase:1,\
         ver:'matrix-rule-exclusions-plugin/1.0.0',\
         pass,\
         t:none,\
         nolog,\
-        setvar:'tx.allowed_methods=GET POST PUT DELETE OPTIONS'"
+        setvar:'tx.allowed_methods=PUT'"
 
     # allow creating new rooms
     SecRule REQUEST_URI "@rx ^/_matrix/client/(?:v3|r0)/createRoom$" \
