@@ -180,10 +180,9 @@ spec:
                 #   configMap:
                 #     name: before-starting-scripts
                 #     defaultMode: 0550
-                #- name: certs
-                #  secret:
-                #    secretName: valkey-crt
-                #    defaultMode: 0640
+                - name: certs
+                  secret:
+                    secretName: valkey-crt
 
                 - name: postgres-ca
                   secret:
@@ -198,8 +197,8 @@ spec:
               extraVolumeMounts:
                 # - name: before-starting-scripts
                 #   mountPath: /docker-entrypoint-hooks.d/before-starting
-                #- mountPath: /certs
-                #  name: certs
+                - mountPath: /certs
+                  name: certs
 
                 - name: postgres-ca
                   mountPath: /etc/secrets/ca
@@ -216,9 +215,9 @@ spec:
                 #    user = www-data
                 #    group = www-data
                 redis-cluster.ini: |-
-                  session.save_handler = rediscluster
-                  session.save_path = "seed[]=valkey.nextcloud.svc.cluster.local:6379&timeout=2&read_timeout=2&failover=error&persistent=1&auth[user]=redis-user&auth[pass]=ChangeM3"
-
+                  redis.session.locking_enabled=1
+                  redis.session.lock_retries=-1
+                  redis.session.lock_wait_time=10000
 
                 www.conf: |-
                   [www]
@@ -243,12 +242,18 @@ spec:
                 redis-cluster.config.php: |-
                   <?php
                   $CONFIG = [
-                    'memcache.local' => '\OC\Memcache\Redis',
+                    'memcache.local' => '\OC\Memcache\APCu',
                     'memcache.distributed' => '\\OC\\Memcache\\Redis',
                     'memcache.locking' => '\\OC\\Memcache\\Redis',
                     'redis.cluster' => [
                       'seeds' => [
                         'valkey.nextcloud.svc.cluster.local:6379',
+                      ],
+                      'ssl_context' => [
+                        'local_cert' => '/certs/redis.crt',
+                        'local_pk' => '/certs/redis.key',
+                        'cafile' => '/certs/ca.crt',
+                        'verify_peer_name' => false,
                       ],
                       'timeout' => 0.0,
                       'read_timeout' => 0.0,
