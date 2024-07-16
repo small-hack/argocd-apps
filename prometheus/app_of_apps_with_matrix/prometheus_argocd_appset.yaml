@@ -23,8 +23,8 @@ spec:
               - prometheus_alert_manager_hostname
               - prometheus_grafana_hostname
               - prometheus_alert_manager_secret
-              - vouch_hostname
               - zitadel_hostname
+              - vouch_hostname
               - global_cluster_issuer
   template:
     metadata:
