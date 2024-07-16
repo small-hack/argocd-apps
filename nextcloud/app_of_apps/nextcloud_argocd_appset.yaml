@@ -160,12 +160,6 @@ spec:
                       name: nextcloud-oidc-credentials
                       key: client_secret
 
-                - name: "REDIS_HOST_PASSWORD"
-                  valueFrom:
-                    secretKeyRef:
-                      name: valkey-credentials
-                      key: valkey_password
-
                 - name: "PGSSLCERT"
                   value: /etc/secrets/nextcloud/tls.crt
 
@@ -255,10 +249,6 @@ spec:
                         'cafile' => '/certs/ca.crt',
                         'verify_peer_name' => false,
                       ],
-                      'timeout' => 0.0,
-                      'read_timeout' => 0.0,
-                      'failover_mode' => \RedisCluster::FAILOVER_ERROR,
-                      'password' => getenv('REDIS_HOST_PASSWORD')
                     ],
                   ];
 

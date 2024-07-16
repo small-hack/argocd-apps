@@ -26,10 +26,10 @@ spec:
       values: |
         fullnameOverride: "valkey"
 
-        usePassword: true
+        usePassword: false
         password: ""
-        existingSecret: "valkey-credentials"
-        existingSecretPasswordKey: "valkey_password"
+        existingSecret: ""
+        existingSecretPasswordKey: ""
 
         tls:
           enabled: true
