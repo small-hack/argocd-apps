@@ -11,5 +11,8 @@ s3AdminCredentialsBitwardenID: ""
 s3PostgresCredentialsBitwardenID: ""
 s3BackupsCredentialsBitwardenID: ""
 
+# smtp credentials
+smtpCredentialsBitwardenID: ""
+
 # fake postgresql credentials
 postgresqlBitwardenID: ""
