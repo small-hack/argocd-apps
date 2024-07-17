@@ -699,10 +699,6 @@ spec:
               alertmanager:
                 enabled: true
                 revisionHistoryLimit: 1
-
-                image:
-                  tag: 0.12.0-dev-6
-
                 registration:
                   id: "alertmanager"
                   rate_limited: false
