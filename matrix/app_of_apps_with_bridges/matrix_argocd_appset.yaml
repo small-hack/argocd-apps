@@ -700,7 +700,7 @@ spec:
                 enabled: true
                 revisionHistoryLimit: 1
                 image:
-                  tag: "0.12.1-dev-2"
+                  tag: "0.12.1-dev-3"
                 registration:
                   id: "alertmanager"
                   rate_limited: false
