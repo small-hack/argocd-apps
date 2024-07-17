@@ -54,12 +54,12 @@ spec:
           prune: true
           selfHeal: true
       source:
-        repoURL: 'https://small-hack.github.io/matrix-chart'
-        targetRevision: 13.2.0
-        chart: matrix
-        # repoURL: 'https://github.com/small-hack/matrix-chart'
-        # targetRevision: main
-        # path: charts/matrix/
+        # repoURL: 'https://small-hack.github.io/matrix-chart'
+        # targetRevision: 13.1.0
+        # chart: matrix
+        repoURL: 'https://github.com/small-hack/matrix-chart'
+        targetRevision: add-rss-bot
+        path: charts/matrix/
         helm:
           valuesObject:
             fullnameOverride: matrix-stack
