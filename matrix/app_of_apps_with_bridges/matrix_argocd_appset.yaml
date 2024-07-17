@@ -628,7 +628,7 @@ spec:
                   # -- rss bridge docker image
                   repository: "jessebot/matrix-rss-bot"
                   # -- rss bridge docker image tag
-                  tag: "0.2.0-dev-8"
+                  tag: "0.2.0-dev-9"
                   # -- rss bridge docker image pull policy.
                   # If tag is "main", set pullPolicy to "Always"
                   pullPolicy: IfNotPresent
@@ -655,8 +655,9 @@ spec:
                 # read more about application services here:
                 # https://spec.matrix.org/v1.11/application-service-api/
                 registration:
-                  # -- url of the rss service. if not provided, we will template it
-                  # for you like http://matrix-rss-service:3000
+                  id: "rss-bot"
+                  sender_localpart: "rss"
+                  # like http://matrix-rss-service:3000
                   url: ""
                   # -- should this bot be rate limited?
                   rate_limited: false
