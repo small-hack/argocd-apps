@@ -628,7 +628,7 @@ spec:
                   # -- rss bridge docker image
                   repository: "jessebot/matrix-rss-bot"
                   # -- rss bridge docker image tag
-                  tag: "0.2.0-dev-12"
+                  tag: "0.2.0-dev-13"
                   # -- rss bridge docker image pull policy.
                   # If tag is "main", set pullPolicy to "Always"
                   pullPolicy: IfNotPresent
