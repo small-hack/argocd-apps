@@ -69,6 +69,27 @@ spec:
                     name: zitadel-smtp-credentials
                     key: password
 
+              - name: ZITADEL_DEFAULTINSTANCE_SMTPCONFIGURATION_TLS
+                value: 'true'
+
+              - name: ZITADEL_DEFAULTINSTANCE_SMTPCONFIGURATION_FROM
+                valueFrom:
+                  secretKeyRef:
+                    name: zitadel-smtp-credentials
+                    key: from_address
+
+              - name: ZITADEL_DEFAULTINSTANCE_SMTPCONFIGURATION_FROMNAME
+                valueFrom:
+                  secretKeyRef:
+                    name: zitadel-smtp-credentials
+                    key: from_name
+
+              - name: ZITADEL_DEFAULTINSTANCE_SMTPCONFIGURATION_REPLYTOADDRESS
+                valueFrom:
+                  secretKeyRef:
+                    name: zitadel-smtp-credentials
+                    key: reply_to_address
+
             zitadel:
               # See all defaults here:
               # https://github.com/zitadel/zitadel/blob/main/cmd/defaults.yaml
