@@ -686,15 +686,19 @@ spec:
                     # -- optionally provide an mxc:// file to use as an avatar for this bot
                     avatar: ""
                     # -- the default room to post things in and interact in
-                    default_room: ""
+                    default_room: "!RTkTbtPFXALdjmxAWn:{{ .matrix_hostname }}"
                     # -- interval to update all feeds, in seconds
                     interval: 60
+                  log:
+                    level: debug
 
                 # -- optionally provide a list of RSS feeds to add to the rss bot on startup
-                feeds: []
-                # - name: "matrix.org blog"
-                #   url: "https://matrix.org/blog/feed"
-                #   room_id: "!AUweUQXCxcVfFOaOIU:matrix.org"
+                feeds:
+                  - name: "matrix.org blog"
+                    url: "https://matrix.org/blog/feed"
+                    room_id: "!AUweUQXCxcVfFOaOIU:matrix.org"
+                  - name: "GitHub Status"
+                    url: "https://www.githubstatus.com/feed"
 
               alertmanager:
                 enabled: true
