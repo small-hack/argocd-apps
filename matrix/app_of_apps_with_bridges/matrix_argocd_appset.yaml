@@ -628,7 +628,7 @@ spec:
                   # -- rss bridge docker image
                   repository: "jessebot/matrix-rss-bot"
                   # -- rss bridge docker image tag
-                  tag: "0.2.0-dev-17"
+                  tag: "0.2.0-dev-18"
                   # -- rss bridge docker image pull policy.
                   # If tag is "main", set pullPolicy to "Always"
                   pullPolicy: IfNotPresent
@@ -688,7 +688,7 @@ spec:
                     # -- the default room to post things in and interact in
                     default_room: "!RTkTbtPFXALdjmxAWn:{{ .matrix_hostname }}"
                     # -- interval to update all feeds, in seconds
-                    interval: 60
+                    interval: 480
                   log:
                     level: debug
 
