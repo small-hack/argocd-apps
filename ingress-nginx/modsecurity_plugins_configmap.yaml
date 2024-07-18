@@ -157,7 +157,7 @@ data:
     # /_matrix/client/v3/directory/room/
     # /_matrix/client/v3/register
     # /_matrix/client/v3/pushrules/global/room
-    SecRule REQUEST_URI "@rx ^/_matrix/client/(?:v3|r0)/(?:rooms|user|devices|pushrules|profile|sendToDevice|room_keys|register|directory)/.*$" \
+    SecRule REQUEST_URI "@rx ^/_matrix/client/(?:v3|r0)/(?:rooms|user|devices|account|pushrules|profile|sendToDevice|room_keys|register|directory)/.*$" \
         "id:20018,\
         phase:1,\
         ver:'matrix-rule-exclusions-plugin/1.0.0',\
