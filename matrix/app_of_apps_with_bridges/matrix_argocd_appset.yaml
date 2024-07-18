@@ -667,13 +667,13 @@ spec:
                   # the synapse pod to authenticate mautrix/discord. It will only replaces the tokens.
                   # To replaces the ENTIRE registration.yaml, use
                   # bridges.rss.existingSecret.registration
-                  existingSecret: ""
+                  existingSecret: "matrix-bridge-rss"
                   existingSecretKeys:
                     # -- key in existingSecret for as_token (application service token). If
                     # provided and existingSecret is set, ignores bridges.rss.registration.as_token
                     as_token: "as_token"
                     # -- key in existingSecret for hs_token (home server token)
-                    hs_token: ""
+                    hs_token: "hs_token"
 
                 encryption: false
 
