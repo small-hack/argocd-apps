@@ -169,14 +169,20 @@ spec:
                 - name: "PGSSLROOTCERT"
                   value: /etc/secrets/ca/ca.crt
 
+                - name: "REDIS_HOST_PASSWORD"
+                  valueFrom:
+                    secretKeyRef:
+                      name: valkey
+                      key: valkey-password
+
               extraVolumes:
                 # - name: before-starting-scripts
                 #   configMap:
                 #     name: before-starting-scripts
                 #     defaultMode: 0550
-                - name: certs
-                  secret:
-                    secretName: valkey-crt
+                #- name: certs
+                #  secret:
+                #    secretName: valkey-crt
 
                 - name: postgres-ca
                   secret:
@@ -191,8 +197,8 @@ spec:
               extraVolumeMounts:
                 # - name: before-starting-scripts
                 #   mountPath: /docker-entrypoint-hooks.d/before-starting
-                - mountPath: /certs
-                  name: certs
+                #- mountPath: /certs
+                #  name: certs
 
                 - name: postgres-ca
                   mountPath: /etc/secrets/ca
@@ -243,12 +249,10 @@ spec:
                       'seeds' => [
                         'valkey.nextcloud.svc.cluster.local:6379',
                       ],
-                      'ssl_context' => [
-                        'local_cert' => '/certs/tls.crt',
-                        'local_pk' => '/certs/tls.key',
-                        'cafile' => '/certs/ca.crt',
-                        'verify_peer_name' => false,
-                      ],
+                      'timeout' => 0.0,
+                      'read_timeout' => 0.0,
+                      'failover_mode' => \RedisCluster::FAILOVER_ERROR,
+                      'password' => getenv('REDIS_HOST_PASSWORD')
                     ],
                   ];
 
