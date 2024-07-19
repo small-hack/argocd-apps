@@ -92,10 +92,10 @@ spec:
               # -- Settings related to image and multimedia uploads
               uploads:
                 # -- Max upload size in bytes
-                maxSize: 10M
+                maxSize: 100M
 
                 # -- Max image size in pixels
-                maxPixels: 32M
+                maxPixels: 64M
 
               serve_server_wellknown: true
 
