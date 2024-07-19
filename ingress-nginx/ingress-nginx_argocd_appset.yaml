@@ -37,8 +37,6 @@ spec:
           releaseName: 'ingress-nginx'
           valuesObject:
             controller:
-              image:
-                tag: "v1.11.0@sha256:a886e56d532d1388c77c8340261149d974370edca1093af4c97a96fb1467cb39"
               # Mutually exclusive with keda autoscaling
               autoscaling:
                 enabled: true
