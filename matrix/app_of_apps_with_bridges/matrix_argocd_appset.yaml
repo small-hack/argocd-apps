@@ -54,12 +54,12 @@ spec:
           prune: true
           selfHeal: true
       source:
-        repoURL: 'https://small-hack.github.io/matrix-chart'
-        targetRevision: 13.2.0
-        chart: matrix
-        # repoURL: 'https://github.com/small-hack/matrix-chart'
-        # targetRevision: main
-        # path: charts/matrix/
+        # repoURL: 'https://small-hack.github.io/matrix-chart'
+        # targetRevision: 13.1.0
+        # chart: matrix
+        repoURL: 'https://github.com/small-hack/matrix-chart'
+        targetRevision: add-rss-bot
+        path: charts/matrix/
         helm:
           valuesObject:
             fullnameOverride: matrix-stack
@@ -622,13 +622,87 @@ spec:
                 storageClass: local-path
                 accessMode: ReadWriteOnce
 
+              rss:
+                enabled: true
+                image:
+                  # -- rss bridge docker image
+                  repository: "jessebot/matrix-rss-bot"
+                  # -- rss bridge docker image tag
+                  tag: "0.2.0-dev-24"
+                  # -- rss bridge docker image pull policy.
+                  # If tag is "main", set pullPolicy to "Always"
+                  pullPolicy: IfNotPresent
+
+                # -- set the revisionHistoryLimit to decide how many replicaSets are
+                # kept when you change a deployment. Explicitly setting this field to 0,
+                # will result in cleaning up all the history of your Deployment thus that
+                # Deployment will not be able to roll back.
+                revisionHistoryLimit: 1
+
+                existingSecret:
+                  # -- use an existing Kubernetes secret for your entire appservice registration file.
+                  # must have a secret key called registration.yaml. If provided, ignores bridges.rss.registration
+                  registration: ""
+                  # -- use an existing Kubernetes secret for your entire feeds.yml file.
+                  # must have a secret key called feeds.yml. If provided, ignores bridges.rss.feeds
+                  feeds: ""
+
+                # -- optionally provide an existing Kubernetes ConfigMap with a key of feeds.yml
+                # if set, bridges.rss.feeds will be ignored.
+                existingFeedsConfigMap: ""
+
+                # this section is for registering the application service with matrix
+                # read more about application services here:
+                # https://spec.matrix.org/v1.11/application-service-api/
+                registration:
+                  id: "rss-bot"
+                  sender_localpart: "rss"
+                  # like http://matrix-rss-service:3000
+                  url: ""
+                  # -- should this bot be rate limited?
+                  rate_limited: false
+                  # -- Use an existing Kubernetes Secret to store your own generated appservice
+                  # and homeserver tokens. If this is not set, we'll generate them for you.
+                  # Setting this won't override the ENTIRE registration.yaml we generate for
+                  # the synapse pod to authenticate mautrix/discord. It will only replaces the tokens.
+                  # To replaces the ENTIRE registration.yaml, use
+                  # bridges.rss.existingSecret.registration
+                  existingSecret: "matrix-bridge-rss"
+                  existingSecretKeys:
+                    # -- key in existingSecret for as_token (application service token). If
+                    # provided and existingSecret is set, ignores bridges.rss.registration.as_token
+                    as_token: "as_token"
+                    # -- key in existingSecret for hs_token (home server token)
+                    hs_token: "hs_token"
+
+                encryption: false
+
+                config:
+                  bot:
+                    # -- the username of the bot (we will automatically template the homeserver)
+                    user: "rss"
+                    # -- optionally provide a display name for this bot
+                    display_name: "RSS Bot"
+                    # -- optionally provide an mxc:// file to use as an avatar for this bot
+                    avatar: ""
+                    # -- the default room to post things in and interact in
+                    default_room: "!RTkTbtPFXALdjmxAWn:{{ .matrix_hostname }}"
+                    # -- interval to update all feeds, in seconds
+                    interval: 480
+                  log:
+                    level: debug
+
+                # -- optionally provide a list of RSS feeds to add to the rss bot on startup
+                feeds:
+                  - name: "matrix.org blog"
+                    url: "https://matrix.org/blog/feed"
+                    room_id: "!AUweUQXCxcVfFOaOIU:matrix.org"
+                  - name: "GitHub Status"
+                    url: "https://www.githubstatus.com/feed"
+
               alertmanager:
                 enabled: true
                 revisionHistoryLimit: 1
-
-                image:
-                  tag: 0.12.0-dev-6
-
                 registration:
                   id: "alertmanager"
                   rate_limited: false

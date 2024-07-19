@@ -49,3 +49,5 @@ bridges:
   alertmanager_bitwarden_ID: ""
   # -- bitwarden id containing secrets for discord bridge
   discord_bitwarden_ID: ""
+  # -- bitwarden id containing secrets for RSS feeds bridge
+  rss_bitwarden_ID: ""
