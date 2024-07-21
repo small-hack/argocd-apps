@@ -2261,6 +2261,16 @@ data:
         ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
         setvar:'tx.allowed_methods=%{tx.allowed_methods} DELETE'"
 
+    # Dismissing notifications
+    SecRule REQUEST_FILENAME "@rx /ocs/v[0-9]+\.php/apps/notifications/api/v[0-9]/notifications/push$" \
+        "id:9508703,\
+        phase:1,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        setvar:'tx.allowed_methods=%{tx.allowed_methods} DELETE'"
+
     # Sometimes a 502 error is returned when viewing/dismissing a notification
     SecRule REQUEST_FILENAME "@rx /ocs/v[0-9]\.php/apps/notifications/api/v[0-9]/notifications$" \
         "id:9508702,\
