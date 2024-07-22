@@ -24,6 +24,16 @@ data:
         t:none,\
         nolog,\
         setvar:'tx.allowed_methods=GET HEAD POST PUT DELETE'"
+
+    SecRule REQUEST_FILENAME "@beginsWith /api/v1/projects/" \
+        "id:30007,\
+        phase:1,\
+        ver:'argocd-rule-exclusions-plugin/1.0.0',\
+        pass,\
+        t:none,\
+        nolog,\
+        setvar:'tx.allowed_methods=GET HEAD POST PUT DELETE'"
+
   grafana-rule-exclusions-before.conf: |-
     # -------------------------------------------------------------------------
     # allow exceptions for rules 933210, 942100, 932110 for using datasources
