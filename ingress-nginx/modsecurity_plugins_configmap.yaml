@@ -32,7 +32,8 @@ data:
         pass,\
         t:none,\
         nolog,\
-        setvar:'tx.allowed_methods=GET HEAD POST PUT DELETE'"
+        setvar:'tx.allowed_methods=GET HEAD POST PUT DELETE',\
+        ctl:ruleRemoveTargetById=930120;ARGS:json.project.metadata.annotations.kubectl.kubernetes.io/last-applied-configuration"
 
   grafana-rule-exclusions-before.conf: |-
     # -------------------------------------------------------------------------
