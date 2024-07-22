@@ -33,6 +33,11 @@ data:
         t:none,\
         nolog,\
         setvar:'tx.allowed_methods=GET HEAD POST PUT DELETE',\
+        ctl:ruleRemoveTargetById=930120;ARGS:json.project.spec.sourceRepos.array_1,\
+        ctl:ruleRemoveTargetById=930120;ARGS:json.project.spec.sourceRepos.array_2,\
+        ctl:ruleRemoveTargetById=930120;ARGS:json.project.spec.sourceRepos.array_3,\
+        ctl:ruleRemoveTargetById=930120;ARGS:json.project.spec.sourceRepos.array_5,\
+        ctl:ruleRemoveTargetById=930120;ARGS:json.project.spec.sourceRepos.array_6,\
         ctl:ruleRemoveTargetById=930120;ARGS:json.project.metadata.annotations.kubectl.kubernetes.io/last-applied-configuration"
 
   grafana-rule-exclusions-before.conf: |-
