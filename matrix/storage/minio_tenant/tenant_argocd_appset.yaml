@@ -37,7 +37,7 @@ spec:
         # official minio helm repo
         repoURL: 'https://operator.min.io/'
         chart: tenant
-        targetRevision: 6.0.0
+        targetRevision: 6.0.1
         helm:
           releaseName: matrix-minio-tenant
           values: |
