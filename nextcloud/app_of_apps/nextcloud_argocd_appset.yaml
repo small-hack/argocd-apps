@@ -46,7 +46,7 @@ spec:
           valuesObject:
             image:
               repository: jessebot/nextcloud
-              tag: 29.0.3-fpm-alpine
+              tag: 29.0.4-fpm-alpine
               pullPolicy: IfNotPresent
 
             ingress:
