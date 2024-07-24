@@ -147,11 +147,10 @@ metadata:
   name: nextcloud
 spec:
   destination:
-    name: ''
     namespace: nextcloud
     server: 'https://kubernetes.default.svc'
   source:
-    path: nextcloud/
+    path: nextcloud/app_of_apps/
     repoURL: 'https://github.com/small-hack/argocd-apps.git'
     targetRevision: HEAD
   sources: []
