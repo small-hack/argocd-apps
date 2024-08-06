@@ -207,10 +207,7 @@ spec:
                 #    [www]
                 #    user = www-data
                 #    group = www-data
-                zz-filesize.conf: |-
-                  php_value upload_max_filesize = 10G
-                  php_value post_max_size = 10G
-                zz-www.conf: |-
+                www.conf: |-
                   [www]
                   security.limit_extensions = .php .css .js .html
                   listen = 127.0.0.1:9000
@@ -220,7 +217,7 @@ spec:
                   pm.min_spare_servers = 100
                   pm.max_spare_servers = 280
 
-                zz-opcache.conf: |
+                opcache.conf: |
                   php_admin_value[memory_limit] = -1
                   php_admin_value[opcache.jit_buffer_size] = 8M
                   php_admin_value[opcache.interned_strings_buffer] = 64
@@ -228,6 +225,8 @@ spec:
                   php_admin_value[opcache.max_accelerated_files] = 30000
                   php_admin_value[opcache.validate_timestamps] = 0
                   php_admin_value[opcache.revalidate_freq] = 60
+                  php_admin_value[upload_max_filesize] = 10G
+                  php_admin_value[post_max_size] = 10G
 
               configs:
                 logging.config.php: |-
