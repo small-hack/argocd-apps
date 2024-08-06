@@ -107,7 +107,7 @@ spec:
                   Include /etc/nginx/owasp-modsecurity-crs/nginx-modsecurity.conf
 
                   # Enable prevention mode. Can be any of: DetectionOnly,On,Off (default is DetectionOnly)
-                  SecRuleEngine DetectionOnly
+                  SecRuleEngine Off
 
                   # Enable scanning of the request body
                   SecRequestBodyAccess On
