@@ -126,8 +126,8 @@ spec:
                   # 2Gb (default is 12.5Mb)
                   SecRequestBodyLimit 268400000
 
-                  # 20Mb (default is 128Kb)
-                  SecRequestBodyNoFilesLimit 20971520
+                  # 2Gb (default is 128Kb)
+                  SecRequestBodyNoFilesLimit 268400000
 
                   # Reject if larger (we could also let it pass with ProcessPartial)
                   SecRequestBodyLimitAction Reject
