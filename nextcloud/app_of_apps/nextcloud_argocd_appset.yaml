@@ -208,8 +208,8 @@ spec:
                 #    user = www-data
                 #    group = www-data
                 zz-filesize.conf: |-
-                  upload_max_filesize = 10G
-                  post_max_size = 10G
+                  php_value upload_max_filesize = 10G
+                  php_value post_max_size = 10G
                 zz-www.conf: |-
                   [www]
                   security.limit_extensions = .php .css .js .html
