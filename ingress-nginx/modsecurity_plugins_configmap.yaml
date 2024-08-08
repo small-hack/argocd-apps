@@ -375,18 +375,6 @@ data:
         nolog,\
         setvar:'tx.allowed_methods=GET HEAD POST PUT DELETE'"
 
-    # Large uploads can be modified with SecRequestBodyLimit. Or they
-    # can be more controlled by using the following:
-    #
-    SecRule REQUEST_URI "@beginsWith /index.php/apps/files/" \
-        "id:9508610,\
-        phase:1,\
-        t:none,\
-        nolog,\
-        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
-        pass,\
-        ctl:requestBodyLimit=10740000000"
-
     # ------------------------------------------------------------------------
     # OWASP CRS Plugin
     # Copyright (c) 2021-2024 CRS project. All rights reserved.

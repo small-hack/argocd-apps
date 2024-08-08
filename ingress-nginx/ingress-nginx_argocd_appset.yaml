@@ -123,11 +123,11 @@ spec:
                   # Note NGINX Ingress has its own annotations, keep in sync!
                   #
                   # Max request sizes in bytes (with/without files)
-                  # 2Gb (default is 12.5Mb)
-                  SecRequestBodyLimit 268400000
+                  # 10Gb (default is 12.5Mb)
+                  SecRequestBodyLimit 10740000000
 
-                  # 2Gb (default is 128Kb)
-                  SecRequestBodyNoFilesLimit 268400000
+                  # 10Gb (default is 128Kb)
+                  SecRequestBodyNoFilesLimit 10740000000
 
                   # Reject if larger (we could also let it pass with ProcessPartial)
                   SecRequestBodyLimitAction Reject
