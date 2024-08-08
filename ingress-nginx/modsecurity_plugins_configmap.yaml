@@ -384,6 +384,7 @@ data:
         t:none,\
         nolog,\
         ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        pass,\
         ctl:requestBodyLimit=10740000000"
 
     # ------------------------------------------------------------------------
