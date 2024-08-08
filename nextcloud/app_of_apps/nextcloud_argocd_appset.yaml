@@ -76,9 +76,6 @@ spec:
                   location ~ ^/(?:autotest|occ|issue|indie|db_|console) {
                     deny all;
                   }
-                  location /remote.php/dav/files/ {
-                    modsecurity_rules 'SecRequestBodyNoFilesLimit 10740000000';
-                  }
               tls:
                 - secretName: nextcloud-tls
                   hosts:

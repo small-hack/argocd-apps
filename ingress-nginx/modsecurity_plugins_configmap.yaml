@@ -375,6 +375,17 @@ data:
         nolog,\
         setvar:'tx.allowed_methods=GET HEAD POST PUT DELETE'"
 
+    # Large uploads can be modified with SecRequestBodyLimit. Or they
+    # can be more controlled by using the following:
+    #
+    SecRule REQUEST_URI "@beginsWith /index.php/apps/files/" \
+        "id:9508610,\
+        phase:1,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
+        ctl:requestBodyLimit=10740000000"
+
     # ------------------------------------------------------------------------
     # OWASP CRS Plugin
     # Copyright (c) 2021-2024 CRS project. All rights reserved.
@@ -412,16 +423,6 @@ data:
     #     ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
     #     setvar:'tx.restricted_extensions=.bak/ .config/ .conf/'"
     #
-    # Large uploads can be modified with SecRequestBodyLimit. Or they
-    # can be more controlled by using the following:
-    #
-    # SecRule REQUEST_URI "@endsWith /index.php/apps/files/ajax/upload.php" \
-    #     "id:9508610,\
-    #     phase:1,\
-    #     t:none,\
-    #     nolog,\
-    #     ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
-    #     ctl:requestBodyLimit=1073741824"
     #
     # ctl:requestBodyLimit is not supported in libmodsecurity3, Nginx users can increase max upload size
     # by using the following:
