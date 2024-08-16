@@ -38,7 +38,7 @@ spec:
         # official minio helm repo
         repoURL: 'https://operator.min.io/'
         chart: operator
-        targetRevision: 6.0.1
+        targetRevision: 6.0.2
         helm:
           releaseName: minio-operator
           values: |
