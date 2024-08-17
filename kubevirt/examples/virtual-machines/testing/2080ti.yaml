@@ -29,10 +29,10 @@ spec:
              autoattachGraphicsDevice: true
           machine:
             machineType: "q35"
-            cpuPassthrough: true
+            cpuPassthrough: false
             vCores: 6
             pinCores: false
-            hyperThreadingEnabled: true
+            hyperThreadingEnabled: false
             memory: 16Gi
           gpus:
           - name: gpu0
@@ -58,7 +58,7 @@ spec:
             pv-enable: false
         
         service:
-          - name: vm0-service
+          - name: 2080ti
             type: LoadBalancer
             externalTrafficPolicy: Cluster
             ports:
