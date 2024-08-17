@@ -2,7 +2,7 @@
 apiVersion: instancetype.kubevirt.io/v1beta1
 kind: VirtualMachineClusterInstancetype
 metadata:
-  name: m60-large
+  name: 2080ti-full
   annotations:
     instancetype.kubevirt.io/description: |-
       fully allocated RTX 2080ti
