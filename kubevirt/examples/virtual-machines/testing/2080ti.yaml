@@ -2,7 +2,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: debian12-2080ti
+  name: 2080ti
 spec:
   destination:
     name: ''
