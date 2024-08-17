@@ -137,46 +137,57 @@ spec:
         cloudinitPath:
         cloudinitFromSecret: false
         cloudinit:
-          hostname: scrapmetal
+
+        cloudinitEnabled: true
+        cloudinitFromSecret: false
+            
+        # -- Provide a path to an existing cloud-init file
+        # will be genrated from values below if no file specified
+        cloudinitPath:
+            
+        # -- Values used to generate a cloud-init user-data file
+        # Not all modules yet supported
+        cloudinit:
+          # -- Set hostname of VM
+          hostname: '{{ .vm_hostname }}'
           disable_root: false
-          network:
-            config: disabled
-          wireguard: []
-          groups:
-            - docker
-            - kvm
-          users:
-            - name: friend
-              groups: users, admin, sudo
-              sudo: ALL=(ALL) NOPASSWD:ALL
-              shell: /bin/bash
-              lock_passwd: false
-              passwd: "$6$rounds=4096$saltsaltlettuce$Lp/FV.2oOgew7GbM6Nr8KMGMBn7iFM0x9ZwLqtx9Y4QJmKvfcnS.2zx4MKmymCPQGpHS7gqYOiqWjvdCIV2uN."
-              ssh_import_id: []
-              ssh_authorized_keys: []
-          ca_certs: []
-          boot_cmd: []
-          write_as_b64: false
-          write_files: []
-          package_update: true
-          package_upgrade: true
-          packages:
-            - ssh-import-id
-            - git
-            - git-extras
-            - htop
-            - clang
-            - qemu-guest-agent
-          runcmd:
-            - sudo -u friend -i ssh-import-id-gh cloudymax
-            - sudo systemctl start qemu-guest-agent
-            - wget https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh
-            - chmod +x /install.sh
-            - chmod 777 /install.sh
-            - sudo -u friend -i NONINTERACTIVE=1 /bin/bash /install.sh
-            - sudo -u friend -i /home/linuxbrew/.linuxbrew/bin/brew shellenv >> /home/friend/.bashrc
-            - sudo chown -R friend:friend /home/friend
-            - sudo chown -R friend:friend /home/linuxbrew
+            network:
+              config: disabled
+              # -- provide a wireguard config
+            wireguard: []
+            # -- Create Groups
+            groups:
+              - docker
+              - kvm
+            # -- Create users
+            users:
+              - name: friend
+                groups: users, admin, sudo
+                sudo: ALL=(ALL) NOPASSWD:ALL
+                shell: /bin/bash
+                lock_passwd: false
+                passwd: "$6$rounds=4096$saltsaltlettuce$Lp/FV.2oOgew7GbM6Nr8KMGMBn7iFM0x9ZwLqtx9Y4QJmKvfcnS.2zx4MKmymCPQGpHS7gqYOiqWjvdCIV2uN."
+                # -- import ssh public-keys from github or lanchpad (doesnt work on Debian12)
+                ssh_import_id: []
+                # -- manually add a ssh public-key
+                ssh_authorized_keys: []
+            ca_certs: []
+            # -- Commands to run early in boot process
+            boot_cmd: []
+            # -- base64 encode content of written files
+            write_as_b64: false
+            # -- list of files to embed in the user-data
+            write_files: []
+            # -- Update apt package cache
+            package_update: true
+            # -- Perform apt package upgrade
+            package_upgrade: false
+            # -- apt packages to install
+            packages: 
+              - ssh-import-id
+            # -- commands to run in final step
+            runcmd:
+              - sudo -u friend -i ssh-import-id-gh cloudymax
   sources: []
   project: default
   syncPolicy:
