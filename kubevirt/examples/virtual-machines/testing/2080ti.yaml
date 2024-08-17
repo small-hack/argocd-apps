@@ -48,8 +48,11 @@ spec:
             bus: virtio
             bootorder: 2
             readonly: false
-            pvc: debian12
-            ephemeral: true
+            pvsize: 32G
+            pvstorageClass: fast-raid
+            pvaccessMode: ReadWriteOnce
+            source: url
+            url: https://cloud.debian.org/images/cloud/bookworm/latest/debian-12-generic-arm64.qcow2
           - name: cloudinitvolume
             type: cdrom
             bus: sata
@@ -58,7 +61,7 @@ spec:
             pv-enable: false
         
         service:
-          - name: 2080ti
+          - name: vm0
             type: LoadBalancer
             externalTrafficPolicy: Cluster
             ports:
