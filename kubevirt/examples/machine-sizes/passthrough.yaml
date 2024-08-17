@@ -1,0 +1,22 @@
+---
+apiVersion: instancetype.kubevirt.io/v1beta1
+kind: VirtualMachineClusterInstancetype
+metadata:
+  name: m60-large
+  annotations:
+    instancetype.kubevirt.io/description: |-
+      fully allocated RTX 2080ti
+  labels:
+    instancetype.kubevirt.io/class: "gpu.nvidia"
+    instancetype.kubevirt.io/icon-pf: "fa-microchip"
+    instancetype.kubevirt.io/version: "1"
+    instancetype.kubevirt.io/vendor: "kubevirt.io"
+    instancetype.kubevirt.io/gpus: "true"
+spec:
+  cpu:
+    guest: 8
+  memory:
+    guest: 16Gi
+  gpus:
+    - name: "gpu0"
+      deviceName: "nvidia.com/TU102_GeForce_RTX2080Ti"
