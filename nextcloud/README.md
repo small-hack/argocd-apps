@@ -28,7 +28,7 @@ NextCloud would be running ontop of Kubernetes (we use k3s) and using the follow
 
 ## Argo CD Nextcloud app of apps
 
-Here's a quick peak at what we're deploying with Argo CD.
+Here's a quick peak at what we're deploying with Argo CD. We support deploying with or without node affinity + tolerations. The default behavior is to not include tolerations/affinity settings in the `app_of_apps` directory, but you are also free to use the `app_of_apps_with_tolerations` directory.
 
 #### Sync wave 1
 - **External Secrets** are the actual secrets populated from the external secrets store. This includes things like the admin password.
