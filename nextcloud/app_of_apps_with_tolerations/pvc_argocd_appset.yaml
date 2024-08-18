@@ -16,13 +16,14 @@ spec:
         input:
           parameters:
             secret_vars:
-              - global_pvc_storage_class
               - nextcloud_files_pvc_enabled
               - nextcloud_files_storage
               - nextcloud_files_access_mode
+              - nextcloud_files_storage_class
               - nextcloud_config_pvc_enabled
               - nextcloud_config_storage
               - nextcloud_config_access_mode
+              - nextcloud_config_storage_class
   template:
     metadata:
       name: nextcloud-pvc
@@ -48,13 +49,13 @@ spec:
             # -- enable nextcloud files pvc
             files_pvc:
               enabled: '{{ .nextcloud_files_pvc_enabled }}'
-              storageClassName: '{{ .global_pvc_storage_class }}'
+              storageClassName: '{{ .nextcloud_files_storage_class }}'
               accessMode: '{{ .nextcloud_files_access_mode }}'
               storage: '{{ .nextcloud_files_storage }}'
 
             # -- enable nextcloud configuration pvc
             config_pvc:
               enabled: '{{ .nextcloud_config_pvc_enabled }}'
-              storageClassName: '{{ .global_pvc_storage_class }}'
+              storageClassName: '{{ .nextcloud_config_storage_class }}'
               accessMode: '{{ .nextcloud_config_access_mode }}'
               storage: '{{ .nextcloud_config_storage }}'

@@ -22,7 +22,8 @@ spec:
               - nextcloud_s3_backup_region
               - nextcloud_s3_pvc_capacity
               - nextcloud_pvc_backup_schedule
-              - global_pvc_storage_class
+              - nextcloud_s3_pvc_storage_class
+
   template:
     metadata:
       name: nextcloud-s3-pvc
@@ -47,7 +48,7 @@ spec:
           valuesObject:
             provider: '{{ .nextcloud_s3_provider }}'
             pvc_capacity: '{{ .nextcloud_s3_pvc_capacity }}'
-            pvc_storageClassName: '{{ .global_pvc_storage_class }}'
+            pvc_storageClassName: '{{ .nextcloud_s3_pvc_storage_class }}'
 
             seaweedfs:
               # -- deploy a master data PVC for seaweedfs

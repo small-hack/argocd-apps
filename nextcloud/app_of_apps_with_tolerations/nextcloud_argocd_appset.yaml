@@ -22,6 +22,12 @@ spec:
               - nextcloud_mail_domain
               - nextcloud_mail_from_address
               - nextcloud_s3_region
+              - nextcloud_toleration_key
+              - nextcloud_toleration_operator
+              - nextcloud_toleration_value
+              - nextcloud_toleration_effect
+              - nextcloud_affinity_key
+              - nextcloud_affinity_value
   template:
     metadata:
       name: nextcloud-web-app
