@@ -1,0 +1,54 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: nextcloud-maintenance-cron-appset
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "4"
+spec:
+  goTemplate: true
+  # generator allows us to source specific values from an external k8s secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - global_time_zone
+              - nextcloud_maintenance_mode_on_schedule
+              - nextcloud_maintenance_mode_off_schedule
+  template:
+    metadata:
+      name: nextcloud-maintanence-cronjobs
+      annotations:
+        argocd.argoproj.io/sync-wave: "4"
+    spec:
+      project: nextcloud
+      destination:
+        server: "https://kubernetes.default.svc"
+        namespace: nextcloud
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
+          selfHeal: true
+      source:
+        repoURL: https://github.com/small-hack/argocd-apps.git
+        path: nextcloud/maintenance_mode_cronjobs/
+        targetRevision: main
+        helm:
+          releaseName: maintenance-mode-cronjobs
+          valuesObject:
+            # -- timezone for nextcloud container
+            timezone: '{{ .global_time_zone }}'
+
+            maintenance_mode_on:
+              # -- cron schedule to turn on maintenance mode for nextcloud
+              schedule: '{{ .nextcloud_maintenance_mode_on_schedule }}'
+
+            maintenance_mode_off:
+              # -- cron schedule to turn off maintenance mode for nextcloud
+              schedule: '{{ .nextcloud_maintenance_mode_off_schedule }}'

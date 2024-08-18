@@ -1,0 +1,37 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: nextcloud-s3-provider-app-set
+  namespace: argocd
+spec:
+  goTemplate: true
+  # generator allows us to source specific values from an external k8s secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - nextcloud_s3_provider
+  template:
+    metadata:
+      name: nextcloud-{{ .nextcloud_s3_provider }}
+      annotations:
+        argocd.argoproj.io/sync-wave: "2"
+    spec:
+      project: nextcloud
+      destination:
+        server: "https://kubernetes.default.svc"
+        namespace: nextcloud
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
+          selfHeal: true
+      source:
+        repoURL: https://github.com/small-hack/argocd-apps.git
+        path: nextcloud/storage/{{ .nextcloud_s3_provider }}/
+        targetRevision: main

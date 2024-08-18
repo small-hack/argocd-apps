@@ -1,0 +1,175 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: install-nextcloud-apps
+  annotations:
+    argocd.argoproj.io/hook: PostSync
+spec:
+  template:
+    spec:
+      securityContext:
+        fsGroup: 82
+      restartPolicy: OnFailure
+      volumes:
+        - name: nextcloud-main
+          persistentVolumeClaim:
+            claimName: nextcloud-files
+        - configMap:
+            defaultMode: 420
+            name: nextcloud-web-app-config
+          name: nextcloud-config
+        - configMap:
+            defaultMode: 420
+            name: nextcloud-web-app-phpconfig
+          name: nextcloud-phpconfig
+        - name: postgres-ca
+          secret:
+            defaultMode: 416
+            secretName: nextcloud-postgres-server-ca-key-pair
+        - name: postgres-client-certs
+          secret:
+            defaultMode: 416
+            secretName: nextcloud-postgres-nextcloud-cert
+
+      containers:
+        - name: nextcloud-app-installs
+          image: nextcloud:29-fpm-alpine
+          imagePullPolicy: IfNotPresent
+          command:
+            - /bin/sh
+            - -c
+            - su -s /bin/sh www-data -c "while true; do php occ app:list && break; done; echo '\nphp occ is now available\n' && php occ app:install oidc_login --allow-unstable; php occ app:enable oidc_login --force; php occ app:install notes --allow-unstable; php occ app:install bookmarks --allow-unstable; php occ app:install deck --allow-unstable; php occ app:install side_menu --allow-unstable; php occ app:install recognize --allow-unstable; php occ app:install memories --allow-unstable; php occ app:install music --allow-unstable; echo done"
+          volumeMounts:
+            - mountPath: /var/www/
+              name: nextcloud-main
+              subPath: root
+            - mountPath: /var/www/html
+              name: nextcloud-main
+              subPath: html
+            # only needed if you have a seperate data dir for nextcloud
+            - mountPath: /var/www/html/data
+              name: nextcloud-main
+              subPath: data
+            - mountPath: /var/www/html/config
+              name: nextcloud-main
+              subPath: config
+            - mountPath: /var/www/html/custom_apps
+              name: nextcloud-main
+              subPath: custom_apps
+            - mountPath: /var/www/tmp
+              name: nextcloud-main
+              subPath: tmp
+            - mountPath: /var/www/html/themes
+              name: nextcloud-main
+              subPath: themes
+            - mountPath: /var/www/html/config/logging.config.php
+              name: nextcloud-config
+              subPath: logging.config.php
+            - mountPath: /var/www/html/config/oidc.config.php
+              name: nextcloud-config
+              subPath: oidc.config.php
+            - mountPath: /var/www/html/config/previews.config.php
+              name: nextcloud-config
+              subPath: previews.config.php
+            - mountPath: /var/www/html/config/proxy.config.php
+              name: nextcloud-config
+              subPath: proxy.config.php
+            - mountPath: /var/www/html/config/.htaccess
+              name: nextcloud-config
+              subPath: .htaccess
+            - mountPath: /var/www/html/config/apache-pretty-urls.config.php
+              name: nextcloud-config
+              subPath: apache-pretty-urls.config.php
+            - mountPath: /var/www/html/config/apcu.config.php
+              name: nextcloud-config
+              subPath: apcu.config.php
+            - mountPath: /var/www/html/config/apps.config.php
+              name: nextcloud-config
+              subPath: apps.config.php
+            - mountPath: /var/www/html/config/autoconfig.php
+              name: nextcloud-config
+              subPath: autoconfig.php
+            - mountPath: /var/www/html/config/smtp.config.php
+              name: nextcloud-config
+              subPath: smtp.config.php
+            - mountPath: /etc/secrets/ca
+              name: postgres-ca
+            - mountPath: /etc/secrets/nextcloud
+              name: postgres-client-certs
+            - mountPath: /usr/local/etc/php-fpm.d/www.conf
+              name: nextcloud-phpconfig
+              subPath: www.conf
+          env:
+            - name: POSTGRES_HOST
+              value: nextcloud-postgres-rw.nextcloud.svc:5432;sslmode=verify-full;sslrootcert=/etc/secrets/ca/ca.crt;sslcert=/etc/secrets/nextcloud/tls.crt;sslkey=/etc/secrets/nextcloud/tls.key
+            - name: POSTGRES_DB
+              value: nextcloud
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  key: username
+                  name: nextcloud-pgsql-credentials
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: nextcloud-pgsql-credentials
+            - name: NEXTCLOUD_ADMIN_USER
+              valueFrom:
+                secretKeyRef:
+                  key: username
+                  name: nextcloud-admin-credentials
+            - name: NEXTCLOUD_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: nextcloud-admin-credentials
+            - name: NEXTCLOUD_DATA_DIR
+              value: /var/www/html/data
+            - name: MAIL_FROM_ADDRESS
+              value: user
+            - name: MAIL_DOMAIN
+              value: domain.com
+            - name: SMTP_SECURE
+              value: ssl
+            - name: SMTP_PORT
+              value: "465"
+            - name: SMTP_AUTHTYPE
+              value: LOGIN
+            - name: SMTP_HOST
+              valueFrom:
+                secretKeyRef:
+                  key: smtpHost
+                  name: nextcloud-admin-credentials
+            - name: SMTP_NAME
+              valueFrom:
+                secretKeyRef:
+                  key: smtpUsername
+                  name: nextcloud-admin-credentials
+            - name: SMTP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: smtpPassword
+                  name: nextcloud-admin-credentials
+            - name: NC_oidc_login_provider_url
+              valueFrom:
+                secretKeyRef:
+                  key: issuer
+                  name: nextcloud-oidc-credentials
+            - name: NC_oidc_login_client_id
+              valueFrom:
+                secretKeyRef:
+                  key: client_id
+                  name: nextcloud-oidc-credentials
+            - name: NC_oidc_login_client_secret
+              valueFrom:
+                secretKeyRef:
+                  key: client_secret
+                  name: nextcloud-oidc-credentials
+            - name: PGSSLCERT
+              value: /etc/secrets/nextcloud/tls.crt
+            - name: PGSSLKEY
+              value: /etc/secrets/nextcloud/tls.key
+            - name: PGSSLROOTCERT
+              value: /etc/secrets/ca/ca.crt

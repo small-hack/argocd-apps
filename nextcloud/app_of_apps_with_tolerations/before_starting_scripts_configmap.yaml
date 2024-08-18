@@ -1,0 +1,17 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: before-starting-scripts
+data:
+  install-apps.sh: |
+    #!/bin/sh
+    echo "Switching to the beta channel"
+    php /var/www/html/occ config:system:set updater.release.channel --value=beta
+    echo "Installing Nextcloud apps..."
+    php /var/www/html/occ app:install oidc_login
+    php /var/www/html/occ app:install notes
+    php /var/www/html/occ app:install bookmarks
+    php /var/www/html/occ app:install deck
+    php /var/www/html/occ app:install side_menu
+    echo "Nextcloud apps installation complete."

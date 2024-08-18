@@ -1,0 +1,101 @@
+---
+# webapp is deployed 2nd because we need secrets and persistent volumes up 1st
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: nextcloud-postgres-app-set
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  goTemplate: true
+  # generator allows us to source specific values from an external k8s secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - nextcloud_s3_endpoint
+              - nextcloud_postgres_backup_schedule
+  template:
+    metadata:
+      name: nextcloud-postgres-cluster
+      namespace: nextcloud
+      annotations:
+        argocd.argoproj.io/sync-wave: "2"
+    spec:
+      project: nextcloud
+      destination:
+        server: "https://kubernetes.default.svc"
+        namespace: nextcloud
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
+          selfHeal: true
+      source:
+        repoURL: https://small-hack.github.io/cloudnative-pg-cluster-chart
+        chart: cnpg-cluster
+        targetRevision: 0.4.0
+        helm:
+          releaseName: nextcloud-postgres-cluster
+          valuesObject:
+            name: nextcloud-postgres
+            instances: 2
+
+            bootstrap:
+              initdb:
+                database: nextcloud
+                owner: nextcloud
+                secret:
+                  name: nextcloud-pgsql-credentials
+
+            backup:
+              # barman is a utility for backing up postgres to s3
+              barmanObjectStore:
+                destinationPath: "s3://nextcloud-postgres"
+                endpointURL: "https://{{ .nextcloud_s3_endpoint }}"
+                s3Credentials:
+                  accessKeyId:
+                    name: s3-postgres-credentials
+                    key: "accessKeyId"
+                  secretAccessKey:
+                    name: s3-postgres-credentials
+                    key: "secretAccessKey"
+                wal:
+                  compression: gzip
+                  maxParallel: 8
+                  encryption: AES256
+              retentionPolicy: "30d"
+
+            certificates:
+              server:
+                enabled: true
+                generate: true
+              client:
+                enabled: true
+                generate: true
+              user:
+                enabled: true
+                username:
+                  - nextcloud
+
+            scheduledBackup:
+              name: nextcloud-pg-backup
+              spec:
+                # Midnight daily backups for postgres data
+                schedule: '{{ .nextcloud_postgres_backup_schedule }}'
+                backupOwnerReference: self
+                cluster:
+                  name: nextcloud-postgres
+
+            monitoring:
+              enablePodMonitor: true
+
+            postgresql:
+              pg_hba:
+                - hostnossl all all 0.0.0.0/0 reject
+                - hostssl all all 0.0.0.0/0 cert clientcert=verify-full
