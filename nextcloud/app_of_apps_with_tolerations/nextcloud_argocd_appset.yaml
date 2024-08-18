@@ -56,10 +56,10 @@ spec:
               pullPolicy: IfNotPresent
 
             tolerations:
-              - key: 'dedicated'
-                operator: 'Equal'
-                value: 'nextcloud'
-                effect: 'NoSchedule'
+              - key: '{{ .nextcloud_toleration_key }}'
+                operator: '{{ .nextcloud_toleration_operator }}'
+                value: '{{ .nextcloud_toleration_value }}'
+                effect: '{{ .nextcloud_toleration_effect }}'
 
             affinity:
               nodeAffinity:

@@ -9,8 +9,24 @@ spec:
       securityContext:
         runAsUser: {{ .runAsUser }}
       {{- end }}
+
       containers:
         - name: test
           env:
-          - name: APP_POD_CONFIG_EXAMPLE
-            value: 'true'
+            - name: {{ .Values.app }}
+              value: "true"
+
+      {{- if .Values.tolerations }}
+      tolerations:
+        {{- range .Values.tolerations }}
+        - effect: {{ .effect }}
+          key: {{ .key }}
+          operator: {{ .operator }}
+          value: {{ .iot }}
+        {{- end }}
+      {{- end }}
+
+      {{- with .Values.affinity}}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
