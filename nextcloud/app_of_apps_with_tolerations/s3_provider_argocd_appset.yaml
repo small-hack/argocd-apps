@@ -33,5 +33,5 @@ spec:
           selfHeal: true
       source:
         repoURL: https://github.com/small-hack/argocd-apps.git
-        path: nextcloud/storage/{{ .nextcloud_s3_provider }}/
+        path: nextcloud/storage/{{ .nextcloud_s3_provider }}_with_tolerations/
         targetRevision: main

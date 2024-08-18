@@ -66,11 +66,10 @@ spec:
                 requiredDuringSchedulingIgnoredDuringExecution:
                   nodeSelectorTerms:
                     - matchExpressions:
-                      - key: 'dedicated'
+                      - key: '{{ .nextcloud_affinity_key }}'
                         operator: In
                         values:
-                          - 'nextcloud'
-
+                          - '{{ .nextcloud_affinity_value }}'
             ingress:
               enabled: true
               className: nginx
