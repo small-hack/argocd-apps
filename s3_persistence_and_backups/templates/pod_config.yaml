@@ -22,7 +22,7 @@ spec:
         - effect: {{ .effect }}
           key: {{ .key }}
           operator: {{ .operator }}
-          value: {{ .iot }}
+          value: {{ .value }}
         {{- end }}
       {{- end }}
 
