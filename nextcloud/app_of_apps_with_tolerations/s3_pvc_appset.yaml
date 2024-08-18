@@ -77,11 +77,10 @@ spec:
               # -- deploy a master data PVC for seaweedfs
               master_pvc: false
 
-            # not in use yet
             k8up:
               # -- user to run the backups as
               securityContext:
-                runAsUser: 82
+                runAsUser: 0
 
               backup_name: 'nextcloud-nightly-backup'
 
