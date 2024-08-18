@@ -6,7 +6,7 @@ files_pvc:
   # -- default access mode for the files pvc
   accessMode: "ReadWriteOnce"
   # -- storage capacity for the nextcloud files pvc
-  storage: "20Gi"
+  storage: "100Gi"
 
 config_pvc:
   # -- enable nextcloud configuration pvc
@@ -17,3 +17,15 @@ config_pvc:
   accessMode: "ReadWriteOnce"
   # -- storage capacity for the nextcloud config pvc
   storage: "2Gi"
+
+# -- tolerate affinity
+affinity: {}
+
+# -- tolerate taints
+tolerations: []
+
+# -- for enabling backups to a remote s3 provider or local disk backup
+k8up:
+  # -- user to run the backups as
+  securityContext:
+    runAsUser: 82

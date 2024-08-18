@@ -24,6 +24,12 @@ spec:
               - nextcloud_config_storage
               - nextcloud_config_access_mode
               - nextcloud_config_storage_class
+              - nextcloud_toleration_key
+              - nextcloud_toleration_operator
+              - nextcloud_toleration_value
+              - nextcloud_toleration_effect
+              - nextcloud_affinity_key
+              - nextcloud_affinity_value
   template:
     metadata:
       name: nextcloud-pvc
@@ -59,3 +65,19 @@ spec:
               storageClassName: '{{ .nextcloud_config_storage_class }}'
               accessMode: '{{ .nextcloud_config_access_mode }}'
               storage: '{{ .nextcloud_config_storage }}'
+
+            tolerations:
+              - key: '{{ .nextcloud_toleration_key }}'
+                operator: '{{ .nextcloud_toleration_operator }}'
+                value: '{{ .nextcloud_toleration_value }}'
+                effect: '{{ .nextcloud_toleration_effect }}'
+
+            affinity:
+              nodeAffinity:
+                requiredDuringSchedulingIgnoredDuringExecution:
+                  nodeSelectorTerms:
+                    - matchExpressions:
+                      - key: '{{ .nextcloud_affinity_key }}'
+                        operator: In
+                        values:
+                          - '{{ .nextcloud_affinity_value }}'

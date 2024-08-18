@@ -1,7 +1,7 @@
 apiVersion: k8up.io/v1
 kind: PodConfig
 metadata:
-  name: s3-backups-podconfig
+  name: file-backups-podconfig
 spec:
   template:
     spec:
@@ -13,7 +13,7 @@ spec:
       containers:
         - name: test
           env:
-            - name: {{ .Values.app }}
+            - name: nextcloud
               value: "true"
 
       {{- if .Values.tolerations }}
