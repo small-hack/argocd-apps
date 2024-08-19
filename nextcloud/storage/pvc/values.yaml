@@ -28,4 +28,5 @@ tolerations: []
 k8up:
   # -- user to run the backups as
   securityContext:
-    runAsUser: 82
+    # this may need to be 33 (apache) or 82 (nginx) depending on how you run nextcloud
+    runAsUser: 0
