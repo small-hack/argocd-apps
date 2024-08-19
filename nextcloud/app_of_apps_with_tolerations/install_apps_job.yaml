@@ -30,7 +30,7 @@ spec:
               - nextcloud_affinity_value
   template:
     metadata:
-      name: nextcloud-install-apps
+      name: nextcloud-install-apps-app
       annotations:
         argocd.argoproj.io/sync-wave: "3"
     spec:
