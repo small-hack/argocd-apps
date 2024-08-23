@@ -19,6 +19,12 @@ spec:
               - global_time_zone
               - nextcloud_maintenance_mode_on_schedule
               - nextcloud_maintenance_mode_off_schedule
+              - nextcloud_toleration_key
+              - nextcloud_toleration_operator
+              - nextcloud_toleration_value
+              - nextcloud_toleration_effect
+              - nextcloud_affinity_key
+              - nextcloud_affinity_value
   template:
     metadata:
       name: nextcloud-maintanence-cronjobs
@@ -52,3 +58,19 @@ spec:
             maintenance_mode_off:
               # -- cron schedule to turn off maintenance mode for nextcloud
               schedule: '{{ .nextcloud_maintenance_mode_off_schedule }}'
+
+            tolerations:
+              - key: '{{ .nextcloud_toleration_key }}'
+                operator: '{{ .nextcloud_toleration_operator }}'
+                value: '{{ .nextcloud_toleration_value }}'
+                effect: '{{ .nextcloud_toleration_effect }}'
+
+            affinity:
+              nodeAffinity:
+                requiredDuringSchedulingIgnoredDuringExecution:
+                  nodeSelectorTerms:
+                    - matchExpressions:
+                      - key: '{{ .nextcloud_affinity_key }}'
+                        operator: In
+                        values:
+                          - '{{ .nextcloud_affinity_value }}'

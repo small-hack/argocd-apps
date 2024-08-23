@@ -16,3 +16,9 @@ maintenance_mode_on:
 maintenance_mode_off:
   # -- cron schedule to turn off maintenance mode for nextcloud
   schedule: ""
+
+# -- affinity to make the cronjobs use a specific node
+affinity: {}
+
+# -- tolerations to make the cronjobs tolerate the taints on a specific node
+tolerations: []

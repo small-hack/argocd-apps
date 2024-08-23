@@ -11,6 +11,19 @@ spec:
     spec:
       template:
         spec:
+          {{- with .Values.affinity }}
+          affinity:
+          {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- if .Values.tolerations }}
+          tolerations:
+            {{- range .Values.tolerations }}
+            - effect: {{ .effect }}
+              key: {{ .key }}
+              operator: {{ .operator }}
+              value: {{ .value }}
+            {{- end }}
+          {{- end }}
           securityContext:
             fsGroup: 82
           restartPolicy: OnFailure
