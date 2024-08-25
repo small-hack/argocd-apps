@@ -92,7 +92,7 @@ spec:
               # -- Settings related to image and multimedia uploads
               uploads:
                 # -- Max upload size in bytes
-                maxSize: 100M
+                maxSize: 2G
 
                 # -- Max image size in pixels
                 maxPixels: 64M
