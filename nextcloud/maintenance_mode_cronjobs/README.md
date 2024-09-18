@@ -10,7 +10,7 @@ A Helm chart for Kubernetes
 |-----|------|---------|-------------|
 | affinity | object | `{}` | affinity to make the cronjobs use a specific node |
 | image.repository | string | `"nextcloud"` | docker image repo |
-| image.tag | string | `"29.0.5-fpm-alpine"` | docker image tag |
+| image.tag | string | `"29.0.6-fpm-alpine"` | docker image tag |
 | maintenance_mode_off.schedule | string | `""` | cron schedule to turn off maintenance mode for nextcloud |
 | maintenance_mode_on.schedule | string | `""` | cron schedule to turn on maintenance mode for nextcloud |
 | timezone | string | `""` | timezone you want to use for TZ env var, must be identifier from this list: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List example could be "Europe/Amsterdam" |
