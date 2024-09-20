@@ -37,7 +37,7 @@ spec:
         # official minio helm repo
         repoURL: 'https://operator.min.io/'
         chart: tenant
-        targetRevision: 6.0.2
+        targetRevision: 6.0.3
         helm:
           releaseName: nextcloud-minio-tenant
           values: |
