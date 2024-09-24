@@ -91,7 +91,7 @@ spec:
                     key: reply_to_address
 
               - name: ZITADEL_LOG_LEVEL
-                value: debug
+                value: info
 
             zitadel:
               # See all defaults here:
