@@ -314,7 +314,7 @@ spec:
                     'oidc_login_auto_redirect' => false,
 
                     // Redirect to this page after logging out the user
-                    'oidc_login_logout_url' => '{{ .nextcloud_hostname }}',
+                    'oidc_login_logout_url' => '{{ .nextcloud_hostname }}/apps/oidc_login/oidc',
 
                     // If set to true the user will be redirected to the
                     // logout endpoint of the OIDC provider after logout
