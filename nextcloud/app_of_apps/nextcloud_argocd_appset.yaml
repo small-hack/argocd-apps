@@ -40,7 +40,7 @@ spec:
           selfHeal: true
       source:
         repoURL: 'https://nextcloud.github.io/helm'
-        targetRevision: 6.0.2
+        targetRevision: 6.0.3
         chart: nextcloud
         helm:
           valuesObject:
