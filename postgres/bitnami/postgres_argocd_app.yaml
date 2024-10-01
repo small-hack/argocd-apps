@@ -14,7 +14,7 @@ spec:
   source:
     chart: postgresql
     repoURL: 'https://charts.bitnami.com/bitnami'
-    targetRevision: 15.5.37
+    targetRevision: 15.5.38
     helm:
       skipCrds: true
       values: |
