@@ -163,6 +163,9 @@ spec:
                 # Discover some mobile devices automatically
                 mobile_app:
 
+                # enable circadian rythim lighting
+                circadian_lighting:
+
                 # enable configuration ui i think
                 config:
 
