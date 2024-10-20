@@ -160,6 +160,8 @@ spec:
               data:
                 type: "existingClaim"
                 claimName: "swfs-filer-data"
+              ingress:
+                enabled: false
               s3:
                 enabled: true
                 port: 8333
@@ -191,6 +193,8 @@ spec:
                 successThreshold: 2
                 failureThreshold: 100
                 timeoutSeconds: 10
+            s3:
+              enabled: false
               ingress:
                 enabled: true
                 className: "nginx"
@@ -204,7 +208,5 @@ spec:
                   - secretName: zitadel-seaweedfs-tls
                     hosts:
                       - '{{ .zitadel_s3_endpoint }}'
-            s3:
-              enabled: false
             cosi:
               enabled: false
