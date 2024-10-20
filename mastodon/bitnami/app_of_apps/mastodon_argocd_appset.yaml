@@ -38,7 +38,7 @@ spec:
       source:
         repoURL: registry-1.docker.io
         chart: bitnamicharts/mastodon
-        targetRevision: 6.2.11
+        targetRevision: 9.0.0
         helm:
           releaseName: "mastodon"
           values: |
@@ -231,13 +231,16 @@ spec:
             ## @section Mastodon Migration job Parameters
             initJob:
               ## Execute rake assets:precompile as part of the job
-              precompileAssets: true
+              precompileAssets:
+                enabled: true
               ## Execute rake db:migrate as part of the job
-              migrateDB: true
-              ## Execute rake chewy:upgrade as part of the job
-              migrateElasticsearch: true
-              ## Create admin user as part of the job
-              createAdmin: true
+              migrateAndCreateAdmin:
+                enabled: true
+                migrateDB: true
+                ## Execute rake chewy:upgrade as part of the job
+                migrateElasticsearch: true
+                ## Create admin user as part of the job
+                createAdmin: true
               ## set backoff limit of the job
               backoffLimit: 10
               extraEnvVars:
@@ -275,7 +278,7 @@ spec:
                 requests: {}
               ## [object] Add annotations to the job
               annotations:
-                helm.sh/hook: post-install, pre-upgrade
+                helm.sh/hook: post-install, post-upgrade
                 helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
                 # This should be executed after the minio provisioning job
                 helm.sh/hook-weight: "10"
@@ -284,14 +287,14 @@ spec:
             ## ref: https://kubernetes.io/docs/user-guide/persistent-volumes/
             persistence:
               enabled: false
-
-            ## 'volumePermissions' init container parameters
-            ## Changes owner/group of PV mount point to runAsUser:fsGroup values
-            ## based on the *podSecurityContext/*containerSecurityContext parameters
-            volumePermissions:
-              ## OS Shell + Utility image
-              ## ref: https://hub.docker.com/r/bitnami/os-shell/tags/
-              enabled: true
+            defaultInitContainers:
+              ## 'volumePermissions' init container parameters
+              ## Changes owner/group of PV mount point to runAsUser:fsGroup values
+              ## based on the *podSecurityContext/*containerSecurityContext parameters
+              volumePermissions:
+                ## OS Shell + Utility image
+                ## ref: https://hub.docker.com/r/bitnami/os-shell/tags/
+                enabled: true
 
             ## @section External S3 parameters
             externalS3:
