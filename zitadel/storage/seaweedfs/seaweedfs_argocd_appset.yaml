@@ -191,18 +191,20 @@ spec:
                 successThreshold: 2
                 failureThreshold: 100
                 timeoutSeconds: 10
-              #ingress:
-              #  enabled: true
-              #  className: "nginx"
-              #  # host: false for "*" hostname
-              #  host: '{{ .zitadel_s3_endpoint }}'
-              #  # additional ingress annotations for the s3 endpoint
-              #  annotations:
-              #    cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
-              #    nginx.ingress.kubernetes.io/proxy-body-size: "64m"
-              #  tls:
-              #    - secretName: zitadel-seaweedfs-tls
-              #      hosts:
-              #        - '{{ .zitadel_s3_endpoint }}'
+              ingress:
+                enabled: true
+                className: "nginx"
+                # host: false for "*" hostname
+                host: '{{ .zitadel_s3_endpoint }}'
+                # additional ingress annotations for the s3 endpoint
+                annotations:
+                  cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
+                  nginx.ingress.kubernetes.io/proxy-body-size: "64m"
+                tls:
+                  - secretName: zitadel-seaweedfs-tls
+                    hosts:
+                      - '{{ .zitadel_s3_endpoint }}'
+            s3:
+              enabled: false
             cosi:
               enabled: false
