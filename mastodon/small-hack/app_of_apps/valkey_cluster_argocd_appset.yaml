@@ -25,10 +25,10 @@ spec:
       annotations:
         argocd.argoproj.io/sync-wave: "1"
     spec:
-      project: valkey
+      project: mastodon
       destination:
         server: https://kubernetes.default.svc
-        namespace: valkey
+        namespace: mastodon
 
       syncPolicy:
         syncOptions:
