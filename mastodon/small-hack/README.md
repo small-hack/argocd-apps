@@ -1,7 +1,7 @@
 # Mastodon Argo CD ApplicationSet
 Mastodon is social networking that's not for sale: https://joinmastodon.org/
 
-<img width="846" src="https://github.com/small-hack/argocd-apps/assets/2389292/712e9538-9409-49a6-8d93-a6464f368134" alt="screenshot of the mastodon applicationset in Argo CD's web interface using the tree mode view. the main mastodon app has 6 child apps: mastodon-redis, mastodon-app-set with child mastodon-web-app, mastodon-external-secrets-appset with child mastodon-external-secrets, mastodon-postgres-app-set with child mastodon-postgres-cluster, mastodon-s3-provider-app-set with child mastodon-seaweedfs, and mastodon-s3-pvc-appset with child mastodon-s3-pvc.">
+<img width="846" src="https://github.com/small-hack/argocd-apps/assets/2389292/712e9538-9409-49a6-8d93-a6464f368134" alt="screenshot of the mastodon applicationset in Argo CD's web interface using the tree mode view. the main mastodon app has 6 child apps: mastodon-valkey, mastodon-app-set with child mastodon-web-app, mastodon-external-secrets-appset with child mastodon-external-secrets, mastodon-postgres-app-set with child mastodon-postgres-cluster, mastodon-s3-provider-app-set with child mastodon-seaweedfs, and mastodon-s3-pvc-appset with child mastodon-s3-pvc.">
 
 This is the networking view in Argo CD:
 
@@ -13,7 +13,7 @@ In the [`./app_of_apps`](./app_of_apps) directory we create the manifests and he
 1. all required PVCs, and Secrets (secrets are external secrets in a private repo)
 2. SeaweedFS file system and s3 endpoint with two buckets, one for postgres backups and one for mastodon media
 3. Postgresql Cluster
-4. Mastodon web app (including elastic search and redis)
+4. Mastodon web app (including elastic search and valkey)
 
 ## Creating Mastodon Secrets
 This template relies on you already having created secrets. You can do that via [`smol-k8s-lab`](https://small-hack.github.io/smol-k8s-lab/k8s_apps/mastodon/) or manually.
@@ -26,7 +26,7 @@ OTP_SECRET=$(docker run --rm -it tootsuite/mastodon:latest bin/rake secret)
 
 docker run --rm -e "OTP_SECRET=$OTP_SECRET" \
     -e "SECRET_KEY_BASE=$SECRET_KEY_BASE" \
-    -it tootsuite/mastodon:latest bin/rake mastodon:webpush:generate_vapid_key 
+    -it tootsuite/mastodon:latest bin/rake mastodon:webpush:generate_vapid_key
 ```
 
 # Troubleshooting Mastodon
