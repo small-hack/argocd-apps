@@ -77,7 +77,7 @@ spec:
               name: mastodon-pg-backup
               spec:
                 # hourly backups for postgres data
-                schedule: '{{ .mastodon_pvc_backup_schedule }}'
+                schedule: '{{ .mastodon_postgres_backup_schedule }}'
                 backupOwnerReference: self
                 cluster:
                   name: mastodon-postgres
