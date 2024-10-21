@@ -19,6 +19,7 @@ spec:
               - mastodon_hostname
               - mastodon_s3_endpoint
               - global_cluster_issuer
+              - global_time_zone
   template:
     metadata:
       name: mastodon-web-app
@@ -255,3 +256,6 @@ spec:
               create: true
               # -- Annotations to add to the service account
               annotations: {}
+
+            # -- timezone for all the pods
+            timezone: '{{ .global_time_zone }}'
