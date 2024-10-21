@@ -228,7 +228,7 @@ spec:
             # https://github.com/bitnami/charts/tree/main/bitnami/redis#parameters
             redis:
               enabled: false
-              hostname: "mastodon-redis-master"
+              hostname: "valkey"
               port: 6379
               auth:
                 # with a key of redis-password set to the password you want
