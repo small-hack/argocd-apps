@@ -1,0 +1,16 @@
+{{- if eq .Values.valkey_pvc.enabled "true" }}
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: valkey
+  annotations:
+    k8up.io/backup: 'true'
+spec:
+  storageClassName: {{ .Values.valkey_pvc.storageClassName }}
+  accessModes:
+    - {{ .Values.valkey_pvc.accessMode }}
+  resources:
+    requests:
+      storage: {{ .Values.valkey_pvc.storage }}
+{{- end }}
