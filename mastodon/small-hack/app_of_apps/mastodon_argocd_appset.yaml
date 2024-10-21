@@ -34,6 +34,9 @@ spec:
       syncPolicy:
         syncOptions:
           - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
+          selfHeal: true
       source:
         # forked from: https://github.com/mastodon/chart/tree/main
         repoURL: 'https://small-hack.github.io/mastodon-helm-chart'
