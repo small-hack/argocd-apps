@@ -232,7 +232,8 @@ spec:
               port: 6379
               auth:
                 # with a key of redis-password set to the password you want
-                existingSecret: "mastodon-redis-credentials"
+                existingSecret: "mastodon-valkey-credentials"
+                existingSecretPasswordKey: "valkey-password"
 
             service:
               type: ClusterIP
