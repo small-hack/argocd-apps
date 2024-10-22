@@ -41,11 +41,11 @@ spec:
         # forked from: https://github.com/mastodon/chart/tree/main
         # repoURL: 'https://small-hack.github.io/mastodon-helm-chart'
         # targetRevision: 9.4.0
+        # chart: mastodon
         repoURL: 'https://github.com/small-hack/mastodon-helm-chart'
         path: 'charts/mastodon/'
-        # targetRevision: test-job-assets-with-s3
-        targetRevision: 68169b32302a11558f554ffa5b5570fa98a379a5
-        chart: mastodon
+        # targetRevision: 68169b32302a11558f554ffa5b5570fa98a379a5
+        targetRevision: test-job-assets-with-s3
         helm:
           valuesObject:
             image:
