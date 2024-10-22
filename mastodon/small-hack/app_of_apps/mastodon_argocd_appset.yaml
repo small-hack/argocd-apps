@@ -41,12 +41,12 @@ spec:
           selfHeal: true
       source:
         # forked from: https://github.com/mastodon/chart/tree/main
-        # repoURL: 'https://small-hack.github.io/mastodon-helm-chart'
-        # targetRevision: 9.5.1
-        # chart: mastodon
-        repoURL: 'https://github.com/small-hack/mastodon-helm-chart'
-        path: 'charts/mastodon/'
-        targetRevision: fix-precompile-volume-perm
+        repoURL: 'https://small-hack.github.io/mastodon-helm-chart'
+        targetRevision: 9.5.1
+        chart: mastodon
+        # repoURL: 'https://github.com/small-hack/mastodon-helm-chart'
+        # path: 'charts/mastodon/'
+        # targetRevision: fix-precompile-volume-perm
         helm:
           valuesObject:
             image:
@@ -61,7 +61,7 @@ spec:
 
                 # disabled due to https://github.com/mastodon/chart/issues/158
                 assetsPrecompile:
-                  enabled: true
+                  enabled: false
 
                 # Upload website assets to S3 before deploying using rclone.
                 # Whenever there is an update to Mastodon, sometimes there are assets files
