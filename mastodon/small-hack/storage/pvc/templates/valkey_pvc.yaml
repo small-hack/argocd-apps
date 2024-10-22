@@ -3,7 +3,7 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: valkey
+  name: mastodon-valkey
   annotations:
     k8up.io/backup: 'true'
 spec:

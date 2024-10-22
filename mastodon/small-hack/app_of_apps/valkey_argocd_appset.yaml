@@ -2,7 +2,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: valkey-cluster-appset
+  name: valkey-appset
   namespace: argocd
 spec:
   # enable go templating
@@ -15,13 +15,9 @@ spec:
           parameters:
             secret_vars:
               - global_time_zone
-              - global_pvc_storage_class
-              # - mastodon_valkey_access_mode
-              - mastodon_valkey_storage
-              - mastodon_valkey_storage_class
   template:
     metadata:
-      name: valkey-cluster-app
+      name: valkey-app
       annotations:
         argocd.argoproj.io/sync-wave: "1"
     spec:
@@ -40,7 +36,7 @@ spec:
 
       source:
         repoURL: 'registry-1.docker.io'
-        chart: bitnamicharts/valkey-cluster
+        chart: bitnamicharts/valkey
         targetRevision: 1.0.2
         helm:
           valuesObject:
@@ -61,51 +57,12 @@ spec:
 
             persistence:
               enabled: true
-              path: /bitnami/valkey/data
-              storageClass: "{{ .mastodon_valkey_storage_class }}"
-              annotations:
-                k8up.io/backup: 'true'
-              accessModes:
-                - ReadWriteOnce
-              size: '{{ .mastodon_valkey_storage }}'
+              existingClaim: "mastodon-valkey"
 
             persistentVolumeClaimRetentionPolicy:
               enabled: true
               whenScaled: Retain
               whenDeleted: Retain
-
-            valkey:
-              command: []
-              args: []
-              updateStrategy:
-                type: RollingUpdate
-                rollingUpdate:
-                  partition: 0
-
-              podManagementPolicy: Parallel
-              automountServiceAccountToken: false
-              hostNetwork: false
-              useAOFPersistence: "yes"
-              containerPorts:
-                valkey: 6379
-                bus: 16379
-
-              resourcesPreset: "nano"
-              resources: {}
-
-            cluster:
-              init: true
-              nodes: 6
-              replicas: 1
-              externalAccess:
-                enabled: false
-                hostMode: false
-                service:
-                  disableLoadBalancerIP: false
-                  type: LoadBalancer
-                  port: 6379
-                  loadBalancerIP: []
-                  loadBalancerSourceRanges: []
 
             # metrics on valkey cluster
             metrics:
