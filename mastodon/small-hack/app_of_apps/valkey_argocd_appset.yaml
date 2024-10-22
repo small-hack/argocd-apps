@@ -4,6 +4,8 @@ kind: ApplicationSet
 metadata:
   name: valkey-appset
   namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
 spec:
   # enable go templating
   goTemplate: true
@@ -19,7 +21,7 @@ spec:
     metadata:
       name: valkey-app
       annotations:
-        argocd.argoproj.io/sync-wave: "1"
+        argocd.argoproj.io/sync-wave: "2"
     spec:
       project: mastodon
       destination:
