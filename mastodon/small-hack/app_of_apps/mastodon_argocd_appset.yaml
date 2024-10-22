@@ -6,7 +6,7 @@ metadata:
   name: mastodon-app-set
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "3"
+    argocd.argoproj.io/sync-wave: "4"
 spec:
   # enable go templating
   goTemplate: true
@@ -26,7 +26,7 @@ spec:
     metadata:
       name: mastodon-web-app
       annotations:
-        argocd.argoproj.io/sync-wave: "3"
+        argocd.argoproj.io/sync-wave: "4"
         argocd.argoproj.io/sync-options: ApplyOnly=true
     spec:
       project: mastodon
