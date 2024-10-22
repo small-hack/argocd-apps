@@ -43,14 +43,15 @@ spec:
         helm:
           valuesObject:
 
+            fullnameOverride: "valkey"
+
             global:
               storageClass: "local-path"
 
-            fullnameOverride: "valkey"
-
-            usePassword: true
-            existingSecret: "mastodon-valkey-credentials"
-            existingSecretPasswordKey: "valkey-password"
+            auth:
+              enabled: true
+              existingSecret: "mastodon-valkey-credentials"
+              existingSecretPasswordKey: "valkey-password"
 
             tls:
               enabled: false
