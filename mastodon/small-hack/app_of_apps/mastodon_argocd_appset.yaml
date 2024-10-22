@@ -233,7 +233,7 @@ spec:
             # https://github.com/bitnami/charts/tree/main/bitnami/redis#parameters
             redis:
               enabled: false
-              hostname: "valkey"
+              hostname: "valkey-master"
               port: 6379
               auth:
                 # with a key of redis-password set to the password you want
