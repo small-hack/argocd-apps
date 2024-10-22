@@ -64,7 +64,6 @@ spec:
               whenScaled: Retain
               whenDeleted: Retain
 
-            # metrics on valkey cluster
             metrics:
               # we use a grafana exporter that logs into valkey directly
               enabled: false
