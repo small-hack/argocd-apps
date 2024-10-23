@@ -1226,6 +1226,7 @@ data:
                   "axisLabel": "",
                   "axisPlacement": "auto",
                   "barAlignment": 0,
+                  "barWidthFactor": 0.6,
                   "drawStyle": "line",
                   "fillOpacity": 26,
                   "gradientMode": "none",
@@ -1259,7 +1260,8 @@ data:
                   "mode": "absolute",
                   "steps": [
                     {
-                      "color": "green"
+                      "color": "green",
+                      "value": null
                     },
                     {
                       "color": "red",
@@ -1331,6 +1333,7 @@ data:
                   "axisLabel": "",
                   "axisPlacement": "auto",
                   "barAlignment": 0,
+                  "barWidthFactor": 0.6,
                   "drawStyle": "line",
                   "fillOpacity": 26,
                   "gradientMode": "none",
@@ -1364,7 +1367,8 @@ data:
                   "mode": "absolute",
                   "steps": [
                     {
-                      "color": "green"
+                      "color": "green",
+                      "value": null
                     },
                     {
                       "color": "red",
@@ -1437,6 +1441,7 @@ data:
                   "axisLabel": "",
                   "axisPlacement": "auto",
                   "barAlignment": 0,
+                  "barWidthFactor": 0.6,
                   "drawStyle": "line",
                   "fillOpacity": 26,
                   "gradientMode": "none",
@@ -1470,7 +1475,8 @@ data:
                   "mode": "absolute",
                   "steps": [
                     {
-                      "color": "green"
+                      "color": "green",
+                      "value": null
                     },
                     {
                       "color": "red",
@@ -1540,7 +1546,8 @@ data:
                   "mode": "absolute",
                   "steps": [
                     {
-                      "color": "green"
+                      "color": "green",
+                      "value": null
                     },
                     {
                       "color": "red",
@@ -1575,7 +1582,7 @@ data:
               "textMode": "auto",
               "wideLayout": true
             },
-            "pluginVersion": "11.1.0",
+            "pluginVersion": "11.2.2+security-01",
             "targets": [
               {
                 "datasource": {
@@ -1612,7 +1619,8 @@ data:
                   "mode": "absolute",
                   "steps": [
                     {
-                      "color": "green"
+                      "color": "green",
+                      "value": null
                     }
                   ]
                 }
@@ -1643,7 +1651,7 @@ data:
               "textMode": "auto",
               "wideLayout": true
             },
-            "pluginVersion": "11.1.0",
+            "pluginVersion": "11.2.2+security-01",
             "targets": [
               {
                 "datasource": {
@@ -1681,7 +1689,8 @@ data:
                   "mode": "absolute",
                   "steps": [
                     {
-                      "color": "green"
+                      "color": "green",
+                      "value": null
                     },
                     {
                       "color": "red",
@@ -1716,7 +1725,7 @@ data:
               "textMode": "auto",
               "wideLayout": true
             },
-            "pluginVersion": "11.1.0",
+            "pluginVersion": "11.2.2+security-01",
             "targets": [
               {
                 "datasource": {
@@ -2376,7 +2385,7 @@ data:
         },
         "id": 8,
         "panels": [],
-        "title": "Mastodon Backups",
+        "title": "🐘 Mastodon Backups",
         "type": "row"
       },
       {
@@ -2487,86 +2496,51 @@ data:
       },
       {
         "datasource": {
+          "default": false,
           "type": "prometheus",
           "uid": "${DS_PROMETHEUS}"
         },
+        "description": "",
         "fieldConfig": {
           "defaults": {
             "color": {
-              "mode": "thresholds"
+              "mode": "palette-classic"
             },
-            "mappings": [],
-            "thresholds": {
-              "mode": "absolute",
-              "steps": [
-                {
-                  "color": "yellow",
-                  "value": null
-                },
-                {
-                  "color": "green",
-                  "value": 1
-                }
-              ]
-            }
-          },
-          "overrides": []
-        },
-        "gridPos": {
-          "h": 4,
-          "w": 8,
-          "x": 8,
-          "y": 5
-        },
-        "id": 24,
-        "options": {
-          "colorMode": "value",
-          "graphMode": "area",
-          "justifyMode": "auto",
-          "orientation": "auto",
-          "percentChangeColorMode": "standard",
-          "reduceOptions": {
-            "calcs": [
-              "lastNotNull"
-            ],
-            "fields": "",
-            "values": false
-          },
-          "showPercentChange": false,
-          "textMode": "auto",
-          "wideLayout": true
-        },
-        "pluginVersion": "11.2.2+security-01",
-        "targets": [
-          {
-            "datasource": {
-              "type": "prometheus",
-              "uid": "${DS_PROMETHEUS}"
-            },
-            "disableTextWrap": false,
-            "editorMode": "builder",
-            "expr": "sum by(exported_namespace) (k8up_jobs_successful_counter{jobType=\"backup\", exported_namespace=\"mastodon\"})",
-            "fullMetaSearch": false,
-            "includeNullMetadata": true,
-            "instant": false,
-            "legendFormat": "__auto",
-            "range": true,
-            "refId": "A",
-            "useBackend": false
-          }
-        ],
-        "title": "successful k8up jobs - Mastodon",
-        "type": "stat"
-      },
-      {
-        "datasource": {
-          "type": "prometheus",
-          "uid": "${DS_PROMETHEUS}"
-        },
-        "fieldConfig": {
-          "defaults": {
-            "color": {
-              "mode": "thresholds"
+            "custom": {
+              "axisBorderShow": false,
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "barWidthFactor": 0.6,
+              "drawStyle": "line",
+              "fillOpacity": 26,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "insertNulls": false,
+              "lineInterpolation": "smooth",
+              "lineStyle": {
+                "fill": "solid"
+              },
+              "lineWidth": 3,
+              "pointSize": 4,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "auto",
+              "spanNulls": true,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
             },
             "mappings": [],
             "thresholds": {
@@ -2578,7 +2552,7 @@ data:
                 },
                 {
                   "color": "red",
-                  "value": 1
+                  "value": 80
                 }
               ]
             }
@@ -2586,30 +2560,28 @@ data:
           "overrides": []
         },
         "gridPos": {
-          "h": 4,
+          "h": 6,
           "w": 8,
-          "x": 16,
+          "x": 8,
           "y": 5
         },
-        "id": 31,
+        "id": 47,
         "options": {
-          "colorMode": "value",
-          "graphMode": "area",
-          "justifyMode": "auto",
-          "orientation": "auto",
-          "percentChangeColorMode": "standard",
-          "reduceOptions": {
+          "legend": {
             "calcs": [
               "lastNotNull"
             ],
-            "fields": "",
-            "values": false
+            "displayMode": "table",
+            "placement": "right",
+            "showLegend": true
           },
-          "showPercentChange": false,
-          "textMode": "auto",
-          "wideLayout": true
+          "tooltip": {
+            "maxHeight": 600,
+            "mode": "single",
+            "sort": "none"
+          }
         },
-        "pluginVersion": "11.2.2+security-01",
+        "pluginVersion": "10.4.1",
         "targets": [
           {
             "datasource": {
@@ -2618,7 +2590,7 @@ data:
             },
             "disableTextWrap": false,
             "editorMode": "builder",
-            "expr": "sum by(exported_namespace) (k8up_jobs_failed_counter{jobType=\"backup\", exported_namespace=\"mastodon\"})",
+            "expr": "sum by(instance) (k8up_backup_restic_changed_directories_during_backup{instance=\"mastodon\"})",
             "fullMetaSearch": false,
             "includeNullMetadata": true,
             "instant": false,
@@ -2628,8 +2600,117 @@ data:
             "useBackend": false
           }
         ],
-        "title": "failed k8up jobs - Mastodon",
-        "type": "stat"
+        "title": "restic changed directories during backup - mastodon",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "default": false,
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "description": "new files discovered during the backup",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisBorderShow": false,
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "barWidthFactor": 0.6,
+              "drawStyle": "line",
+              "fillOpacity": 26,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "insertNulls": false,
+              "lineInterpolation": "smooth",
+              "lineStyle": {
+                "fill": "solid"
+              },
+              "lineWidth": 3,
+              "pointSize": 4,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "auto",
+              "spanNulls": true,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 6,
+          "w": 8,
+          "x": 16,
+          "y": 5
+        },
+        "id": 48,
+        "options": {
+          "legend": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "displayMode": "table",
+            "placement": "right",
+            "showLegend": true
+          },
+          "tooltip": {
+            "maxHeight": 600,
+            "mode": "single",
+            "sort": "none"
+          }
+        },
+        "pluginVersion": "10.4.1",
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS_PROMETHEUS}"
+            },
+            "disableTextWrap": false,
+            "editorMode": "builder",
+            "expr": "sum by(instance) (k8up_backup_restic_new_files_during_backup{instance=\"mastodon\"})",
+            "fullMetaSearch": false,
+            "includeNullMetadata": true,
+            "instant": false,
+            "legendFormat": "__auto",
+            "range": true,
+            "refId": "A",
+            "useBackend": false
+          }
+        ],
+        "title": "restic new files during backup - mastodon",
+        "type": "timeseries"
       },
       {
         "datasource": {
@@ -2705,12 +2786,198 @@ data:
         "type": "stat"
       },
       {
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "yellow",
+                  "value": null
+                },
+                {
+                  "color": "green",
+                  "value": 1
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 6,
+          "w": 8,
+          "x": 8,
+          "y": 11
+        },
+        "id": 24,
+        "options": {
+          "colorMode": "value",
+          "graphMode": "area",
+          "justifyMode": "auto",
+          "orientation": "auto",
+          "percentChangeColorMode": "standard",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "showPercentChange": false,
+          "textMode": "auto",
+          "wideLayout": true
+        },
+        "pluginVersion": "11.2.2+security-01",
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS_PROMETHEUS}"
+            },
+            "disableTextWrap": false,
+            "editorMode": "builder",
+            "expr": "sum by(exported_namespace) (k8up_jobs_successful_counter{jobType=\"backup\", exported_namespace=\"mastodon\"})",
+            "fullMetaSearch": false,
+            "includeNullMetadata": true,
+            "instant": false,
+            "legendFormat": "__auto",
+            "range": true,
+            "refId": "A",
+            "useBackend": false
+          }
+        ],
+        "title": "successful k8up jobs - Mastodon",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 1
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 6,
+          "w": 8,
+          "x": 16,
+          "y": 11
+        },
+        "id": 31,
+        "options": {
+          "colorMode": "value",
+          "graphMode": "area",
+          "justifyMode": "auto",
+          "orientation": "auto",
+          "percentChangeColorMode": "standard",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "showPercentChange": false,
+          "textMode": "auto",
+          "wideLayout": true
+        },
+        "pluginVersion": "11.2.2+security-01",
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS_PROMETHEUS}"
+            },
+            "disableTextWrap": false,
+            "editorMode": "builder",
+            "expr": "sum by(exported_namespace) (k8up_jobs_failed_counter{jobType=\"backup\", exported_namespace=\"mastodon\"})",
+            "fullMetaSearch": false,
+            "includeNullMetadata": true,
+            "instant": false,
+            "legendFormat": "__auto",
+            "range": true,
+            "refId": "A",
+            "useBackend": false
+          }
+        ],
+        "title": "failed k8up jobs - Mastodon",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "default": false,
+          "type": "loki",
+          "uid": "P8E80F9AEF21F6940"
+        },
+        "description": "logs for k8up for mastodon",
+        "gridPos": {
+          "h": 7,
+          "w": 24,
+          "x": 0,
+          "y": 17
+        },
+        "id": 46,
+        "options": {
+          "dedupStrategy": "none",
+          "enableLogDetails": true,
+          "prettifyLogMessage": false,
+          "showCommonLabels": false,
+          "showLabels": false,
+          "showTime": false,
+          "sortOrder": "Descending",
+          "wrapLogMessage": false
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "loki",
+              "uid": "P8E80F9AEF21F6940"
+            },
+            "editorMode": "builder",
+            "expr": "{namespace=\"mastodon\", container=\"backup\"} |= ``",
+            "queryType": "range",
+            "refId": "A"
+          }
+        ],
+        "title": "K8up logs for mastodon",
+        "transparent": true,
+        "type": "logs"
+      },
+      {
         "collapsed": true,
         "gridPos": {
           "h": 1,
           "w": 24,
           "x": 0,
-          "y": 17
+          "y": 24
         },
         "id": 25,
         "panels": [
