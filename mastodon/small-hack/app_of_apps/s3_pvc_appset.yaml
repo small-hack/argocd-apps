@@ -71,7 +71,7 @@ spec:
 
               repoPasswordSecretRef:
                 name: 's3-backups-credentials'
-                key: 'resticRepoPass'
+                key: 'resticRepoPassword'
 
               prometheus_url: 'push-gateway.prometheus.svc:9091'
 
