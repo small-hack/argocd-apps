@@ -7,3077 +7,3053 @@ metadata:
 data:
   k8up-dashboard.json: |-
     {
-      "annotations": {
-        "list": [
-          {
-            "builtIn": 1,
-            "datasource": {
-              "type": "grafana",
-              "uid": "-- Grafana --"
-            },
-            "enable": true,
-            "hide": true,
-            "iconColor": "rgba(0, 211, 255, 1)",
-            "name": "Annotations & Alerts",
-            "type": "dashboard"
-          }
-        ]
-      },
-      "description": "all the data we get from k8up as a dashboard",
-      "editable": true,
-      "fiscalYearStartMonth": 0,
-      "graphTooltip": 0,
-      "links": [],
-      "panels": [
+    "annotations": {
+      "list": [
         {
-          "collapsed": true,
-          "gridPos": {
-            "h": 1,
-            "w": 24,
-            "x": 0,
-            "y": 0
+          "builtIn": 1,
+          "datasource": {
+            "type": "grafana",
+            "uid": "-- Grafana --"
           },
-          "id": 4,
-          "panels": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "palette-classic"
-                  },
-                  "custom": {
-                    "axisBorderShow": false,
-                    "axisCenteredZero": false,
-                    "axisColorMode": "text",
-                    "axisLabel": "",
-                    "axisPlacement": "auto",
-                    "barAlignment": 0,
-                    "drawStyle": "line",
-                    "fillOpacity": 26,
-                    "gradientMode": "none",
-                    "hideFrom": {
-                      "legend": false,
-                      "tooltip": false,
-                      "viz": false
-                    },
-                    "insertNulls": false,
-                    "lineInterpolation": "smooth",
-                    "lineStyle": {
-                      "fill": "solid"
-                    },
-                    "lineWidth": 3,
-                    "pointSize": 4,
-                    "scaleDistribution": {
-                      "type": "linear"
-                    },
-                    "showPoints": "auto",
-                    "spanNulls": true,
-                    "stacking": {
-                      "group": "A",
-                      "mode": "none"
-                    },
-                    "thresholdsStyle": {
-                      "mode": "off"
-                    }
-                  },
-                  "mappings": [],
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  }
-                },
-                "overrides": []
-              },
-              "gridPos": {
-                "h": 6,
-                "w": 8,
-                "x": 0,
-                "y": 1
-              },
-              "id": 12,
-              "options": {
-                "legend": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "displayMode": "table",
-                  "placement": "right",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "maxHeight": 600,
-                  "mode": "single",
-                  "sort": "none"
-                }
-              },
-              "pluginVersion": "10.4.1",
-              "targets": [
-                {
-                  "datasource": {
-                    "type": "prometheus",
-                    "uid": "${DS_PROMETHEUS}"
-                  },
-                  "disableTextWrap": false,
-                  "editorMode": "builder",
-                  "expr": "sum by(instance) (k8up_backup_restic_changed_files_during_backup{instance=\"nextcloud\"})",
-                  "fullMetaSearch": false,
-                  "includeNullMetadata": true,
-                  "instant": false,
-                  "legendFormat": "__auto",
-                  "range": true,
-                  "refId": "A",
-                  "useBackend": false
-                }
-              ],
-              "title": "restic changed files during backup - Nextcloud",
-              "type": "timeseries"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "palette-classic"
-                  },
-                  "custom": {
-                    "axisBorderShow": false,
-                    "axisCenteredZero": false,
-                    "axisColorMode": "text",
-                    "axisLabel": "",
-                    "axisPlacement": "auto",
-                    "barAlignment": 0,
-                    "drawStyle": "line",
-                    "fillOpacity": 26,
-                    "gradientMode": "none",
-                    "hideFrom": {
-                      "legend": false,
-                      "tooltip": false,
-                      "viz": false
-                    },
-                    "insertNulls": false,
-                    "lineInterpolation": "smooth",
-                    "lineStyle": {
-                      "fill": "solid"
-                    },
-                    "lineWidth": 3,
-                    "pointSize": 4,
-                    "scaleDistribution": {
-                      "type": "linear"
-                    },
-                    "showPoints": "auto",
-                    "spanNulls": true,
-                    "stacking": {
-                      "group": "A",
-                      "mode": "none"
-                    },
-                    "thresholdsStyle": {
-                      "mode": "off"
-                    }
-                  },
-                  "mappings": [],
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  }
-                },
-                "overrides": []
-              },
-              "gridPos": {
-                "h": 6,
-                "w": 8,
-                "x": 8,
-                "y": 1
-              },
-              "id": 35,
-              "options": {
-                "legend": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "displayMode": "table",
-                  "placement": "right",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "maxHeight": 600,
-                  "mode": "single",
-                  "sort": "none"
-                }
-              },
-              "pluginVersion": "10.4.1",
-              "targets": [
-                {
-                  "datasource": {
-                    "type": "prometheus",
-                    "uid": "${DS_PROMETHEUS}"
-                  },
-                  "disableTextWrap": false,
-                  "editorMode": "builder",
-                  "expr": "sum by(instance) (k8up_backup_restic_changed_directories_during_backup{instance=\"nextcloud\"})",
-                  "fullMetaSearch": false,
-                  "includeNullMetadata": true,
-                  "instant": false,
-                  "legendFormat": "__auto",
-                  "range": true,
-                  "refId": "A",
-                  "useBackend": false
-                }
-              ],
-              "title": "restic changed directories during backup - Nextcloud",
-              "type": "timeseries"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "palette-classic"
-                  },
-                  "custom": {
-                    "axisBorderShow": false,
-                    "axisCenteredZero": false,
-                    "axisColorMode": "text",
-                    "axisLabel": "",
-                    "axisPlacement": "auto",
-                    "barAlignment": 0,
-                    "drawStyle": "line",
-                    "fillOpacity": 26,
-                    "gradientMode": "none",
-                    "hideFrom": {
-                      "legend": false,
-                      "tooltip": false,
-                      "viz": false
-                    },
-                    "insertNulls": false,
-                    "lineInterpolation": "smooth",
-                    "lineStyle": {
-                      "fill": "solid"
-                    },
-                    "lineWidth": 3,
-                    "pointSize": 4,
-                    "scaleDistribution": {
-                      "type": "linear"
-                    },
-                    "showPoints": "auto",
-                    "spanNulls": true,
-                    "stacking": {
-                      "group": "A",
-                      "mode": "none"
-                    },
-                    "thresholdsStyle": {
-                      "mode": "off"
-                    }
-                  },
-                  "mappings": [],
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  }
-                },
-                "overrides": []
-              },
-              "gridPos": {
-                "h": 6,
-                "w": 8,
-                "x": 16,
-                "y": 1
-              },
-              "id": 34,
-              "options": {
-                "legend": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "displayMode": "table",
-                  "placement": "right",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "maxHeight": 600,
-                  "mode": "single",
-                  "sort": "none"
-                }
-              },
-              "pluginVersion": "10.4.1",
-              "targets": [
-                {
-                  "datasource": {
-                    "type": "prometheus",
-                    "uid": "${DS_PROMETHEUS}"
-                  },
-                  "disableTextWrap": false,
-                  "editorMode": "builder",
-                  "expr": "sum by(instance) (k8up_backup_restic_new_files_during_backup{instance=\"nextcloud\"})",
-                  "fullMetaSearch": false,
-                  "includeNullMetadata": true,
-                  "instant": false,
-                  "legendFormat": "__auto",
-                  "range": true,
-                  "refId": "A",
-                  "useBackend": false
-                }
-              ],
-              "title": "restic new files during backup - Nextcloud",
-              "type": "timeseries"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "thresholds"
-                  },
-                  "mappings": [],
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  }
-                },
-                "overrides": []
-              },
-              "gridPos": {
-                "h": 5,
-                "w": 8,
-                "x": 0,
-                "y": 7
-              },
-              "id": 26,
-              "options": {
-                "colorMode": "value",
-                "graphMode": "area",
-                "justifyMode": "auto",
-                "orientation": "auto",
-                "percentChangeColorMode": "standard",
-                "reduceOptions": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "fields": "",
-                  "values": false
-                },
-                "showPercentChange": false,
-                "textMode": "auto",
-                "wideLayout": true
-              },
-              "pluginVersion": "11.1.0",
-              "targets": [
-                {
-                  "datasource": {
-                    "type": "prometheus",
-                    "uid": "${DS_PROMETHEUS}"
-                  },
-                  "disableTextWrap": false,
-                  "editorMode": "builder",
-                  "expr": "sum by(instance) (k8up_backup_restic_available_snapshots{instance=\"nextcloud\"})",
-                  "fullMetaSearch": false,
-                  "includeNullMetadata": true,
-                  "instant": false,
-                  "legendFormat": "__auto",
-                  "range": true,
-                  "refId": "A",
-                  "useBackend": false
-                }
-              ],
-              "title": "k8up backup restic snapshots - Nextcloud",
-              "type": "stat"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "thresholds"
-                  },
-                  "mappings": [],
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  }
-                },
-                "overrides": []
-              },
-              "gridPos": {
-                "h": 5,
-                "w": 8,
-                "x": 8,
-                "y": 7
-              },
-              "id": 28,
-              "options": {
-                "colorMode": "value",
-                "graphMode": "area",
-                "justifyMode": "auto",
-                "orientation": "auto",
-                "percentChangeColorMode": "standard",
-                "reduceOptions": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "fields": "",
-                  "values": false
-                },
-                "showPercentChange": false,
-                "textMode": "auto",
-                "wideLayout": true
-              },
-              "pluginVersion": "11.1.0",
-              "targets": [
-                {
-                  "datasource": {
-                    "type": "prometheus",
-                    "uid": "${DS_PROMETHEUS}"
-                  },
-                  "disableTextWrap": false,
-                  "editorMode": "builder",
-                  "expr": "sum by(exported_namespace) (k8up_jobs_successful_counter{jobType=\"backup\", exported_namespace=\"nextcloud\"})",
-                  "fullMetaSearch": false,
-                  "includeNullMetadata": true,
-                  "instant": false,
-                  "legendFormat": "__auto",
-                  "range": true,
-                  "refId": "A",
-                  "useBackend": false
-                }
-              ],
-              "title": "successful k8up jobs - Nextcloud",
-              "type": "stat"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "thresholds"
-                  },
-                  "mappings": [],
-                  "noValue": "No Failures 🎉",
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 1
-                      }
-                    ]
-                  }
-                },
-                "overrides": []
-              },
-              "gridPos": {
-                "h": 5,
-                "w": 8,
-                "x": 16,
-                "y": 7
-              },
-              "id": 14,
-              "options": {
-                "colorMode": "value",
-                "graphMode": "area",
-                "justifyMode": "auto",
-                "orientation": "auto",
-                "percentChangeColorMode": "standard",
-                "reduceOptions": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "fields": "",
-                  "values": false
-                },
-                "showPercentChange": false,
-                "textMode": "auto",
-                "wideLayout": true
-              },
-              "pluginVersion": "11.1.0",
-              "targets": [
-                {
-                  "datasource": {
-                    "type": "prometheus",
-                    "uid": "${DS_PROMETHEUS}"
-                  },
-                  "disableTextWrap": false,
-                  "editorMode": "builder",
-                  "expr": "sum by(exported_namespace) (k8up_jobs_failed_counter{jobType=\"backup\", exported_namespace=\"nextcloud\"})",
-                  "fullMetaSearch": false,
-                  "includeNullMetadata": true,
-                  "instant": false,
-                  "legendFormat": "__auto",
-                  "range": true,
-                  "refId": "A",
-                  "useBackend": false
-                }
-              ],
-              "title": "failed k8up jobs - Nextcloud",
-              "type": "stat"
-            },
-            {
-              "datasource": {
-                "type": "loki",
-                "uid": "P8E80F9AEF21F6940"
-              },
-              "description": "logs for k8up for nextcloud",
-              "gridPos": {
-                "h": 7,
-                "w": 24,
-                "x": 0,
-                "y": 12
-              },
-              "id": 36,
-              "options": {
-                "dedupStrategy": "none",
-                "enableLogDetails": true,
-                "prettifyLogMessage": false,
-                "showCommonLabels": false,
-                "showLabels": false,
-                "showTime": false,
-                "sortOrder": "Descending",
-                "wrapLogMessage": false
-              },
-              "targets": [
-                {
-                  "datasource": {
-                    "type": "loki",
-                    "uid": "P8E80F9AEF21F6940"
-                  },
-                  "editorMode": "builder",
-                  "expr": "{namespace=\"nextcloud\", container=\"backup\"} |= ``",
-                  "queryType": "range",
-                  "refId": "A"
-                }
-              ],
-              "title": "K8up logs for Nextcloud",
-              "transparent": true,
-              "type": "logs"
-            }
-          ],
-          "title": "☁️ Nextcloud Backups",
-          "type": "row"
-        },
-        {
-          "collapsed": true,
-          "gridPos": {
-            "h": 1,
-            "w": 24,
-            "x": 0,
-            "y": 1
-          },
-          "id": 5,
-          "panels": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "palette-classic"
-                  },
-                  "custom": {
-                    "axisBorderShow": false,
-                    "axisCenteredZero": false,
-                    "axisColorMode": "text",
-                    "axisLabel": "",
-                    "axisPlacement": "auto",
-                    "barAlignment": 0,
-                    "drawStyle": "line",
-                    "fillOpacity": 26,
-                    "gradientMode": "none",
-                    "hideFrom": {
-                      "legend": false,
-                      "tooltip": false,
-                      "viz": false
-                    },
-                    "insertNulls": false,
-                    "lineInterpolation": "smooth",
-                    "lineStyle": {
-                      "fill": "solid"
-                    },
-                    "lineWidth": 3,
-                    "pointSize": 4,
-                    "scaleDistribution": {
-                      "type": "linear"
-                    },
-                    "showPoints": "auto",
-                    "spanNulls": true,
-                    "stacking": {
-                      "group": "A",
-                      "mode": "none"
-                    },
-                    "thresholdsStyle": {
-                      "mode": "off"
-                    }
-                  },
-                  "mappings": [],
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  }
-                },
-                "overrides": []
-              },
-              "gridPos": {
-                "h": 6,
-                "w": 8,
-                "x": 0,
-                "y": 2
-              },
-              "id": 13,
-              "options": {
-                "legend": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "displayMode": "table",
-                  "placement": "right",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "maxHeight": 600,
-                  "mode": "single",
-                  "sort": "none"
-                }
-              },
-              "pluginVersion": "10.4.1",
-              "targets": [
-                {
-                  "datasource": {
-                    "type": "prometheus",
-                    "uid": "${DS_PROMETHEUS}"
-                  },
-                  "disableTextWrap": false,
-                  "editorMode": "builder",
-                  "expr": "sum by(instance) (k8up_backup_restic_changed_files_during_backup{instance=\"matrix\"})",
-                  "fullMetaSearch": false,
-                  "includeNullMetadata": true,
-                  "instant": false,
-                  "legendFormat": "__auto",
-                  "range": true,
-                  "refId": "A",
-                  "useBackend": false
-                }
-              ],
-              "title": "restic changed files during backup - Matrix",
-              "type": "timeseries"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "palette-classic"
-                  },
-                  "custom": {
-                    "axisBorderShow": false,
-                    "axisCenteredZero": false,
-                    "axisColorMode": "text",
-                    "axisLabel": "",
-                    "axisPlacement": "auto",
-                    "barAlignment": 0,
-                    "drawStyle": "line",
-                    "fillOpacity": 26,
-                    "gradientMode": "none",
-                    "hideFrom": {
-                      "legend": false,
-                      "tooltip": false,
-                      "viz": false
-                    },
-                    "insertNulls": false,
-                    "lineInterpolation": "smooth",
-                    "lineStyle": {
-                      "fill": "solid"
-                    },
-                    "lineWidth": 3,
-                    "pointSize": 4,
-                    "scaleDistribution": {
-                      "type": "linear"
-                    },
-                    "showPoints": "auto",
-                    "spanNulls": true,
-                    "stacking": {
-                      "group": "A",
-                      "mode": "none"
-                    },
-                    "thresholdsStyle": {
-                      "mode": "off"
-                    }
-                  },
-                  "mappings": [],
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  }
-                },
-                "overrides": []
-              },
-              "gridPos": {
-                "h": 6,
-                "w": 8,
-                "x": 8,
-                "y": 2
-              },
-              "id": 37,
-              "options": {
-                "legend": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "displayMode": "table",
-                  "placement": "right",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "maxHeight": 600,
-                  "mode": "single",
-                  "sort": "none"
-                }
-              },
-              "pluginVersion": "10.4.1",
-              "targets": [
-                {
-                  "datasource": {
-                    "type": "prometheus",
-                    "uid": "${DS_PROMETHEUS}"
-                  },
-                  "disableTextWrap": false,
-                  "editorMode": "builder",
-                  "expr": "sum by(instance) (k8up_backup_restic_changed_directories_during_backup{instance=\"matrix\"})",
-                  "fullMetaSearch": false,
-                  "includeNullMetadata": true,
-                  "instant": false,
-                  "legendFormat": "__auto",
-                  "range": true,
-                  "refId": "A",
-                  "useBackend": false
-                }
-              ],
-              "title": "restic changed directories during backup - Matrix",
-              "type": "timeseries"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "palette-classic"
-                  },
-                  "custom": {
-                    "axisBorderShow": false,
-                    "axisCenteredZero": false,
-                    "axisColorMode": "text",
-                    "axisLabel": "",
-                    "axisPlacement": "auto",
-                    "barAlignment": 0,
-                    "drawStyle": "line",
-                    "fillOpacity": 26,
-                    "gradientMode": "none",
-                    "hideFrom": {
-                      "legend": false,
-                      "tooltip": false,
-                      "viz": false
-                    },
-                    "insertNulls": false,
-                    "lineInterpolation": "smooth",
-                    "lineStyle": {
-                      "fill": "solid"
-                    },
-                    "lineWidth": 3,
-                    "pointSize": 4,
-                    "scaleDistribution": {
-                      "type": "linear"
-                    },
-                    "showPoints": "auto",
-                    "spanNulls": true,
-                    "stacking": {
-                      "group": "A",
-                      "mode": "none"
-                    },
-                    "thresholdsStyle": {
-                      "mode": "off"
-                    }
-                  },
-                  "mappings": [],
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  }
-                },
-                "overrides": []
-              },
-              "gridPos": {
-                "h": 6,
-                "w": 8,
-                "x": 16,
-                "y": 2
-              },
-              "id": 38,
-              "options": {
-                "legend": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "displayMode": "table",
-                  "placement": "right",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "maxHeight": 600,
-                  "mode": "single",
-                  "sort": "none"
-                }
-              },
-              "pluginVersion": "10.4.1",
-              "targets": [
-                {
-                  "datasource": {
-                    "type": "prometheus",
-                    "uid": "${DS_PROMETHEUS}"
-                  },
-                  "disableTextWrap": false,
-                  "editorMode": "builder",
-                  "expr": "sum by(instance) (k8up_backup_restic_new_files_during_backup{instance=\"matrix\"})",
-                  "fullMetaSearch": false,
-                  "includeNullMetadata": true,
-                  "instant": false,
-                  "legendFormat": "__auto",
-                  "range": true,
-                  "refId": "A",
-                  "useBackend": false
-                }
-              ],
-              "title": "restic new files during backup - Matrix",
-              "type": "timeseries"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "thresholds"
-                  },
-                  "mappings": [],
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  }
-                },
-                "overrides": []
-              },
-              "gridPos": {
-                "h": 5,
-                "w": 8,
-                "x": 0,
-                "y": 8
-              },
-              "id": 1,
-              "options": {
-                "colorMode": "value",
-                "graphMode": "area",
-                "justifyMode": "auto",
-                "orientation": "auto",
-                "percentChangeColorMode": "standard",
-                "reduceOptions": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "fields": "",
-                  "values": false
-                },
-                "showPercentChange": false,
-                "textMode": "auto",
-                "wideLayout": true
-              },
-              "pluginVersion": "11.1.0",
-              "targets": [
-                {
-                  "datasource": {
-                    "type": "prometheus",
-                    "uid": "${DS_PROMETHEUS}"
-                  },
-                  "disableTextWrap": false,
-                  "editorMode": "builder",
-                  "expr": "sum by(instance) (k8up_backup_restic_available_snapshots{instance=\"matrix\"})",
-                  "fullMetaSearch": false,
-                  "includeNullMetadata": true,
-                  "instant": false,
-                  "legendFormat": "__auto",
-                  "range": true,
-                  "refId": "A",
-                  "useBackend": false
-                }
-              ],
-              "title": "k8up backup restic snapshots - Matrix",
-              "type": "stat"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "thresholds"
-                  },
-                  "mappings": [],
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  }
-                },
-                "overrides": []
-              },
-              "gridPos": {
-                "h": 5,
-                "w": 8,
-                "x": 8,
-                "y": 8
-              },
-              "id": 2,
-              "options": {
-                "colorMode": "value",
-                "graphMode": "area",
-                "justifyMode": "auto",
-                "orientation": "auto",
-                "percentChangeColorMode": "standard",
-                "reduceOptions": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "fields": "",
-                  "values": false
-                },
-                "showPercentChange": false,
-                "textMode": "auto",
-                "wideLayout": true
-              },
-              "pluginVersion": "11.1.0",
-              "targets": [
-                {
-                  "datasource": {
-                    "type": "prometheus",
-                    "uid": "${DS_PROMETHEUS}"
-                  },
-                  "disableTextWrap": false,
-                  "editorMode": "builder",
-                  "expr": "sum by(exported_namespace) (k8up_jobs_successful_counter{jobType=\"backup\", exported_namespace=\"matrix\"})",
-                  "fullMetaSearch": false,
-                  "includeNullMetadata": true,
-                  "instant": false,
-                  "legendFormat": "__auto",
-                  "range": true,
-                  "refId": "A",
-                  "useBackend": false
-                }
-              ],
-              "title": "successful k8up jobs - Matrix",
-              "type": "stat"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "thresholds"
-                  },
-                  "mappings": [],
-                  "noValue": "No Failures 🎉",
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 2
-                      }
-                    ]
-                  }
-                },
-                "overrides": []
-              },
-              "gridPos": {
-                "h": 5,
-                "w": 8,
-                "x": 16,
-                "y": 8
-              },
-              "id": 29,
-              "options": {
-                "colorMode": "value",
-                "graphMode": "area",
-                "justifyMode": "auto",
-                "orientation": "auto",
-                "percentChangeColorMode": "standard",
-                "reduceOptions": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "fields": "",
-                  "values": false
-                },
-                "showPercentChange": false,
-                "textMode": "auto",
-                "wideLayout": true
-              },
-              "pluginVersion": "11.1.0",
-              "targets": [
-                {
-                  "datasource": {
-                    "type": "prometheus",
-                    "uid": "${DS_PROMETHEUS}"
-                  },
-                  "disableTextWrap": false,
-                  "editorMode": "builder",
-                  "expr": "sum by(exported_namespace) (k8up_jobs_failed_counter{jobType=\"backup\", exported_namespace=\"matrix\"})",
-                  "fullMetaSearch": false,
-                  "includeNullMetadata": true,
-                  "instant": false,
-                  "legendFormat": "__auto",
-                  "range": true,
-                  "refId": "A",
-                  "useBackend": false
-                }
-              ],
-              "title": "failed k8up jobs - Matrix",
-              "type": "stat"
-            },
-            {
-              "datasource": {
-                "type": "loki",
-                "uid": "P8E80F9AEF21F6940"
-              },
-              "description": "logs for k8up for matrix",
-              "gridPos": {
-                "h": 7,
-                "w": 24,
-                "x": 0,
-                "y": 13
-              },
-              "id": 39,
-              "options": {
-                "dedupStrategy": "none",
-                "enableLogDetails": true,
-                "prettifyLogMessage": false,
-                "showCommonLabels": false,
-                "showLabels": false,
-                "showTime": false,
-                "sortOrder": "Descending",
-                "wrapLogMessage": false
-              },
-              "targets": [
-                {
-                  "datasource": {
-                    "type": "loki",
-                    "uid": "P8E80F9AEF21F6940"
-                  },
-                  "editorMode": "builder",
-                  "expr": "{namespace=\"matrix\", container=\"backup\"} |= ``",
-                  "queryType": "range",
-                  "refId": "A"
-                }
-              ],
-              "title": "K8up logs for Matrix",
-              "transparent": true,
-              "type": "logs"
-            }
-          ],
-          "title": "💬 Matrix Backups",
-          "type": "row"
-        },
-        {
-          "collapsed": true,
-          "gridPos": {
-            "h": 1,
-            "w": 24,
-            "x": 0,
-            "y": 2
-          },
-          "id": 6,
-          "panels": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "palette-classic"
-                  },
-                  "custom": {
-                    "axisBorderShow": false,
-                    "axisCenteredZero": false,
-                    "axisColorMode": "text",
-                    "axisLabel": "",
-                    "axisPlacement": "auto",
-                    "barAlignment": 0,
-                    "drawStyle": "line",
-                    "fillOpacity": 26,
-                    "gradientMode": "none",
-                    "hideFrom": {
-                      "legend": false,
-                      "tooltip": false,
-                      "viz": false
-                    },
-                    "insertNulls": false,
-                    "lineInterpolation": "smooth",
-                    "lineStyle": {
-                      "fill": "solid"
-                    },
-                    "lineWidth": 3,
-                    "pointSize": 4,
-                    "scaleDistribution": {
-                      "type": "linear"
-                    },
-                    "showPoints": "auto",
-                    "spanNulls": true,
-                    "stacking": {
-                      "group": "A",
-                      "mode": "none"
-                    },
-                    "thresholdsStyle": {
-                      "mode": "off"
-                    }
-                  },
-                  "mappings": [],
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  }
-                },
-                "overrides": []
-              },
-              "gridPos": {
-                "h": 6,
-                "w": 8,
-                "x": 0,
-                "y": 3
-              },
-              "id": 10,
-              "options": {
-                "legend": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "displayMode": "table",
-                  "placement": "right",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "maxHeight": 600,
-                  "mode": "single",
-                  "sort": "none"
-                }
-              },
-              "pluginVersion": "10.4.1",
-              "targets": [
-                {
-                  "datasource": {
-                    "type": "prometheus",
-                    "uid": "${DS_PROMETHEUS}"
-                  },
-                  "disableTextWrap": false,
-                  "editorMode": "builder",
-                  "expr": "sum by(instance) (k8up_backup_restic_changed_files_during_backup{instance=\"zitadel\"})",
-                  "fullMetaSearch": false,
-                  "includeNullMetadata": true,
-                  "instant": false,
-                  "legendFormat": "__auto",
-                  "range": true,
-                  "refId": "A",
-                  "useBackend": false
-                }
-              ],
-              "title": "restic changed files during backup - Zitadel",
-              "type": "timeseries"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "palette-classic"
-                  },
-                  "custom": {
-                    "axisBorderShow": false,
-                    "axisCenteredZero": false,
-                    "axisColorMode": "text",
-                    "axisLabel": "",
-                    "axisPlacement": "auto",
-                    "barAlignment": 0,
-                    "drawStyle": "line",
-                    "fillOpacity": 26,
-                    "gradientMode": "none",
-                    "hideFrom": {
-                      "legend": false,
-                      "tooltip": false,
-                      "viz": false
-                    },
-                    "insertNulls": false,
-                    "lineInterpolation": "smooth",
-                    "lineStyle": {
-                      "fill": "solid"
-                    },
-                    "lineWidth": 3,
-                    "pointSize": 4,
-                    "scaleDistribution": {
-                      "type": "linear"
-                    },
-                    "showPoints": "auto",
-                    "spanNulls": true,
-                    "stacking": {
-                      "group": "A",
-                      "mode": "none"
-                    },
-                    "thresholdsStyle": {
-                      "mode": "off"
-                    }
-                  },
-                  "mappings": [],
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  }
-                },
-                "overrides": []
-              },
-              "gridPos": {
-                "h": 6,
-                "w": 8,
-                "x": 8,
-                "y": 3
-              },
-              "id": 40,
-              "options": {
-                "legend": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "displayMode": "table",
-                  "placement": "right",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "maxHeight": 600,
-                  "mode": "single",
-                  "sort": "none"
-                }
-              },
-              "pluginVersion": "10.4.1",
-              "targets": [
-                {
-                  "datasource": {
-                    "type": "prometheus",
-                    "uid": "${DS_PROMETHEUS}"
-                  },
-                  "disableTextWrap": false,
-                  "editorMode": "builder",
-                  "expr": "sum by(instance) (k8up_backup_restic_changed_directories_during_backup{instance=\"zitadel\"})",
-                  "fullMetaSearch": false,
-                  "includeNullMetadata": true,
-                  "instant": false,
-                  "legendFormat": "__auto",
-                  "range": true,
-                  "refId": "A",
-                  "useBackend": false
-                }
-              ],
-              "title": "restic changed directories during backup - zitadel",
-              "type": "timeseries"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
-              },
-              "description": "new files discovered during the backup",
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "palette-classic"
-                  },
-                  "custom": {
-                    "axisBorderShow": false,
-                    "axisCenteredZero": false,
-                    "axisColorMode": "text",
-                    "axisLabel": "",
-                    "axisPlacement": "auto",
-                    "barAlignment": 0,
-                    "drawStyle": "line",
-                    "fillOpacity": 26,
-                    "gradientMode": "none",
-                    "hideFrom": {
-                      "legend": false,
-                      "tooltip": false,
-                      "viz": false
-                    },
-                    "insertNulls": false,
-                    "lineInterpolation": "smooth",
-                    "lineStyle": {
-                      "fill": "solid"
-                    },
-                    "lineWidth": 3,
-                    "pointSize": 4,
-                    "scaleDistribution": {
-                      "type": "linear"
-                    },
-                    "showPoints": "auto",
-                    "spanNulls": true,
-                    "stacking": {
-                      "group": "A",
-                      "mode": "none"
-                    },
-                    "thresholdsStyle": {
-                      "mode": "off"
-                    }
-                  },
-                  "mappings": [],
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  }
-                },
-                "overrides": []
-              },
-              "gridPos": {
-                "h": 6,
-                "w": 8,
-                "x": 16,
-                "y": 3
-              },
-              "id": 41,
-              "options": {
-                "legend": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "displayMode": "table",
-                  "placement": "right",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "maxHeight": 600,
-                  "mode": "single",
-                  "sort": "none"
-                }
-              },
-              "pluginVersion": "10.4.1",
-              "targets": [
-                {
-                  "datasource": {
-                    "type": "prometheus",
-                    "uid": "${DS_PROMETHEUS}"
-                  },
-                  "disableTextWrap": false,
-                  "editorMode": "builder",
-                  "expr": "sum by(instance) (k8up_backup_restic_new_files_during_backup{instance=\"zitadel\"})",
-                  "fullMetaSearch": false,
-                  "includeNullMetadata": true,
-                  "instant": false,
-                  "legendFormat": "__auto",
-                  "range": true,
-                  "refId": "A",
-                  "useBackend": false
-                }
-              ],
-              "title": "restic new files during backup - Zitadel",
-              "type": "timeseries"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "thresholds"
-                  },
-                  "mappings": [],
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  }
-                },
-                "overrides": []
-              },
-              "gridPos": {
-                "h": 6,
-                "w": 8,
-                "x": 0,
-                "y": 9
-              },
-              "id": 11,
-              "options": {
-                "colorMode": "value",
-                "graphMode": "area",
-                "justifyMode": "auto",
-                "orientation": "auto",
-                "percentChangeColorMode": "standard",
-                "reduceOptions": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "fields": "",
-                  "values": false
-                },
-                "showPercentChange": false,
-                "textMode": "auto",
-                "wideLayout": true
-              },
-              "pluginVersion": "11.1.0",
-              "targets": [
-                {
-                  "datasource": {
-                    "type": "prometheus",
-                    "uid": "${DS_PROMETHEUS}"
-                  },
-                  "disableTextWrap": false,
-                  "editorMode": "builder",
-                  "expr": "sum by(instance) (k8up_backup_restic_available_snapshots{instance=\"zitadel\"})",
-                  "fullMetaSearch": false,
-                  "includeNullMetadata": true,
-                  "instant": false,
-                  "legendFormat": "__auto",
-                  "range": true,
-                  "refId": "A",
-                  "useBackend": false
-                }
-              ],
-              "title": "k8up backup restic snapshots - Zitadel",
-              "type": "stat"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "thresholds"
-                  },
-                  "mappings": [],
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      }
-                    ]
-                  }
-                },
-                "overrides": []
-              },
-              "gridPos": {
-                "h": 6,
-                "w": 8,
-                "x": 8,
-                "y": 9
-              },
-              "id": 27,
-              "options": {
-                "colorMode": "value",
-                "graphMode": "area",
-                "justifyMode": "auto",
-                "orientation": "auto",
-                "percentChangeColorMode": "standard",
-                "reduceOptions": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "fields": "",
-                  "values": false
-                },
-                "showPercentChange": false,
-                "textMode": "auto",
-                "wideLayout": true
-              },
-              "pluginVersion": "11.1.0",
-              "targets": [
-                {
-                  "datasource": {
-                    "type": "prometheus",
-                    "uid": "${DS_PROMETHEUS}"
-                  },
-                  "disableTextWrap": false,
-                  "editorMode": "builder",
-                  "expr": "sum by(exported_namespace) (k8up_jobs_successful_counter{jobType=\"backup\", exported_namespace=\"zitadel\"})",
-                  "fullMetaSearch": false,
-                  "includeNullMetadata": true,
-                  "instant": false,
-                  "legendFormat": "__auto",
-                  "range": true,
-                  "refId": "A",
-                  "useBackend": false
-                }
-              ],
-              "title": "successful k8up jobs - Zitadel",
-              "type": "stat"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "thresholds"
-                  },
-                  "mappings": [],
-                  "noValue": "No failures 🎉",
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 1
-                      }
-                    ]
-                  }
-                },
-                "overrides": []
-              },
-              "gridPos": {
-                "h": 6,
-                "w": 8,
-                "x": 16,
-                "y": 9
-              },
-              "id": 32,
-              "options": {
-                "colorMode": "value",
-                "graphMode": "area",
-                "justifyMode": "auto",
-                "orientation": "auto",
-                "percentChangeColorMode": "standard",
-                "reduceOptions": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "fields": "",
-                  "values": false
-                },
-                "showPercentChange": false,
-                "textMode": "auto",
-                "wideLayout": true
-              },
-              "pluginVersion": "11.1.0",
-              "targets": [
-                {
-                  "datasource": {
-                    "type": "prometheus",
-                    "uid": "${DS_PROMETHEUS}"
-                  },
-                  "disableTextWrap": false,
-                  "editorMode": "builder",
-                  "expr": "sum by(exported_namespace) (k8up_jobs_failed_counter{jobType=\"backup\", exported_namespace=\"zitadel\"})",
-                  "fullMetaSearch": false,
-                  "includeNullMetadata": true,
-                  "instant": false,
-                  "legendFormat": "__auto",
-                  "range": true,
-                  "refId": "A",
-                  "useBackend": false
-                }
-              ],
-              "title": "failed k8up jobs - Zitadel",
-              "type": "stat"
-            },
-            {
-              "datasource": {
-                "type": "loki",
-                "uid": "P8E80F9AEF21F6940"
-              },
-              "description": "logs for k8up for zitadel",
-              "gridPos": {
-                "h": 7,
-                "w": 24,
-                "x": 0,
-                "y": 15
-              },
-              "id": 42,
-              "options": {
-                "dedupStrategy": "none",
-                "enableLogDetails": true,
-                "prettifyLogMessage": false,
-                "showCommonLabels": false,
-                "showLabels": false,
-                "showTime": false,
-                "sortOrder": "Descending",
-                "wrapLogMessage": false
-              },
-              "targets": [
-                {
-                  "datasource": {
-                    "type": "loki",
-                    "uid": "P8E80F9AEF21F6940"
-                  },
-                  "editorMode": "builder",
-                  "expr": "{namespace=\"zitadel\", container=\"backup\"} |= ``",
-                  "queryType": "range",
-                  "refId": "A"
-                }
-              ],
-              "title": "K8up logs for Zitadel",
-              "transparent": true,
-              "type": "logs"
-            }
-          ],
-          "title": "👥 Zitadel Backups",
-          "type": "row"
-        },
-        {
-          "collapsed": true,
-          "gridPos": {
-            "h": 1,
-            "w": 24,
-            "x": 0,
-            "y": 3
-          },
-          "id": 7,
-          "panels": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "palette-classic"
-                  },
-                  "custom": {
-                    "axisBorderShow": false,
-                    "axisCenteredZero": false,
-                    "axisColorMode": "text",
-                    "axisLabel": "",
-                    "axisPlacement": "auto",
-                    "barAlignment": 0,
-                    "drawStyle": "line",
-                    "fillOpacity": 26,
-                    "gradientMode": "none",
-                    "hideFrom": {
-                      "legend": false,
-                      "tooltip": false,
-                      "viz": false
-                    },
-                    "insertNulls": false,
-                    "lineInterpolation": "smooth",
-                    "lineStyle": {
-                      "fill": "solid"
-                    },
-                    "lineWidth": 3,
-                    "pointSize": 4,
-                    "scaleDistribution": {
-                      "type": "linear"
-                    },
-                    "showPoints": "auto",
-                    "spanNulls": true,
-                    "stacking": {
-                      "group": "A",
-                      "mode": "none"
-                    },
-                    "thresholdsStyle": {
-                      "mode": "off"
-                    }
-                  },
-                  "mappings": [],
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  }
-                },
-                "overrides": []
-              },
-              "gridPos": {
-                "h": 6,
-                "w": 8,
-                "x": 0,
-                "y": 4
-              },
-              "id": 16,
-              "options": {
-                "legend": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "displayMode": "table",
-                  "placement": "right",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
-              },
-              "pluginVersion": "10.4.1",
-              "targets": [
-                {
-                  "datasource": {
-                    "type": "prometheus",
-                    "uid": "${DS_PROMETHEUS}"
-                  },
-                  "disableTextWrap": false,
-                  "editorMode": "builder",
-                  "expr": "sum by(instance) (k8up_backup_restic_changed_files_during_backup{instance=\"home-assistant\"})",
-                  "fullMetaSearch": false,
-                  "includeNullMetadata": true,
-                  "instant": false,
-                  "legendFormat": "__auto",
-                  "range": true,
-                  "refId": "A",
-                  "useBackend": false
-                }
-              ],
-              "title": "restic changed files during backup - Home Assistant",
-              "type": "timeseries"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "palette-classic"
-                  },
-                  "custom": {
-                    "axisBorderShow": false,
-                    "axisCenteredZero": false,
-                    "axisColorMode": "text",
-                    "axisLabel": "",
-                    "axisPlacement": "auto",
-                    "barAlignment": 0,
-                    "drawStyle": "line",
-                    "fillOpacity": 26,
-                    "gradientMode": "none",
-                    "hideFrom": {
-                      "legend": false,
-                      "tooltip": false,
-                      "viz": false
-                    },
-                    "insertNulls": false,
-                    "lineInterpolation": "smooth",
-                    "lineStyle": {
-                      "fill": "solid"
-                    },
-                    "lineWidth": 3,
-                    "pointSize": 4,
-                    "scaleDistribution": {
-                      "type": "linear"
-                    },
-                    "showPoints": "auto",
-                    "spanNulls": true,
-                    "stacking": {
-                      "group": "A",
-                      "mode": "none"
-                    },
-                    "thresholdsStyle": {
-                      "mode": "off"
-                    }
-                  },
-                  "mappings": [],
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  }
-                },
-                "overrides": []
-              },
-              "gridPos": {
-                "h": 6,
-                "w": 8,
-                "x": 8,
-                "y": 4
-              },
-              "id": 44,
-              "options": {
-                "legend": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "displayMode": "table",
-                  "placement": "right",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "maxHeight": 600,
-                  "mode": "single",
-                  "sort": "none"
-                }
-              },
-              "pluginVersion": "10.4.1",
-              "targets": [
-                {
-                  "datasource": {
-                    "type": "prometheus",
-                    "uid": "${DS_PROMETHEUS}"
-                  },
-                  "disableTextWrap": false,
-                  "editorMode": "builder",
-                  "expr": "sum by(instance) (k8up_backup_restic_changed_directories_during_backup{namespace=\"home-assistant\"})",
-                  "fullMetaSearch": false,
-                  "includeNullMetadata": true,
-                  "instant": false,
-                  "legendFormat": "__auto",
-                  "range": true,
-                  "refId": "A",
-                  "useBackend": false
-                }
-              ],
-              "title": "restic changed directories during backup - home assistant",
-              "type": "timeseries"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
-              },
-              "description": "new files discovered during the backup",
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "palette-classic"
-                  },
-                  "custom": {
-                    "axisBorderShow": false,
-                    "axisCenteredZero": false,
-                    "axisColorMode": "text",
-                    "axisLabel": "",
-                    "axisPlacement": "auto",
-                    "barAlignment": 0,
-                    "drawStyle": "line",
-                    "fillOpacity": 26,
-                    "gradientMode": "none",
-                    "hideFrom": {
-                      "legend": false,
-                      "tooltip": false,
-                      "viz": false
-                    },
-                    "insertNulls": false,
-                    "lineInterpolation": "smooth",
-                    "lineStyle": {
-                      "fill": "solid"
-                    },
-                    "lineWidth": 3,
-                    "pointSize": 4,
-                    "scaleDistribution": {
-                      "type": "linear"
-                    },
-                    "showPoints": "auto",
-                    "spanNulls": true,
-                    "stacking": {
-                      "group": "A",
-                      "mode": "none"
-                    },
-                    "thresholdsStyle": {
-                      "mode": "off"
-                    }
-                  },
-                  "mappings": [],
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  }
-                },
-                "overrides": []
-              },
-              "gridPos": {
-                "h": 6,
-                "w": 8,
-                "x": 16,
-                "y": 4
-              },
-              "id": 45,
-              "options": {
-                "legend": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "displayMode": "table",
-                  "placement": "right",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "maxHeight": 600,
-                  "mode": "single",
-                  "sort": "none"
-                }
-              },
-              "pluginVersion": "10.4.1",
-              "targets": [
-                {
-                  "datasource": {
-                    "type": "prometheus",
-                    "uid": "${DS_PROMETHEUS}"
-                  },
-                  "disableTextWrap": false,
-                  "editorMode": "builder",
-                  "expr": "sum by(instance) (k8up_backup_restic_new_files_during_backup{instance=\"home-assistant\"})",
-                  "fullMetaSearch": false,
-                  "includeNullMetadata": true,
-                  "instant": false,
-                  "legendFormat": "__auto",
-                  "range": true,
-                  "refId": "A",
-                  "useBackend": false
-                }
-              ],
-              "title": "restic new files during backup - home assistant",
-              "type": "timeseries"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "thresholds"
-                  },
-                  "mappings": [],
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  }
-                },
-                "overrides": []
-              },
-              "gridPos": {
-                "h": 6,
-                "w": 8,
-                "x": 0,
-                "y": 10
-              },
-              "id": 17,
-              "options": {
-                "colorMode": "value",
-                "graphMode": "area",
-                "justifyMode": "auto",
-                "orientation": "auto",
-                "percentChangeColorMode": "standard",
-                "reduceOptions": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "fields": "",
-                  "values": false
-                },
-                "showPercentChange": false,
-                "textMode": "auto",
-                "wideLayout": true
-              },
-              "pluginVersion": "11.1.0",
-              "targets": [
-                {
-                  "datasource": {
-                    "type": "prometheus",
-                    "uid": "${DS_PROMETHEUS}"
-                  },
-                  "disableTextWrap": false,
-                  "editorMode": "builder",
-                  "expr": "sum by(instance) (k8up_backup_restic_available_snapshots{instance=\"home-assistant\"})",
-                  "fullMetaSearch": false,
-                  "includeNullMetadata": true,
-                  "instant": false,
-                  "legendFormat": "__auto",
-                  "range": true,
-                  "refId": "A",
-                  "useBackend": false
-                }
-              ],
-              "title": "k8up backup restic snapshots - Home Assistant",
-              "type": "stat"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "thresholds"
-                  },
-                  "mappings": [],
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "red",
-                        "value": null
-                      },
-                      {
-                        "color": "green",
-                        "value": 1
-                      }
-                    ]
-                  }
-                },
-                "overrides": []
-              },
-              "gridPos": {
-                "h": 6,
-                "w": 8,
-                "x": 8,
-                "y": 10
-              },
-              "id": 15,
-              "options": {
-                "colorMode": "value",
-                "graphMode": "area",
-                "justifyMode": "auto",
-                "orientation": "auto",
-                "percentChangeColorMode": "standard",
-                "reduceOptions": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "fields": "",
-                  "values": false
-                },
-                "showPercentChange": false,
-                "textMode": "auto",
-                "wideLayout": true
-              },
-              "pluginVersion": "11.1.0",
-              "targets": [
-                {
-                  "datasource": {
-                    "type": "prometheus",
-                    "uid": "${DS_PROMETHEUS}"
-                  },
-                  "disableTextWrap": false,
-                  "editorMode": "builder",
-                  "expr": "sum by(exported_namespace) (k8up_jobs_successful_counter{jobType=\"backup\", exported_namespace=\"home-assistant\"})",
-                  "fullMetaSearch": false,
-                  "includeNullMetadata": true,
-                  "instant": false,
-                  "legendFormat": "__auto",
-                  "range": true,
-                  "refId": "A",
-                  "useBackend": false
-                }
-              ],
-              "title": "successful k8up jobs - Home Assistant",
-              "type": "stat"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "thresholds"
-                  },
-                  "mappings": [],
-                  "noValue": "No Failures 🎉",
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 1
-                      }
-                    ]
-                  }
-                },
-                "overrides": []
-              },
-              "gridPos": {
-                "h": 6,
-                "w": 8,
-                "x": 16,
-                "y": 10
-              },
-              "id": 33,
-              "options": {
-                "colorMode": "value",
-                "graphMode": "area",
-                "justifyMode": "auto",
-                "orientation": "auto",
-                "percentChangeColorMode": "standard",
-                "reduceOptions": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "fields": "",
-                  "values": false
-                },
-                "showPercentChange": false,
-                "textMode": "auto",
-                "wideLayout": true
-              },
-              "pluginVersion": "11.1.0",
-              "targets": [
-                {
-                  "datasource": {
-                    "type": "prometheus",
-                    "uid": "${DS_PROMETHEUS}"
-                  },
-                  "disableTextWrap": false,
-                  "editorMode": "builder",
-                  "expr": "sum by(exported_namespace) (k8up_jobs_failed_counter{jobType=\"backup\", exported_namespace=\"home-assistant\"})",
-                  "fullMetaSearch": false,
-                  "includeNullMetadata": true,
-                  "instant": false,
-                  "legendFormat": "__auto",
-                  "range": true,
-                  "refId": "A",
-                  "useBackend": false
-                }
-              ],
-              "title": "failed k8up jobs - Home Assistant",
-              "type": "stat"
-            },
-            {
-              "datasource": {
-                "type": "loki",
-                "uid": "P8E80F9AEF21F6940"
-              },
-              "description": "logs for k8up for home assistant",
-              "gridPos": {
-                "h": 7,
-                "w": 24,
-                "x": 0,
-                "y": 16
-              },
-              "id": 43,
-              "options": {
-                "dedupStrategy": "none",
-                "enableLogDetails": true,
-                "prettifyLogMessage": false,
-                "showCommonLabels": false,
-                "showLabels": false,
-                "showTime": false,
-                "sortOrder": "Descending",
-                "wrapLogMessage": false
-              },
-              "targets": [
-                {
-                  "datasource": {
-                    "type": "loki",
-                    "uid": "P8E80F9AEF21F6940"
-                  },
-                  "editorMode": "builder",
-                  "expr": "{namespace=\"home-assistant\", container=\"backup\"} |= ``",
-                  "queryType": "range",
-                  "refId": "A"
-                }
-              ],
-              "title": "K8up logs for home assistant",
-              "transparent": true,
-              "type": "logs"
-            }
-          ],
-          "title": "🛜 Home Assistant Backups",
-          "type": "row"
-        },
-        {
-          "collapsed": true,
-          "gridPos": {
-            "h": 1,
-            "w": 24,
-            "x": 0,
-            "y": 4
-          },
-          "id": 8,
-          "panels": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "palette-classic"
-                  },
-                  "custom": {
-                    "axisBorderShow": false,
-                    "axisCenteredZero": false,
-                    "axisColorMode": "text",
-                    "axisLabel": "",
-                    "axisPlacement": "auto",
-                    "barAlignment": 0,
-                    "drawStyle": "line",
-                    "fillOpacity": 26,
-                    "gradientMode": "none",
-                    "hideFrom": {
-                      "legend": false,
-                      "tooltip": false,
-                      "viz": false
-                    },
-                    "insertNulls": false,
-                    "lineInterpolation": "smooth",
-                    "lineStyle": {
-                      "fill": "solid"
-                    },
-                    "lineWidth": 3,
-                    "pointSize": 4,
-                    "scaleDistribution": {
-                      "type": "linear"
-                    },
-                    "showPoints": "auto",
-                    "spanNulls": true,
-                    "stacking": {
-                      "group": "A",
-                      "mode": "none"
-                    },
-                    "thresholdsStyle": {
-                      "mode": "off"
-                    }
-                  },
-                  "mappings": [],
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  }
-                },
-                "overrides": []
-              },
-              "gridPos": {
-                "h": 6,
-                "w": 8,
-                "x": 0,
-                "y": 5
-              },
-              "id": 19,
-              "options": {
-                "legend": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "displayMode": "table",
-                  "placement": "right",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
-              },
-              "pluginVersion": "10.4.1",
-              "targets": [
-                {
-                  "datasource": {
-                    "type": "prometheus",
-                    "uid": "${DS_PROMETHEUS}"
-                  },
-                  "disableTextWrap": false,
-                  "editorMode": "builder",
-                  "expr": "sum by(instance) (k8up_backup_restic_changed_files_during_backup{instance=\"mastodon\"})",
-                  "fullMetaSearch": false,
-                  "includeNullMetadata": true,
-                  "instant": false,
-                  "legendFormat": "__auto",
-                  "range": true,
-                  "refId": "A",
-                  "useBackend": false
-                }
-              ],
-              "title": "restic changed files during backup - Mastodon",
-              "type": "timeseries"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "thresholds"
-                  },
-                  "mappings": [],
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 1
-                      }
-                    ]
-                  }
-                },
-                "overrides": []
-              },
-              "gridPos": {
-                "h": 4,
-                "w": 8,
-                "x": 8,
-                "y": 5
-              },
-              "id": 24,
-              "options": {
-                "colorMode": "value",
-                "graphMode": "area",
-                "justifyMode": "auto",
-                "orientation": "auto",
-                "percentChangeColorMode": "standard",
-                "reduceOptions": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "fields": "",
-                  "values": false
-                },
-                "showPercentChange": false,
-                "textMode": "auto",
-                "wideLayout": true
-              },
-              "pluginVersion": "11.1.0",
-              "targets": [
-                {
-                  "datasource": {
-                    "type": "prometheus",
-                    "uid": "${DS_PROMETHEUS}"
-                  },
-                  "disableTextWrap": false,
-                  "editorMode": "builder",
-                  "expr": "sum by(exported_namespace) (k8up_jobs_successful_counter{jobType=\"backup\", exported_namespace=\"mastodon\"})",
-                  "fullMetaSearch": false,
-                  "includeNullMetadata": true,
-                  "instant": false,
-                  "legendFormat": "__auto",
-                  "range": true,
-                  "refId": "A",
-                  "useBackend": false
-                }
-              ],
-              "title": "successful k8up jobs - Mastodon",
-              "type": "stat"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "thresholds"
-                  },
-                  "mappings": [],
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 1
-                      }
-                    ]
-                  }
-                },
-                "overrides": []
-              },
-              "gridPos": {
-                "h": 4,
-                "w": 8,
-                "x": 16,
-                "y": 5
-              },
-              "id": 31,
-              "options": {
-                "colorMode": "value",
-                "graphMode": "area",
-                "justifyMode": "auto",
-                "orientation": "auto",
-                "percentChangeColorMode": "standard",
-                "reduceOptions": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "fields": "",
-                  "values": false
-                },
-                "showPercentChange": false,
-                "textMode": "auto",
-                "wideLayout": true
-              },
-              "pluginVersion": "11.1.0",
-              "targets": [
-                {
-                  "datasource": {
-                    "type": "prometheus",
-                    "uid": "${DS_PROMETHEUS}"
-                  },
-                  "disableTextWrap": false,
-                  "editorMode": "builder",
-                  "expr": "sum by(exported_namespace) (k8up_jobs_failed_counter{jobType=\"backup\", exported_namespace=\"mastodon\"})",
-                  "fullMetaSearch": false,
-                  "includeNullMetadata": true,
-                  "instant": false,
-                  "legendFormat": "__auto",
-                  "range": true,
-                  "refId": "A",
-                  "useBackend": false
-                }
-              ],
-              "title": "failed k8up jobs - Mastodon",
-              "type": "stat"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "thresholds"
-                  },
-                  "mappings": [],
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  }
-                },
-                "overrides": []
-              },
-              "gridPos": {
-                "h": 6,
-                "w": 8,
-                "x": 0,
-                "y": 11
-              },
-              "id": 20,
-              "options": {
-                "colorMode": "value",
-                "graphMode": "area",
-                "justifyMode": "auto",
-                "orientation": "auto",
-                "percentChangeColorMode": "standard",
-                "reduceOptions": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "fields": "",
-                  "values": false
-                },
-                "showPercentChange": false,
-                "textMode": "auto",
-                "wideLayout": true
-              },
-              "pluginVersion": "11.1.0",
-              "targets": [
-                {
-                  "datasource": {
-                    "type": "prometheus",
-                    "uid": "${DS_PROMETHEUS}"
-                  },
-                  "disableTextWrap": false,
-                  "editorMode": "builder",
-                  "expr": "sum by(instance) (k8up_backup_restic_available_snapshots{instance=\"mastodon\"})",
-                  "fullMetaSearch": false,
-                  "includeNullMetadata": true,
-                  "instant": false,
-                  "legendFormat": "__auto",
-                  "range": true,
-                  "refId": "A",
-                  "useBackend": false
-                }
-              ],
-              "title": "k8up backup restic snapshots - Mastodon",
-              "type": "stat"
-            }
-          ],
-          "title": "Mastodon Backups",
-          "type": "row"
-        },
-        {
-          "collapsed": true,
-          "gridPos": {
-            "h": 1,
-            "w": 24,
-            "x": 0,
-            "y": 5
-          },
-          "id": 25,
-          "panels": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "palette-classic"
-                  },
-                  "custom": {
-                    "axisBorderShow": false,
-                    "axisCenteredZero": false,
-                    "axisColorMode": "text",
-                    "axisLabel": "",
-                    "axisPlacement": "auto",
-                    "barAlignment": 0,
-                    "drawStyle": "line",
-                    "fillOpacity": 26,
-                    "gradientMode": "none",
-                    "hideFrom": {
-                      "legend": false,
-                      "tooltip": false,
-                      "viz": false
-                    },
-                    "insertNulls": false,
-                    "lineInterpolation": "smooth",
-                    "lineStyle": {
-                      "fill": "solid"
-                    },
-                    "lineWidth": 3,
-                    "pointSize": 4,
-                    "scaleDistribution": {
-                      "type": "linear"
-                    },
-                    "showPoints": "auto",
-                    "spanNulls": true,
-                    "stacking": {
-                      "group": "A",
-                      "mode": "none"
-                    },
-                    "thresholdsStyle": {
-                      "mode": "off"
-                    }
-                  },
-                  "mappings": [],
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green"
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  }
-                },
-                "overrides": []
-              },
-              "gridPos": {
-                "h": 8,
-                "w": 10,
-                "x": 0,
-                "y": 14
-              },
-              "id": 22,
-              "options": {
-                "legend": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "displayMode": "table",
-                  "placement": "right",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
-              },
-              "pluginVersion": "10.4.1",
-              "targets": [
-                {
-                  "datasource": {
-                    "type": "prometheus",
-                    "uid": "${DS_PROMETHEUS}"
-                  },
-                  "disableTextWrap": false,
-                  "editorMode": "builder",
-                  "expr": "sum by(instance) (k8up_backup_restic_changed_files_during_backup{instance=\"netmaker\"})",
-                  "fullMetaSearch": false,
-                  "includeNullMetadata": true,
-                  "instant": false,
-                  "legendFormat": "__auto",
-                  "range": true,
-                  "refId": "A",
-                  "useBackend": false
-                }
-              ],
-              "title": "restic changed files during backup - Netmaker",
-              "type": "timeseries"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "thresholds"
-                  },
-                  "mappings": [],
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green"
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  }
-                },
-                "overrides": []
-              },
-              "gridPos": {
-                "h": 8,
-                "w": 10,
-                "x": 10,
-                "y": 14
-              },
-              "id": 23,
-              "options": {
-                "colorMode": "value",
-                "graphMode": "area",
-                "justifyMode": "auto",
-                "orientation": "auto",
-                "reduceOptions": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "fields": "",
-                  "values": false
-                },
-                "showPercentChange": false,
-                "textMode": "auto",
-                "wideLayout": true
-              },
-              "pluginVersion": "10.4.1",
-              "targets": [
-                {
-                  "datasource": {
-                    "type": "prometheus",
-                    "uid": "${DS_PROMETHEUS}"
-                  },
-                  "disableTextWrap": false,
-                  "editorMode": "builder",
-                  "expr": "sum by(instance) (k8up_backup_restic_available_snapshots{instance=\"netmaker\"})",
-                  "fullMetaSearch": false,
-                  "includeNullMetadata": true,
-                  "instant": false,
-                  "legendFormat": "__auto",
-                  "range": true,
-                  "refId": "A",
-                  "useBackend": false
-                }
-              ],
-              "title": "k8up backup restic snapshots - Netmaker",
-              "type": "stat"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "thresholds"
-                  },
-                  "mappings": [],
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green"
-                      }
-                    ]
-                  }
-                },
-                "overrides": []
-              },
-              "gridPos": {
-                "h": 4,
-                "w": 10,
-                "x": 0,
-                "y": 22
-              },
-              "id": 21,
-              "options": {
-                "colorMode": "value",
-                "graphMode": "area",
-                "justifyMode": "auto",
-                "orientation": "auto",
-                "reduceOptions": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "fields": "",
-                  "values": false
-                },
-                "showPercentChange": false,
-                "textMode": "auto",
-                "wideLayout": true
-              },
-              "pluginVersion": "10.4.1",
-              "targets": [
-                {
-                  "datasource": {
-                    "type": "prometheus",
-                    "uid": "${DS_PROMETHEUS}"
-                  },
-                  "disableTextWrap": false,
-                  "editorMode": "builder",
-                  "expr": "sum by(exported_namespace) (k8up_jobs_successful_counter{jobType=\"backup\", exported_namespace=\"netmaker\"})",
-                  "fullMetaSearch": false,
-                  "includeNullMetadata": true,
-                  "instant": false,
-                  "legendFormat": "__auto",
-                  "range": true,
-                  "refId": "A",
-                  "useBackend": false
-                }
-              ],
-              "title": "successful k8up jobs - Netmaker",
-              "type": "stat"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "thresholds"
-                  },
-                  "mappings": [],
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green"
-                      },
-                      {
-                        "color": "red",
-                        "value": 1
-                      }
-                    ]
-                  }
-                },
-                "overrides": []
-              },
-              "gridPos": {
-                "h": 4,
-                "w": 10,
-                "x": 10,
-                "y": 22
-              },
-              "id": 30,
-              "options": {
-                "colorMode": "value",
-                "graphMode": "area",
-                "justifyMode": "auto",
-                "orientation": "auto",
-                "reduceOptions": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "fields": "",
-                  "values": false
-                },
-                "showPercentChange": false,
-                "textMode": "auto",
-                "wideLayout": true
-              },
-              "pluginVersion": "10.4.1",
-              "targets": [
-                {
-                  "datasource": {
-                    "type": "prometheus",
-                    "uid": "${DS_PROMETHEUS}"
-                  },
-                  "disableTextWrap": false,
-                  "editorMode": "builder",
-                  "expr": "sum by(exported_namespace) (k8up_jobs_failed_counter{jobType=\"backup\", exported_namespace=\"netmaker\"})",
-                  "fullMetaSearch": false,
-                  "includeNullMetadata": true,
-                  "instant": false,
-                  "legendFormat": "__auto",
-                  "range": true,
-                  "refId": "A",
-                  "useBackend": false
-                }
-              ],
-              "title": "failed k8up jobs - Netmaker",
-              "type": "stat"
-            }
-          ],
-          "title": "Netmaker",
-          "type": "row"
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations & Alerts",
+          "type": "dashboard"
         }
-      ],
-      "refresh": "12h",
-      "schemaVersion": 39,
-      "tags": [],
-      "templating": {
-        "list": [
+      ]
+    },
+    "description": "all the data we get from k8up as a dashboard",
+    "editable": true,
+    "fiscalYearStartMonth": 0,
+    "graphTooltip": 0,
+    "links": [],
+    "panels": [
+      {
+        "collapsed": true,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 0
+        },
+        "id": 4,
+        "panels": [
           {
-            "hide": 2,
-            "name": "DS_PROMETHEUS",
-            "query": "prometheus",
-            "skipUrlSync": false,
-            "type": "constant"
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS_PROMETHEUS}"
+            },
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "drawStyle": "line",
+                  "fillOpacity": 26,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "smooth",
+                  "lineStyle": {
+                    "fill": "solid"
+                  },
+                  "lineWidth": 3,
+                  "pointSize": 4,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "auto",
+                  "spanNulls": true,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 6,
+              "w": 8,
+              "x": 0,
+              "y": 1
+            },
+            "id": 12,
+            "options": {
+              "legend": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "displayMode": "table",
+                "placement": "right",
+                "showLegend": true
+              },
+              "tooltip": {
+                "maxHeight": 600,
+                "mode": "single",
+                "sort": "none"
+              }
+            },
+            "pluginVersion": "10.4.1",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "${DS_PROMETHEUS}"
+                },
+                "disableTextWrap": false,
+                "editorMode": "builder",
+                "expr": "sum by(instance) (k8up_backup_restic_changed_files_during_backup{instance=\"nextcloud\"})",
+                "fullMetaSearch": false,
+                "includeNullMetadata": true,
+                "instant": false,
+                "legendFormat": "__auto",
+                "range": true,
+                "refId": "A",
+                "useBackend": false
+              }
+            ],
+            "title": "restic changed files during backup - Nextcloud",
+            "type": "timeseries"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS_PROMETHEUS}"
+            },
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "drawStyle": "line",
+                  "fillOpacity": 26,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "smooth",
+                  "lineStyle": {
+                    "fill": "solid"
+                  },
+                  "lineWidth": 3,
+                  "pointSize": 4,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "auto",
+                  "spanNulls": true,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 6,
+              "w": 8,
+              "x": 8,
+              "y": 1
+            },
+            "id": 35,
+            "options": {
+              "legend": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "displayMode": "table",
+                "placement": "right",
+                "showLegend": true
+              },
+              "tooltip": {
+                "maxHeight": 600,
+                "mode": "single",
+                "sort": "none"
+              }
+            },
+            "pluginVersion": "10.4.1",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "${DS_PROMETHEUS}"
+                },
+                "disableTextWrap": false,
+                "editorMode": "builder",
+                "expr": "sum by(instance) (k8up_backup_restic_changed_directories_during_backup{instance=\"nextcloud\"})",
+                "fullMetaSearch": false,
+                "includeNullMetadata": true,
+                "instant": false,
+                "legendFormat": "__auto",
+                "range": true,
+                "refId": "A",
+                "useBackend": false
+              }
+            ],
+            "title": "restic changed directories during backup - Nextcloud",
+            "type": "timeseries"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS_PROMETHEUS}"
+            },
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "drawStyle": "line",
+                  "fillOpacity": 26,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "smooth",
+                  "lineStyle": {
+                    "fill": "solid"
+                  },
+                  "lineWidth": 3,
+                  "pointSize": 4,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "auto",
+                  "spanNulls": true,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 6,
+              "w": 8,
+              "x": 16,
+              "y": 1
+            },
+            "id": 34,
+            "options": {
+              "legend": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "displayMode": "table",
+                "placement": "right",
+                "showLegend": true
+              },
+              "tooltip": {
+                "maxHeight": 600,
+                "mode": "single",
+                "sort": "none"
+              }
+            },
+            "pluginVersion": "10.4.1",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "${DS_PROMETHEUS}"
+                },
+                "disableTextWrap": false,
+                "editorMode": "builder",
+                "expr": "sum by(instance) (k8up_backup_restic_new_files_during_backup{instance=\"nextcloud\"})",
+                "fullMetaSearch": false,
+                "includeNullMetadata": true,
+                "instant": false,
+                "legendFormat": "__auto",
+                "range": true,
+                "refId": "A",
+                "useBackend": false
+              }
+            ],
+            "title": "restic new files during backup - Nextcloud",
+            "type": "timeseries"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS_PROMETHEUS}"
+            },
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "thresholds"
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 5,
+              "w": 8,
+              "x": 0,
+              "y": 7
+            },
+            "id": 26,
+            "options": {
+              "colorMode": "value",
+              "graphMode": "area",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "percentChangeColorMode": "standard",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "",
+                "values": false
+              },
+              "showPercentChange": false,
+              "textMode": "auto",
+              "wideLayout": true
+            },
+            "pluginVersion": "11.1.0",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "${DS_PROMETHEUS}"
+                },
+                "disableTextWrap": false,
+                "editorMode": "builder",
+                "expr": "sum by(instance) (k8up_backup_restic_available_snapshots{instance=\"nextcloud\"})",
+                "fullMetaSearch": false,
+                "includeNullMetadata": true,
+                "instant": false,
+                "legendFormat": "__auto",
+                "range": true,
+                "refId": "A",
+                "useBackend": false
+              }
+            ],
+            "title": "k8up backup restic snapshots - Nextcloud",
+            "type": "stat"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS_PROMETHEUS}"
+            },
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "thresholds"
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 5,
+              "w": 8,
+              "x": 8,
+              "y": 7
+            },
+            "id": 28,
+            "options": {
+              "colorMode": "value",
+              "graphMode": "area",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "percentChangeColorMode": "standard",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "",
+                "values": false
+              },
+              "showPercentChange": false,
+              "textMode": "auto",
+              "wideLayout": true
+            },
+            "pluginVersion": "11.1.0",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "${DS_PROMETHEUS}"
+                },
+                "disableTextWrap": false,
+                "editorMode": "builder",
+                "expr": "sum by(exported_namespace) (k8up_jobs_successful_counter{jobType=\"backup\", exported_namespace=\"nextcloud\"})",
+                "fullMetaSearch": false,
+                "includeNullMetadata": true,
+                "instant": false,
+                "legendFormat": "__auto",
+                "range": true,
+                "refId": "A",
+                "useBackend": false
+              }
+            ],
+            "title": "successful k8up jobs - Nextcloud",
+            "type": "stat"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS_PROMETHEUS}"
+            },
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "thresholds"
+                },
+                "mappings": [],
+                "noValue": "No Failures 🎉",
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    },
+                    {
+                      "color": "red",
+                      "value": 1
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 5,
+              "w": 8,
+              "x": 16,
+              "y": 7
+            },
+            "id": 14,
+            "options": {
+              "colorMode": "value",
+              "graphMode": "area",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "percentChangeColorMode": "standard",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "",
+                "values": false
+              },
+              "showPercentChange": false,
+              "textMode": "auto",
+              "wideLayout": true
+            },
+            "pluginVersion": "11.1.0",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "${DS_PROMETHEUS}"
+                },
+                "disableTextWrap": false,
+                "editorMode": "builder",
+                "expr": "sum by(exported_namespace) (k8up_jobs_failed_counter{jobType=\"backup\", exported_namespace=\"nextcloud\"})",
+                "fullMetaSearch": false,
+                "includeNullMetadata": true,
+                "instant": false,
+                "legendFormat": "__auto",
+                "range": true,
+                "refId": "A",
+                "useBackend": false
+              }
+            ],
+            "title": "failed k8up jobs - Nextcloud",
+            "type": "stat"
+          },
+          {
+            "datasource": {
+              "type": "loki",
+              "uid": "P8E80F9AEF21F6940"
+            },
+            "description": "logs for k8up for nextcloud",
+            "gridPos": {
+              "h": 7,
+              "w": 24,
+              "x": 0,
+              "y": 12
+            },
+            "id": 36,
+            "options": {
+              "dedupStrategy": "none",
+              "enableLogDetails": true,
+              "prettifyLogMessage": false,
+              "showCommonLabels": false,
+              "showLabels": false,
+              "showTime": false,
+              "sortOrder": "Descending",
+              "wrapLogMessage": false
+            },
+            "targets": [
+              {
+                "datasource": {
+                  "type": "loki",
+                  "uid": "P8E80F9AEF21F6940"
+                },
+                "editorMode": "builder",
+                "expr": "{namespace=\"nextcloud\", container=\"backup\"} |= ``",
+                "queryType": "range",
+                "refId": "A"
+              }
+            ],
+            "title": "K8up logs for Nextcloud",
+            "transparent": true,
+            "type": "logs"
           }
-        ]
+        ],
+        "title": "☁️ Nextcloud Backups",
+        "type": "row"
       },
-      "time": {
-        "from": "now-7d",
-        "to": "now"
+      {
+        "collapsed": true,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 1
+        },
+        "id": 5,
+        "panels": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS_PROMETHEUS}"
+            },
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "drawStyle": "line",
+                  "fillOpacity": 26,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "smooth",
+                  "lineStyle": {
+                    "fill": "solid"
+                  },
+                  "lineWidth": 3,
+                  "pointSize": 4,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "auto",
+                  "spanNulls": true,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 6,
+              "w": 8,
+              "x": 0,
+              "y": 2
+            },
+            "id": 13,
+            "options": {
+              "legend": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "displayMode": "table",
+                "placement": "right",
+                "showLegend": true
+              },
+              "tooltip": {
+                "maxHeight": 600,
+                "mode": "single",
+                "sort": "none"
+              }
+            },
+            "pluginVersion": "10.4.1",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "${DS_PROMETHEUS}"
+                },
+                "disableTextWrap": false,
+                "editorMode": "builder",
+                "expr": "sum by(instance) (k8up_backup_restic_changed_files_during_backup{instance=\"matrix\"})",
+                "fullMetaSearch": false,
+                "includeNullMetadata": true,
+                "instant": false,
+                "legendFormat": "__auto",
+                "range": true,
+                "refId": "A",
+                "useBackend": false
+              }
+            ],
+            "title": "restic changed files during backup - Matrix",
+            "type": "timeseries"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS_PROMETHEUS}"
+            },
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "drawStyle": "line",
+                  "fillOpacity": 26,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "smooth",
+                  "lineStyle": {
+                    "fill": "solid"
+                  },
+                  "lineWidth": 3,
+                  "pointSize": 4,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "auto",
+                  "spanNulls": true,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 6,
+              "w": 8,
+              "x": 8,
+              "y": 2
+            },
+            "id": 37,
+            "options": {
+              "legend": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "displayMode": "table",
+                "placement": "right",
+                "showLegend": true
+              },
+              "tooltip": {
+                "maxHeight": 600,
+                "mode": "single",
+                "sort": "none"
+              }
+            },
+            "pluginVersion": "10.4.1",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "${DS_PROMETHEUS}"
+                },
+                "disableTextWrap": false,
+                "editorMode": "builder",
+                "expr": "sum by(instance) (k8up_backup_restic_changed_directories_during_backup{instance=\"matrix\"})",
+                "fullMetaSearch": false,
+                "includeNullMetadata": true,
+                "instant": false,
+                "legendFormat": "__auto",
+                "range": true,
+                "refId": "A",
+                "useBackend": false
+              }
+            ],
+            "title": "restic changed directories during backup - Matrix",
+            "type": "timeseries"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS_PROMETHEUS}"
+            },
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "drawStyle": "line",
+                  "fillOpacity": 26,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "smooth",
+                  "lineStyle": {
+                    "fill": "solid"
+                  },
+                  "lineWidth": 3,
+                  "pointSize": 4,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "auto",
+                  "spanNulls": true,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 6,
+              "w": 8,
+              "x": 16,
+              "y": 2
+            },
+            "id": 38,
+            "options": {
+              "legend": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "displayMode": "table",
+                "placement": "right",
+                "showLegend": true
+              },
+              "tooltip": {
+                "maxHeight": 600,
+                "mode": "single",
+                "sort": "none"
+              }
+            },
+            "pluginVersion": "10.4.1",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "${DS_PROMETHEUS}"
+                },
+                "disableTextWrap": false,
+                "editorMode": "builder",
+                "expr": "sum by(instance) (k8up_backup_restic_new_files_during_backup{instance=\"matrix\"})",
+                "fullMetaSearch": false,
+                "includeNullMetadata": true,
+                "instant": false,
+                "legendFormat": "__auto",
+                "range": true,
+                "refId": "A",
+                "useBackend": false
+              }
+            ],
+            "title": "restic new files during backup - Matrix",
+            "type": "timeseries"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS_PROMETHEUS}"
+            },
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "thresholds"
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 5,
+              "w": 8,
+              "x": 0,
+              "y": 8
+            },
+            "id": 1,
+            "options": {
+              "colorMode": "value",
+              "graphMode": "area",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "percentChangeColorMode": "standard",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "",
+                "values": false
+              },
+              "showPercentChange": false,
+              "textMode": "auto",
+              "wideLayout": true
+            },
+            "pluginVersion": "11.1.0",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "${DS_PROMETHEUS}"
+                },
+                "disableTextWrap": false,
+                "editorMode": "builder",
+                "expr": "sum by(instance) (k8up_backup_restic_available_snapshots{instance=\"matrix\"})",
+                "fullMetaSearch": false,
+                "includeNullMetadata": true,
+                "instant": false,
+                "legendFormat": "__auto",
+                "range": true,
+                "refId": "A",
+                "useBackend": false
+              }
+            ],
+            "title": "k8up backup restic snapshots - Matrix",
+            "type": "stat"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS_PROMETHEUS}"
+            },
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "thresholds"
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 5,
+              "w": 8,
+              "x": 8,
+              "y": 8
+            },
+            "id": 2,
+            "options": {
+              "colorMode": "value",
+              "graphMode": "area",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "percentChangeColorMode": "standard",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "",
+                "values": false
+              },
+              "showPercentChange": false,
+              "textMode": "auto",
+              "wideLayout": true
+            },
+            "pluginVersion": "11.1.0",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "${DS_PROMETHEUS}"
+                },
+                "disableTextWrap": false,
+                "editorMode": "builder",
+                "expr": "sum by(exported_namespace) (k8up_jobs_successful_counter{jobType=\"backup\", exported_namespace=\"matrix\"})",
+                "fullMetaSearch": false,
+                "includeNullMetadata": true,
+                "instant": false,
+                "legendFormat": "__auto",
+                "range": true,
+                "refId": "A",
+                "useBackend": false
+              }
+            ],
+            "title": "successful k8up jobs - Matrix",
+            "type": "stat"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS_PROMETHEUS}"
+            },
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "thresholds"
+                },
+                "mappings": [],
+                "noValue": "No Failures 🎉",
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    },
+                    {
+                      "color": "red",
+                      "value": 2
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 5,
+              "w": 8,
+              "x": 16,
+              "y": 8
+            },
+            "id": 29,
+            "options": {
+              "colorMode": "value",
+              "graphMode": "area",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "percentChangeColorMode": "standard",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "",
+                "values": false
+              },
+              "showPercentChange": false,
+              "textMode": "auto",
+              "wideLayout": true
+            },
+            "pluginVersion": "11.1.0",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "${DS_PROMETHEUS}"
+                },
+                "disableTextWrap": false,
+                "editorMode": "builder",
+                "expr": "sum by(exported_namespace) (k8up_jobs_failed_counter{jobType=\"backup\", exported_namespace=\"matrix\"})",
+                "fullMetaSearch": false,
+                "includeNullMetadata": true,
+                "instant": false,
+                "legendFormat": "__auto",
+                "range": true,
+                "refId": "A",
+                "useBackend": false
+              }
+            ],
+            "title": "failed k8up jobs - Matrix",
+            "type": "stat"
+          },
+          {
+            "datasource": {
+              "type": "loki",
+              "uid": "P8E80F9AEF21F6940"
+            },
+            "description": "logs for k8up for matrix",
+            "gridPos": {
+              "h": 7,
+              "w": 24,
+              "x": 0,
+              "y": 13
+            },
+            "id": 39,
+            "options": {
+              "dedupStrategy": "none",
+              "enableLogDetails": true,
+              "prettifyLogMessage": false,
+              "showCommonLabels": false,
+              "showLabels": false,
+              "showTime": false,
+              "sortOrder": "Descending",
+              "wrapLogMessage": false
+            },
+            "targets": [
+              {
+                "datasource": {
+                  "type": "loki",
+                  "uid": "P8E80F9AEF21F6940"
+                },
+                "editorMode": "builder",
+                "expr": "{namespace=\"matrix\", container=\"backup\"} |= ``",
+                "queryType": "range",
+                "refId": "A"
+              }
+            ],
+            "title": "K8up logs for Matrix",
+            "transparent": true,
+            "type": "logs"
+          }
+        ],
+        "title": "💬 Matrix Backups",
+        "type": "row"
       },
-      "timepicker": {},
-      "timezone": "browser",
-      "title": "K8up backups",
-      "uid": "adp2mzw5g81z4c",
-      "version": 1,
-      "weekStart": ""
+      {
+        "collapsed": true,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 2
+        },
+        "id": 6,
+        "panels": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS_PROMETHEUS}"
+            },
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "drawStyle": "line",
+                  "fillOpacity": 26,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "smooth",
+                  "lineStyle": {
+                    "fill": "solid"
+                  },
+                  "lineWidth": 3,
+                  "pointSize": 4,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "auto",
+                  "spanNulls": true,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 6,
+              "w": 8,
+              "x": 0,
+              "y": 3
+            },
+            "id": 10,
+            "options": {
+              "legend": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "displayMode": "table",
+                "placement": "right",
+                "showLegend": true
+              },
+              "tooltip": {
+                "maxHeight": 600,
+                "mode": "single",
+                "sort": "none"
+              }
+            },
+            "pluginVersion": "10.4.1",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "${DS_PROMETHEUS}"
+                },
+                "disableTextWrap": false,
+                "editorMode": "builder",
+                "expr": "sum by(instance) (k8up_backup_restic_changed_files_during_backup{instance=\"zitadel\"})",
+                "fullMetaSearch": false,
+                "includeNullMetadata": true,
+                "instant": false,
+                "legendFormat": "__auto",
+                "range": true,
+                "refId": "A",
+                "useBackend": false
+              }
+            ],
+            "title": "restic changed files during backup - Zitadel",
+            "type": "timeseries"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS_PROMETHEUS}"
+            },
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "drawStyle": "line",
+                  "fillOpacity": 26,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "smooth",
+                  "lineStyle": {
+                    "fill": "solid"
+                  },
+                  "lineWidth": 3,
+                  "pointSize": 4,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "auto",
+                  "spanNulls": true,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 6,
+              "w": 8,
+              "x": 8,
+              "y": 3
+            },
+            "id": 40,
+            "options": {
+              "legend": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "displayMode": "table",
+                "placement": "right",
+                "showLegend": true
+              },
+              "tooltip": {
+                "maxHeight": 600,
+                "mode": "single",
+                "sort": "none"
+              }
+            },
+            "pluginVersion": "10.4.1",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "${DS_PROMETHEUS}"
+                },
+                "disableTextWrap": false,
+                "editorMode": "builder",
+                "expr": "sum by(instance) (k8up_backup_restic_changed_directories_during_backup{instance=\"zitadel\"})",
+                "fullMetaSearch": false,
+                "includeNullMetadata": true,
+                "instant": false,
+                "legendFormat": "__auto",
+                "range": true,
+                "refId": "A",
+                "useBackend": false
+              }
+            ],
+            "title": "restic changed directories during backup - zitadel",
+            "type": "timeseries"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS_PROMETHEUS}"
+            },
+            "description": "new files discovered during the backup",
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "drawStyle": "line",
+                  "fillOpacity": 26,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "smooth",
+                  "lineStyle": {
+                    "fill": "solid"
+                  },
+                  "lineWidth": 3,
+                  "pointSize": 4,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "auto",
+                  "spanNulls": true,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 6,
+              "w": 8,
+              "x": 16,
+              "y": 3
+            },
+            "id": 41,
+            "options": {
+              "legend": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "displayMode": "table",
+                "placement": "right",
+                "showLegend": true
+              },
+              "tooltip": {
+                "maxHeight": 600,
+                "mode": "single",
+                "sort": "none"
+              }
+            },
+            "pluginVersion": "10.4.1",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "${DS_PROMETHEUS}"
+                },
+                "disableTextWrap": false,
+                "editorMode": "builder",
+                "expr": "sum by(instance) (k8up_backup_restic_new_files_during_backup{instance=\"zitadel\"})",
+                "fullMetaSearch": false,
+                "includeNullMetadata": true,
+                "instant": false,
+                "legendFormat": "__auto",
+                "range": true,
+                "refId": "A",
+                "useBackend": false
+              }
+            ],
+            "title": "restic new files during backup - Zitadel",
+            "type": "timeseries"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS_PROMETHEUS}"
+            },
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "thresholds"
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 6,
+              "w": 8,
+              "x": 0,
+              "y": 9
+            },
+            "id": 11,
+            "options": {
+              "colorMode": "value",
+              "graphMode": "area",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "percentChangeColorMode": "standard",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "",
+                "values": false
+              },
+              "showPercentChange": false,
+              "textMode": "auto",
+              "wideLayout": true
+            },
+            "pluginVersion": "11.1.0",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "${DS_PROMETHEUS}"
+                },
+                "disableTextWrap": false,
+                "editorMode": "builder",
+                "expr": "sum by(instance) (k8up_backup_restic_available_snapshots{instance=\"zitadel\"})",
+                "fullMetaSearch": false,
+                "includeNullMetadata": true,
+                "instant": false,
+                "legendFormat": "__auto",
+                "range": true,
+                "refId": "A",
+                "useBackend": false
+              }
+            ],
+            "title": "k8up backup restic snapshots - Zitadel",
+            "type": "stat"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS_PROMETHEUS}"
+            },
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "thresholds"
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 6,
+              "w": 8,
+              "x": 8,
+              "y": 9
+            },
+            "id": 27,
+            "options": {
+              "colorMode": "value",
+              "graphMode": "area",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "percentChangeColorMode": "standard",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "",
+                "values": false
+              },
+              "showPercentChange": false,
+              "textMode": "auto",
+              "wideLayout": true
+            },
+            "pluginVersion": "11.1.0",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "${DS_PROMETHEUS}"
+                },
+                "disableTextWrap": false,
+                "editorMode": "builder",
+                "expr": "sum by(exported_namespace) (k8up_jobs_successful_counter{jobType=\"backup\", exported_namespace=\"zitadel\"})",
+                "fullMetaSearch": false,
+                "includeNullMetadata": true,
+                "instant": false,
+                "legendFormat": "__auto",
+                "range": true,
+                "refId": "A",
+                "useBackend": false
+              }
+            ],
+            "title": "successful k8up jobs - Zitadel",
+            "type": "stat"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS_PROMETHEUS}"
+            },
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "thresholds"
+                },
+                "mappings": [],
+                "noValue": "No failures 🎉",
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    },
+                    {
+                      "color": "red",
+                      "value": 1
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 6,
+              "w": 8,
+              "x": 16,
+              "y": 9
+            },
+            "id": 32,
+            "options": {
+              "colorMode": "value",
+              "graphMode": "area",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "percentChangeColorMode": "standard",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "",
+                "values": false
+              },
+              "showPercentChange": false,
+              "textMode": "auto",
+              "wideLayout": true
+            },
+            "pluginVersion": "11.1.0",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "${DS_PROMETHEUS}"
+                },
+                "disableTextWrap": false,
+                "editorMode": "builder",
+                "expr": "sum by(exported_namespace) (k8up_jobs_failed_counter{jobType=\"backup\", exported_namespace=\"zitadel\"})",
+                "fullMetaSearch": false,
+                "includeNullMetadata": true,
+                "instant": false,
+                "legendFormat": "__auto",
+                "range": true,
+                "refId": "A",
+                "useBackend": false
+              }
+            ],
+            "title": "failed k8up jobs - Zitadel",
+            "type": "stat"
+          },
+          {
+            "datasource": {
+              "type": "loki",
+              "uid": "P8E80F9AEF21F6940"
+            },
+            "description": "logs for k8up for zitadel",
+            "gridPos": {
+              "h": 7,
+              "w": 24,
+              "x": 0,
+              "y": 15
+            },
+            "id": 42,
+            "options": {
+              "dedupStrategy": "none",
+              "enableLogDetails": true,
+              "prettifyLogMessage": false,
+              "showCommonLabels": false,
+              "showLabels": false,
+              "showTime": false,
+              "sortOrder": "Descending",
+              "wrapLogMessage": false
+            },
+            "targets": [
+              {
+                "datasource": {
+                  "type": "loki",
+                  "uid": "P8E80F9AEF21F6940"
+                },
+                "editorMode": "builder",
+                "expr": "{namespace=\"zitadel\", container=\"backup\"} |= ``",
+                "queryType": "range",
+                "refId": "A"
+              }
+            ],
+            "title": "K8up logs for Zitadel",
+            "transparent": true,
+            "type": "logs"
+          }
+        ],
+        "title": "👥 Zitadel Backups",
+        "type": "row"
+      },
+      {
+        "collapsed": true,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 3
+        },
+        "id": 7,
+        "panels": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS_PROMETHEUS}"
+            },
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "drawStyle": "line",
+                  "fillOpacity": 26,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "smooth",
+                  "lineStyle": {
+                    "fill": "solid"
+                  },
+                  "lineWidth": 3,
+                  "pointSize": 4,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "auto",
+                  "spanNulls": true,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 6,
+              "w": 8,
+              "x": 0,
+              "y": 4
+            },
+            "id": 16,
+            "options": {
+              "legend": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "displayMode": "table",
+                "placement": "right",
+                "showLegend": true
+              },
+              "tooltip": {
+                "mode": "single",
+                "sort": "none"
+              }
+            },
+            "pluginVersion": "10.4.1",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "${DS_PROMETHEUS}"
+                },
+                "disableTextWrap": false,
+                "editorMode": "builder",
+                "expr": "sum by(instance) (k8up_backup_restic_changed_files_during_backup{instance=\"home-assistant\"})",
+                "fullMetaSearch": false,
+                "includeNullMetadata": true,
+                "instant": false,
+                "legendFormat": "__auto",
+                "range": true,
+                "refId": "A",
+                "useBackend": false
+              }
+            ],
+            "title": "restic changed files during backup - Home Assistant",
+            "type": "timeseries"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS_PROMETHEUS}"
+            },
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "drawStyle": "line",
+                  "fillOpacity": 26,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "smooth",
+                  "lineStyle": {
+                    "fill": "solid"
+                  },
+                  "lineWidth": 3,
+                  "pointSize": 4,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "auto",
+                  "spanNulls": true,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 6,
+              "w": 8,
+              "x": 8,
+              "y": 4
+            },
+            "id": 44,
+            "options": {
+              "legend": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "displayMode": "table",
+                "placement": "right",
+                "showLegend": true
+              },
+              "tooltip": {
+                "maxHeight": 600,
+                "mode": "single",
+                "sort": "none"
+              }
+            },
+            "pluginVersion": "10.4.1",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "${DS_PROMETHEUS}"
+                },
+                "disableTextWrap": false,
+                "editorMode": "builder",
+                "expr": "sum by(instance) (k8up_backup_restic_changed_directories_during_backup{namespace=\"home-assistant\"})",
+                "fullMetaSearch": false,
+                "includeNullMetadata": true,
+                "instant": false,
+                "legendFormat": "__auto",
+                "range": true,
+                "refId": "A",
+                "useBackend": false
+              }
+            ],
+            "title": "restic changed directories during backup - home assistant",
+            "type": "timeseries"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS_PROMETHEUS}"
+            },
+            "description": "new files discovered during the backup",
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "drawStyle": "line",
+                  "fillOpacity": 26,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "smooth",
+                  "lineStyle": {
+                    "fill": "solid"
+                  },
+                  "lineWidth": 3,
+                  "pointSize": 4,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "auto",
+                  "spanNulls": true,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 6,
+              "w": 8,
+              "x": 16,
+              "y": 4
+            },
+            "id": 45,
+            "options": {
+              "legend": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "displayMode": "table",
+                "placement": "right",
+                "showLegend": true
+              },
+              "tooltip": {
+                "maxHeight": 600,
+                "mode": "single",
+                "sort": "none"
+              }
+            },
+            "pluginVersion": "10.4.1",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "${DS_PROMETHEUS}"
+                },
+                "disableTextWrap": false,
+                "editorMode": "builder",
+                "expr": "sum by(instance) (k8up_backup_restic_new_files_during_backup{instance=\"home-assistant\"})",
+                "fullMetaSearch": false,
+                "includeNullMetadata": true,
+                "instant": false,
+                "legendFormat": "__auto",
+                "range": true,
+                "refId": "A",
+                "useBackend": false
+              }
+            ],
+            "title": "restic new files during backup - home assistant",
+            "type": "timeseries"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS_PROMETHEUS}"
+            },
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "thresholds"
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 6,
+              "w": 8,
+              "x": 0,
+              "y": 10
+            },
+            "id": 17,
+            "options": {
+              "colorMode": "value",
+              "graphMode": "area",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "percentChangeColorMode": "standard",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "",
+                "values": false
+              },
+              "showPercentChange": false,
+              "textMode": "auto",
+              "wideLayout": true
+            },
+            "pluginVersion": "11.1.0",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "${DS_PROMETHEUS}"
+                },
+                "disableTextWrap": false,
+                "editorMode": "builder",
+                "expr": "sum by(instance) (k8up_backup_restic_available_snapshots{instance=\"home-assistant\"})",
+                "fullMetaSearch": false,
+                "includeNullMetadata": true,
+                "instant": false,
+                "legendFormat": "__auto",
+                "range": true,
+                "refId": "A",
+                "useBackend": false
+              }
+            ],
+            "title": "k8up backup restic snapshots - Home Assistant",
+            "type": "stat"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS_PROMETHEUS}"
+            },
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "thresholds"
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "red"
+                    },
+                    {
+                      "color": "green",
+                      "value": 1
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 6,
+              "w": 8,
+              "x": 8,
+              "y": 10
+            },
+            "id": 15,
+            "options": {
+              "colorMode": "value",
+              "graphMode": "area",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "percentChangeColorMode": "standard",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "",
+                "values": false
+              },
+              "showPercentChange": false,
+              "textMode": "auto",
+              "wideLayout": true
+            },
+            "pluginVersion": "11.1.0",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "${DS_PROMETHEUS}"
+                },
+                "disableTextWrap": false,
+                "editorMode": "builder",
+                "expr": "sum by(exported_namespace) (k8up_jobs_successful_counter{jobType=\"backup\", exported_namespace=\"home-assistant\"})",
+                "fullMetaSearch": false,
+                "includeNullMetadata": true,
+                "instant": false,
+                "legendFormat": "__auto",
+                "range": true,
+                "refId": "A",
+                "useBackend": false
+              }
+            ],
+            "title": "successful k8up jobs - Home Assistant",
+            "type": "stat"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS_PROMETHEUS}"
+            },
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "thresholds"
+                },
+                "mappings": [],
+                "noValue": "No Failures 🎉",
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    },
+                    {
+                      "color": "red",
+                      "value": 1
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 6,
+              "w": 8,
+              "x": 16,
+              "y": 10
+            },
+            "id": 33,
+            "options": {
+              "colorMode": "value",
+              "graphMode": "area",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "percentChangeColorMode": "standard",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "",
+                "values": false
+              },
+              "showPercentChange": false,
+              "textMode": "auto",
+              "wideLayout": true
+            },
+            "pluginVersion": "11.1.0",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "${DS_PROMETHEUS}"
+                },
+                "disableTextWrap": false,
+                "editorMode": "builder",
+                "expr": "sum by(exported_namespace) (k8up_jobs_failed_counter{jobType=\"backup\", exported_namespace=\"home-assistant\"})",
+                "fullMetaSearch": false,
+                "includeNullMetadata": true,
+                "instant": false,
+                "legendFormat": "__auto",
+                "range": true,
+                "refId": "A",
+                "useBackend": false
+              }
+            ],
+            "title": "failed k8up jobs - Home Assistant",
+            "type": "stat"
+          },
+          {
+            "datasource": {
+              "type": "loki",
+              "uid": "P8E80F9AEF21F6940"
+            },
+            "description": "logs for k8up for home assistant",
+            "gridPos": {
+              "h": 7,
+              "w": 24,
+              "x": 0,
+              "y": 16
+            },
+            "id": 43,
+            "options": {
+              "dedupStrategy": "none",
+              "enableLogDetails": true,
+              "prettifyLogMessage": false,
+              "showCommonLabels": false,
+              "showLabels": false,
+              "showTime": false,
+              "sortOrder": "Descending",
+              "wrapLogMessage": false
+            },
+            "targets": [
+              {
+                "datasource": {
+                  "type": "loki",
+                  "uid": "P8E80F9AEF21F6940"
+                },
+                "editorMode": "builder",
+                "expr": "{namespace=\"home-assistant\", container=\"backup\"} |= ``",
+                "queryType": "range",
+                "refId": "A"
+              }
+            ],
+            "title": "K8up logs for home assistant",
+            "transparent": true,
+            "type": "logs"
+          }
+        ],
+        "title": "🛜 Home Assistant Backups",
+        "type": "row"
+      },
+      {
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 4
+        },
+        "id": 8,
+        "panels": [],
+        "title": "Mastodon Backups",
+        "type": "row"
+      },
+      {
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisBorderShow": false,
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "barWidthFactor": 0.6,
+              "drawStyle": "line",
+              "fillOpacity": 26,
+              "gradientMode": "none",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "insertNulls": false,
+              "lineInterpolation": "smooth",
+              "lineStyle": {
+                "fill": "solid"
+              },
+              "lineWidth": 3,
+              "pointSize": 4,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "auto",
+              "spanNulls": true,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 6,
+          "w": 8,
+          "x": 0,
+          "y": 5
+        },
+        "id": 19,
+        "options": {
+          "legend": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "displayMode": "table",
+            "placement": "right",
+            "showLegend": true
+          },
+          "tooltip": {
+            "mode": "single",
+            "sort": "none"
+          }
+        },
+        "pluginVersion": "10.4.1",
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS_PROMETHEUS}"
+            },
+            "disableTextWrap": false,
+            "editorMode": "builder",
+            "expr": "sum by(instance) (k8up_backup_restic_changed_files_during_backup{instance=\"mastodon\"})",
+            "fullMetaSearch": false,
+            "includeNullMetadata": true,
+            "instant": false,
+            "legendFormat": "__auto",
+            "range": true,
+            "refId": "A",
+            "useBackend": false
+          }
+        ],
+        "title": "restic changed files during backup - Mastodon",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "yellow",
+                  "value": null
+                },
+                {
+                  "color": "green",
+                  "value": 1
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 4,
+          "w": 8,
+          "x": 8,
+          "y": 5
+        },
+        "id": 24,
+        "options": {
+          "colorMode": "value",
+          "graphMode": "area",
+          "justifyMode": "auto",
+          "orientation": "auto",
+          "percentChangeColorMode": "standard",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "showPercentChange": false,
+          "textMode": "auto",
+          "wideLayout": true
+        },
+        "pluginVersion": "11.2.2+security-01",
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS_PROMETHEUS}"
+            },
+            "disableTextWrap": false,
+            "editorMode": "builder",
+            "expr": "sum by(exported_namespace) (k8up_jobs_successful_counter{jobType=\"backup\", exported_namespace=\"mastodon\"})",
+            "fullMetaSearch": false,
+            "includeNullMetadata": true,
+            "instant": false,
+            "legendFormat": "__auto",
+            "range": true,
+            "refId": "A",
+            "useBackend": false
+          }
+        ],
+        "title": "successful k8up jobs - Mastodon",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 1
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 4,
+          "w": 8,
+          "x": 16,
+          "y": 5
+        },
+        "id": 31,
+        "options": {
+          "colorMode": "value",
+          "graphMode": "area",
+          "justifyMode": "auto",
+          "orientation": "auto",
+          "percentChangeColorMode": "standard",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "showPercentChange": false,
+          "textMode": "auto",
+          "wideLayout": true
+        },
+        "pluginVersion": "11.2.2+security-01",
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS_PROMETHEUS}"
+            },
+            "disableTextWrap": false,
+            "editorMode": "builder",
+            "expr": "sum by(exported_namespace) (k8up_jobs_failed_counter{jobType=\"backup\", exported_namespace=\"mastodon\"})",
+            "fullMetaSearch": false,
+            "includeNullMetadata": true,
+            "instant": false,
+            "legendFormat": "__auto",
+            "range": true,
+            "refId": "A",
+            "useBackend": false
+          }
+        ],
+        "title": "failed k8up jobs - Mastodon",
+        "type": "stat"
+      },
+      {
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 6,
+          "w": 8,
+          "x": 0,
+          "y": 11
+        },
+        "id": 20,
+        "options": {
+          "colorMode": "value",
+          "graphMode": "area",
+          "justifyMode": "auto",
+          "orientation": "auto",
+          "percentChangeColorMode": "standard",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "showPercentChange": false,
+          "textMode": "auto",
+          "wideLayout": true
+        },
+        "pluginVersion": "11.2.2+security-01",
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS_PROMETHEUS}"
+            },
+            "disableTextWrap": false,
+            "editorMode": "builder",
+            "expr": "sum by(instance) (k8up_backup_restic_available_snapshots{instance=\"mastodon\"})",
+            "fullMetaSearch": false,
+            "includeNullMetadata": true,
+            "instant": false,
+            "legendFormat": "__auto",
+            "range": true,
+            "refId": "A",
+            "useBackend": false
+          }
+        ],
+        "title": "k8up backup restic snapshots - Mastodon",
+        "type": "stat"
+      },
+      {
+        "collapsed": true,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 17
+        },
+        "id": 25,
+        "panels": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS_PROMETHEUS}"
+            },
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "drawStyle": "line",
+                  "fillOpacity": 26,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "smooth",
+                  "lineStyle": {
+                    "fill": "solid"
+                  },
+                  "lineWidth": 3,
+                  "pointSize": 4,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "auto",
+                  "spanNulls": true,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 8,
+              "w": 10,
+              "x": 0,
+              "y": 14
+            },
+            "id": 22,
+            "options": {
+              "legend": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "displayMode": "table",
+                "placement": "right",
+                "showLegend": true
+              },
+              "tooltip": {
+                "mode": "single",
+                "sort": "none"
+              }
+            },
+            "pluginVersion": "10.4.1",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "${DS_PROMETHEUS}"
+                },
+                "disableTextWrap": false,
+                "editorMode": "builder",
+                "expr": "sum by(instance) (k8up_backup_restic_changed_files_during_backup{instance=\"netmaker\"})",
+                "fullMetaSearch": false,
+                "includeNullMetadata": true,
+                "instant": false,
+                "legendFormat": "__auto",
+                "range": true,
+                "refId": "A",
+                "useBackend": false
+              }
+            ],
+            "title": "restic changed files during backup - Netmaker",
+            "type": "timeseries"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS_PROMETHEUS}"
+            },
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "thresholds"
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 8,
+              "w": 10,
+              "x": 10,
+              "y": 14
+            },
+            "id": 23,
+            "options": {
+              "colorMode": "value",
+              "graphMode": "area",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "",
+                "values": false
+              },
+              "showPercentChange": false,
+              "textMode": "auto",
+              "wideLayout": true
+            },
+            "pluginVersion": "10.4.1",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "${DS_PROMETHEUS}"
+                },
+                "disableTextWrap": false,
+                "editorMode": "builder",
+                "expr": "sum by(instance) (k8up_backup_restic_available_snapshots{instance=\"netmaker\"})",
+                "fullMetaSearch": false,
+                "includeNullMetadata": true,
+                "instant": false,
+                "legendFormat": "__auto",
+                "range": true,
+                "refId": "A",
+                "useBackend": false
+              }
+            ],
+            "title": "k8up backup restic snapshots - Netmaker",
+            "type": "stat"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS_PROMETHEUS}"
+            },
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "thresholds"
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 4,
+              "w": 10,
+              "x": 0,
+              "y": 22
+            },
+            "id": 21,
+            "options": {
+              "colorMode": "value",
+              "graphMode": "area",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "",
+                "values": false
+              },
+              "showPercentChange": false,
+              "textMode": "auto",
+              "wideLayout": true
+            },
+            "pluginVersion": "10.4.1",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "${DS_PROMETHEUS}"
+                },
+                "disableTextWrap": false,
+                "editorMode": "builder",
+                "expr": "sum by(exported_namespace) (k8up_jobs_successful_counter{jobType=\"backup\", exported_namespace=\"netmaker\"})",
+                "fullMetaSearch": false,
+                "includeNullMetadata": true,
+                "instant": false,
+                "legendFormat": "__auto",
+                "range": true,
+                "refId": "A",
+                "useBackend": false
+              }
+            ],
+            "title": "successful k8up jobs - Netmaker",
+            "type": "stat"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS_PROMETHEUS}"
+            },
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "thresholds"
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    },
+                    {
+                      "color": "red",
+                      "value": 1
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 4,
+              "w": 10,
+              "x": 10,
+              "y": 22
+            },
+            "id": 30,
+            "options": {
+              "colorMode": "value",
+              "graphMode": "area",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "",
+                "values": false
+              },
+              "showPercentChange": false,
+              "textMode": "auto",
+              "wideLayout": true
+            },
+            "pluginVersion": "10.4.1",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "${DS_PROMETHEUS}"
+                },
+                "disableTextWrap": false,
+                "editorMode": "builder",
+                "expr": "sum by(exported_namespace) (k8up_jobs_failed_counter{jobType=\"backup\", exported_namespace=\"netmaker\"})",
+                "fullMetaSearch": false,
+                "includeNullMetadata": true,
+                "instant": false,
+                "legendFormat": "__auto",
+                "range": true,
+                "refId": "A",
+                "useBackend": false
+              }
+            ],
+            "title": "failed k8up jobs - Netmaker",
+            "type": "stat"
+          }
+        ],
+        "title": "Netmaker",
+        "type": "row"
+      }
+    ],
+    "refresh": "5s",
+    "schemaVersion": 39,
+    "tags": [],
+    "templating": {
+      "list": [
+        {
+          "hide": 2,
+          "name": "DS_PROMETHEUS",
+          "query": "prometheus",
+          "skipUrlSync": false,
+          "type": "constant"
+        }
+      ]
+    },
+    "time": {
+      "from": "now-7d",
+      "to": "now"
+    },
+    "timepicker": {},
+    "timezone": "browser",
+    "title": "K8up backups",
+    "uid": "adp2mzw5g81z4c",
+    "version": 1,
+    "weekStart": ""
     }
