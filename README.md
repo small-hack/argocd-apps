@@ -164,6 +164,7 @@ Other useful tools that don't fit neatly into any one category.
 | App Directory            | Description                                                                                                                                                |
 |:-------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------|
 | [infisical](./demo/infisical) | [Infisical](https://infisical.com/docs/integrations/platforms/kubernetes) is an open source secrets management solution and it has a k8s secrets operator. |
+| [OpenBao](./demo/openbao)     | [OpenBao](https://github.com/openbao/openbao) is an open source secrets management solution forked from Vault and supported by the Linux Foundation.       |
 | [vault](./demo/vault)         | [Vault](https://github.com/hashicorp/vault) is an open source secrets management solution by Hashicorp.                                                    |
 
 ## Social Media and chat

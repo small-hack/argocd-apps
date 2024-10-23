@@ -46,13 +46,13 @@ spec:
           selfHeal: true
       source:
         repoURL: 'https://nextcloud.github.io/helm'
-        targetRevision: 6.1.1
+        targetRevision: 6.2.1
         chart: nextcloud
         helm:
           valuesObject:
             image:
               repository: jessebot/nextcloud
-              tag: 30.0.0-fpm-alpine
+              tag: 30.0.1-fpm-alpine
               pullPolicy: IfNotPresent
 
             tolerations:

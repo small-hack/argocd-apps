@@ -6,7 +6,7 @@ metadata:
   name: mastodon-postgres-app-set
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "2"
+    argocd.argoproj.io/sync-wave: "3"
 spec:
   goTemplate: true
   # generator allows us to source specific values from an external k8s secret
@@ -24,7 +24,7 @@ spec:
       name: mastodon-postgres-cluster
       namespace: mastodon
       annotations:
-        argocd.argoproj.io/sync-wave: "2"
+        argocd.argoproj.io/sync-wave: "3"
     spec:
       project: mastodon
       destination:
@@ -56,11 +56,11 @@ spec:
                 endpointURL: "https://{{ .mastodon_s3_endpoint }}"
                 s3Credentials:
                   accessKeyId:
-                    name: postgres-s3-credentials
-                    key: "S3_USER"
+                    name: s3-postgres-credentials
+                    key: "accessKeyId"
                   secretAccessKey:
-                    name: postgres-s3-credentials
-                    key: "S3_PASSWORD"
+                    name: s3-postgres-credentials
+                    key: "secretAccessKey"
               retentionPolicy: "30d"
             certificates:
               server:
@@ -77,7 +77,7 @@ spec:
               name: mastodon-pg-backup
               spec:
                 # hourly backups for postgres data
-                schedule: '{{ .mastodon_pvc_backup_schedule }}'
+                schedule: '{{ .mastodon_postgres_backup_schedule }}'
                 backupOwnerReference: self
                 cluster:
                   name: mastodon-postgres

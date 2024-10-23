@@ -5,7 +5,7 @@
   "packageRules": [
     { 
       "matchManagers": ["argocd", "github-actions"],
-      "matchUpdateTypes": ["patch"],
+      "matchUpdateTypes": ["patch", "minor"],
       "automerge": true
     }
   ]
