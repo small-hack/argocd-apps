@@ -20,6 +20,7 @@ spec:
             secret_vars:
               - mastodon_hostname
               - mastodon_s3_endpoint
+              - mastodon_smtp_port
               - global_cluster_issuer
               - global_time_zone
   template:
@@ -175,7 +176,7 @@ spec:
                 enable_starttls: 'auto'
                 from_address: 'tootadmin@{{ .mastodon_hostname }}'
                 openssl_verify_mode: peer
-                port: 587
+                port: '{{ .mastodon_smtp_port }}'
                 reply_to: 'no-reply@{{ .mastodon_hostname }}'
                 tls: true
                 # keys must be named `server`, `login`, `password`
