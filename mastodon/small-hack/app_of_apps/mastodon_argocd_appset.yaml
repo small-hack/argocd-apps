@@ -173,7 +173,7 @@ spec:
                 delivery_method: smtp
                 domain: '{{ .mastodon_hostname }}'
                 enable_starttls: 'auto'
-                from_address: 'toots@{{ .mastodon_hostname }}'
+                from_address: 'tootadmin@{{ .mastodon_hostname }}'
                 openssl_verify_mode: peer
                 port: 587
                 reply_to: 'no-reply@{{ .mastodon_hostname }}'
