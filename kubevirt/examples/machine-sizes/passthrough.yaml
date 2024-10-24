@@ -19,7 +19,7 @@ spec:
     guest: 16Gi
   gpus:
     - name: "gpu0"
-      deviceName: "nvidia.com/AD104_GeForce_RTX2080Ti"
+      deviceName: "nvidia.com/TU102_GeForce_RTX2080Ti"
 ---
 apiVersion: instancetype.kubevirt.io/v1beta1
 kind: VirtualMachineClusterInstancetype
@@ -41,4 +41,4 @@ spec:
     guest: 16Gi
   gpus:
     - name: "gpu0"
-      deviceName: "nvidia.com/TU102_GeForce_RTX4070Ti"
+      deviceName: "nvidia.com/AD104_GeForce_RTX4070Ti"
