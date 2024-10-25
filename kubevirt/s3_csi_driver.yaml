@@ -2,29 +2,33 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: kubevirt-swfs-csi-driver
-  namespace: kubevirt
+  name: seaweedfs-csi-driver
+  namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "3"
+    argocd.argoproj.io/sync-wave: "1"
 spec:
   project: kubevirt
   destination:
-    name: ''
+    server: "https://kubernetes.default.svc"
     namespace: kubevirt
-    server: 'https://kubernetes.default.svc'
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+    automated:
+      prune: true
+      selfHeal: true
   source:
-    path: ''
     repoURL: "https://seaweedfs.github.io/seaweedfs-csi-driver/helm"
     targetRevision: 0.2.2
     chart: seaweedfs-csi-driver
     helm:
       valuesObject:
+        # host and port of your SeaweedFs filer
         seaweedfsFiler: "seaweedfs-filer.kubevirt.svc.cluster.local:8888"
         storageClassName: seaweedfs-storage
         isDefaultStorageClass: false
         tlsSecret: ""
-        logVerbosity: 4
-        cacheCapacityMB: 0
+        #logVerbosity: 4
 
         #concurrentWriters: 32
 
@@ -83,7 +87,7 @@ spec:
           resources: {}
 
         seaweedfsCsiPlugin:
-          image: chrislusf/seaweedfs-csi-driver:v1.2.5
+          image: chrislusf/seaweedfs-csi-driver:latest
           securityContext:
             privileged: true
             capabilities:
