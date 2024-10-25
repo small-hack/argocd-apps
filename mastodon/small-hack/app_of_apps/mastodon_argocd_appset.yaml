@@ -43,7 +43,7 @@ spec:
       source:
         # forked from: https://github.com/mastodon/chart/tree/main
         repoURL: 'https://small-hack.github.io/mastodon-helm-chart'
-        targetRevision: 9.5.2
+        targetRevision: 9.6.0
         chart: mastodon
         # repoURL: 'https://github.com/small-hack/mastodon-helm-chart'
         # path: 'charts/mastodon/'
@@ -100,6 +100,11 @@ spec:
                 removeMedia:
                   enabled: true
                   schedule: "0 0 * * 0"
+                updateSearchIndexMappings:
+                  # -- run `tootctl search deploy --only=instances accounts tags statuses public_statuses` on a cron schedule
+                  enabled: true
+                  # -- run once an hour
+                  schedule: "0 * * * *"
 
               # -- available locales: https://github.com/mastodon/mastodon/blob/main/config/application.rb#L71
               locale: en
