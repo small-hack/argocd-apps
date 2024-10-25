@@ -17,7 +17,7 @@ spec:
     targetRevision: 0.2.2
     chart: seaweedfs-csi-driver
     helm:
-      valuesObject: |
+      valuesObject:
         seaweedfsFiler: "seaweedfs-filer.kubevirt.svc.cluster.local:8888"
         storageClassName: seaweedfs-storage
         isDefaultStorageClass: false
