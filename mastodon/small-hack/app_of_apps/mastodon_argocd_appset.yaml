@@ -43,7 +43,7 @@ spec:
       source:
         # forked from: https://github.com/mastodon/chart/tree/main
         repoURL: 'https://small-hack.github.io/mastodon-helm-chart'
-        targetRevision: 9.6.2
+        targetRevision: 9.7.0
         chart: mastodon
         # repoURL: 'https://github.com/small-hack/mastodon-helm-chart'
         # path: 'charts/mastodon/'
@@ -143,6 +143,12 @@ spec:
 
                 - name: postgres-client-certs
                   mountPath: /etc/secrets/mastodon
+
+              # Specify extra environment variables to be added to all Mastodon pods.
+              # These can be used for configuration not included in this chart (including configuration for Mastodon varietals.)
+              extraEnvVars:
+                - name: MAX_TOOT_CHARS
+                  value: "1024"
 
               s3:
                 enabled: true
