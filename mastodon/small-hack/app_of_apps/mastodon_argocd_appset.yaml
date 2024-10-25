@@ -149,6 +149,18 @@ spec:
               extraEnvVars:
                 - name: MAX_TOOT_CHARS
                   value: "1024"
+                - name: MAX_DISPLAY_NAME_CHARS
+                  value: "64"
+                - name: MAX_BIO_CHARS
+                  value: "720"
+                - name: MAX_PROFILE_FIELDS
+                  value: "6"
+                - name: MAX_IMAGE_SIZE
+                  # 64MB for photos
+                  value: "67110000"
+                - name: MAX_VIDEO_SIZE
+                  # 1GB for videos
+                  value: "1074000000"
 
               s3:
                 enabled: true
