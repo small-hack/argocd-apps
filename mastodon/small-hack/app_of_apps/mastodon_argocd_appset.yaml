@@ -147,20 +147,33 @@ spec:
               # Specify extra environment variables to be added to all Mastodon pods.
               # These can be used for configuration not included in this chart (including configuration for Mastodon varietals.)
               extraEnvVars:
+                # Maximum allowed character count
                 - name: MAX_TOOT_CHARS
                   value: "1024"
+                # Maximum allowed display name characters
                 - name: MAX_DISPLAY_NAME_CHARS
                   value: "64"
+                # Maximum allowed bio characters
                 - name: MAX_BIO_CHARS
                   value: "720"
+                # Maximim number of profile fields allowed
                 - name: MAX_PROFILE_FIELDS
                   value: "6"
+                # Maximum image and video/audio upload sizes
                 - name: MAX_IMAGE_SIZE
                   # 64MB for photos
                   value: "67110000"
                 - name: MAX_VIDEO_SIZE
                   # 1GB for videos
                   value: "1074000000"
+                # Maximum search results to display
+                # Only relevant when elasticsearch is installed
+                - name: MAX_SEARCH_RESULTS
+                  value: "30"
+                # Maximum hashtags to display
+                # Customize the number of hashtags shown in 'Explore'
+                - name: MAX_TRENDING_TAGS
+                  value: "15"
 
               s3:
                 enabled: true
