@@ -150,7 +150,7 @@ spec:
               extraEnvVars:
                 # Maximum allowed character count
                 - name: MAX_TOOT_CHARS
-                  value: "1024"
+                  value: "2000"
                 # Maximum allowed display name characters
                 - name: MAX_DISPLAY_NAME_CHARS
                   value: "64"
