@@ -44,7 +44,6 @@ spec:
           releaseName: zitadel-postgres-cluster
           valuesObject:
             name: zitadel-postgres
-            imageName: ghcr.io/cloudnative-pg/postgresql:15.0
             instances: 1
 
             bootstrap:
