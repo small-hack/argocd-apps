@@ -20,6 +20,7 @@ spec:
             secret_vars:
               - mastodon_hostname
               - mastodon_s3_endpoint
+              - mastodon_smtp_port
               - global_cluster_issuer
               - global_time_zone
   template:
@@ -42,15 +43,17 @@ spec:
       source:
         # forked from: https://github.com/mastodon/chart/tree/main
         repoURL: 'https://small-hack.github.io/mastodon-helm-chart'
-        targetRevision: 9.5.2
+        targetRevision: 9.7.0
         chart: mastodon
         # repoURL: 'https://github.com/small-hack/mastodon-helm-chart'
         # path: 'charts/mastodon/'
         # targetRevision: fix-precompile-volume-perm
         helm:
           valuesObject:
+            # original repository: ghcr.io/mastodon/mastodon
             image:
-              repository: ghcr.io/mastodon/mastodon
+              repository: jessebot/mastodon-glitch-soc
+              tag: latest
               pullPolicy: IfNotPresent
 
             mastodon:
@@ -99,6 +102,11 @@ spec:
                 removeMedia:
                   enabled: true
                   schedule: "0 0 * * 0"
+                updateSearchIndexMappings:
+                  # -- run `tootctl search deploy --only=instances accounts tags statuses public_statuses` on a cron schedule
+                  enabled: true
+                  # -- run once an hour
+                  schedule: "0 * * * *"
 
               # -- available locales: https://github.com/mastodon/mastodon/blob/main/config/application.rb#L71
               locale: en
@@ -135,6 +143,24 @@ spec:
 
                 - name: postgres-client-certs
                   mountPath: /etc/secrets/mastodon
+
+              # Specify extra environment variables to be added to all Mastodon pods.
+              # These can be used for configuration not included in this chart (including configuration for Mastodon varietals.)
+              extraEnvVars:
+                - name: MAX_TOOT_CHARS
+                  value: "1024"
+                - name: MAX_DISPLAY_NAME_CHARS
+                  value: "64"
+                - name: MAX_BIO_CHARS
+                  value: "720"
+                - name: MAX_PROFILE_FIELDS
+                  value: "6"
+                - name: MAX_IMAGE_SIZE
+                  # 64MB for photos
+                  value: "67110000"
+                - name: MAX_VIDEO_SIZE
+                  # 1GB for videos
+                  value: "1074000000"
 
               s3:
                 enabled: true
@@ -175,7 +201,7 @@ spec:
                 enable_starttls: 'auto'
                 from_address: 'tootadmin@{{ .mastodon_hostname }}'
                 openssl_verify_mode: peer
-                port: 587
+                port: '{{ .mastodon_smtp_port }}'
                 reply_to: 'no-reply@{{ .mastodon_hostname }}'
                 tls: true
                 # keys must be named `server`, `login`, `password`
