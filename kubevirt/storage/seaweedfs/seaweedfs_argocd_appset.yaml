@@ -18,8 +18,8 @@ spec:
           parameters:
             secret_vars:
               - global_cluster_issuer
-              - kubevirt_s3_region
               - kubevirt_s3_endpoint
+              - kubevirt-hostname
   template:
     metadata:
       name: kubevirt-seaweedfs-app
