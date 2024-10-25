@@ -146,6 +146,7 @@ spec:
 
               # Specify extra environment variables to be added to all Mastodon pods.
               # These can be used for configuration not included in this chart (including configuration for Mastodon varietals.)
+              # ref: https://github.com/glitch-soc/mastodon/blob/main/.env.production.sample#L256
               extraEnvVars:
                 # Maximum allowed character count
                 - name: MAX_TOOT_CHARS
