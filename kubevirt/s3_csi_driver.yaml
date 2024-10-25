@@ -7,6 +7,7 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "3"
 spec:
+  project: kubevirt
   destination:
     name: ''
     namespace: kubevirt
