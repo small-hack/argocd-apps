@@ -37,7 +37,7 @@ spec:
           selfHeal: true
       source:
         repoURL: 'https://seaweedfs.github.io/seaweedfs/helm'
-        targetRevision: "4.0.377"
+        targetRevision: 3.68.0
         chart: seaweedfs
         helm:
           releaseName: zitadel-seaweedfs
@@ -160,8 +160,6 @@ spec:
               data:
                 type: "existingClaim"
                 claimName: "swfs-filer-data"
-              ingress:
-                enabled: false
               s3:
                 enabled: true
                 port: 8333
@@ -208,5 +206,3 @@ spec:
                   - secretName: zitadel-seaweedfs-tls
                     hosts:
                       - '{{ .zitadel_s3_endpoint }}'
-            cosi:
-              enabled: false
