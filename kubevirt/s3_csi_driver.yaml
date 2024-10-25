@@ -13,12 +13,12 @@ spec:
     server: 'https://kubernetes.default.svc'
   source:
     path: ''
-    repoURL: 'https://cloudymax.github.io/kubevirt-community-stack/'
-    targetRevision: 0.1.5
-    chart: kubevirt-cdi
+    repoURL: "https://seaweedfs.github.io/seaweedfs-csi-driver/helm"
+    targetRevision: 0.2.2
+    chart: seaweedfs-csi-driver
     helm:
       valuesObject: |
-        seaweedfsFiler: "http://seaweedfs-volume:8888"
+        seaweedfsFiler: "seaweedfs-filer.kubevirt.svc.cluster.local:8888"
         storageClassName: seaweedfs-storage
         isDefaultStorageClass: false
         tlsSecret: ""
