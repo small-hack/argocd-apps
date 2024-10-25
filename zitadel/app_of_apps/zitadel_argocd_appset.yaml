@@ -89,7 +89,6 @@ spec:
                   secretKeyRef:
                     name: zitadel-smtp-credentials
                     key: reply_to_address
-
               - name: ZITADEL_LOG_LEVEL
                 value: info
 
