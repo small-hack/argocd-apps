@@ -7,6 +7,8 @@ This is the networking view in Argo CD:
 
 <img width="1225" alt="screenshot of the mastodon applicationset in Argo CD's web interface using the networking tree mode view. it shows the flow of cloud to ip address to mastodon-web-app ingress to two services mastodon-web-app-streaming and mastodon-web-app-web which each go to their respective pods. There's also additional services and pods outside of that flow. pods masotdon-web-app-media and masotdon-web-app-sidekiq have no children. 2 elastic search services have the same elastic search pod child. and then there's an additional 3 matching elastic search service and pod pairs" src="https://github.com/small-hack/argocd-apps/assets/2389292/d2ea734d-8dd9-49fd-8a5e-acbecafe3f3a">
 
+This Mastodon AppSet uses a fork of Mastodon called [glitch-soc](https://github.com/glitch-soc/mastodon). You can see the docker repo [small-hack/mastodon-glitch-soc-docker](https://github.com/small-hack/mastodon-glitch-soc-docker) whose image is published [here](https://hub.docker.com/repository/docker/jessebot/mastodon-glitch-soc/general).
+
 
 ## Sync waves
 In the [`./app_of_apps`](./app_of_apps) directory we create the manifests and helm chart in this sync wave order:

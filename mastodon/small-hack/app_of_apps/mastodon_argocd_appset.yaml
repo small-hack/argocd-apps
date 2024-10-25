@@ -50,9 +50,9 @@ spec:
         # targetRevision: fix-precompile-volume-perm
         helm:
           valuesObject:
+            # original repository: ghcr.io/mastodon/mastodon
             image:
-              # repository: ghcr.io/mastodon/mastodon
-              repository: jessebot/mastodon-lgbt-glitch
+              repository: jessebot/mastodon-glitch-soc
               tag: latest
               pullPolicy: IfNotPresent
 
