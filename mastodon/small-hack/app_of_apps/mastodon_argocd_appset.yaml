@@ -51,7 +51,9 @@ spec:
         helm:
           valuesObject:
             image:
-              repository: ghcr.io/mastodon/mastodon
+              # repository: ghcr.io/mastodon/mastodon
+              repository: jessebot/mastodon-lgbt-glitch
+              tag: latest
               pullPolicy: IfNotPresent
 
             mastodon:
