@@ -36,4 +36,4 @@ spec:
       source:
         repoURL: https://github.com/small-hack/argocd-apps.git
         path: kubevirt/storage/{{ .kubevirt_s3_provider }}/
-        targetRevision: main
+        targetRevision: swfs-kubevirt
