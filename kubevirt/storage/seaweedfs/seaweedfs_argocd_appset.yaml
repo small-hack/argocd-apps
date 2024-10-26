@@ -72,7 +72,7 @@ spec:
               repository: ""
             master:
               enabled: true
-              replicas: 1
+              replicas: 3
               port: 9333
               grpcPort: 19333
               metricsPort: 9327
