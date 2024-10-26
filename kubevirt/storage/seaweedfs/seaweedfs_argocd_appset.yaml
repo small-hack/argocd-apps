@@ -81,7 +81,7 @@ spec:
               pulseSeconds: null
               garbageThreshold: null
               metricsIntervalSec: 15
-              defaultReplication: "000"
+              defaultReplication: "001"
               disableHttp: false
               config: |-
                 # Enter any extra configuration for master.toml here.
