@@ -166,7 +166,7 @@ spec:
                 timeoutSeconds: 10
             filer:
               enabled: true
-              replicas: 1
+              replicas: 3
               port: 8888
               grpcPort: 18888
               metricsPort: 9327
