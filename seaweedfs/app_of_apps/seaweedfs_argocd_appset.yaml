@@ -44,7 +44,7 @@ spec:
         # path: k8s/charts/seaweedfs/
 
         repoURL: 'https://seaweedfs.github.io/seaweedfs/helm'
-        targetRevision: 3.68.0
+        targetRevision: 4.0.377
         chart: seaweedfs
         helm:
           releaseName: seaweedfs
@@ -227,3 +227,5 @@ spec:
                   - secretName: zitadel-seaweedfs-tls
                     hosts:
                       - '{{ .seaweedfs_s3_endpoint }}'
+            cosi:
+              enabled: false
