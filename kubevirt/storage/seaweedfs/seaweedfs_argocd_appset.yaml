@@ -98,8 +98,6 @@ spec:
                 podAntiAffinity:
                   requiredDuringSchedulingIgnoredDuringExecution:
                     - labelSelector:
-                        matchLabels:
-                          app.kubernetes.io/component: master
                       topologyKey: kubernetes.io/hostname
               livenessProbe:
                 enabled: true
@@ -140,8 +138,6 @@ spec:
                 podAntiAffinity:
                   requiredDuringSchedulingIgnoredDuringExecution:
                     - labelSelector:
-                        matchLabels:
-                          app.kubernetes.io/component: volume
                       topologyKey: kubernetes.io/hostname
               livenessProbe:
                 enabled: true
@@ -179,8 +175,6 @@ spec:
                 podAntiAffinity:
                   requiredDuringSchedulingIgnoredDuringExecution:
                     - labelSelector:
-                        matchLabels:
-                          app.kubernetes.io/component: filer
                       topologyKey: kubernetes.io/hostname
               s3:
                 enabled: true
