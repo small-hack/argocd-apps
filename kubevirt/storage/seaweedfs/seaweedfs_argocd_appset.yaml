@@ -61,7 +61,7 @@ spec:
                 enabled: false
                 gatewayHost: null
                 gatewayPort: null
-              enableReplication: false
+              enableReplication: true
               replicationPlacment: "001"
               extraEnvironmentVars:
                 WEED_CLUSTER_DEFAULT: "sw"
