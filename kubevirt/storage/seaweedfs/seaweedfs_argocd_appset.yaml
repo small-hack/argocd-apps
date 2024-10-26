@@ -128,7 +128,7 @@ spec:
               grpcPort: 18080
               metricsPort: 9327
               ipBind: "0.0.0.0"
-              replicas: 1
+              replicas: 2
               loggingOverrideLevel: null
               fileSizeLimitMB: null
               minFreeSpacePercent: 7
