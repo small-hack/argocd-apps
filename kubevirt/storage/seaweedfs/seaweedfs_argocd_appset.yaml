@@ -94,7 +94,7 @@ spec:
                 size: ""
                 storageClass: ""
                 hostPathPrefix: /storage
-              affinity: ""
+              affinity: null
               livenessProbe:
                 enabled: true
                 httpGet:
@@ -130,7 +130,7 @@ spec:
                   type: "existingClaim"
                   claimName: "swfs-volume-data"
                   maxVolumes: 0
-              affinity: "":
+              affinity: null
               livenessProbe:
                 enabled: true
                 httpGet:
@@ -163,7 +163,7 @@ spec:
               data:
                 type: "existingClaim"
                 claimName: "swfs-filer-data"
-              affinity: ""
+              affinity: null
               s3:
                 enabled: true
                 port: 8333
