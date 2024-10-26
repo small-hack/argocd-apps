@@ -94,6 +94,13 @@ spec:
                 size: ""
                 storageClass: ""
                 hostPathPrefix: /storage
+              affinity: |
+                podAntiAffinity:
+                  requiredDuringSchedulingIgnoredDuringExecution:
+                    - labelSelector:
+                        matchLabels:
+                          app.kubernetes.io/component: master
+                      topologyKey: kubernetes.io/hostname
               livenessProbe:
                 enabled: true
                 httpGet:
@@ -129,6 +136,13 @@ spec:
                   type: "existingClaim"
                   claimName: "swfs-volume-data"
                   maxVolumes: 0
+              affinity: |
+                podAntiAffinity:
+                  requiredDuringSchedulingIgnoredDuringExecution:
+                    - labelSelector:
+                        matchLabels:
+                          app.kubernetes.io/component: volume
+                      topologyKey: kubernetes.io/hostname
               livenessProbe:
                 enabled: true
                 httpGet:
@@ -161,6 +175,13 @@ spec:
               data:
                 type: "existingClaim"
                 claimName: "swfs-filer-data"
+              affinity: |
+                podAntiAffinity:
+                  requiredDuringSchedulingIgnoredDuringExecution:
+                    - labelSelector:
+                        matchLabels:
+                          app.kubernetes.io/component: filer
+                      topologyKey: kubernetes.io/hostname
               s3:
                 enabled: true
                 port: 8333
