@@ -50,11 +50,12 @@ spec:
         # targetRevision: fix-precompile-volume-perm
         helm:
           valuesObject:
+            fullnameOverride: mastodon
             # original repository: ghcr.io/mastodon/mastodon
             image:
               repository: jessebot/mastodon-glitch-soc
               tag: latest
-              pullPolicy: IfNotPresent
+              pullPolicy: Always
 
             mastodon:
 
