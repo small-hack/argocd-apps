@@ -23,13 +23,26 @@ This template relies on you already having created secrets. You can do that via 
 
 ### Creating secrets manually
 
-```bash
-SECRET_KEY_BASE=$(docker run --rm -it tootsuite/mastodon:latest bin/rake secret)
-OTP_SECRET=$(docker run --rm -it tootsuite/mastodon:latest bin/rake secret)
+For the secret key base, otp secret and vapid key:
 
-docker run --rm -e "OTP_SECRET=$OTP_SECRET" \
+```console
+$ SECRET_KEY_BASE=$(docker run --rm -it tootsuite/mastodon:latest bin/rake secret)
+$ OTP_SECRET=$(docker run --rm -it tootsuite/mastodon:latest bin/rake secret)
+
+$ docker run --rm -e "OTP_SECRET=$OTP_SECRET" \
     -e "SECRET_KEY_BASE=$SECRET_KEY_BASE" \
     -it tootsuite/mastodon:latest bin/rake mastodon:webpush:generate_vapid_key
+```
+
+For the active record encryption keys:
+
+```console
+$ docker run docker.io/tootsuite/mastodon:latest rails db:encryption:init
+Add the following secret environment variables to your Mastodon environment (e.g. .env.production), ensure they are shared across all your nodes and do not change them after they are set:
+
+ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY=ig3iQLB5FAzU7500SJNdbsoncKBmrR7f
+ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT=1laBmHjzGUJRpAbXLI1RJVmng7uZN8i1
+ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY=10AfrwAKCgPVuzT8FuaSpSXoMGAFKIQk
 ```
 
 # Troubleshooting Mastodon
