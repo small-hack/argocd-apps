@@ -278,6 +278,7 @@ spec:
               # RAILS_ENV=production bundle exec rake chewy:sync
               # (https://docs.joinmastodon.org/admin/optional/elasticsearch/)
               enabled: true
+              fullnameOverride: elasticsearch
               master:
                 replicaCount: 1
                 autoscaling:
