@@ -23,6 +23,9 @@ spec:
               - nextcloud_config_pvc_enabled
               - nextcloud_config_storage
               - nextcloud_config_access_mode
+              - nextcloud_valkey_storage
+              - nextcloud_valkey_access_mode
+              - nextcloud_valkey_pvc_enabled
   template:
     metadata:
       name: nextcloud-pvc
@@ -58,3 +61,14 @@ spec:
               storageClassName: '{{ .global_pvc_storage_class }}'
               accessMode: '{{ .nextcloud_config_access_mode }}'
               storage: '{{ .nextcloud_config_storage }}'
+
+            # -- enable mastodon valkeyuration pvc
+            valkey_pvc:
+              enabled: true
+              #enabled: '{{ .nextcloud_valkey_pvc_enabled }}'
+              storageClassName: local-path
+              #storageClassName: '{{ .global_pvc_storage_class }}'
+              accessMode: ReadWriteOnce
+              #accessMode: '{{ .nextcloud_valkey_access_mode }}'
+              storage: 2G
+              #storage: '{{ .nextcloud_valkey_storage }}'
