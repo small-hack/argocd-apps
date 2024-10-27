@@ -1,8 +1,8 @@
-# Full Argo CD ApplicationSets for Mastodon.
+# Argo CD ApplicationSets for Mastodon
 
-Stable directory: small-hack
+**Stable directory**: [small-hack](./small-hack)
 
-Experimental (not working): bitnami
+**Experimental (not working)**: [bitnami](./bitnami)
 
 Example Argo CD tree view of Mastodon (small-hack) App:
 
