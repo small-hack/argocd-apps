@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: "windows10-iso"
+  name: "windows10-sysprepd-iso"
   labels:
     app: containerized-data-importer
   annotations:
