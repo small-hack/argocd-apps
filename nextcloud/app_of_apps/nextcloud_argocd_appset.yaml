@@ -173,6 +173,9 @@ spec:
                 - name: "PGSSLROOTCERT"
                   value: /etc/secrets/ca/ca.crt
 
+                - name: "REDIS_HOST"
+                  value: valkey-headless.nextcloud.svc.cluster.local:6379
+
                 - name: "REDIS_HOST_PASSWORD"
                   valueFrom:
                     secretKeyRef:
@@ -218,10 +221,10 @@ spec:
                 #    [www]
                 #    user = www-data
                 #    group = www-data
-                redis-cluster.ini: |-
-                  redis.session.locking_enabled=1
-                  redis.session.lock_retries=-1
-                  redis.session.lock_wait_time=10000
+                #redis-cluster.ini: |-
+                #  redis.session.locking_enabled=1
+                #  redis.session.lock_retries=-1
+                #  redis.session.lock_wait_time=10000
 
                 www.conf: |-
                   [www]
@@ -245,22 +248,22 @@ spec:
                   php_admin_value[post_max_size] = 10G
 
               configs:
-                redis-cluster.config.php: |-
-                  <?php
-                  $CONFIG = [
-                    'memcache.local' => '\OC\Memcache\APCu',
-                    'memcache.distributed' => '\\OC\\Memcache\\Redis',
-                    'memcache.locking' => '\\OC\\Memcache\\Redis',
-                    'redis.cluster' => [
-                      'seeds' => [
-                        'valkey.nextcloud.svc.cluster.local:6379',
-                      ],
-                      'timeout' => 0.0,
-                      'read_timeout' => 0.0,
-                      'failover_mode' => \RedisCluster::FAILOVER_ERROR,
-                      'password' => getenv('REDIS_HOST_PASSWORD')
-                    ],
-                  ];
+                # redis-cluster.config.php: |-
+                #   <?php
+#  $CONFIG = [
+                #     'memcache.local' => '\OC\Memcache\APCu',
+                #     'memcache.distributed' => '\\OC\\Memcache\\Redis',
+                #     'memcache.locking' => '\\OC\\Memcache\\Redis',
+                #     'redis.cluster' => [
+                #       'seeds' => [
+                #         'valkey.nextcloud.svc.cluster.local:6379',
+                #       ],
+                #       'timeout' => 0.0,
+                #       'read_timeout' => 0.0,
+                #       'failover_mode' => \RedisCluster::FAILOVER_ERROR,
+                #       'password' => getenv('REDIS_HOST_PASSWORD')
+                #     ],
+                #   ];
 
                 logging.config.php: |-
                   <?php
@@ -585,8 +588,8 @@ spec:
                 replicaCount: 3
               auth:
                 enabled: true
-                existingSecret: redis-secret
-                existingSecretPasswordKey: redis-password
+                existingSecret: nextcloud-valkey-cluster-app
+                existingSecretPasswordKey: valkey-password
 
             cronjob:
               enabled: true
