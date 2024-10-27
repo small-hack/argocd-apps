@@ -211,7 +211,7 @@ spec:
                   mountPath: /etc/secrets/nextcloud
 
               defaultConfigs:
-                redis.config.php: false
+                redis.config.php: true
 
               phpConfigs:
                 #  www.conf: |-
@@ -580,13 +580,13 @@ spec:
               enabled: false
 
             redis:
-              enabled: false
+              enabled: true
               replica:
                 replicaCount: 3
               auth:
                 enabled: true
-                existingSecret: nextcloud-redis-credentials
-                existingSecretPasswordKey: redis_password
+                existingSecret: nextcloud-valkey-cluster-app
+                existingSecretPasswordKey: uOEJ1uR04q
 
             cronjob:
               enabled: true
