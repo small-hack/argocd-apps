@@ -91,6 +91,7 @@ spec:
 
         mediatedDevicesTypes:
           - nvidia-18
+          - nvidia-259
 
         useEmulation: false
 
