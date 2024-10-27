@@ -35,6 +35,7 @@ data:
                 {
                         "node": "compufam",
                         "paths": [
+                                "/mnt/raid1",
                                 "/var/lib/rancher/k3s/storage"
                         ]
                 }

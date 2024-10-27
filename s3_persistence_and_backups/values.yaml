@@ -1,7 +1,15 @@
+app: example
+
 # -- provider must be set to minio or seaweedfs
 provider: seaweedfs
 pvc_capacity: 10Gi
 pvc_storageClassName: "local-path"
+
+# -- tolerate affinity
+affinity: {}
+
+# -- tolerate taints
+tolerations: []
 
 seaweedfs:
   # -- deploy a master data PVC for seaweedfs

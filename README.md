@@ -164,6 +164,7 @@ Other useful tools that don't fit neatly into any one category.
 | App Directory            | Description                                                                                                                                                |
 |:-------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------|
 | [infisical](./demo/infisical) | [Infisical](https://infisical.com/docs/integrations/platforms/kubernetes) is an open source secrets management solution and it has a k8s secrets operator. |
+| [OpenBao](./demo/openbao)     | [OpenBao](https://github.com/openbao/openbao) is an open source secrets management solution forked from Vault and supported by the Linux Foundation.       |
 | [vault](./demo/vault)         | [Vault](https://github.com/hashicorp/vault) is an open source secrets management solution by Hashicorp.                                                    |
 
 ## Social Media and chat
@@ -171,15 +172,8 @@ Other useful tools that don't fit neatly into any one category.
 | App Directory          | Description                                                                                                                                                                                                                                                                 |
 |:-----------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | [coturn](./coturn)     | TURN/STUN server for connecting VoIP peers                                                                                                                                                                                                                                  |
-| [mastodon](./mastodon) | Selfhosted social media site, includes [postgresql](https://github.com/bitnami/charts/tree/main/bitnami/postgresql), [elastic search] (for full text searching), and [redis](https://github.com/bitnami/charts/tree/main/bitnami/redis) (in memory caching) - mostly stable |
-| [matrix](./matrix)     | Selfhosted chat server that plugs into a bunch of other chat apps                                                                                                                                                                                                           |
-
-#### Experimental
-
-| App Directory                  | Description                                                                        |
-|:-------------------------------|:-----------------------------------------------------------------------------------|
-| [iceshrimp](./demo/iceshrimp) | Selfhosted social media. This is forked from firefish, which is forked from miskey |
-
+| [mastodon](./mastodon) | Selfhosted social media site, includes [postgresql](https://github.com/bitnami/charts/tree/main/bitnami/postgresql), [elastic search](https://github.com/bitnami/charts/tree/main/bitnami/elasticsearch) (for full text searching), and [valkey](https://github.com/bitnami/charts/tree/main/bitnami/valkey) (in memory caching) |
+| [matrix](./matrix)     | Selfhosted chat server that plugs into a bunch of other chat apps                                                                                                                                                                                                      
 
 ## Virtual Machines
 

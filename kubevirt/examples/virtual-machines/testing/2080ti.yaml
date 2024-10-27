@@ -1,0 +1,198 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: 2080ti
+spec:
+  destination:
+    name: ''
+    namespace: kubevirt
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: ''
+    repoURL: 'https://cloudymax.github.io/kubevirt-community-stack/'
+    targetRevision: 0.3.0
+    chart: kubevirt-vm
+    helm:
+      valuesObject:
+        virtualMachine:
+          name: 2080ti
+          namespace: kubevirt
+          runStrategy: "RerunOnFailure"
+          features:
+             kvmEnabled: true
+             acpiEnabled: true
+             smmEnabled: true
+             efiEnabled: false
+             autoattachPodInterface: true
+             autoattachSerialConsole: true
+             autoattachGraphicsDevice: true
+          machine:
+            machineType: "q35"
+            cpuPassthrough: false
+            vCores: 6
+            pinCores: false
+            hyperThreadingEnabled: false
+            memory: 16Gi
+          gpus:
+          - name: gpu0
+            deviceName: nvidia.com/TU102_GeForce_RTX2080Ti
+        
+        virtualMachinePool:
+          enabled: false
+          size: 1
+        
+        disks:
+          - name: harddrive
+            type: disk
+            bus: virtio
+            bootorder: 2
+            readonly: false
+            pvsize: 32G
+            pvstorageClass: fast-raid
+            pvaccessMode: ReadWriteOnce
+            source: url
+            url: https://cloud.debian.org/images/cloud/bookworm/latest/debian-12-generic-arm64.qcow2
+          - name: cloudinitvolume
+            type: cdrom
+            bus: sata
+            readonly: true
+            bootorder: 1
+            pv-enable: false
+        
+        service:
+          - name: vm0
+            type: LoadBalancer
+            externalTrafficPolicy: Cluster
+            ports:
+              - name: vnc
+                port: 22
+                targetPort: 22
+                protocol: TCP
+              - name: vnc
+                port: 5900
+                targetPort: 5900
+                protocol: TCP
+              - name: rdp
+                nodePort: 31597
+                port: 3389
+                protocol: TCP
+                targetPort: 3389
+              - name: sunshine0
+                nodePort: 32203
+                port: 47984
+                protocol: TCP
+                targetPort: 47984
+              - name: sunshine1
+                nodePort: 31213
+                port: 47985
+                protocol: TCP
+                targetPort: 47985
+              - name: sunshine2
+                nodePort: 30217
+                port: 47986
+                protocol: TCP
+                targetPort: 47986
+              - name: sunshine3
+                nodePort: 30112
+                port: 47987
+                protocol: TCP
+                targetPort: 47987
+              - name: sunshine4
+                nodePort: 30474
+                port: 47988
+                protocol: TCP
+                targetPort: 47988
+              - name: sunshine5
+                nodePort: 32567
+                port: 47989
+                protocol: TCP
+                targetPort: 47989
+              - name: sunshine6
+                nodePort: 30881
+                port: 47990
+                protocol: TCP
+                targetPort: 47990
+              - name: sunshine7
+                nodePort: 31957
+                port: 47998
+                protocol: UDP
+                targetPort: 47998
+              - name: sunshine8
+                nodePort: 32672
+                port: 47999
+                protocol: UDP
+                targetPort: 47999
+              - name: sunshine9
+                nodePort: 31549
+                port: 48000
+                protocol: UDP
+                targetPort: 48000
+              - name: sunshine10
+                nodePort: 31786
+                port: 48010
+                protocol: TCP
+                targetPort: 48010
+        
+        cloudinitPath:
+        cloudinitFromSecret: false
+        cloudinit:
+
+        cloudinitEnabled: true
+        cloudinitFromSecret: false
+            
+        # -- Provide a path to an existing cloud-init file
+        # will be genrated from values below if no file specified
+        cloudinitPath:
+            
+        # -- Values used to generate a cloud-init user-data file
+        # Not all modules yet supported
+        cloudinit:
+          # -- Set hostname of VM
+          hostname: '{{ .vm_hostname }}'
+          disable_root: false
+            network:
+              config: disabled
+              # -- provide a wireguard config
+            wireguard: []
+            # -- Create Groups
+            groups:
+              - docker
+              - kvm
+            # -- Create users
+            users:
+              - name: friend
+                groups: users, admin, sudo
+                sudo: ALL=(ALL) NOPASSWD:ALL
+                shell: /bin/bash
+                lock_passwd: false
+                passwd: "$6$rounds=4096$saltsaltlettuce$Lp/FV.2oOgew7GbM6Nr8KMGMBn7iFM0x9ZwLqtx9Y4QJmKvfcnS.2zx4MKmymCPQGpHS7gqYOiqWjvdCIV2uN."
+                # -- import ssh public-keys from github or lanchpad (doesnt work on Debian12)
+                ssh_import_id: []
+                # -- manually add a ssh public-key
+                ssh_authorized_keys: []
+            ca_certs: []
+            # -- Commands to run early in boot process
+            boot_cmd: []
+            # -- base64 encode content of written files
+            write_as_b64: false
+            # -- list of files to embed in the user-data
+            write_files: []
+            # -- Update apt package cache
+            package_update: true
+            # -- Perform apt package upgrade
+            package_upgrade: false
+            # -- apt packages to install
+            packages: 
+              - ssh-import-id
+            # -- commands to run in final step
+            runcmd:
+              - sudo -u friend -i ssh-import-id-gh cloudymax
+  sources: []
+  project: default
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false
+    syncOptions:
+      - CreateNamespace=true

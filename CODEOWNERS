@@ -8,9 +8,9 @@
 /demo/forgejo/ @jessebot
 /demo/kepler/ @jessebot @cloudymax
 /demo/longhorn/ @cloudymax
-/openbao/ @jessebot
 /demo/oauth2-proxy/ @jessebot
 /demo/wg-access-server/ @jessebot @cloudymax
+/demo/valkey/ @cloudymax
 
 # Directories of live supported Argo CD Applications
 /argocd/ @jessebot
@@ -29,6 +29,7 @@
 /matrix/ @jessebot
 /netmaker/ @cloudymax
 /nextcloud/ @jessebot
+/openbao/ @jessebot
 /postgres/ @cloudymax
 /prometheus/ @cloudymax
 /test-app/ @cloudymax

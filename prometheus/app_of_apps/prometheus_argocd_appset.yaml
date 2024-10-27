@@ -40,11 +40,11 @@ spec:
       source:
         repoURL: https://prometheus-community.github.io/helm-charts
         chart: kube-prometheus-stack
-        targetRevision: 61.3.1
+        targetRevision: 65.5.0
         helm:
           releaseName: prom-stack
           valuesObject:
-            # fullnameOverride: prom-stack
+            fullnameOverride: prom-stack
             global:
               evaluation_interval: 5s
               scrape_interval: 5s
@@ -52,6 +52,31 @@ spec:
 
             crds:
               enabled: false
+
+            ## Provide custom recording or alerting rules to be deployed into the cluster.
+            additionalPrometheusRulesMap:
+              # basic Argo CD alerts from awesome prometheus alerts
+              prometheus.rules:
+                groups:
+                  - name: argo_cd
+                    rules:
+                      - alert: ArgocdServiceNotSynced
+                        expr: argocd_app_info{sync_status!="Synced"} != 0
+                        for: 15m
+                        labels:
+                          severity: warning
+                        annotations:
+                          summary: ArgoCD service not synced (instance {{`{{ $labels.instance }}`}})
+                          description: "Service {{`{{ $labels.name }}`}} run by argo is currently not in sync.\n  VALUE = {{`{{ $value }}`}}\n  LABELS = {{`{{ $labels }}`}}"
+
+                      - alert: ArgocdServiceUnhealthy
+                        expr: argocd_app_info{health_status!="Healthy"} != 0
+                        for: 15m
+                        labels:
+                          severity: warning
+                        annotations:
+                          summary: ArgoCD service unhealthy (instance {{`{{ $labels.instance }}`}})
+                          description: "Service {{`{{ $labels.name }}`}} run by argo is currently not healthy.\n  VALUE = {{`{{ $value }}`}}\n  LABELS = {{`{{ $labels }}`}}"
 
             prometheus:
               ingress:
@@ -151,9 +176,21 @@ spec:
                     - '{{ .prometheus_alert_manager_hostname }}'
 
             grafana:
+              envValueFrom:
+                GF_AUTH_GENERIC_OAUTH_CLIENT_ID:
+                  secretKeyRef:
+                    name: grafana-oidc-credentials
+                    key: client_id
+
+                GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET:
+                  secretKeyRef:
+                    name: grafana-oidc-credentials
+                    key: client_secret
+
               grafana.ini:
                 auth:
                   disable_login_form: true
+
                 "auth.generic_oauth":
                   name: Zitadel
                   enabled: true

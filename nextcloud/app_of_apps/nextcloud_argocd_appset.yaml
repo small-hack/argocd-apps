@@ -40,13 +40,13 @@ spec:
           selfHeal: true
       source:
         repoURL: 'https://nextcloud.github.io/helm'
-        targetRevision: 5.2.0
+        targetRevision: 6.2.1
         chart: nextcloud
         helm:
           valuesObject:
             image:
               repository: jessebot/nextcloud
-              tag: 29.0.3-fpm-alpine
+              tag: 30.0.1-fpm-alpine
               pullPolicy: IfNotPresent
 
             ingress:
@@ -138,9 +138,13 @@ spec:
                       type: RuntimeDefault
 
               extraEnv:
+                - name: "OVERWRITECLIURL"
+                  value: 'https://{{ .nextcloud_hostname }}'
+
                 # fix time in nextcloud container
                 - name: "TZ"
                   value: '{{ .global_time_zone }}'
+
                 # OIDC parameters
                 - name: "NC_oidc_login_provider_url"
                   valueFrom:
@@ -237,6 +241,8 @@ spec:
                   php_admin_value[opcache.max_accelerated_files] = 30000
                   php_admin_value[opcache.validate_timestamps] = 0
                   php_admin_value[opcache.revalidate_freq] = 60
+                  php_admin_value[upload_max_filesize] = 10G
+                  php_admin_value[post_max_size] = 10G
 
               configs:
                 redis-cluster.config.php: |-
@@ -320,7 +326,7 @@ spec:
                     'oidc_login_auto_redirect' => false,
 
                     // Redirect to this page after logging out the user
-                    'oidc_login_logout_url' => '{{ .nextcloud_hostname }}',
+                    'oidc_login_logout_url' => 'https://{{ .nextcloud_hostname }}/apps/oidc_login/oidc',
 
                     // If set to true the user will be redirected to the
                     // logout endpoint of the OIDC provider after logout

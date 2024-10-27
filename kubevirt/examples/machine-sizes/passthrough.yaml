@@ -1,0 +1,44 @@
+---
+apiVersion: instancetype.kubevirt.io/v1beta1
+kind: VirtualMachineClusterInstancetype
+metadata:
+  name: 2080ti-full
+  annotations:
+    instancetype.kubevirt.io/description: |-
+      fully allocated RTX 2080ti
+  labels:
+    instancetype.kubevirt.io/class: "gpu.nvidia"
+    instancetype.kubevirt.io/icon-pf: "fa-microchip"
+    instancetype.kubevirt.io/version: "1"
+    instancetype.kubevirt.io/vendor: "kubevirt.io"
+    instancetype.kubevirt.io/gpus: "true"
+spec:
+  cpu:
+    guest: 8
+  memory:
+    guest: 16Gi
+  gpus:
+    - name: "gpu0"
+      deviceName: "nvidia.com/TU102_GeForce_RTX2080Ti"
+---
+apiVersion: instancetype.kubevirt.io/v1beta1
+kind: VirtualMachineClusterInstancetype
+metadata:
+  name: 4070ti-full
+  annotations:
+    instancetype.kubevirt.io/description: |-
+      fully allocated RTX 4070ti
+  labels:
+    instancetype.kubevirt.io/class: "gpu.nvidia"
+    instancetype.kubevirt.io/icon-pf: "fa-microchip"
+    instancetype.kubevirt.io/version: "1"
+    instancetype.kubevirt.io/vendor: "kubevirt.io"
+    instancetype.kubevirt.io/gpus: "true"
+spec:
+  cpu:
+    guest: 8
+  memory:
+    guest: 16Gi
+  gpus:
+    - name: "gpu0"
+      deviceName: "nvidia.com/AD104_GeForce_RTX4070Ti"

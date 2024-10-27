@@ -13,7 +13,7 @@ spec:
     repoURL: 'https://dl.cloudsmith.io/public/infisical/helm-charts/helm/charts/'
     chart: secrets-operator
     # published versions: https://cloudsmith.io/~infisical/repos/helm-charts/packages/detail/helm/secrets-operator/#versions
-    targetRevision: 0.6.4
+    targetRevision: 0.7.3
   destination:
     server: "https://kubernetes.default.svc"
     namespace: infisical
@@ -37,7 +37,7 @@ spec:
   source:
     repoURL: 'registry-1.docker.io'
     chart: bitnamicharts/mongodb
-    targetRevision: 15.6.12
+    targetRevision: 16.1.1
     helm:
       # Docs: https://github.com/bitnami/charts/blob/main/bitnami/mongodb/values.yaml
       values: |

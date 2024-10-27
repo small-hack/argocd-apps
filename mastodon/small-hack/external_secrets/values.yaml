@@ -3,7 +3,7 @@ provider: ""
 
 adminCredentialsBitwardenID: ""
 pgsqlCredentialsBitwardenID: ""
-redisCredentialsBitwardenID: ""
+valkeyCredentialsBitwardenID: ""
 mastodonSecretsBitwardenID: ""
 smtpCredentialsBitwardenID: ""
 

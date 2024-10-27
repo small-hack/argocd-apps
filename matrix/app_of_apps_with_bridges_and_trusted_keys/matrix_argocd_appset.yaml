@@ -1,0 +1,1044 @@
+---
+# webapp is deployed 2nd because we need secrets and persistent volumes up 1st
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: matrix-web-app-set
+  namespace: argocd
+spec:
+  goTemplate: true
+  # generator allows us to source specific values from an external k8s secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - matrix_hostname
+              - matrix_element_hostname
+              - matrix_federation_hostname
+              - matrix_admin_email
+              - matrix_admin_users
+              - matrix_s3_bucket
+              - matrix_s3_region
+              - matrix_s3_endpoint
+              - matrix_sliding_sync_bitwarden_id
+              - prometheus_alert_manager_hostname
+              - prometheus_grafana_hostname
+              - global_cluster_issuer
+  templatePatch: |
+    spec:
+      source:
+        helm:
+          parameters:
+            {{- $users := .matrix_admin_users }}
+            {{- range $index, $user := $users }}
+            - name: bridges.discord_mautrix.admin_users[{{ $index }}]
+              value: {{ $user }}
+            {{- end }}
+  template:
+    metadata:
+      name: matrix-web-app
+      annotations:
+        argocd.argoproj.io/sync-wave: "3"
+    spec:
+      project: matrix
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: matrix
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
+          selfHeal: true
+      source:
+        repoURL: 'https://small-hack.github.io/matrix-chart'
+        targetRevision: 16.0.1
+        chart: matrix
+        # repoURL: 'https://github.com/small-hack/matrix-chart'
+        # targetRevision: main
+        # path: charts/matrix/
+        helm:
+          valuesObject:
+            fullnameOverride: matrix-stack
+
+            # Runtime configuration for Synapse and settings related to the Matrix protocol
+            matrix:
+              # -- Domain name of the server
+              serverName: "{{ .matrix_hostname }}"
+              hostname: "{{ .matrix_hostname }}"
+              # -- Enable anonymous telemetry to matrix.org
+              telemetry: false
+              # -- Set to false to disable presence (online/offline indicators)
+              presence: true
+              # -- Set to true to block non-admins from inviting users to any rooms
+              blockNonAdminInvites: false
+
+              # -- Set to false to disable message searching
+              search: true
+
+              # Which types of rooms to enable end-to-end encryption on by default
+              # off:    none
+              # all:    all rooms
+              # invite: private msg/room created w/ private_chat or trusted_private_chat
+              #         room presets
+              encryptByDefault: all
+
+              # -- Email address of the administrator
+              adminEmail: '{{ .matrix_admin_email }}'
+
+              # -- Settings related to image and multimedia uploads
+              uploads:
+                # -- Max upload size in bytes
+                maxSize: 100M
+
+                # -- Max image size in pixels
+                maxPixels: 64M
+
+              serve_server_wellknown: true
+
+              experimental_features:
+                # these enable encryption for appservices like hookshot and discord:
+                # https://matrix-org.github.io/matrix-hookshot/latest/advanced/encryption.html
+                msc3202_device_masquerading: true
+                msc3202_transaction_extensions: true
+                msc2409_to_device_messages_enabled: true
+
+              # Settings related to federation
+              federation:
+                # -- Set to false to disable federation and run an isolated homeserver
+                enabled: true
+
+                client_timeout: 180s
+                max_short_retry_delay: 5s
+                max_long_retry_delay: 100s
+                max_short_retries: 3
+                max_long_retries: 10
+                destination_min_retry_interval: 30s
+                destination_retry_multiplier: 2
+                destination_max_retry_interval: 6h
+
+                ingress:
+                  enabled: false
+                  tls:
+                    enabled: true
+                  host: '{{ .matrix_federation_hostname }}'
+                  annotations:
+                    # -- required for the Nginx ingress provider. You can remove it if you
+                    # use a different ingress provider
+                    nginx.ingress.kubernetes.io/configuration-snippet: |
+                      proxy_intercept_errors off;
+                    # -- required for TLS certs issued by cert-manager
+                    cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
+
+              # -- Allow members of other homeservers to fetch *public* rooms
+              allow_public_rooms_over_federation: false
+
+              # -- If set to true, removes the need for authentication to access the server's public rooms directory through the client API, meaning that anyone can query the room directory
+              allow_public_rooms_without_auth: false
+
+              # -- Restrict federation to the given whitelist of domains. N.B. we recommend also firewalling your federation listener to limit inbound federation traffic as early as possible, rather than relying purely on this application-layer restriction. If not specified, the default is to whitelist everything
+              # Note: this does not stop a server from joining rooms that servers not on the whitelist are in. As such, this option is really only useful to establish a "private federation", where a group of servers all whitelist each other and have the same whitelist.
+              federation_domain_whitelist: []
+
+              # -- This option prevents outgoing requests from being sent to the specified blacklisted IP address CIDR ranges. If this option is not specified then it defaults to private IP address ranges (see the example below). The blacklist applies to the outbound requests for federation, identity servers, push servers, and for checking key validity for third-party invite events.
+              # (0.0.0.0 and :: are always blacklisted, whether or not they are explicitly listed here, since they correspond to unroutable addresses.)
+              # This option replaces federation_ip_range_blacklist in Synapse v1.25.0.
+              # Note: The value is ignored when an HTTP proxy is in use.
+              ip_range_blacklist:
+                - '127.0.0.0/8'
+                - '10.0.0.0/8'
+                - '172.16.0.0/12'
+                - '192.168.0.0/16'
+                - '100.64.0.0/10'
+                - '192.0.0.0/24'
+                - '169.254.0.0/16'
+                - '192.88.99.0/24'
+                - '198.18.0.0/15'
+                - '192.0.2.0/24'
+                - '198.51.100.0/24'
+                - '203.0.113.0/24'
+                - '224.0.0.0/4'
+                - '::1/128'
+                - 'fe80::/10'
+                - 'fc00::/7'
+                - '2001:db8::/32'
+                - 'ff00::/8'
+                - 'fec0::/10'
+
+              password_config:
+                enabled: false
+
+              # User registration settings
+              registration:
+                # -- Allow new users to register an account
+                enabled: false
+
+                existingSecret: "matrix-registration"
+                secretKey: "registrationSharedSecret"
+
+                # -- Allow users to join rooms as a guest
+                allowGuests: false
+
+                # Required "3PIDs" - third-party identifiers such as email or msisdn (SMS)
+                # required3Pids:
+                #   - email
+                #   - msisdn
+
+                # -- Rooms to automatically join all new users to
+                autoJoinRooms: []
+                # - "#welcome:{{ .matrix_hostname }}"
+
+                # -- Whether to allow token based registration
+                requiresToken: false
+
+              # ref: https://github.com/element-hq/synapse/blob/develop/docs/openid.md
+              oidc:
+                enabled: true
+                existingSecret: "synapse-oidc"
+                secretKeys:
+                  issuer: "issuer"
+                  client_id: "client_id"
+                  client_secret: "client_secret"
+
+                providers:
+                  - idp_id: zitadel
+                    idp_name: zitadel
+                    # discover: true
+                    # options: client_secret_basic (default), client_secret_post, 'none'
+                    # client_auth_method: client_secret_post
+                    scopes:
+                      - "openid"
+                      - "profile"
+                    # skip_verification: false
+                    user_mapping_provider:
+                      config:
+                        localpart_template: "{{`{{ user.preferred_username }}`}}"
+                        display_name_template: "{{`{{ user.name }}`}}"
+
+              # Settings for the URL preview crawler
+              urlPreviews:
+                # WARNING: review rules below
+                enabled: true
+
+                # Blacklists and whitelists for the URL preview crawler
+                rules:
+                  # -- Max size of a crawlable page. Keep this low to prevent a DOS vector
+                  maxSize: 10M
+
+                  # Whitelist and blacklist for crawlable IP addresses
+                  ip:
+                    whitelist: []
+                    blacklist:
+                      - '127.0.0.0/8'
+                      - '10.0.0.0/8'
+                      - '172.16.0.0/12'
+                      - '192.168.0.0/16'
+                      - '100.64.0.0/10'
+                      - '169.254.0.0/16'
+                      - '::1/128'
+                      - 'fe80::/64'
+                      - 'fc00::/7'
+
+                  # -- Whitelist and blacklist based on URL pattern matching
+                  url: {}
+                  # whitelist:
+                  # blacklist:
+                  #  # blacklist any URL with a username in its URI
+                  #  - username: '*'
+                  #
+                  #  # blacklist all *.google.com URLs
+                  #  - netloc: 'google.com'
+                  #  - netloc: '*.google.com'
+                  #
+                  #  # blacklist all plain HTTP URLs
+                  #  - scheme: 'http'
+                  #
+                  #  # blacklist http(s)://www.acme.com/foo
+                  #  - netloc: 'www.acme.com'
+                  #    path: '/foo'
+                  #
+                  #  # blacklist any URL with a literal IPv4 address
+                  #  - netloc: '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$'
+
+              # -- How long to keep redacted events in unredacted form in the database
+              retentionPeriod: 7d
+
+              security:
+                # This disables the warning that is emitted when the
+                # trustedKeyServers include 'matrix.org'. See below.
+                # Set to false to re-enable the warning.
+                #
+                surpressKeyServerWarning: true
+
+                # The trusted servers to download signing keys from.
+                #
+                # When we need to fetch a signing key, each server is tried in parallel.
+                #
+                # Normally, the connection to the key server is validated via TLS certs.
+                # Additional security can be provided by configuring a `verify key`, which
+                # will make synapse check that the response is signed by that key.
+                #
+                # This setting supercedes an older setting named `perspectives`. Old format
+                # is still supported for backwards-compatibility, but it is deprecated.
+                #
+                # 'trustedKeyServers' defaults to matrix.org, but using it will generate a
+                # warning on start-up. To suppress this warning, set
+                # 'surpressKeyServerWarning' to true.
+                #
+                # Options for each entry in the list include:
+                #
+                #  serverName: the name of the server. required.
+                #
+                #  verifyKeys: an optional map from key id to base64-encoded public key.
+                #     If specified, we will check that the response is signed by at least
+                #     one of the given keys.
+                #
+                #  acceptKeysInsecurely: a boolean. Normally, if `verify_keys` is unset,
+                #    and federation_verify_certificates is not `true`, synapse will refuse
+                #    to start, because this would allow anyone who can spoof DNS responses
+                #    to masquerade as the trusted key server. If you know what you are doing
+                #    and are sure that your network environment provides a secure connection
+                #    to the key server, you can set this to `true` to override this
+                #    behaviour.
+                #
+                # An example configuration might look like:
+                #
+                # trustedKeyServers:
+                #   - serverName: 'my_trusted_server.{{ .matrix_hostname }}'
+                #     verifyKeys:
+                #       - id: "ed25519:auto"
+                #         key: "abcdefghijklmnopqrstuvwxyzabcdefghijklmopqr"
+                #     acceptKeysInsecurely: false
+                #   - serverName: 'my_other_trusted_server.{{ .matrix_hostname }}'
+
+                # -- use an existing Kubernetes Secret for trusted server list
+                # instead of matrix.security.trustedKeyServers
+                trustedKeyServersExistingSecret: "trusted-key-servers"
+
+                # -- key in existing Kubernetes Secret for trusted server list
+                trustedKeyServersSecretKey: "trustedKeyServers"
+
+              # -- Set to true to globally block access to the homeserver
+              disabled: false
+              # -- Human readable reason for why the homeserver is blocked
+              disabledMessage: ""
+
+              logging:
+                # -- Root log level is the default log level for log outputs that don't
+                # have more specific settings.
+                rootLogLevel: INFO
+                # -- beware: increasing this to DEBUG will make synapse log sensitive
+                # information such as access tokens.
+                sqlLogLevel: INFO
+                # -- The log level for the synapse server
+                synapseLogLevel: INFO
+
+            s3:
+              # -- enable s3 storage via https://github.com/matrix-org/synapse-s3-storage-provider
+              enabled: true
+              endpoint: 'https://{{ .matrix_s3_endpoint }}'
+              bucket: '{{ .matrix_s3_bucket }}'
+              region: '{{ .matrix_s3_region }}'
+              existingSecret: "matrix-s3-credentials"
+              secretKeys:
+                accessKey: "S3_ACCESS_KEY"
+                secretKey: "S3_SECRET_KEY"
+              cronjob:
+                # -- enable a regular cleanup k8s cronjob to automatically backup everything
+                # to your s3 bucket for you and delete it from local disk ref:
+                # https://github.com/matrix-org/synapse-s3-storage-provider/tree/main#regular-cleanup-job
+                enabled: false
+                schedule: "0 0 * * *"
+                # -- this is the age of files you'd like to clean up, defaults files not used
+                # within two months (2m)
+                file_age: 2m
+
+            # Persistent volumes configuration
+            volumes:
+              media:
+                existingClaim: "matrix-media"
+              signingKey:
+                existingClaim: "matrix-signing-key"
+              synapseConfig:
+                existingClaim: "matrix-synapse-config"
+
+            externalDatabase:
+              enabled: true
+              sslmode: verify-full
+              sslrootcert: /etc/secrets/ca/ca.crt
+              sslcert: /etc/secrets/matrix/tls.crt
+              sslkey: /etc/secrets/matrix/tls.key
+              port: 5432
+              # -- Name of existing secret to use for PostgreSQL credentials
+              existingSecret: "matrix-pgsql-credentials"
+              # secretKeys to grab from existingSecret
+              # if postgresql.existingSecret is provided, the following are ignored
+              # postgresql.password/username/hostname/database/port
+              secretKeys:
+                # -- key in existingSecret with hostname of the database
+                databaseHostname: hostname
+                # -- key in existingSecret with username for matrix to connect to db
+                databaseUsername: username
+                # -- key in existingSecret with password for matrix to connect to db
+                userPasswordKey: password
+                # -- key in existingSecret with the admin postgresql password
+                adminPasswordKey: password
+
+            # PostgreSQL Database configuration, for more options:
+            # https://github.com/bitnami/charts/tree/main/bitnami/postgresql
+            postgresql:
+              enabled: false
+
+            # Synapse Kubernetes resource settings
+            synapse:
+              revisionHistoryLimit: 1
+              image:
+                # -- image registry and repository to use for synapse
+                repository: "matrixdotorg/synapse"
+                # -- pullPolicy for synapse image, Use Always if using image.tag: latest
+                pullPolicy: IfNotPresent
+
+              service:
+                # -- service type for synpase
+                type: ClusterIP
+                # -- service port for synapse
+                port: 80
+                federation:
+                  type: ClusterIP
+                  port: 80
+
+              ingress:
+                enabled: true
+                annotations:
+                  nginx.ingress.kubernetes.io/proxy-body-size: 1G
+                  # -- This annotation is required for the Nginx ingress provider. You can
+                  # remove it if you use a different ingress provider
+                  nginx.ingress.kubernetes.io/configuration-snippet: |
+                    proxy_intercept_errors off;
+                  # -- required for TLS certs issued by cert-manager
+                  cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
+                hosts:
+                  - host: '{{ .matrix_hostname }}'
+                    paths:
+                      - path: /
+                        pathType: Prefix
+                tls:
+                  - secretName: matrix-tls
+                    hosts:
+                      - '{{ .matrix_hostname }}'
+
+              replicaCount: 1
+              resources: {}
+              # Configure timings for readiness, startup, and liveness probes here
+              probes:
+                readiness:
+                  # -- readiness probe seconds before timing out
+                  timeoutSeconds: 5
+                  # -- readiness probe seconds trying again
+                  periodSeconds: 10
+                startup:
+                  # -- startup probe seconds before timing out
+                  timeoutSeconds: 5
+                  # -- startup probe seconds trying again
+                  periodSeconds: 5
+                  # -- startup probe times to try and fail before giving up
+                  failureThreshold: 6
+                liveness:
+                  # -- liveness probe seconds before timing out
+                  timeoutSeconds: 5
+                  # -- liveness probe seconds trying again
+                  periodSeconds: 10
+
+              # Does not work by default in all cloud providers, disable by default
+              securityContext:
+                # -- user to run the synapse container as
+                runAsUser: 1000
+                # -- group to run the synapse container as
+                runAsGroup: 1000
+                fsGroup: 1000
+                runAsNonRoot: true
+
+                # -- Enable if your k8s environment allows containers to chuser/setuid
+                # https://github.com/matrix-org/synapse/blob/96cf81e312407f0caba1b45ba9899906b1dcc098/docker/start.py#L196
+                env: false
+
+              # -- Labels to be appended to all Synapse resources
+              labels:
+                component: synapse
+
+              # Prometheus metrics for Synapse
+              # https://github.com/matrix-org/synapse/blob/develop/docs/metrics-howto.md
+              metrics:
+                # -- Whether Synapse should capture metrics on an additional endpoint
+                enabled: true
+                # -- Port to listen on for metrics scraping
+                port: 9092
+                annotations: true
+                serviceMonitor:
+                  enabled: true
+
+              extraVolumes:
+                - name: postgres-ca
+                  secret:
+                    secretName: matrix-postgres-server-ca-key-pair
+                    defaultMode: 0640
+
+                - name: postgres-client-certs
+                  secret:
+                    secretName: matrix-postgres-matrix-cert
+                    defaultMode: 0640
+
+              extraVolumeMounts:
+                - name: postgres-ca
+                  mountPath: /etc/secrets/ca
+
+                - name: postgres-client-certs
+                  mountPath: /etc/secrets/matrix
+
+              extraEnv:
+                - name: PIP_CACHE_DIR
+                  value: /tmp
+
+            # Element client configuration. see: https://element.io/
+            element:
+              # -- Set to false to disable a deployment of Element. Users will still be able
+              # to connect via any other instances of Element e.g. https://app.element.io,
+              # Element Desktop, or any other Matrix clients
+              enabled: true
+
+              ingress:
+                # -- enable ingress for element
+                enabled: true
+                tls:
+                  enabled: true
+                # -- the hostname to use for element
+                host: '{{ .matrix_element_hostname }}'
+                annotations:
+                  # This annotation is required for the Nginx ingress provider. You can
+                  # remove it if you use a different ingress provider
+                  nginx.ingress.kubernetes.io/configuration-snippet: |
+                    proxy_intercept_errors off;
+                  # -- required for TLS certs issued by cert-manager
+                  cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
+
+              # Organization/enterprise branding
+              branding:
+                # -- brand shown in email notifications
+                brand: "{{ .matrix_hostname }}"
+                # -- Background of login splash screen
+                welcomeBackgroundUrl: "https://i.imgur.com/VpFquY4.png"
+                # -- Logo shown at top of login screen
+                authHeaderLogoUrl: "https://raw.githubusercontent.com/jessebot/dot_files/main/.local/share/fastfetch/logos/dogontheinternet.png"
+                # -- Array of links to show at the bottom of the login screen
+                authFooterLinks: []
+                #  - text:
+                #    url:
+
+              # Element integrations configuration
+              integrations:
+                # -- enables the Integrations menu, including:
+                #    widgets, bots, and other plugins to Element
+                enabled: false
+
+              # -- Experimental features in Element, see:
+              # https://github.com/vector-im/element-web/blob/develop/docs/labs.md
+              labs:
+                - feature_report_to_moderators
+                - feature_pinning
+                - feature_mjolnir
+                - feature_disable_call_per_sender_encryption
+                - feature_dm_verification
+                - feature_bridge_state
+                - feature_html_topic
+                - feature_custom_themes
+                - feature_jump_to_date
+                - feature_video_rooms
+                - feature_element_call_video_rooms
+                - feature_group_calls
+
+              # -- Servers to show in the Explore menu (the current server is always shown)
+              roomDirectoryServers:
+                - matrix.org
+
+              # -- Set to the user ID (@username:domain.tld) of a bot to invite all new
+              # users to a DM with the bot upon registration
+              welcomeUserId: ""
+
+              # -- Prefix before permalinks generated when users share links to rooms,
+              # users, or messages. If running an unfederated Synapse, set the below to the
+              # URL of your Element instance.
+              permalinkPrefix: "https://matrix.to"
+
+              # Element Kubernetes resource settings
+              image:
+                # -- registry and repository to use for element docker image
+                repository: "vectorim/element-web"
+                # -- tag to use for element docker image
+                # -- pullPolicy to use for element image, set to Always if using latest tag
+                pullPolicy: IfNotPresent
+              service:
+                type: ClusterIP
+                port: 80
+              replicaCount: 1
+              resources: {}
+              probes:
+                readiness: {}
+                startup: {}
+                liveness: {}
+
+              # -- Element specific labels
+              labels:
+                component: element
+
+            # Settings for Coturn TURN relay, used for routing voice calls
+            coturn:
+              # -- Set to false to disable the included deployment of Coturn
+              enabled: false
+
+            # Settings for email notifications
+            mail:
+              enabled: true
+              # disable exim relay
+              relay:
+                enabled: false
+              # External mail server
+              external:
+                # INSECURE: 25, SSL: 465, STARTTLS: 587
+                port: 587
+                requireTransportSecurity: true
+                existingSecret: "matrix-smtp-credentials"
+                secretKeys:
+                  host: "host"
+                  username: "username"
+                  password: "password"
+
+            bridges:
+              affinity: true
+
+              volume:
+                storageClass: local-path
+                accessMode: ReadWriteOnce
+
+              alertmanager:
+                enabled: true
+                revisionHistoryLimit: 1
+
+                image:
+                  tag: 0.12.1
+
+                registration:
+                  id: "alertmanager"
+                  rate_limited: false
+                  sender_localpart: "alertmanager"
+                  port: 9993
+                  existingSecret: "matrix-bridge-alertmanager"
+                  existingSecretKeys:
+                    # -- key in existingSecret for as_token (appservice token)
+                    as_token: "as_token"
+                    # -- key in existingSecret for hs_token (home server token)
+                    hs_token: "hs_token"
+
+                encryption: false
+
+                config:
+                  app_alertmanager_secret: "{{ .matrix_sliding_sync_bitwarden_id }}"
+                  homeserver_url: "http://matrix-stack-synapse"
+
+                  bot:
+                    # -- map of rooms to send alerts to. where the key is the reciever in alert manager
+                    # and the value is the room in matrix.
+                    rooms: "matrix/!NSKUaRzeVZpCWqwlQo:{{ .matrix_hostname }}"
+                    user: "alertmanager"
+                    display_name: "Prometheus Alerts"
+                    avatar_url: "mxc://{{ .matrix_hostname }}/lDmnZtMCeOBGvdmOpCSiczHx"
+                    # -- Set this to true to make firing alerts do a `@room` mention.
+                    # NOTE! Bot should also have enough power in the room for this to be useful.
+                    mention_room: true
+
+                  # -- set to enable Grafana links, e.g. https://grafana.example.com
+                  grafana_url: "https://{{ .prometheus_grafana_hostname }}"
+                  # -- grafana data source, e.g. default
+                  grafana_datasource: "default"
+                  # -- set to enable silence link, e.g. https://alertmanager.example.com
+                  alertmanager_url: "https://{{ .prometheus_alert_manager_hostname }}"
+
+              discord_mautrix:
+                # -- Set to true to enable the Discord bridge. Learn more in the [docs](https://docs.mau.fi/bridges/go/discord/index.html).
+                enabled: true
+
+                revisionHistoryLimit: 1
+
+                image:
+                  repository: "dock.mau.dev/mautrix/discord"
+                  tag: "08cde6313a32d2382886444db86a7a6e6b12080c-amd64"
+                  pullPolicy: IfNotPresent
+
+                service:
+                  type: ClusterIP
+                  bridge:
+                    port: 29334
+
+                # -- extra volumes for the mautrix/discord deployment
+                extraVolumes:
+                  - name: sqllite
+                    persistentVolumeClaim:
+                      claimName: mautrix-discord-bridge-sqlite
+
+                extraVolumeMounts:
+                  - name: sqllite
+                    mountPath: /sql
+
+                registration:
+                  # -- I don't actually know what this does
+                  sender_localpart: "discord"
+                  # To replaces the ENTIRE registration.yaml, use
+                  # bridges.discord_mautrix.existingSecret.registration
+                  existingSecret: "matrix-bridge-discord"
+                  existingSecretKeys:
+                    # -- key in existingSecret for as_token (appservice token)
+                    as_token: "as_token"
+                    # -- key in existingSecret for hs_token (home server token)
+                    hs_token: "hs_token"
+
+                # users in discord that have admin level permissions to the bot
+                admin_users: []
+
+                # templates out to config.yaml for the mautrix bridge
+                config:
+                  homeserver:
+                    # this would be something like https://matrix.example.com, but if not set,
+                    # we'll try to guess the correct homeserver url :)
+                    address: "https://{{ .matrix_hostname }}"
+                    # -- domain of the homeserver (also known as server_name, used for MXIDs, etc).
+                    # if not provided, we'll try to guess the correct one, but if your server is
+                    # https://matrix.example.com, it's probably example.com
+                    domain: "{{ .matrix_hostname }}"
+                    # -- The URL to push real-time bridge status to. If set, the bridge
+                    # will make POST requests to this URL whenever a user's discord connection state changes.
+                    # The bridge will use the appservice as_token to authorize requests.
+                    status_endpoint: null
+                    # -- Endpoint for reporting per-message status
+                    message_send_checkpoint_endpoint: null
+                    # -- Does the homeserver support https://github.com/matrix-org/matrix-spec-proposals/pull/2246?
+                    async_media: false
+
+                  # Application service host/registration related details.
+                  # Changing these values requires regeneration of the registration.
+                  appservice:
+                    # Database config.
+                    database:
+                      # -- The database type. "sqlite3-fk-wal" and "postgres" are supported.
+                      type: sqlite3-fk-wal
+                      # -- The database URI.
+                      # SQLite: A raw file path is supported, but `file:<path>?_txlock=immediate` is recommended.
+                      #    https://github.com/mattn/go-sqlite3#connection-string
+                      # Postgres: Connection string. For example,
+                      #    postgres://user:password@host/database?sslmode=disable
+                      # To connect via Unix socket, use something like,
+                      #    postgres:///dbname?host=/var/run/postgresql
+                      uri: file:/sql/mautrixdiscord.db?_txlock=immediate
+                      # -- Maximum number of connections. Mostly relevant for Postgres.
+                      max_open_conns: 20
+                      max_idle_conns: 2
+                      # -- Maximum connection idle time and lifetime before its closed. Disabled if null.
+                      # Parsed with https://pkg.go.dev/time#ParseDuration
+                      max_conn_idle_time: null
+                      max_conn_lifetime: null
+
+                    # unique ID of this appservice
+                    id: discord
+                    # Appservice bot details.
+                    bot:
+                      # -- Username of the appservice bot
+                      username: discordbot
+                      # -- Display name for bot. Set to "remove" to remove display name
+                      displayname: Discord Friend Bot
+                      # -- Display avatar for bot. Set to "remove" to remove display avatar
+                      avatar: mxc://{{ .matrix_hostname }}/CMJQVVOSQhjasbipXcdoWSWj
+
+                    # -- Whether or not to receive ephemeral events via appservice transactions.
+                    # Requires MSC2409 support (i.e. Synapse 1.22+).
+                    ephemeral_events: true
+
+                    # -- Should incoming events be handled asynchronously?
+                    # This may be necessary for large public instances with lots of messages going through.
+                    # However, messages will not be guaranteed to be bridged in the same order they were sent in.
+                    async_transactions: false
+
+                  # Bridge config
+                  bridge:
+                    # -- Localpart template of MXIDs for Discord users.
+                    # {{.}} is replaced with the internal ID of the Discord user.
+                    username_template: "{{`discord_{{.}}`}}"
+                    # -- Displayname template for Discord users. This is also used as the room name in DMs if private_chat_portal_meta is enabled.
+                    # Available variables:
+                    #   .ID - Internal user ID
+                    #   .Username - Legacy display/username on Discord
+                    #   .GlobalName - New displayname on Discord
+                    #   .Discriminator - The 4 numbers after the name on Discord
+                    #   .Bot - Whether the user is a bot
+                    #   .System - Whether the user is an official system user
+                    #   .Webhook - Whether the user is a webhook and is not an application
+                    #   .Application - Whether the user is an application
+                    displayname_template: '{{`{{or .GlobalName .Username}}{{if .Bot}} (bot){{end}}`}}'
+                    # -- Displayname template for Discord channels (bridged as rooms, or spaces when type=4).
+                    # Available variables:
+                    #   .Name - Channel name, or user displayname (pre-formatted with displayname_template) in DMs.
+                    #   .ParentName - Parent channel name (used for categories).
+                    #   .GuildName - Guild name.
+                    #   .NSFW - Whether the channel is marked as NSFW.
+                    #   .Type - Channel type (see values at https://github.com/bwmarrin/discordgo/blob/v0.25.0/structs.go#L251-L267)
+                    channel_name_template: '{{`{{if or (eq .Type 3) (eq .Type 4)}}{{.Name}}{{else}}#{{.Name}}{{end}}`}}'
+                    # -- Displayname template for Discord guilds (bridged as spaces).
+                    # Available variables:
+                    #   .Name - Guild name
+                    guild_name_template: '{{`{{.Name}}`}}'
+                    # -- Whether to explicitly set the avatar and room name for private chat portal rooms.
+                    # If set to `default`, this will be enabled in encrypted rooms and disabled in unencrypted rooms.
+                    # If set to `always`, all DM rooms will have explicit names and avatars set.
+                    # If set to `never`, DM rooms will never have names and avatars set.
+                    private_chat_portal_meta: always
+                    portal_message_buffer: 128
+                    # -- Number of private channel portals to create on bridge startup.
+                    # Other portals will be created when receiving messages.
+                    startup_private_channel_create_limit: 10
+                    # -- Should the bridge send a read receipt from the bridge bot when a msg has been sent to Discord?
+                    delivery_receipts: true
+                    # -- Whether the bridge should send error notices via m.notice events when a msg fails to bridge.
+                    message_error_notices: true
+                    # -- Should the bridge use space-restricted join rules instead of invite-only for guild rooms?
+                    # This can avoid unnecessary invite events in guild rooms when members are synced in.
+                    restricted_rooms: true
+                    # -- Should the bridge automatically join the user to threads on Discord when the thread is opened on Matrix?
+                    # This only works with clients that support thread read receipts (MSC3771 added in Matrix v1.4).
+                    autojoin_thread_on_open: true
+                    # -- Should inline fields in Discord embeds be bridged as HTML tables to Matrix?
+                    # Tables aren't supported in all clients, but are the only way to emulate the Discord inline field UI.
+                    embed_fields_as_tables: true
+                    # -- Should guild channels be muted when the portal is created? This only meant for single-user instances,
+                    # it won't mute it for all users if there are multiple Matrix users in the same Discord guild.
+                    mute_channels_on_create: false
+                    # -- Should the bridge update the m.direct account data event when double puppeting is enabled.
+                    # Note that updating the m.direct event is not atomic (except with mautrix-asmux)
+                    # and is therefore prone to race conditions.
+                    sync_direct_chat_list: false
+                    # -- Set this to true to tell the bridge to re-send m.bridge events to all rooms on the next run.
+                    # This field will automatically be changed back to false after it, except if the config file is not writable.
+                    resend_bridge_info: true
+                    # -- Should incoming custom emoji reactions be bridged as mxc:// URIs?
+                    # If set to false, custom emoji reactions will be bridged as the shortcode instead, and the image won't be available.
+                    custom_emoji_reactions: true
+                    # -- Should the bridge attempt to completely delete portal rooms when a channel is deleted on Discord?
+                    # If true, the bridge will try to kick Matrix users from the room. Otherwise, the bridge only makes ghosts leave.
+                    delete_portal_on_channel_delete: true
+                    # -- Should the bridge delete all portal rooms when you leave a guild on Discord?
+                    # This only applies if the guild has no other Matrix users on this bridge instance.
+                    delete_guild_on_leave: true
+                    # -- Whether or not created rooms should have federation enabled.
+                    # If false, created portal rooms will never be federated.
+                    federate_rooms: true
+                    # -- Prefix messages from webhooks with the profile info? This can be used along with a custom displayname_template
+                    # to better handle webhooks that change their name all the time (like ones used by bridges).
+                    prefix_webhook_messages: true
+                    # -- Bridge webhook avatars?
+                    enable_webhook_avatars: true
+                    # -- Should the bridge upload media to the Discord CDN directly before sending the message when using a user token,
+                    # like the official client does? The other option is sending the media in the message send request as a form part
+                    # (which is always used by bots and webhooks).
+                    use_discord_cdn_upload: true
+                    # -- Should mxc uris copied from Discord be cached?
+                    # This can be `never` to never cache, `unencrypted` to only cache unencrypted mxc uris, or `always` to cache everything.
+                    # If you have a media repo that generates non-unique mxc uris, you should set this to never.
+                    cache_media: unencrypted
+                    # -- Settings for converting Discord media to custom mxc:// URIs instead of reuploading.
+                    # More details can be found at https://docs.mau.fi/bridges/go/discord/direct-media.html
+                    direct_media:
+                      # -- Should custom mxc:// URIs be used instead of reuploading media?
+                      enabled: false
+                      # -- The server name to use for the custom mxc:// URIs.
+                      # This server name will effectively be a real Matrix server, it just won't implement anything other than media.
+                      # You must either set up .well-known delegation from this domain to the bridge, or proxy the domain directly to the bridge.
+                      server_name: discord-media.example.com
+                      # -- Optionally a custom .well-known response. This defaults to `server_name:443`
+                      well_known_response:
+                      # -- The bridge supports MSC3860 media download redirects and will use them if the requester supports it.
+                      # Optionally, you can force redirects and not allow proxying at all by setting this to false.
+                      allow_proxy: true
+                      # -- Matrix server signing key to make the federation tester pass, same format as synapse's .signing.key file.
+                      server_key: generate
+                    # Settings for converting animated stickers.
+                    animated_sticker:
+                      # -- Format to which animated stickers should be converted.
+                      # disable - No conversion, send as-is (lottie JSON)
+                      # png - converts to non-animated png (fastest)
+                      # gif - converts to animated gif
+                      # webm - converts to webm video, requires ffmpeg executable with vp9 codec and webm container support
+                      # webp - converts to animated webp, requires ffmpeg executable with webp codec/container support
+                      target: webp
+                      # Arguments for converter. All converters take width and height.
+                      args:
+                        # -- width arg for converter
+                        width: 320
+                        # -- height arg for converter
+                        height: 320
+                        # -- fps, only for webm, webp and gif (2, 5, 10, 20 or 25 recommended)
+                        fps: 25
+                    # -- Allow using double puppeting from any server with a valid client .well-known file.
+                    double_puppet_allow_discovery: false
+                    # -- Shared secrets for https://github.com/devture/matrix-synapse-shared-secret-auth
+                    #
+                    # If set, double puppeting will be enabled automatically for local users
+                    # instead of users having to find an access token and run `login-matrix`
+                    # manually.
+                    login_shared_secret_map: {}
+                    #  example.com: foobar
+
+                    # -- The prefix for commands. Only required in non-management rooms.
+                    command_prefix: '!discord'
+                    # Messages sent upon joining a management room.
+                    # Markdown is supported. The defaults are listed below.
+                    management_room_text:
+                      # -- Sent when joining a room.
+                      welcome: "Hoi, I'm a Discord bridge bot, but more than anything, I'm your friend 💙"
+                      # -- Sent when joining a management room and the user is already logged in.
+                      welcome_connected: "Use `help` for help."
+                      # -- Sent when joining a management room and the user is not logged in.
+                      welcome_unconnected: "Use `help` for help or `login` to log in."
+                      # -- Optional extra text sent when joining a management room.
+                      additional_help: ""
+
+                    # Settings for backfilling messages.
+                    backfill:
+                      # Limits for forward backfilling.
+                      forward_limits:
+                        # Initial backfill (when creating portal). 0 means backfill is disabled.
+                        # A special unlimited value is not supported, you must set a limit. Initial backfill will
+                        # fetch all messages first before backfilling anything, so high limits can take a lot of time.
+                        initial:
+                          dm: 10
+                          channel: 10
+                          thread: 10
+                        # Missed message backfill (on startup).
+                        # 0 means backfill is disabled, -1 means fetch all messages since last bridged message.
+                        # When using unlimited backfill (-1), messages are backfilled as they are fetched.
+                        # With limits, all messages up to the limit are fetched first and backfilled afterwards.
+                        missed:
+                          dm: 10
+                          channel: 10
+                          thread: 10
+                      # -- Maximum members in a guild to enable backfilling. Set to -1 to disable limit.
+                      # This can be used as a rough heuristic to disable backfilling in channels that are too active.
+                      # Currently only applies to missed message backfill.
+                      max_guild_members: -1
+
+                    # End-to-bridge encryption support options.
+                    #
+                    # See https://docs.mau.fi/bridges/general/end-to-bridge-encryption.html for more info.
+                    encryption:
+                      # -- Allow encryption, work in group chat rooms with e2ee enabled
+                      allow: true
+                      # -- Default to encryption, force-enable encryption in all portals the bridge creates
+                      # This will cause the bridge bot to be in private chats for the encryption to work properly.
+                      default: true
+                      # -- Whether to use MSC2409/MSC3202 instead of /sync long polling for receiving encryption-related data.
+                      appservice: false
+                      # -- Require encryption, drop any unencrypted messages.
+                      require: false
+                      # -- Enable key sharing? If enabled, key requests for rooms where users are in will be fulfilled.
+                      # You must use a client that supports requesting keys from other users to use this feature.
+                      allow_key_sharing: true
+                      # -- Should users mentions be in the event wire content to enable the server to send push notifications?
+                      plaintext_mentions: true
+                      # Options for deleting megolm sessions from the bridge.
+                      delete_keys:
+                        # -- Don't store outbound sessions in the inbound table.
+                        dont_store_outbound: false
+                        # -- Ratchet megolm sessions forward after decrypting messages.
+                        ratchet_on_decrypt: false
+                        # -- Delete fully used keys (index >= max_messages) after decrypting messages.
+                        delete_fully_used_on_decrypt: false
+                        # -- Delete previous megolm sessions from same device when receiving a new one.
+                        delete_prev_on_new_session: false
+                        # -- Delete megolm sessions received from a device when the device is deleted.
+                        delete_on_device_delete: false
+                        # -- Periodically delete megolm sessions when 2x max_age has passed since receiving the session.
+                        periodically_delete_expired: false
+                        # -- Delete inbound megolm sessions that don't have the received_at field used for
+                        # automatic ratcheting and expired session deletion. This is meant as a migration
+                        # to delete old keys prior to the bridge update.
+                        delete_outdated_inbound: false
+
+                      # What level of device verification should be required from users?
+                      #
+                      # Valid levels:
+                      #   unverified - Send keys to all device in the room.
+                      #   cross-signed-untrusted - Require valid cross-signing, but trust all cross-signing keys.
+                      #   cross-signed-tofu - Require valid cross-signing, trust cross-signing keys on first use (and reject changes).
+                      #   cross-signed-verified - Require valid cross-signing, plus a valid user signature from the bridge bot.
+                      #                           Note that creating user signatures from the bridge bot is not currently possible.
+                      #   verified - Require manual per-device verification
+                      #              (currently only possible by modifying the `trust` column in the `crypto_device` database table).
+                      verification_levels:
+                        # -- Minimum level for which the bridge should send keys to when bridging messages from WhatsApp to Matrix.
+                        receive: unverified
+                        # -- Minimum level that the bridge should accept for incoming Matrix messages.
+                        send: unverified
+                        # -- Minimum level that the bridge should require for accepting key requests.
+                        share: cross-signed-tofu
+
+                      # Options for Megolm room key rotation. These options allow you to
+                      # configure the m.room.encryption event content. See:
+                      # https://spec.matrix.org/v1.3/client-server-api/#mroomencryption for
+                      # more information about that event.
+                      rotation:
+                        # -- Enable custom Megolm room key rotation settings. Note that these
+                        # settings will only apply to rooms created after this option is
+                        # set.
+                        enable_custom: false
+                        # -- The maximum number of milliseconds a session should be used
+                        # before changing it. The Matrix spec recommends 604800000 (a week)
+                        # as the default.
+                        milliseconds: 604800000
+                        # -- The maximum number of messages that should be sent with a given a
+                        # session before changing it. The Matrix spec recommends 100 as the
+                        # default.
+                        messages: 100
+
+                        # -- Disable rotating keys when a user's devices change?
+                        # You should not enable this option unless you understand all the implications.
+                        disable_device_change_key_rotation: false
+
+                    # Settings for provisioning API
+                    provisioning:
+                      # -- Prefix for the provisioning API paths.
+                      prefix: /_matrix/provision
+                      # -- Shared secret for authentication. If set to "generate", a random
+                      # secret will be generated, or if set to "disable", the provisioning
+                      # API will be disabled.
+                      shared_secret: generate
+                      # -- Enable debug API at /debug with provisioning authentication.
+                      debug_endpoints: false
+
+                  # Logging config. See https://github.com/tulir/zeroconfig for details.
+                  logging:
+                    # -- min logging level
+                    min_level: debug
+                    writers:
+                      - type: stdout
+                        format: pretty-colored
+                      - type: file
+                        format: json
+                        filename: ./logs/mautrix-discord.log
+                        max_size: 100
+                        max_backups: 10
+                        compress: true
+
+              irc:
+                enabled: false
+
+            networkPolicies:
+              # -- whether to enable kubernetes network policies or not
+              enabled: true

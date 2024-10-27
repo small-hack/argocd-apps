@@ -1,0 +1,83 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: nextcloud-pvc-appset
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  goTemplate: true
+  # generator allows us to source specific values from an external k8s secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - nextcloud_files_pvc_enabled
+              - nextcloud_files_storage
+              - nextcloud_files_access_mode
+              - nextcloud_files_storage_class
+              - nextcloud_config_pvc_enabled
+              - nextcloud_config_storage
+              - nextcloud_config_access_mode
+              - nextcloud_config_storage_class
+              - nextcloud_toleration_key
+              - nextcloud_toleration_operator
+              - nextcloud_toleration_value
+              - nextcloud_toleration_effect
+              - nextcloud_affinity_key
+              - nextcloud_affinity_value
+  template:
+    metadata:
+      name: nextcloud-pvc
+      annotations:
+        argocd.argoproj.io/sync-wave: "1"
+    spec:
+      project: nextcloud
+      destination:
+        server: "https://kubernetes.default.svc"
+        namespace: nextcloud
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
+          selfHeal: true
+      source:
+        repoURL: https://github.com/small-hack/argocd-apps.git
+        path: nextcloud/storage/pvc/
+        targetRevision: main
+        helm:
+          valuesObject:
+            # -- enable nextcloud files pvc
+            files_pvc:
+              enabled: '{{ .nextcloud_files_pvc_enabled }}'
+              storageClassName: '{{ .nextcloud_files_storage_class }}'
+              accessMode: '{{ .nextcloud_files_access_mode }}'
+              storage: '{{ .nextcloud_files_storage }}'
+
+            # -- enable nextcloud configuration pvc
+            config_pvc:
+              enabled: '{{ .nextcloud_config_pvc_enabled }}'
+              storageClassName: '{{ .nextcloud_config_storage_class }}'
+              accessMode: '{{ .nextcloud_config_access_mode }}'
+              storage: '{{ .nextcloud_config_storage }}'
+
+            tolerations:
+              - key: '{{ .nextcloud_toleration_key }}'
+                operator: '{{ .nextcloud_toleration_operator }}'
+                value: '{{ .nextcloud_toleration_value }}'
+                effect: '{{ .nextcloud_toleration_effect }}'
+
+            affinity:
+              nodeAffinity:
+                requiredDuringSchedulingIgnoredDuringExecution:
+                  nodeSelectorTerms:
+                    - matchExpressions:
+                      - key: '{{ .nextcloud_affinity_key }}'
+                        operator: In
+                        values:
+                          - '{{ .nextcloud_affinity_value }}'

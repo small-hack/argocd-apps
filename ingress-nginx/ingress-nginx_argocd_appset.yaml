@@ -32,7 +32,7 @@ spec:
       source:
         repoURL: 'https://kubernetes.github.io/ingress-nginx'
         chart: ingress-nginx
-        targetRevision: 4.11.0
+        targetRevision: 4.11.3
         helm:
           releaseName: 'ingress-nginx'
           valuesObject:
@@ -86,7 +86,7 @@ spec:
                 # restrict old versions of tls, could break old browsers/phones
                 ssl-protocols: "TLSv1.3"
                 # Enables Online Certificate Status Protocol stapling (OCSP) support.
-                # enable-ocsp: "true"
+                enable-ocsp: "true"
                 # reject SSL handshake to an unknown virtualhost. helps to
                 # mitigate the fingerprinting using default certificate of ingress
                 ssl-reject-handshake: "true"
@@ -107,7 +107,7 @@ spec:
                   Include /etc/nginx/owasp-modsecurity-crs/nginx-modsecurity.conf
 
                   # Enable prevention mode. Can be any of: DetectionOnly,On,Off (default is DetectionOnly)
-                  SecRuleEngine On
+                  SecRuleEngine Off
 
                   # Enable scanning of the request body
                   SecRequestBodyAccess On
@@ -123,11 +123,11 @@ spec:
                   # Note NGINX Ingress has its own annotations, keep in sync!
                   #
                   # Max request sizes in bytes (with/without files)
-                  # 2Gb (default is 12.5Mb)
-                  SecRequestBodyLimit 268400000
+                  # 10Gb (default is 12.5Mb)
+                  SecRequestBodyLimit 10740000000
 
-                  # 20Mb (default is 128Kb)
-                  SecRequestBodyNoFilesLimit 20971520
+                  # 10Gb (default is 128Kb)
+                  SecRequestBodyNoFilesLimit 10740000000
 
                   # Reject if larger (we could also let it pass with ProcessPartial)
                   SecRequestBodyLimitAction Reject

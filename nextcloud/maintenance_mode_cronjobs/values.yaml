@@ -7,7 +7,7 @@ image:
   # -- docker image repo
   repository: "nextcloud"
   # -- docker image tag
-  tag: "29.0.3-fpm-alpine"
+  tag: "30.0.1-fpm-alpine"
 
 maintenance_mode_on:
   # -- cron schedule to turn on maintenance mode for nextcloud
@@ -16,3 +16,9 @@ maintenance_mode_on:
 maintenance_mode_off:
   # -- cron schedule to turn off maintenance mode for nextcloud
   schedule: ""
+
+# -- affinity to make the cronjobs use a specific node
+affinity: {}
+
+# -- tolerations to make the cronjobs tolerate the taints on a specific node
+tolerations: []

@@ -1,11 +1,14 @@
 # Mastodon Argo CD ApplicationSet
 Mastodon is social networking that's not for sale: https://joinmastodon.org/
 
-<img width="846" src="https://github.com/small-hack/argocd-apps/assets/2389292/712e9538-9409-49a6-8d93-a6464f368134" alt="screenshot of the mastodon applicationset in Argo CD's web interface using the tree mode view. the main mastodon app has 6 child apps: mastodon-redis, mastodon-app-set with child mastodon-web-app, mastodon-external-secrets-appset with child mastodon-external-secrets, mastodon-postgres-app-set with child mastodon-postgres-cluster, mastodon-s3-provider-app-set with child mastodon-seaweedfs, and mastodon-s3-pvc-appset with child mastodon-s3-pvc.">
+![Screenshot of mastodon application in Argo CD's web interface. It shows tree view with a main mastodon app having the following children: mastodon-external-secrets-appset, mastodon-pvc-appset, mastodon-postgres-appset, valkey-appset, mastodon-web-app, mastodon-s3-pvc, and mastodon-seaweedfs. All apps show as healthy and successfully synced. The image is in dark mode so it used dark grey background, greyish blue tiles, and neon green pop colors.](https://github.com/user-attachments/assets/a6657495-02f0-41c9-b6e6-d6149549c7ab)
 
 This is the networking view in Argo CD:
 
-<img width="1225" alt="screenshot of the mastodon applicationset in Argo CD's web interface using the networking tree mode view. it shows the flow of cloud to ip address to mastodon-web-app ingress to two services mastodon-web-app-streaming and mastodon-web-app-web which each go to their respective pods. There's also additional services and pods outside of that flow. pods masotdon-web-app-media and masotdon-web-app-sidekiq have no children. 2 elastic search services have the same elastic search pod child. and then there's an additional 3 matching elastic search service and pod pairs" src="https://github.com/small-hack/argocd-apps/assets/2389292/d2ea734d-8dd9-49fd-8a5e-acbecafe3f3a">
+<img width="1278" alt="screenshot of the mastodon applicationset in Argo CD's web interface using the networking tree mode view. it shows the flow of cloud to ip address to mastodon-web-app ingress to two services mastodon-web-app-streaming and mastodon-web-app-web which each go to their respective pods. There's also additional services and pods outside of that flow. pods masotdon-web-app-media and masotdon-web-app-sidekiq have no children. 2 elastic search services have the same elastic search pod child. and then there's an additional 3 matching elastic search service and pod pairs" src="https://github.com/user-attachments/assets/c19ec840-e15a-4504-b6eb-7ed13601846e">
+
+
+This Mastodon AppSet uses a fork of Mastodon called [glitch-soc](https://github.com/glitch-soc/mastodon). You can see the docker repo [small-hack/mastodon-glitch-soc-docker](https://github.com/small-hack/mastodon-glitch-soc-docker) whose image is published [here](https://hub.docker.com/repository/docker/jessebot/mastodon-glitch-soc/general).
 
 
 ## Sync waves
@@ -13,20 +16,33 @@ In the [`./app_of_apps`](./app_of_apps) directory we create the manifests and he
 1. all required PVCs, and Secrets (secrets are external secrets in a private repo)
 2. SeaweedFS file system and s3 endpoint with two buckets, one for postgres backups and one for mastodon media
 3. Postgresql Cluster
-4. Mastodon web app (including elastic search and redis)
+4. Mastodon web app (including elastic search and valkey)
 
 ## Creating Mastodon Secrets
 This template relies on you already having created secrets. You can do that via [`smol-k8s-lab`](https://small-hack.github.io/smol-k8s-lab/k8s_apps/mastodon/) or manually.
 
 ### Creating secrets manually
 
-```bash
-SECRET_KEY_BASE=$(docker run --rm -it tootsuite/mastodon:latest bin/rake secret)
-OTP_SECRET=$(docker run --rm -it tootsuite/mastodon:latest bin/rake secret)
+For the secret key base, otp secret and vapid key:
 
-docker run --rm -e "OTP_SECRET=$OTP_SECRET" \
+```console
+$ SECRET_KEY_BASE=$(docker run --rm -it tootsuite/mastodon:latest bin/rake secret)
+$ OTP_SECRET=$(docker run --rm -it tootsuite/mastodon:latest bin/rake secret)
+
+$ docker run --rm -e "OTP_SECRET=$OTP_SECRET" \
     -e "SECRET_KEY_BASE=$SECRET_KEY_BASE" \
-    -it tootsuite/mastodon:latest bin/rake mastodon:webpush:generate_vapid_key 
+    -it tootsuite/mastodon:latest bin/rake mastodon:webpush:generate_vapid_key
+```
+
+For the active record encryption keys:
+
+```console
+$ docker run docker.io/tootsuite/mastodon:latest rails db:encryption:init
+Add the following secret environment variables to your Mastodon environment (e.g. .env.production), ensure they are shared across all your nodes and do not change them after they are set:
+
+ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY=ig3iQLB5FAzU7500SJNdbsoncKBmrR7f
+ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT=1laBmHjzGUJRpAbXLI1RJVmng7uZN8i1
+ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY=10AfrwAKCgPVuzT8FuaSpSXoMGAFKIQk
 ```
 
 # Troubleshooting Mastodon

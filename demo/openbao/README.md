@@ -4,7 +4,6 @@ We're using our own helm chart, [jessebot/openbao-helm](https://github.com/jesse
 
 ## Status
 
-We're currently waiting on a few PRs before we can move forward with official support for openbao:
+We're currently waiting on a PR or two before we can move forward with official support for openbao:
 
-- https://github.com/openbao/openbao-helm/pull/2 - official releases
 - https://github.com/openbao/openbao-helm/issues/3 - release includes official docker hub images
