@@ -20,7 +20,7 @@ data:
                 {
                         "node": "bradley",
                         "paths": [
-                                "/mnt/raid0",
+                                "/mnt/raid1",
                                 "/var/lib/rancher/k3s/storage"
                         ]
                 },
@@ -41,7 +41,7 @@ data:
                 {
                         "node": "scremlin",
                         "paths": [
-                                "/mnt/data",
+                                "/mnt/raid1",
                                 "/var/lib/rancher/k3s/storage"
                         ]
                 }
