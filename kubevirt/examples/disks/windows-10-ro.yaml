@@ -11,7 +11,7 @@ metadata:
 spec:
   storageClassName: seaweedfs-storage
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   resources:
     requests:
       storage: 8Gi
