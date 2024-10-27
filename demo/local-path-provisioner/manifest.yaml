@@ -120,7 +120,6 @@ data:
                 {
                         "node": "bradley",
                         "paths": [
-                                "/mnt/raid0",
                                 "/mnt/raid1",
                                 "/var/lib/rancher/k3s/storage"
                         ]
@@ -134,7 +133,15 @@ data:
                 },
                 {
                         "node": "compufam",
+                                "/mnt/raid1",
                         "paths": [
+                                "/var/lib/rancher/k3s/storage"
+                        ]
+                },
+                {
+                        "node": "scremlin",
+                        "paths": [
+                                "/mnt/raid1",
                                 "/var/lib/rancher/k3s/storage"
                         ]
                 }
