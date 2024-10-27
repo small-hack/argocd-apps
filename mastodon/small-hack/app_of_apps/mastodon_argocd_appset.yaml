@@ -45,10 +45,8 @@ spec:
         repoURL: 'https://small-hack.github.io/mastodon-helm-chart'
         targetRevision: 9.7.0
         chart: mastodon
-        # repoURL: 'https://github.com/small-hack/mastodon-helm-chart'
-        # path: 'charts/mastodon/'
-        # targetRevision: fix-precompile-volume-perm
         helm:
+          releaseName: mastodon
           valuesObject:
             fullnameOverride: mastodon
             # original repository: ghcr.io/mastodon/mastodon
