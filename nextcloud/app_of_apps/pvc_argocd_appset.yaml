@@ -45,7 +45,7 @@ spec:
       source:
         repoURL: https://github.com/small-hack/argocd-apps.git
         path: nextcloud/storage/pvc/
-        targetRevision: main
+        targetRevision: valkey-nextcloud
         helm:
           valuesObject:
             # -- enable nextcloud files pvc
@@ -64,11 +64,11 @@ spec:
 
             # -- enable mastodon valkeyuration pvc
             valkey_pvc:
-              enabled: true
+              enabled: 'true'
               #enabled: '{{ .nextcloud_valkey_pvc_enabled }}'
               storageClassName: local-path
               #storageClassName: '{{ .global_pvc_storage_class }}'
               accessMode: ReadWriteOnce
               #accessMode: '{{ .nextcloud_valkey_access_mode }}'
-              storage: 2G
+              storage: 2Gi
               #storage: '{{ .nextcloud_valkey_storage }}'
