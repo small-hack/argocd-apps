@@ -176,7 +176,7 @@ spec:
                 - name: "REDIS_HOST_PASSWORD"
                   valueFrom:
                     secretKeyRef:
-                      name: valkey
+                      name: nextcloud-valkey-cluster-app
                       key: valkey-password
 
               extraVolumes:
