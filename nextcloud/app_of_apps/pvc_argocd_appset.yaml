@@ -64,7 +64,7 @@ spec:
 
             # -- enable mastodon valkeyuration pvc
             valkey_pvc:
-              enabled: 'true'
+              enabled: true
               #enabled: '{{ .nextcloud_valkey_pvc_enabled }}'
               storageClassName: local-path
               #storageClassName: '{{ .global_pvc_storage_class }}'
