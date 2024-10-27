@@ -42,12 +42,12 @@ spec:
         primary:
           persistence:
             enabled: true
-            existingClaim: "valkey-primary"
+            existingClaim: "nextcloud-valkey-primary"
 
         replica:
           persistence:
             enabled: true
-            existingClaim: "valkey-replica"
+            existingClaim: "nextcloud-valkey-replica"
 
         persistentVolumeClaimRetentionPolicy:
           enabled: true
