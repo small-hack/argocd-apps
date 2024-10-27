@@ -2,10 +2,10 @@
 apiVersion: instancetype.kubevirt.io/v1beta1
 kind: VirtualMachineClusterInstancetype
 metadata:
-  name: rtx6000-micro
+  name: rtx-6000-micro
   annotations:
     instancetype.kubevirt.io/description: |-
-      The RTX6000 Series provides instances types for VMs with
+      The rtx 6000 Series provides instances types for VMs with
       an attached NVIDIA GRID RTX6000-4Q vGPU attached.
   labels:
     instancetype.kubevirt.io/class: "gpu.nvidia"
@@ -25,10 +25,10 @@ spec:
 apiVersion: instancetype.kubevirt.io/v1beta1
 kind: VirtualMachineClusterInstancetype
 metadata:
-  name: rtx6000-small
+  name: rtx-6000-small
   annotations:
     instancetype.kubevirt.io/description: |-
-      The RTX6000 Series provides instances types for VMs with
+      The rtx 6000 Series provides instances types for VMs with
       an attached NVIDIA GRID RTX6000-4Q vGPU attached.
   labels:
     instancetype.kubevirt.io/class: "gpu.nvidia"
@@ -48,10 +48,10 @@ spec:
 apiVersion: instancetype.kubevirt.io/v1beta1
 kind: VirtualMachineClusterInstancetype
 metadata:
-  name: rtx6000-medium
+  name: rtx-6000-medium
   annotations:
     instancetype.kubevirt.io/description: |-
-      The RTX6000 Series provides instances types for VMs with
+      The rtx 6000 Series provides instances types for VMs with
       an attached NVIDIA GRID RTX6000-4Q vGPU attached.
   labels:
     instancetype.kubevirt.io/class: "gpu.nvidia"
@@ -71,10 +71,10 @@ spec:
 apiVersion: instancetype.kubevirt.io/v1beta1
 kind: VirtualMachineClusterInstancetype
 metadata:
-  name: rtx6000-large
+  name: rtx-6000-large
   annotations:
     instancetype.kubevirt.io/description: |-
-      The RTX6000 Series provides instances types for VMs with
+      The rtx 6000 Series provides instances types for VMs with
       an attached NVIDIA GRID RTX6000-4Q vGPU attached.
   labels:
     instancetype.kubevirt.io/class: "gpu.nvidia"
