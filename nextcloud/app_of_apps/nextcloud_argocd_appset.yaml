@@ -177,7 +177,7 @@ spec:
                   value: valkey-headless.nextcloud.svc.cluster.local
 
                 - name: "REDIS_HOST_PORT"
-                  value: 6379
+                  value: "6379"
 
                 - name: "REDIS_HOST_PASSWORD"
                   valueFrom:
