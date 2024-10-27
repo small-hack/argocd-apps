@@ -85,14 +85,14 @@ spec:
           #   resourceName: "nvidia.com/GM200GL_Tesla_M40"
   
           mediatedDevices:
-          #- mdevNameSelector: "GRID M60-2Q"
-          #  resourceName: "nvidia.com/GRID_M60-2Q"
-          - mdevNameSelector: "GRID RTX60000-4Q"
-            resourceName: "nvidia.com/GRID_RTX6000-4Q"
+          - mdevNameSelector: "GRID M60-2Q"
+            resourceName: "nvidia.com/GRID_M60-2Q"
+          - mdevNameSelector: "GRID RTX60000-3Q"
+            resourceName: "nvidia.com/GRID_RTX6000-43"
 
         mediatedDevicesTypes:
-          # - nvidia-18
-          - nvidia-259
+          - nvidia-18
+          - nvidia-258
 
         useEmulation: false
 
