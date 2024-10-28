@@ -95,20 +95,20 @@ spec:
           enabled: true
           secretName: friend-scrapmetal-user-data
 
-        livenessProbe:
-          initialDelaySeconds: 30
-          periodSeconds: 5
-          tcpSocket:
-            port: 1500
-          timeoutSeconds: 60
+        # livenessProbe:
+        #   initialDelaySeconds: 30
+        #   periodSeconds: 5
+        #   tcpSocket:
+        #     port: 1500
+        #   timeoutSeconds: 60
 
-        readinessProbe:
-          initialDelaySeconds: 30
-          periodSeconds: 5
-          timeoutSeconds: 60
-          failureThreshold: 100
-          successThreshold: 3
-          httpGet:
-            port: 1500
+        # readinessProbe:
+        #   initialDelaySeconds: 30
+        #   periodSeconds: 5
+        #   timeoutSeconds: 60
+        #   failureThreshold: 100
+        #   successThreshold: 3
+        #   httpGet:
+        #     port: 1500
 
 
