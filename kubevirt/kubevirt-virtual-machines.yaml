@@ -19,4 +19,4 @@ spec:
     syncOptions:
       - ApplyOutOfSyncOnly=true
     automated:
-      selfHeal: true
+      selfHeal: false
