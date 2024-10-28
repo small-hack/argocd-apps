@@ -86,7 +86,7 @@ spec:
                 valkey: 6379
                 bus: 16379
 
-              resourcesPreset: "small"
+              resourcesPreset: "xlarge"
               resources: {}
 
             cluster:
