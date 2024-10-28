@@ -2,8 +2,9 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: debian12-cloud-vm
+  name: cloud-init-secret
 spec:
+  project: kubevirt
   destination:
     name: ''
     namespace: kubevirt
