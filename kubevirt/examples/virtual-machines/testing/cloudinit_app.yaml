@@ -89,11 +89,11 @@ spec:
 
             # -- set user password from existing secret or generate random
             password:
-              random: true
-            #  random: false
-            #  existingSecret:
-            #    name: admin-password
-            #    key: password
+            #  random: true
+              random: false
+              existingSecret:
+                name: admin-password
+                key: password
 
             # -- import user ssh public keys from github, gitlab, or launchpad
             # See https://cloudinit.readthedocs.io/en/latest/reference/modules.html#ssh
@@ -140,8 +140,8 @@ spec:
           - mkdir -p /home/${USERNAME}/shared
           - chown ${USERNAME}:${USERNAME} /home/${USERNAME}/shared
           - sudo -u ${USERNAME} -i ssh-import-id-gh ${GITHUB_USER}
-          - [ sed , -i , "s/PasswordAuthentication no/PasswordAuthentication yes/g" , /etc/ssh/sshd_config ]
-          - systemctl restart sshd
+          #- [ sed , -i , "s/PasswordAuthentication no/PasswordAuthentication yes/g" , /etc/ssh/sshd_config ]
+          #- systemctl restart sshd
           #- ["sudo", "systemd-run", "--unit=httpserver", "nc", "-klp", "1500", "-e", '/usr/bin/echo -e HTTP/1.1 200 OK\\nContent-Length: 12\\n\\nReady']
 
 
