@@ -54,7 +54,7 @@ spec:
             bootorder: 2
             readonly: false
             pvsize: 40G
-            pvstorageClassName: raid
+            pvstorageClassName: local-path
             nodePlacement: scremlin
             pvaccessMode: ReadWriteOnce
             source: pvc
@@ -70,7 +70,6 @@ spec:
         service:
           - name: scrapmetal-service
             type: LoadBalancer
-            externalTrafficPolicy: Cluster
             ports:
               - name: ssh
                 port: 22
