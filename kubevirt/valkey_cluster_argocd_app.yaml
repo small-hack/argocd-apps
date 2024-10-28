@@ -1,5 +1,3 @@
-valkey cluster example that does not currently work as sidekiq does not support redis-cluster:
-
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
