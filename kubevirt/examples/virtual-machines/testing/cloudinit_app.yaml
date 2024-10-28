@@ -28,7 +28,7 @@ spec:
           - var: USERNAME
             value: friend
           - var: GITHUB_USER
-            var: cloudymax
+            value: cloudymax
         # -- virtual-machine hostname
         hostname: scrapmetal
         # -- namespace in which to create resources
