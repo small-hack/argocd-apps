@@ -49,8 +49,13 @@ spec:
             bus: virtio
             bootorder: 2
             readonly: false
-            pvc: debian12
-            ephemeral: true
+            pvsize: 64G
+            pvstorageClassName: raid
+            nodePlacement: scremlin
+            pvaccessMode: ReadWriteOnce
+            source: pvc
+            pvcnamespace: kubevirt
+            pvcname: debian12
           - name: cloudinitvolume
             type: cdrom
             bus: sata
