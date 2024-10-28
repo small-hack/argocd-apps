@@ -2,19 +2,16 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: cloud-init-secret
+  name: cloud-init-secret-app
+  annotations:
+    argocd.argoproj.io/sync-wave: "4"
 spec:
   project: kubevirt
   destination:
-    name: ''
     namespace: kubevirt
     server: 'https://kubernetes.default.svc'
   source:
-    path: ''
-    repoURL: 'https://cloudymax.github.io/kubevirt-community-stack/'
-    targetRevision: 0.2.1
+    repoURL: 'https://cloudymax.github.io/kubevirt-community-stack'
+    targetRevision: 0.2.2
     chart: cloud-init
-    helm:
-      values: |
-        # Not all cloud-init modules are currently supported
 
