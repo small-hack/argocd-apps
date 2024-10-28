@@ -6,6 +6,14 @@ metadata:
   namespace: argocd
 spec:
   goTemplate: true
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - juicefs_redis_password
   template:
     metadata:
       name: valkey-cluster-app
