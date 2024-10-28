@@ -12,7 +12,7 @@ spec:
     syncOptions:
       - ApplyOutOfSyncOnly=true
     automated:
-      selfHeal: true
+      selfHeal: false
   destination:
     namespace: kubevirt
     server: 'https://kubernetes.default.svc'
