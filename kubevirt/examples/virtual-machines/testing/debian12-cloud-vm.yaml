@@ -6,6 +6,12 @@ metadata:
   namespace: argocd
 spec:
   project: kubevirt
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
   destination:
     namespace: kubevirt
     server: 'https://kubernetes.default.svc'
@@ -90,27 +96,19 @@ spec:
           secretName: friend-scrapmetal-user-data
 
         livenessProbe:
-          initialDelaySeconds: 10
+          initialDelaySeconds: 30
           periodSeconds: 5
           tcpSocket:
             port: 1500
-          timeoutSeconds: 10
+          timeoutSeconds: 60
 
         readinessProbe:
-          initialDelaySeconds: 10
+          initialDelaySeconds: 30
           periodSeconds: 5
-          timeoutSeconds: 10
+          timeoutSeconds: 60
           failureThreshold: 100
           successThreshold: 3
           httpGet:
             port: 1500
 
-  sources: []
-  project: default
-  syncPolicy:
-    automated:
-      prune: false
-      selfHeal: false
-    syncOptions:
-      - CreateNamespace=true
 
