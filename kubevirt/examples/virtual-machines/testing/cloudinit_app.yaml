@@ -14,4 +14,8 @@ spec:
     repoURL: 'https://cloudymax.github.io/kubevirt-community-stack'
     targetRevision: 0.2.2
     chart: cloud-init
-
+  syncPolicy:
+    syncOptions:
+      - ApplyOutOfSyncOnly=true
+    automated:
+      selfHeal: true
