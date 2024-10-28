@@ -49,7 +49,7 @@ spec:
             bus: virtio
             bootorder: 2
             readonly: false
-            pvsize: 32G
+            pvsize: 40G
             pvstorageClassName: raid
             nodePlacement: scremlin
             pvaccessMode: ReadWriteOnce
