@@ -50,7 +50,7 @@ spec:
             bootorder: 2
             readonly: false
             pvsize: 64G
-            pvstorageClassName: raid
+            pvstorageClassName: local-path
             nodePlacement: scremlin
             pvaccessMode: ReadWriteOnce
             source: pvc
