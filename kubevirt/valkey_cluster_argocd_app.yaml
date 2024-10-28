@@ -12,8 +12,7 @@ spec:
           name: secret-var-plugin-generator
         input:
           parameters:
-            secret_vars:
-              - juicefs_redis_password
+            secret_vars: []
   template:
     metadata:
       name: valkey-cluster-app
