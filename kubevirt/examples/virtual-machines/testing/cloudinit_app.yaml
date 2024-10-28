@@ -1,0 +1,114 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: debian12-cloud-vm
+spec:
+  destination:
+    name: ''
+    namespace: kubevirt
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: ''
+    repoURL: 'https://cloudymax.github.io/kubevirt-community-stack/'
+    targetRevision: 0.3.1
+    chart: cloud-init
+    helm:
+      valuesObject:
+        # Not all cloud-init modules are currently supported
+        # https://cloudinit.readthedocs.io/en/latest/reference/modules.html
+        # -- name of secret in which to save the user-data file
+        secret_name: friend-scrapmetal-user-data
+        # -- image version
+        image: deserializeme/kv-cloud-init:v0.0.1
+        # -- Run envsubst against bootcmd and runcmd fields at the beginning of templating
+        # Not an official part of cloid-init
+        envsubst:
+          - var: USERNAME
+            value: friend
+          - var: GITHUB_USER
+            var: cloudymax
+        # -- virtual-machine hostname
+        hostname: scrapmetal
+        # -- namespace in which to create resources
+        namespace: kubevirt
+        # -- Disable root login over ssh
+        disable_root: false
+        debug: false
+        # -- salt used for password generation
+        salt: "saltsaltlettuce"
+        # -- networking options
+        network:
+          # --  disable cloud-init’s network configuration capability and rely on
+          # other methods such as embedded configuration or other customisations.
+          config: disabled
+        # -- add wireguard configuration from existing secret or as plain-text
+        # See https://cloudinit.readthedocs.io/en/latest/reference/modules.html#wireguard
+        wireguard: []
+        #  interfaces:
+        #    - name: wg0
+        #      config_path: /etc/wireguard/wg0.conf
+        #      existingSecret:
+        #        name: wg0-credentials
+        #        key: wg0.conf
+
+        # -- user configuration options
+        # See https://cloudinit.readthedocs.io/en/latest/reference/modules.html#users-and-groups
+        users:
+          - name: friend
+            groups: users, admin, docker, sudo, kvm
+            sudo: ALL=(ALL) NOPASSWD:ALL
+            shell: /bin/bash
+            lock_passwd: false
+            # -- set user password from existing secret or generate random
+            password:
+              random: true
+            #  random: false
+            #  existingSecret:
+            #    name: admin-password
+            #    key: password
+
+            # -- import user ssh public keys from github, gitlab, or launchpad
+            # See https://cloudinit.readthedocs.io/en/latest/reference/modules.html#ssh
+            ssh_import_id: []
+            # -- provider user ssh pub key as plaintext
+            ssh_authorized_keys: []
+        # -- Add CA certificates
+        # See https://cloudinit.readthedocs.io/en/latest/reference/modules.html#ca-certificates
+        ca_certs: []
+        #  remove_defaults: true
+        #  trusted:
+        #    - certificate
+
+        # -- Run arbitrary commands early in the boot process
+        # See https://cloudinit.readthedocs.io/en/latest/reference/modules.html#bootcmd
+        boot_cmd: []
+        # -- Write arbitrary files to disk.
+        # Files my be provided as plain-text or downloaded from a url
+        # See https://cloudinit.readthedocs.io/en/latest/reference/modules.html#write-files
+        write_files: {}
+        #  - path: /etc/ssh/ssh_config
+        #    permissions: "0644"
+        #    url: "https://raw.githubusercontent.com/small-hack/smol-metal/refs/heads/main/sshd_config"
+        #  - path: /tmp/test.yaml
+        #    permissions: '0644'
+        #    content: |-
+        #      foo: bar
+
+        # -- Update, upgrade, and install packages
+        # See https://cloudinit.readthedocs.io/en/latest/reference/modules.html#package-update-upgrade-install
+        package_reboot_if_required: true
+        package_update: true
+        package_upgrade: true
+        packages:
+          - ssh-import-id
+          - neovim
+
+        # -- Run arbitrary commands
+        # See https://cloudinit.readthedocs.io/en/latest/reference/modules.html#runcmd
+        runcmd:
+          - mkdir -p /home/${USERNAME}/shared
+          - chown ${USERNAME}:${USERNAME} /home/${USERNAME}/shared
+          - sudo -u ${USERNAME} -i ssh-import-id-gh ${GITHUB_USER}
+          - [ "sed", "-i", "s/PasswordAuthentication no/PasswordAuthentication yes/g", "/etc/ssh/sshd_config"  ]
+          - systemctl restart sshd
