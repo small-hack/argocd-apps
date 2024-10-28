@@ -40,9 +40,7 @@ spec:
             pinCores: false
             hyperThreadingEnabled: false
             memory: 8Gi
-          gpus:
-          - name: gpu0
-            deviceName: nvidia.com/GRID_RTX6000-4Q
+          gpus: []
 
         virtualMachinePool:
           enabled: false
@@ -70,7 +68,7 @@ spec:
             pv-enable: false
 
         service:
-          - name: vm0-service
+          - name: scrapmetal-service
             type: LoadBalancer
             externalTrafficPolicy: Cluster
             ports:
@@ -81,14 +79,6 @@ spec:
               - name: vnc
                 port: 5900
                 targetPort: 5900
-                protocol: TCP
-              - name: status
-                port: 1500
-                targetPort: 1500
-                protocol: TCP
-              - name: https
-                port: 443
-                targetPort: 443
                 protocol: TCP
 
         cloudinit:
