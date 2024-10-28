@@ -196,6 +196,14 @@ spec:
                     anonymousRead: false
                   - name: kubevirt-postgres
                     anonymousRead: false
+                extraEnvironmentVars:
+                  WEED_MYSQL_ENABLED: "false"
+                  WEED_LEVELDB2_ENABLED: "false"
+                  WEED_REDIS_CLUSTER2_ENABLED: "true"
+                  WEED_REDIS_CLUSTER2_ADDRESSES: "valkey-headless.kubevirt.svc.cluster.local:6379"
+                  WEED_REDIS_CLUSTER2_PASSWORD: "uOEJ1uR04q"
+                  WEED_FILER_OPTIONS_RECURSIVE_DELETE: "true"
+                  WEED_FILER_BUCKETS_FOLDER: "/buckets"
               livenessProbe:
                 enabled: true
                 httpGet:
