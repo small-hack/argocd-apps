@@ -29,13 +29,13 @@ spec:
             kvmEnabled: true
             acpiEnabled: true
             smmEnabled: true
-            efiEnabled: false
+            efiEnabled: true
             autoattachPodInterface: true
             autoattachSerialConsole: true
             autoattachGraphicsDevice: true
           machine:
             machineType: "q35"
-            cpuPassthrough: false
+            cpuPassthrough: true
             vCores: 4
             pinCores: false
             hyperThreadingEnabled: false
