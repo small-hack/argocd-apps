@@ -79,8 +79,8 @@ spec:
           pciHostDevices:
           - pciVendorSelector: "10de:2782"
             resourceName: "nvidia.com/AD104_GeForce_RTX4070Ti"
-          #- pciVendorSelector: "10de:1e04"
-          #  resourceName: "nvidia.com/TU102_GeForce_RTX2080Ti"
+          - pciVendorSelector: "10de:1e04"
+            resourceName: "nvidia.com/TU102_GeForce_RTX2080Ti"
           # - pciVendorSelector: "10de:17fd"
           #   resourceName: "nvidia.com/GM200GL_Tesla_M40"
   
