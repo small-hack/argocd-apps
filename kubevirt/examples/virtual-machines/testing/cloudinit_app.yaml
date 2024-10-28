@@ -142,6 +142,6 @@ spec:
           - sudo -u ${USERNAME} -i ssh-import-id-gh ${GITHUB_USER}
           - [ sed , -i , "s/PasswordAuthentication no/PasswordAuthentication yes/g" , /etc/ssh/sshd_config ]
           - systemctl restart sshd
-          - ["sudo", "systemd-run", "--unit=httpserver", "nc", "-klp", "1500", "-e", '/usr/bin/echo -e HTTP/1.1 200 OK\\nContent-Length: 12\\n\\nReady']
+          #- ["sudo", "systemd-run", "--unit=httpserver", "nc", "-klp", "1500", "-e", '/usr/bin/echo -e HTTP/1.1 200 OK\\nContent-Length: 12\\n\\nReady']
 
 
