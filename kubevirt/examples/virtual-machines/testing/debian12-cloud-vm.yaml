@@ -11,7 +11,7 @@ spec:
     server: 'https://kubernetes.default.svc'
   source:
     repoURL: 'https://cloudymax.github.io/kubevirt-community-stack/'
-    targetRevision: 0.3.0
+    targetRevision: 0.3.1
     chart: kubevirt-vm
     helm:
       values: |
@@ -76,6 +76,10 @@ spec:
                 port: 5900
                 targetPort: 5900
                 protocol: TCP
+              - name: status
+                port: 1500
+                targetPort: 1500
+                protocol: TCP
               - name: https
                 port: 443
                 targetPort: 443
@@ -84,6 +88,22 @@ spec:
         cloudinit:
           enabled: true
           secretName: friend-scrapmetal-user-data
+
+        livenessProbe:
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          tcpSocket:
+            port: 1500
+          timeoutSeconds: 10
+
+        readinessProbe:
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 10
+          failureThreshold: 100
+          successThreshold: 3
+          httpGet:
+            port: 1500
 
   sources: []
   project: default
