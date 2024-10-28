@@ -87,12 +87,12 @@ spec:
           mediatedDevices:
           - mdevNameSelector: "GRID M60-2Q"
             resourceName: "nvidia.com/GRID_M60-2Q"
-          - mdevNameSelector: "GRID RTX60000-3Q"
-            resourceName: "nvidia.com/GRID_RTX6000-43"
+          - mdevNameSelector: "GRID RTX60000-4Q"
+            resourceName: "nvidia.com/GRID_RTX6000-4Q"
 
         mediatedDevicesTypes:
           - nvidia-18
-          - nvidia-258
+          - nvidia-259
 
         useEmulation: false
 
