@@ -2,7 +2,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: cloud-init-secret-app
+  name: kubevirt-cloud-init-secret-friend
   annotations:
     argocd.argoproj.io/sync-wave: "4"
 spec:
