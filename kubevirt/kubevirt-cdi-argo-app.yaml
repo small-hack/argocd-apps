@@ -51,7 +51,7 @@ spec:
           protocol: TCP
 
         uploadProxy:
-          type: ClusterIP
+          type: LoadBalancer
           port: 443
           targetPort: 8443
           protocol: TCP
@@ -61,8 +61,8 @@ spec:
 
         resources:
           requests:
-            cpu: 10m
-            memory: 150Mi
+            cpu: 250m
+            memory: 250Mi
 
         nodeSelector:
           kubernetes.io/os: linux
