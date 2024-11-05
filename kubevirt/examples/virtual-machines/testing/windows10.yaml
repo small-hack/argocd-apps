@@ -1,0 +1,191 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: windows10
+  namespace: argocd
+spec:
+  project: kubevirt
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+  destination:
+    namespace: kubevirt
+    server: 'https://kubernetes.default.svc'
+  source:
+    repoURL: 'https://cloudymax.github.io/kubevirt-community-stack/'
+    targetRevision: 0.3.3
+    chart: kubevirt-vm
+    helm:
+      valuesObject:
+        ##########################
+        # Virtual Machine settings
+        virtualMachine:
+          name: win10
+          namespace: kubevirt
+          runStrategy: "RerunOnFailure"
+
+          features:
+            kvmEnabled: true
+            acpiEnabled: true
+            smmEnabled: true
+            efiEnabled: true
+            secureBoot: false
+            autoattachPodInterface: true
+            autoattachSerialConsole: true
+            autoattachGraphicsDevice: true
+
+          machine:
+            machineType: "q35"
+            cpuPassthrough: true
+            vCores: 4
+            pinCores: false
+            hyperThreadingEnabled: false
+            memory: 8Gi
+
+          gpus: []
+          #- name: gpu0
+          #  deviceName: nvidia.com/AD104_GeForce_RTX4070Ti
+
+        #########################
+        # Create a Virtual Machine Pool
+        # Vm pools should be used with ephemeral disks or containerdisks
+        # otherwise they would all fight over the same PVC
+        virtualMachinePool:
+          enabled: false
+          maxReplicas: 5
+          minReplicas: 1
+
+        #############################
+        # -- List of disks to create for the VM, Will be used to create Datavolumes or PVCs.
+        disks:
+
+        ##########################################################
+        # ISO live-image example
+        ##########################################################
+        - name: iso
+          type: cdrom
+          bus: sata
+          bootorder: 1
+          readonly: true
+          pvsize: 8G
+          pvstorageClass: local-path
+          pvaccessMode: ReadWriteOnce
+          source: pvc
+          pvcnamespace: kubevirt
+          pvcname: windows10-iso
+
+        - name: answers
+          type: cdrom
+          bus: sata
+          bootorder: 2
+          readonly: true
+          pvsize: 1G
+          pvstorageClass: local-path
+          pvaccessMode: ReadWriteOnce
+          source: url
+          url: "https://f004.backblazeb2.com/file/buildstar-public-share/config.iso"
+
+        ##########################################################
+        # Empty PVC as disk example
+        ##########################################################
+        - name: harddrive
+          type: disk
+          bus: sata
+          bootorder: 3
+          readonly: false
+          pvsize: 32G
+          pvstorageClass: local-path
+          pvaccessMode: ReadWriteOnce
+
+        ########################################################
+        # Container Disk Example
+        ##########################################################
+        - name: virtio-drivers
+          type: cdrom
+          bus: sata
+          bootorder: 4
+          readonly: true
+          image: "quay.io/kubevirt/virtio-container-disk:v1.0.0-rc.1-amd64"
+
+        ###########################################################
+        # Local Disk example
+        # Not working, will have to open a ticket
+        # disks need to be owned by 107:messagebus
+        # disks cannot be mounted, file systems unidentifiable
+        ###########################################################
+        #- name: localfile
+        #  type: hostDisk
+        #  # -- Enter a capacity amount to create a new disk
+        #  # otherwise expects an existing disk
+        #  capacity: 500G
+        #  path: /mnt/raid1/hdd2.img
+
+        service:
+        - name: service
+          type: LoadBalancer
+          externalTrafficPolicy: Cluster
+          ports:
+            - name: ssh
+              port: 22
+              targetPort: 22
+              protocol: TCP
+            - name: vnc
+              port: 5900
+              targetPort: 5900
+              protocol: TCP
+            - name: rdp
+              port: 3389
+              protocol: TCP
+              targetPort: 3389
+            - name: sunshine0
+              port: 47984
+              protocol: TCP
+              targetPort: 47984
+            - name: sunshine1
+              port: 47985
+              protocol: TCP
+              targetPort: 47985
+            - name: sunshine2
+              port: 47986
+              protocol: TCP
+              targetPort: 47986
+            - name: sunshine3
+              port: 47987
+              protocol: TCP
+              targetPort: 47987
+            - name: sunshine4
+              port: 47988
+              protocol: TCP
+              targetPort: 47988
+            - name: sunshine5
+              port: 47989
+              protocol: TCP
+              targetPort: 47989
+            - name: sunshine6
+              port: 47990
+              protocol: TCP
+              targetPort: 47990
+            - name: sunshine7
+              port: 47998
+              protocol: UDP
+              targetPort: 47998
+            - name: sunshine8
+              port: 47999
+              protocol: UDP
+              targetPort: 47999
+            - name: sunshine9
+              port: 48000
+              protocol: UDP
+              targetPort: 48000
+            - name: sunshine10
+              port: 48010
+              protocol: TCP
+              targetPort: 48010
+
+        # -- enable or disable usage of cloud-init
+        cloudinit:
+          enabled: false

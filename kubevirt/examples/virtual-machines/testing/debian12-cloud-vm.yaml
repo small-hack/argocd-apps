@@ -17,10 +17,10 @@ spec:
     server: 'https://kubernetes.default.svc'
   source:
     repoURL: 'https://cloudymax.github.io/kubevirt-community-stack/'
-    targetRevision: 0.3.2
+    targetRevision: 0.3.3
     chart: kubevirt-vm
     helm:
-      values: |
+      valuesObject:
         virtualMachine:
           name: scrapmetal
           namespace: kubevirt
@@ -40,7 +40,9 @@ spec:
             pinCores: false
             hyperThreadingEnabled: false
             memory: 8Gi
-          gpus: []
+          gpus:
+          - name: gpu0
+            deviceName: nvidia.com/GRID_RTX6000-4Q
 
         virtualMachinePool:
           enabled: false
@@ -53,13 +55,8 @@ spec:
             bus: virtio
             bootorder: 2
             readonly: false
-            pvsize: 40G
-            pvstorageClassName: local-path
-            nodePlacement: scremlin
-            pvaccessMode: ReadWriteOnce
-            source: pvc
-            pvcnamespace: kubevirt
-            pvcname: debian12
+            pvc: debian12
+            ephemeral: true
           - name: cloudinitvolume
             type: cdrom
             bus: sata
@@ -79,9 +76,75 @@ spec:
                 port: 5900
                 targetPort: 5900
                 protocol: TCP
+              - name: rdp
+                port: 3389
+                protocol: TCP
+                targetPort: 3389
+              - name: sunshine0
+                port: 47984
+                protocol: TCP
+                targetPort: 47984
+              - name: sunshine1
+                port: 47985
+                protocol: TCP
+                targetPort: 47985
+              - name: sunshine2
+                port: 47986
+                protocol: TCP
+                targetPort: 47986
+              - name: sunshine3
+                port: 47987
+                protocol: TCP
+                targetPort: 47987
+              - name: sunshine4
+                port: 47988
+                protocol: TCP
+                targetPort: 47988
+              - name: sunshine5
+                port: 47989
+                protocol: TCP
+                targetPort: 47989
+              - name: sunshine6
+                port: 47990
+                protocol: TCP
+                targetPort: 47990
+              - name: sunshine7
+                port: 47998
+                protocol: UDP
+                targetPort: 47998
+              - name: sunshine8
+                port: 47999
+                protocol: UDP
+                targetPort: 47999
+              - name: sunshine9
+                port: 48000
+                protocol: UDP
+                targetPort: 48000
+              - name: sunshine10
+                port: 48010
+                protocol: TCP
+                targetPort: 48010
+
+
 
         cloudinit:
           enabled: true
           secretName: friend-scrapmetal-user-data
 
+        # -- set tieming and port number for liveness probe
+        # livenessProbe:
+        #   initialDelaySeconds: 120
+        #   periodSeconds: 20
+        #   tcpSocket:
+        #     port: 1500
+        #   timeoutSeconds: 10
 
+        # -- set tieming and port number for readiness probe
+        #readinessProbe:
+        #  initialDelaySeconds: 120
+        #  periodSeconds: 20
+        #  timeoutSeconds: 10
+        #  failureThreshold: 3
+        #  successThreshold: 3
+        #  httpGet:
+        #    port: 1500
