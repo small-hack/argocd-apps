@@ -77,8 +77,8 @@ spec:
 
         permittedHostDevices:
           mediatedDevices:
-          - mdevNameSelector: "GRID RTXA5000-2Q"
-            resourceName: "nvidia.com/GRID_RTXA5000-2Q"
+          - mdevNameSelector: "NVIDIA RTXA5000-2Q"
+            resourceName: "nvidia.com/NVIDIA_RTXA5000-2Q"
 
         mediatedDevicesTypes:
           - nvidia-660
