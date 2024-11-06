@@ -77,11 +77,11 @@ spec:
 
         permittedHostDevices:
           mediatedDevices:
-          - mdevNameSelector: "NVIDIA RTXA5000-2Q"
-            resourceName: "nvidia.com/NVIDIA_RTXA5000-2Q"
+          - mdevNameSelector: "NVIDIA RTXA5000-4Q"
+            resourceName: "nvidia.com/NVIDIA_RTXA5000-4Q"
 
         mediatedDevicesTypes:
-          - nvidia-660
+          - nvidia-662
 
         useEmulation: false
 
