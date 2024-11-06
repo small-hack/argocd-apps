@@ -89,10 +89,22 @@ spec:
             resourceName: "nvidia.com/GRID_M60-2Q"
           - mdevNameSelector: "GRID RTX6000-4Q"
             resourceName: "nvidia.com/GRID_RTX6000-4Q"
-
+          - mdevNameSelector: "GRID RTXA5000-2Q"
+            resourceName: "nvidia.com/GRID_RTXA5000-2Q"
+          - mdevNameSelector: "GRID RTXA5000-4Q"
+            resourceName: "nvidia.com/GRID_RTXA5000-4Q"
+          - mdevNameSelector: "GRID RTXA5000-8Q"
+            resourceName: "nvidia.com/GRID_RTXA5000-8Q"
+          - mdevNameSelector: "GRID RTXA5000-24Q"
+            resourceName: "nvidia.com/GRID_RTXA5000-24Q"
+            
         mediatedDevicesTypes:
           - nvidia-18
           - nvidia-259
+          - nvidia-660
+          - nvidia-662
+          - nvidia-664
+          - nvidia-666
 
         useEmulation: false
 
