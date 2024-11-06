@@ -2,11 +2,11 @@
 apiVersion: instancetype.kubevirt.io/v1beta1
 kind: VirtualMachineClusterInstancetype
 metadata:
-  name: rtx-6000-micro
+  name: rtx-a5000-micro
   annotations:
     instancetype.kubevirt.io/description: |-
       The rtx 6000 Series provides instances types for VMs with
-      an attached NVIDIA GRID RTX6000-4Q vGPU attached.
+      an attached NVIDIA NVIDIA RTXA5000-4Q vGPU attached.
   labels:
     instancetype.kubevirt.io/class: "gpu.nvidia"
     instancetype.kubevirt.io/icon-pf: "fa-microchip"
@@ -20,16 +20,16 @@ spec:
     guest: 2Gi
   gpus:
     - name: "gpu0"
-      deviceName: "nvidia.com/GRID_RTX6000-4Q"
+      deviceName: "nvidia.com/NVIDIA_RTXA5000-4Q"
 ---
 apiVersion: instancetype.kubevirt.io/v1beta1
 kind: VirtualMachineClusterInstancetype
 metadata:
-  name: rtx-6000-small
+  name: rtx-a5000-small
   annotations:
     instancetype.kubevirt.io/description: |-
       The rtx 6000 Series provides instances types for VMs with
-      an attached NVIDIA GRID RTX6000-4Q vGPU attached.
+      an attached NVIDIA NVIDIA RTXA5000-4Q vGPU attached.
   labels:
     instancetype.kubevirt.io/class: "gpu.nvidia"
     instancetype.kubevirt.io/icon-pf: "fa-microchip"
@@ -43,16 +43,16 @@ spec:
     guest: 4Gi
   gpus:
     - name: "gpu0"
-      deviceName: "nvidia.com/GRID_RTX6000-4Q"
+      deviceName: "nvidia.com/NVIDIA_RTXA5000-4Q"
 ---
 apiVersion: instancetype.kubevirt.io/v1beta1
 kind: VirtualMachineClusterInstancetype
 metadata:
-  name: rtx-6000-medium
+  name: rtx-a5000-medium
   annotations:
     instancetype.kubevirt.io/description: |-
       The rtx 6000 Series provides instances types for VMs with
-      an attached NVIDIA GRID RTX6000-4Q vGPU attached.
+      an attached NVIDIA NVIDIA RTXA5000-4Q vGPU attached.
   labels:
     instancetype.kubevirt.io/class: "gpu.nvidia"
     instancetype.kubevirt.io/icon-pf: "fa-microchip"
@@ -66,16 +66,16 @@ spec:
     guest: 8Gi
   gpus:
     - name: "gpu0"
-      deviceName: "nvidia.com/GRID_RTX6000-4Q"
+      deviceName: "nvidia.com/NVIDIA_RTXA5000-4Q"
 ---
 apiVersion: instancetype.kubevirt.io/v1beta1
 kind: VirtualMachineClusterInstancetype
 metadata:
-  name: rtx-6000-large
+  name: rtx-a5000-large
   annotations:
     instancetype.kubevirt.io/description: |-
       The rtx 6000 Series provides instances types for VMs with
-      an attached NVIDIA GRID RTX6000-4Q vGPU attached.
+      an attached NVIDIA NVIDIA RTXA5000-4Q vGPU attached.
   labels:
     instancetype.kubevirt.io/class: "gpu.nvidia"
     instancetype.kubevirt.io/icon-pf: "fa-microchip"
@@ -89,4 +89,4 @@ spec:
     guest: 16Gi
   gpus:
     - name: "gpu0"
-      deviceName: "nvidia.com/GRID_RTX6000-4Q"
+      deviceName: "nvidia.com/NVIDIA_RTXA5000-4Q"
