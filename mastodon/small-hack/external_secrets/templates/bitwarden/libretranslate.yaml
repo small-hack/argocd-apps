@@ -1,0 +1,26 @@
+{{- if eq .Values.provider "bitwarden" }}
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: libretranslate-api-key
+  namespace: libre-translate
+spec:
+  target:
+    name: libretranslate-api-key
+    deletionPolicy: Delete
+    template:
+      type: Opaque
+      data:
+        secret: |-
+          {{ `{{ .secret }}` }}
+  data:
+    - secretKey: secret
+      sourceRef:
+        storeRef:
+          name: bitwarden-login
+          kind: ClusterSecretStore
+      remoteRef:
+        key: {{ .Values.bitwardenLibreApiCredentialsID }}
+        property: password
+{{- end }}

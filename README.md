@@ -143,6 +143,7 @@ Other useful tools that don't fit neatly into any one category.
 |     App Directory    | Description                                                      |
 |:--------------------:|:-----------------------------------------------------------------|
 | [k8tz](./demo/k8tz) | A helm chart for k8tz, to inject timezone info into cronjob pods |
+| [LibreTranslate](./libretranslate) | A helm chart for LibreTranslate, to self host a translation tool |
 
 
 ## Security
@@ -173,7 +174,7 @@ Other useful tools that don't fit neatly into any one category.
 |:-----------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | [coturn](./coturn)     | TURN/STUN server for connecting VoIP peers                                                                                                                                                                                                                                  |
 | [mastodon](./mastodon) | Selfhosted social media site, includes [postgresql](https://github.com/bitnami/charts/tree/main/bitnami/postgresql), [elastic search](https://github.com/bitnami/charts/tree/main/bitnami/elasticsearch) (for full text searching), and [valkey](https://github.com/bitnami/charts/tree/main/bitnami/valkey) (in memory caching) |
-| [matrix](./matrix)     | Selfhosted chat server that plugs into a bunch of other chat apps                                                                                                                                                                                                      
+| [matrix](./matrix)     | Selfhosted chat server that plugs into a bunch of other chat apps
 
 ## Virtual Machines
 

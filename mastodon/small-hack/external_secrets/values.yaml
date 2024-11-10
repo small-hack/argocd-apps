@@ -19,3 +19,6 @@ s3PostgresCredentialsBitwardenID: ""
 
 # -- existing kubernetes secret with s3 credentials for the remote backups
 s3BackupCredentialsBitwardenID: ""
+
+# -- existing kubernetes secret with libretranslate API secret key
+libretranslateApiKeybitwardenID: ""
