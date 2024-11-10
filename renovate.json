@@ -3,10 +3,21 @@
     "fileMatch": ["\\.yaml$"]
   },
   "packageRules": [
-    { 
+    {
       "matchManagers": ["argocd", "github-actions"],
       "matchUpdateTypes": ["patch", "minor"],
       "automerge": true
+    },
+    {
+    "description": "Update Prometheus Stack CRDs at the same time as the ArgoCD Application",
+    "matchManagers": ["argocd"],
+    "postUpgradeTasks": {
+      "commands": [
+        "bash scripts/ '{{{newVersion}}}'"
+      ],
+      "fileFilters": ["prometheus/crds/prometheus_crds_argocd_app.yaml"],
+      "executionMode": "branch"
+      }
     }
   ]
 }
