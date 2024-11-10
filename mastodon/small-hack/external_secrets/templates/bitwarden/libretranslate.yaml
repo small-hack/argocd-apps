@@ -4,7 +4,7 @@ apiVersion: external-secrets.io/v1beta1
 kind: ExternalSecret
 metadata:
   name: libretranslate-api-key
-  namespace: libre-translate
+  namespace: libretranslate
 spec:
   target:
     name: libretranslate-api-key
@@ -12,10 +12,12 @@ spec:
     template:
       type: Opaque
       data:
-        secret: |-
-          {{ `{{ .secret }}` }}
+        apiKey: |-
+          {{ `{{ .apiKey }}` }}
+        endpoint: |-
+          {{ `{{ .endpoint }}` }}
   data:
-    - secretKey: secret
+    - secretKey: apiKey
       sourceRef:
         storeRef:
           name: bitwarden-login
@@ -23,4 +25,13 @@ spec:
       remoteRef:
         key: {{ .Values.bitwardenLibreApiCredentialsID }}
         property: password
+
+    - secretKey: endpoint
+      sourceRef:
+        storeRef:
+          name: bitwarden-fields
+          kind: ClusterSecretStore
+      remoteRef:
+        key: {{ .Values.bitwardenLibreApiCredentialsID }}
+        property: endpoint
 {{- end }}

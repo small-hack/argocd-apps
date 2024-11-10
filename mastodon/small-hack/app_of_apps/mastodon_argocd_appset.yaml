@@ -43,7 +43,7 @@ spec:
       source:
         # forked from: https://github.com/mastodon/chart/tree/main
         repoURL: 'https://small-hack.github.io/mastodon-helm-chart'
-        targetRevision: 9.7.0
+        targetRevision: 9.8.0
         chart: mastodon
         helm:
           releaseName: mastodon
@@ -261,6 +261,16 @@ spec:
 
               # Sets the PREPARED_STATEMENTS environment variable: https://docs.joinmastodon.org/admin/config/#prepared_statements
               preparedStatements: true
+
+              libretranslate:
+                # -- enable the use of libretranslate for translations
+                enabled: true
+                endpoint: ""
+                # -- use an existing secret for libretranslate endpoint and api key
+                existingSecret: "libretranslate-api-key"
+                secretKeys:
+                  endpoint: "endpoint"
+                  apiKey: "apiKey"
 
             ingress:
               enabled: true
