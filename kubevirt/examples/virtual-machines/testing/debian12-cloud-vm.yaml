@@ -12,12 +12,18 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+      - RespectIgnoreDifferences=true
+  ignoreDifferences:
+    - kind: VirtualMachinePool
+      name: scrapmetal
+      jsonPointers:
+      - /spec/replicas
   destination:
     namespace: kubevirt
     server: 'https://kubernetes.default.svc'
   source:
     repoURL: 'https://cloudymax.github.io/kubevirt-community-stack/'
-    targetRevision: 0.3.3
+    targetRevision: 0.3.6
     chart: kubevirt-vm
     helm:
       valuesObject:
@@ -28,27 +34,43 @@ spec:
           features:
             kvmEnabled: true
             acpiEnabled: true
-            smmEnabled: true
-            efiEnabled: true
+            smmEnabled: false
+            efiEnabled: false
+            secureBoot: false
             autoattachPodInterface: true
             autoattachSerialConsole: true
             autoattachGraphicsDevice: true
+            networkInterfaceMultiqueue: true
+
           machine:
+            instancetype:
+              name: standard-small
+              kind: virtualMachineClusterInstancetype
             machineType: "q35"
             cpuPassthrough: true
-            vCores: 4
+            #vCores: 4
             pinCores: false
             hyperThreadingEnabled: false
-            memory: 8Gi
-          gpus:
-          - name: gpu0
-            deviceName: nvidia.com/GRID_RTX6000-4Q
+            #memory: 8Gi
+          #gpus: []
+          #- name: gpu0
+          #  deviceName: nvidia.com/GRID_RTX6000-4Q
+          interfaces:
+          - bridge: {}
+            name: default
+          networks:
+          - name: default
+            pod: {}
 
         virtualMachinePool:
-          enabled: false
-          maxReplicas: 5
-          minReplicas: 1
+          enabled: true
+          replicas: 1
+          hpa:
+            enabled: false
+            maxReplicas: 5
+            minReplicas: 1
 
+        diskErrorPolicy: "report"
         disks:
           - name: harddrive
             type: disk
@@ -124,8 +146,6 @@ spec:
                 port: 48010
                 protocol: TCP
                 targetPort: 48010
-
-
 
         cloudinit:
           enabled: true
