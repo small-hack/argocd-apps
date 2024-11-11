@@ -13,6 +13,7 @@ spec:
     chart: bitnamicharts/thanos
     targetRevision: 15.7.11
     helm:
+      version: v3
       skipCrds: true
       valuesObject:
         existingObjstoreSecret: thanos-objstore-config
