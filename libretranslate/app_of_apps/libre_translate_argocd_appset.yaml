@@ -61,10 +61,10 @@ spec:
 
             # Ingress settings
             ingress:
-              enabled: false
-              className: ""  # set this to the name of the ingress controller class to use like nginx
+              enabled: true
+              className: "nginx"  # set this to the name of the ingress controller class to use like nginx
               annotations:
-                # cert-manager.io/cluster-issuer: "letsencrypt-prod"
+                cert-manager.io/cluster-issuer: "{{ .global_cluster_issuer }}"
                 nginx.ingress.kubernetes.io/proxy-body-size: 10m
                 # Check for the adminUser key below.
                 # This will enable basic auth for the whole site.
@@ -79,7 +79,7 @@ spec:
               tls:
                 - secretName: libretranslate-secret-tls
                   hosts:
-                    - translate.example.com
+                    - '{{ .libre_translate_hostname }}'
 
             # Security Context
             securityContext:
