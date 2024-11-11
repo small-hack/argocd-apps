@@ -25,7 +25,7 @@ spec:
       annotations:
         argocd.argoproj.io/sync-wave: "2"
     spec:
-      project: libre-translate
+      project: libretranslate
       destination:
         server: "https://kubernetes.default.svc"
         namespace: libre-translate
