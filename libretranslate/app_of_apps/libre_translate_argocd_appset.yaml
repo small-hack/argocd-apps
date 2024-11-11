@@ -2,7 +2,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: libre-translate-app-set
+  name: libretranslate-app-set
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "2"
@@ -21,14 +21,14 @@ spec:
               - libre_translate_hostname
   template:
     metadata:
-      name: libre-translate-app
+      name: libretranslate-app
       annotations:
         argocd.argoproj.io/sync-wave: "2"
     spec:
       project: libretranslate
       destination:
         server: "https://kubernetes.default.svc"
-        namespace: libre-translate
+        namespace: libretranslate
       syncPolicy:
         syncOptions:
           - ApplyOutOfSyncOnly=true
