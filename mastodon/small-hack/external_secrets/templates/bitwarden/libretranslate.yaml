@@ -4,7 +4,7 @@ apiVersion: external-secrets.io/v1beta1
 kind: ExternalSecret
 metadata:
   name: libretranslate-api-key
-  namespace: libretranslate
+  namespace: mastodon
 spec:
   target:
     name: libretranslate-api-key
