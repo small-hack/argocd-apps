@@ -10,10 +10,12 @@ This is the networking view in Argo CD:
 
 This Mastodon AppSet uses a fork of Mastodon called [glitch-soc](https://github.com/glitch-soc/mastodon). You can see the docker repo [small-hack/mastodon-glitch-soc-docker](https://github.com/small-hack/mastodon-glitch-soc-docker) whose image is published [here](https://hub.docker.com/repository/docker/jessebot/mastodon-glitch-soc/general).
 
+:new: We now support setting up a [libretranslate](https://libretranslate.com/) endpoint and API key.
+
 
 ## Sync waves
 In the [`./app_of_apps`](./app_of_apps) directory we create the manifests and helm chart in this sync wave order:
-1. all required PVCs, and Secrets (secrets are external secrets in a private repo)
+1. all required PVCs, and ExternalSecrets
 2. SeaweedFS file system and s3 endpoint with two buckets, one for postgres backups and one for mastodon media
 3. Postgresql Cluster
 4. Mastodon web app (including elastic search and valkey)
