@@ -42,6 +42,7 @@ spec:
         chart: kube-prometheus-stack
         targetRevision: 62.7.0
         helm:
+          version: v3
           releaseName: prom-stack
           valuesObject:
             fullnameOverride: prom-stack
