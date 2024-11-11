@@ -17,6 +17,7 @@ spec:
     chart: alloy
     targetRevision: 0.7.0
     helm:
+      version: v3
       skipCrds: true
       valuesObject:
         fullnameOverride: alloy
