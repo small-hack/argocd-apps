@@ -159,17 +159,28 @@ spec:
 
             # Settings / Flags
             appSettings:
-              debug:                 "false"    # Enable debug environment (Default: Disabled)
-              ssl:                   "true"    # Enable SSL (Default: Disabled)
-              apiKeys:               "true"    # Enable API keys database for per-client rate limits when --req-limit is reached (Default: Don't use API keys)
-              requireApiKeyOrigin:   ""         # Require use of an API key for programmatic access to the API, unless the request origin matches this domain (Default: No restrictions on domain origin)
-              requireApiKeySecret:   ""         # Require use of an API key for programmatic access to the API, unless the client also sends a secret match (Default: No secrets required)
-              suggestions:           "true"    # Allow user suggestions (Default: Disabled)
-              disableFilesTranslation: "false"  # Disable files translation (Default: File translation allowed)
-              disableWebUi:          "false"    # Disable web ui (Default: Web Ui enabled)
-              updateModels:          "true"    # Update language models at startup (Default: Only on if no models found)
-              metrics:               "false"    # Enable the /metrics endpoint for exporting Prometheus usage metrics (Default: Disabled)
-              existingSecret: "libretranslate-api-key" # use an existing secret for api key origin and secret
+              # Enable debug environment (Default: Disabled)
+              debug:                 "true"
+              # Enable SSL (Default: Disabled)
+              ssl:                   "true"
+              # Enable API keys database for per-client rate limits when --req-limit is reached (Default: Don't use API keys)
+              apiKeys:               "true"
+              # Require use of an API key for programmatic access to the API, unless the request origin matches this domain (Default: No restrictions on domain origin)
+              requireApiKeyOrigin:   ""
+              # Require use of an API key for programmatic access to the API, unless the client also sends a secret match (Default: No secrets required)
+              requireApiKeySecret:   ""
+              # Allow user suggestions (Default: Disabled)
+              suggestions:           "true"
+              # Disable files translation (Default: File translation allowed)
+              disableFilesTranslation: "false"
+              # Disable web ui (Default: Web Ui enabled)
+              disableWebUi:          "false"
+              # Update language models at startup (Default: Only on if no models found)
+              updateModels:          "true"
+              # Enable the /metrics endpoint for exporting Prometheus usage metrics (Default: Disabled)
+              metrics:               "false"
+              # use an existing secret for api key origin and secret
+              existingSecret: "libretranslate-api-key"
               # keys in existing secret
               secretKeys:
                 apiKeyorigin: ""
