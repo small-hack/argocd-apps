@@ -35,7 +35,7 @@ spec:
         automated:
           selfHeal: true
       source:
-        repoURL: https://small-hack.github.io/libretranslate-helm-chart/
+        repoURL: https://small-hack.github.io/libretranslate-helm-chart
         chart: libretranslate
         targetRevision: 0.2.0
         helm:
