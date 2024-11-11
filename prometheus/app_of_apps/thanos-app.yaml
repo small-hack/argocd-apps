@@ -1,0 +1,58 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: thanos-app
+  namespace: argocd
+spec:
+  project: default
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: default
+  source:
+    repoURL: registry-1.docker.io
+    chart: bitnamicharts/thanos
+    targetRevision: 15.7.11
+    helm:
+      skipCrds: true
+      valuesObject:
+        existingObjstoreSecret: thanos-objstore-config
+        query:
+          dnsDiscovery:
+            sidecarsService: "prometheus-operated"
+            sidecarsNamespace: "prometheus"
+        queryFrontend:
+          ingress:
+            enabled: false
+        compactor:
+          enabled: true
+          retentionResolutionRaw: 30d
+          retentionResolution5m: 30d
+          retentionResolution1h: 10y
+          resourcesPreset: "small"
+          persistence:
+            enabled: true
+            storageClass: "local-path"
+            size: 8Gi
+          serviceAccount:
+            create: true
+        storegateway:
+          enabled: true
+          resourcesPreset: "small"
+          persistence:
+            enabled: true
+            storageClass: "local-path"
+            size: 8Gi
+          serviceAccount:
+            create: true
+        metrics:
+          enabled: true
+          serviceMonitor:
+            enabled: true
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+      - ApplyOutOfSyncOnly=true
+      - Retry=true
+    automated:
+      selfHeal: false
+      prune: true

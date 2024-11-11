@@ -104,7 +104,29 @@ spec:
                   - secretName: prometheus-tls
                     hosts:
                     - '{{ .prometheus_hostname }}'
+
+              thanosService:
+                enabled: true
+              thanosServiceMonitor:
+                enabled: true
               prometheusSpec:
+                disableCompaction: true
+                storageSpec:
+                  volumeClaimTemplate:
+                    spec:
+                      storageClassName: local-path
+                      accessModes: ["ReadWriteOnce"]
+                      resources:
+                        requests:
+                          storage: 1Gi
+                thanos:
+                  create: true
+                  image: quay.io/thanos/thanos:v0.28.1
+                  objectStorageConfig:
+                    existingSecret:
+                      name: thanos-objstore-config
+                      key: thanos.yaml
+
                 probeSelectorNilUsesHelmValues: false
                 probeSelector: {}
                 probeNamespaceSelector: {}
@@ -120,6 +142,7 @@ spec:
                 serviceMonitorSelectorNilUsesHelmValues: false
                 serviceMonitorSelector: {}
                 serviceMonitorNamespaceSelector: {}
+
 
                 additionalScrapeConfigsSecret:
                   enabled: false

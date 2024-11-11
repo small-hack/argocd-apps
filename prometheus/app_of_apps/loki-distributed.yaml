@@ -1,0 +1,134 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: loki-distributed-app
+  namespace: argocd
+spec:
+  project: default
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: default
+  source:
+    repoURL: 'https://grafana.github.io/helm-charts'
+    chart: loki-distributed
+    targetRevision: 0.79.3
+    helm:
+      skipCrds: true
+      valuesObject:
+        fullnameOverride: loki
+
+        loki:
+          structuredConfig:
+            memberlist:
+              bind_addr: []
+          schemaConfig:
+            configs:
+              - from: 2020-05-15
+                store: boltdb-shipper
+                object_store: s3
+                schema: v11
+                index:
+                  period: 24h
+                  prefix: loki_index_
+          storageConfig:
+            aws:
+              bucketnames: loki-logs
+              endpoint: s3.us-west-004.backblazeb2.com
+              region: us-west-004
+              access_key_id: ""
+              secret_access_key: ""
+              s3forcepathstyle: false
+            boltdb_shipper:
+              shared_store: s3
+              cache_ttl: 24h
+
+        serviceAccount:
+          create: true
+
+        compactor:
+          serviceAccount:
+            create: false
+            name: aws-thanos-s3-admin
+          extraArgs:
+            - -memberlist.bind-addr=$(MY_POD_IP)
+          shared_store: s3
+
+        gateway:
+          extraArgs:
+            - -memberlist.bind-addr=$(MY_POD_IP)
+          extraEnv:
+            - name: MY_POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+
+        memcachedchunks:
+          extraArgs:
+            - -memberlist.bind-addr=$(MY_POD_IP)
+          extraEnv:
+            - name: MY_POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+
+        memcachedfrontend:
+          extraArgs:
+            - -memberlist.bind-addr=$(MY_POD_IP)
+          extraEnv:
+            - name: MY_POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+
+        distributor:
+          extraArgs:
+            - -memberlist.bind-addr=$(MY_POD_IP)
+          extraEnv:
+            - name: MY_POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+
+        ingester:
+          extraArgs:
+            - -memberlist.bind-addr=$(MY_POD_IP)
+          extraEnv:
+            - name: MY_POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+
+        querier:
+          extraArgs:
+            - -memberlist.bind-addr=$(MY_POD_IP)
+          extraEnv:
+            - name: MY_POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+
+        queryFrontend:
+          extraArgs:
+            - -memberlist.bind-addr=$(MY_POD_IP)
+          extraEnv:
+            - name: MY_POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+
+        queryScheduler:
+          extraArgs:
+            - -memberlist.bind-addr=$(MY_POD_IP)
+          extraEnv:
+            - name: MY_POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+      - ApplyOutOfSyncOnly=true
+      - Retry=true
+    automated:
+      selfHeal: true
+      prune: true
