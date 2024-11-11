@@ -40,8 +40,9 @@ spec:
         chart: prometheus-pushgateway
         targetRevision: 2.14.0
         helm:
+          version: v3
           releaseName: push-gateway
-          values: |
+          valuesObject:
             # Provide a name to substitute for the full names of resources
             fullnameOverride: "push-gateway"
 
