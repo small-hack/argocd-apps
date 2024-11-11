@@ -37,7 +37,7 @@ spec:
       source:
         repoURL: https://small-hack.github.io/libretranslate-helm-chart
         chart: libretranslate
-        targetRevision: 0.3.0
+        targetRevision: 0.4.0
         helm:
           releaseName: libre-translate
           valuesObject:
@@ -172,7 +172,7 @@ spec:
               existingSecret: "libretranslate-api-key" # use an existing secret for api key origin and secret
               # keys in existing secret
               secretKeys:
-                apiKeyorigin: "origin"
+                apiKeyorigin: ""
                 apiKeysecret: "secret"
 
             # Configuration Parameters
