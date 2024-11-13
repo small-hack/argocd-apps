@@ -50,8 +50,8 @@ spec:
               name: http
             prometheus:
               enabled: true
-              serviceName: thanos-app-query-frontend
-              serviceNamespace: default
+              serviceName: "thanos-app-query-frontend"
+              serviceNamespace: "default"
             ingress:
               enabled: true
               className: "nginx"
