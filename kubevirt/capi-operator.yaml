@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: capi-operator
+  namespace: argocd
+spec:
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: capi
+  source:
+    path: hack/charts/cluster-api-operator
+    repoURL: https://github.com/kubernetes-sigs/cluster-api-operator
+    targetRevision: HEAD
+    helm:
+      releaseName: capi-operator
+      values: |
+        core: cluster-api:v1.7.2
+        controlPlane: kubeadm:v1.7.2
+        bootstrap: kubeadm:v1.7.2
+        infrastructure: kubevirt:v0.1.8
+  project: 'kubevirt'
