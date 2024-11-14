@@ -14,7 +14,8 @@ metadata:
     instancetype.kubevirt.io/gpus: "true"
 spec:
   cpu:
-    guest: 8
+    cores: 8
+    sockets: 1
   memory:
     guest: 16Gi
   gpus:
@@ -36,7 +37,8 @@ metadata:
     instancetype.kubevirt.io/gpus: "true"
 spec:
   cpu:
-    guest: 8
+    cores: 8
+    sockets: 1
   memory:
     guest: 16Gi
   gpus:
