@@ -6,7 +6,8 @@ metadata:
   name: standard-micro
 spec:
   cpu:
-    guest: 1
+    cores: 1
+    sockets: 1
   memory:
     guest: 2Gi
 ---
@@ -16,7 +17,8 @@ metadata:
   name: standard-small
 spec:
   cpu:
-    guest: 2
+    cores: 2
+    sockets: 1
   memory:
     guest: 4Gi
 ---
@@ -26,7 +28,8 @@ metadata:
   name: standard-medium
 spec:
   cpu:
-    guest: 4
+    cores: 4
+    sockets: 1
   memory:
     guest: 8Gi
 ---
@@ -36,6 +39,7 @@ metadata:
   name: standard-large
 spec:
   cpu:
-    guest: 8
+    cores: 8
+    sockets: 1
   memory:
     guest: 16Gi
