@@ -175,8 +175,8 @@ spec:
                   # 64MB for photos
                   value: "67110000"
                 - name: MAX_VIDEO_SIZE
-                  # 2GB for videos
-                  value: "268400000"
+                  # 10GB for videos
+                  value: "10740000000"
                 # Maximum search results to display
                 # Only relevant when elasticsearch is installed
                 - name: MAX_SEARCH_RESULTS
