@@ -278,7 +278,7 @@ spec:
                 kubernetes.io/tls-acme: "true"
                 cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
                 # ensure that NGINX's upload size matches Mastodon's
-                nginx.ingress.kubernetes.io/proxy-body-size: 40m
+                nginx.ingress.kubernetes.io/proxy-body-size: 2G
               ingressClassName: nginx
               hosts:
                 - host: '{{ .mastodon_hostname }}'
