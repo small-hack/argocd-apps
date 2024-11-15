@@ -264,7 +264,7 @@ spec:
 
               libretranslate:
                 # -- enable the use of libretranslate for translations
-                enabled: true
+                enabled: false
                 endpoint: ""
                 # -- use an existing secret for libretranslate endpoint and api key
                 existingSecret: "libretranslate-api-key"
