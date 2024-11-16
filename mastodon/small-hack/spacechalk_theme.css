@@ -86,6 +86,7 @@
 .custom-emoji:hover {
   transform: scale(2);
   transition: all 0.2s ease;
+  position: absolute;
 }
 
 /*------------------------------------------------------------------------------
