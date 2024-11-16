@@ -19,6 +19,7 @@ spec:
           parameters:
             secret_vars:
               - mastodon_hostname
+              - mastodon_libretranslate_hostname
               - mastodon_s3_endpoint
               - mastodon_smtp_port
               - global_cluster_issuer
@@ -264,8 +265,8 @@ spec:
 
               libretranslate:
                 # -- enable the use of libretranslate for translations
-                enabled: false
-                endpoint: ""
+                enabled: true
+                endpoint: "{{ .mastodon_libretranslate_hostname }}"
                 # -- use an existing secret for libretranslate endpoint and api key
                 existingSecret: "libretranslate-api-key"
                 secretKeys:
