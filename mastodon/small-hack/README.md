@@ -10,7 +10,7 @@ This is the networking view in Argo CD:
 
 This Mastodon AppSet uses a fork of Mastodon called [glitch-soc](https://github.com/glitch-soc/mastodon). You can see the docker repo [small-hack/mastodon-glitch-soc-docker](https://github.com/small-hack/mastodon-glitch-soc-docker) whose image is published [here](https://hub.docker.com/repository/docker/jessebot/mastodon-glitch-soc/general).
 
-:new: We now support setting up a [libretranslate](https://libretranslate.com/) endpoint and API key.
+:new: We now support setting up a [libretranslate](https://libretranslate.com/) endpoint and API key. (still a bit buggy right now)
 
 
 ## Sync waves
@@ -108,3 +108,7 @@ kubectl exec deploy/mastodon-web-app -- /bin/bash
 ```
 
 `tootctl` commands can then be run as normal. Checkout the [mastodon docs](https://docs.joinmastodon.org/admin/tootctl/) for more!
+
+## Adding a custom theme
+
+Go to https://my-mastodon.tld/admin/settings/appearance and then you can add any CSS you want in the text box under Custom CSS. As an example, we've included a custom theme in this repo called [Spacechalk](./spacechalk_theme.css). It mostly just sets some pretty colors, but it also takes care of enlarging emojis on hover. Have fun! :]
