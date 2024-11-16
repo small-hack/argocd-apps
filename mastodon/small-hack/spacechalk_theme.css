@@ -148,9 +148,9 @@
   color: #f289f9 !important;
 }
 
-/*------------------------------------
-* 󰗊  translate should always be white
---------------------------------------*/
+/*-----------------------------------------
+* 󰗊  translate icon should always be white
+------------------------------------------*/
 .dropdown-button .icon-undefined {
   color: var(--text) !important;
 }
@@ -170,10 +170,17 @@
 }
 
 /*---------------------------------------------
-*     compose form for new toot and search bar
+*     compose new toot form and search bar
 -----------------------------------------------*/
 .autosuggest-textarea__textarea::placeholder, .search__input::placeholder {
   color: var(--textPageBold) !important;
+}
+
+/*-----------------------------------------
+* make the profile banner a decent size
+* -----------------------------------------*/
+.account__header__image {
+  height: 210px;
 }
 
 /*---------------------------------------------
