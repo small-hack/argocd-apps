@@ -85,6 +85,7 @@
 
 .custom-emoji:hover {
   transform: scale(2);
+  transition: all 0.2s ease;
 }
 
 /*------------------------------------------------------------------------------
@@ -96,8 +97,15 @@
   background-color: var(--bg);
 }
 
-.column-link>.icon {
+.column-link>.icon, .column-link>.icon-with-badge {
   color: #5f87ff;
+}
+
+/*----------------------
+*      hashtag bar
+----------------------*/
+.hashtag-bar a {
+	background: var(--accentButton);
 }
 
 /*------------------------------------------------------------------------------
@@ -329,9 +337,6 @@ override for muted text
     .status__prepend .status__display-name strong,
 .account__moved-note__message,
 .attachment-list.compact .fa,
-/* .icon-button,
-    .icon-button.disabled,
-    .icon-button.active:hover, */
 .account__action-bar__tab>span,
 .compose-form .icon-button.inverted,
     .compose-form .text-icon-button,
