@@ -126,7 +126,7 @@ spec:
                 enabled: false
                 className: "nginx"
                 # host: false for "*" hostname
-                host: '{{ .kubevirt_s3_endpoint }}'
+                host: ui-'{{ .kubevirt_s3_endpoint }}'
                 annotations:
                   nginx.ingress.kubernetes.io/proxy-body-size: 1G
                   cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
@@ -238,7 +238,7 @@ spec:
                 enabled: false
                 className: "nginx"
                 # host: false for "*" hostname
-                host: '{{ .kubevirt_s3_endpoint }}'
+                host: ui-'{{ .kubevirt_s3_endpoint }}'
                 annotations:
                   nginx.ingress.kubernetes.io/proxy-body-size: 1G
                   cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
