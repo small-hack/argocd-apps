@@ -74,7 +74,7 @@ spec:
 
             master:
               enabled: true
-              replicas: 2
+              replicas: 1
               port: 9333
               grpcPort: 19333
               metricsPort: 9327
@@ -188,6 +188,8 @@ spec:
                   requiredDuringSchedulingIgnoredDuringExecution:
                     - labelSelector:
                         matchLabels:
+                          app.kubernetes.io/name: seaweedfs
+                          app.kubernetes.io/instance: kubevirt-seaweedfs
                           app.kubernetes.io/component: volume
                       topologyKey: kubernetes.io/hostname
 
@@ -246,6 +248,8 @@ spec:
                   requiredDuringSchedulingIgnoredDuringExecution:
                     - labelSelector:
                         matchLabels:
+                          app.kubernetes.io/name: seaweedfs
+                          app.kubernetes.io/instance: kubevirt-seaweedfs
                           app.kubernetes.io/component: filer
                       topologyKey: kubernetes.io/hostname
               topologySpreadConstraints: {}
