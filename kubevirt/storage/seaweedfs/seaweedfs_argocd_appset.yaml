@@ -164,12 +164,9 @@ spec:
 
               dataDirs:
                 - name: data0
-                  type: "existingClaim"
-                  claimName: "swfs-volume-data-0"
-                  maxVolumes: 0
-                - name: data1
-                  type: "existingClaim"
-                  claimName: "swfs-volume-data-1"
+                  type: "persistentVolumeClaim"
+                  storageClass: "local-path"
+                  size: "100Gi"
                   maxVolumes: 0
 
               idx: {}
