@@ -126,7 +126,7 @@ spec:
                 enabled: true
                 className: "nginx"
                 # host: false for "*" hostname
-                host: main-'{{ .kubevirt_s3_endpoint }}'
+                host: 'main-{{ .kubevirt_s3_endpoint }}'
                 annotations:
                   nginx.ingress.kubernetes.io/proxy-body-size: 1G
                   cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
@@ -142,9 +142,9 @@ spec:
                     sub_filter '/seaweedfsstatic' './seaweedfsstatic';
                     sub_filter_once off;
                 tls:
-                  - secretName: main-'{{ .kubevirt_s3_endpoint }}'-tls
+                  - secretName: 'main-{{ .kubevirt_s3_endpoint }}-tls'
                     hosts:
-                      - main-'{{ .kubevirt_s3_endpoint }}'
+                      - 'main-{{ .kubevirt_s3_endpoint }}'
 
               extraEnvironmentVars:
                 WEED_MASTER_VOLUME_GROWTH_COPY_1: '7'
@@ -236,7 +236,7 @@ spec:
                 enabled: true
                 className: "nginx"
                 # host: false for "*" hostname
-                host: filer-'{{ .kubevirt_s3_endpoint }}'
+                host: 'filer-{{ .kubevirt_s3_endpoint }}'
                 annotations:
                   nginx.ingress.kubernetes.io/proxy-body-size: 1G
                   cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
@@ -252,9 +252,9 @@ spec:
                     sub_filter '/seaweedfsstatic' './seaweedfsstatic';
                     sub_filter_once off;
                 tls:
-                  - secretName: filer-'{{ .kubevirt_s3_endpoint }}'-tls
+                  - secretName: 'filer-{{ .kubevirt_s3_endpoint }}-tls'
                     hosts:
-                      - filer-'{{ .kubevirt_s3_endpoint }}'
+                      - 'filer-{{ .kubevirt_s3_endpoint }}'
 
               extraEnvironmentVars:
                 WEED_MYSQL_ENABLED: "false"
