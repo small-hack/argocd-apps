@@ -7,9 +7,10 @@ on:
   push:
     branches:
       - main
-    paths-ignore:
-      - "README.md"
-      - "**/README.md"
+    paths:
+      - ".github/workflows/renovate.yml"
+      - ".github/renovate-config.json"
+      - "renovate.json"
 jobs:
   renovate:
     runs-on: ubuntu-latest
