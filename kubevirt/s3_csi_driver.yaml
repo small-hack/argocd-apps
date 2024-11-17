@@ -111,7 +111,7 @@ spec:
         #  e.g. Allows Pods to write preferrably to its local dataCenter volume-servers
         # Requires Volume-Servers to be correctly labelled and matching Topology-Info to be passed into seaweedfs-csi-driver node
         # Example-Value: "write_preferlocaldc"
-        dataLocality: "write_preferlocaldc"
+        dataLocality: "none"
 
         node:
           # Deploy node daemonset
@@ -134,7 +134,7 @@ spec:
           #  Necessary because DownwardAPI doesnt support passing node-labels (see: https://github.com/kubernetes/kubernetes/issues/40610)
           # Requires KubeMod to be installed
           injectTopologyInfoFromNodeLabel:
-            enabled: true
+            enabled: false
             labels:
               dataCenter: "topology.kubernetes.io/zone"
 
