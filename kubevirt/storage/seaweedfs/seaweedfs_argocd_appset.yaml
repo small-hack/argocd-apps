@@ -94,13 +94,7 @@ spec:
               affinity: ""
               logs:
                 type: "emptydir"
-              affinity: |
-                podAntiAffinity:
-                  requiredDuringSchedulingIgnoredDuringExecution:
-                    - labelSelector:
-                        matchLabels:
-                          app.kubernetes.io/component: master
-                      topologyKey: kubernetes.io/hostname
+              affinity: null
               topologySpreadConstraints: {}
               tolerations: ""
               nodeSelector: |
@@ -191,15 +185,7 @@ spec:
                   mountPath: /drive
                   subPathExpr: seaweedfs-volume-1
 
-              affinity: |
-                podAntiAffinity:
-                  requiredDuringSchedulingIgnoredDuringExecution:
-                    - labelSelector:
-                        matchLabels:
-                          app.kubernetes.io/name: seaweedfs
-                          app.kubernetes.io/instance: kubevirt-seaweedfs
-                          app.kubernetes.io/component: volume
-                      topologyKey: kubernetes.io/hostname
+              affinity: null
 
               topologySpreadConstraints: {}
               resources: {}
@@ -262,14 +248,7 @@ spec:
                   subPathExpr: seaweedfs-filer-1
 
               affinity: null
-             #   podAntiAffinity:
-             #     requiredDuringSchedulingIgnoredDuringExecution:
-             #       - labelSelector:
-             #           matchLabels:
-             #             app.kubernetes.io/name: seaweedfs
-             #             app.kubernetes.io/instance: kubevirt-seaweedfs
-             #             app.kubernetes.io/component: filer
-             #         topologyKey: kubernetes.io/hostname
+
               topologySpreadConstraints: {}
               tolerations: ""
               nodeSelector: |
