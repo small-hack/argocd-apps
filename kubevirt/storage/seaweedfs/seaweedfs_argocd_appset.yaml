@@ -130,17 +130,6 @@ spec:
                 annotations:
                   nginx.ingress.kubernetes.io/proxy-body-size: 1G
                   cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
-                  nginx.ingress.kubernetes.io/backend-protocol: AUTO_HTTP
-                  nginx.ingress.kubernetes.io/service-upstream: "true"
-                  nginx.ingress.kubernetes.io/rewrite-target: /$1
-                  nginx.ingress.kubernetes.io/use-regex: "true"
-                  nginx.ingress.kubernetes.io/enable-rewrite-log: "true"
-                  nginx.ingress.kubernetes.io/configuration-snippet: |
-                    sub_filter '<head>' '<head> <base href="/sw-master/">'; 
-                    sub_filter '="/' '="./';
-                    sub_filter '=/' '=./';
-                    sub_filter '/seaweedfsstatic' './seaweedfsstatic';
-                    sub_filter_once off;
                 tls:
                   - secretName: 'main-{{ .kubevirt_s3_endpoint }}-tls'
                     hosts:
@@ -240,17 +229,6 @@ spec:
                 annotations:
                   nginx.ingress.kubernetes.io/proxy-body-size: 1G
                   cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
-                  nginx.ingress.kubernetes.io/backend-protocol: AUTO_HTTP
-                  nginx.ingress.kubernetes.io/service-upstream: "true"
-                  nginx.ingress.kubernetes.io/rewrite-target: /$1
-                  nginx.ingress.kubernetes.io/use-regex: "true"
-                  nginx.ingress.kubernetes.io/enable-rewrite-log: "true"
-                  nginx.ingress.kubernetes.io/configuration-snippet: |
-                    sub_filter '<head>' '<head> <base href="/sw-filer/">'; #add base url
-                    sub_filter '="/' '="./';                               #make absolute paths to relative
-                    sub_filter '=/' '=./';
-                    sub_filter '/seaweedfsstatic' './seaweedfsstatic';
-                    sub_filter_once off;
                 tls:
                   - secretName: 'filer-{{ .kubevirt_s3_endpoint }}-tls'
                     hosts:
