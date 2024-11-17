@@ -126,10 +126,8 @@ spec:
                 enabled: true
                 className: "nginx"
                 # host: false for "*" hostname
-                host: 'main-{{ .kubevirt_s3_endpoint }}'
+                host: 's3.buildstar.online'
                 annotations:
-                  nginx.ingress.kubernetes.io/proxy-body-size: 1G
-                  cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
                   nginx.ingress.kubernetes.io/auth-realm: Authentication Required - SW-Filer
                   nginx.ingress.kubernetes.io/auth-secret: default/ingress-basic-auth-secret
                   nginx.ingress.kubernetes.io/auth-type: basic
@@ -147,9 +145,9 @@ spec:
                   nginx.ingress.kubernetes.io/ssl-redirect: "false"
                   nginx.ingress.kubernetes.io/use-regex: "true"
                 tls:
-                  - secretName: 'main-{{ .kubevirt_s3_endpoint }}-tls'
+                  - secretName: 's3-buildstar-online-tls'
                     hosts:
-                      - 'main-{{ .kubevirt_s3_endpoint }}'
+                      - 's3.buildstar.online
 
               extraEnvironmentVars:
                 WEED_MASTER_VOLUME_GROWTH_COPY_1: '7'
