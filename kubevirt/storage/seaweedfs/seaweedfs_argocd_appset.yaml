@@ -163,10 +163,15 @@ spec:
               minFreeSpacePercent: 7
 
               dataDirs:
-                - name: data
+                - name: data0
                   type: "existingClaim"
                   claimName: "swfs-volume-data-0"
                   maxVolumes: 0
+                - name: data1
+                  type: "existingClaim"
+                  claimName: "swfs-volume-data-1"
+                  maxVolumes: 0
+
               idx: {}
               logs: {}
 
@@ -175,15 +180,8 @@ spec:
               readMode: proxy
               whiteList: null
 
-              extraVolumes: |
-                - name: drive
-                  persistentVolumeClaim:
-                    claimName: swfs-volume-data-1
-
-              extraVolumeMounts: |
-                - name: drive
-                  mountPath: /drive
-                  subPathExpr: seaweedfs-volume-1
+              extraVolumes: ""
+              extraVolumeMounts: ""
 
               topologySpreadConstraints: {}
               resources: {}
@@ -230,20 +228,9 @@ spec:
               filerGroup: ""
               enablePVC: true
               storage: 10Gi
-
+              storageClass: null
               data:
-                type: "existingClaim"
-                claimName: "swfs-filer-data-0"
-
-              extraVolumes: |
-                - name: drive
-                  persistentVolumeClaim:
-                    claimName: swfs-filer-data-1
-
-              extraVolumeMounts: |
-                - name: drive
-                  mountPath: /drive
-                  subPathExpr: seaweedfs-filer-1
+                type: "emptydir"
 
               topologySpreadConstraints: {}
               tolerations: ""
