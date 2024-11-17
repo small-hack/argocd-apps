@@ -5,7 +5,7 @@ metadata:
     grafana_dashboard: "1"
   name: seaweedfs-dashboard
 data:
-  file.yaml: |
+  seaweedfs-dashboard.json: |
     {
       "annotations": {
         "list": [
