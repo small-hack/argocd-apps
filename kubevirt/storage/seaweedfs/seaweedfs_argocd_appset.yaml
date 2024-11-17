@@ -126,11 +126,11 @@ spec:
                 enabled: false
                 className: "nginx"
                 # host: false for "*" hostname
-                host: "master.seaweedfs.local"
+                host: '{{ .kubevirt_s3_endpoint }}'
                 annotations:
-                  nginx.ingress.kubernetes.io/auth-type: "basic"
-                  nginx.ingress.kubernetes.io/auth-secret: "default/ingress-basic-auth-secret"
-                  nginx.ingress.kubernetes.io/auth-realm: 'Authentication Required - SW-Master'
+                  nginx.ingress.kubernetes.io/proxy-body-size: 1G
+                  cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
+                  nginx.ingress.kubernetes.io/backend-protocol: AUTO_HTTP
                   nginx.ingress.kubernetes.io/service-upstream: "true"
                   nginx.ingress.kubernetes.io/rewrite-target: /$1
                   nginx.ingress.kubernetes.io/use-regex: "true"
@@ -143,7 +143,10 @@ spec:
                     sub_filter '=/' '=./';
                     sub_filter '/seaweedfsstatic' './seaweedfsstatic';
                     sub_filter_once off;
-                tls: []
+                tls:
+                  - secretName: kubevirt-seaweedfs-tls
+                    hosts:
+                      - '{{ .kubevirt_s3_endpoint }}'
 
               extraEnvironmentVars:
                 WEED_MASTER_VOLUME_GROWTH_COPY_1: '7'
@@ -235,12 +238,11 @@ spec:
                 enabled: false
                 className: "nginx"
                 # host: false for "*" hostname
-                host: "seaweedfs.cluster.local"
+                host: '{{ .kubevirt_s3_endpoint }}'
                 annotations:
-                  nginx.ingress.kubernetes.io/backend-protocol: GRPC
-                  nginx.ingress.kubernetes.io/auth-type: "basic"
-                  nginx.ingress.kubernetes.io/auth-secret: "default/ingress-basic-auth-secret"
-                  nginx.ingress.kubernetes.io/auth-realm: 'Authentication Required - SW-Filer'
+                  nginx.ingress.kubernetes.io/proxy-body-size: 1G
+                  cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
+                  nginx.ingress.kubernetes.io/backend-protocol: AUTO_HTTP
                   nginx.ingress.kubernetes.io/service-upstream: "true"
                   nginx.ingress.kubernetes.io/rewrite-target: /$1
                   nginx.ingress.kubernetes.io/use-regex: "true"
@@ -253,6 +255,10 @@ spec:
                     sub_filter '=/' '=./';
                     sub_filter '/seaweedfsstatic' './seaweedfsstatic';
                     sub_filter_once off;
+                tls:
+                  - secretName: kubevirt-seaweedfs-filer-tls
+                    hosts:
+                      - s3-"{{ .kubevirt-hostname }}"
 
               extraEnvironmentVars:
                 WEED_MYSQL_ENABLED: "false"
