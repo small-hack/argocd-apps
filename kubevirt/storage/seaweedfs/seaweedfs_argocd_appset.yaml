@@ -126,7 +126,7 @@ spec:
                 enabled: true
                 className: "nginx"
                 # host: false for "*" hostname
-                host: main-ui-'{{ .kubevirt_endpoint }}'
+                host: main-ui-'{{ .kubevirt-hostname }}'
                 annotations:
                   nginx.ingress.kubernetes.io/proxy-body-size: 1G
                   cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
@@ -144,7 +144,7 @@ spec:
                 tls:
                   - secretName: kubevirt-seaweedfs-tls
                     hosts:
-                      - main-ui-'{{ .kubevirt_endpoint }}'
+                      - main-ui-'{{ .kubevirt-hostname }}'
 
               extraEnvironmentVars:
                 WEED_MASTER_VOLUME_GROWTH_COPY_1: '7'
@@ -236,7 +236,7 @@ spec:
                 enabled: true
                 className: "nginx"
                 # host: false for "*" hostname
-                host: filer-ui-'{{ .kubevirt_endpoint }}'
+                host: filer-ui-'{{ .kubevirt-hostname }}'
                 annotations:
                   nginx.ingress.kubernetes.io/proxy-body-size: 1G
                   cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
@@ -254,7 +254,7 @@ spec:
                 tls:
                   - secretName: kubevirt-seaweedfs-filer-tls
                     hosts:
-                      - filer-ui-'{{ .kubevirt_endpoint }}'
+                      - filer-ui-'{{ .kubevirt-hostname }}'
 
               extraEnvironmentVars:
                 WEED_MYSQL_ENABLED: "false"
