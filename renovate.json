@@ -10,12 +10,13 @@
     },
     {
       "matchManagers": ["github-actions"],
-      "matchUpdateTypes": ["patch", "minor"],
+      "matchUpdateTypes": ["patch"],
       "automerge": true
     },
     {
       "matchManagers": ["github-actions"],
-      "matchPackageNames": ["renovate/renovate"],
+      "matchPackageNames": ["renovatebot/github-action"],
+      "matchUpdateTypes": ["patch", "minor"],
       "automerge": true
     },
     {
