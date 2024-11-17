@@ -126,7 +126,7 @@ spec:
                 enabled: true
                 className: "nginx"
                 # host: false for "*" hostname
-                host: ui-'{{ .kubevirt_s3_endpoint }}'
+                host: main.ui.'{{ .kubevirt_endpoint }}'
                 annotations:
                   nginx.ingress.kubernetes.io/proxy-body-size: 1G
                   cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
@@ -135,11 +135,9 @@ spec:
                   nginx.ingress.kubernetes.io/rewrite-target: /$1
                   nginx.ingress.kubernetes.io/use-regex: "true"
                   nginx.ingress.kubernetes.io/enable-rewrite-log: "true"
-                  nginx.ingress.kubernetes.io/ssl-redirect: "false"
-                  nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
                   nginx.ingress.kubernetes.io/configuration-snippet: |
-                    sub_filter '<head>' '<head> <base href="/sw-master/">'; #add base url
-                    sub_filter '="/' '="./';                                #make absolute paths to relative
+                    sub_filter '<head>' '<head> <base href="/sw-master/">'; 
+                    sub_filter '="/' '="./';
                     sub_filter '=/' '=./';
                     sub_filter '/seaweedfsstatic' './seaweedfsstatic';
                     sub_filter_once off;
@@ -238,7 +236,7 @@ spec:
                 enabled: true
                 className: "nginx"
                 # host: false for "*" hostname
-                host: ui-'{{ .kubevirt_s3_endpoint }}'
+                host: filer.ui.'{{ .kubevirt_endpoint }}'
                 annotations:
                   nginx.ingress.kubernetes.io/proxy-body-size: 1G
                   cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
@@ -247,8 +245,6 @@ spec:
                   nginx.ingress.kubernetes.io/rewrite-target: /$1
                   nginx.ingress.kubernetes.io/use-regex: "true"
                   nginx.ingress.kubernetes.io/enable-rewrite-log: "true"
-                  nginx.ingress.kubernetes.io/ssl-redirect: "false"
-                  nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
                   nginx.ingress.kubernetes.io/configuration-snippet: |
                     sub_filter '<head>' '<head> <base href="/sw-filer/">'; #add base url
                     sub_filter '="/' '="./';                               #make absolute paths to relative
