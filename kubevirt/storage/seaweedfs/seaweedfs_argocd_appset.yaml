@@ -74,7 +74,7 @@ spec:
 
             master:
               enabled: true
-              replicas: 1
+              replicas: 2
               port: 9333
               grpcPort: 19333
               metricsPort: 9327
@@ -163,7 +163,7 @@ spec:
               grpcPort: 18080
               metricsPort: 9327
               ipBind: "0.0.0.0"
-              replicas: 1
+              replicas: 2
               loggingOverrideLevel: null
               fileSizeLimitMB: null
               minFreeSpacePercent: 7
@@ -222,7 +222,7 @@ spec:
 
             filer:
               enabled: true
-              replicas: 1
+              replicas: 2
               dataCenter: home
               rack: home
               defaultReplicaPlacement: "000"
