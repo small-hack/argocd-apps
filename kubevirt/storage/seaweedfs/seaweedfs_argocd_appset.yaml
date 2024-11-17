@@ -167,7 +167,7 @@ spec:
               dataDirs:
                 - name: data
                   type: "existingClaim"
-                  claimName: "swfs-volume-data"
+                  claimName: "swfs-volume-data-0"
                   maxVolumes: 0
               idx: {}
               logs: {}
@@ -237,7 +237,7 @@ spec:
 
               data:
                 type: "existingClaim"
-                claimName: "swfs-filer-data"
+                claimName: "swfs-filer-data-0"
 
               extraVolumes: |
                 - name: drive
