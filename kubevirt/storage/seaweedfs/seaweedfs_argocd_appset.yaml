@@ -163,7 +163,7 @@ spec:
               grpcPort: 18080
               metricsPort: 9327
               ipBind: "0.0.0.0"
-              replicas: 1
+              replicas: 2
               loggingOverrideLevel: null
               fileSizeLimitMB: null
               minFreeSpacePercent: 7
@@ -176,8 +176,8 @@ spec:
               idx: {}
               logs: {}
 
-              rack: null
-              dataCenter: null
+              rack: home
+              dataCenter: home
               readMode: proxy
               whiteList: null
               extraVolumes: ""
@@ -222,9 +222,9 @@ spec:
 
             filer:
               enabled: true
-              replicas: 1
-              dataCenter: null
-              rack: null
+              replicas: 2
+              dataCenter: home
+              rack: home
               defaultReplicaPlacement: "000"
               maxMB: null
               redirectOnRead: false
