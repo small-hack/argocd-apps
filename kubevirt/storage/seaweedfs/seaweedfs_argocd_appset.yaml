@@ -147,7 +147,7 @@ spec:
                 tls:
                   - secretName: 's3-buildstar-online-tls'
                     hosts:
-                      - 's3.buildstar.online
+                      - 's3.buildstar.online'
 
               extraEnvironmentVars:
                 WEED_MASTER_VOLUME_GROWTH_COPY_1: '7'
