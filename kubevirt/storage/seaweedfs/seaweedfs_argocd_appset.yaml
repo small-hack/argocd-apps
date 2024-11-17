@@ -128,10 +128,6 @@ spec:
                 # host: false for "*" hostname
                 host: 's3.buildstar.online'
                 annotations:
-                  nginx.ingress.kubernetes.io/auth-realm: Authentication Required - SW-Filer
-                  nginx.ingress.kubernetes.io/auth-secret: default/ingress-basic-auth-secret
-                  nginx.ingress.kubernetes.io/auth-type: basic
-                  nginx.ingress.kubernetes.io/backend-protocol: AUTO_HTTP
                   nginx.ingress.kubernetes.io/configuration-snippet: |
                     sub_filter '<head>' '<head> <base href="/sw-master/">'; 
                     sub_filter '="/' '="./';                               
@@ -144,10 +140,6 @@ spec:
                   nginx.ingress.kubernetes.io/service-upstream: "true"
                   nginx.ingress.kubernetes.io/ssl-redirect: "false"
                   nginx.ingress.kubernetes.io/use-regex: "true"
-                tls:
-                  - secretName: 's3-buildstar-online-tls'
-                    hosts:
-                      - 's3.buildstar.online'
 
               extraEnvironmentVars:
                 WEED_MASTER_VOLUME_GROWTH_COPY_1: '7'
