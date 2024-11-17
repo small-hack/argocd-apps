@@ -62,7 +62,7 @@ spec:
                 gatewayHost: null
                 gatewayPort: null
               enableReplication: false
-              replicationPlacment: "002"
+              replicationPlacment: "001"
               extraEnvironmentVars:
                 WEED_CLUSTER_DEFAULT: "sw"
                 WEED_CLUSTER_SW_MASTER: "seaweedfs-master.seaweedfs:9333"
@@ -163,7 +163,7 @@ spec:
               grpcPort: 18080
               metricsPort: 9327
               ipBind: "0.0.0.0"
-              replicas: 2
+              replicas: 1
               loggingOverrideLevel: null
               fileSizeLimitMB: null
               minFreeSpacePercent: 7
@@ -222,7 +222,7 @@ spec:
 
             filer:
               enabled: true
-              replicas: 2
+              replicas: 1
               dataCenter: home
               rack: home
               defaultReplicaPlacement: "000"
