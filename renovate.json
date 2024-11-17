@@ -21,6 +21,7 @@
     {
     "description": "Update Prometheus Stack CRDs at the same time as the ArgoCD Application",
     "matchManagers": ["argocd"],
+    "matchPackageNames": ["kube-prometheus-stack"],
     "postUpgradeTasks": {
       "commands": [
         "bash scripts/autoupdate-prometheus-crds.sh '{{{newVersion}}}'"
