@@ -37,7 +37,7 @@ spec:
       source:
         repoURL: 'https://juicedata.github.io/charts/'
         chart: juicefs-csi-driver
-        targetRevision: 0.21.1
+        targetRevision: 0.21.2
         helm:
           values: |
             metrics:
