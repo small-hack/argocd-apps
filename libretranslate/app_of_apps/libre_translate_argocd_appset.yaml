@@ -38,7 +38,7 @@ spec:
       source:
         repoURL: https://small-hack.github.io/libretranslate-helm-chart
         chart: libretranslate
-        targetRevision: 0.6.3
+        targetRevision: 0.6.4
         helm:
           releaseName: libre-translate
           valuesObject:
