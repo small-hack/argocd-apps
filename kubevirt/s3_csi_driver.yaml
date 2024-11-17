@@ -134,7 +134,7 @@ spec:
           #  Necessary because DownwardAPI doesnt support passing node-labels (see: https://github.com/kubernetes/kubernetes/issues/40610)
           # Requires KubeMod to be installed
           injectTopologyInfoFromNodeLabel:
-            enabled: false
+            enabled: true
             labels:
               dataCenter: "topology.kubernetes.io/zone"
 
