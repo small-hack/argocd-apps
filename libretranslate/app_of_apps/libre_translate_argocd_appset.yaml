@@ -112,7 +112,7 @@ spec:
             # Resource limits
             resources:
               limits:
-                cpu: 1
+                cpu: 1500m
                 memory: 2Gi
               requests:
                 cpu: 500m
