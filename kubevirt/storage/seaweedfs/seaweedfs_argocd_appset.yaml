@@ -144,7 +144,7 @@ spec:
                 tls:
                   - secretName: kubevirt-seaweedfs-tls
                     hosts:
-                      - '{{ .kubevirt_s3_endpoint }}'
+                      - main.ui.'{{ .kubevirt_endpoint }}'
 
               extraEnvironmentVars:
                 WEED_MASTER_VOLUME_GROWTH_COPY_1: '7'
@@ -254,7 +254,7 @@ spec:
                 tls:
                   - secretName: kubevirt-seaweedfs-filer-tls
                     hosts:
-                      - s3-"{{ .kubevirt-hostname }}"
+                      - filer.ui.'{{ .kubevirt_endpoint }}'
 
               extraEnvironmentVars:
                 WEED_MYSQL_ENABLED: "false"
