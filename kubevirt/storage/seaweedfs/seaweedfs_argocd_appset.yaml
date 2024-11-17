@@ -99,8 +99,6 @@ spec:
                   requiredDuringSchedulingIgnoredDuringExecution:
                     - labelSelector:
                         matchLabels:
-                          app.kubernetes.io/name: {{ template "seaweedfs.name" . }}
-                          app.kubernetes.io/instance: {{ .Release.Name }}
                           app.kubernetes.io/component: master
                       topologyKey: kubernetes.io/hostname
               topologySpreadConstraints: {}
@@ -190,8 +188,6 @@ spec:
                   requiredDuringSchedulingIgnoredDuringExecution:
                     - labelSelector:
                         matchLabels:
-                          app.kubernetes.io/name: {{ template "seaweedfs.name" . }}
-                          app.kubernetes.io/instance: {{ .Release.Name }}
                           app.kubernetes.io/component: volume
                       topologyKey: kubernetes.io/hostname
 
@@ -250,8 +246,6 @@ spec:
                   requiredDuringSchedulingIgnoredDuringExecution:
                     - labelSelector:
                         matchLabels:
-                          app.kubernetes.io/name: {{ template "seaweedfs.name" . }}
-                          app.kubernetes.io/instance: {{ .Release.Name }}
                           app.kubernetes.io/component: filer
                       topologyKey: kubernetes.io/hostname
               topologySpreadConstraints: {}
