@@ -200,6 +200,9 @@ spec:
                     - '{{ .prometheus_alert_manager_hostname }}'
 
             grafana:
+              plugins:
+                - redis-datasource
+
               envValueFrom:
                 GF_AUTH_GENERIC_OAUTH_CLIENT_ID:
                   secretKeyRef:
@@ -213,7 +216,7 @@ spec:
 
               grafana.ini:
                 auth:
-                  disable_login_form: true
+                  disable_login_form: false
 
                 "auth.generic_oauth":
                   name: Zitadel
