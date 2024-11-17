@@ -111,7 +111,7 @@ spec:
         #  e.g. Allows Pods to write preferrably to its local dataCenter volume-servers
         # Requires Volume-Servers to be correctly labelled and matching Topology-Info to be passed into seaweedfs-csi-driver node
         # Example-Value: "write_preferlocaldc"
-        dataLocality: "none"
+        dataLocality: "write_preferlocaldc"
 
         node:
           # Deploy node daemonset
