@@ -94,7 +94,7 @@ spec:
 
               logs:
                 type: "emptydir"
-              affinity: null
+
               topologySpreadConstraints: {}
               tolerations: ""
               nodeSelector: |
@@ -226,11 +226,8 @@ spec:
               metricsPort: 9327
               encryptVolumeData: false
               filerGroup: ""
-              enablePVC: true
+              enablePVC: false
               storage: 10Gi
-              storageClass: null
-              data:
-                type: "emptydir"
 
               topologySpreadConstraints: {}
               tolerations: ""
