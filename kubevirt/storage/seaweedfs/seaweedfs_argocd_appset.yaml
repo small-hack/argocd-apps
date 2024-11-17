@@ -62,7 +62,7 @@ spec:
                 gatewayHost: null
                 gatewayPort: null
               enableReplication: false
-              replicationPlacment: "001"
+              replicationPlacment: "002"
               extraEnvironmentVars:
                 WEED_CLUSTER_DEFAULT: "sw"
                 WEED_CLUSTER_SW_MASTER: "seaweedfs-master.seaweedfs:9333"
