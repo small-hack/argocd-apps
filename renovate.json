@@ -15,7 +15,7 @@
     },
     {
       "matchManagers": ["github-actions"],
-      "matchDepNames": ["renovate"],
+      "matchPackageNames": ["renovate/renovate"],
       "automerge": true
     },
     {
