@@ -38,7 +38,7 @@ spec:
           selfHeal: true
       source:
         repoURL: 'https://seaweedfs.github.io/seaweedfs/helm'
-        targetRevision: 3.68.0
+        targetRevision: 4.0.379
         chart: seaweedfs
         helm:
           releaseName: kubevirt-seaweedfs
@@ -67,9 +67,11 @@ spec:
                 WEED_CLUSTER_DEFAULT: "sw"
                 WEED_CLUSTER_SW_MASTER: "seaweedfs-master.seaweedfs:9333"
                 WEED_CLUSTER_SW_FILER: "seaweedfs-filer-client.seaweedfs:8888"
+
             image:
               registry: ""
               repository: ""
+
             master:
               enabled: true
               replicas: 1
@@ -81,7 +83,7 @@ spec:
               pulseSeconds: null
               garbageThreshold: null
               metricsIntervalSec: 15
-              defaultReplication: "001"
+              defaultReplication: "000"
               disableHttp: false
               config: |-
                 # Enter any extra configuration for master.toml here.
@@ -91,11 +93,21 @@ spec:
                 # claimName: "swfs-master-data"
               affinity: ""
               logs:
-                type: "hostPath"
-                size: ""
-                storageClass: ""
-                hostPathPrefix: /storage
-              affinity: null
+                type: "emptydir"
+              affinity: |
+                podAntiAffinity:
+                  requiredDuringSchedulingIgnoredDuringExecution:
+                    - labelSelector:
+                        matchLabels:
+                          app.kubernetes.io/name: {{ template "seaweedfs.name" . }}
+                          app.kubernetes.io/instance: {{ .Release.Name }}
+                          app.kubernetes.io/component: master
+                      topologyKey: kubernetes.io/hostname
+              topologySpreadConstraints: {}
+              tolerations: ""
+              nodeSelector: |
+                kubernetes.io/arch: amd64
+
               livenessProbe:
                 enabled: true
                 httpGet:
@@ -106,6 +118,7 @@ spec:
                 successThreshold: 1
                 failureThreshold: 100
                 timeoutSeconds: 10
+
               readinessProbe:
                 enabled: true
                 httpGet:
@@ -116,6 +129,36 @@ spec:
                 successThreshold: 2
                 failureThreshold: 100
                 timeoutSeconds: 10
+
+              ingress:
+                enabled: false
+                className: "nginx"
+                # host: false for "*" hostname
+                host: "master.seaweedfs.local"
+                annotations:
+                  nginx.ingress.kubernetes.io/auth-type: "basic"
+                  nginx.ingress.kubernetes.io/auth-secret: "default/ingress-basic-auth-secret"
+                  nginx.ingress.kubernetes.io/auth-realm: 'Authentication Required - SW-Master'
+                  nginx.ingress.kubernetes.io/service-upstream: "true"
+                  nginx.ingress.kubernetes.io/rewrite-target: /$1
+                  nginx.ingress.kubernetes.io/use-regex: "true"
+                  nginx.ingress.kubernetes.io/enable-rewrite-log: "true"
+                  nginx.ingress.kubernetes.io/ssl-redirect: "false"
+                  nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
+                  nginx.ingress.kubernetes.io/configuration-snippet: |
+                    sub_filter '<head>' '<head> <base href="/sw-master/">'; #add base url
+                    sub_filter '="/' '="./';                                #make absolute paths to relative
+                    sub_filter '=/' '=./';
+                    sub_filter '/seaweedfsstatic' './seaweedfsstatic';
+                    sub_filter_once off;
+                tls: []
+
+              extraEnvironmentVars:
+                WEED_MASTER_VOLUME_GROWTH_COPY_1: '7'
+                WEED_MASTER_VOLUME_GROWTH_COPY_2: '6'
+                WEED_MASTER_VOLUME_GROWTH_COPY_3: '3'
+                WEED_MASTER_VOLUME_GROWTH_COPY_OTHER: '1'
+
             volume:
               enabled: true
               port: 8080
@@ -126,12 +169,39 @@ spec:
               loggingOverrideLevel: null
               fileSizeLimitMB: null
               minFreeSpacePercent: 7
+
               dataDirs:
                 - name: data
                   type: "existingClaim"
                   claimName: "swfs-volume-data"
                   maxVolumes: 0
-              affinity: ""
+              idx: {}
+              logs: {}
+
+              rack: null
+              dataCenter: null
+              readMode: proxy
+              whiteList: null
+              extraVolumes: ""
+              extraVolumeMounts: ""
+
+              affinity: |
+                podAntiAffinity:
+                  requiredDuringSchedulingIgnoredDuringExecution:
+                    - labelSelector:
+                        matchLabels:
+                          app.kubernetes.io/name: {{ template "seaweedfs.name" . }}
+                          app.kubernetes.io/instance: {{ .Release.Name }}
+                          app.kubernetes.io/component: volume
+                      topologyKey: kubernetes.io/hostname
+
+              topologySpreadConstraints: {}
+              resources: {}
+              tolerations: ""
+
+              nodeSelector: |
+                kubernetes.io/arch: amd64
+
               livenessProbe:
                 enabled: true
                 httpGet:
@@ -142,6 +212,7 @@ spec:
                 successThreshold: 1
                 failureThreshold: 100
                 timeoutSeconds: 10
+
               readinessProbe:
                 enabled: true
                 httpGet:
@@ -152,19 +223,76 @@ spec:
                 successThreshold: 2
                 failureThreshold: 100
                 timeoutSeconds: 10
+
             filer:
               enabled: true
               replicas: 1
+              dataCenter: null
+              rack: null
+              defaultReplicaPlacement: "000"
+              maxMB: null
+              redirectOnRead: false
+
               port: 8888
               grpcPort: 18888
               metricsPort: 9327
               encryptVolumeData: true
+              filerGroup: ""
               enablePVC: true
               storage: 10Gi
+
               data:
                 type: "existingClaim"
                 claimName: "swfs-filer-data"
-              affinity: ""
+
+              affinity: |
+                podAntiAffinity:
+                  requiredDuringSchedulingIgnoredDuringExecution:
+                    - labelSelector:
+                        matchLabels:
+                          app.kubernetes.io/name: {{ template "seaweedfs.name" . }}
+                          app.kubernetes.io/instance: {{ .Release.Name }}
+                          app.kubernetes.io/component: filer
+                      topologyKey: kubernetes.io/hostname
+              topologySpreadConstraints: {}
+              tolerations: ""
+              nodeSelector: |
+                kubernetes.io/arch: amd64
+
+              ingress:
+                enabled: false
+                className: "nginx"
+                # host: false for "*" hostname
+                host: "seaweedfs.cluster.local"
+                annotations:
+                  nginx.ingress.kubernetes.io/backend-protocol: GRPC
+                  nginx.ingress.kubernetes.io/auth-type: "basic"
+                  nginx.ingress.kubernetes.io/auth-secret: "default/ingress-basic-auth-secret"
+                  nginx.ingress.kubernetes.io/auth-realm: 'Authentication Required - SW-Filer'
+                  nginx.ingress.kubernetes.io/service-upstream: "true"
+                  nginx.ingress.kubernetes.io/rewrite-target: /$1
+                  nginx.ingress.kubernetes.io/use-regex: "true"
+                  nginx.ingress.kubernetes.io/enable-rewrite-log: "true"
+                  nginx.ingress.kubernetes.io/ssl-redirect: "false"
+                  nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
+                  nginx.ingress.kubernetes.io/configuration-snippet: |
+                    sub_filter '<head>' '<head> <base href="/sw-filer/">'; #add base url
+                    sub_filter '="/' '="./';                               #make absolute paths to relative
+                    sub_filter '=/' '=./';
+                    sub_filter '/seaweedfsstatic' './seaweedfsstatic';
+                    sub_filter_once off;
+
+              extraEnvironmentVars:
+                WEED_MYSQL_ENABLED: "false"
+                WEED_LEVELDB2_ENABLED: "false"
+                WEED_REDIS_CLUSTER3_ENABLED: "true"
+                WEED_REDIS_CLUSTER3_ADDRESSES: "valkey.kubevirt.svc.cluster.local:6379"
+                WEED_REDIS_CLUSTER3_PASSWORD: "uOEJ1uR04q"
+                WEED_FILER_OPTIONS_RECURSIVE_DELETE: "true"
+                WEED_FILER_BUCKETS_FOLDER: "/buckets"
+
+              secretExtraEnvironmentVars: {}
+
               s3:
                 enabled: true
                 port: 8333
@@ -178,14 +306,8 @@ spec:
                     anonymousRead: false
                   - name: kubevirt-postgres
                     anonymousRead: false
-                extraEnvironmentVars:
-                  WEED_MYSQL_ENABLED: "false"
-                  WEED_LEVELDB2_ENABLED: "false"
-                  WEED_REDIS_CLUSTER3_ENABLED: "true"
-                  WEED_REDIS_CLUSTER3_ADDRESSES: "valkey.kubevirt.svc.cluster.local:6379"
-                  WEED_REDIS_CLUSTER3_PASSWORD: "uOEJ1uR04q"
-                  WEED_FILER_OPTIONS_RECURSIVE_DELETE: "true"
-                  WEED_FILER_BUCKETS_FOLDER: "/buckets"
+
+
               livenessProbe:
                 enabled: true
                 httpGet:
@@ -196,6 +318,7 @@ spec:
                 successThreshold: 1
                 failureThreshold: 100
                 timeoutSeconds: 10
+
               readinessProbe:
                 enabled: true
                 httpGet:
@@ -206,6 +329,7 @@ spec:
                 successThreshold: 2
                 failureThreshold: 100
                 timeoutSeconds: 10
+
             s3:
               enabled: false
               ingress:
