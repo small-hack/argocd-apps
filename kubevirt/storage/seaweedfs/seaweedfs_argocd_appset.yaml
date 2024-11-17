@@ -65,8 +65,8 @@ spec:
               replicationPlacment: "001"
               extraEnvironmentVars:
                 WEED_CLUSTER_DEFAULT: "sw"
-                WEED_CLUSTER_SW_MASTER: "seaweedfs-master.seaweedfs:9333"
-                WEED_CLUSTER_SW_FILER: "seaweedfs-filer-client.seaweedfs:8888"
+                WEED_CLUSTER_SW_MASTER: "seaweedfs-master.kubevirt:9333"
+                WEED_CLUSTER_SW_FILER: "seaweedfs-filer.kubevirt:8888"
 
             image:
               registry: ""
@@ -123,7 +123,7 @@ spec:
                 timeoutSeconds: 10
 
               ingress:
-                enabled: false
+                enabled: true
                 className: "nginx"
                 # host: false for "*" hostname
                 host: ui-'{{ .kubevirt_s3_endpoint }}'
@@ -235,7 +235,7 @@ spec:
                 kubernetes.io/arch: amd64
 
               ingress:
-                enabled: false
+                enabled: true
                 className: "nginx"
                 # host: false for "*" hostname
                 host: ui-'{{ .kubevirt_s3_endpoint }}'
