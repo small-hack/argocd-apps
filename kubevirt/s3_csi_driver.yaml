@@ -24,8 +24,8 @@ spec:
     helm:
       valuesObject:
         # host and port of your SeaweedFs filer
-        seaweedfsFiler: "seaweedfs-filer.kubevirt.svc.cluster.local:8888"
-        storageClassName: seaweedfs-storage
+        seaweedfsFiler: "seaweedfs-filer-0.kubevirt.svc.cluster.local:8888"
+        storageClassName: swfs
         isDefaultStorageClass: false
         tlsSecret: ""
         #logVerbosity: 4
