@@ -133,7 +133,7 @@ spec:
                   nginx.ingress.kubernetes.io/auth-type: basic
                   nginx.ingress.kubernetes.io/backend-protocol: AUTO_HTTP
                   nginx.ingress.kubernetes.io/configuration-snippet: |
-                    sub_filter '<head>' '<head> <base href="/sw-filer/">'; 
+                    sub_filter '<head>' '<head> <base href="/sw-master/">'; 
                     sub_filter '="/' '="./';                               
                     sub_filter '=/' '=./';
                     sub_filter '/seaweedfsstatic' './seaweedfsstatic';
