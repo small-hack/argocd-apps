@@ -92,8 +92,6 @@ spec:
                 type: "emptyDir"
                 # claimName: "swfs-master-data"
 
-              affinity: {}
-
               logs:
                 type: "emptydir"
               affinity: null
@@ -187,8 +185,6 @@ spec:
                   mountPath: /drive
                   subPathExpr: seaweedfs-volume-1
 
-              affinity: {}
-
               topologySpreadConstraints: {}
               resources: {}
               tolerations: ""
@@ -248,8 +244,6 @@ spec:
                 - name: drive
                   mountPath: /drive
                   subPathExpr: seaweedfs-filer-1
-
-              affinity: {}
 
               topologySpreadConstraints: {}
               tolerations: ""
