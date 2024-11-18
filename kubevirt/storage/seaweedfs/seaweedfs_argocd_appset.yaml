@@ -191,7 +191,7 @@ spec:
 
             filer:
               enabled: true
-              replicas: 2
+              replicas: 1
               dataCenter: home
               rack: home
               defaultReplicaPlacement: "000"
