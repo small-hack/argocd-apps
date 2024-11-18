@@ -123,23 +123,7 @@ spec:
                 timeoutSeconds: 10
 
               ingress:
-                enabled: true
-                className: "nginx"
-                # host: false for "*" hostname
-                host: 's3.buildstar.online'
-                annotations:
-                  nginx.ingress.kubernetes.io/configuration-snippet: |
-                    sub_filter '<head>' '<head> <base href="/sw-master/">'; 
-                    sub_filter '="/' '="./';                               
-                    sub_filter '=/' '=./';
-                    sub_filter '/seaweedfsstatic' './seaweedfsstatic';
-                    sub_filter_once off;
-                  nginx.ingress.kubernetes.io/enable-rewrite-log: "true"
-                  nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
-                  nginx.ingress.kubernetes.io/rewrite-target: /$1
-                  nginx.ingress.kubernetes.io/service-upstream: "true"
-                  nginx.ingress.kubernetes.io/ssl-redirect: "false"
-                  nginx.ingress.kubernetes.io/use-regex: "true"
+                enabled: false
 
               extraEnvironmentVars:
                 WEED_MASTER_VOLUME_GROWTH_COPY_1: '7'
@@ -228,17 +212,7 @@ spec:
                 kubernetes.io/arch: amd64
 
               ingress:
-                enabled: true
-                className: "nginx"
-                # host: false for "*" hostname
-                host: 'filer-{{ .kubevirt_s3_endpoint }}'
-                annotations:
-                  nginx.ingress.kubernetes.io/proxy-body-size: 1G
-                  cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
-                tls:
-                  - secretName: 'filer-{{ .kubevirt_s3_endpoint }}-tls'
-                    hosts:
-                      - 'filer-{{ .kubevirt_s3_endpoint }}'
+                enabled: false
 
               extraEnvironmentVars:
                 WEED_MYSQL_ENABLED: "false"
