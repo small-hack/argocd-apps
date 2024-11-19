@@ -14,7 +14,7 @@ spec:
     # - https://linkerd.io/2.15/tasks/install-helm/
     repoURL: 'https://helm.linkerd.io/edge'
     chart: linkerd-crds
-    targetRevision: 2024.11.3
+    targetRevision: 2024.11.4
   project: linkerd
   syncPolicy:
     syncOptions:
