@@ -49,7 +49,7 @@ spec:
               protocol: TCP
               name: http
             prometheus:
-              enabled: true
+              enabled: false
               serviceName: prom-stack-prometheus
               serviceNamespace: promethus
             ingress:
