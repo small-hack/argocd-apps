@@ -55,6 +55,6 @@ spec:
             ingress:
               enabled: true
               className: "nginx"
-              hostname: kubevirt.buildstar.online
+              hostname: kubevirt.gg-internal.com
               tls:
                 enabled: false
