@@ -6,7 +6,7 @@ metadata:
   annotations:
     instancetype.kubevirt.io/description: |-
       The rtx 6000 Series provides instances types for VMs with
-      an attached NVIDIA NVIDIA RTXA5000-4Q vGPU attached.
+      an attached NVIDIA NVIDIA RTXA5000-8Q vGPU attached.
   labels:
     instancetype.kubevirt.io/class: "gpu.nvidia"
     instancetype.kubevirt.io/icon-pf: "fa-microchip"
@@ -20,7 +20,7 @@ spec:
     guest: 2Gi
   gpus:
     - name: "gpu0"
-      deviceName: "nvidia.com/NVIDIA_RTXA5000-4Q"
+      deviceName: "nvidia.com/NVIDIA_RTXA5000-8Q"
 ---
 apiVersion: instancetype.kubevirt.io/v1beta1
 kind: VirtualMachineClusterInstancetype
@@ -29,7 +29,7 @@ metadata:
   annotations:
     instancetype.kubevirt.io/description: |-
       The rtx 6000 Series provides instances types for VMs with
-      an attached NVIDIA NVIDIA RTXA5000-4Q vGPU attached.
+      an attached NVIDIA NVIDIA RTXA5000-8Q vGPU attached.
   labels:
     instancetype.kubevirt.io/class: "gpu.nvidia"
     instancetype.kubevirt.io/icon-pf: "fa-microchip"
@@ -43,7 +43,7 @@ spec:
     guest: 4Gi
   gpus:
     - name: "gpu0"
-      deviceName: "nvidia.com/NVIDIA_RTXA5000-4Q"
+      deviceName: "nvidia.com/NVIDIA_RTXA5000-8Q"
 ---
 apiVersion: instancetype.kubevirt.io/v1beta1
 kind: VirtualMachineClusterInstancetype
@@ -52,7 +52,7 @@ metadata:
   annotations:
     instancetype.kubevirt.io/description: |-
       The rtx 6000 Series provides instances types for VMs with
-      an attached NVIDIA NVIDIA RTXA5000-4Q vGPU attached.
+      an attached NVIDIA NVIDIA RTXA5000-8Q vGPU attached.
   labels:
     instancetype.kubevirt.io/class: "gpu.nvidia"
     instancetype.kubevirt.io/icon-pf: "fa-microchip"
@@ -66,7 +66,7 @@ spec:
     guest: 8Gi
   gpus:
     - name: "gpu0"
-      deviceName: "nvidia.com/NVIDIA_RTXA5000-4Q"
+      deviceName: "nvidia.com/NVIDIA_RTXA5000-8Q"
 ---
 apiVersion: instancetype.kubevirt.io/v1beta1
 kind: VirtualMachineClusterInstancetype
@@ -75,7 +75,7 @@ metadata:
   annotations:
     instancetype.kubevirt.io/description: |-
       The rtx 6000 Series provides instances types for VMs with
-      an attached NVIDIA NVIDIA RTXA5000-4Q vGPU attached.
+      an attached NVIDIA NVIDIA RTXA5000-8Q vGPU attached.
   labels:
     instancetype.kubevirt.io/class: "gpu.nvidia"
     instancetype.kubevirt.io/icon-pf: "fa-microchip"
@@ -89,4 +89,4 @@ spec:
     guest: 16Gi
   gpus:
     - name: "gpu0"
-      deviceName: "nvidia.com/NVIDIA_RTXA5000-4Q"
+      deviceName: "nvidia.com/NVIDIA_RTXA5000-8Q"
