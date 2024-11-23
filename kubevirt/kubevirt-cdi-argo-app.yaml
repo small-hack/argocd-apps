@@ -23,7 +23,7 @@ spec:
     chart: kubevirt-cdi
     helm:
       values: |
-        replicaCount: 1
+        replicaCount: 2
 
         image:
           repository: quay.io/kubevirt/cdi-operator
