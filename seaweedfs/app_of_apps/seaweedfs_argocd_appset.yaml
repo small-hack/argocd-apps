@@ -44,7 +44,7 @@ spec:
         # path: k8s/charts/seaweedfs/
 
         repoURL: 'https://seaweedfs.github.io/seaweedfs/helm'
-        targetRevision: 4.0.377
+        targetRevision: 4.0.379
         chart: seaweedfs
         helm:
           releaseName: seaweedfs
