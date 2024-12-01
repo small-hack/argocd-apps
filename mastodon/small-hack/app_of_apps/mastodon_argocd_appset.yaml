@@ -155,7 +155,7 @@ spec:
                 # Note that setting this value higher may cause significant
                 # database load
                 - name: MAX_FEED_HASHTAGS
-                  value: "6"
+                  value: "10"
                 # Maximum allowed display name characters
                 - name: MAX_DISPLAY_NAME_CHARS
                   value: "64"
@@ -164,13 +164,13 @@ spec:
                   value: "800"
                 # Maximum allowed poll options
                 - name: MAX_POLL_OPTIONS
-                  value: "10"
+                  value: "12"
                 # Maximum allowed poll option characters
                 - name: MAX_POLL_OPTION_CHARS
-                  value: "150"
+                  value: "250"
                 # Maximim number of profile fields allowed
                 - name: MAX_PROFILE_FIELDS
-                  value: "6"
+                  value: "8"
                 # Maximum image and video/audio upload sizes
                 - name: MAX_IMAGE_SIZE
                   # 64MB for photos
