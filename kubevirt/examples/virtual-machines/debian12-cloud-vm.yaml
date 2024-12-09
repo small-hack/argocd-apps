@@ -11,38 +11,159 @@ spec:
   source:
     path: ''
     repoURL: 'https://cloudymax.github.io/kubevirt-community-stack/'
-    targetRevision: 0.2.5
+    targetRevision: 0.4.1
     chart: kubevirt-vm
     helm:
-      values: |
+      valuesObject:
+        ##########################
+        # Virtual Machine settings
         virtualMachine:
-          name: debian12
+          # -- name of the virtualMachine or virtualMachinePool object
+          name: test
+          # -- namespace to deploy to
           namespace: kubevirt
+          # -- One of 'Always' `RerunOnFailure` `Manual` `Halted` `Once`
+          # See: https://kubevirt.io/user-guide/compute/run_strategies/#runstrategy
           runStrategy: "RerunOnFailure"
           features:
-             kvmEnabled: true
-             acpiEnabled: true
-             smmEnabled: true
-             efiEnabled: false
-             autoattachPodInterface: true
-             autoattachSerialConsole: true
-             autoattachGraphicsDevice: true
+            # -- Enable KVM acceleration
+            kvmEnabled: true
+            # -- obscure virtualization details from the guest OS
+            kvmHidden: false
+            # Enable ACPI platform event device
+            acpiEnabled: true
+            # Enable System Management Mode (required for secureboot)
+            smmEnabled: true
+            # -- Enable EFI bios
+            efiEnabled: true
+            # -- Enable Secure boot (Requires EFI)
+            secureBoot: false
+            # -- Make pod network interface the default for the VM
+            autoattachPodInterface: true
+            # -- Attach a serial console device
+            autoattachSerialConsole: true
+            # -- Attach a basic graphics device for VNC access
+            autoattachGraphicsDevice: true
+            # -- Enhances network performance by allowing multiple TX and RX queues.
+            networkInterfaceMultiqueue: true
+            # -- Set default hyperv settings for windows guests
+            hyperv: false
+            # -- Options for machine clock
+            clock:
+              enabled: true
+              # -- High Precision Event Timer
+              hpet:
+                enabled: true
+                present: false
+              # -- Programmable interval timer
+              pit:
+                enabled: true
+                tickPolicy: delay
+              # -- Real-Time Clock
+              rtc:
+                enabled: true
+                tickPolicy: catchup
+              kvm: true
+              hyperv: false
           machine:
-            machineType: "q35"
-            cpuPassthrough: false
+            # -- If a Pod cannot be scheduled, lower priorityClass Pods will be evicted
+            priorityClassName: vm-standard
+            # -- Define CPU, RAM, GPU, HostDevice settings for VMs.
+            # Overrides: vCores, memory, gpus
+            instancetype:
+              enabled: true
+              name: standard-small
+              kind: virtualMachineClusterInstancetype
+            # -- Arch
+            architecture: amd64
+            # -- QEMU virtual-machine type
+            machineType: q35
+            # -- Specify hots-passthrough or a named cpu model
+            # https://www.qemu.org/docs/master/system/qemu-cpu-models.html
+            cpuModel: host-passthrough
+            # -- Number of Virtual cores to pass to the Guest
+            # ignored when instancetype is defined
             vCores: 4
+            # -- Pin QEMU process to specific physical cores
+            # Requires `--cpu-manager-policy` enabled in kubelet
             pinCores: false
+            # -- Enable the use of Hyperthreading on Intel CPUs. Disable on AMD CPUs.
             hyperThreadingEnabled: false
-            memory: 8Gi
-          gpus:
-          - name: gpu0
-            deviceName: nvidia.com/GRID_M60-2Q
-        
+            # -- Amount of RAM to pass to the Guest. Ignored when instancetype is defined
+            memory: 4Gi
+          # -- GPUs to pass to guest, requires that the GPUs are pre-configured in the
+          # kubevirt custom resource. ignored when instancetype is defined
+          gpus: []
+          # - name: gpu0
+          # deviceName: nvidia.com/AD104_GeForce_RTX4070Ti
+
+          # -- virtual network interface config options.
+          # See: https://kubevirt.io/user-guide/network/interfaces_and_networks/#interfaces
+          interfaces:
+            # -- bridge mode, vms are connected to the network via a linux "bridge".
+            # Pod network IP is delegated to vm via DHCPv4. VM must use DHCP for an IP
+            - bridge: {}
+              name: default
+          networks:
+            # Use the default pod network
+            - name: default
+              pod: {}
+        #########################
+        # Create a Virtual Machine Pool
+        # Vm pools should be used with ephemeral disks or containerdisks
+        # otherwise they would all fight over the same PVC
         virtualMachinePool:
           enabled: true
-          size: 1
-        
+          # -- number of replicas to create. Ignored when hpa is set to 'true'
+          replicas: 1
+          hpa:
+            enabled: false
+            maxReplicas: 5
+            minReplicas: 1
+        #############################
+        # -- controls hypervisor behavior when IO errors occur on disk read or write.
+        # Possible values are: 'report', 'ignore', 'enospace'
+        diskErrorPolicy: "report"
+        #############################
+        # -- List of disks to create for the VM, Will be used to create Datavolumes or PVCs.
         disks:
+          #################################################
+          # DataVolume disk with URL source example
+          #################################################
+          # - name: harddrive
+          #
+          #   # -- Disk type: disk, cdrom, filesystem, or lun
+          #   type: disk
+          #
+          #   # -- Bus type: sata or virtio
+          #   bus: virtio
+          #
+          #   # -- Sets disk position in boot order, lower numbers are checked earlier
+          #   bootorder: 2
+          #
+          #   # -- Set disk to be Read-only
+          #   readonly: false
+          #
+          #   # -- Size of disk in GB
+          #   pvsize: 32G
+          #
+          #   # -- Storage class to use for the pvc
+          #   pvstorageClass: local-path
+          #
+          #   # -- Access mode for the PVC
+          #   pvaccessMode: ReadWriteOnce
+          #
+          #   # -- source type of the disk image. One of `url`, `pvc`
+          #   source: url
+          #
+          #   # -- URL of cloud-image
+          #   url: "https://cloud.debian.org/images/cloud/bookworm/daily/latest/debian-12-generic-amd64-daily.qcow2"
+
+          #########################################################
+          # Ephemeral disk example
+          # no persistance, these are deleted after the VM exists
+          # requires an existing PVC as a backing file
+          #########################################################
           - name: harddrive
             type: disk
             bus: virtio
@@ -50,16 +171,111 @@ spec:
             readonly: false
             pvc: debian12
             ephemeral: true
-          - name: cloudinitvolume
-            type: cdrom
-            bus: sata
-            readonly: true
-            bootorder: 1
-            pv-enable: false
-        
+        ########################################################
+        # DataVolume disk with existing PVC source example
+        ########################################################
+        # - name: harddrive
+        #   type: disk
+        #   bus: virtio
+        #   bootorder: 2
+        #   readonly: false
+        #   pvsize: 64G
+        #   pvstorageClassName: local-path
+        #   nodePlacement: bradley
+        #   pvaccessMode: ReadWriteOnce
+        #   source: pvc
+        #   pvcnamespace: kubevirt
+        #   pvcname: debian12
+
+        ##########################################################
+        # ISO live-image example
+        ##########################################################
+        # - name: iso
+        #   type: cdrom
+        #   bus: sata
+        #   bootorder: 1
+        #   readonly: true
+        #   pvsize: 8G
+        #   pvstorageClassName: local-path
+        #   nodePlacement: node0
+        #   pvaccessMode: ReadWriteOnce
+        #   source: "https://www.itechtics.com/?dl_id=173"
+
+        ##########################################################
+        # Empty PVC as disk example
+        ##########################################################
+        # - name: harddrive
+        #   type: disk
+        #   bus: virtio
+        #   bootorder: 2
+        #   readonly: false
+        #   pvsize: 32G
+        #   pvstorageClassName: local-path
+        #   nodePlacement: node0
+        #   pvaccessMode: ReadWriteOnce
+
+        ##########################################################
+        # Container Disk Example
+        ##########################################################
+        # - name: virtio-drivers
+        #   type: cdrom
+        #   bus: sata
+        #   bootorder: 3
+        #   readonly: true
+        #   image: "quay.io/kubevirt/virtio-container-disk:v1.0.0-rc.1-amd64"
+
+        ###########################################################
+        # Local Disk example
+        # Not working, will have to open a ticket
+        # disks need to be owned by 107:messagebus
+        # disks cannot be mounted, file systems unidentifiable
+        ###########################################################
+        # - name: localfile
+        #   type: hostDisk
+        #   # -- Enter a capacity amount to create a new disk
+        #   # otherwise expects an existing disk
+        #   capacity: 500G
+        #   path: /mnt/raid1/hdd2.img
+
+        ###########################################################
+        # ConfigMap example
+        # Attach a configmap to VM as an ISO disk or FileSystem
+        # Must be mounted via cloud init
+        # see https://kubevirt.io/user-guide/storage/disks_and_volumes/#as-a-disk and
+        # https://kubevirt.io/user-guide/storage/disks_and_volumes/#as-a-filesystem
+        #
+        # Configmaps may also specify the volumeLable field which informs the guest OS
+        # of the disk name. Useful for windows vms.
+        ###########################################################
+        #  - name: my-configmap
+        #    type: configmap
+        #    volumeLabel: cfgdata
+        #    method: disk
+        #    bootorder: 3
+        #    readonly: true
+        #    configMap: my-configmap
+        #    serialNumber: CVLY623300HK240D
+
+        ###########################################################
+        # ConfigMap example
+        # Attach a configmap to VM as an ISO disk or FileSystem
+        # Must be mounted via cloud init
+        # see https://kubevirt.io/user-guide/storage/disks_and_volumes/#as-a-disk and
+        # https://kubevirt.io/user-guide/storage/disks_and_volumes/#as-a-filesystem
+        ###########################################################
+        #  - name: my-secret
+        #    type: secret
+        #    method: disk
+        #    bootorder: 3
+        #    readonly: true
+        #    secretName: test
+        #    serialNumber: CVLY623300HK240D
+
+        # -- Service cinfiguration. Used to expose VM to the outside world.
+        # Accepts a list of ports to open.
         service:
-          - name: vm0-service
-            type: LoadBalancer
+          - name: service
+            type: NodePort
             externalTrafficPolicy: Cluster
             ports:
               - name: ssh
@@ -70,60 +286,119 @@ spec:
                 port: 5900
                 targetPort: 5900
                 protocol: TCP
-              - name: https
-                port: 443
-                targetPort: 443
-                protocol: TCP
-        
-        cloudinitPath:
-        cloudinitFromSecret: false
+        # -- set tieming and port number for liveness probe
+        # livenessProbe:
+        #   initialDelaySeconds: 120
+        #   periodSeconds: 20
+        #   tcpSocket:
+        #     port: 1500
+        #   timeoutSeconds: 10
+
+        # -- set tieming and port number for readiness probe
+        # readinessProbe:
+        #   initialDelaySeconds: 120
+        #   periodSeconds: 20
+        #   timeoutSeconds: 10
+        #   failureThreshold: 3
+        #   successThreshold: 3
+        #   httpGet:
+        #     port: 1500
+
+        # -- Use an existing cloud-init userdata secret
+        # ignored if cloudinit subchart is enabled.
+        userDataSecret:
+          enabled: false
+          name: ""
+        # -- Enable or disable usage of cloud-init sub-chart
         cloudinit:
-          hostname: scrapmetal
+          enabled: true
+          # Not all cloud-init modules are currently supported
+          # https://cloudinit.readthedocs.io/en/latest/reference/modules.html
+
+          # -- name of secret in which to save the user-data file
+          secret_name: test-scrapmetal-user-data
+          # -- image version
+          image: deserializeme/kv-cloud-init:v0.0.1
+          # -- Choose weather to create a service-account or not. Once a SA has been created
+          # you should set this to false on subsequent runs.
+          serviceAccount:
+            create: false
+            name: cloud-init-sa
+            existingServiceAccountName: "cloud-init-sa"
+          # -- Dont recreate script configmap. Set to true when keeping multiple
+          # cloud-init secrets in the same namespace
+          existingConfigMap: true
+          # -- Run envsubst against bootcmd and runcmd fields at the beginning of templating
+          # Not an official part of cloid-init
+          envsubst: false
+          extraEnvVars: []
+          # -- virtual-machine hostname
+          hostname: test
+          # -- namespace in which to create resources
+          namespace: kubevirt
+          # -- Disable root login over ssh
           disable_root: false
+          # -- when enabled job sleeps to allow user to exec into the container
+          debug: false
+          # -- salt used for password generation
+          salt: "saltsaltlettuce"
+          # -- networking options
           network:
+            # --  disable cloud-init’s network configuration capability and rely on
+            # other methods such as embedded configuration or other customisations.
             config: disabled
+          # -- add wireguard configuration from existing secret or as plain-text
+          # See https://cloudinit.readthedocs.io/en/latest/reference/modules.html#wireguard
           wireguard: []
-          groups:
-            - docker
-            - kvm
+          #  interfaces:
+          #    - name: wg0
+          #      config_path: /etc/wireguard/wg0.conf
+          #      existingSecret:
+          #        name: wg0-credentials
+          #        key: wg0.conf
+
+          # -- user configuration options
+          # See https://cloudinit.readthedocs.io/en/latest/reference/modules.html#users-and-groups
+          # do NOT use 'admin' as username - it conflicts with multiele cloud-images
           users:
-            - name: friend
-              groups: users, admin, sudo
+            - name: test
+              groups: users, admin, docker, sudo, kvm
               sudo: ALL=(ALL) NOPASSWD:ALL
               shell: /bin/bash
               lock_passwd: false
-              passwd: "$6$rounds=4096$saltsaltlettuce$Lp/FV.2oOgew7GbM6Nr8KMGMBn7iFM0x9ZwLqtx9Y4QJmKvfcnS.2zx4MKmymCPQGpHS7gqYOiqWjvdCIV2uN."
-              ssh_import_id: []
-              ssh_authorized_keys: []
-          ca_certs: []
-          boot_cmd: []
-          write_as_b64: false
-          write_files: []
-          package_update: true
-          package_upgrade: true
-          packages:
-            - ssh-import-id
-            - git
-            - git-extras
-            - htop
-            - clang
-            - qemu-guest-agent
-          runcmd:
-            - sudo -u friend -i ssh-import-id-gh cloudymax
-            - sudo systemctl start qemu-guest-agent
-            - wget https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh
-            - chmod +x /install.sh
-            - chmod 777 /install.sh
-            - sudo -u friend -i NONINTERACTIVE=1 /bin/bash /install.sh
-            - sudo -u friend -i /home/linuxbrew/.linuxbrew/bin/brew shellenv >> /home/friend/.bashrc
-            - sudo chown -R friend:friend /home/friend
-            - sudo chown -R friend:friend /home/linuxbrew
-  sources: []
-  project: default
-  syncPolicy:
-    automated:
-      prune: false
-      selfHeal: false
-    syncOptions:
-      - CreateNamespace=true
+              # -- set user password from existing secret or generate random
+              password:
+                random: true
+              #  random: false
+              #  existingSecret:
+              #    name: admin-password
+              #    key: password
 
+              # -- import user ssh public keys from github, gitlab, or launchpad
+              # See https://cloudinit.readthedocs.io/en/latest/reference/modules.html#ssh
+              ssh_import_id: []
+              # -- provider user ssh pub key as plaintext
+              ssh_authorized_keys: []
+          # -- Add CA certificates
+          # See https://cloudinit.readthedocs.io/en/latest/reference/modules.html#ca-certificates
+          ca_certs: []
+          #  remove_defaults: true
+          #  trusted:
+          #    - certificate
+
+          # -- Run arbitrary commands early in the boot process
+          # See https://cloudinit.readthedocs.io/en/latest/reference/modules.html#bootcmd
+          boot_cmd: []
+          # -- Write arbitrary files to disk.
+          # Files my be provided as plain-text or downloaded from a url
+          # See https://cloudinit.readthedocs.io/en/latest/reference/modules.html#write-files
+          write_files: []
+          # -- Update, upgrade, and install packages
+          # See https://cloudinit.readthedocs.io/en/latest/reference/modules.html#package-update-upgrade-install
+          package_reboot_if_required: false
+          package_update: false
+          package_upgrade: false
+          packages: []
+          # -- Run arbitrary commands
+          # See https://cloudinit.readthedocs.io/en/latest/reference/modules.html#runcmd
+          runcmd: []
