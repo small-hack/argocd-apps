@@ -37,7 +37,7 @@ spec:
             # -- Attach a serial console device
             autoattachSerialConsole: true
             # -- Attach a basic graphics device for VNC access
-            autoattachGraphicsDevice: true
+            autoattachGraphicsDevice: false
             # -- Enhances network performance by allowing multiple TX and RX queues.
             networkInterfaceMultiqueue: true
             # -- Set default hyperv settings for windows guests
