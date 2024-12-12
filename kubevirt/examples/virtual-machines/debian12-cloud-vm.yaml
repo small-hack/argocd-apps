@@ -11,7 +11,7 @@ spec:
   source:
     path: ''
     repoURL: 'https://cloudymax.github.io/kubevirt-community-stack/'
-    targetRevision: 0.4.1
+    targetRevision: 0.4.2
     chart: kubevirt-vm
     helm:
       valuesObject:
@@ -27,17 +27,11 @@ spec:
           runStrategy: "RerunOnFailure"
           features:
             # -- Enable KVM acceleration
-            kvmEnabled: true
-            # -- obscure virtualization details from the guest OS
-            kvmHidden: false
+            kvm:
+              enabled: true
+              hidden: true
             # Enable ACPI platform event device
             acpiEnabled: true
-            # Enable System Management Mode (required for secureboot)
-            smmEnabled: true
-            # -- Enable EFI bios
-            efiEnabled: true
-            # -- Enable Secure boot (Requires EFI)
-            secureBoot: false
             # -- Make pod network interface the default for the VM
             autoattachPodInterface: true
             # -- Attach a serial console device
@@ -65,6 +59,16 @@ spec:
                 tickPolicy: catchup
               kvm: true
               hyperv: false
+          
+          firmware:
+            # Enable System Management Mode (required for secureboot)
+            smmEnabled: false
+            # -- Enable EFI bios and secureboot
+            efi:
+              enabled: true
+              secureBoot: false
+              uuid: 5d307ca9-b3ef-428c-8861-06e72d69f223
+    
           machine:
             # -- If a Pod cannot be scheduled, lower priorityClass Pods will be evicted
             priorityClassName: vm-standard
@@ -93,17 +97,24 @@ spec:
             memory: 4Gi
           # -- GPUs to pass to guest, requires that the GPUs are pre-configured in the
           # kubevirt custom resource. ignored when instancetype is defined
-          gpus: []
-          # - name: gpu0
-          # deviceName: nvidia.com/AD104_GeForce_RTX4070Ti
+          gpus:
+          - name: gpu0
+            deviceName: nvidia.com/GRID_RTX6000-4Q
+            virtualGPUOptions:
+              display:
+                enabled: true
+              ramFB:
+                enabled: true
 
           # -- virtual network interface config options.
           # See: https://kubevirt.io/user-guide/network/interfaces_and_networks/#interfaces
           interfaces:
             # -- bridge mode, vms are connected to the network via a linux "bridge".
             # Pod network IP is delegated to vm via DHCPv4. VM must use DHCP for an IP
-            - bridge: {}
+            - masquerade: {}
               name: default
+              model: virtio
+              
           networks:
             # Use the default pod network
             - name: default
