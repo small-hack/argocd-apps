@@ -103,8 +103,8 @@ spec:
             virtualGPUOptions:
               display:
                 enabled: true
-              ramFB:
-                enabled: true
+                ramFB:
+                  enabled: true
 
           # -- virtual network interface config options.
           # See: https://kubevirt.io/user-guide/network/interfaces_and_networks/#interfaces
