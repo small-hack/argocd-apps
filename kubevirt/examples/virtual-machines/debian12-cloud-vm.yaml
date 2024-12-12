@@ -75,7 +75,7 @@ spec:
             # -- Define CPU, RAM, GPU, HostDevice settings for VMs.
             # Overrides: vCores, memory, gpus
             instancetype:
-              enabled: true
+              enabled: false
               name: standard-small
               kind: virtualMachineClusterInstancetype
             # -- Arch
