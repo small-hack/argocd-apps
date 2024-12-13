@@ -4,6 +4,7 @@ kind: Application
 metadata:
   name: debian12-cloud-vm
 spec:
+ project: default
   destination:
     name: ''
     namespace: kubevirt
@@ -14,7 +15,7 @@ spec:
     targetRevision: 0.4.3
     chart: kubevirt-vm
     helm:
-      valuesObject:
+      values: |
         ##########################
         # Virtual Machine settings
         virtualMachine:
