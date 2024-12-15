@@ -55,7 +55,7 @@ spec:
           selfHeal: true
       source:
         repoURL: 'https://small-hack.github.io/matrix-chart'
-        targetRevision: 16.0.2
+        targetRevision: 17.1.0
         chart: matrix
         # repoURL: 'https://github.com/small-hack/matrix-chart'
         # targetRevision: main
@@ -460,6 +460,8 @@ spec:
               # to connect via any other instances of Element e.g. https://app.element.io,
               # Element Desktop, or any other Matrix clients
               enabled: true
+
+              revisionHistoryLimit: 1
 
               ingress:
                 # -- enable ingress for element
