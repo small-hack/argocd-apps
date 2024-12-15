@@ -4,14 +4,26 @@
   },
   "packageRules": [
     {
-      "matchManagers": ["argocd", "helmv3", "helm-values"],
-      "matchUpdateTypes": ["patch", "minor"],
+      "description": "Update Prometheus Stack CRDs at the same time as the ArgoCD Application",
+      "matchManagers": ["argocd", "kuberentes", "helmv3", "helm-values"],
+      "matchPackageNames": ["kube-prometheus-stack"],
+      "postUpgradeTasks": {
+        "commands": [
+          "bash scripts/autoupdate-prometheus-crds.sh '{{{newVersion}}}'"
+        ],
+        "fileFilters": [
+          "./prometheus/app_of_apps_with_matrix/prometheus_argocd_appset.yaml",
+          "./prometheus/app_of_apps/prometheus_argocd_appset.yaml",
+          "prometheus/crds/prometheus_crds_argocd_app.yaml"
+        ],
+        "executionMode": "branch"
+      },
       "automerge": true,
       "ignoreTests": true
     },
     {
-      "matchManagers": ["github-actions"],
-      "matchUpdateTypes": ["patch"],
+      "matchManagers": ["argocd", "helmv3", "helm-values", "kuberentes", "github-actions"],
+      "matchUpdateTypes": ["patch", "minor"],
       "automerge": true,
       "ignoreTests": true
     },
@@ -22,23 +34,5 @@
       "automerge": true,
       "ignoreTests": true
     },
-    {
-    "description": "Update Prometheus Stack CRDs at the same time as the ArgoCD Application",
-    "matchManagers": ["argocd", "helmv3", "helm-values"],
-    "matchPackageNames": ["kube-prometheus-stack"],
-    "postUpgradeTasks": {
-      "commands": [
-        "bash scripts/autoupdate-prometheus-crds.sh '{{{newVersion}}}'"
-      ],
-      "fileFilters": [
-                    "./prometheus/app_of_apps_with_matrix/prometheus_argocd_appset.yaml",
-                    "./prometheus/app_of_apps/prometheus_argocd_appset.yaml",
-                    "prometheus/crds/prometheus_crds_argocd_app.yaml"
-                ],
-      "executionMode": "branch"
-      },
-    "automerge": true,
-    "ignoreTests": true
-    }
   ]
 }
