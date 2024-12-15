@@ -15,9 +15,9 @@ spec:
         input:
           parameters:
             secret_vars:
-              - collabora_online_hostname
               - global_cluster_issuer
               - global_time_zone
+              - nextcloud_collabora_hostname
               - nextcloud_default_phone_region
               - nextcloud_hostname
               - nextcloud_mail_domain
@@ -632,12 +632,12 @@ spec:
                 # extra_params: --o:ssl.enable=false --o:ssl.termination=true
 
                 ## Specify server_name when the hostname is not reachable directly for example behind reverse-proxy
-                server_name: '{{ .collabora_online_hostname }}'
+                server_name: '{{ .nextcloud_collabora_hostname }}'
 
                 # setup admin login credentials
                 existingSecret:
                   enabled: true
-                  secretName: "collabora-credentials"
+                  secretName: "collabora-admin-credentials"
                   usernameKey: "username"
                   passwordKey: "password"
 
@@ -649,14 +649,14 @@ spec:
                 annotations:
                   cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
                 hosts:
-                  - host: '{{ .collabora_online_hostname }}'
+                  - host: '{{ .nextcloud_collabora_hostname }}'
                     paths:
                     - path: /
                       pathType: ImplementationSpecific
                 tls:
                  - secretName: collabora-ingress-tls
                    hosts:
-                     - '{{ .collabora_online_hostname }}'
+                     - '{{ .nextcloud_collabora_hostname }}'
 
               # see collabora helm README.md for recommended values
               resources: {}
