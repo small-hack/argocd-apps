@@ -46,9 +46,11 @@ spec:
           prune: true
           selfHeal: true
       source:
-        repoURL: 'https://nextcloud.github.io/helm'
-        targetRevision: 6.3.2
-        chart: nextcloud
+        # repoURL: 'https://nextcloud.github.io/helm'
+        # chart: nextcloud
+        repoURL: 'https://github.com/nextcloud/helm'
+        targetRevision: 10cae24593c059bab6135d3c829f898f97d97fad
+        path: charts/nextcloud/
         helm:
           valuesObject:
             image:
