@@ -26,13 +26,6 @@
       "matchUpdateTypes": ["patch", "minor"],
       "automerge": true,
       "ignoreTests": true
-    },
-    {
-      "matchManagers": ["github-actions"],
-      "matchPackageNames": ["renovatebot/github-action"],
-      "matchUpdateTypes": ["patch", "minor"],
-      "automerge": true,
-      "ignoreTests": true
     }
   ]
 }
