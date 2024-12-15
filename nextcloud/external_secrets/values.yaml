@@ -34,3 +34,7 @@ redisBitwardenID: ""
 
 # -- nextcloud OIDC Credentials
 oidcCredentialsBitwardenID: ""
+
+collabora:
+  # -- collabora online admin crdentials bitwarden ID
+  adminCredentialsBitwardenID: ""

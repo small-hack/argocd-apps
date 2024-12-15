@@ -15,6 +15,7 @@ spec:
         input:
           parameters:
             secret_vars:
+              - collabora_online_hostname
               - global_cluster_issuer
               - global_time_zone
               - nextcloud_default_phone_region
@@ -40,7 +41,7 @@ spec:
           selfHeal: true
       source:
         repoURL: 'https://nextcloud.github.io/helm'
-        targetRevision: 6.3.2
+        targetRevision: 6.4.0
         chart: nextcloud
         helm:
           valuesObject:
@@ -615,3 +616,47 @@ spec:
 
             rbac:
               enabled: true
+
+            ## Collabora chart configuration
+            ## for more options see https://github.com/CollaboraOnline/online/tree/master/kubernetes/helm/collabora-online
+            collabora:
+              enabled: true
+              # please check collabora README.md first
+              autoscaling:
+                enabled: false
+
+              collabora:
+                ## HTTPS nextcloud domain, if needed
+                # aliasgroups:
+                #   - host: "https://nextcloud.domain:443"
+                # extra_params: --o:ssl.enable=false --o:ssl.termination=true
+
+                ## Specify server_name when the hostname is not reachable directly for example behind reverse-proxy
+                server_name: '{{ .collabora_online_hostname }}'
+
+                # setup admin login credentials
+                existingSecret:
+                  enabled: true
+                  secretName: "collabora-credentials"
+                  usernameKey: "username"
+                  passwordKey: "password"
+
+              # setup ingress
+              ingress:
+                enabled: true
+                className: "nginx"
+                # please check collabora values.yaml for nginx/haproxy annotations examples
+                annotations:
+                  cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
+                hosts:
+                  - host: '{{ .collabora_online_hostname }}'
+                    paths:
+                    - path: /
+                      pathType: ImplementationSpecific
+                tls:
+                 - secretName: collabora-ingress-tls
+                   hosts:
+                     - '{{ .collabora_online_hostname }}'
+
+              # see collabora helm README.md for recommended values
+              resources: {}

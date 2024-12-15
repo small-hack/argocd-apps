@@ -1,0 +1,82 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: collabora-online-appset
+  namespace: argocd
+spec:
+  goTemplate: true
+  # generator allows us to source specific values from an external k8s secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - global_cluster_issuer
+              - global_time_zone
+              - collabora_online_hostname
+  template:
+    metadata:
+      name: collabora-online-web-app
+      annotations:
+        argocd.argoproj.io/sync-wave: "3"
+    spec:
+      project: collabora-online
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: collabora-online
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
+          selfHeal: true
+      source:
+        repoURL: 'https://collaboraonline.github.io/online'
+        targetRevision: 1.1.20
+        chart: collabora-online
+        helm:
+          ## Collabora chart configuration
+          ## for more options see https://github.com/CollaboraOnline/online/tree/master/kubernetes/helm/collabora-online
+          valuesObject:
+            # please check collabora README.md first
+            autoscaling:
+              enabled: false
+
+            collabora:
+              ## HTTPS nextcloud domain, if needed
+              # aliasgroups:
+              #   - host: "https://nextcloud.domain:443"
+              # extra_params: --o:ssl.enable=false --o:ssl.termination=true
+
+              ## Specify server_name when the hostname is not reachable directly for example behind reverse-proxy
+              server_name: '{{ .collabora_online_hostname }}'
+
+              # setup admin login credentials
+              existingSecret:
+                enabled: true
+                secretName: "collabora-credentials"
+                usernameKey: "username"
+                passwordKey: "password"
+
+            # setup ingress
+            ingress:
+              enabled: true
+              className: "nginx"
+              # please check collabora values.yaml for nginx/haproxy annotations examples
+              annotations:
+                cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
+              hosts:
+                - host: '{{ .collabora_online_hostname }}'
+                  paths:
+                  - path: /
+                    pathType: ImplementationSpecific
+              tls:
+               - secretName: collabora-ingress-tls
+                 hosts:
+                   - '{{ .collabora_online_hostname }}'
+
+            # see collabora helm README.md for recommended values
+            resources: {}
