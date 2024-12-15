@@ -12,8 +12,8 @@
           "bash scripts/autoupdate-prometheus-crds.sh '{{{newVersion}}}'"
         ],
         "fileFilters": [
-          "./prometheus/app_of_apps_with_matrix/prometheus_argocd_appset.yaml",
-          "./prometheus/app_of_apps/prometheus_argocd_appset.yaml",
+          "prometheus/app_of_apps_with_matrix/prometheus_argocd_appset.yaml",
+          "prometheus/app_of_apps/prometheus_argocd_appset.yaml",
           "prometheus/crds/prometheus_crds_argocd_app.yaml"
         ],
         "executionMode": "branch"
