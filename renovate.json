@@ -4,13 +4,7 @@
   },
   "packageRules": [
     {
-      "matchManagers": ["argocd"],
-      "matchUpdateTypes": ["patch", "minor"],
-      "automerge": true,
-      "ignoreTests": true
-    },
-    {
-      "matchManagers": ["helm"],
+      "matchManagers": ["argocd", "helmv3", "helm-values"],
       "matchUpdateTypes": ["patch", "minor"],
       "automerge": true,
       "ignoreTests": true
@@ -30,7 +24,7 @@
     },
     {
     "description": "Update Prometheus Stack CRDs at the same time as the ArgoCD Application",
-    "matchManagers": ["argocd", "helm"],
+    "matchManagers": ["argocd", "helmv3", "helm-values"],
     "matchPackageNames": ["kube-prometheus-stack"],
     "postUpgradeTasks": {
       "commands": [
