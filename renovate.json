@@ -33,6 +33,6 @@
       "matchUpdateTypes": ["patch", "minor"],
       "automerge": true,
       "ignoreTests": true
-    },
+    }
   ]
 }
