@@ -57,7 +57,7 @@ spec:
               # setup admin login credentials
               existingSecret:
                 enabled: true
-                secretName: "collabora-credentials"
+                secretName: "collabora-admin-credentials"
                 usernameKey: "username"
                 passwordKey: "password"
 
