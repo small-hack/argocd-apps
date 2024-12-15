@@ -52,7 +52,7 @@ spec:
           valuesObject:
             image:
               repository: jessebot/nextcloud
-              tag: 30.0.1-fpm-alpine
+              tag: 30.0.4-fpm-alpine
               pullPolicy: IfNotPresent
 
             tolerations:
