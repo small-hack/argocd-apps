@@ -17,7 +17,7 @@ spec:
             secret_vars:
               - zitadel_hostname
               - matrix_hostname
-              - matrix_sliding_sync_hostname
+              # - matrix_sliding_sync_hostname
               - matrix_auth_hostname
               - matrix_element_hostname
               - matrix_federation_hostname
@@ -46,9 +46,6 @@ spec:
         repoURL: 'https://small-hack.github.io/matrix-chart'
         targetRevision: 16.0.2
         chart: matrix
-        # repoURL: 'https://github.com/small-hack/matrix-chart'
-        # targetRevision: add-sliding-sync-subchart
-        # path: charts/matrix/
         helm:
           valuesObject:
             fullnameOverride: matrix-stack
@@ -79,9 +76,9 @@ spec:
               adminEmail: '{{ .matrix_admin_email }}'
 
               # -- needed for sliding sync to work
-              extra_well_known_client_content:
-                "org.matrix.msc3575.proxy":
-                  "url": "https://{{ .matrix_sliding_sync_hostname }}"
+              # extra_well_known_client_content:
+              #   "org.matrix.msc3575.proxy":
+              #     "url": "https://{{ .matrix_sliding_sync_hostname }}"
 
               # -- Settings related to image and multimedia uploads
               uploads:
@@ -485,37 +482,31 @@ spec:
 
             # values for https://github.com/small-hack/matrix-sliding-sync-chart
             # it's called syncv3 because that's what the directory in the official repo calls it
+            # This is only needed if you're running an older version of synapse before v1.114
             syncv3:
               fullnameOverride: "syncv3"
-              enabled: true
+              enabled: false
               postgresql:
                 enabled: false
 
               serviceAccount:
                 create: true
-                # -- Automatically mount a ServiceAccount's API credentials?
-                automount: true
-                # -- Annotations to add to the service account
-                annotations: {}
-                # -- The name of the service account to use.
-                # If not set and create is true, a name is generated using the fullname template
-                name: ""
 
               ingress:
                 # syncv3 ingress
-                enabled: true
+                enabled: false
                 className: "nginx"
-                annotations:
-                  cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
-                hosts:
-                  - host: '{{ .matrix_sliding_sync_hostname }}'
-                    paths:
-                      - path: /
-                        pathType: ImplementationSpecific
-                tls:
-                  - secretName: syncv3-tls
-                    hosts:
-                      - '{{ .matrix_sliding_sync_hostname }}'
+                # annotations:
+                #   cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
+                # hosts:
+                #   - host: '{{ .matrix_sliding_sync_hostname }}'
+                #     paths:
+                #       - path: /
+                #         pathType: ImplementationSpecific
+                # tls:
+                #   - secretName: syncv3-tls
+                #     hosts:
+                #       - '{{ .matrix_sliding_sync_hostname }}'
 
               volumes:
                 - name: postgres-ca
