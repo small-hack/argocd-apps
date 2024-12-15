@@ -54,10 +54,8 @@ spec:
             image:
               repository: jessebot/mastodon-glitch-soc
               tag: v4.3.2
-              pullPolicy: Always
 
             mastodon:
-
               hooks:
                 dbMigrate:
                   enabled: true
