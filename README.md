@@ -59,12 +59,13 @@ Here's some quick guidelines, but you if you'd like to contribute, please read t
 
 ## File Storage and Backups
 
-| App Directory                  | Description                                                                                                                                                           |
-|:-------------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [k8up](./k8up)                 | [K8up](https://k8up.io/k8up/2.7/index.html) is a k8s native backups done via restic, so you can sync your persistent volumes to external s3 compliant storage         |
-| [nextcloud](./nextcloud)       | [Nextcloud](https://nextcloud.com/) is a self hosted file storage cloud solution. Replaces something like google drive/photos/notes/meets/calendar - mostly stable    |
-| [minio](./minio)               | [MinIO](https://min.io) is a secure self hosted S3 compatible Object Store.                                                                                           |
-| [seaweedfs](./seaweedfs) | [SeaweedFS](https://github.com/seaweedfs/seaweedfs) is a secure and very fast self hosted S3 compatible Object Store specialized for either many files or large files |
+| App Directory                          | Description                                                                                                                                                           |
+|:---------------------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [collabora online](./collabora_online) | [Collabora Online](https://www.collaboraonline.com/) is a powerful online document editing suite                                                                      |
+| [k8up](./k8up)                         | [K8up](https://k8up.io/k8up/2.7/index.html) is a k8s native backups done via restic, so you can sync your persistent volumes to external s3 compliant storage         |
+| [nextcloud](./nextcloud)               | [Nextcloud](https://nextcloud.com/) is a self hosted file storage cloud solution. Replaces something like google drive/photos/notes/meets/calendar - mostly stable    |
+| [minio](./minio)                       | [MinIO](https://min.io) is a secure self hosted S3 compatible Object Store.                                                                                           |
+| [seaweedfs](./seaweedfs)               | [SeaweedFS](https://github.com/seaweedfs/seaweedfs) is a secure and very fast self hosted S3 compatible Object Store specialized for either many files or large files |
 
 
 #### Experimental
