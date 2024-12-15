@@ -41,7 +41,7 @@ spec:
           selfHeal: true
       source:
         repoURL: 'https://small-hack.github.io/matrix-chart'
-        targetRevision: 16.0.2
+        targetRevision: 18.0.0
         chart: matrix
         helm:
           valuesObject:
@@ -371,8 +371,6 @@ spec:
             # Synapse Kubernetes resource settings
             synapse:
               image:
-                # -- image registry and repository to use for synapse
-                repository: "matrixdotorg/synapse"
                 # -- pullPolicy for synapse image, Use Always if using image.tag: latest
                 pullPolicy: IfNotPresent
 
