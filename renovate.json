@@ -6,22 +6,31 @@
     {
       "matchManagers": ["argocd"],
       "matchUpdateTypes": ["patch", "minor"],
-      "automerge": true
+      "automerge": true,
+      "ignoreTests": true
+    },
+    {
+      "matchManagers": ["helm"],
+      "matchUpdateTypes": ["patch", "minor"],
+      "automerge": true,
+      "ignoreTests": true
     },
     {
       "matchManagers": ["github-actions"],
       "matchUpdateTypes": ["patch"],
-      "automerge": true
+      "automerge": true,
+      "ignoreTests": true
     },
     {
       "matchManagers": ["github-actions"],
       "matchPackageNames": ["renovatebot/github-action"],
       "matchUpdateTypes": ["patch", "minor"],
-      "automerge": true
+      "automerge": true,
+      "ignoreTests": true
     },
     {
     "description": "Update Prometheus Stack CRDs at the same time as the ArgoCD Application",
-    "matchManagers": ["argocd"],
+    "matchManagers": ["argocd", "helm"],
     "matchPackageNames": ["kube-prometheus-stack"],
     "postUpgradeTasks": {
       "commands": [
@@ -33,7 +42,9 @@
                     "prometheus/crds/prometheus_crds_argocd_app.yaml"
                 ],
       "executionMode": "branch"
-      }
+      },
+    "automerge": true,
+    "ignoreTests": true
     }
   ]
 }
