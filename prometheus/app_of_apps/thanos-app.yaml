@@ -96,7 +96,7 @@ spec:
           persistence:
             enabled: true
             storageClass: default
-            size: 32i
+            size: 32Gi
 
           serviceAccount:
             create: true
