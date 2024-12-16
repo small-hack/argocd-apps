@@ -29,7 +29,7 @@ stringData:
       tail_proxy_url: http://loki-querier:3100
 
     frontend_worker:
-      frontend_address: http://loki-query-frontend-headless.monitoring.svc.cluster.local:9095
+      frontend_address: loki-query-frontend-headless.monitoring.svc.cluster.local:9095
 
     ingester:
       chunk_block_size: 262144
