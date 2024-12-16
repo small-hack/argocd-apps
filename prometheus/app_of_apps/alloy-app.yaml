@@ -15,7 +15,7 @@ spec:
   source:
     repoURL: 'https://grafana.github.io/helm-charts'
     chart: alloy
-    targetRevision: 0.7.0
+    targetRevision: 0.10.1
     helm:
       version: v3
       skipCrds: true
@@ -94,7 +94,7 @@ spec:
               loki.process "pod_logs" {
                 stage.static_labels {
                     values = {
-                      cluster = "dope-max",
+                      cluster = "${cluster_name}",
                     }
                 }
 

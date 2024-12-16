@@ -107,26 +107,35 @@ spec:
                     - '{{ .prometheus_hostname }}'
 
               thanosService:
-                enabled: true
+                # For use with SideCar only
+                enabled: false
+                annotations: {}
+                labels: {}
+
               thanosServiceMonitor:
-                enabled: true
+                # For use with SideCar only
+                enabled: false
+
+              disableCompaction: true
+
               prometheusSpec:
-                disableCompaction: true
-                storageSpec:
-                  volumeClaimTemplate:
-                    spec:
-                      storageClassName: local-path
-                      accessModes: ["ReadWriteOnce"]
-                      resources:
-                        requests:
-                          storage: 1Gi
-                thanos:
-                  create: true
-                  image: quay.io/thanos/thanos:v0.28.1
-                  objectStorageConfig:
-                    existingSecret:
-                      name: thanos-objstore-config
-                      key: thanos.yaml
+                tolerations: {}
+                nodeSelector: {}
+
+                # For use with Thanos SideCar only
+                # thanos:
+                #   create: false
+                #   image: quay.io/thanos/thanos:v0.28.1
+                #   objectStorageConfig:
+                #     existingSecret:
+                #       name: thanos-objstore-config
+                #       key: thanos.yaml
+
+                enabledRemoteWriteReceiver: false
+                remoteWriteDashboards: false
+
+                remoteWrite:
+                  - url: http://thanos-receive:19291/api/v1/receive
 
                 probeSelectorNilUsesHelmValues: false
                 probeSelector: {}
@@ -144,7 +153,6 @@ spec:
                 serviceMonitorSelector: {}
                 serviceMonitorNamespaceSelector: {}
 
-
                 additionalScrapeConfigsSecret:
                   enabled: false
                   name: additional-scrape-configs
@@ -158,7 +166,8 @@ spec:
                       resources:
                         requests:
                           storage: 32Gi
-                retention: 30d
+
+                retention: 7d
                 logLevel: info
 
               prometheusOperator:
@@ -171,37 +180,33 @@ spec:
                     - zitadel
                 admissionWebhooks:
                   certManager:
-                    enabled: true
+                    enabled: false
                   patch:
                     enabled: false
-
-            alertmanager:
-              enabled: true
-              annotations: {}
-              ingress:
-                enabled: true
-                ingressClassName: nginx
-                annotations:
-                  cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
-                  nginx.ingress.kubernetes.io/auth-signin: 'https://{{ .vouch_hostname }}/login?url=$scheme://$http_host$request_uri&vouch-failcount=$auth_resp_failcount&X-Vouch-Token=$auth_resp_jwt&error=$auth_resp_err'
-                  nginx.ingress.kubernetes.io/auth-url: 'https://{{ .vouch_hostname }}/validate'
-                  nginx.ingress.kubernetes.io/auth-response-headers: X-Vouch-User
-                  nginx.ingress.kubernetes.io/auth-snippet: |
-                    auth_request_set $auth_resp_jwt $upstream_http_x_vouch_jwt;
-                    auth_request_set $auth_resp_err $upstream_http_x_vouch_err;
-                    auth_request_set $auth_resp_failcount $upstream_http_x_vouch_failcount;
-                hosts:
-                  - '{{ .prometheus_alert_manager_hostname }}'
-                paths:
-                  - /
-                tls:
-                  - secretName: alertmanager-tls
-                    hosts:
-                    - '{{ .prometheus_alert_manager_hostname }}'
 
             grafana:
               plugins:
                 - redis-datasource
+                - grafana-piechart-panel
+                - grafana-lokiexplore-app
+
+              datasources:
+                enabled: true
+                defaultDatasourceEnabled: true
+                isDefaultDatasource: true
+                name: Thanos
+                uid: thanos
+                url: http://thanos-query-frontend.monitoring.svc.cluster.local:9090
+
+              additionalDataSources:
+                - name: loki
+                  access: proxy
+                  editable: false
+                  type: loki
+                  url: http://loki-query-frontend.monitoring.svc.cluster.local:3100
+                  jsonData:
+                    timeout: 60
+                    maxLines: 1000
 
               envValueFrom:
                 GF_AUTH_GENERIC_OAUTH_CLIENT_ID:
@@ -217,6 +222,12 @@ spec:
               grafana.ini:
                 auth:
                   disable_login_form: false
+                  publicDashboards: true
+
+                users:
+                  allow_sign_up: false
+                  auto_assign_org: true
+                  auto_assign_org_role: Admin
 
                 "auth.generic_oauth":
                   name: Zitadel
@@ -254,3 +265,88 @@ spec:
               scrape_timeout: 1m
               metrics_path: /metrics
               scheme: http
+
+            defaultRules:
+              create: true
+              rules:
+
+                kubeControllerManager:
+                  enabled: false
+                  service:
+                    enabled: false
+                  serviceMonitor:
+                    enabled: false
+
+                kubeScheduler:
+                  enabled: false
+                  service:
+                    enabled: false
+                  serviceMonitor:
+                    enabled: false
+
+            alertmanager:
+              enabled: true
+              annotations: {}
+              ingress:
+                enabled: true
+                ingressClassName: nginx
+                annotations:
+                  cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
+                  nginx.ingress.kubernetes.io/auth-signin: 'https://{{ .vouch_hostname }}/login?url=$scheme://$http_host$request_uri&vouch-failcount=$auth_resp_failcount&X-Vouch-Token=$auth_resp_jwt&error=$auth_resp_err'
+                  nginx.ingress.kubernetes.io/auth-url: 'https://{{ .vouch_hostname }}/validate'
+                  nginx.ingress.kubernetes.io/auth-response-headers: X-Vouch-User
+                  nginx.ingress.kubernetes.io/auth-snippet: |
+                    auth_request_set $auth_resp_jwt $upstream_http_x_vouch_jwt;
+                    auth_request_set $auth_resp_err $upstream_http_x_vouch_err;
+                    auth_request_set $auth_resp_failcount $upstream_http_x_vouch_failcount;
+                hosts:
+                  - '{{ .prometheus_alert_manager_hostname }}'
+                paths:
+                  - /
+                tls:
+                  - secretName: alertmanager-tls
+                    hosts:
+                    - '{{ .prometheus_alert_manager_hostname }}'
+
+              alertmanagerSpec:
+                retention: 12h
+                storage: {}
+                externalUrl: 'https://{{ .prometheus_alert_manager_hostname }}'
+
+              config:
+                global:
+                  resolve_timeout: 5m
+
+                  inhibit_rules:
+                    - source_matchers:
+                        - 'severity = critical'
+                      target_matchers:
+                        - 'severity =~ info'
+                      equal:
+                        - 'namespace'
+                        - 'alertname'
+
+                    - source_matchers:
+                        - 'severity = warning'
+                      target_matchers:
+                        - 'severity =~ info'
+                      equal:
+                        - 'namespace'
+                        - 'alertname'
+
+                    - source_matchers:
+                        - 'alertname = InfoInhibitor'
+                      target_matchers:
+                        - 'severity =~ info'
+                      equal:
+                        - 'namespace'
+
+                    - target_matchers:
+                        - 'alertname = InfoInhibitor'
+
+                    - target_matchers:
+                        - 'alertname = Watchdog'
+
+                    - target_matchers:
+                        - 'alertname = KubeVersionMismatch'
+

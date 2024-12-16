@@ -11,36 +11,19 @@ spec:
   source:
     repoURL: 'https://grafana.github.io/helm-charts'
     chart: loki-distributed
-    targetRevision: 0.79.3
+    targetRevision: 0.80.0
     helm:
       version: v3
       skipCrds: true
       valuesObject:
         fullnameOverride: loki
+
         loki:
-          structuredConfig:
-            memberlist:
-              bind_addr: []
-          schemaConfig:
-            configs:
-              - from: 2020-05-15
-                store: boltdb-shipper
-                object_store: s3
-                schema: v11
-                index:
-                  period: 24h
-                  prefix: loki_index_
-          storageConfig:
-            aws:
-              bucketnames: loki-logs
-              endpoint: s3.us-west-004.backblazeb2.com
-              region: us-west-004
-              access_key_id: ""
-              secret_access_key: ""
-              s3forcepathstyle: false
-            boltdb_shipper:
-              shared_store: s3
-              cache_ttl: 24h
+          revisionHistoryLimit: 2
+
+          existingSecretForConfig: "loki-config"
+
+          auth_enabled: false
 
         serviceAccount:
           create: true
@@ -97,6 +80,25 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: status.podIP
+          resources:
+            requests:
+              cpu: 1
+              memory: 2048Mi
+            limits:
+              cpu: 2
+              memory: 4096Mi
+
+          autoscaling:
+            enabled: true
+            minReplicas: 2
+            maxReplicas: 4
+            targetCPUUtilizationPercentage: 60
+            targetMemoryUtilizationPercentage: 70
+            customMetrics: []
+            behavior:
+              enabled: false
+              scaleDown: {}
+              scaleUp: {}
 
         querier:
           extraArgs:
@@ -124,6 +126,32 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: status.podIP
+
+        ruler:
+          enabled: true
+          kind: Deployment
+          replicas: 1
+          extraArgs: []
+          extraEnv: []
+          extraEnvFrom: []
+          extraVolumeMounts:
+            - name: fake
+              mountPath: /etc/loki/rules/fake
+          extraVolumes:
+            - name: fake
+              configMap:
+                name: loki-cluster-rules
+          resources: {}
+          terminationGracePeriodSeconds: 300
+          maxUnavailable: null
+          nodeSelector: {}
+          persistence:
+            enabled: true
+            size: 10Gi
+            storageClass: local-path
+          appProtocol:
+            grpc: ""
+
   syncPolicy:
     syncOptions:
       - CreateNamespace=true
