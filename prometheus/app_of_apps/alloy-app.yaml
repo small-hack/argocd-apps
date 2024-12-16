@@ -11,7 +11,7 @@ spec:
       - ApplyOutOfSyncOnly=true
   destination:
     server: "https://kubernetes.default.svc"
-    namespace: default
+    namespace: monitoring
   source:
     repoURL: 'https://grafana.github.io/helm-charts'
     chart: alloy

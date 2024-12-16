@@ -12,7 +12,7 @@ spec:
     path: prometheus/dashboards/
   destination:
     server: "https://kubernetes.default.svc"
-    namespace: prometheus
+    namespace: monitoring
   syncPolicy:
     syncOptions:
       - Replace=true

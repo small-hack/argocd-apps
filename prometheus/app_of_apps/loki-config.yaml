@@ -3,6 +3,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: loki-config
+  namespace: monitoring
 stringData:
   config.yaml: |
     auth_enabled: false
