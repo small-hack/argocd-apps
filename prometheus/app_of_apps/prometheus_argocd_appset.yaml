@@ -27,7 +27,7 @@ spec:
     metadata:
       name: prometheus-stack-helm-chart
     spec:
-      project: prometheus
+      project: default
       syncPolicy:
         syncOptions:
           - ApplyOutOfSyncOnly=true
