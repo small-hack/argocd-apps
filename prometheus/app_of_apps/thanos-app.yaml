@@ -43,8 +43,8 @@ spec:
             targetMemory: 80
 
           extraEnvVars:
-            - name: THANOS_ALLOW_EXISTING_BUCKET_USE
-              value: true
+            - name: "THANOS_ALLOW_EXISTING_BUCKET_USE"
+              value: "true"
 
           resources:
             requests:
@@ -102,8 +102,8 @@ spec:
             create: true
 
           extraEnvVars:
-            - name: THANOS_ALLOW_EXISTING_BUCKET_USE
-              value: true
+            - name: "THANOS_ALLOW_EXISTING_BUCKET_USE"
+              value: "true"
 
         ########################################################################
         #  ____  _                                ____       _
@@ -127,8 +127,8 @@ spec:
             create: true
 
           extraEnvVars:
-            - name: THANOS_ALLOW_EXISTING_BUCKET_USE
-              value: true
+            - name: "THANOS_ALLOW_EXISTING_BUCKET_USE"
+              value: "true"
 
 
         ########################################################################
