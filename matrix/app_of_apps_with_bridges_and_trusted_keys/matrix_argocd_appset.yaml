@@ -55,7 +55,7 @@ spec:
           selfHeal: true
       source:
         repoURL: 'https://small-hack.github.io/matrix-chart'
-        targetRevision: 13.3.1
+        targetRevision: 18.2.0
         chart: matrix
         # repoURL: 'https://github.com/small-hack/matrix-chart'
         # targetRevision: main
@@ -396,8 +396,6 @@ spec:
             synapse:
               revisionHistoryLimit: 1
               image:
-                # -- image registry and repository to use for synapse
-                repository: "matrixdotorg/synapse"
                 # -- pullPolicy for synapse image, Use Always if using image.tag: latest
                 pullPolicy: IfNotPresent
 

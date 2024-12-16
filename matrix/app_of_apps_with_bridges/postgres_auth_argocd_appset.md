@@ -1,9 +1,11 @@
+This is for when mas is ready for for production
+```yaml
 ---
 # webapp is deployed 2nd because we need secrets and persistent volumes up 1st
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: sliding-sync-postgres-app-set
+  name: mas-postgres-app-set
   namespace: argocd
 spec:
   goTemplate: true
@@ -19,7 +21,7 @@ spec:
               - matrix_postgres_backup_schedule
   template:
     metadata:
-      name: sliding-sync-postgres-cluster
+      name: mas-postgres-cluster
       namespace: matrix
       annotations:
         argocd.argoproj.io/sync-wave: "2"
@@ -39,20 +41,22 @@ spec:
         chart: cnpg-cluster
         targetRevision: 0.4.0
         helm:
-          releaseName: syncv3-postgres-cluster
+          releaseName: mas-postgres-cluster
           valuesObject:
-            name: syncv3-postgres
+            name: mas-postgres
             instances: 1
 
             bootstrap:
               initdb:
-                database: syncv3
-                owner: syncv3
+                database: mas
+                owner: mas
+                secret:
+                  name: mas-pgsql-credentials
 
             backup:
               # barman is a utility for backing up postgres to s3
               barmanObjectStore:
-                destinationPath: "s3://synvcv3"
+                destinationPath: "s3://mas"
                 endpointURL: "https://{{ .matrix_s3_endpoint }}"
                 s3Credentials:
                   accessKeyId:
@@ -75,20 +79,20 @@ spec:
               user:
                 enabled: true
                 username:
-                  - syncv3
+                  - mas
 
             scheduledBackup:
-              name: synvcv3-pg-backup
+              name: mas-pg-backup
               spec:
                 schedule: '{{ .matrix_postgres_backup_schedule }}'
                 backupOwnerReference: self
                 cluster:
-                  name: syncv3
+                  name: mas
 
             monitoring:
               enablePodMonitor: false
 
             postgresql:
               pg_hba:
-                - hostnossl all all 0.0.0.0/0 reject
-                - hostssl all all 0.0.0.0/0 cert clientcert=verify-full
+                - host all all 0.0.0.0/0 md5
+```

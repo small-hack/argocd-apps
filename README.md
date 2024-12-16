@@ -59,12 +59,13 @@ Here's some quick guidelines, but you if you'd like to contribute, please read t
 
 ## File Storage and Backups
 
-| App Directory                  | Description                                                                                                                                                           |
-|:-------------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [k8up](./k8up)                 | [K8up](https://k8up.io/k8up/2.7/index.html) is a k8s native backups done via restic, so you can sync your persistent volumes to external s3 compliant storage         |
-| [nextcloud](./nextcloud)       | [Nextcloud](https://nextcloud.com/) is a self hosted file storage cloud solution. Replaces something like google drive/photos/notes/meets/calendar - mostly stable    |
-| [minio](./minio)               | [MinIO](https://min.io) is a secure self hosted S3 compatible Object Store.                                                                                           |
-| [seaweedfs](./seaweedfs) | [SeaweedFS](https://github.com/seaweedfs/seaweedfs) is a secure and very fast self hosted S3 compatible Object Store specialized for either many files or large files |
+| App Directory                          | Description                                                                                                                                                           |
+|:---------------------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [collabora online](./collabora_online) | [Collabora Online](https://www.collaboraonline.com/) is a powerful online document editing suite                                                                      |
+| [k8up](./k8up)                         | [K8up](https://k8up.io/k8up/2.7/index.html) is a k8s native backups done via restic, so you can sync your persistent volumes to external s3 compliant storage         |
+| [nextcloud](./nextcloud)               | [Nextcloud](https://nextcloud.com/) is a self hosted file storage cloud solution. Replaces something like google drive/photos/notes/meets/calendar - mostly stable    |
+| [minio](./minio)                       | [MinIO](https://min.io) is a secure self hosted S3 compatible Object Store.                                                                                           |
+| [seaweedfs](./seaweedfs)               | [SeaweedFS](https://github.com/seaweedfs/seaweedfs) is a secure and very fast self hosted S3 compatible Object Store specialized for either many files or large files |
 
 
 #### Experimental
@@ -143,6 +144,7 @@ Other useful tools that don't fit neatly into any one category.
 |     App Directory    | Description                                                      |
 |:--------------------:|:-----------------------------------------------------------------|
 | [k8tz](./demo/k8tz) | A helm chart for k8tz, to inject timezone info into cronjob pods |
+| [LibreTranslate](./libretranslate) | A helm chart for LibreTranslate, to self host a translation tool |
 
 
 ## Security
@@ -164,6 +166,7 @@ Other useful tools that don't fit neatly into any one category.
 | App Directory            | Description                                                                                                                                                |
 |:-------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------|
 | [infisical](./demo/infisical) | [Infisical](https://infisical.com/docs/integrations/platforms/kubernetes) is an open source secrets management solution and it has a k8s secrets operator. |
+| [OpenBao](./demo/openbao)     | [OpenBao](https://github.com/openbao/openbao) is an open source secrets management solution forked from Vault and supported by the Linux Foundation.       |
 | [vault](./demo/vault)         | [Vault](https://github.com/hashicorp/vault) is an open source secrets management solution by Hashicorp.                                                    |
 
 ## Social Media and chat
@@ -171,15 +174,8 @@ Other useful tools that don't fit neatly into any one category.
 | App Directory          | Description                                                                                                                                                                                                                                                                 |
 |:-----------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | [coturn](./coturn)     | TURN/STUN server for connecting VoIP peers                                                                                                                                                                                                                                  |
-| [mastodon](./mastodon) | Selfhosted social media site, includes [postgresql](https://github.com/bitnami/charts/tree/main/bitnami/postgresql), [elastic search] (for full text searching), and [redis](https://github.com/bitnami/charts/tree/main/bitnami/redis) (in memory caching) - mostly stable |
-| [matrix](./matrix)     | Selfhosted chat server that plugs into a bunch of other chat apps                                                                                                                                                                                                           |
-
-#### Experimental
-
-| App Directory                  | Description                                                                        |
-|:-------------------------------|:-----------------------------------------------------------------------------------|
-| [iceshrimp](./demo/iceshrimp) | Selfhosted social media. This is forked from firefish, which is forked from miskey |
-
+| [mastodon](./mastodon) | Selfhosted social media site, includes [postgresql](https://github.com/bitnami/charts/tree/main/bitnami/postgresql), [elastic search](https://github.com/bitnami/charts/tree/main/bitnami/elasticsearch) (for full text searching), and [valkey](https://github.com/bitnami/charts/tree/main/bitnami/valkey) (in memory caching) |
+| [matrix](./matrix)     | Selfhosted chat server that plugs into a bunch of other chat apps
 
 ## Virtual Machines
 

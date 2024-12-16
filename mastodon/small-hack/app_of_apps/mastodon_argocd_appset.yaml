@@ -5,6 +5,8 @@ kind: ApplicationSet
 metadata:
   name: mastodon-app-set
   namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "4"
 spec:
   # enable go templating
   goTemplate: true
@@ -17,13 +19,16 @@ spec:
           parameters:
             secret_vars:
               - mastodon_hostname
+              - mastodon_libretranslate_hostname
               - mastodon_s3_endpoint
+              - mastodon_smtp_port
               - global_cluster_issuer
+              - global_time_zone
   template:
     metadata:
       name: mastodon-web-app
       annotations:
-        argocd.argoproj.io/sync-wave: "3"
+        argocd.argoproj.io/sync-wave: "4"
         argocd.argoproj.io/sync-options: ApplyOnly=true
     spec:
       project: mastodon
@@ -33,18 +38,55 @@ spec:
       syncPolicy:
         syncOptions:
           - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
+          selfHeal: true
       source:
         # forked from: https://github.com/mastodon/chart/tree/main
         repoURL: 'https://small-hack.github.io/mastodon-helm-chart'
-        targetRevision: 7.0.0
+        targetRevision: 9.8.1
         chart: mastodon
         helm:
+          releaseName: mastodon
           valuesObject:
+            fullnameOverride: mastodon
+            # original repository: ghcr.io/mastodon/mastodon
             image:
-              repository: ghcr.io/mastodon/mastodon
-              pullPolicy: IfNotPresent
+              repository: jessebot/mastodon-glitch-soc
+              tag: v4.3.2
 
             mastodon:
+              hooks:
+                dbMigrate:
+                  enabled: true
+
+                # disabled due to https://github.com/mastodon/chart/issues/158
+                assetsPrecompile:
+                  enabled: false
+
+                # Upload website assets to S3 before deploying using rclone.
+                # Whenever there is an update to Mastodon, sometimes there are assets files
+                # that are renamed. As the pods are getting redeployed, and old/new pods are
+                # present simultaneously, there is a chance that old asset files are
+                # requested from pods that don't have them anymore, or new asset files are
+                # requested from old pods. Uploading asset files to S3 in this manner solves
+                # this potential conflict.
+                # Note that you will need to CDN/proxy to send all requests to /assets and
+                # /packs to this bucket.
+                s3Upload:
+                  enabled: false
+                  endpoint: '{{ .mastodon_s3_endpoint }}'
+                  bucket: ""
+                  acl: public-read
+                  secretRef:
+                    name: mastodon-s3-credentials
+                    keys:
+                      accesKeyId: S3_USER
+                      secretAccessKey: S3_PASSWORD
+                  rclone:
+                    # Any additional environment variables to pass to rclone.
+                    env: {}
+
               createAdmin:
                 enabled: false
                 existingSecret: mastodon-admin-credentials
@@ -58,6 +100,11 @@ spec:
                 removeMedia:
                   enabled: true
                   schedule: "0 0 * * 0"
+                updateSearchIndexMappings:
+                  # -- run `tootctl search deploy --only=instances accounts tags statuses public_statuses` on a cron schedule
+                  enabled: true
+                  # -- run once an hour
+                  schedule: "0 * * * *"
 
               # -- available locales: https://github.com/mastodon/mastodon/blob/main/config/application.rb#L71
               locale: en
@@ -94,6 +141,49 @@ spec:
 
                 - name: postgres-client-certs
                   mountPath: /etc/secrets/mastodon
+
+              # Specify extra environment variables to be added to all Mastodon pods.
+              # These can be used for configuration not included in this chart (including configuration for Mastodon varietals.)
+              # ref: https://github.com/glitch-soc/mastodon/blob/main/.env.production.sample#L256
+              extraEnvVars:
+                # Maximum allowed character count
+                - name: MAX_TOOT_CHARS
+                  value: "2500"
+                # Maximum allowed hashtags to follow in a feed column
+                # Note that setting this value higher may cause significant
+                # database load
+                - name: MAX_FEED_HASHTAGS
+                  value: "10"
+                # Maximum allowed display name characters
+                - name: MAX_DISPLAY_NAME_CHARS
+                  value: "64"
+                # Maximum allowed bio characters
+                - name: MAX_BIO_CHARS
+                  value: "800"
+                # Maximum allowed poll options
+                - name: MAX_POLL_OPTIONS
+                  value: "12"
+                # Maximum allowed poll option characters
+                - name: MAX_POLL_OPTION_CHARS
+                  value: "250"
+                # Maximim number of profile fields allowed
+                - name: MAX_PROFILE_FIELDS
+                  value: "8"
+                # Maximum image and video/audio upload sizes
+                - name: MAX_IMAGE_SIZE
+                  # 64MB for photos
+                  value: "67110000"
+                - name: MAX_VIDEO_SIZE
+                  # 10GB for videos
+                  value: "10740000000"
+                # Maximum search results to display
+                # Only relevant when elasticsearch is installed
+                - name: MAX_SEARCH_RESULTS
+                  value: "40"
+                # Maximum hashtags to display
+                # Customize the number of hashtags shown in 'Explore'
+                - name: MAX_TRENDING_TAGS
+                  value: "15"
 
               s3:
                 enabled: true
@@ -132,15 +222,17 @@ spec:
                 delivery_method: smtp
                 domain: '{{ .mastodon_hostname }}'
                 enable_starttls: 'auto'
-                from_address: 'toots@{{ .mastodon_hostname }}'
+                from_address: 'tootadmin@{{ .mastodon_hostname }}'
                 openssl_verify_mode: peer
-                port: 587
+                port: '{{ .mastodon_smtp_port }}'
                 reply_to: 'no-reply@{{ .mastodon_hostname }}'
                 tls: true
                 # keys must be named `server`, `login`, `password`
                 existingSecret: mastodon-smtp-credentials
 
               streaming:
+                image:
+                  repository: ghcr.io/mastodon/mastodon-streaming
                 port: 4000
                 # -- this should be set manually since os.cpus() returns the number of CPUs on
                 # the node running the pod, which is unrelated to the resources allocated to
@@ -169,13 +261,23 @@ spec:
               # Sets the PREPARED_STATEMENTS environment variable: https://docs.joinmastodon.org/admin/config/#prepared_statements
               preparedStatements: true
 
+              libretranslate:
+                # -- enable the use of libretranslate for translations
+                enabled: true
+                endpoint: "{{ .mastodon_libretranslate_hostname }}"
+                # -- use an existing secret for libretranslate endpoint and api key
+                existingSecret: "libretranslate-api-key"
+                secretKeys:
+                  endpoint: "endpoint"
+                  apiKey: "apiKey"
+
             ingress:
               enabled: true
               annotations:
                 kubernetes.io/tls-acme: "true"
                 cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
                 # ensure that NGINX's upload size matches Mastodon's
-                nginx.ingress.kubernetes.io/proxy-body-size: 40m
+                nginx.ingress.kubernetes.io/proxy-body-size: 2G
               ingressClassName: nginx
               hosts:
                 - host: '{{ .mastodon_hostname }}'
@@ -194,6 +296,7 @@ spec:
               # RAILS_ENV=production bundle exec rake chewy:sync
               # (https://docs.joinmastodon.org/admin/optional/elasticsearch/)
               enabled: true
+              fullnameOverride: mastodon-elasticsearch
               master:
                 replicaCount: 1
                 autoscaling:
@@ -224,11 +327,12 @@ spec:
             # https://github.com/bitnami/charts/tree/main/bitnami/redis#parameters
             redis:
               enabled: false
-              hostname: "mastodon-redis-master"
+              hostname: "valkey-primary"
               port: 6379
               auth:
                 # with a key of redis-password set to the password you want
-                existingSecret: "mastodon-redis-credentials"
+                existingSecret: "mastodon-valkey-credentials"
+                existingSecretPasswordKey: "valkey-password"
 
             service:
               type: ClusterIP
@@ -255,3 +359,6 @@ spec:
               create: true
               # -- Annotations to add to the service account
               annotations: {}
+
+            # -- timezone for all the pods
+            timezone: '{{ .global_time_zone }}'

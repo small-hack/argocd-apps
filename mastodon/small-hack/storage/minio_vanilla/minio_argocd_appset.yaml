@@ -39,14 +39,14 @@ spec:
         # official minio helm repo
         repoURL: 'https://charts.min.io/'
         chart: minio
-        targetRevision: 5.2.0
+        targetRevision: 5.3.0
         helm:
           releaseName: mastodon-minio
           values: |
             ## Use existing Secret that store following variables:
             ## .data.rootUser and .data.rootPassword are mandatory,
             existingSecret: "admin-s3-credentials"
-            
+
             ## TLS Settings for MinIO
             tls:
               enabled: false
@@ -140,7 +140,7 @@ spec:
                   memory: 128Mi
               # Command to run after the main command on exit
               exitCommand: ""
-            
+
             ## List of users to be created after minio install
             ##
             users:
@@ -153,10 +153,10 @@ spec:
                 existingSecretKey: password
                 policy: readwrite
               - accessKey: mastodon-postgres
-                existingSecret: postgres-s3-credentials
+                existingSecret: s3-postgres-credentials
                 existingSecretKey: password
                 policy: readwrite
-            
+
             ## Additional stuff for the Kubernetes Job makeUserJob
             makeUserJob:
               securityContext:

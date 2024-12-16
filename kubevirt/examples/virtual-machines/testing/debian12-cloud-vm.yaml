@@ -11,10 +11,10 @@ spec:
   source:
     path: ''
     repoURL: 'https://cloudymax.github.io/kubevirt-community-stack/'
-    targetRevision: 0.2.5
+    targetRevision: 0.4.7
     chart: kubevirt-vm
     helm:
-      values: |
+      valuesObject:
         virtualMachine:
           name: debian12
           namespace: kubevirt

@@ -44,7 +44,7 @@ spec:
           selfHeal: true
       source:
         repoURL: 'https://seaweedfs.github.io/seaweedfs/helm'
-        targetRevision: 3.68.0
+        targetRevision: 4.0.377
         chart: seaweedfs
         helm:
           releaseName: nextcloud-seaweedfs
@@ -273,3 +273,5 @@ spec:
                   - secretName: nextcloud-seaweedfs-tls
                     hosts:
                       - '{{ .nextcloud_s3_endpoint }}'
+            cosi:
+              enabled: false

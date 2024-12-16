@@ -17,11 +17,11 @@ spec:
   source:
     path: ''
     repoURL: 'https://cloudymax.github.io/kubevirt-community-stack/'
-    targetRevision: 0.1.5
+    targetRevision: 0.2.0
     chart: kubevirt-cdi
     helm: 
       values: |
-        replicaCount: 1
+        replicaCount: 2
         
         image:
           repository: quay.io/kubevirt/cdi-operator

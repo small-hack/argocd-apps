@@ -38,7 +38,7 @@ spec:
           selfHeal: true
       source:
         repoURL: 'https://cloudymax.github.io/kubevirt-community-stack/'
-        targetRevision: 0.1.9
+        targetRevision: 0.2.2
         chart: kubevirt-manager
         helm:
           valuesObject:
@@ -50,7 +50,7 @@ spec:
               name: http
             prometheus:
               enabled: true
-              serviceName: prom-stack-prometheus
+              serviceName: prometheus-prom-stack-prometheus-0
               serviceNamespace: promethus
             ingress:
               enabled: true

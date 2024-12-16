@@ -17,6 +17,7 @@ spec:
             secret_vars:
               - global_cluster_issuer
               - global_time_zone
+              - nextcloud_collabora_hostname
               - nextcloud_default_phone_region
               - nextcloud_hostname
               - nextcloud_mail_domain
@@ -40,13 +41,13 @@ spec:
           selfHeal: true
       source:
         repoURL: 'https://nextcloud.github.io/helm'
-        targetRevision: 6.0.3
+        targetRevision: 6.4.0
         chart: nextcloud
         helm:
           valuesObject:
             image:
               repository: jessebot/nextcloud
-              tag: 30.0.0-fpm-alpine
+              tag: 30.0.4-fpm-alpine
               pullPolicy: IfNotPresent
 
             ingress:
@@ -615,3 +616,47 @@ spec:
 
             rbac:
               enabled: true
+
+            ## Collabora chart configuration
+            ## for more options see https://github.com/CollaboraOnline/online/tree/master/kubernetes/helm/collabora-online
+            collabora:
+              enabled: true
+              # please check collabora README.md first
+              autoscaling:
+                enabled: false
+
+              collabora:
+                ## HTTPS nextcloud domain, if needed
+                # aliasgroups:
+                #   - host: "https://nextcloud.domain:443"
+                # extra_params: --o:ssl.enable=false --o:ssl.termination=true
+
+                ## Specify server_name when the hostname is not reachable directly for example behind reverse-proxy
+                server_name: '{{ .nextcloud_collabora_hostname }}'
+
+                # setup admin login credentials
+                existingSecret:
+                  enabled: true
+                  secretName: "collabora-admin-credentials"
+                  usernameKey: "username"
+                  passwordKey: "password"
+
+              # setup ingress
+              ingress:
+                enabled: true
+                className: "nginx"
+                # please check collabora values.yaml for nginx/haproxy annotations examples
+                annotations:
+                  cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
+                hosts:
+                  - host: '{{ .nextcloud_collabora_hostname }}'
+                    paths:
+                    - path: /
+                      pathType: ImplementationSpecific
+                tls:
+                 - secretName: collabora-ingress-tls
+                   hosts:
+                     - '{{ .nextcloud_collabora_hostname }}'
+
+              # see collabora helm README.md for recommended values
+              resources: {}

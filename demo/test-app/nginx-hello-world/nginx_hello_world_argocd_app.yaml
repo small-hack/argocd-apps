@@ -8,7 +8,7 @@ spec:
     namespace: nginx-hello
     server: 'https://kubernetes.default.svc'
   source:
-    path: test-app/nginx-hello-world/manifests/
+    path: demo/test-app/nginx-hello-world/manifests/
     repoURL: 'https://github.com/small-hack/argocd-apps.git'
     targetRevision: HEAD
   sources: []
