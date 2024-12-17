@@ -31,16 +31,23 @@ NextCloud would be running ontop of Kubernetes (we use k3s) and using the follow
 Here's a quick peak at what we're deploying with Argo CD. We support deploying with or without node affinity + tolerations. The default behavior is to not include tolerations/affinity settings in the `app_of_apps` directory, but you are also free to use the `app_of_apps_with_tolerations` directory.
 
 #### Sync wave 1
+
 - **External Secrets** are the actual secrets populated from the external secrets store. This includes things like the admin password.
 - **Persistence** are the two persistent volumes needed to persist nextcloud data. This includes the postgresql database as well as the actual files we're storing in nextcloud
 
 #### Sync wave 2
-- **Nextcloud WebApp** is the actual nextcloud webapp deployed using Nginx. We're also using the bundled Bitnami Postgresql helm chart.
+
+- **Cloud native postgresql cluster** check deploys the PostgreSQL with automatic minor and patch version updates.
 
 #### Sync wave 3
+
+- **Nextcloud Web App** is the actual helm chart deployment of Nextcloud.
+The Nextcloud WebApp also includes a metrics pod, a Collabora Online deployment, and a Redis (soon to be valkey) cluster.
+
+#### Sync wave 4
+
 - **K8up B2 Backups** are the cronjobs needed for putting nextcloud into maintanence mode, as well as custom resource for backups, using Restic.
 
-The Nextcloud WebApp also includes a metrics pod, postgres statefulset, and a redis cluster.
 
 ## Quick start (with a k8s cluster already running Argo CD)
 You should be able to just set argo to use this repo. There's an example template, `nextcloud_argocd_template.yaml`, for you to get started :) You can run this from the cli:
