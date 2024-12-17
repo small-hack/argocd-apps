@@ -43,7 +43,7 @@ Here's a quick peak at what we're deploying with Argo CD. We support deploying w
 #### Sync wave 3
 
 - **Nextcloud App** is the actual helm chart deployment of Nextcloud.
-The Nextcloud App also includes a metrics pod, a [Collabora Online] deployment, and a Redis (soon to be [Valkey](https://valkey.io/)) cluster.
+The Nextcloud App also includes a metrics pod, a [Collabora Online] deployment, and a Redis (soon to be [Valkey]) cluster.
 
 #### Sync wave 4
 
@@ -332,8 +332,9 @@ $CONFIG = array (
 <!-- link references -->
 [Collabora Online]: https://sdk.collaboraonline.com/docs/installation/Kubernetes.html
 [Debian]: https://www.debian.org/
+[External Secrets Operator]: https://external-secrets.io/v0.9.0/examples/bitwarden/
+[Ingress Nginx controller]: https://kubernetes.github.io/ingress-nginx/
+[k8up]: https://k8up.io
 [Kuberentes]: https://kubernetes.io/
 [smol-k8s-lab]: https://github.com/small-hack/smol-k8s-lab
-[External Secrets Operator]: https://external-secrets.io/v0.9.0/examples/bitwarden/
-[k8up]: https://k8up.io
-[Ingress Nginx controller]: https://kubernetes.github.io/ingress-nginx/
+[Valkey]: https://valkey.io/
