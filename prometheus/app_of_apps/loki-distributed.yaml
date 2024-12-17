@@ -30,8 +30,7 @@ spec:
 
         compactor:
           serviceAccount:
-            create: false
-            name: aws-thanos-s3-admin
+            create: true
           extraArgs:
             - -memberlist.bind-addr=$(MY_POD_IP)
           shared_store: s3
