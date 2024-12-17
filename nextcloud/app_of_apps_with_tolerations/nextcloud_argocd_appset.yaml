@@ -700,6 +700,12 @@ spec:
                   nginx.ingress.kubernetes.io/proxy-body-size: "0"
                   nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
                   nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+                  nginx.ingress.kubernetes.io/server-snippet: |
+                    # block admin and metrics endpoint from outside by default
+                    location /cool/getMetrics { deny all; return 403; }
+                    location /cool/adminws/ { deny all; return 403; }
+                    location /browser/dist/admin/admin.html { deny all; return 403; }
+
                 hosts:
                   - host: '{{ .nextcloud_collabora_hostname }}'
                     paths:
