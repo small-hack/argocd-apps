@@ -19,6 +19,10 @@ spec:
         fullnameOverride: loki
 
         loki:
+          structuredConfig:
+            memberlist:
+              bind_addr: []
+
           revisionHistoryLimit: 2
 
           existingSecretForConfig: "loki-config"
@@ -29,6 +33,13 @@ spec:
           create: true
 
         compactor:
+          extraArgs:
+            - -memberlist.bind-addr=$(MY_POD_IP)
+          extraEnv:
+            - name: MY_POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
           serviceAccount:
             create: true
           shared_store: s3
@@ -52,13 +63,89 @@ spec:
               scaleDown: {}
               scaleUp: {}
 
+        gateway:
+          extraArgs:
+            - -memberlist.bind-addr=$(MY_POD_IP)
+          extraEnv:
+            - name: MY_POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+
+        memcachedchunks:
+          extraArgs:
+            - -memberlist.bind-addr=$(MY_POD_IP)
+          extraEnv:
+            - name: MY_POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+
+        memcachedfrontend:
+          extraArgs:
+            - -memberlist.bind-addr=$(MY_POD_IP)
+          extraEnv:
+            - name: MY_POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+
+        distributor:
+          extraArgs:
+            - -memberlist.bind-addr=$(MY_POD_IP)
+          extraEnv:
+            - name: MY_POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+
+        ingester:
+          extraArgs:
+            - -memberlist.bind-addr=$(MY_POD_IP)
+          extraEnv:
+            - name: MY_POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+
+        querier:
+          extraArgs:
+            - -memberlist.bind-addr=$(MY_POD_IP)
+          extraEnv:
+            - name: MY_POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+
+        queryFrontend:
+          extraArgs:
+            - -memberlist.bind-addr=$(MY_POD_IP)
+          extraEnv:
+            - name: MY_POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+
+        queryScheduler:
+          extraArgs:
+            - -memberlist.bind-addr=$(MY_POD_IP)
+          extraEnv:
+            - name: MY_POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+
         ruler:
           enabled: false
           kind: Deployment
           replicas: 1
-          extraArgs: []
-          extraEnv: []
-          extraEnvFrom: []
+          extraArgs:
+            - -memberlist.bind-addr=$(MY_POD_IP)
+          extraEnv:
+            - name: MY_POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
           extraVolumeMounts:
             - name: fake
               mountPath: /etc/loki/rules/fake
