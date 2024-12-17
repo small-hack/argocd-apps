@@ -34,23 +34,28 @@ spec:
       name: nextcloud-web-app
       annotations:
         argocd.argoproj.io/sync-wave: "3"
+
     spec:
+      # project in Argo CD
       project: nextcloud
+
+      # which k8s cluster this goes to (this assumes the local cluster)
       destination:
         server: https://kubernetes.default.svc
         namespace: nextcloud
+
+      # the sync policy for this Argo CD Application
       syncPolicy:
         syncOptions:
           - ApplyOutOfSyncOnly=true
         automated:
           prune: true
           selfHeal: true
+
       source:
-        # repoURL: 'https://nextcloud.github.io/helm'
-        # chart: nextcloud
-        repoURL: 'https://github.com/nextcloud/helm'
-        targetRevision: 10cae24593c059bab6135d3c829f898f97d97fad
-        path: charts/nextcloud/
+        repoURL: 'https://nextcloud.github.io/helm'
+        chart: nextcloud
+        targetRevision: 6.4.1
         helm:
           valuesObject:
             image:
