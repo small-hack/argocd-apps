@@ -265,21 +265,21 @@ spec:
 
             defaultRules:
               create: true
-              rules:
+              # rules:
 
-                kubeControllerManager:
-                  enabled: false
-                  service:
-                    enabled: false
-                  serviceMonitor:
-                    enabled: false
+              #   kubeControllerManager:
+              #     enabled: false
+              #     service:
+              #       enabled: false
+              #     serviceMonitor:
+              #       enabled: false
 
-                kubeScheduler:
-                  enabled: false
-                  service:
-                    enabled: false
-                  serviceMonitor:
-                    enabled: false
+              #   kubeScheduler:
+              #     enabled: false
+              #     service:
+              #       enabled: false
+              #     serviceMonitor:
+              #       enabled: false
 
             alertmanager:
               enabled: true
