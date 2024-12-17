@@ -57,8 +57,14 @@ spec:
         chart: nextcloud
         targetRevision: 6.4.1
         helm:
+          # release name for this helm chart release. If this is not set,
+          # Argo CD will use the name of the Application as the release name
+          releaseName: nextcloud
+          # all values to pass into the helm chart
           valuesObject:
             image:
+              # this is a custom nextcloud image with ffmpeg on it
+              # it's otherwise exact the same as nextcloud:fpm-alpine
               repository: jessebot/nextcloud
               tag: 30.0.4-fpm-alpine
               pullPolicy: IfNotPresent
