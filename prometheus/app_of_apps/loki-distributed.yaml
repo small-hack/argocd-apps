@@ -53,7 +53,7 @@ spec:
               scaleUp: {}
 
         ruler:
-          enabled: true
+          enabled: false
           kind: Deployment
           replicas: 1
           extraArgs: []
