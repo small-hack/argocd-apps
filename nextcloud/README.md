@@ -2,7 +2,7 @@
 
 A Nextcloud k8s Argo CD "App of apps" for those who want to get started quickly with Nextcloud on k3s the way we use it :) This project uses the official [nextcloud helm chart](https://github.com/nextcloud/helm/tree/main/charts/nextcloud). See the current version in [nextcloud_argocd_appset.yaml](./app_of_apps/nextcloud_argocd_appset.yaml).
 
-<img width="900" alt="nextcloud" src="https://github.com/small-hack/argocd-apps/assets/2389292/f70fdbf9-b3a0-4837-b606-d0de8fb6f73a">
+<img width="942" alt="screenshot of nextcloud Argo CD app of apps including nextcloud-appset, nextcloud-external-secrets-appset, nextcloud-install-apps-appset, nextcloud-maintenance-cron-appset, nextcloud-postgres-app-set, nextcloud-pvc-appset, nextcloud-s3-provider-app-set, and nextcloud-s3-pvc-app-set." src="https://github.com/user-attachments/assets/d8f225a1-4c5c-4bb3-8653-11f680e6a918" />
 
 <details>
   <summary>More Nextcloud Argo CD App screenshots</summary>
