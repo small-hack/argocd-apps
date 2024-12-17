@@ -664,7 +664,7 @@ spec:
                 aliasgroups:
                   - host: "https://{{ .nextcloud_hostname }}:443"
 
-                extra_params: --o:ssl.enable=true --o:ssl.termination=true
+                extra_params: --o:ssl.enable=false --o:ssl.termination=true
 
                 ## Specify server_name when the hostname is not reachable directly for example behind reverse-proxy
                 server_name: '{{ .nextcloud_collabora_hostname }}'
