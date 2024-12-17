@@ -3,7 +3,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: nextcloud-web-app-set
+  name: nextcloud-appset
   namespace: argocd
 spec:
   goTemplate: true
@@ -31,7 +31,7 @@ spec:
               - nextcloud_affinity_value
   template:
     metadata:
-      name: nextcloud-web-app
+      name: nextcloud-app
       annotations:
         argocd.argoproj.io/sync-wave: "3"
 
