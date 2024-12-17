@@ -328,6 +328,14 @@ $CONFIG = array (
   );
 ```
 
+## More info on collabora online
+
+The helm chart is here: https://github.com/CollaboraOnline/online/tree/master/kubernetes/helm/collabora-online
+
+Here's the docs: https://sdk.collaboraonline.com/docs/installation/Kubernetes.html
+
+Here's an exmaple helm chart config:
+https://gitlab.opencode.de/bmi/opendesk/deployment/opendesk/-/blob/e4d9106c457e018922dcc730df0570d41f3ec2aa/helmfile/apps/collabora/values.yaml.gotmpl
 
 <!-- link references -->
 [Collabora Online]: https://sdk.collaboraonline.com/docs/installation/Kubernetes.html
