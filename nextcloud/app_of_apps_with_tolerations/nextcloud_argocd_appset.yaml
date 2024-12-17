@@ -666,11 +666,17 @@ spec:
                 tag: 24.04.10.2.1
 
               collabora:
+                fullnameOverrride: "collabora"
+
                 ## HTTPS nextcloud domain, if needed
                 aliasgroups:
                   - host: "https://{{ .nextcloud_hostname }}:443"
 
-                extra_params: --o:ssl.enable=false --o:ssl.termination=true
+                extra_params: >
+                  --o:ssl.enable=false
+                  --o:ssl.termination=true
+                  --o:fetch_update_check=0
+                  --o:num_prespawn_children=3
 
                 ## Specify server_name when the hostname is not reachable directly for example behind reverse-proxy
                 server_name: '{{ .nextcloud_collabora_hostname }}'
@@ -689,6 +695,10 @@ spec:
                 # please check collabora values.yaml for nginx/haproxy annotations examples
                 annotations:
                   cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
+                  nginx.ingress.kubernetes.io/upstream-hash-by: "$arg_WOPISrc"
+                  nginx.ingress.kubernetes.io/proxy-body-size: "0"
+                  nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+                  nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
                 hosts:
                   - host: '{{ .nextcloud_collabora_hostname }}'
                     paths:
@@ -700,4 +710,11 @@ spec:
                      - '{{ .nextcloud_collabora_hostname }}'
 
               # see collabora helm README.md for recommended values
-              resources: {}
+              # https://github.com/CollaboraOnline/online/tree/master/kubernetes/helm/collabora-online#deploying-collabora-online-in-kubernetes
+              resources:
+                limits:
+                  cpu: "8000m"
+                  memory: "8000Mi"
+                requests:
+                  cpu: "1800m"
+                  memory: "2000Mi"
