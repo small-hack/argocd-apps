@@ -25,6 +25,10 @@ spec:
 
           auth_enabled: false
 
+          structuredConfig:
+            memberlist:
+              bind_addr: []
+
         serviceAccount:
           create: true
 
