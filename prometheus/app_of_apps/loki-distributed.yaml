@@ -25,10 +25,6 @@ spec:
 
           auth_enabled: false
 
-          structuredConfig:
-            memberlist:
-              bind_addr: []
-
         serviceAccount:
           create: true
 
@@ -45,8 +41,8 @@ spec:
               memory: 4096Mi
 
           autoscaling:
-            enabled: true
-            minReplicas: 2
+            enabled: false
+            minReplicas: 1
             maxReplicas: 4
             targetCPUUtilizationPercentage: 60
             targetMemoryUtilizationPercentage: 70
