@@ -19,51 +19,76 @@ spec:
         fullnameOverride: loki
 
         loki:
-          structuredConfig:
-            memberlist:
-              bind_addr: []
-
+          # -- The number of old ReplicaSets to retain to allow rollback
           revisionHistoryLimit: 2
+
+          auth_enabled: false
 
           existingSecretForConfig: "loki-config"
 
-          auth_enabled: false
+          limits_config:
+            ingestion_rate_mb: 128
+            ingestion_burst_size_mb: 256
+            enforce_metric_name: false
+            reject_old_samples: false
+            reject_old_samples_max_age: 1w
+            per_stream_rate_limit: 32MB
+            per_stream_rate_limit_burst: 64MB
+
+          ingester_client:
+            remote_timeout: 60s
+            pool_config:
+              remote_timeout: 60s
+
+          server:
+            http_server_read_timeout: 60s
+            http_server_write_timeout: 60s
+            log_level: debug
+            grpc_server_max_recv_msg_size: 8388608
+            grpc_server_max_send_msg_size: 8388608
+            grpc_server_max_concurrent_streams: 0
+
+          structuredConfig:
+           memberlist:
+             bind_addr: []
+
+          schemaConfig:
+            configs:
+            - from: 2020-05-15
+              store: boltdb-shipper
+              object_store: s3
+              schema: v11
+              index:
+                period: 24h
+                prefix: loki_index_
+
+          storageConfig:
+            aws:
+              region: us-west-004
+              bucketnames: buildstars-loki-logs
+              s3forcepathstyle: false
+            boltdb_shipper:
+              shared_store: s3
+              cache_ttl: 24h
 
         serviceAccount:
           create: true
 
         compactor:
-          extraArgs:
-            - -memberlist.bind-addr=$(MY_POD_IP)
-          extraEnv:
-            - name: MY_POD_IP
-              valueFrom:
-                fieldRef:
-                  fieldPath: status.podIP
           serviceAccount:
             create: true
-          shared_store: s3
-          resources:
-            requests:
-              cpu: 1
-              memory: 2048Mi
-            limits:
-              cpu: 2
-              memory: 4096Mi
 
-          autoscaling:
-            enabled: false
-            minReplicas: 1
-            maxReplicas: 4
-            targetCPUUtilizationPercentage: 60
-            targetMemoryUtilizationPercentage: 70
-            customMetrics: []
-            behavior:
-              enabled: false
-              scaleDown: {}
-              scaleUp: {}
+          extraArgs:
+            - -memberlist.bind-addr=$(MY_POD_IP)
+          shared_store: s3
 
         gateway:
+          tolerations:
+             - key: "type"
+               operator: "Equal"
+               effect: "NoSchedule"
+               value: "observability"
+
           extraArgs:
             - -memberlist.bind-addr=$(MY_POD_IP)
           extraEnv:
@@ -91,6 +116,12 @@ spec:
                   fieldPath: status.podIP
 
         distributor:
+          tolerations:
+             - key: "type"
+               operator: "Equal"
+               effect: "NoSchedule"
+               value: "observability"
+
           extraArgs:
             - -memberlist.bind-addr=$(MY_POD_IP)
           extraEnv:
@@ -100,17 +131,67 @@ spec:
                   fieldPath: status.podIP
 
         ingester:
+          tolerations:
+             - key: "type"
+               operator: "Equal"
+               effect: "NoSchedule"
+               value: "observability"
+
           extraArgs:
             - -memberlist.bind-addr=$(MY_POD_IP)
+
           extraEnv:
             - name: MY_POD_IP
               valueFrom:
                 fieldRef:
                   fieldPath: status.podIP
 
+          resources:
+            requests:
+              cpu: 2
+              memory: 4096Mi
+            limits:
+              cpu: 4
+              memory: 8192Mi
+
+          autoscaling:
+            # -- Enable autoscaling for the ingester
+            enabled: true
+            # -- Minimum autoscaling replicas for the ingester
+            minReplicas: 2
+            # -- Maximum autoscaling replicas for the ingester
+            maxReplicas: 3
+            # -- Target CPU utilisation percentage for the ingester
+            targetCPUUtilizationPercentage: 60
+            # -- Target memory utilisation percentage for the ingester
+            targetMemoryUtilizationPercentage: 70
+            # -- Allows one to define custom metrics using the HPA/v2 schema (for example, Pods, Object or External metrics)
+            customMetrics: []
+            # - type: Pods
+            #   pods:
+            #     metric:
+            #       name: loki_lines_total
+            #     target:
+            #       type: AverageValue
+            #       averageValue: 10k
+            behavior:
+              # -- Enable autoscaling behaviours
+              enabled: false
+              # -- define scale down policies, must conform to HPAScalingRules
+              scaleDown: {}
+              # -- define scale up policies, must conform to HPAScalingRules
+              scaleUp: {}
+
         querier:
+          tolerations:
+             - key: "type"
+               operator: "Equal"
+               effect: "NoSchedule"
+               value: "observability"
+
           extraArgs:
             - -memberlist.bind-addr=$(MY_POD_IP)
+
           extraEnv:
             - name: MY_POD_IP
               valueFrom:
@@ -118,8 +199,15 @@ spec:
                   fieldPath: status.podIP
 
         queryFrontend:
+          tolerations:
+             - key: "type"
+               operator: "Equal"
+               effect: "NoSchedule"
+               value: "observability"
+
           extraArgs:
             - -memberlist.bind-addr=$(MY_POD_IP)
+
           extraEnv:
             - name: MY_POD_IP
               valueFrom:
@@ -127,48 +215,75 @@ spec:
                   fieldPath: status.podIP
 
         queryScheduler:
+          tolerations:
+             - key: "type"
+               operator: "Equal"
+               effect: "NoSchedule"
+               value: "observability"
+
           extraArgs:
             - -memberlist.bind-addr=$(MY_POD_IP)
+
           extraEnv:
             - name: MY_POD_IP
               valueFrom:
                 fieldRef:
                   fieldPath: status.podIP
 
+        # Configuration for the ruler
         ruler:
-          enabled: false
+          # -- Specifies whether the ruler should be enabled
+          enabled: true
+
+          # -- Kind of deployment [StatefulSet/Deployment]
           kind: Deployment
+
+          # -- Number of replicas for the ruler
           replicas: 1
-          extraArgs:
-            - -memberlist.bind-addr=$(MY_POD_IP)
-          extraEnv:
-            - name: MY_POD_IP
-              valueFrom:
-                fieldRef:
-                  fieldPath: status.podIP
-          extraVolumeMounts:
-            - name: fake
-              mountPath: /etc/loki/rules/fake
-          extraVolumes:
-            - name: fake
-              configMap:
-                name: loki-cluster-rules
+
+          # -- Additional CLI args for the ruler
+          extraArgs: []
+
+          # -- Environment variables to add to the ruler pods
+          extraEnv: []
+
+          # -- Environment variables from secrets or configmaps to add to the ruler pods
+          extraEnvFrom: []
+
+          # -- Volume mounts to add to the ruler pods
+          extraVolumeMounts: []
+            # these are the rules for entire clusters
+            # located in https://github.sie.sony.com/Guerrilla/dope-monitoring-control-plane/tree/main/charts/loki-rules
+            # - name: fake
+            #  mountPath: /etc/loki/rules/fake
+
+          # -- Volumes to add to the ruler pods
+          extraVolumes: []
+            # these are the rules for entire clusters
+            # located in https://github.sie.sony.com/Guerrilla/dope-monitoring-control-plane/tree/main/charts/loki-rules
+            # - name: fake
+            #  configMap:
+            #    name: loki-cluster-rules
+
+          # -- Resource requests and limits for the ruler
           resources: {}
+
+          # -- Grace period to allow the ruler to shutdown before it is killed
           terminationGracePeriodSeconds: 300
+
+          # -- Pod Disruption Budget maxUnavailable
           maxUnavailable: null
-          nodeSelector: {}
+
           persistence:
+            # -- Enable creating PVCs which is required when using recording rules
             enabled: true
+
+            # -- Size of persistent disk
             size: 10Gi
+
+            # -- Storage class to be used.
             storageClass: local-path
+
+          # -- Set the optional grpc service protocol. Ex: "grpc", "http2" or "https"
           appProtocol:
             grpc: ""
-
-  syncPolicy:
-    syncOptions:
-      - CreateNamespace=true
-      - ApplyOutOfSyncOnly=true
-      - Retry=true
-    automated:
-      selfHeal: true
-      prune: true
