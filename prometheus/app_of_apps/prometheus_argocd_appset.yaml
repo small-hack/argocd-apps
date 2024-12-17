@@ -219,7 +219,6 @@ spec:
               grafana.ini:
                 auth:
                   disable_login_form: false
-                  publicDashboards: true
 
                 "auth.generic_oauth":
                   name: Zitadel
