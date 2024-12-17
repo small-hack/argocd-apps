@@ -119,9 +119,6 @@ spec:
               disableCompaction: true
 
               prometheusSpec:
-                tolerations: {}
-                nodeSelector: {}
-
                 # For use with Thanos SideCar only
                 # thanos:
                 #   create: false
