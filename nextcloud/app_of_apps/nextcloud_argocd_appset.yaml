@@ -656,6 +656,7 @@ spec:
                   --o:ssl.termination=true
                   --o:fetch_update_check=0
                   --o:num_prespawn_children=3
+                  --o:remote_font_config.url=https://{{ .nextcloud_hostname }}/apps/richdocuments/settings/fonts.json
 
                 ## Specify server_name when the hostname is not reachable directly for example behind reverse-proxy
                 server_name: '{{ .nextcloud_collabora_hostname }}'
