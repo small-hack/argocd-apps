@@ -41,8 +41,8 @@ Here's a quick peak at what we're deploying with Argo CD. We support deploying w
 
 #### Sync wave 3
 
-- **Nextcloud Web App** is the actual helm chart deployment of Nextcloud.
-The Nextcloud WebApp also includes a metrics pod, a Collabora Online deployment, and a Redis (soon to be valkey) cluster.
+- **Nextcloud App** is the actual helm chart deployment of Nextcloud.
+The Nextcloud App also includes a metrics pod, a Collabora Online deployment, and a Redis (soon to be valkey) cluster.
 
 #### Sync wave 4
 
