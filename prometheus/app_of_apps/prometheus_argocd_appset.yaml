@@ -221,11 +221,6 @@ spec:
                   disable_login_form: false
                   publicDashboards: true
 
-                users:
-                  allow_sign_up: false
-                  auto_assign_org: true
-                  auto_assign_org_role: Admin
-
                 "auth.generic_oauth":
                   name: Zitadel
                   enabled: true
@@ -236,10 +231,12 @@ spec:
                   auth_url: https://{{ .zitadel_hostname }}/oauth/v2/authorize
                   token_url: https://{{ .zitadel_hostname }}/oauth/v2/token
                   api_url: https://{{ .zitadel_hostname }}/oauth/v1/userinfo
+
                 users:
                   allow_sign_up: false
                   auto_assign_org: true
                   auto_assign_org_role: Admin
+
                 server:
                   root_url: "https://{{ .prometheus_grafana_hostname }}"
 
