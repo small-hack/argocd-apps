@@ -31,54 +31,7 @@ spec:
         compactor:
           serviceAccount:
             create: true
-          extraArgs:
-            - -memberlist.bind-addr=$(MY_POD_IP)
           shared_store: s3
-
-        gateway:
-          extraArgs:
-            - -memberlist.bind-addr=$(MY_POD_IP)
-          extraEnv:
-            - name: MY_POD_IP
-              valueFrom:
-                fieldRef:
-                  fieldPath: status.podIP
-
-        memcachedchunks:
-          extraArgs:
-            - -memberlist.bind-addr=$(MY_POD_IP)
-          extraEnv:
-            - name: MY_POD_IP
-              valueFrom:
-                fieldRef:
-                  fieldPath: status.podIP
-
-        memcachedfrontend:
-          extraArgs:
-            - -memberlist.bind-addr=$(MY_POD_IP)
-          extraEnv:
-            - name: MY_POD_IP
-              valueFrom:
-                fieldRef:
-                  fieldPath: status.podIP
-
-        distributor:
-          extraArgs:
-            - -memberlist.bind-addr=$(MY_POD_IP)
-          extraEnv:
-            - name: MY_POD_IP
-              valueFrom:
-                fieldRef:
-                  fieldPath: status.podIP
-
-        ingester:
-          extraArgs:
-            - -memberlist.bind-addr=$(MY_POD_IP)
-          extraEnv:
-            - name: MY_POD_IP
-              valueFrom:
-                fieldRef:
-                  fieldPath: status.podIP
           resources:
             requests:
               cpu: 1
@@ -98,33 +51,6 @@ spec:
               enabled: false
               scaleDown: {}
               scaleUp: {}
-
-        querier:
-          extraArgs:
-            - -memberlist.bind-addr=$(MY_POD_IP)
-          extraEnv:
-            - name: MY_POD_IP
-              valueFrom:
-                fieldRef:
-                  fieldPath: status.podIP
-
-        queryFrontend:
-          extraArgs:
-            - -memberlist.bind-addr=$(MY_POD_IP)
-          extraEnv:
-            - name: MY_POD_IP
-              valueFrom:
-                fieldRef:
-                  fieldPath: status.podIP
-
-        queryScheduler:
-          extraArgs:
-            - -memberlist.bind-addr=$(MY_POD_IP)
-          extraEnv:
-            - name: MY_POD_IP
-              valueFrom:
-                fieldRef:
-                  fieldPath: status.podIP
 
         ruler:
           enabled: true
