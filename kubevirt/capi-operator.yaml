@@ -11,7 +11,7 @@ spec:
   source:
     path: charts/capi-operator
     repoURL: https://github.com/cloudymax/kubevirt-community-stack
-    targetRevision: 0bac6ffa70922e39a841e2f10132ce44c0efb231
+    targetRevision: 1c08d9d84ba2a5600236e9de6c33187b9e3d205f
     helm:
       releaseName: capi-operator
       values: |
@@ -39,7 +39,7 @@ spec:
         diagnosticsAddress: "0.0.0.0:8443"
         env:
           manager: []
-        healthAddr: 0.0.0.0:8081
+        healthAddr: "0.0.0.0:8081"
         image:
           manager:
             pullPolicy: IfNotPresent
@@ -47,6 +47,7 @@ spec:
             tag: v0.15.0
         imagePullSecrets: {}
         featureGates:
+          enabled: false
           MachinePool: "true"
           KubeadmBootstrapFormatIgnition: "true"
           BootstrapTokenTtl: "15m"
