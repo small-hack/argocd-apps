@@ -36,10 +36,10 @@ spec:
         containerSecurityContext: {}
         controlPlane: kubeadm:v1.7.2
         core: cluster-api:v1.7.2
-        diagnosticsAddress: "8443"
+        diagnosticsAddress: "0.0.0.0:8443"
         env:
           manager: []
-        healthAddr: :8081
+        healthAddr: 0.0.0.0:8081
         image:
           manager:
             pullPolicy: IfNotPresent
