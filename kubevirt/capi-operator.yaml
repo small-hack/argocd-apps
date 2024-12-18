@@ -11,7 +11,7 @@ spec:
   source:
     path: charts/capi-operator
     repoURL: https://github.com/cloudymax/kubevirt-community-stack
-    targetRevision: 2e23d3793ea5676fbc342a75a366fe0d83f54c01
+    targetRevision: 0bac6ffa70922e39a841e2f10132ce44c0efb231
     helm:
       releaseName: capi-operator
       values: |
@@ -46,6 +46,10 @@ spec:
             repository: registry.k8s.io/capi-operator/cluster-api-operator
             tag: v0.15.0
         imagePullSecrets: {}
+        featureGates:
+          MachinePool: "false"
+          KubeadmBootstrapFormatIgnition: "true"
+          BootstrapTokenTtl: "15m"
         infrastructure: kubevirt:v0.1.8
         insecureDiagnostics: false
         leaderElection:
