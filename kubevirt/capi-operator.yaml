@@ -31,6 +31,14 @@ spec:
                   operator: In
                   values:
                   - linux
+        args:
+          - --v=2
+          - --health-addr="0.0.0.0:8081"
+          - --diagnostics-address="0.0.0.0:8443"
+          - --insecure-diagnostics=true
+          - --watch-configsecret
+          - --leader-elect=true
+
         bootstrap: kubeadm:v1.7.2
         configSecret: {}
         containerSecurityContext: {}
@@ -76,6 +84,7 @@ spec:
           - mountPath: /tmp/k8s-webhook-server/serving-certs
             name: cert
             readOnly: true
+            
         volumes:
         - name: cert
           secret:
