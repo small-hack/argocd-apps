@@ -59,7 +59,17 @@ spec:
         leaderElection:
           enabled: true
         logLevel: 2
-        manager.featureGates: {}
+        manager:
+          featureGates:
+            kubeadm:
+              MachinePool: true
+              KubeadmBootstrapFormatIgnition: true
+            core:
+              MachinePool: true
+              KubeadmBootstrapFormatIgnition: true
+            kubevirt:
+              MachinePool: true
+              KubeadmBootstrapFormatIgnition: true
         replicaCount: 1
         resources:
           manager:
