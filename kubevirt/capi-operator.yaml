@@ -11,7 +11,7 @@ spec:
   source:
     path: charts/capi-operator
     repoURL: https://github.com/cloudymax/kubevirt-community-stack
-    targetRevision: 1c08d9d84ba2a5600236e9de6c33187b9e3d205f
+    targetRevision: 062aaa26f592f04683cba53835d6a78ca8aaedec
     helm:
       releaseName: capi-operator
       values: |
