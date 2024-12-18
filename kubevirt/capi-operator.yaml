@@ -47,11 +47,11 @@ spec:
             tag: v0.15.0
         imagePullSecrets: {}
         featureGates:
-          MachinePool: "false"
+          MachinePool: "true"
           KubeadmBootstrapFormatIgnition: "true"
           BootstrapTokenTtl: "15m"
         infrastructure: kubevirt:v0.1.8
-        insecureDiagnostics: false
+        insecureDiagnostics: true
         leaderElection:
           enabled: true
         logLevel: 2
