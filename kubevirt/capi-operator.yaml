@@ -20,21 +20,7 @@ spec:
         controlPlane: "kubeadm:v1.7.2"
         infrastructure: "kubevirt:v0.1.8"
         addon: ""
-        manager:
-          featureGates:
-            kubeadm:
-              MachinePool: true
-              KubeadmBootstrapFormatIgnition: true
-            core:
-              MachinePool: true
-              KubeadmBootstrapFormatIgnition: true
-            kubevirt:
-              MachinePool: true
-              KubeadmBootstrapFormatIgnition: true
-            bootstrap:
-              MachinePool: true
-              KubeadmBootstrapFormatIgnition: true
-
+        manager: {}
         configSecret: {}
         replicaCount: 1
         image:
@@ -47,9 +33,6 @@ spec:
         imagePullSecrets: {}
         args:
           - --v=2
-          - --health-addr="0.0.0.0:8080"
-          - --diagnostics-address="0.0.0.0:8443"
-          - --insecure-diagnostics=true
           - --watch-configsecret
           - --leader-elect=true
         resources:
