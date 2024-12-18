@@ -14,7 +14,7 @@ spec:
     targetRevision: "0.4.7"
     helm:
       releaseName: capi-operator
-      values: |
+      valuesObject:
         core: "cluster-api:v1.7.2"
         bootstrap: "kubeadm:v1.7.2"
         controlPlane: "kubeadm:v1.7.2"
