@@ -15,50 +15,11 @@ spec:
     helm:
       releaseName: capi-operator
       values: |
+        core: "cluster-api:v1.7.2"
+        bootstrap: "kubeadm:v1.7.2"
+        controlPlane: "kubeadm:v1.7.2"
+        infrastructure: "kubevirt:v0.1.8"
         addon: ""
-        affinity:
-          nodeAffinity:
-            requiredDuringSchedulingIgnoredDuringExecution:
-              nodeSelectorTerms:
-              - matchExpressions:
-                - key: kubernetes.io/arch
-                  operator: In
-                  values:
-                  - amd64
-                  - arm64
-                  - ppc64le
-                - key: kubernetes.io/os
-                  operator: In
-                  values:
-                  - linux
-        args:
-          - --v=2
-          - --watch-configsecret
-          - --leader-elect=true
-
-        bootstrap: kubeadm:v1.7.2
-        configSecret: {}
-        containerSecurityContext: {}
-        controlPlane: kubeadm:v1.7.2
-        core: cluster-api:v1.7.2
-        env:
-          manager: []
-        image:
-          manager:
-            pullPolicy: IfNotPresent
-            repository: registry.k8s.io/capi-operator/cluster-api-operator
-            tag: v0.15.0
-        imagePullSecrets: {}
-        featureGates:
-          enabled: false
-          MachinePool: "true"
-          KubeadmBootstrapFormatIgnition: "true"
-          BootstrapTokenTtl: "15m"
-        infrastructure: kubevirt:v0.1.8
-        insecureDiagnostics: true
-        leaderElection:
-          enabled: true
-        logLevel: 2
         manager:
           featureGates:
             kubeadm:
@@ -73,7 +34,24 @@ spec:
             bootstrap:
               MachinePool: true
               KubeadmBootstrapFormatIgnition: true
+
+        configSecret: {}
         replicaCount: 1
+        image:
+          manager:
+            repository: registry.k8s.io/capi-operator/cluster-api-operator
+            tag: v0.15.0
+            pullPolicy: IfNotPresent
+        env:
+          manager: []
+        imagePullSecrets: {}
+        args:
+          - --v=2
+          - --health-addr="0.0.0.0:8080"
+          - --diagnostics-address="0.0.0.0:8443"
+          - --insecure-diagnostics=true
+          - --watch-configsecret
+          - --leader-elect=true
         resources:
           manager:
             limits:
@@ -82,23 +60,38 @@ spec:
             requests:
               cpu: 100m
               memory: 100Mi
+        containerSecurityContext: {}
+        affinity:
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+                - matchExpressions:
+                    - key: kubernetes.io/arch
+                      operator: In
+                      values:
+                        - amd64
+                        - arm64
+                        - ppc64le
+                    - key: kubernetes.io/os
+                      operator: In
+                      values:
+                        - linux
         tolerations:
-        - effect: NoSchedule
-          key: node-role.kubernetes.io/master
-        - effect: NoSchedule
-          key: node-role.kubernetes.io/control-plane
+          - effect: NoSchedule
+            key: node-role.kubernetes.io/master
+          - effect: NoSchedule
+            key: node-role.kubernetes.io/control-plane
+        volumes:
+          - name: cert
+            secret:
+              defaultMode: 420
+              secretName: capi-operator-webhook-service-cert
         volumeMounts:
           manager:
-          - mountPath: /tmp/k8s-webhook-server/serving-certs
-            name: cert
-            readOnly: true
-            
-        volumes:
-        - name: cert
-          secret:
-            defaultMode: 420
-            secretName: capi-operator-webhook-service-cert
-        watchConfigSecret: false
+            - mountPath: /tmp/k8s-webhook-server/serving-certs
+              name: cert
+              readOnly: true
+               watchConfigSecret: false
   syncPolicy:
     syncOptions:
     - CreateNamespace=true
