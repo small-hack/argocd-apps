@@ -195,15 +195,15 @@ spec:
               #   uid: thanos
               #   url: http://thanos-query-frontend.monitoring.svc.cluster.local:9090
 
-              additionalDataSources: []
-              #   - name: loki
-              #     access: proxy
-              #     editable: "false"
-              #     type: loki
-              #     url: http://loki-query-frontend.monitoring.svc.cluster.local:3100
-              #     jsonData:
-              #       timeout: 60
-              #       maxLines: 1000
+              additionalDataSources:
+                - name: loki
+                  access: proxy
+                  editable: false
+                  type: loki
+                  url: "http://loki-query-frontend.monitoring.svc.cluster.local:3100"
+                  jsonData:
+                    timeout: 60
+                    maxLines: 1000
 
               envValueFrom:
                 GF_AUTH_GENERIC_OAUTH_CLIENT_ID:
