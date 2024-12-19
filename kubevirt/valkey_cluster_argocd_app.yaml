@@ -86,8 +86,7 @@ spec:
                 valkey: 6379
                 bus: 16379
 
-              resourcesPreset: "xlarge"
-              resources: {}
+              resourcesPreset: "nano"
 
             cluster:
               init: true
@@ -107,13 +106,7 @@ spec:
             metrics:
               # we use a grafana exporter that logs into valkey directly
               enabled: true
+              resourcesPreset: nano
 
-            resources:
-              requests:
-                cpu: 100m
-                memory: 512Mi
-              limits:
-                cpu: 2
-                memory: 4096Mi
 
 
