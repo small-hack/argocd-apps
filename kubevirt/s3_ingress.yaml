@@ -19,8 +19,6 @@ metadata:
     nginx.org/location-snippets: |
       proxy_set_header Upgrade $http_upgrade;
       proxy_set_header Connection $connection_upgrade;
-  creationTimestamp: "2024-12-19T10:27:25Z"
-  generation: 1
   labels:
     app.kubernetes.io/name: seaweedfs
   name: swfs-filer-ui-ingress
@@ -63,8 +61,6 @@ metadata:
     nginx.org/location-snippets: |
       proxy_set_header Upgrade $http_upgrade;
       proxy_set_header Connection $connection_upgrade;
-  creationTimestamp: "2024-12-19T10:27:25Z"
-  generation: 1
   labels:
     app.kubernetes.io/name: seaweedfs
   name: swfs-master-ui-ingress
@@ -107,8 +103,6 @@ metadata:
     nginx.org/location-snippets: |
       proxy_set_header Upgrade $http_upgrade;
       proxy_set_header Connection $connection_upgrade;
-  creationTimestamp: "2024-12-19T10:27:25Z"
-  generation: 1
   labels:
     app.kubernetes.io/name: seaweedfs
   name: swfs-volume-ui-ingress
