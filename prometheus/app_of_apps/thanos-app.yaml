@@ -48,7 +48,7 @@ spec:
 
           resources:
             requests:
-              cpu: 500m
+              cpu: 250m
               memory: 1024M
             limits:
               cpu: 2
@@ -87,7 +87,7 @@ spec:
 
           resources:
             requests:
-              cpu: 500m
+              cpu: 250m
               memory: 512M
             limits:
               cpu: 2
@@ -164,7 +164,7 @@ spec:
 
           resources:
             requests:
-              cpu: 500,
+              cpu: 250m,
               memory: 1024M
             limits:
               cpu: 2
