@@ -287,3 +287,8 @@ spec:
           # -- Set the optional grpc service protocol. Ex: "grpc", "http2" or "https"
           appProtocol:
             grpc: ""
+  syncPolicy:
+    syncOptions:
+      - ApplyOutOfSyncOnly=true
+    automated:
+      selfHeal: true
