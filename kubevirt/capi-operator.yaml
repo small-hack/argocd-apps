@@ -32,9 +32,7 @@ spec:
           manager: []
         imagePullSecrets: {}
         args:
-          - --v=2
-          - --watch-configsecret
-          - --leader-elect=true
+          - --leader-elect
         resources:
           manager:
             limits:
