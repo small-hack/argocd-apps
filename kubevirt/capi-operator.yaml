@@ -15,10 +15,10 @@ spec:
     helm:
       releaseName: capi-operator
       values: |
-        core: "cluster-api:v1.7.2"
-        bootstrap: "kubeadm:v1.7.2"
-        controlPlane: "kubeadm:v1.7.2"
-        infrastructure: "kubevirt:v0.1.8"
+        core: "cluster-api:v1.9.1"
+        bootstrap: "kubeadm:v1.9.1"
+        controlPlane: "kubeadm:v1.9.1"
+        infrastructure: "kubevirt:v0.1.9"
         addon: ""
         manager: {}
         #  featureGates:
