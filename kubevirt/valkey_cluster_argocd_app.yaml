@@ -106,6 +106,14 @@ spec:
             # metrics on valkey cluster
             metrics:
               # we use a grafana exporter that logs into valkey directly
-              enabled: false
+              enabled: true
+
+            resources:
+              requests:
+                cpu: 100m
+                memory: 512Mi
+              limits:
+                cpu: 2
+                memory: 4096Mi
 
 
