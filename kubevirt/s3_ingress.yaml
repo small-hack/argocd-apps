@@ -1,0 +1,134 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/auth-response-headers: X-Vouch-User
+    nginx.ingress.kubernetes.io/auth-signin: https://auth.buildstar.online/login?url=$scheme://$http_host$request_uri&vouch-failcount=$auth_resp_failcount&X-Vouch-Token=$auth_resp_jwt&error=$auth_resp_err
+    nginx.ingress.kubernetes.io/auth-snippet: |
+      auth_request_set $auth_resp_jwt $upstream_http_x_vouch_jwt;
+      auth_request_set $auth_resp_err $upstream_http_x_vouch_err;
+      auth_request_set $auth_resp_failcount $upstream_http_x_vouch_failcount;
+      # when VP is hosted externally to k8s ensure the SSL cert is valid to avoid MITM risk
+      proxy_ssl_trusted_certificate /etc/ssl/certs/ca-certificates.crt;
+      proxy_ssl_session_reuse on;
+      proxy_ssl_verify_depth 2;
+      proxy_ssl_verify on;
+    nginx.ingress.kubernetes.io/auth-url: https://auth.buildstar.online/validate
+    nginx.org/location-snippets: |
+      proxy_set_header Upgrade $http_upgrade;
+      proxy_set_header Connection $connection_upgrade;
+  creationTimestamp: "2024-12-19T10:27:25Z"
+  generation: 1
+  labels:
+    app.kubernetes.io/name: seaweedfs
+  name: swfs-filer-ui-ingress
+  namespace: kubevirt
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: filer.kubevirt.buildstar.online
+    http:
+      paths:
+      - backend:
+          service:
+            name: seaweedfs-filer
+            port:
+              number: 8888
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+    - filer.kubevirt.buildstar.online
+    secretName: tls-s3-filer
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/auth-response-headers: X-Vouch-User
+    nginx.ingress.kubernetes.io/auth-signin: https://auth.buildstar.online/login?url=$scheme://$http_host$request_uri&vouch-failcount=$auth_resp_failcount&X-Vouch-Token=$auth_resp_jwt&error=$auth_resp_err
+    nginx.ingress.kubernetes.io/auth-snippet: |
+      auth_request_set $auth_resp_jwt $upstream_http_x_vouch_jwt;
+      auth_request_set $auth_resp_err $upstream_http_x_vouch_err;
+      auth_request_set $auth_resp_failcount $upstream_http_x_vouch_failcount;
+      # when VP is hosted externally to k8s ensure the SSL cert is valid to avoid MITM risk
+      proxy_ssl_trusted_certificate /etc/ssl/certs/ca-certificates.crt;
+      proxy_ssl_session_reuse on;
+      proxy_ssl_verify_depth 2;
+      proxy_ssl_verify on;
+    nginx.ingress.kubernetes.io/auth-url: https://auth.buildstar.online/validate
+    nginx.org/location-snippets: |
+      proxy_set_header Upgrade $http_upgrade;
+      proxy_set_header Connection $connection_upgrade;
+  creationTimestamp: "2024-12-19T10:27:25Z"
+  generation: 1
+  labels:
+    app.kubernetes.io/name: seaweedfs
+  name: swfs-master-ui-ingress
+  namespace: kubevirt
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: controller.kubevirt.buildstar.online
+    http:
+      paths:
+      - backend:
+          service:
+            name: seaweedfs-master
+            port:
+              number: 9333
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+    - controller.kubevirt.buildstar.online
+    secretName: tls-kubevirt-s3-controller
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/auth-response-headers: X-Vouch-User
+    nginx.ingress.kubernetes.io/auth-signin: https://auth.buildstar.online/login?url=$scheme://$http_host$request_uri&vouch-failcount=$auth_resp_failcount&X-Vouch-Token=$auth_resp_jwt&error=$auth_resp_err
+    nginx.ingress.kubernetes.io/auth-snippet: |
+      auth_request_set $auth_resp_jwt $upstream_http_x_vouch_jwt;
+      auth_request_set $auth_resp_err $upstream_http_x_vouch_err;
+      auth_request_set $auth_resp_failcount $upstream_http_x_vouch_failcount;
+      # when VP is hosted externally to k8s ensure the SSL cert is valid to avoid MITM risk
+      proxy_ssl_trusted_certificate /etc/ssl/certs/ca-certificates.crt;
+      proxy_ssl_session_reuse on;
+      proxy_ssl_verify_depth 2;
+      proxy_ssl_verify on;
+    nginx.ingress.kubernetes.io/auth-url: https://auth.buildstar.online/validate
+    nginx.org/location-snippets: |
+      proxy_set_header Upgrade $http_upgrade;
+      proxy_set_header Connection $connection_upgrade;
+  creationTimestamp: "2024-12-19T10:27:25Z"
+  generation: 1
+  labels:
+    app.kubernetes.io/name: seaweedfs
+  name: swfs-volume-ui-ingress
+  namespace: kubevirt
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: volume.kubevirt.buildstar.online
+    http:
+      paths:
+      - backend:
+          service:
+            name: seaweedfs-volume
+            port:
+              number: 8080
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+    - volume.kubevirt.buildstar.online
+    secretName: tls-kubevirt-s3-volume
+
+
