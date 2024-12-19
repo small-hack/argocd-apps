@@ -148,11 +148,11 @@ spec:
 
           resources:
             requests:
+              cpu: 500m
+              memory: 1024Mi
+            limits:
               cpu: 2
               memory: 4096Mi
-            limits:
-              cpu: 4
-              memory: 8192Mi
 
           autoscaling:
             # -- Enable autoscaling for the ingester
