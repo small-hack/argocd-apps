@@ -21,6 +21,20 @@ spec:
         infrastructure: "kubevirt:v0.1.8"
         addon: ""
         manager: {}
+        #  featureGates:
+        #    kubeadm:
+        #      MachinePool: true
+        #      KubeadmBootstrapFormatIgnition: true
+        #    core:
+        #      MachinePool: true
+        #      KubeadmBootstrapFormatIgnition: true
+        #    kubevirt:
+        #      MachinePool: true
+        #      KubeadmBootstrapFormatIgnition: true
+        #    bootstrap:
+        #      MachinePool: true
+        #      KubeadmBootstrapFormatIgnition: true
+
         configSecret: {}
         replicaCount: 1
         image:
@@ -72,8 +86,7 @@ spec:
             - mountPath: /tmp/k8s-webhook-server/serving-certs
               name: cert
               readOnly: true
-               watchConfigSecret: false
-  syncPolicy:
-    syncOptions:
-    - CreateNamespace=true
-    - ApplyOutOfSyncOnly=true
+          syncPolicy:
+            syncOptions:
+            - CreateNamespace=true
+            - ApplyOutOfSyncOnly=true
