@@ -51,7 +51,7 @@ spec:
             prometheus:
               enabled: true
               serviceName: "thanos-app-query-frontend"
-              serviceNamespace: "default"
+              serviceNamespace: "monitoring"
             ingress:
               enabled: true
               className: "nginx"
