@@ -25,7 +25,7 @@ spec:
       annotations:
         argocd.argoproj.io/sync-wave: "3"
     spec:
-      project: argocd
+      project: argo-cd
       destination:
         server: "https://kubernetes.default.svc"
         namespace: argocd
@@ -70,16 +70,15 @@ spec:
 
             certificates:
               server:
-                enabled: true
-                generate: true
+                enabled: false
+                generate: false
               client:
-                enabled: true
-                generate: true
+                enabled: false
+                generate: false
               user:
-                enabled: true
+                enabled: false
                 username:
                   - workflows
-                  - postgres
 
             scheduledBackup:
               name: workflows-pg-backup
