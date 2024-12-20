@@ -203,7 +203,7 @@ spec:
               metricsPort: 9327
               encryptVolumeData: false
               filerGroup: ""
-              enablePVC: false
+              enablePVC: true
               storage: 10Gi
 
               topologySpreadConstraints: {}
