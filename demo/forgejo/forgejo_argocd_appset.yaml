@@ -434,12 +434,12 @@ spec:
               - name: FORGEJO__DATABASE__USER
                 valueFrom:
                   secretKeyRef:
-                    name: forgejo-pgsql-credentials
+                    name: gitea-pgsql-credentials
                     key: username
               - name: FORGEJO__DATABASE__PASSWD
                 valueFrom:
                   secretKeyRef:
-                    name: forgejo-pgsql-credentials
+                    name: gitea-pgsql-credentials
                     key: password
 
               ## @param gitea.podAnnotations Annotations for the Forgejo pod
@@ -480,15 +480,16 @@ spec:
                 ## @param gitea.config.database Database configuration (only necessary with an [externally managed DB](https://code.forgejo.org/forgejo-helm/forgejo-helm#external-database)).
                 database:
                   DB_TYPE: postgres
-                  USER: forgejo
-                  HOST: forgejo-postgres:5432
+                  HOST: forgejo-postgres-rw:5432
+                  NAME: forgejo
                   SSL_MODE: disable
 
                 ## @param gitea.config.indexer Settings for what content is indexed and how
                 indexer: {}
 
                 ## @param gitea.config.queue Job queue configuration
-                queue: {}
+                queue:
+                  TYPE: redis
 
                 ## @param gitea.config.admin Admin user settings
                 admin: {}
@@ -629,7 +630,7 @@ spec:
                 failureThreshold: 10
 
             redis-cluster:
-              enabled: true
+              enabled: false
 
             redis:
               enabled: false

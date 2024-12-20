@@ -14,3 +14,11 @@ This uses an oci image repo which can only be used if it is added as a repo to a
 kns argocd
 argocd repo add code.forgejo.org --type helm --name forgejo --enable-oci
 ```
+
+TODO:
+
+1. convert existing secrets to external secrets or random passwords
+2. add seaweedfs backups
+3. add zitadel auth
+4. Create an App-of-Apps
+5. Add to smol-k8s-lab config

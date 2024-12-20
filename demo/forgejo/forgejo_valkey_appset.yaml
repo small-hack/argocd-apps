@@ -85,7 +85,7 @@ spec:
                 valkey: 6379
                 bus: 16379
 
-              resourcesPreset: "nano"
+              resourcesPreset: "small"
 
             cluster:
               init: true

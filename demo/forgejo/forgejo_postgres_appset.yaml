@@ -44,53 +44,53 @@ spec:
           releaseName: forgejo-postgres-cluster
           valuesObject:
             name: forgejo-postgres
-            instances: 2
+            instances: 1
 
             bootstrap:
               initdb:
                 database: forgejo
-                owner: root
+                owner: forgejo
                 secret:
-                  name: forgejo-pgsql-credentials
+                  name: gitea-pgsql-credentials
 
-            backup:
-              # barman is a utility for backing up postgres to s3
-              barmanObjectStore:
-                destinationPath: "s3://forgejo-postgres"
-                endpointURL: "https://{{ .forgejo_s3_endpoint }}"
-                s3Credentials:
-                  accessKeyId:
-                    name: s3-postgres-credentials
-                    key: "accessKeyId"
-                  secretAccessKey:
-                    name: s3-postgres-credentials
-                    key: "secretAccessKey"
-                wal:
-                  compression: gzip
-                  maxParallel: 8
-                  encryption: AES256
-              retentionPolicy: "30d"
+            backup: {}
+            #   # barman is a utility for backing up postgres to s3
+            #   barmanObjectStore:
+            #     destinationPath: "s3://forgejo-postgres"
+            #     endpointURL: "https://{{ .forgejo_s3_endpoint }}"
+            #     s3Credentials:
+            #       accessKeyId:
+            #         name: s3-postgres-credentials
+            #         key: "accessKeyId"
+            #       secretAccessKey:
+            #         name: s3-postgres-credentials
+            #         key: "secretAccessKey"
+            #     wal:
+            #       compression: gzip
+            #       maxParallel: 8
+            #       encryption: AES256
+            #   retentionPolicy: "30d"
 
             certificates:
               server:
-                enabled: true
-                generate: true
+                enabled: false
+                generate: false
               client:
-                enabled: true
-                generate: true
+                enabled: false
+                generate: false
               user:
-                enabled: true
+                enabled: false
                 username:
                   - forgejo
 
-            scheduledBackup:
-              name: forgejo-pg-backup
-              spec:
-                # Midnight daily backups for postgres data
-                schedule: '{{ .forgejo_postgres_backup_schedule }}'
-                backupOwnerReference: self
-                cluster:
-                  name: forgejo-postgres
+            scheduledBackup: {}
+              #  name: forgejo-pg-backup
+              #  spec:
+              #    # Midnight daily backups for postgres data
+              #    schedule: '{{ .forgejo_postgres_backup_schedule }}'
+              #    backupOwnerReference: self
+              #    cluster:
+              #      name: forgejo-postgres
 
             monitoring:
               enablePodMonitor: true
