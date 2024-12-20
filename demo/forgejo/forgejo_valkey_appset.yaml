@@ -37,7 +37,7 @@ spec:
       source:
         repoURL: 'registry-1.docker.io'
         chart: bitnamicharts/valkey-cluster
-        targetRevision: 1.0.3
+        targetRevision: 2.1.0
         helm:
           valuesObject:
 
