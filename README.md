@@ -7,6 +7,7 @@ https://github.com/small-hack/argocd-apps/assets/2389292/76b0fe06-554e-4e46-856f
 These Argo CD apps were originally designed to be compatible with [`smol-k8s-lab`](https://github.com/small-hack/smol-k8s-lab), but they can be used anywhere :)
 
 ## Core Tenants
+
 Here's some quick guidelines, but you if you'd like to contribute, please read the full contributing guidelines [here](./CONTRIBUTING.md) 😃!
 
 - Follow a base [schema](./CONTRIBUTING.md#directory-and-filename-schemas) for all our files and directories so that we can easily make more of them faster.
@@ -20,27 +21,27 @@ Here's some quick guidelines, but you if you'd like to contribute, please read t
 # All Apps
 
 * [Continuous Deployment](#continuous-deployment)
-* [Database](#database)
+* [Database and Key Value Stores](#database-and-key-value-stores)
 * [File Storage and Backups](#file-storage-and-backups)
   * [Experimental](#experimental)
 * [Identity Providers and SSO](#identity-providers-and-sso)
   * [Experimental](#experimental-1)
 * [Ingress](#ingress)
 * [Monitoring](#monitoring)
-* [Networking](#networking)
   * [Experimental](#experimental-2)
-* [Other](#other)
+* [Networking](#networking)
   * [Experimental](#experimental-3)
+* [Other](#other)
+  * [Experimental](#experimental-4)
 * [Security](#security)
 * [Secrets Management](#secrets-management)
-  * [Experimental](#experimental-4)
-* [Social Media and chat](#social-media-and-chat)
   * [Experimental](#experimental-5)
+* [Social Media and chat](#social-media-and-chat)
 * [Virtual Machines](#virtual-machines)
   * [Experimental](#experimental-6)
 * [Troubleshooting Tips](#troubleshooting-tips)
 * [Art](#art)
-
+  * [Argo CD Squid riding a Docker whale](#argo-cd-squid-riding-a-docker-whale)
 
 ## Continuous Deployment
 
@@ -49,45 +50,47 @@ Here's some quick guidelines, but you if you'd like to contribute, please read t
 | [argocd](./argocd) | The one, the only, [Argo CD](https://argoproj.github.io/cd/) is used for declarative continuous delivery to Kubernetes with a fully-loaded UI. This actually deploys all the other apps and manages itself too :3 |
 
 
-## Database
+## Database and Key Value Stores
 
-| App Directory                                      | Description                                                                                             |
-|:-----------------------------------------|:------------------------------------------------------------------------------------------------------------------|
-| [cloud-native-postgres-operator](./postgres/operators/cloud-native-postgres) | PostgreSQL database management operator to spin up postgres instances, collect metrics, and create backups |
-| [postgres](./postgres/bitnami)           | Just a bitnami PostgreSQL database helm chart on k8s, in case you need that for something                         |
+| App Directory                                                                | Description                                                                                                |
+|:-----------------------------------------------------------------------------|:-----------------------------------------------------------------------------------------------------------|
+| [cloud-native-postgres](./postgres/operators/cloud-native-postgres) | PostgreSQL database management operator to spin up postgres instances, collect metrics, and create backups |
+| [postgresql](./postgres/bitnami)                                             | Just a bitnami PostgreSQL database helm chart on k8s, in case you need that for something                  |
+| [valkey](./valkey)                                                           | Bitnami Valkey helm chart on k8s. Valkey is a more FOSS alternative to Redis.                              |
+| [valkey Cluster](./valkey_cluster)                                           | Bitnami Valkey Cluster helm chart on k8s. Valkey is a more FOSS alternative to Redis Cluster.              |
 
 
 ## File Storage and Backups
 
 | App Directory                          | Description                                                                                                                                                           |
 |:---------------------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [collabora online](./collabora_online) | [Collabora Online](https://www.collaboraonline.com/) is a powerful online document editing suite                                                                      |
+| [Collabora Online](./collabora_online) | [Collabora Online](https://www.collaboraonline.com/) is a powerful online document editing suite                                                                      |
 | [k8up](./k8up)                         | [K8up](https://k8up.io/k8up/2.7/index.html) is a k8s native backups done via restic, so you can sync your persistent volumes to external s3 compliant storage         |
 | [nextcloud](./nextcloud)               | [Nextcloud](https://nextcloud.com/) is a self hosted file storage cloud solution. Replaces something like google drive/photos/notes/meets/calendar - mostly stable    |
 | [minio](./minio)                       | [MinIO](https://min.io) is a secure self hosted S3 compatible Object Store.                                                                                           |
-| [seaweedfs](./seaweedfs)               | [SeaweedFS](https://github.com/seaweedfs/seaweedfs) is a secure and very fast self hosted S3 compatible Object Store specialized for either many files or large files |
+| [SeaweedFS](./seaweedfs)               | [SeaweedFS](https://github.com/seaweedfs/seaweedfs) is a secure and very fast self hosted S3 compatible Object Store specialized for either many files or large files |
 
 
 #### Experimental
-|       App Directory      | Description                                                                                                                                                                          |
-|:------------------------:|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [garage](./demo/garage) | [Garage](https://git.deuxfleurs.fr/Deuxfleurs/garage/src/branch/main) is a self hosted S3 compatible Object Store                                                                    |
-|    [Harbor](./harbor)    | Container Registry and OCI artifact store with built-in vulernability scanning via Trivy                                                                                             |
-|  [Longhorn](./demo/longhorn)  | [Longhorn](https://github.com/longhorn/longhorn) is a lightweight, reliable and easy-to-use distributed block storage system for Kubernetes. (not currently actively in development) |
+|        App Directory        | Description                                                                                                                                                                          |
+|:---------------------------:|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|   [garage](./demo/garage)   | [Garage](https://git.deuxfleurs.fr/Deuxfleurs/garage/src/branch/main) is a self hosted S3 compatible Object Store                                                                    |
+|      [harbor](./harbor)     | Container Registry and OCI artifact store with built-in vulernability scanning via Trivy                                                                                             |
+| [longhorn](./demo/longhorn) | [Longhorn](https://github.com/longhorn/longhorn) is a lightweight, reliable and easy-to-use distributed block storage system for Kubernetes. (not currently actively in development) |
 
 ## Identity Providers and SSO
 
-|         App Directory        | Description                                                                                                                                                                                                                                                                                                                                       |
-|:----------------------------:|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|         App Directory        | Description                                                                                                                                                                                                                                                                                                                                                 |
+|:----------------------------:|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | [vouch-proxy](./vouch-proxy) | helm chart for [Vouch](https://github.com/vouch/vouch-proxy), an OAuth2 proxy that allows you to use ingress-nginx annotations to connect to a third party identity provider, giving you proper auth on websites that don't have auth. Currently works with the zitadel provider in this template, but also known to work with keycloak, google, and github |
-|     [zitadel](./zitadel)     | helm chart for [Zitadel](https://zitadel.com/), an Identity Access Management tool with built in OpenIDConnect for authenticating to self hosted apps. Recommended over keycloak.                                                                                                                                                                 |
+|     [zitadel](./zitadel)     | helm chart for [Zitadel](https://zitadel.com/), an Identity Access Management tool with built in OpenIDConnect for authenticating to self hosted apps. Recommended over keycloak.                                                                                                                                                                           |
 
 
 #### Experimental
 
 |          App Directory         | Description                                                                                                                                                 |
 |:------------------------------:|:------------------------------------------------------------------------------------------------------------------------------------------------------------|
-|  [keycloak](./demo/keycloak)  | helm chart for [Keycloak](https://www.keycloak.org/), an Identity Access Management tool with built in OpenIDConnect for authenticating to self hosted apps |
+|   [keycloak](./demo/keycloak)  | helm chart for [Keycloak](https://www.keycloak.org/), an Identity Access Management tool with built in OpenIDConnect for authenticating to self hosted apps |
 | [oauth2-proxy](./oauth2-proxy) | Oauth2 proxy that works with Google, however we're testing a keycloak provider right now                                                                    |
 
 ## Ingress
@@ -101,10 +104,11 @@ Here's some quick guidelines, but you if you'd like to contribute, please read t
 ## Monitoring
 
 The main thing we deploy is the Kube Prometheus Stack which includes:
-- prometheus
-- alertmanager
-- grafana
-- loki
+- Prometheus
+- Alertmanager
+- Grafana
+- Loki
+- Thanos
 
 | App Directory                                                           | Description                                                                                                                                                                         |
 |:------------------------------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
