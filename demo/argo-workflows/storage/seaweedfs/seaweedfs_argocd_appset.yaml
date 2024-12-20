@@ -6,7 +6,7 @@ metadata:
   name: workflows-seaweedfs-appset
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "2"
+    argocd.argoproj.io/sync-wave: "1"
 spec:
   goTemplate: true
   # generator allows us to source specific values from an external k8s secret
@@ -17,8 +17,9 @@ spec:
         input:
           parameters:
             secret_vars:
-              - workflows_s3_endpoint
               - global_cluster_issuer
+              - workflows_s3_endpoint
+              - workflows-hostname
   template:
     metadata:
       name: workflows-seaweedfs-app
@@ -28,16 +29,16 @@ spec:
       project: argocd
       destination:
         server: https://kubernetes.default.svc
-        namespace: argocd 
+        namespace: argocd
       syncPolicy:
         syncOptions:
           - ApplyOutOfSyncOnly=true
         automated:
           prune: true
-          selfHeal: true 
+          selfHeal: true
       source:
         repoURL: 'https://seaweedfs.github.io/seaweedfs/helm'
-        targetRevision: 3.68.0
+        targetRevision: 4.0.379
         chart: seaweedfs
         helm:
           releaseName: workflows-seaweedfs
@@ -57,18 +58,20 @@ spec:
               certificates:
                 alphacrds: false
               monitoring:
-                enabled: false
+                enabled: true
                 gatewayHost: null
                 gatewayPort: null
               enableReplication: false
               replicationPlacment: "001"
               extraEnvironmentVars:
                 WEED_CLUSTER_DEFAULT: "sw"
-                WEED_CLUSTER_SW_MASTER: "seaweedfs-master.seaweedfs:9333"
-                WEED_CLUSTER_SW_FILER: "seaweedfs-filer-client.seaweedfs:8888"
+                WEED_CLUSTER_SW_MASTER: "seaweedfs-master:9333"
+                WEED_CLUSTER_SW_FILER: "seaweedfs-filer:8888"
+
             image:
               registry: ""
               repository: ""
+
             master:
               enabled: true
               replicas: 1
@@ -86,13 +89,17 @@ spec:
                 # Enter any extra configuration for master.toml here.
                 # It may be be a multi-line string.
               data:
-                type: "existingClaim"
-                claimName: "swfs-master-data"
+                type: "emptyDir"
+                # claimName: "swfs-master-data"
+
               logs:
-                type: "hostPath"
-                size: ""
-                storageClass: ""
-                hostPathPrefix: /storage
+                type: "emptydir"
+
+              topologySpreadConstraints: {}
+              tolerations: ""
+              nodeSelector: |
+                kubernetes.io/arch: amd64
+
               livenessProbe:
                 enabled: true
                 httpGet:
@@ -103,6 +110,7 @@ spec:
                 successThreshold: 1
                 failureThreshold: 100
                 timeoutSeconds: 10
+
               readinessProbe:
                 enabled: true
                 httpGet:
@@ -113,6 +121,16 @@ spec:
                 successThreshold: 2
                 failureThreshold: 100
                 timeoutSeconds: 10
+
+              ingress:
+                enabled: false
+
+              extraEnvironmentVars:
+                WEED_MASTER_VOLUME_GROWTH_COPY_1: '7'
+                WEED_MASTER_VOLUME_GROWTH_COPY_2: '6'
+                WEED_MASTER_VOLUME_GROWTH_COPY_3: '3'
+                WEED_MASTER_VOLUME_GROWTH_COPY_OTHER: '1'
+
             volume:
               enabled: true
               port: 8080
@@ -123,11 +141,32 @@ spec:
               loggingOverrideLevel: null
               fileSizeLimitMB: null
               minFreeSpacePercent: 7
+
               dataDirs:
-                - name: data
-                  type: "existingClaim"
-                  claimName: "swfs-volume-data"
+                - name: data0
+                  type: "persistentVolumeClaim"
+                  storageClass: "local-path"
+                  size: "10Gi"
                   maxVolumes: 0
+
+              idx: {}
+              logs: {}
+
+              rack: home
+              dataCenter: home
+              readMode: proxy
+              whiteList: null
+
+              extraVolumes: ""
+              extraVolumeMounts: ""
+
+              topologySpreadConstraints: {}
+              resources: {}
+              tolerations: ""
+
+              nodeSelector: |
+                kubernetes.io/arch: amd64
+
               livenessProbe:
                 enabled: true
                 httpGet:
@@ -138,6 +177,7 @@ spec:
                 successThreshold: 1
                 failureThreshold: 100
                 timeoutSeconds: 10
+
               readinessProbe:
                 enabled: true
                 httpGet:
@@ -148,29 +188,54 @@ spec:
                 successThreshold: 2
                 failureThreshold: 100
                 timeoutSeconds: 10
+
             filer:
               enabled: true
               replicas: 1
+              dataCenter: home
+              rack: home
+              defaultReplicaPlacement: "000"
+              maxMB: null
+              redirectOnRead: false
+
               port: 8888
               grpcPort: 18888
               metricsPort: 9327
-              encryptVolumeData: true
-              data:
-                type: "existingClaim"
-                claimName: "swfs-filer-data"
+              encryptVolumeData: false
+              filerGroup: ""
+              enablePVC: false
+              storage: 10Gi
+
+              topologySpreadConstraints: {}
+              tolerations: ""
+              nodeSelector: |
+                kubernetes.io/arch: amd64
+
+              ingress:
+                enabled: false
+
+              extraEnvironmentVars:
+                WEED_MYSQL_ENABLED: "false"
+                WEED_LEVELDB2_ENABLED: "true"
+
+              secretExtraEnvironmentVars: {}
+
               s3:
                 enabled: true
                 port: 8333
                 httpsPort: 0
                 allowEmptyFolder: false
-                domainName: '{{ .workflows_s3_endpoint }}'
+                domainName: s3.workflows.buildstar.online
                 enableAuth: true
                 existingConfigSecret: seaweedfs-s3-secret
                 createBuckets:
+                  - name: workflows
+                    anonymousRead: false
                   - name: workflows-postgres
                     anonymousRead: false
                   - name: artifacts
                     anonymousRead: false
+
               livenessProbe:
                 enabled: true
                 httpGet:
@@ -181,6 +246,7 @@ spec:
                 successThreshold: 1
                 failureThreshold: 100
                 timeoutSeconds: 10
+
               readinessProbe:
                 enabled: true
                 httpGet:
@@ -191,18 +257,20 @@ spec:
                 successThreshold: 2
                 failureThreshold: 100
                 timeoutSeconds: 10
+
             s3:
               enabled: false
               ingress:
                 enabled: true
                 className: "nginx"
                 # host: false for "*" hostname
-                host: '{{ .workflows_s3_endpoint }}'
+                host: s3.workflows.buildstar.online
                 # additional ingress annotations for the s3 endpoint
                 annotations:
+                  nginx.ingress.kubernetes.io/proxy-body-size: 1G
                   cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
-                  nginx.ingress.kubernetes.io/proxy-body-size: "64m"
                 tls:
-                  - secretName: workflows-seaweedfs-tls
+                  - secretName: workflows-s3-tls
                     hosts:
-                      - '{{ .workflows_s3_endpoint }}'
+                      - s3.workflows.buildstar.online
+
