@@ -26,7 +26,7 @@ spec:
       annotations:
         argocd.argoproj.io/sync-wave: "2"
     spec:
-      project: argocd
+      project: argo-cd
       destination:
         server: https://kubernetes.default.svc
         namespace: argocd
