@@ -90,8 +90,8 @@ spec:
 
             cluster:
               init: true
-              nodes: 6
-              replicas: 1
+              nodes: 3
+              replicas: 0
               externalAccess:
                 enabled: false
                 hostMode: false
