@@ -7,22 +7,10 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "2"
 spec:
-  project: default
+  project: argo-cd
   destination:
     server: "https://kubernetes.default.svc"
     namespace: argocd
-  sources:
-    # official helm repo
-    - repoURL: 'https://argoproj.github.io/argo-helm/'
-      chart: argo-workflows
-      targetRevision: 0.45.2
-      helm:
-        valueFiles:
-        - $values/demo/argo-workflows/values.yaml
-    # our values.yaml file locally
-    - repoURL: 'https://github.com/small-hack/argocd-apps.git'
-      targetRevision: main
-      ref: values
   syncPolicy:
     syncOptions:
       - ApplyOutOfSyncOnly=true
@@ -94,7 +82,7 @@ spec:
           namespace:
           serviceAccount:
             # -- Specifies whether a service account should be created
-            create: false
+            create: true
             # -- Labels applied to created service account
             labels: {}
             # -- Annotations applied to created service account
@@ -285,7 +273,7 @@ spec:
           # workflows. This controls where the service account and RBAC resources will
           # be created. Only valid when singleNamespace is false.
           workflowNamespaces:
-            - default
+            - argocd
 
           instanceID:
             # -- Configures the controller to filter workflow submissions
@@ -733,7 +721,7 @@ spec:
             redirectUrl: "https://workflows.buildstar.online/oauth2/callback"
             rbac:
               # -- Adds ServiceAccount Policy to server (Cluster)Role.
-              enabled: true
+              enabled: false
             # -- Whitelist to allow server to fetch Secrets
             ## When present, restricts secrets the server can read to a given list.
             ## You can use it to restrict the server to only be able to access the
@@ -746,7 +734,7 @@ spec:
               - openid
               - profile
               - email
-              # - groups
+              - groups
             # -- Define how long your login is valid for (in hours)
             ## If omitted, defaults to 10h.
             sessionExpiry: ""
