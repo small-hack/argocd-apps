@@ -395,13 +395,11 @@ spec:
                   #    prometheus-release: prom1
 
               ## @param gitea.ldap LDAP configuration
-              ldap:
-                []
+              ldap: []
 
               # Either specify inline `key` and `secret` or refer to them via `existingSecret`
               ## @param gitea.oauth OAuth configuration
-              oauth:
-                []
+              oauth: []
                 # - name: 'OAuth 1'
                 #   provider:
                 #   key:
@@ -422,7 +420,27 @@ spec:
               #       name: gitea-app-ini-plaintext
 
               ## @param gitea.additionalConfigFromEnvs Additional configuration sources from environment variables
-              additionalConfigFromEnvs: []
+              additionalConfigFromEnvs:
+              - name: FORGEJO__CACHE__HOST
+                valueFrom:
+                  secretKeyRef:
+                    name: redis-creds
+                    key: REDIS_URL
+              - name: FORGEJO__QUEUE__CONN_STR
+                valueFrom:
+                  secretKeyRef:
+                    name: redis-creds
+                    key: REDIS_URL
+              - name: FORGEJO__DATABASE__USER
+                valueFrom:
+                  secretKeyRef:
+                    name: forgejo-pgsql-credentials
+                    key: username
+              - name: FORGEJO__DATABASE__PASSWD
+                valueFrom:
+                  secretKeyRef:
+                    name: forgejo-pgsql-credentials
+                    key: password
 
               ## @param gitea.podAnnotations Annotations for the Forgejo pod
               podAnnotations: {}
@@ -462,10 +480,8 @@ spec:
                 ## @param gitea.config.database Database configuration (only necessary with an [externally managed DB](https://code.forgejo.org/forgejo-helm/forgejo-helm#external-database)).
                 database:
                   DB_TYPE: postgres
+                  USER: forgejo
                   HOST: forgejo-postgres:5432
-                  NAME: forgejo
-                  USER: root
-                  PASSWD: "your-password-here"
                   SSL_MODE: disable
 
                 ## @param gitea.config.indexer Settings for what content is indexed and how
