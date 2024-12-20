@@ -311,7 +311,6 @@ redis:
   # redisPort: 6379
   # cluster:
   #   enabled: false
-  #   slaveCount: 1
 
 # Enables apiVersion deprecation checks
 checkDeprecation: true
