@@ -141,12 +141,10 @@ spec:
               loggingOverrideLevel: null
               fileSizeLimitMB: null
               minFreeSpacePercent: 7
-
               dataDirs:
-                - name: data0
-                  type: "persistentVolumeClaim"
-                  storageClass: "local-path"
-                  size: "10Gi"
+                - name: data
+                  type: "existingClaim"
+                  claimName: "swfs-volume-data"
                   maxVolumes: 0
 
               idx: {}
@@ -205,6 +203,9 @@ spec:
               filerGroup: ""
               enablePVC: true
               storage: 10Gi
+              data:
+                type: "existingClaim"
+                claimName: "swfs-filer-data"
 
               topologySpreadConstraints: {}
               tolerations: ""
