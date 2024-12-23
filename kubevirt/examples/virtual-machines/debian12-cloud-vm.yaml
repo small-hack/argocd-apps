@@ -101,9 +101,9 @@ spec:
           secret_name: test-scrapmetal-user-data
           image: deserializeme/kv-cloud-init:v0.0.1
           serviceAccount:
-            create: false
+            create: true
             name: cloud-init-sa
-            existingServiceAccountName: "cloud-init-sa"
+            existingServiceAccountName: "scrapmetal-sa"
           existingConfigMap: true
           envsubst: true
           extraEnvVars:
