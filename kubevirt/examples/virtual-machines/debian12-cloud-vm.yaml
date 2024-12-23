@@ -14,7 +14,7 @@ spec:
     targetRevision: 0.4.7
     chart: kubevirt-vm
     helm:
-      valuesObject:
+      values: |
         virtualMachine:
           name: test
           namespace: kubevirt
