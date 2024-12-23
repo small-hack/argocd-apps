@@ -103,8 +103,8 @@ spec:
           serviceAccount:
             create: true
             name: cloud-init-sa
-            existingServiceAccountName: "scrapmetal-sa"
-          existingConfigMap: true
+            existingServiceAccountName: ""
+          existingConfigMap: false
           envsubst: true
           extraEnvVars:
             - name: VNC_PASS
