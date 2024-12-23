@@ -3,288 +3,145 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: debian12-cloud-vm
+  namespace: argocd
 spec:
   project: default
   destination:
-    name: ''
     namespace: kubevirt
     server: 'https://kubernetes.default.svc'
   source:
-    path: ''
     repoURL: 'https://cloudymax.github.io/kubevirt-community-stack/'
-    targetRevision: 0.4.4
+    targetRevision: 0.4.7
     chart: kubevirt-vm
     helm:
       valuesObject:
         virtualMachine:
-          # -- name of the virtualMachine or virtualMachinePool object
           name: test
-          # -- namespace to deploy to
           namespace: kubevirt
-          # -- One of 'Always' `RerunOnFailure` `Manual` `Halted` `Once`
-          # See: https://kubevirt.io/user-guide/compute/run_strategies/#runstrategy
           runStrategy: "Always"
           features:
-            # -- Enable KVM acceleration
             kvm:
               enabled: true
-              hidden: true
-              # -- Set default hyperv settings for windows guests
+              hidden: false
             hyperv: false
-            # Enable ACPI platform event device
             acpiEnabled: true
-            # -- Make pod network interface the default for the VM
             autoattachPodInterface: true
-            # -- Attach a serial console device
             autoattachSerialConsole: true
-            # -- Attach a basic graphics device for VNC access
             autoattachGraphicsDevice: true
-            # -- Enhances network performance by allowing multiple TX and RX queues.
             networkInterfaceMultiqueue: true
-            # -- Options for machine clock
-            clock:
+          clock:
+            enabled: true
+            timezone: utc
+            hpet:
               enabled: true
-              # -- High Precision Event Timer
-              hpet:
-                enabled: true
-                present: false
-                # -- Programmable interval timer
-              pit:
-                enabled: true
-                tickPolicy: delay
-                # -- Real-Time Clock
-              rtc:
-                enabled: true
-                tickPolicy: catchup
-              kvm: true
-              hyperv: false
+              present: false
+            pit:
+              enabled: true
+              tickPolicy: delay
+            rtc:
+              enabled: true
+              tickPolicy: catchup
+            kvm: true
+            hyperv: false
           firmware:
-            # Enable System Management Mode (required for secureboot)
             smmEnabled: false
-            # -- Enable EFI bios and secureboot
             efi:
               enabled: true
               secureBoot: false
             uuid: 5d307ca9-b3ef-428c-8861-06e72d69f223
           machine:
-            # -- If a Pod cannot be scheduled, lower priorityClass Pods will be evicted
             priorityClassName: vm-standard
-            # -- Define CPU, RAM, GPU, HostDevice settings for VMs.
-            # Overrides: vCores, memory, gpus
             instancetype:
               enabled: false
               name: standard-small
               kind: virtualMachineClusterInstancetype
-            # -- Arch
             architecture: amd64
-            # -- QEMU virtual-machine type
             machineType: q35
-            # -- Specify hots-passthrough or a named cpu model
-            # https://www.qemu.org/docs/master/system/qemu-cpu-models.html
             cpuModel: host-passthrough
-            # -- Number of Virtual cores to pass to the Guest
-            # ignored when instancetype is defined
-            vCores: 4
-            # -- Pin QEMU process to specific physical core
-            # Requires `--cpu-manager-policy` enabled in kubelet
-            pinCores: false
-            # -- Enable the use of Hyperthreading on Intel CPUs. Disable on AMD CPUs.
-            hyperThreadingEnabled: true
-            # -- Amount of RAM to pass to the Guest. Ignored when instancetype is defined
+            sockets: 2
+            vCores: 1
+            threads: 1
+            pinCores: true
+            emulatorThread: false
             memory:
-              base: 4Gi
+              base: 2Gi
               overcommit:
-                # -- Enable memory overcommitment. Tells VM it has more RAM than requested.
-                # VMI becomes Burtable QOS class and may be preempted when node is under memory pressure.
-                # GPU passthrough and vGPU will not function with overcommit enabled.
                 enabled: false
-                limit: 8Gi
-                # -- Do not allocate hypervisor overhead memory to VM. Will work for as
-                # long as most of the VirtualMachineInstances do not request the full memory.
+                limit: 4Gi
                 overhead: false
-          # -- GPUs to pass to guest, requires that the GPUs are pre-configured in the
-          # kubevirt custom resource. ignored when instancetype is defined.
-          # ramFB & display may only be enabled on 1 vGPU
           gpus: []
-          # - name: gpu0
-          #   deviceName: nvidia.com/GRID_RTX6000-4Q
-          #   virtualGPUOptions:
-          #     display:
-          #       enabled: true
-          #       ramFB:
-          #         enabled: true
-
-          # -- virtual network interface config options.
-          # See: https://kubevirt.io/user-guide/network/interfaces_and_networks/#interfaces
           interfaces:
-            # -- bridge mode, vms are connected to the network via a linux "bridge".
-            # Pod network IP is delegated to vm via DHCPv4. VM must use DHCP for an IP
             - masquerade: {}
               name: default
               model: virtio
           networks:
-            # Use the default pod network
             - name: default
               pod: {}
-        #########################
-        # Create a Virtual Machine Pool
-        # Vm pools should be used with ephemeral disks or containerdisks
-        # otherwise they would all fight over the same PVC.
         virtualMachinePool:
           enabled: false
-          # -- number of replicas to create. Ignored when hpa is set to 'true'
-          replicas: 1
+          replicas: 2
           hpa:
-            enabled: true
+            enabled: false
             maxReplicas: 5
             minReplicas: 1
-        #############################
-        # -- controls hypervisor behavior when I/O errors occur on disk read or write.
-        # Possible values are: 'report', 'ignore', 'enospace'
         diskErrorPolicy: "report"
-        #############################
-        # -- List of disks to create for the VM, Will be used to create Datavolumes or PVCs.
         disks:
-          #################################################
-          # DataVolume disk with URL source example
-          #################################################
           - name: harddrive
-            # -- Disk type: disk, cdrom, filesystem, or lun
             type: disk
-            # -- Bus type: sata or virtio
             bus: virtio
-            # -- Sets disk position in boot order, lower numbers are checked earlier
             bootorder: 2
-            # -- Set disk to be Read-only
             readonly: false
-            # -- Size of disk in GB
-            pvsize: 16Gi
-            # -- Storage class to use for the pvc
-            pvstorageClass: fast-raid
-            # -- Access mode for the PVC
-            pvaccessMode: ReadWriteOnce
-            # -- source type of the disk image. One of `url`, `pvc`
-            source: url
-            # -- URL of cloud-image
-            url: "https://buildstars.online/debian-12-generic-amd64-daily.qcow2"
-            #########################################################
-            # Ephemeral disk example
-            # no persistance, these are deleted after the VM exits
-            # requires an existing PVC as a backing file.
-            # Performance degrades at liarge sizes (100G+)
-            #########################################################
-        #  - name: harddrive
-        #    type: disk
-        #    bus: virtio
-        #    bootorder: 2
-        #    readonly: false
-        #    pvc: debian12
-        #    ephemeral: true
-
-        ########################################################
-        # DataVolume disk with existing PVC source example
-        ########################################################
-        # - name: harddrive
-        #   type: disk
-        #   bus: virtio
-        #   bootorder: 2
-        #   readonly: false
-        #   pvsize: 64G
-        #   pvstorageClassName: local-path
-        #   nodePlacement: scremlin
-        #   pvaccessMode: ReadWriteOnce
-        #   source: pvc
-        #   pvcnamespace: kubevirt
-        #   pvcname: debian12
-
-        ##########################################################
-        # ISO live-image example
-        ##########################################################
-        # - name: iso
-        #   type: cdrom
-        #   bus: sata
-        #   bootorder: 1
-        #   readonly: true
-        #   pvsize: 8G
-        #   pvstorageClassName: local-path
-        #   nodePlacement: node0
-        #   pvaccessMode: ReadWriteOnce
-        #   source: "https://www.itechtics.com/?dl_id=173"
-
-        ##########################################################
-        # Empty PVC as disk example
-        ##########################################################
-        # - name: harddrive
-        #   type: disk
-        #   bus: virtio
-        #   bootorder: 2
-        #   readonly: false
-        #   pvsize: 32G
-        #   pvstorageClassName: local-path
-        #   nodePlacement: node0
-        #   pvaccessMode: ReadWriteOnce
-
-        ##########################################################
-        # Container Disk Example
-        ##########################################################
-        # - name: virtio-drivers
-        #   type: cdrom
-        #   bus: sata
-        #   bootorder: 3
-        #   readonly: true
-        #   image: "quay.io/kubevirt/virtio-container-disk:v1.0.0-rc.1-amd64"
-
-        ###########################################################
-        # Local Disk example
-        # Not working, will have to open a ticket
-        # disks need to be owned by 107:messagebus
-        # disks cannot be mounted, file systems unidentifiable
-        ###########################################################
-        # - name: localfile
-        #   type: hostDisk
-        #   # -- Enter a capacity amount to create a new disk
-        #   # otherwise expects an existing disk
-        #   capacity: 500G
-        #   path: /mnt/raid1/hdd2.img
-
-        ###########################################################
-        # ConfigMap example
-        # Attach a configmap to VM as an ISO disk or FileSystem
-        # Must be mounted via cloud init
-        # see https://kubevirt.io/user-guide/storage/disks_and_volumes/#as-a-disk and
-        # https://kubevirt.io/user-guide/storage/disks_and_volumes/#as-a-filesystem
-        #
-        # Configmaps may also specify the volumeLable field which informs the guest OS
-        # of the disk name. Useful for windows vms.
-        ###########################################################
-        #  - name: my-configmap
-        #    type: configmap
-        #    volumeLabel: cfgdata
-        #    method: disk
-        #    bootorder: 3
-        #    readonly: true
-        #    configMap: my-configmap
-        #    serialNumber: CVLY623300HK240D
-
-        ###########################################################
-        # ConfigMap example
-        # Attach a configmap to VM as an ISO disk or FileSystem
-        # Must be mounted via cloud init
-        # see https://kubevirt.io/user-guide/storage/disks_and_volumes/#as-a-disk and
-        # https://kubevirt.io/user-guide/storage/disks_and_volumes/#as-a-filesystem
-        ###########################################################
-        #  - name: my-secret
-        #    type: secret
-        #    method: disk
-        #    bootorder: 3
-        #    readonly: true
-        #    secretName: test
-        #    serialNumber: CVLY623300HK240D
-
-        # -- Service cinfiguration. Used to expose VM to the outside world.
-        # Accepts a list of ports to open.
+            pvc: debian12
+            ephemeral: true
+        userDataSecret:
+          enabled: false
+          name: ""
+        cloudinit:
+          enabled: true
+          secret_name: test-scrapmetal-user-data
+          image: deserializeme/kv-cloud-init:v0.0.1
+          serviceAccount:
+            create: false
+            name: cloud-init-sa
+            existingServiceAccountName: "cloud-init-sa"
+          existingConfigMap: true
+          envsubst: true
+          extraEnvVars:
+            - name: VNC_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: test-password
+                  key: "password"
+          hostname: test
+          namespace: kubevirt
+          disable_root: false
+          debug: false
+          salt: "saltsaltlettuce"
+          network:
+            config: disabled
+          wireguard: []
+          users:
+            - name: test
+              groups: users, admin, docker, sudo, kvm
+              sudo: ALL=(ALL) NOPASSWD:ALL
+              shell: /bin/bash
+              lock_passwd: false
+              password:
+                random: true
+              ssh_import_id: []
+              ssh_authorized_keys: []
+          ca_certs: []
+          boot_cmd: []
+          write_files: []
+          package_reboot_if_required: false
+          package_update: true
+          package_upgrade: false
+          packages:
+            - docker.io
+          runcmd:
+            - docker run -d --tmpfs /dev/shm:rw -p 8080:8080 -e PASSWD="$VNC_PASS" deserializeme/ubuntu-xfce
         service:
-          - name: service
+          - name: test-service
             type: NodePort
             externalTrafficPolicy: Cluster
             ports:
@@ -292,123 +149,67 @@ spec:
                 port: 22
                 targetPort: 22
                 protocol: TCP
-              - name: vnc
-                port: 5900
-                targetPort: 5900
+              - name: novnc
+                port: 8080
+                targetPort: 8080
                 protocol: TCP
-        # -- set tieming and port number for liveness probe
-        # livenessProbe:
-        #   initialDelaySeconds: 120
-        #   periodSeconds: 20
-        #   tcpSocket:
-        #     port: 1500
-        #   timeoutSeconds: 10
-
-        # -- set tieming and port number for readiness probe
-        # readinessProbe:
-        #   initialDelaySeconds: 120
-        #   periodSeconds: 20
-        #   timeoutSeconds: 10
-        #   failureThreshold: 3
-        #   successThreshold: 3
-        #   httpGet:
-        #     port: 1500
-
-        # -- Use an existing cloud-init userdata secret
-        # ignored if cloudinit subchart is enabled.
-        userDataSecret:
-          enabled: false
-          name: ""
-        # -- Enable or disable usage of cloud-init sub-chart
-        cloudinit:
+        ingress:
           enabled: true
-          # Not all cloud-init modules are currently supported
-          # https://cloudinit.readthedocs.io/en/latest/reference/modules.html
-
-          # -- name of secret in which to save the user-data file
-          secret_name: test-scrapmetal-user-data
-          # -- image version
-          image: deserializeme/kv-cloud-init:v0.0.1
-          # -- Choose weather to create a service-account or not. Once a SA has been created
-          # you should set this to false on subsequent runs.
-          serviceAccount:
-            create: false
-            name: cloud-init-sa
-            existingServiceAccountName: "cloud-init-sa"
-          # -- Dont recreate script configmap. Set to true when keeping multiple
-          # cloud-init secrets in the same namespace
-          existingConfigMap: true
-          # -- Run envsubst against bootcmd and runcmd fields at the beginning of templating
-          # Not an official part of cloid-init
-          envsubst: false
-          extraEnvVars: []
-          # -- virtual-machine hostname
-          hostname: test
-          # -- namespace in which to create resources
-          namespace: kubevirt
-          # -- Disable root login over ssh
-          disable_root: false
-          # -- when enabled job sleeps to allow user to exec into the container
-          debug: false
-          # -- salt used for password generation
-          salt: "saltsaltlettuce"
-          # -- networking options
-          network:
-            # --  disable cloud-init’s network configuration capability and rely on
-            # other methods such as embedded configuration or other customisations.
-            config: disabled
-          # -- add wireguard configuration from existing secret or as plain-text
-          # See https://cloudinit.readthedocs.io/en/latest/reference/modules.html#wireguard
-          wireguard: []
-          #  interfaces:
-          #    - name: wg0
-          #      config_path: /etc/wireguard/wg0.conf
-          #      existingSecret:
-          #        name: wg0-credentials
-          #        key: wg0.conf
-
-          # -- user configuration options
-          # See https://cloudinit.readthedocs.io/en/latest/reference/modules.html#users-and-groups
-          # do NOT use 'admin' as username - it conflicts with multiele cloud-images
-          users:
-            - name: test
-              groups: users, admin, docker, sudo, kvm
-              sudo: ALL=(ALL) NOPASSWD:ALL
-              shell: /bin/bash
-              lock_passwd: false
-              # -- set user password from existing secret or generate random
-              password:
-                random: true
-              #  random: false
-              #  existingSecret:
-              #    name: admin-password
-              #    key: password
-
-              # -- import user ssh public keys from github, gitlab, or launchpad
-              # See https://cloudinit.readthedocs.io/en/latest/reference/modules.html#ssh
-              ssh_import_id: []
-              # -- provider user ssh pub key as plaintext
-              ssh_authorized_keys: []
-          # -- Add CA certificates
-          # See https://cloudinit.readthedocs.io/en/latest/reference/modules.html#ca-certificates
-          ca_certs: []
-          #  remove_defaults: true
-          #  trusted:
-          #    - certificate
-
-          # -- Run arbitrary commands early in the boot process
-          # See https://cloudinit.readthedocs.io/en/latest/reference/modules.html#bootcmd
-          boot_cmd: []
-          # -- Write arbitrary files to disk.
-          # Files my be provided as plain-text or downloaded from a url
-          # See https://cloudinit.readthedocs.io/en/latest/reference/modules.html#write-files
-          write_files: []
-          # -- Update, upgrade, and install packages
-          # See https://cloudinit.readthedocs.io/en/latest/reference/modules.html#package-update-upgrade-install
-          package_reboot_if_required: false
-          package_update: false
-          package_upgrade: false
-          packages: []
-          # -- Run arbitrary commands
-          # See https://cloudinit.readthedocs.io/en/latest/reference/modules.html#runcmd
-          runcmd: []
+          className: "nginx"
+          hostname: "novnc.buildstar.online"
+          annotations:
+            cert-manager.io/cluster-issuer: "letsencrypt-prod"
+          tls:
+            enabled: true
+            secretName: "tls-kubevirt-manager"
+          paths:
+            - path: /
+              pathType: Prefix
+              backend:
+                service:
+                  name: test-service
+                  port:
+                    number: 8080
+        networkPolicy:
+          enabled: true
+          egress:
+            - to:
+                - namespaceSelector:
+                    matchLabels:
+                      kubernetes.io/metadata.name: kube-system
+                - podSelector:
+                    matchLabels:
+                      k8s-app: kube-dns
+              ports:
+                - protocol: UDP
+                  port: 53
+            - to:
+                - ipBlock:
+                    cidr: 0.0.0.0/0
+                    # Exclude traffic to Kubernetes service IPs and pods
+                    except:
+                      - 10.0.0.0/8
+                      - 172.16.0.0/12
+                      - 192.168.0.0/16
+          ingress:
+            - from:
+                - namespaceSelector:
+                    matchLabels:
+                      kubernetes.io/metadata.name: "ingress-nginx"
+                - podSelector:
+                    matchLabels:
+                      app.kubernetes.io/name: "ingress-nginx"
+        livenessProbe:
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          tcpSocket:
+            port: 8080
+          timeoutSeconds: 10
+        readinessProbe:
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          timeoutSeconds: 10
+          failureThreshold: 6
+          successThreshold: 1
+          httpGet:
+            port: 8080
