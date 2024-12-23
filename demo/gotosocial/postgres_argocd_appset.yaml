@@ -1,0 +1,89 @@
+---
+# webapp is deployed 2nd because we need secrets and persistent volumes up 1st
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: gotosocial-postgres-app-set
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+spec:
+  goTemplate: true
+  # generator allows us to source specific values from an external k8s secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - gotosocial_s3_endpoint
+              - gotosocial_postgres_backup_schedule
+  template:
+    metadata:
+      name: gotosocial-postgres-cluster
+      namespace: gotosocial
+      annotations:
+        argocd.argoproj.io/sync-wave: "3"
+    spec:
+      project: gotosocial
+      destination:
+        server: "https://kubernetes.default.svc"
+        namespace: gotosocial
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
+          selfHeal: true
+      source:
+        repoURL: https://small-hack.github.io/cloudnative-pg-cluster-chart
+        chart: cnpg-cluster
+        targetRevision: 0.4.0
+        helm:
+          releaseName: gotosocial-postgres-cluster
+          valuesObject:
+            name: gotosocial-postgres
+            instances: 2
+            bootstrap:
+              initdb:
+                database: gotosocial
+                owner: gotosocial
+            backup:
+              # barman is a utility for backing up postgres to s3
+              barmanObjectStore:
+                destinationPath: "s3://gotosocial-postgres"
+                endpointURL: "https://{{ .gotosocial_s3_endpoint }}"
+                s3Credentials:
+                  accessKeyId:
+                    name: s3-postgres-credentials
+                    key: "accessKeyId"
+                  secretAccessKey:
+                    name: s3-postgres-credentials
+                    key: "secretAccessKey"
+              retentionPolicy: "30d"
+            certificates:
+              server:
+                enabled: true
+                generate: true
+              client:
+                enabled: true
+                generate: true
+              user:
+                enabled: true
+                username:
+                  - gotosocial
+            scheduledBackup:
+              name: gotosocial-pg-backup
+              spec:
+                # hourly backups for postgres data
+                schedule: '{{ .gotosocial_postgres_backup_schedule }}'
+                backupOwnerReference: self
+                cluster:
+                  name: gotosocial-postgres
+            monitoring:
+              enablePodMonitor: false
+            postgresql:
+              pg_hba:
+                - hostnossl all all 0.0.0.0/0 reject
+                - hostssl all all 0.0.0.0/0 cert clientcert=verify-full

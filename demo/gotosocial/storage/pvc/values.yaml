@@ -1,0 +1,22 @@
+valkey_pvc:
+  # -- enable nextcloud configuration pvc
+  enabled: true
+  # -- default storage class name to use for config pvc
+  storageClassName: "local-path"
+  # -- default access mode for the config pvc
+  accessMode: "ReadWriteOnce"
+  # -- storage capacity for the nextcloud config pvc
+  storage: "2Gi"
+
+# -- tolerate affinity
+affinity: {}
+
+# -- tolerate taints
+tolerations: []
+
+# -- for enabling backups to a remote s3 provider or local disk backup
+k8up:
+  # -- user to run the backups as
+  securityContext:
+    # this may need to be 33 (apache) or 82 (nginx) depending on how you run nextcloud
+    runAsUser: 0

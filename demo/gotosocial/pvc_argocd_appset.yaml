@@ -1,0 +1,50 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: gotosocial-pvc-appset
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  goTemplate: true
+  # generator allows us to source specific values from an external k8s secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - global_pvc_storage_class
+              - gotosocial_valkey_pvc_enabled
+              - gotosocial_valkey_storage
+              - gotosocial_valkey_access_mode
+  template:
+    metadata:
+      name: gotosocial-pvc
+      annotations:
+        argocd.argoproj.io/sync-wave: "1"
+    spec:
+      project: gotosocial
+      destination:
+        server: "https://kubernetes.default.svc"
+        namespace: gotosocial
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
+          selfHeal: true
+      source:
+        repoURL: https://github.com/small-hack/argocd-apps.git
+        path: gotosocial/small-hack/storage/pvc/
+        targetRevision: main
+        helm:
+          valuesObject:
+            # -- enable gotosocial valkeyuration pvc
+            valkey_pvc:
+              enabled: '{{ .gotosocial_valkey_pvc_enabled }}'
+              storageClassName: '{{ .global_pvc_storage_class }}'
+              accessMode: '{{ .gotosocial_valkey_access_mode }}'
+              storage: '{{ .gotosocial_valkey_storage }}'
