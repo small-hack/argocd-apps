@@ -31,7 +31,7 @@ spec:
       project: argo-cd
       destination:
         server: "https://kubernetes.default.svc"
-        namespace: argocd
+        namespace: peertube
       syncPolicy:
         syncOptions:
           - ApplyOutOfSyncOnly=true
