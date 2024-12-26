@@ -1,0 +1,84 @@
+# Source: peertube/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: peertube
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: peertube
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: peertube
+    spec:
+      containers:
+        - name: peertube
+          image: "docker.io/chocobozzz/peertube:production-bookworm"
+          imagePullPolicy: IfNotPresent
+          command:
+            - gosu
+            - peertube
+            - npm
+            - start
+          ports:
+            - name: smtp
+              containerPort: 25
+            - name: http
+              containerPort: 80
+            - name: https
+              containerPort: 443
+            - name: peertube
+              containerPort: 9000
+            - name: rtmp
+              containerPort: 1935
+          # livenessProbe:
+          #   enabled: true
+          #   httpGet:
+          #     path: /
+          #     port: http
+          # readinessProbe:
+          #   enabled: true
+          #   httpGet:
+          #     path: /
+          #     port: http
+          resources: {}
+          env:
+            - name: POSTGRES_USER
+              value: "peertube"
+            - name: POSTGRES_DB
+              value: "peertube"
+            - name: PEERTUBE_DB_HOSTNAME
+              value: "peertube-postgres-rw:5432"
+            - name: PEERTUBE_DB_USERNAME
+              value: "peertube"
+            - name: PEERTUBE_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: peertube-pgsql-credentials
+                  key: password
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: peertube-pgsql-credentials
+                  key: password
+            - name: PEERTUBE_TRUST_PROXY
+              value: '["10.0.0.0/8"]'
+            - name: PEERTUBE_REDIS_HOSTNAME
+              value: "valkey:6379"
+            - name: PEERTUBE_REDIS_AUTH
+              valueFrom:
+                secretKeyRef:
+                  name: peertube-valkey-credentials
+                  key: valkey-password
+            - name: PEERTUBE_WEBSERVER_HOSTNAME
+              value: peertube.buildstar.online
+            - name: PEERTUBE_WEBSERVER_PORT
+              value: "80"
+            - name: PEERTUBE_WEBSERVER_HTTPS
+              value: "true"
+
+
+
+
