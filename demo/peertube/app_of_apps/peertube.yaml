@@ -50,7 +50,7 @@ spec:
             - name: POSTGRES_DB
               value: "peertube"
             - name: PEERTUBE_DB_HOSTNAME
-              value: "peertube-postgres-rw:5432"
+              value: "peertube-postgres-rw"
             - name: PEERTUBE_DB_USERNAME
               value: "peertube"
             - name: PEERTUBE_DB_PASSWORD
