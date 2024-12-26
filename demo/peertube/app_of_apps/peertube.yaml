@@ -78,6 +78,12 @@ spec:
               value: "80"
             - name: PEERTUBE_WEBSERVER_HTTPS
               value: "true"
+            - name: PEERTUBE_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: peertube-secret
+                  key: password
+
 
 
 
