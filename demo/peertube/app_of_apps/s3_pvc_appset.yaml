@@ -28,7 +28,7 @@ spec:
       annotations:
         argocd.argoproj.io/sync-wave: "1"
     spec:
-      project: argo-cd
+      project: default
       destination:
         server: "https://kubernetes.default.svc"
         namespace: peertube
