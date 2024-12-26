@@ -234,7 +234,7 @@ spec:
                     anonymousRead: false
                   - name: peertube-postgres
                     anonymousRead: false
-                  - name: artifacts
+                  - name: data
                     anonymousRead: false
 
               livenessProbe:
