@@ -182,6 +182,6 @@ spec:
             backend:
               service:
                 name: peertube
-                port: peertube
+                port: 80
 
 
