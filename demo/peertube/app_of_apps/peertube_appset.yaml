@@ -185,8 +185,8 @@ spec:
               # -- resources for the deployment
               resources:
                 limits:
-                  cpu: 4
-                  memory: 4096Mi
+                  cpu: 4000m
+                  memory: 4Gi
                 requests:
                   cpu: 100m
                   memory: 512Mi
