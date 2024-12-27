@@ -23,8 +23,6 @@ spec:
             - npm
             - start
           ports:
-            - name: smtp
-              containerPort: 25
             - name: http
               containerPort: 80
             - name: https
@@ -83,8 +81,105 @@ spec:
                 secretKeyRef:
                   name: peertube-secret
                   key: password
-
-
-
+            - name: PEERTUBE_ADMIN_EMAIL
+              value: "admin@cloudydev.net"
+          volumeMounts:
+            - name: peertube-config
+              mountPath: /config
+            - name: peertube-data
+              mountPath: /data
+      volumes:
+        - name: peertube-config
+          persistentVolumeClaim:
+            claimName: peertube-config
+        - name: peertube-data
+          persistentVolumeClaim:
+            claimName: peertube-data
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  annotations:
+    k8up.io/backup: "true"
+  labels:
+    app: peertube
+  name: peertube-config
+  namespace: peertube
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: local-path
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  annotations:
+    k8up.io/backup: "true"
+  labels:
+    app: peertube
+  name: peertube-data
+  namespace: peertube
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: local-path
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: peertube
+spec:
+  selector:
+    app: peertube
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+      name: http
+    - protocol: TCP
+      port: 25
+      targetPort: 25
+      name: smtp
+    - protocol: TCP
+      port: 9000
+      targetPort: 9000
+      name: peertube
+    - protocol: TCP
+      port: 1935
+      targetPort: 1935
+      name: rtmp
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: peertube
+  labels:
+    app: peertube
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/connection-proxy-header: "keep-alive"
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+spec:
+  tls:
+    - hosts:
+        - peertube.buildstar.online
+      secretName: peertube-tls
+  rules:
+    - host: peertube.buildstar.online
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: peertube
+              servicePort: peertube
 
 
