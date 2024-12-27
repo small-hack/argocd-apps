@@ -236,7 +236,7 @@ spec:
                     anonymousRead: false
                   - name: hls-videos
                     anonymousRead: false
-                  - name: user-export
+                  - name: user-exports
                     anonymousRead: false
                   - name: original-video-files
                     anonymousRead: false
