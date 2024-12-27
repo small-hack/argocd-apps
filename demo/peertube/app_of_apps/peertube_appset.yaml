@@ -38,7 +38,7 @@ spec:
       source:
         repoURL: https://cloudymax.github.io/peertube-helm-chart/
         chart: peertube
-        targetRevision: 0.0.2
+        targetRevision: HEAD
         helm:
           releaseName: peertube
           valuesObject:
