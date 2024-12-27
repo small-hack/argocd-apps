@@ -230,11 +230,15 @@ spec:
                 enableAuth: true
                 existingConfigSecret: seaweedfs-s3-secret
                 createBuckets:
-                  - name: peertube
-                    anonymousRead: false
                   - name: peertube-postgres
                     anonymousRead: false
-                  - name: peertube-videos
+                  - name: web-videos
+                    anonymousRead: false
+                  - name: hls-videos
+                    anonymousRead: false
+                  - name: user-export
+                    anonymousRead: false
+                  - name: original-video-files
                     anonymousRead: false
 
               livenessProbe:
