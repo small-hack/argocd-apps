@@ -178,8 +178,10 @@ spec:
       http:
         paths:
           - path: /
+            pathType: Prefix
             backend:
-              serviceName: peertube
-              servicePort: peertube
+              service:
+                name: peertube
+                port: peertube
 
 
