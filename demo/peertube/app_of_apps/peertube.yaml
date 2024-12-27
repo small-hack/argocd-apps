@@ -64,7 +64,7 @@ spec:
             - name: PEERTUBE_TRUST_PROXY
               value: '["10.0.0.0/8"]'
             - name: PEERTUBE_REDIS_HOSTNAME
-              value: "valkey:6379"
+              value: "valkey"
             - name: PEERTUBE_REDIS_AUTH
               valueFrom:
                 secretKeyRef:
