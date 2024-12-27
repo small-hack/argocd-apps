@@ -1,0 +1,327 @@
+---
+# webapp is deployed 2nd because we need secrets and persistent volumes up 1st
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: peertube-app-set
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  goTemplate: true
+  # generator allows us to source specific values from an external k8s secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - global_cluster_issuer
+  template:
+    metadata:
+      name: peertube
+      namespace: peertube
+      annotations:
+        argocd.argoproj.io/sync-wave: "3"
+    spec:
+      project: default
+      destination:
+        server: "https://kubernetes.default.svc"
+        namespace: peertube
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
+          selfHeal: true
+      source:
+        repoURL: https://cloudymax.github.io/peertube-helm-chart/
+        chart: peertube
+        targetRevision: 0.0.2
+        helm:
+          releaseName: peertube
+          valuesObject:
+            nameOverride: ""
+            fullnameOverride: ""
+
+            deployment:
+              # -- enable the deployment vs job vs cronjob
+              enabled: true
+              # -- replica count if not using autoscaling
+              replicaCount: 1
+              image:
+                # -- docker registry if not using docker.io
+                registry: "docker.io"
+                # -- docker repo
+                repository: chocobozzz/peertube
+                # -- image pull policy, set to Always if using latest and it changes frequently
+                pullPolicy: IfNotPresent
+                # -- Overrides the image tag whose default is latest
+                tag: production-bookworm
+              # -- optional image pull secrets
+              imagePullSecrets: []
+              # -- command to pass to docker container
+              containerCommand:
+                - gosu
+                - peertube
+                - npm
+                - start
+              # -- env list for deployment main container
+              env:
+                - name: PEERTUBE_LOG_LEVEL
+                  value: debug
+                - name: POSTGRES_USER
+                  value: "peertube"
+                - name: POSTGRES_DB
+                  value: "peertube"
+                - name: PEERTUBE_DB_HOSTNAME
+                  value: "peertube-postgres-rw"
+                - name: PEERTUBE_DB_USERNAME
+                  value: "peertube"
+                - name: PEERTUBE_DB_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: peertube-pgsql-credentials
+                      key: password
+                - name: POSTGRES_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: peertube-pgsql-credentials
+                      key: password
+                - name: PEERTUBE_TRUST_PROXY
+                  value: '["10.0.0.0/8"]'
+                - name: PEERTUBE_REDIS_HOSTNAME
+                  value: "valkey-primary"
+                - name: PEERTUBE_REDIS_AUTH
+                  valueFrom:
+                    secretKeyRef:
+                      name: peertube-valkey-credentials
+                      key: valkey-password
+                - name: PEERTUBE_WEBSERVER_HOSTNAME
+                  value: peertube.buildstar.online
+                - name: PEERTUBE_WEBSERVER_PORT
+                  value: "443"
+                - name: PEERTUBE_WEBSERVER_HTTPS
+                  value: "true"
+                - name: PEERTUBE_SECRET
+                  valueFrom:
+                    secretKeyRef:
+                      name: peertube-secret
+                      key: password
+                - name: PEERTUBE_ADMIN_EMAIL
+                  value: "admin@cloudydev.net"
+                - name: PEERTUBE_OBJECT_STORAGE_ENABLED
+                  value: "false"
+                - name: PEERTUBE_OBJECT_STORAGE_ENDPOINT
+                  value: ""
+                - name: PEERTUBE_OBJECT_STORAGE_UPLOAD_ACL_PUBLIC
+                  value: "public-read"
+                - name: PEERTUBE_OBJECT_STORAGE_UPLOAD_ACL_PRIVATE
+                  value: "private"
+                - name: PEERTUBE_OBJECT_STORAGE_CREDENTIALS_ACCESS_KEY_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: peertube-s3-videos-credentials
+                      key: accesskey
+                - name: PEERTUBE_OBJECT_STORAGE_CREDENTIALS_SECRET_ACCESS_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: peertube-s3-videos-credentials
+                      key: secretkey
+              # -- env from list for deployment main container
+              envFrom: []
+              # -- extra init containers for the default deployment
+              initcontainers: {}
+              # -- extra pod annotations for the deployment
+              podAnnotations: {}
+              # -- extra pod labels for the deployment
+              podLabels: {}
+
+              # -- pod securityContext deployment's main container
+              podSecurityContext: {}
+                # fsGroup: 2000
+
+              # -- securityContext whole deployment
+              securityContext: {}
+                # capabilities:
+                #   drop:
+                #   - ALL
+                # readOnlyRootFilesystem: true
+                # runAsNonRoot: true
+                # runAsUser: 1000
+
+              # -- Additional volumes on the output Deployment definition.
+              volumes:
+                - name: peertube-config
+                  configMap:
+                    name: peertube-config
+                - name: custom-env-vars
+                  configMap:
+                    name: custom-env-vars
+                - name: peertube-data
+                  persistentVolumeClaim:
+                    claimName: peertube-data
+
+              # -- Additional volumeMounts on the output Deployment definition.
+              volumeMounts:
+                - name: peertube-config
+                  mountPath: /config/production.yaml
+                  subPath: production.yaml
+                - name: peertube-data
+                  mountPath: /data
+                - name: custom-env-vars
+                  mountPath: /config/custom-environment-variables.yaml
+                  subPath: custom-environment-variables.yaml
+              # -- node selector for deployment
+              nodeSelector: {}
+
+              # -- tolerations of taints on a node
+              tolerations: []
+
+              # -- affinity settings for the deployment
+              affinity: {}
+
+              # -- resources for the deployment
+              resources:
+                limits:
+                  cpu: 4
+                  memory: 4096Mi
+                requests:
+                  cpu: 100m
+                  memory: 512Mi
+
+              # -- livenessProbe for the deployment
+              livenessProbe:
+                enabled: true
+                httpGet:
+                  path: /
+                  port: peertube
+
+              # -- readinessProbe for the deployment
+              readinessProbe:
+                enabled: true
+                httpGet:
+                  path: /
+                  port: peertube
+
+              # -- autoscaling for the deployment
+              autoscaling:
+                enabled: false
+                minReplicas: 1
+                maxReplicas: 100
+                targetCPUUtilizationPercentage: 80
+                # targetMemoryUtilizationPercentage: 80
+
+            job:
+              # -- enable a job
+              enabled: false
+              # -- replica count if not using autoscaling
+              replicaCount: 1
+              # -- restart policy if the job fails; can be never, or always
+              restartPolicy: never
+              image:
+                # -- docker registry if not using docker.io
+                registry: "docker.io"
+                # -- docker repo
+                repository: nginx
+                # -- image pull policy, set to Always if using latest and it changes frequently
+                pullPolicy: IfNotPresent
+                # -- Overrides the image tag whose default is latest
+                tag: "latest"
+              # -- optional image pull secrets
+              imagePullSecrets: []
+              # -- command to pass to docker container
+              containerCommand: []
+              # -- env list for job main container
+              env: []
+              # -- env from list for job main container
+              envFrom: []
+              # -- extra init containers for the default job
+              initcontainers: {}
+              # -- extra pod annotations for the job
+              podAnnotations: {}
+              # -- extra pod labels for the job
+              podLabels: {}
+
+              # -- pod securityContext job's main container
+              podSecurityContext: {}
+                # fsGroup: 2000
+
+              # -- securityContext whole job
+              securityContext: {}
+                # capabilities:
+                #   drop:
+                #   - ALL
+                # readOnlyRootFilesystem: true
+                # runAsNonRoot: true
+                # runAsUser: 1000
+
+              # -- Additional volumes on the output job definition.
+              volumes: []
+              # - name: foo
+              #   secret:
+              #     secretName: mysecret
+              #     optional: false
+
+              # -- Additional volumeMounts on the output job definition.
+              volumeMounts: []
+              # - name: foo
+              #   mountPath: "/etc/foo"
+              #   readOnly: true
+
+              # -- node selector for job
+              nodeSelector: {}
+
+              # -- tolerations of taints on a node
+              tolerations: []
+
+              # -- affinity settings for the job
+              affinity: {}
+
+              # -- resources for the job
+              resources: {}
+                # We usually recommend not to specify default resources and to leave this as a conscious
+                # choice for the user. This also increases chances charts run on environments with little
+                # resources, such as Minikube. If you do want to specify resources, uncomment the following
+                # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+                # limits:
+                #   cpu: 100m
+                #   memory: 128Mi
+                # requests:
+                #   cpu: 100m
+                #   memory: 128Mi
+
+            serviceAccount:
+              create: true
+              automount: true
+              annotations: {}
+              name: "peertube-sa"
+
+            service:
+              enabled: true
+              type: ClusterIP
+              port: 80
+
+            ingress:
+              enabled: true
+              className: "nginx"
+              annotations:
+                cert-manager.io/cluster-issuer: "letsencrypt-prod"
+                nginx.ingress.kubernetes.io/connection-proxy-header: "keep-alive"
+                nginx.ingress.kubernetes.io/enable-cors: "true"
+                nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+                nginx.ingress.kubernetes.io/ssl-redirect: "true"
+                nginx.ingress.kubernetes.io/proxy-body-size: 500m
+                nginx.ingress.kubernetes.io/configuration-snippet: |
+                  more_set_headers "X-Frame-Options: ALLOWALL";
+                  proxy_set_header Host $host;
+              hosts:
+                - host: peertube.buildstar.online
+                  paths:
+                    - path: /
+                      pathType: Prefix
+              tls:
+                - secretName: peertube-tls
+                  hosts:
+                    - chart-example.local
