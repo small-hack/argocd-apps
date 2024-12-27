@@ -183,6 +183,6 @@ spec:
               service:
                 name: peertube
                 port:
-                  number: 80
+                  number: 9000
 
 
