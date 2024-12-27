@@ -278,4 +278,8 @@ spec:
                   - secretName: peertube-s3-tls
                     hosts:
                       - s3.peertube.buildstar.online
+                      - web-videos.s3.peertube.buildstar.online
+                      - hls-videos.s3.peertube.buildstar.online
+                      - user-exports.s3.peertube.buildstar.online
+                      - original-video-files.s3.peertube.buildstar.online
 
