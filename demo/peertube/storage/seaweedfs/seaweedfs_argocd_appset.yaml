@@ -269,7 +269,7 @@ spec:
                 enabled: true
                 className: "nginx"
                 # host: false for "*" hostname
-                host: "*.s3.peertube.buildstar.online"
+                host: "s3.peertube.buildstar.online"
                 # additional ingress annotations for the s3 endpoint
                 annotations:
                   nginx.ingress.kubernetes.io/proxy-body-size: 1G
@@ -277,5 +277,5 @@ spec:
                 tls:
                   - secretName: peertube-s3-tls
                     hosts:
-                      - "*.s3.peertube.buildstar.online"
+                      - "s3.peertube.buildstar.online"
 
