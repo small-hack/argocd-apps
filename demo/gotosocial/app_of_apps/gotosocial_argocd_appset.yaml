@@ -21,7 +21,6 @@ spec:
               - gotosocial_hostname
               - gotosocial_libretranslate_hostname
               - gotosocial_s3_endpoint
-              - gotosocial_smtp_port
               - global_cluster_issuer
               - global_time_zone
   template:
@@ -43,7 +42,7 @@ spec:
           selfHeal: true
       source:
         # repoURL: 'charts.fsociety.social'
-        # targetRevision: 0.4.28
+        # targetRevision: 0.5.1
         # chart: gotosocial
         repoURL: https://github.com/jessebot/charts-1
         ref: patch-1
@@ -87,7 +86,7 @@ spec:
 
               persistence:
                 enabled: false
-                existingClaim: ""
+                existingClaim: "gotosocial"
 
               tmpfs:
                 enabled: false
@@ -116,23 +115,20 @@ spec:
 
                   s3:
                    enabled: true
-                   endpoint: ""
+                   endpoint: "{{ .gotosocial_s3_endpoint }}"
                    proxy: false
                    useSSL: true
-                   accessKey: ""
-                   secretKey: ""
+                   # accessKey: ""
+                   # secretKey: ""
                    # If this is set, accessKey, secretKey will not take place
                    # Needs the S3_ACCESS_KEY_ID and S3_SECRET_ACCESS_KEY keys.
-                   existingSecret: ""
-                   bucket: ""
+                   existingSecret: "gotosocial-s3-credentials"
+                   bucket: "gotosocial"
 
                 oidc:
-                  enabled: true
+                  enabled: false
                   idpName: ""
                   skipVerification: ""
-                  issuer: ""
-                  clientID: ""
-                  clientSecret: ""
                   oidcScopes:
                     - "openid"
                     - "email"
@@ -140,15 +136,20 @@ spec:
                     - "groups"
                   linkExisting: false
                   adminGroups: []
+                  existingSecretName: ""
+                  existingSecretKeys:
+                    issuer: "issuer"
+                    clientID: "clientid"
+                    clientSecret: "clientsecret"
 
                 smtp:
-                  host: ""
-                  port: "0"
-                  userName: ""
-                  password: ""
                   existingSecretName: ""
-                  existingSecretKey: ""
-                  from: ""
+                  existingSecretKeys:
+                    username: "username"
+                    password: "password"
+                    port: "port"
+                    host: "host"
+                  from: "no-reply@{{ .gotosocial_hostname }}"
                   discloseRecipients: false
 
               extraConfig:
