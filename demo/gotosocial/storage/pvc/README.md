@@ -13,8 +13,8 @@ A Helm chart for deploying PVCs to Kubernetes for Gotosocial
 | k8up.securityContext | object | `{"runAsUser":0}` | user to run the backups as |
 | tolerations | list | `[]` | tolerate taints |
 | valkey_pvc.accessMode | string | `"ReadWriteOnce"` | default access mode for the config pvc |
-| valkey_pvc.enabled | bool | `true` | enable nextcloud configuration pvc |
-| valkey_pvc.storage | string | `"2Gi"` | storage capacity for the nextcloud config pvc |
+| valkey_pvc.enabled | bool | `true` | enable gotosocial configuration pvc |
+| valkey_pvc.storage | string | `"2Gi"` | storage capacity for the gotosocial config pvc |
 | valkey_pvc.storageClassName | string | `"local-path"` | default storage class name to use for config pvc |
 
 ----------------------------------------------

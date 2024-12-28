@@ -13,7 +13,7 @@ spec:
       containers:
         - name: test
           env:
-            - name: nextcloud
+            - name: gotosocial
               value: "true"
 
       {{- if .Values.tolerations }}

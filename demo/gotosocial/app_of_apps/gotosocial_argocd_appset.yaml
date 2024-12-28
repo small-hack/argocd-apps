@@ -45,7 +45,7 @@ spec:
         # targetRevision: 0.5.1
         # chart: gotosocial
         repoURL: https://github.com/jessebot/charts-1
-        ref: patch-1
+        ref: jesse-changes
         helm:
           releaseName: gotosocial
           # https://github.com/0hlov3/charts/blob/main/charts/gotosocial/values.yaml
@@ -85,7 +85,7 @@ spec:
                 type: Recreate
 
               persistence:
-                enabled: false
+                enabled: true
                 existingClaim: "gotosocial"
 
               tmpfs:
@@ -136,14 +136,14 @@ spec:
                     - "groups"
                   linkExisting: false
                   adminGroups: []
-                  existingSecretName: ""
+                  existingSecretName: "gotosocial-oidc-credentials"
                   existingSecretKeys:
                     issuer: "issuer"
-                    clientID: "clientid"
-                    clientSecret: "clientsecret"
+                    clientID: "client_id"
+                    clientSecret: "client_secret"
 
                 smtp:
-                  existingSecretName: ""
+                  existingSecretName: "gotosocial-smtp-credentials"
                   existingSecretKeys:
                     username: "username"
                     password: "password"
@@ -157,8 +157,8 @@ spec:
                 metrics:
                   enabled: true
                   authEnabled: false
-                  authUsername: ""
-                  authPassword: ""
+                  # authUsername: ""
+                  # authPassword: ""
 
             externalDatabase:
               enabled: true

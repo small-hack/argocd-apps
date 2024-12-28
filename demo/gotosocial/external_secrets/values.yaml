@@ -21,3 +21,6 @@ s3BackupCredentialsBitwardenID: ""
 
 # -- existing kubernetes secret with libretranslate API secret key
 libretranslateApiKeybitwardenID: ""
+
+# -- OIDC Credentials
+oidcCredentialsBitwardenID: ""
