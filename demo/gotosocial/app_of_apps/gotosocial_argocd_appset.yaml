@@ -76,6 +76,7 @@ spec:
                 - host: '{{ .gotosocial_hostname }}'
                   paths:
                     - path: '/'
+                      pathType: ImplementationSpecific
               tls:
                 - secretName: gotosocial-tls
                   hosts:
