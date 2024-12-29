@@ -3,7 +3,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: gotosocial-app-set
+  name: pixelfed-app-set
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "4"
@@ -18,21 +18,21 @@ spec:
         input:
           parameters:
             secret_vars:
-              - gotosocial_hostname
-              - gotosocial_s3_endpoint
+              - pixelfed_hostname
+              - pixelfed_s3_endpoint
               - global_cluster_issuer
               - global_time_zone
   template:
     metadata:
-      name: gotosocial-web-app
+      name: pixelfed-web-app
       annotations:
         argocd.argoproj.io/sync-wave: "4"
         argocd.argoproj.io/sync-options: ApplyOnly=true
     spec:
-      project: gotosocial
+      project: pixelfed
       destination:
         server: https://kubernetes.default.svc
-        namespace: gotosocial
+        namespace: pixelfed
       syncPolicy:
         syncOptions:
           - ApplyOutOfSyncOnly=true
@@ -42,23 +42,23 @@ spec:
       source:
         # repoURL: 'charts.fsociety.social'
         # targetRevision: 0.5.1
-        # chart: gotosocial
+        # chart: pixelfed
         repoURL: https://github.com/jessebot/charts-1
-        path: charts/gotosocial/
+        path: charts/pixelfed/
         targetRevision: jessebot-changes
         helm:
-          releaseName: gotosocial
-          # https://github.com/0hlov3/charts/blob/main/charts/gotosocial/values.yaml
+          releaseName: pixelfed
+          # https://github.com/0hlov3/charts/blob/main/charts/pixelfed/values.yaml
           valuesObject:
-            fullnameOverride: gotosocial
+            fullnameOverride: pixelfed
             image:
-              repository: superseriousbusiness/gotosocial
+              repository: superseriousbusiness/pixelfed
 
             ingress:
               enabled: true
               annotations:
                 kubernetes.io/tls-acme: "true"
-                cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}-http01'
+                cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
                 nginx.ingress.kubernetes.io/proxy-body-size: 12m
                 nginx.ingress.kubernetes.io/server-snippet: |
                   location /livez {
@@ -72,16 +72,16 @@ spec:
                   }
               className: nginx
               hosts:
-                - host: '{{ .gotosocial_hostname }}'
+                - host: '{{ .pixelfed_hostname }}'
                   paths:
                     - path: '/'
                       pathType: ImplementationSpecific
               tls:
-                - secretName: gotosocial-tls
+                - secretName: pixelfed-tls
                   hosts:
-                    - '{{ .gotosocial_hostname }}'
+                    - '{{ .pixelfed_hostname }}'
 
-            # resource limits for gotosocial
+            # resource limits for pixelfed
             resources:
               limits:
                 cpu: 1500m
@@ -90,14 +90,14 @@ spec:
                 cpu: 500m
                 memory: 512Mi
 
-            gotosocial:
+            pixelfed:
               # for postgres ssl certs
               extraEnv:
                 - name: "PGSSLCERT"
-                  value: /etc/secrets/gotosocial/tls.crt
+                  value: /etc/secrets/pixelfed/tls.crt
 
                 - name: "PGSSLKEY"
-                  value: /etc/secrets/gotosocial/tls.key
+                  value: /etc/secrets/pixelfed/tls.key
 
                 - name: "PGSSLROOTCERT"
                   value: /etc/secrets/ca/ca.crt
@@ -106,12 +106,12 @@ spec:
               extraVolumes:
                 - name: postgres-ca
                   secret:
-                    secretName: gotosocial-postgres-server-ca-key-pair
+                    secretName: pixelfed-postgres-server-ca-key-pair
                     defaultMode: 0640
 
                 - name: postgres-client-certs
                   secret:
-                    secretName: gotosocial-postgres-gotosocial-cert
+                    secretName: pixelfed-postgres-pixelfed-cert
                     defaultMode: 0640
 
               # for postgres ssl certs
@@ -120,22 +120,22 @@ spec:
                   mountPath: /etc/secrets/ca
 
                 - name: postgres-client-certs
-                  mountPath: /etc/secrets/gotosocial
+                  mountPath: /etc/secrets/pixelfed
 
               strategy:
                 type: Recreate
 
               persistence:
                 enabled: true
-                existingClaim: "gotosocial"
+                existingClaim: "pixelfed"
 
               tmpfs:
                 enabled: false
                 size: "1Gi"
 
               config:
-                applicationName: "gotosocial"
-                host: "{{ .gotosocial_hostname }}"
+                applicationName: "pixelfed"
+                host: "{{ .pixelfed_hostname }}"
                 accountDomain: ""
                 protocol: "https"
                 bindAddress: "0.0.0.0"
@@ -152,19 +152,19 @@ spec:
 
                 storage:
                   backend: "s3"
-                  localBasePath: "/gotosocial/storage"
+                  localBasePath: "/pixelfed/storage"
 
                   s3:
                    enabled: true
-                   endpoint: "{{ .gotosocial_s3_endpoint }}"
+                   endpoint: "{{ .pixelfed_s3_endpoint }}"
                    proxy: false
                    useSSL: true
                    # accessKey: ""
                    # secretKey: ""
                    # If this is set, accessKey, secretKey will not take place
                    # Needs the S3_ACCESS_KEY_ID and S3_SECRET_ACCESS_KEY keys.
-                   existingSecret: "gotosocial-s3-credentials"
-                   bucket: "gotosocial"
+                   existingSecret: "pixelfed-s3-credentials"
+                   bucket: "pixelfed"
 
                 oidc:
                   enabled: false
@@ -177,20 +177,20 @@ spec:
                     - "groups"
                   linkExisting: false
                   adminGroups: []
-                  existingSecretName: "gotosocial-oidc-credentials"
+                  existingSecretName: "pixelfed-oidc-credentials"
                   existingSecretKeys:
                     issuer: "issuer"
                     clientID: "client_id"
                     clientSecret: "client_secret"
 
                 smtp:
-                  existingSecretName: "gotosocial-smtp-credentials"
+                  existingSecretName: "pixelfed-smtp-credentials"
                   existingSecretKeys:
                     username: "username"
                     password: "password"
                     port: "port"
                     host: "host"
-                  from: "no-reply@{{ .gotosocial_hostname }}"
+                  from: "no-reply@{{ .pixelfed_hostname }}"
                   discloseRecipients: false
 
               extraConfig:
@@ -201,17 +201,17 @@ spec:
                   # authUsername: ""
                   # authPassword: ""
 
-            externalPostgresql:
+            externalDatabase:
               enabled: true
-              host: gotosocial-postgres-rw.gotosocial.svc
+              host: pixelfed-postgres-rw.pixelfed.svc
               port: "5432"
-              database: gotosocial
-              username: gotosocial
-              existingSecret: "gotosocial-pgsql-credentials"
+              database: pixelfed
+              username: pixelfed
+              existingSecret: "pixelfed-pgsql-credentials"
               existingSecretPasswordKey: postgresPassword
               tls_mode: "disable"
-              sslcert: "/etc/secrets/gotosocial/tls.crt"
-              sslkey: "/etc/secrets/gotosocial/tls.key"
+              sslcert: "/etc/secrets/pixelfed/tls.crt"
+              sslkey: "/etc/secrets/pixelfed/tls.key"
               ca_cert: "/etc/secrets/ca/ca.crt"
 
             # https://github.com/bitnami/charts/tree/main/bitnami/postgresql#parameters
@@ -229,7 +229,7 @@ spec:
                 # -- Automatically redirect to OIDC, CAS or SAML, and don't use local account authentication when clicking on Sign-In
                 omniauth_only: false
 
-            # -- https://github.com/gotosocial/gotosocial/blob/main/Dockerfile#L75
+            # -- https://github.com/pixelfed/pixelfed/blob/main/Dockerfile#L75
             # if you manually change the UID/GID environment variables, ensure these values match:
             podSecurityContext:
               runAsUser: 991

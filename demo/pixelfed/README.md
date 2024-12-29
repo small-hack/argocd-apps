@@ -2,4 +2,4 @@
 
 This directory is meant to deploy the [Pixelfed](https://pixelfed.org/) app, which is a federated FOSS Instagram replacement app.
 
-Need to write the helm chart first :face_palm:
+This uses the [small-hack/pixelfed-chart](https://github.com/small-hack/pixelfed-chart/tree/main) helm chart.
