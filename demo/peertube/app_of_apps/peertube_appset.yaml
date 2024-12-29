@@ -36,7 +36,7 @@ spec:
           prune: true
           selfHeal: true
       source:
-        repoURL: https://github.com/cloudymax/peertube-helm-chart.git
+        repoURL: https://github.com/small-hack/peertube-helm-chart.git
         path: charts/peertube/
         targetRevision: HEAD
         helm:
