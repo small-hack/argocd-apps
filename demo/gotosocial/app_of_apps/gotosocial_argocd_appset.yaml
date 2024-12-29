@@ -60,8 +60,17 @@ spec:
               annotations:
                 kubernetes.io/tls-acme: "true"
                 cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
-                # ensure that NGINX's upload size matches gotosocial's
-                nginx.ingress.kubernetes.io/proxy-body-size: 2G
+                nginx.ingress.kubernetes.io/proxy-body-size: 12m
+                nginx.ingress.kubernetes.io/server-snippet: |
+                  location /livez {
+                    return 404;
+                  }
+                  location /readyz {
+                    return 404;
+                  }
+                  location /metrics {
+                    return 404;
+                  }
               className: nginx
               hosts:
                 - host: '{{ .gotosocial_hostname }}'
