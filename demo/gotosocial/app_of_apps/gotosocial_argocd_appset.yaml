@@ -170,13 +170,14 @@ spec:
                   # authUsername: ""
                   # authPassword: ""
 
-            externalDatabase:
+            externalPostgresql:
               enabled: true
-              hostname: gotosocial-postgres-rw.gotosocial.svc
+              host: gotosocial-postgres-rw.gotosocial.svc
               port: "5432"
               database: gotosocial
-              user: gotosocial
+              username: gotosocial
               existingSecret: "gotosocial-pgsql-credentials"
+              existingSecretPasswordKey: postgresPassword
               sslmode: "verify-full"
               sslcert: "/etc/secrets/gotosocial/tls.crt"
               sslkey: "/etc/secrets/gotosocial/tls.key"
