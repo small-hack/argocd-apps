@@ -49,8 +49,8 @@ spec:
               initdb:
                 database: gotosocial
                 owner: gotosocial
-                secret:
-                  name: "gotosocial-pgsql-credentials"
+                # secret:
+                #   name: "gotosocial-pgsql-credentials"
             backup:
               # barman is a utility for backing up postgres to s3
               barmanObjectStore:
@@ -88,4 +88,6 @@ spec:
             postgresql:
               pg_hba:
                 - hostnossl all all 0.0.0.0/0 reject
-                - hostssl all all 0.0.0.0/0 cert clientcert=verify-full
+                - hostssl all all 0.0.0.0/0 cert clientcert=require
+                # - hostssl all all 0.0.0.0/0 cert clientcert=verify-full
+                # - host all all 0.0.0.0/0 md5
