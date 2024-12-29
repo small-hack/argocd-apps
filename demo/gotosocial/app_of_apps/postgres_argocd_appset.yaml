@@ -44,13 +44,13 @@ spec:
           releaseName: gotosocial-postgres-cluster
           valuesObject:
             name: gotosocial-postgres
-            instances: 2
+            instances: 1
             bootstrap:
               initdb:
                 database: gotosocial
                 owner: gotosocial
                 secret:
-                  name: null
+                  name: gotosocial-pgsql-credentials
             backup:
               # barman is a utility for backing up postgres to s3
               barmanObjectStore:
