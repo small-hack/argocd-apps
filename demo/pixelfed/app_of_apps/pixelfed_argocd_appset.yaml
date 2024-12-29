@@ -40,12 +40,9 @@ spec:
           prune: true
           selfHeal: true
       source:
-        # repoURL: 'charts.fsociety.social'
-        # targetRevision: 0.5.1
-        # chart: pixelfed
-        repoURL: https://github.com/jessebot/charts-1
-        path: charts/pixelfed/
-        targetRevision: jessebot-changes
+        repoURL: https://small-hack.github.io/pixelfed-chart
+        targetRevision: 0.2.0
+        chart: pixelfed
         helm:
           releaseName: pixelfed
           # https://github.com/0hlov3/charts/blob/main/charts/pixelfed/values.yaml
