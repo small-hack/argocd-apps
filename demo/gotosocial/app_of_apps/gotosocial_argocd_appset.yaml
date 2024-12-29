@@ -92,6 +92,16 @@ spec:
                 memory: 512Mi
 
             gotosocial:
+              env:
+                - name: "PGSSLCERT"
+                  value: /etc/secrets/gotosocial/tls.crt
+
+                - name: "PGSSLKEY"
+                  value: /etc/secrets/gotosocial/tls.key
+
+                - name: "PGSSLROOTCERT"
+                  value: /etc/secrets/ca/ca.crt
+
               strategy:
                 type: Recreate
 
