@@ -1,6 +1,7 @@
 # Argo CD GoToSocial App of Apps
 
 This directory deploys a [GoToSocial] Argo CD App of Apps.
+<img width="943" alt="Screenshot of the GoToSocial app of apps in the Argo CD web interface in tree view mode. It shows the main helm chart appset, the external secrets appset, the postgresql app set, the PVC appset, the S3 provider app set, and hte S3 PVC appset" src="https://github.com/user-attachments/assets/45e7eb05-9843-4534-bb04-8a48cb8cb8d3" />
 
 ## Sync Waves
 
