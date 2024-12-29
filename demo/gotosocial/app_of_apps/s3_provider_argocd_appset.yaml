@@ -33,5 +33,5 @@ spec:
           selfHeal: true
       source:
         repoURL: https://github.com/small-hack/argocd-apps.git
-        path: gotosocial/small-hack/storage/{{ .gotosocial_s3_provider }}/
+        path: demo/gotosocial/storage/{{ .gotosocial_s3_provider }}/
         targetRevision: main
