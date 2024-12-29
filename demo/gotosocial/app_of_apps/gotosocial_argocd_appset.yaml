@@ -46,7 +46,7 @@ spec:
         # chart: gotosocial
         repoURL: https://github.com/jessebot/charts-1
         path: charts/gotosocial/
-        ref: jesse-changes
+        targetRevision: jesse-changes
         helm:
           releaseName: gotosocial
           # https://github.com/0hlov3/charts/blob/main/charts/gotosocial/values.yaml
