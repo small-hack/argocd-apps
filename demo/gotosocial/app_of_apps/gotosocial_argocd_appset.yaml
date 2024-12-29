@@ -179,10 +179,10 @@ spec:
               username: gotosocial
               existingSecret: "gotosocial-pgsql-credentials"
               existingSecretPasswordKey: postgresPassword
-              sslmode: "verify-full"
+              tls_mode: "verify-full"
               sslcert: "/etc/secrets/gotosocial/tls.crt"
               sslkey: "/etc/secrets/gotosocial/tls.key"
-              sslrootcert: "/etc/secrets/ca/ca.crt"
+              ca_cert: "/etc/secrets/ca/ca.crt"
 
             # https://github.com/bitnami/charts/tree/main/bitnami/postgresql#parameters
             postgresql:
