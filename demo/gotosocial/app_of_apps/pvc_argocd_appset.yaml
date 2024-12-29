@@ -17,9 +17,8 @@ spec:
           parameters:
             secret_vars:
               - global_pvc_storage_class
-              - gotosocial_valkey_pvc_enabled
-              - gotosocial_valkey_storage
-              - gotosocial_valkey_access_mode
+              - gotosocial_storage
+              - gotosocial_access_mode
   template:
     metadata:
       name: gotosocial-pvc
@@ -43,8 +42,7 @@ spec:
         helm:
           valuesObject:
             # -- enable gotosocial valkeyuration pvc
-            valkey_pvc:
-              enabled: '{{ .gotosocial_valkey_pvc_enabled }}'
+            pvc:
               storageClassName: '{{ .global_pvc_storage_class }}'
-              accessMode: '{{ .gotosocial_valkey_access_mode }}'
-              storage: '{{ .gotosocial_valkey_storage }}'
+              accessMode: '{{ .gotosocial_access_mode }}'
+              storage: '{{ .gotosocial_storage }}'
