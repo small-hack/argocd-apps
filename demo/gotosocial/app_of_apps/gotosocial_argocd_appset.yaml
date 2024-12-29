@@ -209,7 +209,7 @@ spec:
               username: gotosocial
               existingSecret: "gotosocial-pgsql-credentials"
               existingSecretPasswordKey: postgresPassword
-              tls_mode: "disable"
+              tls_mode: "require"
               sslcert: "/etc/secrets/gotosocial/tls.crt"
               sslkey: "/etc/secrets/gotosocial/tls.key"
               ca_cert: "/etc/secrets/ca/ca.crt"
