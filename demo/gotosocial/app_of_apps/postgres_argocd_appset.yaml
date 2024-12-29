@@ -88,6 +88,6 @@ spec:
             postgresql:
               pg_hba:
                 - hostnossl all all 0.0.0.0/0 reject
-                - hostssl all all 0.0.0.0/0 cert clientcert=verify-ca
+                - hostssl all all 0.0.0.0/0 cert clientcert=verify-full
                 # - hostssl all all 0.0.0.0/0 cert clientcert=verify-full
                 # - host all all 0.0.0.0/0 md5
