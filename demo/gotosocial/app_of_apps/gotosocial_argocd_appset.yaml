@@ -93,35 +93,35 @@ spec:
 
             gotosocial:
               # for postgres ssl certs
-              extraEnv:
-                - name: "PGSSLCERT"
-                  value: /etc/secrets/gotosocial/tls.crt
+              # extraEnv:
+              #   - name: "PGSSLCERT"
+              #     value: /etc/secrets/gotosocial/tls.crt
 
-                - name: "PGSSLKEY"
-                  value: /etc/secrets/gotosocial/tls.key
+              #   - name: "PGSSLKEY"
+              #     value: /etc/secrets/gotosocial/tls.key
 
-                - name: "PGSSLROOTCERT"
-                  value: /etc/secrets/ca/ca.crt
-
-              # for postgres ssl certs
-              extraVolumes:
-                - name: postgres-ca
-                  secret:
-                    secretName: gotosocial-postgres-server-ca-key-pair
-                    defaultMode: 0640
-
-                - name: postgres-client-certs
-                  secret:
-                    secretName: gotosocial-postgres-gotosocial-cert
-                    defaultMode: 0640
+              #   - name: "PGSSLROOTCERT"
+              #     value: /etc/secrets/ca/ca.crt
 
               # for postgres ssl certs
-              extraVolumeMounts:
-                - name: postgres-ca
-                  mountPath: /etc/secrets/ca
+              # extraVolumes:
+              #   - name: postgres-ca
+              #     secret:
+              #       secretName: gotosocial-postgres-server-ca-key-pair
+              #       defaultMode: 0640
 
-                - name: postgres-client-certs
-                  mountPath: /etc/secrets/gotosocial
+              #   - name: postgres-client-certs
+              #     secret:
+              #       secretName: gotosocial-postgres-gotosocial-cert
+              #       defaultMode: 0640
+
+              # for postgres ssl certs
+              # extraVolumeMounts:
+              #   - name: postgres-ca
+              #     mountPath: /etc/secrets/ca
+
+              #   - name: postgres-client-certs
+              #     mountPath: /etc/secrets/gotosocial
 
               strategy:
                 type: Recreate
@@ -210,10 +210,10 @@ spec:
               username: gotosocial
               existingSecret: "gotosocial-pgsql-credentials"
               existingSecretPasswordKey: postgresPassword
-              tls_mode: "require"
-              sslcert: "/etc/secrets/gotosocial/tls.crt"
-              sslkey: "/etc/secrets/gotosocial/tls.key"
-              ca_cert: "/etc/secrets/ca/ca.crt"
+              tls_mode: ""
+              # sslcert: "/etc/secrets/gotosocial/tls.crt"
+              # sslkey: "/etc/secrets/gotosocial/tls.key"
+              # ca_cert: "/etc/secrets/ca/ca.crt"
 
             # https://github.com/bitnami/charts/tree/main/bitnami/postgresql#parameters
             postgresql:
