@@ -32,7 +32,7 @@ spec:
       source:
         repoURL: 'https://kubernetes.github.io/ingress-nginx'
         chart: ingress-nginx
-        targetRevision: 4.11.3
+        targetRevision: 4.12.0
         helm:
           releaseName: 'ingress-nginx'
           valuesObject:
