@@ -591,8 +591,8 @@ spec:
                 replicaCount: 3
               auth:
                 enabled: true
-                existingSecret: nextcloud-valkey-cluster-app
-                existingSecretPasswordKey: valkey-password
+                existingSecret: nextcloud-redis-credentials
+                existingSecretPasswordKey: redis-password
 
             cronjob:
               enabled: true
