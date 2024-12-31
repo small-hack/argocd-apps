@@ -172,7 +172,7 @@ spec:
 
                   s3:
                    enabled: true
-                   endpoint: "{{ .gotosocial_s3_endpoint }}"
+                   endpoint: "https://{{ .gotosocial_s3_endpoint }}"
                    proxy: false
                    useSSL: true
                    # accessKey: ""
