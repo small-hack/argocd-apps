@@ -174,7 +174,7 @@ spec:
                   value: /etc/secrets/ca/ca.crt
 
                 - name: "REDIS_HOST"
-                  value: valkey-headless.nextcloud.svc.cluster.local
+                  value: valkey-primary.nextcloud.svc.cluster.local
 
                 - name: "REDIS_HOST_PORT"
                   value: "6379"
