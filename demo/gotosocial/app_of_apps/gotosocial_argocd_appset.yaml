@@ -191,8 +191,8 @@ spec:
                     - "email"
                     - "profile"
                     - "groups"
-                  linkExisting: false
-                  adminGroups: []
+                  linkExisting: true
+                  adminGroups: ['gotosocial_admins']
                   existingSecretName: "gotosocial-oidc-credentials"
                   existingSecretKeys:
                     issuer: "issuer"
