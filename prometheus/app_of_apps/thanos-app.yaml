@@ -36,8 +36,8 @@ spec:
           #  sidecarsService: "prometheus-operated"
           #  sidecarsNamespace: "prometheus"
           autoscaling:
-            enabled: true
-            minReplicas: "2"
+            enabled: false
+            minReplicas: "1"
             maxReplicas: "4"
             targetCPU: 70
             targetMemory: 80
