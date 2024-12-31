@@ -160,6 +160,9 @@ spec:
               # Global snippets in ConfigMap are still respected
               allowSnippetAnnotations: true
 
+              # you need this after latest helm chart release to allow server snippets
+              annotationsRiskLevel: Critical
+
               resources:
                 requests:
                   cpu: 100m
