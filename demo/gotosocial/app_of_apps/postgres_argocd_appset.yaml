@@ -87,7 +87,6 @@ spec:
               enablePodMonitor: false
             postgresql:
               pg_hba:
-                - hostssl all all all cert
-                # - hostssl all all 0.0.0.0/0 cert clientcert=verify-ca
+                - host all all 0.0.0.0/0 md5
+                # uncomment when pgsql cert connections are working to gotosocial
                 # - hostssl all all 0.0.0.0/0 cert clientcert=verify-full
-                # - host all all 0.0.0.0/0 md5
