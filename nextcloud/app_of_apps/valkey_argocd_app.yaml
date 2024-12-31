@@ -32,7 +32,7 @@ spec:
         auth:
           enabled: true
           existingSecret: "nextcloud-redis-credentials"
-          existingSecretPasswordKey: "redis-password"
+          existingSecretPasswordKey: "redis_password"
 
         tls:
           enabled: false

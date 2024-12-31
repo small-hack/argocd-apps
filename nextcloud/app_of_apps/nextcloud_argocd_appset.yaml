@@ -183,7 +183,7 @@ spec:
                   valueFrom:
                     secretKeyRef:
                       name: nextcloud-redis-credentials
-                      key: redis-password
+                      key: redis_password
 
               extraVolumes:
                 # - name: before-starting-scripts
@@ -592,7 +592,7 @@ spec:
               auth:
                 enabled: true
                 existingSecret: nextcloud-redis-credentials
-                existingSecretPasswordKey: redis-password
+                existingSecretPasswordKey: redis_password
 
             cronjob:
               enabled: true
