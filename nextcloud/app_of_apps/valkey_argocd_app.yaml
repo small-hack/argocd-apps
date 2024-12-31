@@ -31,8 +31,8 @@ spec:
 
         auth:
           enabled: true
-          existingSecret: "nextcloud-valkey-cluster-app"
-          existingSecretPasswordKey: "valkey-password"
+          existingSecret: "nextcloud-redis-credentials"
+          existingSecretPasswordKey: "redis-password"
 
         tls:
           enabled: false
@@ -56,8 +56,8 @@ spec:
 
         metrics:
           # we use a grafana exporter that logs into valkey directly
-          enabled: false
+          enabled: true
 
         # default: nano Options: nano, micro, small, medium, large, xlarge, 2xlarge
         # definitions: https://github.com/bitnami/charts/blob/main/bitnami/common/templates/_resources.tpl#L15
-        resourcesPreset: "small"
+        resourcesPreset: "medium"
