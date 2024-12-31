@@ -182,7 +182,7 @@ spec:
                    bucket: "gotosocial"
 
                 oidc:
-                  enabled: false
+                  enabled: true
                   idpName: ""
                   skipVerification: ""
                   oidcScopes:
