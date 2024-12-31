@@ -251,22 +251,17 @@ spec:
                   php_admin_value[post_max_size] = 10G
 
               configs:
-                # redis-cluster.config.php: |-
-                #   <?php
-#  $CONFIG = [
-                #     'memcache.local' => '\OC\Memcache\APCu',
-                #     'memcache.distributed' => '\\OC\\Memcache\\Redis',
-                #     'memcache.locking' => '\\OC\\Memcache\\Redis',
-                #     'redis.cluster' => [
-                #       'seeds' => [
-                #         'valkey.nextcloud.svc.cluster.local:6379',
-                #       ],
-                #       'timeout' => 0.0,
-                #       'read_timeout' => 0.0,
-                #       'failover_mode' => \RedisCluster::FAILOVER_ERROR,
-                #       'password' => getenv('REDIS_HOST_PASSWORD')
-                #     ],
-                #   ];
+                redis.config.php: |-
+                  <?php
+                  $CONFIG = [
+                    'memcache.local' => '\OC\Memcache\Redis',
+                    'memcache.distributed' => '\\OC\\Memcache\\Redis',
+                    'memcache.locking' => '\\OC\\Memcache\\Redis',
+                    'redis' => [
+                      'host' => 'valkey-headless',
+                      'port' => 6379,
+                    ],
+                  ];
 
                 logging.config.php: |-
                   <?php
