@@ -19,6 +19,7 @@ spec:
           parameters:
             secret_vars:
               - gotosocial_hostname
+              # - gotosocial_idp_name
               - gotosocial_s3_endpoint
               - global_cluster_issuer
               - global_time_zone
@@ -183,7 +184,7 @@ spec:
 
                 oidc:
                   enabled: true
-                  idpName: ""
+                  idpName: "zitadel"
                   skipVerification: ""
                   oidcScopes:
                     - "openid"
@@ -239,10 +240,10 @@ spec:
 
             externalAuth:
               oidc:
-                enabled: false
+                enabled: true
               oauth_global:
                 # -- Automatically redirect to OIDC, CAS or SAML, and don't use local account authentication when clicking on Sign-In
-                omniauth_only: false
+                omniauth_only: true
 
             # -- https://github.com/gotosocial/gotosocial/blob/main/Dockerfile#L75
             # if you manually change the UID/GID environment variables, ensure these values match:
