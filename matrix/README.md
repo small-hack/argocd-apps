@@ -1,4 +1,4 @@
-# ArgoCD Template for Matrix helm chart
+# Argo CD Application for Matrix helm chart
 
 [Matrix](https://matrix.org/) is an open network for secure, decentralised communication :)
 
@@ -26,13 +26,14 @@ We're using [small-hack/matrix-chart](https://github.com/small-hack/matrix-chart
 # Notes
 
 ## Stable vs Beta
+
 To use the stable version of synapse and element, use the [`app_of_apps`](./app_of_apps) directory, however if you'd like to try to the new [element-x](https://matrix.org/ecosystem/clients/element-x/), you'll want to use the [`app_of_apps_beta`](./app_of_apps_beta) directory until all is declared live and stable.
 
-`app_of_apps_beta` will use [matrix authentication service](https://matrix-org.github.io/matrix-authentication-service) for OIDC instead of the current OIDC implementation baked into synapse, which you can read more about on the [matrix.org blog](https://matrix.org/blog/2023/09/better-auth/#upgrading-to-use-matrix-authentication-service). It also uses [sliding sync](https://github.com/matrix-org/sliding-sync/tree/main) which is supposed to be faster at syncing large rooms. We've experimented a bit with this, but we don't feel element-x is production ready yet, as it also doesn't have a lot of features yet, but we're excited for when it does :)
+`app_of_apps_beta` will use [matrix authentication service](https://matrix-org.github.io/matrix-authentication-service) for OIDC instead of the current OIDC implementation baked into synapse, which you can read more about on the [matrix.org blog](https://matrix.org/blog/2023/09/better-auth/#upgrading-to-use-matrix-authentication-service). We've experimented a bit with this, but we don't feel element-x is production ready yet, as it also doesn't have a lot of features yet, but we're excited for when it does :)
 
 ## Bridges
 
-We're currently experimenting with turning on bridges in the [`app_of_apps_with_bridge`](./app_of_apps_with_bridge) directory. This is not yet stable and should only be used for testing.
+We're currently experimenting with turning on bridges in the [`app_of_apps_with_bridge`](./app_of_apps_with_bridge) directory. We've started with the alertmanager bridge for getting prometheus alerts directly in matrix. This is semi stable, but should only be used for testing.
 
 ## Security
 

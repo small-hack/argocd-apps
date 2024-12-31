@@ -16,7 +16,7 @@ spec:
     # prometheus-community helm repo
     - repoURL: https://small-hack.github.io/coturn-chart/
       chart: coturn
-      targetRevision: 7.0.3
+      targetRevision: 8.0.1
       helm:
         valueFiles:
         - $values/coturn/values/values.yaml

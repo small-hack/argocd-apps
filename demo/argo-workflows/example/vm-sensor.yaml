@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Sensor
+metadata:
+  name: vm-webhook
+  namespace: argocd
+spec:
+  template:
+    serviceAccountName: operate-workflow-sa
+  dependencies:
+    - name: vm
+      eventSourceName: vm-webhook
+      eventName: vm
+  triggers:
+    - template:
+        name: webhook-workflow-trigger
+        argoWorkflow:
+          operation: submit
+          source:
+            resource:
+              apiVersion: argoproj.io/v1alpha1
+              kind: Workflow
+              metadata:
+                generateName: vm-api-
+              spec:
+                arguments:
+                  parameters:
+                    - name: action
+                      value: create
+                    - name: name
+                      value: scrapmetal
+                workflowTemplateRef:
+                  name: kubevirt-vm-template
+          parameters:
+            - src:
+                dependencyName: vm
+                dataKey: body.action
+              dest: spec.arguments.parameters.0.value
+            - src:
+                dependencyName: vm
+                dataKey: body.name
+              dest: spec.arguments.parameters.1.value

@@ -5,15 +5,17 @@ Mastodon is social networking that's not for sale: https://joinmastodon.org/
 
 This is the networking view in Argo CD:
 
-<img width="1278" alt="screenshot of the mastodon applicationset in Argo CD's web interface using the networking tree mode view. it shows the flow of cloud to ip address to mastodon-web-app ingress to two services mastodon-web-app-streaming and mastodon-web-app-web which each go to their respective pods. There's also additional services and pods outside of that flow. pods masotdon-web-app-media and masotdon-web-app-sidekiq have no children. 2 elastic search services have the same elastic search pod child. and then there's an additional 3 matching elastic search service and pod pairs" src="https://github.com/user-attachments/assets/c19ec840-e15a-4504-b6eb-7ed13601846e">
+<img width="1278" alt="screenshot of the mastodon applicationset in Argo CD's web interface using the networking tree mode view. it shows the flow of cloud to ip address to mastodon ingress to two services mastodon-streaming and mastodon-web which each go to their respective pods. There's also additional services and pods outside of that flow. 2 elastic search services have the same elastic search pod child. and then there's an additional 3 matching elastic search service and pod pairs. finally, there is a mastodon-sidekiq-all-queues pod that is running" src="https://github.com/user-attachments/assets/463e6ac4-6404-49ad-a905-c9efe334e79f">
 
 
 This Mastodon AppSet uses a fork of Mastodon called [glitch-soc](https://github.com/glitch-soc/mastodon). You can see the docker repo [small-hack/mastodon-glitch-soc-docker](https://github.com/small-hack/mastodon-glitch-soc-docker) whose image is published [here](https://hub.docker.com/repository/docker/jessebot/mastodon-glitch-soc/general).
 
+:new: We now support setting up a [libretranslate](https://libretranslate.com/) endpoint and API key. (still a bit buggy right now)
+
 
 ## Sync waves
 In the [`./app_of_apps`](./app_of_apps) directory we create the manifests and helm chart in this sync wave order:
-1. all required PVCs, and Secrets (secrets are external secrets in a private repo)
+1. all required PVCs, and ExternalSecrets
 2. SeaweedFS file system and s3 endpoint with two buckets, one for postgres backups and one for mastodon media
 3. Postgresql Cluster
 4. Mastodon web app (including elastic search and valkey)
@@ -106,3 +108,7 @@ kubectl exec deploy/mastodon-web-app -- /bin/bash
 ```
 
 `tootctl` commands can then be run as normal. Checkout the [mastodon docs](https://docs.joinmastodon.org/admin/tootctl/) for more!
+
+## Adding a custom theme
+
+Go to https://my-mastodon.tld/admin/settings/appearance and then you can add any CSS you want in the text box under Custom CSS. As an example, we've included a custom theme in this repo called [Spacechalk](./spacechalk_theme.css). It mostly just sets some pretty colors, but it also takes care of enlarging emojis on hover. Have fun! :]

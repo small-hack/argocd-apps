@@ -19,6 +19,7 @@ spec:
           parameters:
             secret_vars:
               - mastodon_hostname
+              - mastodon_libretranslate_hostname
               - mastodon_s3_endpoint
               - mastodon_smtp_port
               - global_cluster_issuer
@@ -43,21 +44,18 @@ spec:
       source:
         # forked from: https://github.com/mastodon/chart/tree/main
         repoURL: 'https://small-hack.github.io/mastodon-helm-chart'
-        targetRevision: 9.7.0
+        targetRevision: 9.8.1
         chart: mastodon
-        # repoURL: 'https://github.com/small-hack/mastodon-helm-chart'
-        # path: 'charts/mastodon/'
-        # targetRevision: fix-precompile-volume-perm
         helm:
+          releaseName: mastodon
           valuesObject:
+            fullnameOverride: mastodon
             # original repository: ghcr.io/mastodon/mastodon
             image:
               repository: jessebot/mastodon-glitch-soc
-              tag: latest
-              pullPolicy: IfNotPresent
+              tag: v4.3.2
 
             mastodon:
-
               hooks:
                 dbMigrate:
                   enabled: true
@@ -150,27 +148,38 @@ spec:
               extraEnvVars:
                 # Maximum allowed character count
                 - name: MAX_TOOT_CHARS
-                  value: "2000"
+                  value: "2500"
+                # Maximum allowed hashtags to follow in a feed column
+                # Note that setting this value higher may cause significant
+                # database load
+                - name: MAX_FEED_HASHTAGS
+                  value: "10"
                 # Maximum allowed display name characters
                 - name: MAX_DISPLAY_NAME_CHARS
                   value: "64"
                 # Maximum allowed bio characters
                 - name: MAX_BIO_CHARS
-                  value: "720"
+                  value: "800"
+                # Maximum allowed poll options
+                - name: MAX_POLL_OPTIONS
+                  value: "12"
+                # Maximum allowed poll option characters
+                - name: MAX_POLL_OPTION_CHARS
+                  value: "250"
                 # Maximim number of profile fields allowed
                 - name: MAX_PROFILE_FIELDS
-                  value: "6"
+                  value: "8"
                 # Maximum image and video/audio upload sizes
                 - name: MAX_IMAGE_SIZE
                   # 64MB for photos
                   value: "67110000"
                 - name: MAX_VIDEO_SIZE
-                  # 1GB for videos
-                  value: "1074000000"
+                  # 10GB for videos
+                  value: "10740000000"
                 # Maximum search results to display
                 # Only relevant when elasticsearch is installed
                 - name: MAX_SEARCH_RESULTS
-                  value: "30"
+                  value: "40"
                 # Maximum hashtags to display
                 # Customize the number of hashtags shown in 'Explore'
                 - name: MAX_TRENDING_TAGS
@@ -252,13 +261,23 @@ spec:
               # Sets the PREPARED_STATEMENTS environment variable: https://docs.joinmastodon.org/admin/config/#prepared_statements
               preparedStatements: true
 
+              libretranslate:
+                # -- enable the use of libretranslate for translations
+                enabled: true
+                endpoint: "{{ .mastodon_libretranslate_hostname }}"
+                # -- use an existing secret for libretranslate endpoint and api key
+                existingSecret: "libretranslate-api-key"
+                secretKeys:
+                  endpoint: "endpoint"
+                  apiKey: "apiKey"
+
             ingress:
               enabled: true
               annotations:
                 kubernetes.io/tls-acme: "true"
                 cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
                 # ensure that NGINX's upload size matches Mastodon's
-                nginx.ingress.kubernetes.io/proxy-body-size: 40m
+                nginx.ingress.kubernetes.io/proxy-body-size: 2G
               ingressClassName: nginx
               hosts:
                 - host: '{{ .mastodon_hostname }}'
@@ -277,6 +296,7 @@ spec:
               # RAILS_ENV=production bundle exec rake chewy:sync
               # (https://docs.joinmastodon.org/admin/optional/elasticsearch/)
               enabled: true
+              fullnameOverride: mastodon-elasticsearch
               master:
                 replicaCount: 1
                 autoscaling:

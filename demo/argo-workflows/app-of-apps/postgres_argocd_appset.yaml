@@ -25,7 +25,7 @@ spec:
       annotations:
         argocd.argoproj.io/sync-wave: "3"
     spec:
-      project: argocd
+      project: argo-cd
       destination:
         server: "https://kubernetes.default.svc"
         namespace: argocd
@@ -49,6 +49,8 @@ spec:
               initdb:
                 database: workflows
                 owner: workflows
+                secret:
+                  name: workflows-pgsql-credentials
 
             enableSuperuserAccess: true
 
@@ -56,42 +58,40 @@ spec:
               # barman is a utility for backing up postgres to s3
               barmanObjectStore:
                 destinationPath: "s3://workflows-postgres"
-                endpointURL: "https://{{ .workflows_s3_endpoint }}"
+                endpointURL: "https://s3.workflows.buildstar.online"
                 s3Credentials:
                   accessKeyId:
-                    name: workflows-db-credentials
-                    key : "ACCESS_KEY"
+                    name: workflows-s3-postgres-credentials
+                    key : "accesskey"
                   secretAccessKey:
-                    name: workflows-db-credentials
-                    key : "SECRET_KEY"
+                    name: workflows-s3-postgres-credentials
+                    key : "secretkey"
               retentionPolicy: "30d"
-            
+
             certificates:
               server:
-                enabled: true
-                generate: true
+                enabled: false
+                generate: false
               client:
-                enabled: true
-                generate: true
+                enabled: false
+                generate: false
               user:
-                enabled: true
+                enabled: false
                 username:
                   - workflows
-                  - postgres
 
             scheduledBackup:
               name: workflows-pg-backup
               spec:
                 # hourly full data backups
-                schedule: "0 0 * * * *" 
+                schedule: "0 0 * * * *"
                 backupOwnerReference: self
                 cluster:
                   name: workflows-postgres
 
             monitoring:
-              enablePodMonitor: false
+              enablePodMonitor: true
 
             postgresql:
-              pg_hba: 
-                - hostnossl all all 0.0.0.0/0 reject
-                - hostssl all all 0.0.0.0/0 cert clientcert=verify-full
+              pg_hba:
+                - host all all 0.0.0.0/0 md5

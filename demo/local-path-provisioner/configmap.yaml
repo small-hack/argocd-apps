@@ -38,6 +38,13 @@ data:
                                 "/mnt/raid1",
                                 "/var/lib/rancher/k3s/storage"
                         ]
+                },
+                {
+                        "node": "scremlin",
+                        "paths": [
+                                "/mnt/raid1",
+                                "/var/lib/rancher/k3s/storage"
+                        ]
                 }
         ]
     }

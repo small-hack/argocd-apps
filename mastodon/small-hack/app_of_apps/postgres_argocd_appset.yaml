@@ -84,6 +84,8 @@ spec:
             monitoring:
               enablePodMonitor: false
             postgresql:
+              parameters:
+                max_wal_size: 10GB
               pg_hba:
                 - hostnossl all all 0.0.0.0/0 reject
                 - hostssl all all 0.0.0.0/0 cert clientcert=verify-full

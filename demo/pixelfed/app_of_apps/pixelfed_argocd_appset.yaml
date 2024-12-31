@@ -1,0 +1,245 @@
+---
+# third sync wave because it has to be up after postgres
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: pixelfed-app-set
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "4"
+spec:
+  # enable go templating
+  goTemplate: true
+  # this generator allows us to values from an external k8s secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - pixelfed_hostname
+              - pixelfed_s3_endpoint
+              - global_cluster_issuer
+              - global_time_zone
+  template:
+    metadata:
+      name: pixelfed-web-app
+      annotations:
+        argocd.argoproj.io/sync-wave: "4"
+        argocd.argoproj.io/sync-options: ApplyOnly=true
+    spec:
+      project: pixelfed
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: pixelfed
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
+          selfHeal: true
+      source:
+        repoURL: https://small-hack.github.io/pixelfed-chart
+        targetRevision: 0.2.0
+        chart: pixelfed
+        helm:
+          releaseName: pixelfed
+          # https://github.com/0hlov3/charts/blob/main/charts/pixelfed/values.yaml
+          valuesObject:
+            fullnameOverride: pixelfed
+            image:
+              repository: superseriousbusiness/pixelfed
+
+            ingress:
+              enabled: true
+              annotations:
+                kubernetes.io/tls-acme: "true"
+                cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
+                nginx.ingress.kubernetes.io/proxy-body-size: 12m
+                nginx.ingress.kubernetes.io/server-snippet: |
+                  location /livez {
+                    return 404;
+                  }
+                  location /readyz {
+                    return 404;
+                  }
+                  location /metrics {
+                    return 404;
+                  }
+              className: nginx
+              hosts:
+                - host: '{{ .pixelfed_hostname }}'
+                  paths:
+                    - path: '/'
+                      pathType: ImplementationSpecific
+              tls:
+                - secretName: pixelfed-tls
+                  hosts:
+                    - '{{ .pixelfed_hostname }}'
+
+            # resource limits for pixelfed
+            resources:
+              limits:
+                cpu: 1500m
+                memory: 1Gi
+              requests:
+                cpu: 500m
+                memory: 512Mi
+
+            pixelfed:
+              # for postgres ssl certs
+              extraEnv:
+                - name: "PGSSLCERT"
+                  value: /etc/secrets/pixelfed/tls.crt
+
+                - name: "PGSSLKEY"
+                  value: /etc/secrets/pixelfed/tls.key
+
+                - name: "PGSSLROOTCERT"
+                  value: /etc/secrets/ca/ca.crt
+
+              # for postgres ssl certs
+              extraVolumes:
+                - name: postgres-ca
+                  secret:
+                    secretName: pixelfed-postgres-server-ca-key-pair
+                    defaultMode: 0640
+
+                - name: postgres-client-certs
+                  secret:
+                    secretName: pixelfed-postgres-pixelfed-cert
+                    defaultMode: 0640
+
+              # for postgres ssl certs
+              extraVolumeMounts:
+                - name: postgres-ca
+                  mountPath: /etc/secrets/ca
+
+                - name: postgres-client-certs
+                  mountPath: /etc/secrets/pixelfed
+
+              strategy:
+                type: Recreate
+
+              persistence:
+                enabled: true
+                existingClaim: "pixelfed"
+
+              tmpfs:
+                enabled: false
+                size: "1Gi"
+
+              config:
+                applicationName: "pixelfed"
+                host: "{{ .pixelfed_hostname }}"
+                accountDomain: ""
+                protocol: "https"
+                bindAddress: "0.0.0.0"
+                trustedProxies:
+                  - "::1"
+                  - "10.0.0.0/8"
+                  - "172.16.0.0/12"
+                  - "192.168.0.0/16"
+
+                db: # general db config, for postgres or sqlite specific config scroll down.
+                  maxOpenConnsMultiplier: "8"
+                  cache:
+                    memoryTarget: "100MiB"
+
+                storage:
+                  backend: "s3"
+                  localBasePath: "/pixelfed/storage"
+
+                  s3:
+                   enabled: true
+                   endpoint: "{{ .pixelfed_s3_endpoint }}"
+                   proxy: false
+                   useSSL: true
+                   # accessKey: ""
+                   # secretKey: ""
+                   # If this is set, accessKey, secretKey will not take place
+                   # Needs the S3_ACCESS_KEY_ID and S3_SECRET_ACCESS_KEY keys.
+                   existingSecret: "pixelfed-s3-credentials"
+                   bucket: "pixelfed"
+
+                oidc:
+                  enabled: false
+                  idpName: ""
+                  skipVerification: ""
+                  oidcScopes:
+                    - "openid"
+                    - "email"
+                    - "profile"
+                    - "groups"
+                  linkExisting: false
+                  adminGroups: []
+                  existingSecretName: "pixelfed-oidc-credentials"
+                  existingSecretKeys:
+                    issuer: "issuer"
+                    clientID: "client_id"
+                    clientSecret: "client_secret"
+
+                smtp:
+                  existingSecretName: "pixelfed-smtp-credentials"
+                  existingSecretKeys:
+                    username: "username"
+                    password: "password"
+                    port: "port"
+                    host: "host"
+                  from: "no-reply@{{ .pixelfed_hostname }}"
+                  discloseRecipients: false
+
+              extraConfig:
+                logLevel: "info"
+                metrics:
+                  enabled: true
+                  authEnabled: false
+                  # authUsername: ""
+                  # authPassword: ""
+
+            externalDatabase:
+              enabled: true
+              host: pixelfed-postgres-rw.pixelfed.svc
+              port: "5432"
+              database: pixelfed
+              username: pixelfed
+              existingSecret: "pixelfed-pgsql-credentials"
+              existingSecretPasswordKey: postgresPassword
+              tls_mode: "disable"
+              sslcert: "/etc/secrets/pixelfed/tls.crt"
+              sslkey: "/etc/secrets/pixelfed/tls.key"
+              ca_cert: "/etc/secrets/ca/ca.crt"
+
+            # https://github.com/bitnami/charts/tree/main/bitnami/postgresql#parameters
+            postgresql:
+              enabled: false
+
+            service:
+              type: ClusterIP
+              port: 80
+
+            externalAuth:
+              oidc:
+                enabled: false
+              oauth_global:
+                # -- Automatically redirect to OIDC, CAS or SAML, and don't use local account authentication when clicking on Sign-In
+                omniauth_only: false
+
+            # -- https://github.com/pixelfed/pixelfed/blob/main/Dockerfile#L75
+            # if you manually change the UID/GID environment variables, ensure these values match:
+            podSecurityContext:
+              runAsUser: 991
+              runAsGroup: 991
+              fsGroup: 991
+
+            securityContext: {}
+
+            serviceAccount:
+              # -- Specifies whether a service account should be created
+              create: true
+              # -- Annotations to add to the service account
+              annotations: {}
+
+            # -- timezone for all the pods
+            timezone: '{{ .global_time_zone }}'

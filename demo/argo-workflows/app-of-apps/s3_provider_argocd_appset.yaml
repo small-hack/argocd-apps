@@ -19,11 +19,11 @@ spec:
               - workflows_s3_provider
   template:
     metadata:
-      name: workflows-{{ .workflows_s3_provider }}
+      name: workflows-seaweedfs
       annotations:
         argocd.argoproj.io/sync-wave: "2"
     spec:
-      project: argocd
+      project: argo-cd
       destination:
         server: "https://kubernetes.default.svc"
         namespace: argocd
@@ -35,5 +35,5 @@ spec:
           selfHeal: true
       source:
         repoURL: https://github.com/small-hack/argocd-apps.git
-        path: demo/argo-workflows/storage/{{ .workflows_s3_provider }}/
+        path: demo/argo-workflows/storage/seaweedfs/
         targetRevision: main

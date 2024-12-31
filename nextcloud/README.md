@@ -1,7 +1,8 @@
-# NextCloud ArgoCD App of Apps
-A NextCloud k8s repo for those who want to get started quickly with nextcloud on k3s the way we use it :) This project uses the official [nextcloud helm chart](https://github.com/nextcloud/helm/tree/main/charts/nextcloud). See the current version in [nextcloud_argocd_appset.yaml](./nextcloud_argocd_appset.yaml).
+# Nextcloud Argo CD App of Apps
 
-<img width="900" alt="nextcloud" src="https://github.com/small-hack/argocd-apps/assets/2389292/f70fdbf9-b3a0-4837-b606-d0de8fb6f73a">
+A Nextcloud k8s Argo CD "App of apps" for those who want to get started quickly with Nextcloud on k3s the way we use it :) This project uses the official [nextcloud helm chart](https://github.com/nextcloud/helm/tree/main/charts/nextcloud). See the current version in [nextcloud_argocd_appset.yaml](./app_of_apps/nextcloud_argocd_appset.yaml).
+
+<img width="942" alt="screenshot of nextcloud Argo CD app of apps including nextcloud-appset, nextcloud-external-secrets-appset, nextcloud-install-apps-appset, nextcloud-maintenance-cron-appset, nextcloud-postgres-app-set, nextcloud-pvc-appset, nextcloud-s3-provider-app-set, and nextcloud-s3-pvc-app-set." src="https://github.com/user-attachments/assets/d8f225a1-4c5c-4bb3-8653-11f680e6a918" />
 
 <details>
   <summary>More Nextcloud Argo CD App screenshots</summary>
@@ -31,18 +32,26 @@ NextCloud would be running ontop of Kubernetes (we use k3s) and using the follow
 Here's a quick peak at what we're deploying with Argo CD. We support deploying with or without node affinity + tolerations. The default behavior is to not include tolerations/affinity settings in the `app_of_apps` directory, but you are also free to use the `app_of_apps_with_tolerations` directory.
 
 #### Sync wave 1
+
 - **External Secrets** are the actual secrets populated from the external secrets store. This includes things like the admin password.
 - **Persistence** are the two persistent volumes needed to persist nextcloud data. This includes the postgresql database as well as the actual files we're storing in nextcloud
 
 #### Sync wave 2
-- **Nextcloud WebApp** is the actual nextcloud webapp deployed using Nginx. We're also using the bundled Bitnami Postgresql helm chart.
+
+- **Cloud native postgresql cluster** check deploys the PostgreSQL with automatic minor and patch version updates.
 
 #### Sync wave 3
+
+- **Nextcloud App** is the actual helm chart deployment of Nextcloud.
+The Nextcloud App also includes a metrics pod, a [Collabora Online] deployment, and a Redis (soon to be [Valkey]) cluster.
+
+#### Sync wave 4
+
 - **K8up B2 Backups** are the cronjobs needed for putting nextcloud into maintanence mode, as well as custom resource for backups, using Restic.
 
-The Nextcloud WebApp also includes a metrics pod, postgres statefulset, and a redis cluster.
 
 ## Quick start (with a k8s cluster already running Argo CD)
+
 You should be able to just set argo to use this repo. There's an example template, `nextcloud_argocd_template.yaml`, for you to get started :) You can run this from the cli:
 
 ```bash
@@ -319,11 +328,21 @@ $CONFIG = array (
   );
 ```
 
+## More info on collabora online
+
+The helm chart is here: https://github.com/CollaboraOnline/online/tree/master/kubernetes/helm/collabora-online
+
+Here's the docs: https://sdk.collaboraonline.com/docs/installation/Kubernetes.html
+
+Here's an exmaple helm chart config:
+https://gitlab.opencode.de/bmi/opendesk/deployment/opendesk/-/blob/e4d9106c457e018922dcc730df0570d41f3ec2aa/helmfile/apps/collabora/values.yaml.gotmpl
 
 <!-- link references -->
+[Collabora Online]: https://sdk.collaboraonline.com/docs/installation/Kubernetes.html
 [Debian]: https://www.debian.org/
+[External Secrets Operator]: https://external-secrets.io/v0.9.0/examples/bitwarden/
+[Ingress Nginx controller]: https://kubernetes.github.io/ingress-nginx/
+[k8up]: https://k8up.io
 [Kuberentes]: https://kubernetes.io/
 [smol-k8s-lab]: https://github.com/small-hack/smol-k8s-lab
-[External Secrets Operator]: https://external-secrets.io/v0.9.0/examples/bitwarden/
-[k8up]: https://k8up.io
-[Ingress Nginx controller]: https://kubernetes.github.io/ingress-nginx/
+[Valkey]: https://valkey.io/
