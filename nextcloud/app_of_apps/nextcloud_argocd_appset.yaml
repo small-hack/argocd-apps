@@ -581,7 +581,7 @@ spec:
               enabled: false
 
             redis:
-              enabled: false
+              enabled: true
               replica:
                 replicaCount: 3
               auth:
