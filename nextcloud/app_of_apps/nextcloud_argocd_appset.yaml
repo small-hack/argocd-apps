@@ -258,8 +258,9 @@ spec:
                     'memcache.distributed' => '\\OC\\Memcache\\Redis',
                     'memcache.locking' => '\\OC\\Memcache\\Redis',
                     'redis' => [
-                      'host' => 'valkey-headless',
-                      'port' => 6379,
+                      'host' => 'getenv("REDIS_HOST")',
+                      'port' => 'getenv("REDIS_HOST_PORT")',
+                      'password' => 'getenv(REDIS_HOST_PASSWORD)',
                     ],
                   ];
 
@@ -581,7 +582,7 @@ spec:
               enabled: false
 
             redis:
-              enabled: true
+              enabled: false
               replica:
                 replicaCount: 3
               auth:
