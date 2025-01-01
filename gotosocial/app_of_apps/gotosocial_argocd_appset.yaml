@@ -59,7 +59,7 @@ spec:
               enabled: true
               annotations:
                 kubernetes.io/tls-acme: "true"
-                cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}-http01'
+                cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
                 nginx.ingress.kubernetes.io/proxy-body-size: 12m
                 nginx.ingress.kubernetes.io/server-snippet: |
                   location /livez {
