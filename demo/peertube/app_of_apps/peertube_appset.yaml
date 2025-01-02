@@ -134,12 +134,12 @@ spec:
                 - name: PEERTUBE_OBJECT_STORAGE_CREDENTIALS_ACCESS_KEY_ID
                   valueFrom:
                     secretKeyRef:
-                      name: peertube-s3-videos-credentials
+                      name: peertube-s3-video-credentials
                       key: accesskey
                 - name: PEERTUBE_OBJECT_STORAGE_CREDENTIALS_SECRET_ACCESS_KEY
                   valueFrom:
                     secretKeyRef:
-                      name: peertube-s3-videos-credentials
+                      name: peertube-s3-video-credentials
                       key: secretkey
               # -- env from list for deployment main container
               envFrom: []
