@@ -8,14 +8,16 @@ metadata:
     argocd.argoproj.io/sync-wave: "1"
 spec:
   project: default
-  destination:
-    server: "https://kubernetes.default.svc"
-    namespace: peertube
-  source:
-    repoURL: https://github.com/small-hack/argocd-apps.git
-    path: demo/peertube/app_of_apps/
   syncPolicy:
     syncOptions:
       - ApplyOutOfSyncOnly=true
     automated:
       selfHeal: true
+  # where to deploy this to
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: peertube
+  # where to deploy this from
+  source:
+    repoURL: https://github.com/small-hack/argocd-apps.git
+    path: demo/peertube/app_of_apps/

@@ -8,7 +8,6 @@ A Helm chart for gotosocial External Secrets using the Bitwarden ESO provider on
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| adminCredentialsBitwardenID | string | `""` | admin credentials - currently NOT in use |
 | oidcCredentialsBitwardenID | string | `""` | OIDC Credentials |
 | pgsqlCredentialsBitwardenID | string | `""` | postgres credentials |
 | provider | string | `""` | Use external secrets. Set to bitwarden to use this chart. other providers may be supported in the future |
@@ -17,6 +16,7 @@ A Helm chart for gotosocial External Secrets using the Bitwarden ESO provider on
 | s3PeertubeCredentialsBitwardenID | string | `""` | existing kubernetes secret with s3 gotosocial credentials |
 | s3PostgresCredentialsBitwardenID | string | `""` | existing kubernetes secret with s3 postgres credentials |
 | s3_provider | string | `"seaweedfs"` | if set to seaweedfs we deploy a policy secret. can also be minio |
+| secretBitwardenID | string | `""` | Peertube "secret" |
 | smtpCredentialsBitwardenID | string | `""` | smtp credentials |
 
 ----------------------------------------------
