@@ -135,12 +135,12 @@ spec:
                   valueFrom:
                     secretKeyRef:
                       name: peertube-s3-video-credentials
-                      key: accesskey
+                      key: S3_ACCESS_KEY_ID
                 - name: PEERTUBE_OBJECT_STORAGE_CREDENTIALS_SECRET_ACCESS_KEY
                   valueFrom:
                     secretKeyRef:
                       name: peertube-s3-video-credentials
-                      key: secretkey
+                      key: S3_SECRET_ACCESS_KEY
               # -- env from list for deployment main container
               envFrom: []
               # -- extra init containers for the default deployment
