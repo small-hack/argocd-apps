@@ -18,6 +18,8 @@ spec:
           parameters:
             secret_vars:
               - global_cluster_issuer
+              - peertube_hostname
+              - peertube_admin_email
   template:
     metadata:
       name: peertube
@@ -42,8 +44,7 @@ spec:
         helm:
           releaseName: peertube
           valuesObject:
-            nameOverride: ""
-            fullnameOverride: ""
+            fullnameOverride: "peertube"
 
             deployment:
               # -- enable the deployment vs job vs cronjob
@@ -71,6 +72,22 @@ spec:
               env:
                 - name: PEERTUBE_LOG_LEVEL
                   value: debug
+                - name: PEERTUBE_TRUST_PROXY
+                  value: '["10.0.0.0/8"]'
+                - name: PEERTUBE_WEBSERVER_HOSTNAME
+                  value: "{{ .peertube_hostname }}"
+                - name: PEERTUBE_WEBSERVER_PORT
+                  value: "443"
+                - name: PEERTUBE_WEBSERVER_HTTPS
+                  value: "true"
+                - name: PEERTUBE_SECRET
+                  valueFrom:
+                    secretKeyRef:
+                      name: peertube-secret
+                      key: password
+                - name: PEERTUBE_ADMIN_EMAIL
+                  value: "{{ .peertube_admin_email }}"
+                # database info
                 - name: POSTGRES_USER
                   value: "peertube"
                 - name: POSTGRES_DB
@@ -89,8 +106,7 @@ spec:
                     secretKeyRef:
                       name: peertube-pgsql-credentials
                       key: password
-                - name: PEERTUBE_TRUST_PROXY
-                  value: '["10.0.0.0/8"]'
+                # redis/valkey info
                 - name: PEERTUBE_REDIS_HOSTNAME
                   value: "valkey-primary"
                 - name: PEERTUBE_REDIS_AUTH
@@ -98,19 +114,7 @@ spec:
                     secretKeyRef:
                       name: peertube-valkey-credentials
                       key: valkey-password
-                - name: PEERTUBE_WEBSERVER_HOSTNAME
-                  value: peertube.buildstar.online
-                - name: PEERTUBE_WEBSERVER_PORT
-                  value: "443"
-                - name: PEERTUBE_WEBSERVER_HTTPS
-                  value: "true"
-                - name: PEERTUBE_SECRET
-                  valueFrom:
-                    secretKeyRef:
-                      name: peertube-secret
-                      key: password
-                - name: PEERTUBE_ADMIN_EMAIL
-                  value: "admin@cloudydev.net"
+                # s3 info
                 - name: PEERTUBE_OBJECT_STORAGE_ENABLED
                   value: "false"
                 - name: PEERTUBE_OBJECT_STORAGE_ENDPOINT
@@ -214,7 +218,7 @@ spec:
                 # targetMemoryUtilizationPercentage: 80
 
             job:
-              # -- enable a job
+              # -- enable a job ... for what though?
               enabled: false
               # -- replica count if not using autoscaling
               replicaCount: 1
@@ -307,7 +311,7 @@ spec:
               enabled: true
               className: "nginx"
               annotations:
-                cert-manager.io/cluster-issuer: "letsencrypt-prod"
+                cert-manager.io/cluster-issuer: "{{ .global_cluster_issuer }}"
                 nginx.ingress.kubernetes.io/connection-proxy-header: "keep-alive"
                 nginx.ingress.kubernetes.io/enable-cors: "true"
                 nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
@@ -317,11 +321,11 @@ spec:
                   more_set_headers "X-Frame-Options: ALLOWALL";
                   proxy_set_header Host $host;
               hosts:
-                - host: peertube.buildstar.online
+                - host: "{{ .peertube_hostname }}"
                   paths:
                     - path: /
                       pathType: Prefix
               tls:
                 - secretName: peertube-tls
                   hosts:
-                    - chart-example.local
+                    - "{{ .peertube_hostname }}"
