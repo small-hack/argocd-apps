@@ -10,7 +10,7 @@ A Helm chart for peertube External Secrets using the Bitwarden ESO provider on K
 |-----|------|---------|-------------|
 | oidcCredentialsBitwardenID | string | `""` | OIDC Credentials |
 | pgsqlCredentialsBitwardenID | string | `""` | postgres credentials |
-| provider | string | `""` | Use external secrets. Set to bitwarden to use this chart. other providers may be supported in the future |
+| provider | string | `"bitwarden"` | Use external secrets. Set to bitwarden to use this chart. other providers may be supported in the future |
 | s3AdminCredentialsBitwardenID | string | `""` | existing kubernetes secret with s3 admin credentials |
 | s3BackupCredentialsBitwardenID | string | `""` | existing kubernetes secret with s3 credentials for the remote backups |
 | s3PeertubeCredentialsBitwardenID | string | `""` | existing kubernetes secret with s3 gotosocial credentials |
