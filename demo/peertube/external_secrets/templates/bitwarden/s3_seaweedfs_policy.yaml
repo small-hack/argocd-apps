@@ -16,26 +16,79 @@ spec:
         admin_secret_access_key:  |-
           {{ `{{ .adminSecretKey }}` }}
         seaweedfs_s3_config: |-
-          {"identities":[
-            {"name": "anvAdmin",
-             "credentials": [
-               {"accessKey": "{{ `{{ .adminAccessKey }}` }}",
-                "secretKey": "{{ `{{ .adminSecretKey }}` }}"}
-             ],
-             "actions": ["Admin","Read","Write"]},
-            {"name": "peertube",
-             "credentials": [
-               {"accessKey": "{{ `{{ .userAccessKey }}` }}",
-                "secretKey": "{{ `{{ .userSecretKey }}` }}"}
-             ],
-             "actions": ["Read:peertube","Write:peertube","List:peertube"]},
-            {"name": "anonymous", "actions": ["Read:peertube"]},
-            {"name": "peertube-postgres",
-             "credentials": [
-               {"accessKey": "{{ `{{ .dbUserAccessKey }}` }}",
-                "secretKey": "{{ `{{ .dbUserSecretKey }}` }}"}
-             ],
-             "actions": ["Read:peertube-postgres","Write:peertube-postgres","List:peertube-postgres"]}
+          {
+          "identities": [
+            {
+              "name": "anvAdmin",
+              "credentials": [
+                {
+                  "accessKey": "{{ `{{ .adminAccessKey }}` }}",
+                  "secretKey": "{{ `{{ .adminSecretKey }}` }}"
+                }
+              ],
+              "actions": [
+                "Admin",
+                "Read",
+                "Write"
+              ]
+            },
+            {
+              "name": "peertube",
+              "credentials": [
+                {
+                  "accessKey": "{{ `{{ .userAccessKey }}` }}",
+                  "secretKey": "{{ `{{ .userSecretKey }}` }}"
+                }
+              ],
+              "actions": [
+                "Read:peertube",
+                "Write:peertube",
+                "List:peertube"
+              ]
+            },
+            {
+              "name": "anonymous",
+              "actions": [
+                "Read:peertube"
+              ]
+            },
+            {
+              "name": "peertube-postgres",
+              "credentials": [
+                {
+                  "accessKey": "{{ `{{ .dbUserAccessKey }}` }}",
+                  "secretKey": "{{ `{{ .dbUserSecretKey }}` }}"
+                }
+              ],
+              "actions": [
+                "Read:peertube-postgres",
+                "Write:peertube-postgres",
+                "List:peertube-postgres"
+              ]
+            },
+            {
+              "name": "data",
+              "credentials": [
+                {
+                  "accessKey": "{{ `{{ .videoUserAccessKey }}` }}",
+                  "secretKey": "{{ `{{ .videoUserSecretKey }}` }}"
+                }
+              ],
+              "actions": [
+                "Read:hls-video",
+                "Write:hls-video",
+                "List:hls-video",
+                "Read:original-video-files",
+                "Write:original-video-files",
+                "List:original-video-files",
+                "Read:web-videos",
+                "Write:web-videos",
+                "List:web-videos",
+                "Read:user-exports",
+                "Write:user-exports",
+                "List:user-exports"
+              ]
+            }
           ]}
   data:
     - secretKey: adminAccessKey
@@ -44,7 +97,7 @@ spec:
           name: bitwarden-login
           kind: ClusterSecretStore
       remoteRef:
-        key: {{ .Values.s3AdminCredentialsBitwardenID }} 
+        key: {{ .Values.s3AdminCredentialsBitwardenID }}
         property: username
 
     - secretKey: adminSecretKey
@@ -62,7 +115,7 @@ spec:
           name: bitwarden-login
           kind: ClusterSecretStore
       remoteRef:
-        key: {{ .Values.s3PeertubeCredentialsBitwardenID }} 
+        key: {{ .Values.s3PeertubeCredentialsBitwardenID }}
         property: username
 
     - secretKey: userSecretKey
@@ -80,7 +133,7 @@ spec:
           name: bitwarden-login
           kind: ClusterSecretStore
       remoteRef:
-        key: {{ .Values.s3PostgresCredentialsBitwardenID }} 
+        key: {{ .Values.s3PostgresCredentialsBitwardenID }}
         property: username
 
     - secretKey: dbUserSecretKey
@@ -91,4 +144,22 @@ spec:
       remoteRef:
         key: {{ .Values.s3PostgresCredentialsBitwardenID }}
         property: password
+
+    - secretKey: videoUserAccessKey
+      sourceRef:
+        storeRef:
+          name: bitwarden-fields
+          kind: ClusterSecretStore
+      remoteRef:
+        key: {{ .Values.s3PeertubeCredentialsBitwardenID }}
+        property: videoUsername
+
+    - secretKey: videoUserSecretKey
+      sourceRef:
+        storeRef:
+          name: bitwarden-fields
+          kind: ClusterSecretStore
+      remoteRef:
+        key: {{ .Values.s3PeertubeCredentialsBitwardenID }}
+        property: videoPassword
 {{- end }}
