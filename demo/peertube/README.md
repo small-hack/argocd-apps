@@ -14,6 +14,33 @@ We deploy it using our standard Cloud-Native Postgres, Valkey, and SeaweedFS app
 
 ## ToDo
 
-- Convert secrets from manifests to external secrets
 - Remove hard-coded strings that should be provided from the appset-secret-plugin instead
 - Find and add monitoring resources like dashboards for grafana
+
+## Example of deploying this app
+
+```yaml
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: peertube-app-of-apps
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  project: default
+  syncPolicy:
+    syncOptions:
+      - ApplyOutOfSyncOnly=true
+    automated:
+      selfHeal: true
+  # where to deploy this to
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: peertube
+  # where to deploy this from
+  source:
+    repoURL: https://github.com/small-hack/argocd-apps.git
+    path: demo/peertube/app_of_apps/
+```
