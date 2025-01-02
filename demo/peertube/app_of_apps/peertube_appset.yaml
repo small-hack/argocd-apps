@@ -3,7 +3,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: peertube-app-set
+  name: peertube-web-app-set
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "1"
@@ -21,22 +21,30 @@ spec:
               - peertube_hostname
               - peertube_admin_email
   template:
+    # metadata about the Argo CD app the AppSet deploys
     metadata:
-      name: peertube
+      name: peertube-web-app
       namespace: peertube
       annotations:
         argocd.argoproj.io/sync-wave: "3"
+
     spec:
       project: default
-      destination:
-        server: "https://kubernetes.default.svc"
-        namespace: peertube
+
+      # sync policy
       syncPolicy:
         syncOptions:
           - ApplyOutOfSyncOnly=true
         automated:
           prune: true
           selfHeal: true
+
+      # where it's going
+      destination:
+        server: "https://kubernetes.default.svc"
+        namespace: peertube
+
+      # where it's coming from
       source:
         repoURL: https://github.com/small-hack/peertube-helm-chart.git
         path: charts/peertube/
