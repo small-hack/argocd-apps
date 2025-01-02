@@ -6,7 +6,7 @@ metadata:
   name: peertube-seaweedfs-appset
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "1"
+    argocd.argoproj.io/sync-wave: "2"
 spec:
   goTemplate: true
   # generator allows us to source specific values from an external k8s secret
@@ -19,14 +19,14 @@ spec:
             secret_vars:
               - global_cluster_issuer
               - peertube_s3_endpoint
-              - peertube-hostname
+              - peertube_s3_region
   template:
     metadata:
       name: peertube-seaweedfs-app
       annotations:
         argocd.argoproj.io/sync-wave: "2"
     spec:
-      project: default
+      project: peertube
       destination:
         server: https://kubernetes.default.svc
         namespace: peertube
@@ -85,20 +85,21 @@ spec:
               metricsIntervalSec: 15
               defaultReplication: "000"
               disableHttp: false
+
               config: |-
                 # Enter any extra configuration for master.toml here.
                 # It may be be a multi-line string.
+
               data:
                 type: "emptyDir"
+                # type: "existingClaim"
                 # claimName: "swfs-master-data"
 
               logs:
-                type: "emptydir"
-
-              topologySpreadConstraints: {}
-              tolerations: ""
-              nodeSelector: |
-                kubernetes.io/arch: amd64
+                type: "hostPath"
+                size: ""
+                storageClass: ""
+                hostPathPrefix: /storage
 
               livenessProbe:
                 enabled: true
@@ -121,9 +122,6 @@ spec:
                 successThreshold: 2
                 failureThreshold: 100
                 timeoutSeconds: 10
-
-              ingress:
-                enabled: false
 
               extraEnvironmentVars:
                 WEED_MASTER_VOLUME_GROWTH_COPY_1: '7'
@@ -146,25 +144,6 @@ spec:
                   type: "existingClaim"
                   claimName: "swfs-volume-data"
                   maxVolumes: 0
-
-              idx: {}
-              logs: {}
-
-              rack: home
-              dataCenter: home
-              readMode: proxy
-              whiteList: null
-
-              extraVolumes: ""
-              extraVolumeMounts: ""
-
-              topologySpreadConstraints: {}
-              resources: {}
-              tolerations: ""
-
-              nodeSelector: |
-                kubernetes.io/arch: amd64
-
               livenessProbe:
                 enabled: true
                 httpGet:
@@ -175,7 +154,6 @@ spec:
                 successThreshold: 1
                 failureThreshold: 100
                 timeoutSeconds: 10
-
               readinessProbe:
                 enabled: true
                 httpGet:
@@ -186,31 +164,18 @@ spec:
                 successThreshold: 2
                 failureThreshold: 100
                 timeoutSeconds: 10
-
             filer:
               enabled: true
               replicas: 1
-              dataCenter: home
-              rack: home
-              defaultReplicaPlacement: "000"
-              maxMB: null
-              redirectOnRead: false
-
               port: 8888
               grpcPort: 18888
               metricsPort: 9327
-              encryptVolumeData: false
-              filerGroup: ""
+              encryptVolumeData: true
               enablePVC: true
               storage: 10Gi
               data:
                 type: "existingClaim"
                 claimName: "swfs-filer-data"
-
-              topologySpreadConstraints: {}
-              tolerations: ""
-              nodeSelector: |
-                kubernetes.io/arch: amd64
 
               ingress:
                 enabled: false
@@ -219,27 +184,25 @@ spec:
                 WEED_MYSQL_ENABLED: "false"
                 WEED_LEVELDB2_ENABLED: "true"
 
-              secretExtraEnvironmentVars: {}
-
               s3:
                 enabled: true
                 port: 8333
                 httpsPort: 0
                 allowEmptyFolder: false
-                domainName: s3.peertube.buildstar.online
+                domainName: '{{ .peertube_s3_endpoint }}'
                 enableAuth: true
                 existingConfigSecret: seaweedfs-s3-secret
                 createBuckets:
+                  - name: peertube
+                    anonymousRead: false
                   - name: peertube-postgres
                     anonymousRead: false
                   - name: web-videos
-                    anonymousRead: false
                   - name: hls-videos
                     anonymousRead: false
                   - name: user-exports
                     anonymousRead: false
                   - name: original-video-files
-                    anonymousRead: false
 
               livenessProbe:
                 enabled: true
@@ -262,20 +225,18 @@ spec:
                 successThreshold: 2
                 failureThreshold: 100
                 timeoutSeconds: 10
-
             s3:
               enabled: false
               ingress:
                 enabled: true
                 className: "nginx"
                 # host: false for "*" hostname
-                host: "s3.peertube.buildstar.online"
+                host: '{{ .peertube_s3_endpoint }}'
                 # additional ingress annotations for the s3 endpoint
                 annotations:
                   nginx.ingress.kubernetes.io/proxy-body-size: 1G
                   cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
                 tls:
-                  - secretName: peertube-s3-tls
+                  - secretName: peertube-seaweedfs-tls
                     hosts:
-                      - "s3.peertube.buildstar.online"
-
+                      - '{{ .peertube_s3_endpoint }}'

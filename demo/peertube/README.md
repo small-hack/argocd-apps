@@ -14,7 +14,6 @@ We deploy it using our standard Cloud-Native Postgres, Valkey, and SeaweedFS app
 
 ## ToDo
 
-- Remove hard-coded strings that should be provided from the appset-secret-plugin instead
 - Find and add monitoring resources like dashboards for grafana
 
 ## Example of deploying this app
