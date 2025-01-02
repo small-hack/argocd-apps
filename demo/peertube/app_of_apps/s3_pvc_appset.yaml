@@ -62,7 +62,7 @@ spec:
 
               s3:
                 bucket: peertube-postgres
-                endpoint: s3.peertube.buildstar.online
+                endpoint: "{{ .peertube_s3_backup_endpoint }}"
                 accessKeyIDSecretRef:
                   name: 'peertube-s3-postgres-credentials'
                   key: 'accessKeyId'
