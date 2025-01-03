@@ -136,7 +136,7 @@ spec:
               existingSecret: "peertube-pgsql-credentials"
               # keys to use in an existing Kubernetes Secret to connect to PostgreSQL
               existingSecretKeys:
-                hostname: "hostanme"
+                hostname: "hostname"
                 database: "database"
                 username: "username"
                 password: "password"
