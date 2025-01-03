@@ -138,22 +138,13 @@ spec:
             externalDatabase:
               # -- enable external database, if postgresql.enabled=false is set
               enabled: true
-              # -- postgresql hostname
-              hostname: "peertube-postgres-rw"
-              # -- postgresql database name
-              database: "peertube"
-              # -- postgresql username
-              username: "peertube"
-              # -- postgresql password
-              password: ""
-              # -- use an existing Kubernetes Secret to connect to PostgreSQL
-              existingSecret: ""
+              existingSecret: "peertube-pgsql-credentials"
               # keys to use in an existing Kubernetes Secret to connect to PostgreSQL
               existingSecretKeys:
-                hostname: ""
-                database: ""
-                username: ""
-                password: ""
+                hostname: "hostanme"
+                database: "database"
+                username: "username"
+                password: "password"
 
             externalValkey:
               # -- enable external valkey/redis, if valkey.enabled=false is set
