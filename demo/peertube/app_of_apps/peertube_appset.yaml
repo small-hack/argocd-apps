@@ -54,84 +54,79 @@ spec:
           valuesObject:
             fullnameOverride: "peertube"
 
-            deployment:
-              # -- enable the deployment vs job vs cronjob
-              enabled: true
-              # -- replica count if not using autoscaling
-              replicaCount: 1
-              image:
-                # -- docker registry if not using docker.io
-                registry: "docker.io"
-                # -- docker repo
-                repository: chocobozzz/peertube
-                # -- image pull policy, set to Always if using latest and it changes frequently
-                pullPolicy: IfNotPresent
-                # -- Overrides the image tag whose default is latest
-                tag: production-bookworm
-              # -- optional image pull secrets
-              imagePullSecrets: []
-              # -- command to pass to docker container
-              containerCommand:
-                - gosu
-                - peertube
-                - npm
-                - start
-              # -- env list for deployment main container
-              env: []
+            # -- replica count if not using autoscaling
+            replicaCount: 1
+            image:
+              # -- docker registry if not using docker.io
+              registry: "docker.io"
+              # -- docker repo
+              repository: chocobozzz/peertube
+              # -- image pull policy, set to Always if using latest and it changes frequently
+              pullPolicy: IfNotPresent
+              # -- Overrides the image tag whose default is latest
+              tag: production-bookworm
+            # -- optional image pull secrets
+            imagePullSecrets: []
+            # -- command to pass to docker container
+            containerCommand:
+              - gosu
+              - peertube
+              - npm
+              - start
 
-              peertube:
-                # -- set peertube's logging level
-                log_level: debug
-                # -- set peertube's trusted proxies
-                trust_proxy: '["10.0.0.0/8"]'
-                # -- set peertube's hostname
-                webserver_hostname: "{{ .peertube_hostname }}"
-                # -- set peertube's port
-                webserver_port: 443
-                # -- enable https for peertube web frontend
-                webserver_https: true
-                # -- email address of peertube admin user
-                admin_email: "{{ .peertube_admin_email }}"
-                # -- use an existing Kubernetes Secret for Peetube's secret
-                existingSecret: "peertube-secret"
-                # -- a key in an existing Kubernetes Secret for Peetube's secret
-                existingSecretKey: "password"
+            peertube:
+              # -- set peertube's logging level
+              log_level: debug
+              # -- set peertube's trusted proxies
+              trust_proxy: '["10.0.0.0/8"]'
+              # -- set peertube's hostname
+              webserver_hostname: "{{ .peertube_hostname }}"
+              # -- set peertube's port
+              webserver_port: 443
+              # -- enable https for peertube web frontend
+              webserver_https: true
+              # -- email address of peertube admin user
+              admin_email: "{{ .peertube_admin_email }}"
+              # -- use an existing Kubernetes Secret for Peetube's secret
+              existingSecret: "peertube-secret"
+              # -- a key in an existing Kubernetes Secret for Peetube's secret
+              existingSecretKey: "password"
 
-                s3:
-                  # -- enable object storage, s3, for peertube
-                  enabled: false
-                  upload_acl_public: "public-read"
-                  upload_acl_private: "private"
-                  # -- get the credentials for s3 from an existing Kubernetes Secret
-                  existingSecret: "peertube-s3-video-credentials"
-                  existingSecretKeys:
-                    # -- key in existing secret for s3 endpoint
-                    endpoint: "endpoint"
-                    # -- key in existing secret for s3 access_key_id
-                    access_key_id: "S3_ACCESS_KEY_ID"
-                    # -- key in existing secret for s3 secret_access_key
-                    secret_access_key: "S3_SECRET_ACCESS_KEY"
+              s3:
+                # -- enable object storage, s3, for peertube
+                enabled: false
+                upload_acl_public: "public-read"
+                upload_acl_private: "private"
+                # -- get the credentials for s3 from an existing Kubernetes Secret
+                existingSecret: "peertube-s3-video-credentials"
+                existingSecretKeys:
+                  # -- key in existing secret for s3 endpoint
+                  endpoint: "endpoint"
+                  # -- key in existing secret for s3 access_key_id
+                  access_key_id: "S3_ACCESS_KEY_ID"
+                  # -- key in existing secret for s3 secret_access_key
+                  secret_access_key: "S3_SECRET_ACCESS_KEY"
 
-                smtp:
-                  # -- mail tls setting
-                  tls: true
-                  # -- mail disable starttls
-                  disable_starttls: false
-                  # -- email address to send emails from
-                  from_address: "no-reply@{{ .peertube_hostname }}"
-                  # -- use an existing Kubernetes Secret to connect to SMTP host
-                  # if set, ignores above smtp.host/port/username/password
-                  existingSecret: "peertube-smtp-credentials"
-                  # keys in an existing Kubernetes Secret to use for connecting to SMTP host
-                  existingSecretKeys:
-                    # -- key in existing secret for smtp hostname
-                    host: "host"
-                    # -- key in existing secret for smtp port
-                    port: "port"
-                    # -- key in existing secret for smtp username
-                    username: "username"
-                    # -- key in existing secret for smtp password
-                    password: "password"
+              smtp:
+                # -- mail tls setting
+                tls: true
+                # -- mail disable starttls
+                disable_starttls: false
+                # -- email address to send emails from
+                from_address: "no-reply@{{ .peertube_hostname }}"
+                # -- use an existing Kubernetes Secret to connect to SMTP host
+                # if set, ignores above smtp.host/port/username/password
+                existingSecret: "peertube-smtp-credentials"
+                # keys in an existing Kubernetes Secret to use for connecting to SMTP host
+                existingSecretKeys:
+                  # -- key in existing secret for smtp hostname
+                  host: "host"
+                  # -- key in existing secret for smtp port
+                  port: "port"
+                  # -- key in existing secret for smtp username
+                  username: "username"
+                  # -- key in existing secret for smtp password
+                  password: "password"
 
             # external database credentials
             # external database credentials
