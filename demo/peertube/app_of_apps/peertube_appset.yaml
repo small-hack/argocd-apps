@@ -48,7 +48,7 @@ spec:
       source:
         repoURL: https://github.com/small-hack/peertube-helm-chart.git
         path: charts/peertube/
-        targetRevision: HEAD
+        targetRevision: fix-make-env-vars-configurable-via-yaml
         helm:
           releaseName: peertube
           valuesObject:
@@ -77,70 +77,96 @@ spec:
                 - npm
                 - start
               # -- env list for deployment main container
-              env:
-                - name: PEERTUBE_LOG_LEVEL
-                  value: debug
-                - name: PEERTUBE_TRUST_PROXY
-                  value: '["10.0.0.0/8"]'
-                - name: PEERTUBE_WEBSERVER_HOSTNAME
-                  value: "{{ .peertube_hostname }}"
-                - name: PEERTUBE_WEBSERVER_PORT
-                  value: "443"
-                - name: PEERTUBE_WEBSERVER_HTTPS
-                  value: "true"
-                - name: PEERTUBE_SECRET
-                  valueFrom:
-                    secretKeyRef:
-                      name: peertube-secret
-                      key: password
-                - name: PEERTUBE_ADMIN_EMAIL
-                  value: "{{ .peertube_admin_email }}"
-                # database info
-                - name: POSTGRES_USER
-                  value: "peertube"
-                - name: POSTGRES_DB
-                  value: "peertube"
-                - name: PEERTUBE_DB_HOSTNAME
-                  value: "peertube-postgres-rw"
-                - name: PEERTUBE_DB_USERNAME
-                  value: "peertube"
-                - name: PEERTUBE_DB_PASSWORD
-                  valueFrom:
-                    secretKeyRef:
-                      name: peertube-pgsql-credentials
-                      key: password
-                - name: POSTGRES_PASSWORD
-                  valueFrom:
-                    secretKeyRef:
-                      name: peertube-pgsql-credentials
-                      key: password
-                # redis/valkey info
-                - name: PEERTUBE_REDIS_HOSTNAME
-                  value: "valkey-primary"
-                - name: PEERTUBE_REDIS_AUTH
-                  valueFrom:
-                    secretKeyRef:
-                      name: peertube-valkey-credentials
-                      key: valkey-password
-                # s3 info
-                - name: PEERTUBE_OBJECT_STORAGE_ENABLED
-                  value: "false"
-                - name: PEERTUBE_OBJECT_STORAGE_ENDPOINT
-                  value: ""
-                - name: PEERTUBE_OBJECT_STORAGE_UPLOAD_ACL_PUBLIC
-                  value: "public-read"
-                - name: PEERTUBE_OBJECT_STORAGE_UPLOAD_ACL_PRIVATE
-                  value: "private"
-                - name: PEERTUBE_OBJECT_STORAGE_CREDENTIALS_ACCESS_KEY_ID
-                  valueFrom:
-                    secretKeyRef:
-                      name: peertube-s3-video-credentials
-                      key: S3_ACCESS_KEY_ID
-                - name: PEERTUBE_OBJECT_STORAGE_CREDENTIALS_SECRET_ACCESS_KEY
-                  valueFrom:
-                    secretKeyRef:
-                      name: peertube-s3-video-credentials
-                      key: S3_SECRET_ACCESS_KEY
+              env: []
+
+              peertube:
+                # -- set peertube's logging level
+                log_level: debug
+                # -- set peertube's trusted proxies
+                trust_proxy: '["10.0.0.0/8"]'
+                # -- set peertube's hostname
+                webserver_hostname: "{{ .peertube_hostname }}"
+                # -- set peertube's port
+                webserver_port: 443
+                # -- enable https for peertube web frontend
+                webserver_https: true
+                # -- email address of peertube admin user
+                admin_email: "{{ .peertube_admin_email }}"
+                # -- use an existing Kubernetes Secret for Peetube's secret
+                existingSecret: "peertube-secret"
+                # -- a key in an existing Kubernetes Secret for Peetube's secret
+                existingSecretKey: "password"
+
+                s3:
+                  # -- enable object storage, s3, for peertube
+                  enabled: false
+                  upload_acl_public: "public-read"
+                  upload_acl_private: "private"
+                  # -- get the credentials for s3 from an existing Kubernetes Secret
+                  existingSecret: "peertube-s3-video-credentials"
+                  existingSecretKeys:
+                    # -- key in existing secret for s3 endpoint
+                    endpoint: "endpoint"
+                    # -- key in existing secret for s3 access_key_id
+                    access_key_id: "S3_ACCESS_KEY_ID"
+                    # -- key in existing secret for s3 secret_access_key
+                    secret_access_key: "S3_SECRET_ACCESS_KEY"
+
+                smtp:
+                  # -- mail tls setting
+                  tls: true
+                  # -- mail disable starttls
+                  disable_starttls: false
+                  # -- email address to send emails from
+                  from_address: "no-reply@{{ .peertube_hostname }}"
+                  # -- use an existing Kubernetes Secret to connect to SMTP host
+                  # if set, ignores above smtp.host/port/username/password
+                  existingSecret: "peertube-smtp-credentials"
+                  # keys in an existing Kubernetes Secret to use for connecting to SMTP host
+                  existingSecretKeys:
+                    # -- key in existing secret for smtp hostname
+                    host: "host"
+                    # -- key in existing secret for smtp port
+                    port: "port"
+                    # -- key in existing secret for smtp username
+                    username: "username"
+                    # -- key in existing secret for smtp password
+                    password: "password"
+
+            # external database credentials
+            # external database credentials
+            externalDatabase:
+              # -- enable external database, if postgresql.enabled=false is set
+              enabled: true
+              # -- postgresql hostname
+              hostname: "peertube-postgres-rw"
+              # -- postgresql database name
+              database: "peertube"
+              # -- postgresql username
+              username: "peertube"
+              # -- postgresql password
+              password: ""
+              # -- use an existing Kubernetes Secret to connect to PostgreSQL
+              existingSecret: ""
+              # keys to use in an existing Kubernetes Secret to connect to PostgreSQL
+              existingSecretKeys:
+                hostname: ""
+                database: ""
+                username: ""
+                password: ""
+
+            externalValkey:
+              # -- enable external valkey/redis, if valkey.enabled=false is set
+              enabled: true
+              # -- hostname of external valkey/redis
+              hostname: "valkey-primary"
+              # -- valkey/redis password
+              password: ""
+              # -- use an existing Kubernetes Secret to connect to Redis/Valkey
+              existingSecret: "peertube-valkey-credentials"
+              # -- key to use in an existing Kubernetes Secret to connect to Redis/Valkey
+              existingSecretKey: valkey-password
+
               # -- env from list for deployment main container
               envFrom: []
               # -- extra init containers for the default deployment
