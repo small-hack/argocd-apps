@@ -78,4 +78,10 @@ spec:
 
             # definitions of presets https://github.com/bitnami/charts/blob/main/bitnami/common/templates/_resources.tpl#L15
             # defult is "nano"
-            resourcesPreset: "small"
+            resources:
+              requests:
+                cpu: 50m
+                memory: 256Mi
+              limits:
+                cpu: 1000m
+                memory: 2048Mi
