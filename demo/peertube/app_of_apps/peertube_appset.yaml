@@ -78,7 +78,7 @@ spec:
               # -- set peertube's logging level
               log_level: debug
               # -- set peertube's trusted proxies
-              trust_proxy: '["10.0.0.0/8"]'
+              trust_proxy: '10.0.0.0/8'
               # -- set peertube's hostname
               webserver_hostname: "{{ .peertube_hostname }}"
               # -- set peertube's port
