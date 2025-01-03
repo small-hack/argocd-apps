@@ -93,7 +93,7 @@ spec:
 
               # parameter for creating an initial admin password
               admin:
-                existingSecret: "peertube-admin-credentials"
+                existingSecret: "admin-credentials"
                 existingSecretKeys:
                   # -- a key in an existing Kubernetes Secret for Peertube's admin user email
                   email: "email"
