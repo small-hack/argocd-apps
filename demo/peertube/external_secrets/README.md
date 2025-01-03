@@ -8,6 +8,7 @@ A Helm chart for peertube External Secrets using the Bitwarden ESO provider on K
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| adminCredentialsBitwardenID | string | `""` | peertube admin credentials |
 | oidcCredentialsBitwardenID | string | `""` | OIDC Credentials |
 | pgsqlCredentialsBitwardenID | string | `""` | postgres credentials |
 | provider | string | `"bitwarden"` | Use external secrets. Set to bitwarden to use this chart. other providers may be supported in the future |

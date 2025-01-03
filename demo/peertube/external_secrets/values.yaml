@@ -4,6 +4,9 @@ provider: "bitwarden"
 # -- Peertube "secret"
 secretBitwardenID: ""
 
+# -- peertube admin credentials
+adminCredentialsBitwardenID: ""
+
 # -- smtp credentials
 smtpCredentialsBitwardenID: ""
 

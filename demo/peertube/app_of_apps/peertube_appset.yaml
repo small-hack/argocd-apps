@@ -19,7 +19,6 @@ spec:
             secret_vars:
               - global_cluster_issuer
               - peertube_hostname
-              - peertube_admin_email
   template:
     # metadata about the Argo CD app the AppSet deploys
     metadata:
@@ -91,6 +90,15 @@ spec:
               existingSecret: "peertube-secret"
               # -- a key in an existing Kubernetes Secret for Peetube's secret
               existingSecretKey: "password"
+
+              # parameter for creating an initial admin password
+              admin:
+                existingSecret: "peertube-admin-credentials"
+                existingSecretKeys:
+                  # -- a key in an existing Kubernetes Secret for Peertube's admin user email
+                  email: "email"
+                  # -- a key in an existing Kubernetes Secret for Peertube's admin password
+                  password: "password"
 
               s3:
                 # -- enable object storage, s3, for peertube
