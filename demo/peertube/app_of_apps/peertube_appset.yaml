@@ -217,14 +217,12 @@ spec:
 
               # -- livenessProbe for the deployment
               livenessProbe:
-                enabled: true
                 httpGet:
                   path: /
                   port: peertube
 
               # -- readinessProbe for the deployment
               readinessProbe:
-                enabled: true
                 httpGet:
                   path: /
                   port: peertube
