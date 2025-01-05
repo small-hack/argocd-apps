@@ -70,6 +70,12 @@ spec:
                 "List:{{ .user_exports }}"
                 {{- end }}
               ]
+            },
+            {
+              "name": "anonymous",
+              "actions": [
+                "Read:{{ .Values.s3_buckets.streaming }}"
+              ]
             }
           ]}
   data:
