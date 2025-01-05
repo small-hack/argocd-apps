@@ -102,7 +102,7 @@ spec:
 
               s3:
                 # -- enable object storage, s3, for peertube
-                enabled: false
+                enabled: true
                 upload_acl_public: "public-read"
                 upload_acl_private: "private"
                 # -- get the credentials for s3 from an existing Kubernetes Secret
