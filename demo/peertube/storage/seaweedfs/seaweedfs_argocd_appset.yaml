@@ -240,3 +240,7 @@ spec:
                   - secretName: peertube-seaweedfs-tls
                     hosts:
                       - '{{ .peertube_s3_endpoint }}'
+                      - 'web-video.{{ .peertube_s3_endpoint }}'
+                      - 'orig-video.{{ .peertube_s3_endpoint }}'
+                      - 'streaming.{{ .peertube_s3_endpoint }}'
+                      - 'user-exports.{{ .peertube_s3_endpoint }}'
