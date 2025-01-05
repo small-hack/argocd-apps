@@ -197,12 +197,12 @@ spec:
                     anonymousRead: false
                   - name: peertube-postgres
                     anonymousRead: false
-                  - name: web-videos
-                  - name: hls-videos
+                  - name: web-video
+                  - name: streaming
                     anonymousRead: false
                   - name: user-exports
                     anonymousRead: false
-                  - name: original-video-files
+                  - name: orig-video
 
               livenessProbe:
                 enabled: true
