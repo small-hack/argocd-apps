@@ -45,9 +45,9 @@ spec:
 
       # where it's coming from
       source:
-        repoURL: https://github.com/small-hack/peertube-helm-chart.git
-        path: charts/peertube/
-        targetRevision: fix-make-env-vars-configurable-via-yaml
+        repoURL: https://small-hack.github.io/peertube-helm-chart.git
+        targetRevision: 0.2.1
+        chart: peertube
         helm:
           releaseName: peertube
           valuesObject:
