@@ -55,10 +55,19 @@ spec:
                 }
               ],
               "actions": [
-                {{- range .Values.s3_buckets }}
-                "Read:{{ . }}",
-                "Write:{{ . }}",
-                "List:{{ . }}",
+                {{- with .Values.s3_buckets }}
+                "Read:{{ .web_video }}",
+                "Write:{{ .web_video }}",
+                "List:{{ .web_video }}",
+                "Read:{{ .orig_video }}",
+                "Write:{{ .orig_video }}",
+                "List:{{ .orig_video }}",
+                "Read:{{ .streaming }}",
+                "Write:{{ .streaming }}",
+                "List:{{ .streaming }}",
+                "Read:{{ .user_exports }}",
+                "Write:{{ .user_exports }}",
+                "List:{{ .user_exports }}"
                 {{- end }}
               ]
             }

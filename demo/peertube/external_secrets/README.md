@@ -16,7 +16,10 @@ A Helm chart for peertube External Secrets using the Bitwarden ESO provider on K
 | s3BackupCredentialsBitwardenID | string | `""` | existing kubernetes secret with s3 credentials for the remote backups |
 | s3PeertubeCredentialsBitwardenID | string | `""` | existing kubernetes secret with s3 gotosocial credentials |
 | s3PostgresCredentialsBitwardenID | string | `""` | existing kubernetes secret with s3 postgres credentials |
-| s3_buckets | list | `[]` | the s3 buckets to create SCLs for in seaweedFS |
+| s3_buckets.orig_video | string | `""` | the orig video s3 bucket to create SCL for in seaweedFS |
+| s3_buckets.streaming | string | `""` | the streaming playlist s3 bucket to create SCL for in seaweedFS |
+| s3_buckets.user_exports | string | `""` | the user exports s3 bucket to create SCL for in seaweedFS |
+| s3_buckets.web_video | string | `""` | the web video s3 bucket to create SCL for in seaweedFS |
 | s3_provider | string | `"seaweedfs"` | if set to seaweedfs we deploy a policy secret. can also be minio |
 | secretBitwardenID | string | `""` | Peertube "secret" |
 | smtpCredentialsBitwardenID | string | `""` | smtp credentials |
