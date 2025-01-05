@@ -1,7 +1,9 @@
 # Peertube Argo CD App of Apps
 
 This directory contains the resources to deploy [Peertube](https://joinpeertube.org/en_US), a tool for sharing online videos developed by the french non-profit Framasoft.
-We deploy it using our standard Cloud-Native Postgres, Valkey, and SeaweedFS appsets.
+We deploy it using our standard Cloud-Native Postgres, Valkey, and SeaweedFS Argo CD ApplicationSets.
+
+If you need to be mindful of disk space, please use the `app_of_apps_with_tolerations` directory, otherwise you can use the `app_of_apps` directory.
 
 <img width="1141" alt="A Screenshot of this Peertube Argo CD App of Apps in the web interface using tree mode. You can see the main peertube appset, the postgresql app set, the s3 provider appset, the s3 pvc appset, and the valkey appset." src="https://github.com/user-attachments/assets/2c501b40-08b6-4267-9c20-c4f09909da90" />
 
@@ -41,5 +43,6 @@ spec:
   # where to deploy this from
   source:
     repoURL: https://github.com/small-hack/argocd-apps.git
+    # if you need tolerations/affinity, switch this to peertube/app_of_apps_with_tolerations/
     path: peertube/app_of_apps/
 ```
