@@ -33,26 +33,6 @@ spec:
               ]
             },
             {
-              "name": "peertube",
-              "credentials": [
-                {
-                  "accessKey": "{{ `{{ .userAccessKey }}` }}",
-                  "secretKey": "{{ `{{ .userSecretKey }}` }}"
-                }
-              ],
-              "actions": [
-                "Read:peertube",
-                "Write:peertube",
-                "List:peertube"
-              ]
-            },
-            {
-              "name": "anonymous",
-              "actions": [
-                "Read:peertube"
-              ]
-            },
-            {
               "name": "peertube-postgres",
               "credentials": [
                 {
@@ -75,18 +55,11 @@ spec:
                 }
               ],
               "actions": [
-                "Read:hls-video",
-                "Write:hls-video",
-                "List:hls-video",
-                "Read:original-video-files",
-                "Write:original-video-files",
-                "List:original-video-files",
-                "Read:web-videos",
-                "Write:web-videos",
-                "List:web-videos",
-                "Read:user-exports",
-                "Write:user-exports",
-                "List:user-exports"
+                {{- range .Values.s3_buckets }}
+                "Read:{{ . }}",
+                "Write:{{ . }}",
+                "List:{{ . }}",
+                {{- end }}
               ]
             }
           ]}
@@ -126,24 +99,6 @@ spec:
       remoteRef:
         key: {{ .Values.s3PostgresCredentialsBitwardenID }}
         property: password
-
-    - secretKey: userAccessKey
-      sourceRef:
-        storeRef:
-          name: bitwarden-fields
-          kind: ClusterSecretStore
-      remoteRef:
-        key: {{ .Values.s3PeertubeCredentialsBitwardenID }}
-        property: s3PeertubeUserAccessID
-
-    - secretKey: userSecretKey
-      sourceRef:
-        storeRef:
-          name: bitwarden-fields
-          kind: ClusterSecretStore
-      remoteRef:
-        key: {{ .Values.s3PeertubeCredentialsBitwardenID }}
-        property: s3PeertubeUserAccessKey
 
     - secretKey: videoAccessKey
       sourceRef:
