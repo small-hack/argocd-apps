@@ -49,6 +49,7 @@ spec:
             # -- any annotations you want on this Kubernetes Ingress
             annotations:
                 cert-manager.io/cluster-issuer: "{{ .global_cluster_issuer }}"
+                nginx.ingress.kubernetes.io/proxy-body-size: "4096m"
 
             # -- main s3 hostname in {bucket}.{s3_hostname} We will template the bucket names
             s3_hostname: "{{ .peertube_s3_endpoint }}"
