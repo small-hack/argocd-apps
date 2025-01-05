@@ -56,8 +56,8 @@ spec:
               "name": "peertube-postgres",
               "credentials": [
                 {
-                  "accessKey": "{{ `{{ .dbUserAccessKey }}` }}",
-                  "secretKey": "{{ `{{ .dbUserSecretKey }}` }}"
+                  "accessKey": "{{ `{{ .dbAccessKey }}` }}",
+                  "secretKey": "{{ `{{ .dbSecretKey }}` }}"
                 }
               ],
               "actions": [
@@ -70,8 +70,8 @@ spec:
               "name": "data",
               "credentials": [
                 {
-                  "accessKey": "{{ `{{ .videoUserAccessKey }}` }}",
-                  "secretKey": "{{ `{{ .videoUserSecretKey }}` }}"
+                  "accessKey": "{{ `{{ .videoAccessKey }}` }}",
+                  "secretKey": "{{ `{{ .videoSecretKey }}` }}"
                 }
               ],
               "actions": [
@@ -109,6 +109,24 @@ spec:
         key: {{ .Values.s3AdminCredentialsBitwardenID }}
         property: password
 
+    - secretKey: dbAccessKey
+      sourceRef:
+        storeRef:
+          name: bitwarden-login
+          kind: ClusterSecretStore
+      remoteRef:
+        key: {{ .Values.s3PostgresCredentialsBitwardenID }}
+        property: username
+
+    - secretKey: dbSecretKey
+      sourceRef:
+        storeRef:
+          name: bitwarden-login
+          kind: ClusterSecretStore
+      remoteRef:
+        key: {{ .Values.s3PostgresCredentialsBitwardenID }}
+        property: password
+
     - secretKey: userAccessKey
       sourceRef:
         storeRef:
@@ -116,7 +134,7 @@ spec:
           kind: ClusterSecretStore
       remoteRef:
         key: {{ .Values.s3PeertubeCredentialsBitwardenID }}
-        property: username
+        property: s3PeertubeUserAccessID
 
     - secretKey: userSecretKey
       sourceRef:
@@ -125,41 +143,23 @@ spec:
           kind: ClusterSecretStore
       remoteRef:
         key: {{ .Values.s3PeertubeCredentialsBitwardenID }}
-        property: password
+        property: s3PeertubeUserAccessKey
 
-    - secretKey: dbUserAccessKey
-      sourceRef:
-        storeRef:
-          name: bitwarden-login
-          kind: ClusterSecretStore
-      remoteRef:
-        key: {{ .Values.s3PostgresCredentialsBitwardenID }}
-        property: username
-
-    - secretKey: dbUserSecretKey
-      sourceRef:
-        storeRef:
-          name: bitwarden-login
-          kind: ClusterSecretStore
-      remoteRef:
-        key: {{ .Values.s3PostgresCredentialsBitwardenID }}
-        property: password
-
-    - secretKey: videoUserAccessKey
+    - secretKey: videoAccessKey
       sourceRef:
         storeRef:
           name: bitwarden-fields
           kind: ClusterSecretStore
       remoteRef:
         key: {{ .Values.s3PeertubeCredentialsBitwardenID }}
-        property: videoUsername
+        property: s3PeertubeVideoAccessID
 
-    - secretKey: videoUserSecretKey
+    - secretKey: videoSecretKey
       sourceRef:
         storeRef:
           name: bitwarden-fields
           kind: ClusterSecretStore
       remoteRef:
         key: {{ .Values.s3PeertubeCredentialsBitwardenID }}
-        property: videoPassword
+        property: s3PeertubeVideoAccessKey
 {{- end }}
