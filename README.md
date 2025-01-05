@@ -187,7 +187,7 @@ Other useful tools that don't fit neatly into any one category.
 |:--------------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | [kubevirt](./kubevirt)          | [KubeVirt](https://kubevirt.io/) is a virtual machine management add-on for Kubernetes.                                                                                |
 | [gotosocial](./gotosocial) | [GoToSocial](https://gotosocial.org) is a selfhosted social media site, includes postgresql. Advertised as lighter weight in requirements than Mastodon.               |
-| [peertube](./demo/peertube)     | [PeerTube](https://joinpeertube.org/en_US) is a selfhosted video hosting website that acts a replacement for YouTube. This app of apps includes postgresql and valkey. |
+| [peertube](./peertube)     | [PeerTube](https://joinpeertube.org/en_US) is a selfhosted video hosting website that acts a replacement for YouTube. This app of apps includes postgresql, valkey, and S3 (via SeaweedFS). |
 
 #### Experimental
 |                 App Directory                | Description                                                                       |
