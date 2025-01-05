@@ -14,7 +14,7 @@ smtpCredentialsBitwardenID: ""
 pgsqlCredentialsBitwardenID: ""
 
 # -- OIDC Credentials
-oidcCredentialsBitwardenID: false
+oidcCredentialsBitwardenID: ""
 
 # -- valkey credentials
 valkeyCredentialsBitwardenID: ""
