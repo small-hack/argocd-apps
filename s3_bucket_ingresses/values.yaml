@@ -1,0 +1,15 @@
+# Default values for s3_bucket_ingresses.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# -- Ingress class name. defaults to nginx
+className: "nginx"
+
+# -- any annotations you want on this Kubernetes Ingress
+annotations: {}
+
+# -- main s3 hostname in {bucket}.{s3_hostname} We will template the bucket names
+s3_hostname: ""
+
+# -- all bucket names to create ingresses and certs for
+buckets: []
