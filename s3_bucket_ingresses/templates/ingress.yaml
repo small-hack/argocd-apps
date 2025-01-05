@@ -5,8 +5,10 @@ kind: Ingress
 metadata:
   name: s3-{{ . }}-bucket-ingress
   namespace: peertube
+  {{- with $.Values.annotations }}
   annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-prod
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   ingressClassName: nginx
   rules:
