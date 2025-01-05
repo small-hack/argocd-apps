@@ -41,5 +41,5 @@ spec:
   # where to deploy this from
   source:
     repoURL: https://github.com/small-hack/argocd-apps.git
-    path: demo/peertube/app_of_apps/
+    path: peertube/app_of_apps/
 ```

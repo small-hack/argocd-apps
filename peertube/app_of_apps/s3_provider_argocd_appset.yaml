@@ -35,6 +35,6 @@ spec:
           selfHeal: true
       source:
         repoURL: https://github.com/small-hack/argocd-apps.git
-        path: demo/peertube/storage/seaweedfs/
+        path: peertube/storage/seaweedfs/
         targetRevision: main
 
