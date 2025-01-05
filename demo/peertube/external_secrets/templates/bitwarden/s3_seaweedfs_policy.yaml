@@ -130,7 +130,7 @@ spec:
     - secretKey: userAccessKey
       sourceRef:
         storeRef:
-          name: bitwarden-fileds
+          name: bitwarden-fields
           kind: ClusterSecretStore
       remoteRef:
         key: {{ .Values.s3PeertubeCredentialsBitwardenID }}
