@@ -45,4 +45,4 @@ spec:
     schedule: {{ .Values.k8up.schedules.prune }}
     retention:
       keepDaily: 7
-      keepWeekly: 8
+      keepWeekly: 6
