@@ -20,6 +20,12 @@ spec:
               - global_cluster_issuer
               - peertube_s3_endpoint
               - peertube_s3_region
+              - peertube_toleration_key
+              - peertube_toleration_operator
+              - peertube_toleration_value
+              - peertube_toleration_effect
+              - peertube_affinity_key
+              - peertube_affinity_value
   template:
     metadata:
       name: peertube-seaweedfs-app
@@ -136,7 +142,23 @@ spec:
               metricsPort: 9327
               ipBind: "0.0.0.0"
               replicas: 1
-              loggingOverrideLevel: null
+
+              tolerations:
+                - key: '{{ .peertube_toleration_key }}'
+                  operator: '{{ .peertube_toleration_operator }}'
+                  value: '{{ .peertube_toleration_value }}'
+                  effect: '{{ .peertube_toleration_effect }}'
+
+              affinity:
+                nodeAffinity:
+                  requiredDuringSchedulingIgnoredDuringExecution:
+                    nodeSelectorTerms:
+                      - matchExpressions:
+                        - key: '{{ .peertube_affinity_key }}'
+                          operator: In
+                          values:
+                            - '{{ .peertube_affinity_value }}'
+
               fileSizeLimitMB: null
               minFreeSpacePercent: 7
               dataDirs:
@@ -184,6 +206,22 @@ spec:
               extraEnvironmentVars:
                 WEED_MYSQL_ENABLED: "false"
                 WEED_LEVELDB2_ENABLED: "true"
+
+              tolerations:
+                - key: '{{ .peertube_toleration_key }}'
+                  operator: '{{ .peertube_toleration_operator }}'
+                  value: '{{ .peertube_toleration_value }}'
+                  effect: '{{ .peertube_toleration_effect }}'
+
+              affinity:
+                nodeAffinity:
+                  requiredDuringSchedulingIgnoredDuringExecution:
+                    nodeSelectorTerms:
+                      - matchExpressions:
+                        - key: '{{ .peertube_affinity_key }}'
+                          operator: In
+                          values:
+                            - '{{ .peertube_affinity_value }}'
 
               s3:
                 enabled: true
