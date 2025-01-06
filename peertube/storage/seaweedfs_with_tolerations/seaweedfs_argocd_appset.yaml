@@ -143,13 +143,13 @@ spec:
               ipBind: "0.0.0.0"
               replicas: 1
 
-              tolerations:
+              tolerations: |
                 - key: '{{ .peertube_toleration_key }}'
                   operator: '{{ .peertube_toleration_operator }}'
                   value: '{{ .peertube_toleration_value }}'
                   effect: '{{ .peertube_toleration_effect }}'
 
-              affinity:
+              affinity: |
                 nodeAffinity:
                   requiredDuringSchedulingIgnoredDuringExecution:
                     nodeSelectorTerms:
@@ -207,13 +207,13 @@ spec:
                 WEED_MYSQL_ENABLED: "false"
                 WEED_LEVELDB2_ENABLED: "true"
 
-              tolerations:
+              tolerations: |
                 - key: '{{ .peertube_toleration_key }}'
                   operator: '{{ .peertube_toleration_operator }}'
                   value: '{{ .peertube_toleration_value }}'
                   effect: '{{ .peertube_toleration_effect }}'
 
-              affinity:
+              affinity: |
                 nodeAffinity:
                   requiredDuringSchedulingIgnoredDuringExecution:
                     nodeSelectorTerms:
