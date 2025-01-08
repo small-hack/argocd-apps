@@ -1,0 +1,50 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: peertube-pvc-appset
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  goTemplate: true
+  # generator allows us to source specific values from an external k8s secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - global_pvc_storage_class
+              - peertube_pvc_enabled
+              - peertube_storage
+              - peertube_access_mode
+  template:
+    metadata:
+      name: peertube-pvc
+      annotations:
+        argocd.argoproj.io/sync-wave: "1"
+    spec:
+      project: peertube
+      destination:
+        server: "https://kubernetes.default.svc"
+        namespace: peertube
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
+          selfHeal: true
+      source:
+        repoURL: https://github.com/small-hack/argocd-apps.git
+        path: peertube/storage/pvc/
+        targetRevision: main
+        helm:
+          valuesObject:
+            # -- enable peertube files pvc
+            pvc:
+              enabled: '{{ .peertube_pvc_enabled }}'
+              storageClassName: '{{ .global_pvc_storage_class }}'
+              accessMode: '{{ .peertube_access_mode }}'
+              storage: '{{ .peertube_storage }}'

@@ -52,7 +52,7 @@ spec:
       # where it's coming from
       source:
         repoURL: https://small-hack.github.io/peertube-helm-chart
-        targetRevision: 0.3.0
+        targetRevision: 0.4.0
         chart: peertube
         helm:
           releaseName: peertube
@@ -61,17 +61,7 @@ spec:
 
             # -- replica count if not using autoscaling
             replicaCount: 1
-            image:
-              # -- docker registry if not using docker.io
-              registry: "docker.io"
-              # -- docker repo
-              repository: chocobozzz/peertube
-              # -- image pull policy, set to Always if using latest and it changes frequently
-              pullPolicy: IfNotPresent
-              # -- Overrides the image tag whose default is latest
-              tag: production-bookworm
-            # -- optional image pull secrets
-            imagePullSecrets: []
+
             # -- command to pass to docker container
             containerCommand:
               - gosu
@@ -213,28 +203,12 @@ spec:
                 # runAsNonRoot: true
                 # runAsUser: 1000
 
-              # -- Additional volumes on the output Deployment definition.
-              volumes:
-                - name: peertube-config
-                  configMap:
-                    name: peertube-config
-                - name: custom-env-vars
-                  configMap:
-                    name: custom-env-vars
-                - name: peertube-data
-                  persistentVolumeClaim:
-                    claimName: peertube-data
+              persistence:
+                # -- enable using a persistent volume claim
+                enabled: true
+                # -- use an exisitng persistent volume claim
+                existingClaim: "peertube-data"
 
-              # -- Additional volumeMounts on the output Deployment definition.
-              volumeMounts:
-                - name: peertube-config
-                  mountPath: /config/production.yaml
-                  subPath: production.yaml
-                - name: peertube-data
-                  mountPath: /data
-                - name: custom-env-vars
-                  mountPath: /config/custom-environment-variables.yaml
-                  subPath: custom-environment-variables.yaml
               # -- node selector for deployment
               nodeSelector: {}
 
@@ -273,85 +247,6 @@ spec:
                 targetCPUUtilizationPercentage: 80
                 # targetMemoryUtilizationPercentage: 80
 
-            job:
-              # -- enable a job ... for what though?
-              enabled: false
-              # -- replica count if not using autoscaling
-              replicaCount: 1
-              # -- restart policy if the job fails; can be never, or always
-              restartPolicy: never
-              image:
-                # -- docker registry if not using docker.io
-                registry: "docker.io"
-                # -- docker repo
-                repository: nginx
-                # -- image pull policy, set to Always if using latest and it changes frequently
-                pullPolicy: IfNotPresent
-                # -- Overrides the image tag whose default is latest
-                tag: "latest"
-              # -- optional image pull secrets
-              imagePullSecrets: []
-              # -- command to pass to docker container
-              containerCommand: []
-              # -- env list for job main container
-              env: []
-              # -- env from list for job main container
-              envFrom: []
-              # -- extra init containers for the default job
-              initcontainers: {}
-              # -- extra pod annotations for the job
-              podAnnotations: {}
-              # -- extra pod labels for the job
-              podLabels: {}
-
-              # -- pod securityContext job's main container
-              podSecurityContext: {}
-                # fsGroup: 2000
-
-              # -- securityContext whole job
-              securityContext: {}
-                # capabilities:
-                #   drop:
-                #   - ALL
-                # readOnlyRootFilesystem: true
-                # runAsNonRoot: true
-                # runAsUser: 1000
-
-              # -- Additional volumes on the output job definition.
-              volumes: []
-              # - name: foo
-              #   secret:
-              #     secretName: mysecret
-              #     optional: false
-
-              # -- Additional volumeMounts on the output job definition.
-              volumeMounts: []
-              # - name: foo
-              #   mountPath: "/etc/foo"
-              #   readOnly: true
-
-              # -- node selector for job
-              nodeSelector: {}
-
-              # -- tolerations of taints on a node
-              tolerations: []
-
-              # -- affinity settings for the job
-              affinity: {}
-
-              # -- resources for the job
-              resources: {}
-                # We usually recommend not to specify default resources and to leave this as a conscious
-                # choice for the user. This also increases chances charts run on environments with little
-                # resources, such as Minikube. If you do want to specify resources, uncomment the following
-                # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-                # limits:
-                #   cpu: 100m
-                #   memory: 128Mi
-                # requests:
-                #   cpu: 100m
-                #   memory: 128Mi
-
             serviceAccount:
               create: true
               automount: true
@@ -385,3 +280,11 @@ spec:
                 - secretName: peertube-tls
                   hosts:
                     - "{{ .peertube_hostname }}"
+
+            # optionally use the bundled Bitnami Valkey subchart
+            valkey:
+              enabled: false
+
+            # optionally use the bundled Bitnami PostgreSQL subchart
+            postgresql:
+              enabled: false
