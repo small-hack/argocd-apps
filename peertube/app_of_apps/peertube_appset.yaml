@@ -46,7 +46,7 @@ spec:
       # where it's coming from
       source:
         repoURL: https://small-hack.github.io/peertube-helm-chart
-        targetRevision: 0.4.0
+        targetRevision: 0.4.1
         chart: peertube
         helm:
           releaseName: peertube
