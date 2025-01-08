@@ -17,9 +17,15 @@ spec:
           parameters:
             secret_vars:
               - global_pvc_storage_class
-              - peertube_pvc_enabled
-              - peertube_storage
-              - peertube_access_mode
+              - peertube_data_pvc_enabled
+              - peertube_data_storage
+              - peertube_data_access_mode
+              - peertube_toleration_key
+              - peertube_toleration_operator
+              - peertube_toleration_value
+              - peertube_toleration_effect
+              - peertube_affinity_key
+              - peertube_affinity_value
   template:
     metadata:
       name: peertube-pvc
@@ -44,7 +50,23 @@ spec:
           valuesObject:
             # -- enable peertube files pvc
             pvc:
-              enabled: '{{ .peertube_pvc_enabled }}'
+              enabled: '{{ .peertube_data_pvc_enabled }}'
               storageClassName: '{{ .global_pvc_storage_class }}'
-              accessMode: '{{ .peertube_access_mode }}'
-              storage: '{{ .peertube_storage }}'
+              accessMode: '{{ .peertube_data_access_mode }}'
+              storage: '{{ .peertube_data_storage }}'
+
+            tolerations:
+              - key: '{{ .peertube_toleration_key }}'
+                operator: '{{ .peertube_toleration_operator }}'
+                value: '{{ .peertube_toleration_value }}'
+                effect: '{{ .peertube_toleration_effect }}'
+
+            affinity:
+              nodeAffinity:
+                requiredDuringSchedulingIgnoredDuringExecution:
+                  nodeSelectorTerms:
+                    - matchExpressions:
+                      - key: '{{ .peertube_affinity_key }}'
+                        operator: In
+                        values:
+                          - '{{ .peertube_affinity_value }}'
