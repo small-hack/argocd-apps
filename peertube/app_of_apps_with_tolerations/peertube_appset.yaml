@@ -52,7 +52,7 @@ spec:
       # where it's coming from
       source:
         repoURL: https://small-hack.github.io/peertube-helm-chart
-        targetRevision: 0.4.2
+        targetRevision: 0.4.3
         chart: peertube
         helm:
           releaseName: peertube
@@ -174,8 +174,6 @@ spec:
               enabled: true
               # -- hostname of external valkey/redis
               hostname: "valkey-primary"
-              # -- valkey/redis password
-              password: ""
               # -- use an existing Kubernetes Secret to connect to Redis/Valkey
               existingSecret: "peertube-valkey-credentials"
               # -- key to use in an existing Kubernetes Secret to connect to Redis/Valkey
