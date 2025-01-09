@@ -41,7 +41,7 @@ spec:
           prune: true
           selfHeal: true
       source:
-        repoURL: 'charts.fsociety.social'
+        repoURL: 'https://charts.fsociety.social'
         targetRevision: 1.0.0
         chart: gotosocial
         helm:
