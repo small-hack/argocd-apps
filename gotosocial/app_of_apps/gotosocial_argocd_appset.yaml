@@ -41,12 +41,9 @@ spec:
           prune: true
           selfHeal: true
       source:
-        # repoURL: 'charts.fsociety.social'
-        # targetRevision: 0.5.1
-        # chart: gotosocial
-        repoURL: https://github.com/jessebot/charts-1
-        path: charts/gotosocial/
-        targetRevision: jessebot-changes
+        repoURL: 'charts.fsociety.social'
+        targetRevision: 1.0.0
+        chart: gotosocial
         helm:
           releaseName: gotosocial
           # https://github.com/0hlov3/charts/blob/main/charts/gotosocial/values.yaml
