@@ -41,15 +41,13 @@ spec:
         path: 'script/helm/garage/'
         targetRevision: main
         helm:
-          values: |
-            # Default values for garage.
-            # This is a YAML-formatted file.
-            # Declare variables to be passed into your templates.
-
+          # https://git.deuxfleurs.fr/Deuxfleurs/garage/src/branch/main/script/helm/garage/values.yaml
+          valuesObject:
             # Garage configuration. These values go to garage.toml
             garage:
               # Can be changed for better performance on certain systems
               # https://garagehq.deuxfleurs.fr/documentation/reference-manual/configuration/#db-engine-since-v0-8-0
+              # dbEngine: "lmdb"
               dbEngine: "sled"
 
               # Defaults is 1MB
@@ -209,10 +207,10 @@ spec:
                   # you can find examples here https://kubernetes.io/docs/concepts/services-networking/ingress-controllers
                   className: "nginx"
                   annotations:
-                    cert-manager.io/cluster-issuer: {{ .global_cluster_issuer }}
+                    cert-manager.io/cluster-issuer: "{{ .global_cluster_issuer }}"
                   labels: {}
                   hosts:
-                    - host: "{{ .garage_s3_endpoint }}" 
+                    - host: "{{ .garage_s3_endpoint }}"
                       paths:
                         - path: /
                           pathType: Prefix
@@ -223,7 +221,7 @@ spec:
                   tls:
                     - secretName: garage-tls
                       hosts:
-                        - {{ .garage_s3_endpoint }}
+                        - "{{ .garage_s3_endpoint }}"
                 web:
                   enabled: false
                   # Rely either on the className or the annotation below but not both
@@ -231,7 +229,7 @@ spec:
                   # you can find examples here https://kubernetes.io/docs/concepts/services-networking/ingress-controllers
                   className: "nginx"
                   annotations:
-                    cert-manager.io/cluster-issuer: {{ .global_cluster_issuer }}
+                    cert-manager.io/cluster-issuer: "{{ .global_cluster_issuer }}"
                   labels: {}
                   hosts:
                    - host: "*.{{ .garage_hostname }}" # wildcard website access with bucket name prefix
@@ -245,7 +243,7 @@ spec:
                   tls:
                     - secretName: garage-cluster-tls
                       hosts:
-                        - {{ .garage_hostname }}
+                        - "{{ .garage_hostname }}"
 
             resources: {}
               # The following are indicative for a small-size deployement, for anything serious double them.
@@ -261,6 +259,12 @@ spec:
             tolerations: []
 
             affinity: {}
+
+            environment: {}
+
+            extraVolumes: {}
+
+            extraVolumeMounts: {}
 
             monitoring:
               metrics:
