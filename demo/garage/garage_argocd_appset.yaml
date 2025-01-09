@@ -37,9 +37,10 @@ spec:
           prune: true
           selfHeal: true
       source:
-        repoURL: 'https://git.deuxfleurs.fr/Deuxfleurs/garage'
+        # using fork until https://git.deuxfleurs.fr/Deuxfleurs/garage/pulls/923 is merged
+        repoURL: 'https://git.deuxfleurs.fr/jessebot/garage'
         path: 'script/helm/garage/'
-        targetRevision: main
+        targetRevision: allow-existing-configmap
         helm:
           # https://git.deuxfleurs.fr/Deuxfleurs/garage/src/branch/main/script/helm/garage/values.yaml
           valuesObject:
@@ -81,48 +82,6 @@ spec:
                 web:
                   rootDomain: "{{ .garage_hostname }}"
                   index: "index.html"
-
-              # Template for the garage configuration
-              # Values can be templated
-              # ref: https://garagehq.deuxfleurs.fr/documentation/reference-manual/configuration/
-              garage.toml: |-
-                metadata_dir = "/mnt/meta"
-                data_dir = "/mnt/data"
-
-                db_engine = "sled"
-
-                block_size = "1048576"
-
-                sledCacheCapacity = "134217728"
-                sledFlushEveryMs = "2000"
-
-                replication_mode = "1"
-
-                compression_level = 1
-
-                rpc_bind_addr = "[::]:3901"
-                # rpc_secret will be populated by the init container from a k8s secret object
-                rpc_secret = "__RPC_SECRET_REPLACE__"
-
-                bootstrap_peers = []
-
-                [kubernetes_discovery]
-                namespace = "garage"
-                service_name = "garage"
-                skip_crd = false
-
-                [s3_api]
-                s3_region = "{{ .garage_s3_region }}"
-                api_bind_addr = "[::]:3900"
-                root_domain = "{{ .garage_s3_endpoint }}"
-
-                [s3_web]
-                bind_addr = "[::]:3902"
-                root_domain = "{{ .garage_hostname }}"
-                index = "index.html"
-
-                [admin]
-                api_bind_addr = "[::]:3903"
 
             # Data persistence
             persistence:
