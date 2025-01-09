@@ -38,7 +38,9 @@ spec:
           selfHeal: true
       source:
         repoURL: 'https://seaweedfs.github.io/seaweedfs/helm'
-        targetRevision: 4.0.377
+        # the below version if not stable
+        # targetRevision: 4.0.377
+        targetRevision: 3.68.0
         chart: seaweedfs
         helm:
           releaseName: nextcloud-seaweedfs
