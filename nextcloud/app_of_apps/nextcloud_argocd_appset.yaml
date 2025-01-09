@@ -63,6 +63,9 @@ spec:
               tag: 30.0.4-fpm-alpine
               pullPolicy: IfNotPresent
 
+            deploymentLabels:
+              deploymentName: nextcloud
+
             ingress:
               enabled: true
               className: nginx

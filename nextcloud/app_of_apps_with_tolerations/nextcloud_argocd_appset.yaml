@@ -69,6 +69,9 @@ spec:
               tag: 30.0.4-fpm-alpine
               pullPolicy: IfNotPresent
 
+            deploymentLabels:
+              deploymentName: nextcloud
+
             tolerations:
               - key: '{{ .nextcloud_toleration_key }}'
                 operator: '{{ .nextcloud_toleration_operator }}'
