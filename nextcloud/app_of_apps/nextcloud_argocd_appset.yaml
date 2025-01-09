@@ -63,7 +63,7 @@ spec:
               tag: 30.0.4-fpm-alpine
               pullPolicy: IfNotPresent
 
-            deploymentLabels:
+            podLabels:
               deploymentName: nextcloud
 
             ingress:
