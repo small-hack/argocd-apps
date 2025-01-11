@@ -48,7 +48,7 @@ spec:
           selfHeal: true
       source:
         repoURL: https://github.com/small-hack/argocd-apps.git
-        path: jellyfin/storage/pvc/
+        path: demo/jellyfin/storage/pvc/
         targetRevision: main
         helm:
           valuesObject:
