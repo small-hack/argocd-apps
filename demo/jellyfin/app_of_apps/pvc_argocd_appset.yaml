@@ -1,0 +1,83 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: jellyfin-pvc-appset
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  goTemplate: true
+  # generator allows us to source specific values from an external k8s secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - jellyfin_media_pvc_enabled
+              - jellyfin_media_storage
+              - jellyfin_media_access_mode
+              - jellyfin_media_storage_class
+              - jellyfin_config_pvc_enabled
+              - jellyfin_config_storage
+              - jellyfin_config_access_mode
+              - jellyfin_config_storage_class
+              - jellyfin_toleration_key
+              - jellyfin_toleration_operator
+              - jellyfin_toleration_value
+              - jellyfin_toleration_effect
+              - jellyfin_affinity_key
+              - jellyfin_affinity_value
+  template:
+    metadata:
+      name: jellyfin-pvc
+      annotations:
+        argocd.argoproj.io/sync-wave: "1"
+    spec:
+      project: jellyfin
+      destination:
+        server: "https://kubernetes.default.svc"
+        namespace: jellyfin
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
+          selfHeal: true
+      source:
+        repoURL: https://github.com/small-hack/argocd-apps.git
+        path: jellyfin/storage/pvc/
+        targetRevision: main
+        helm:
+          valuesObject:
+            # -- enable jellyfin media pvc
+            media_pvc:
+              enabled: '{{ .jellyfin_media_pvc_enabled }}'
+              storageClassName: '{{ .jellyfin_media_storage_class }}'
+              accessMode: '{{ .jellyfin_media_access_mode }}'
+              storage: '{{ .jellyfin_media_storage }}'
+
+            # -- enable jellyfin configuration pvc
+            config_pvc:
+              enabled: '{{ .jellyfin_config_pvc_enabled }}'
+              storageClassName: '{{ .jellyfin_config_storage_class }}'
+              accessMode: '{{ .jellyfin_config_access_mode }}'
+              storage: '{{ .jellyfin_config_storage }}'
+
+            tolerations:
+              - key: '{{ .jellyfin_toleration_key }}'
+                operator: '{{ .jellyfin_toleration_operator }}'
+                value: '{{ .jellyfin_toleration_value }}'
+                effect: '{{ .jellyfin_toleration_effect }}'
+
+            affinity:
+              nodeAffinity:
+                requiredDuringSchedulingIgnoredDuringExecution:
+                  nodeSelectorTerms:
+                    - matchExpressions:
+                      - key: '{{ .jellyfin_affinity_key }}'
+                        operator: In
+                        values:
+                          - '{{ .jellyfin_affinity_value }}'
