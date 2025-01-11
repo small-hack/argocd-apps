@@ -63,7 +63,7 @@ spec:
                   secretAccessKey:
                     name: s3-postgres-credentials
                     key: "secretAccessKey"
-              retentionPolicy: "15d"
+              retentionPolicy: "7d"
 
             certificates:
               server:
