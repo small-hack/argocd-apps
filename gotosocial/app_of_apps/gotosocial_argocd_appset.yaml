@@ -146,6 +146,13 @@ spec:
                 enabled: true
                 size: "1Gi"
 
+              extraConfig:
+                accounts-reason-required: true
+                accounts-allow-custom-css: true
+                media-remote-cache-days: 90
+                instance-languages: ["nl", "en"]
+                metrics-enabled: true
+
               config:
                 applicationName: "gotosocial"
                 host: "{{ .gotosocial_hostname }}"
