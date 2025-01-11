@@ -93,13 +93,13 @@ spec:
                 # -- set to false to use emptyDir
                 enabled: true
                 ## -- Use an existing PVC for this mount
-                existingClaim: ''
+                existingClaim: 'jellyfin-config'
 
               media:
                 # -- set to false to use emptyDir
                 enabled: true
                 ## -- Use an existing PVC for this mount
-                existingClaim: ''
+                existingClaim: 'jellyfin-media'
 
             metrics:
               # -- Enable or disable metrics collection
