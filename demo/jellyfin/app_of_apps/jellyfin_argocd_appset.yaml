@@ -50,7 +50,9 @@ spec:
             ingress:
               enabled: true
               className: "nginx"
-              annotations: {}
+              annotations:
+                cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
+                nginx.ingress.kubernetes.io/proxy-body-size: 10G
               hosts:
                 - host: "{{ .jellyfin_hostname }}"
                   paths:
