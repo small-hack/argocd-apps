@@ -1,6 +1,6 @@
 apiVersion: v2
 name: pixelfed-pvc
-description: A Helm chart for deploying a PVC to Kubernetes for PeerTube
+description: A Helm chart for deploying a PVC to Kubernetes for pixelfed
 
 # A chart can be either an 'application' or a 'library' chart.
 #
