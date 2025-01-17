@@ -142,10 +142,10 @@ spec:
               exp_emc: true
 
               # -- domain of admin interface
-              admin_domain: ""
+              admin_domain: "{{ .pixelfed_hostname }}"
 
               # -- domain of session?
-              session_domain: ""
+              session_domain: "{{ .pixelfed_hostname }}"
 
               # -- trusted proxies
               trusted_proxies: "*"
@@ -162,7 +162,7 @@ spec:
                 domain: "{{ .pixelfed_hostname }}"
 
               # -- Enable open registration for new accounts
-              open_registration: true
+              open_registration: false
 
               # -- Enforce email verification
               enforce_email_verification: true
@@ -212,13 +212,13 @@ spec:
               # your whole instance, or server, settings
               instance:
                 # -- your server description
-                description: "Pixelfed - Photo sharing for everyone"
+                description: "Pix Pizza Enby City - a place for meepmorps"
                 # -- enable the instance contact form
-                contact_form: false
+                contact_form: true
                 # -- Enable public access to the Discover feature
-                discover_public: false
+                discover_public: true
                 # -- Allow anonymous access to hashtag feeds
-                public_hashtags: false
+                public_hashtags: true
                 # -- The public contact email for your server
                 contact_email: ""
                 # -- Enable the profile embed feature
@@ -273,11 +273,11 @@ spec:
 
               # ActivityPub Configuration
               activity_pub:
-                enabled: false
-                remote_follow: false
-                inbox: false
-                outbox: false
-                sharedinbox: false
+                enabled: true
+                remote_follow: true
+                inbox: true
+                outbox: true
+                sharedinbox: true
 
               ###########################################################
               # Federation
