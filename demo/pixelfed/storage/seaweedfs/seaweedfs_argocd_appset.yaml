@@ -198,14 +198,6 @@ spec:
                     anonymousRead: false
                   - name: pixelfed-postgres
                     anonymousRead: false
-                  - name: web-video
-                    anonymousRead: false
-                  - name: streaming
-                    anonymousRead: false
-                  - name: user-exports
-                    anonymousRead: false
-                  - name: orig-video
-                    anonymousRead: false
 
               livenessProbe:
                 enabled: true
@@ -243,7 +235,4 @@ spec:
                   - secretName: pixelfed-seaweedfs-tls
                     hosts:
                       - '{{ .pixelfed_s3_endpoint }}'
-                      - 'web-video.{{ .pixelfed_s3_endpoint }}'
-                      - 'orig-video.{{ .pixelfed_s3_endpoint }}'
-                      - 'streaming.{{ .pixelfed_s3_endpoint }}'
-                      - 'user-exports.{{ .pixelfed_s3_endpoint }}'
+                      - 'pixelfed.{{ .pixelfed_s3_endpoint }}'
