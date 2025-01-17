@@ -30,44 +30,36 @@ spec:
         argocd.argoproj.io/sync-options: ApplyOnly=true
     spec:
       project: pixelfed
+
+      # where the app is going
       destination:
         server: https://kubernetes.default.svc
         namespace: pixelfed
+
+      # reconciliation policy
       syncPolicy:
         syncOptions:
           - ApplyOutOfSyncOnly=true
         automated:
           prune: true
           selfHeal: true
+
+      # where the is coming from
       source:
         repoURL: https://small-hack.github.io/pixelfed-chart
         targetRevision: 0.2.0
         chart: pixelfed
         helm:
           releaseName: pixelfed
-          # https://github.com/0hlov3/charts/blob/main/charts/pixelfed/values.yaml
           valuesObject:
             fullnameOverride: pixelfed
-            image:
-              repository: superseriousbusiness/pixelfed
 
             ingress:
               enabled: true
-              annotations:
-                kubernetes.io/tls-acme: "true"
-                cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
-                nginx.ingress.kubernetes.io/proxy-body-size: 12m
-                nginx.ingress.kubernetes.io/server-snippet: |
-                  location /livez {
-                    return 404;
-                  }
-                  location /readyz {
-                    return 404;
-                  }
-                  location /metrics {
-                    return 404;
-                  }
               className: nginx
+              annotations:
+                cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
+                nginx.ingress.kubernetes.io/proxy-body-size: 1g
               hosts:
                 - host: '{{ .pixelfed_hostname }}'
                   paths:
@@ -87,116 +79,40 @@ spec:
                 cpu: 500m
                 memory: 512Mi
 
-            pixelfed:
-              # for postgres ssl certs
-              extraEnv:
-                - name: "PGSSLCERT"
-                  value: /etc/secrets/pixelfed/tls.crt
+            # for postgres ssl certs
+            extraEnv:
+              - name: "PGSSLCERT"
+                value: /etc/secrets/pixelfed/tls.crt
 
-                - name: "PGSSLKEY"
-                  value: /etc/secrets/pixelfed/tls.key
+              - name: "PGSSLKEY"
+                value: /etc/secrets/pixelfed/tls.key
 
-                - name: "PGSSLROOTCERT"
-                  value: /etc/secrets/ca/ca.crt
+              - name: "PGSSLROOTCERT"
+                value: /etc/secrets/ca/ca.crt
 
-              # for postgres ssl certs
-              extraVolumes:
-                - name: postgres-ca
-                  secret:
-                    secretName: pixelfed-postgres-server-ca-key-pair
-                    defaultMode: 0640
+            # for postgres ssl certs
+            extraVolumes:
+              - name: postgres-ca
+                secret:
+                  secretName: pixelfed-postgres-server-ca-key-pair
+                  defaultMode: 0640
 
-                - name: postgres-client-certs
-                  secret:
-                    secretName: pixelfed-postgres-pixelfed-cert
-                    defaultMode: 0640
+              - name: postgres-client-certs
+                secret:
+                  secretName: pixelfed-postgres-pixelfed-cert
+                  defaultMode: 0640
 
-              # for postgres ssl certs
-              extraVolumeMounts:
-                - name: postgres-ca
-                  mountPath: /etc/secrets/ca
+            # for postgres ssl certs
+            extraVolumeMounts:
+              - name: postgres-ca
+                mountPath: /etc/secrets/ca
 
-                - name: postgres-client-certs
-                  mountPath: /etc/secrets/pixelfed
+              - name: postgres-client-certs
+                mountPath: /etc/secrets/pixelfed
 
-              strategy:
-                type: Recreate
-
-              persistence:
-                enabled: true
-                existingClaim: "pixelfed"
-
-              tmpfs:
-                enabled: false
-                size: "1Gi"
-
-              config:
-                applicationName: "pixelfed"
-                host: "{{ .pixelfed_hostname }}"
-                accountDomain: ""
-                protocol: "https"
-                bindAddress: "0.0.0.0"
-                trustedProxies:
-                  - "::1"
-                  - "10.0.0.0/8"
-                  - "172.16.0.0/12"
-                  - "192.168.0.0/16"
-
-                db: # general db config, for postgres or sqlite specific config scroll down.
-                  maxOpenConnsMultiplier: "8"
-                  cache:
-                    memoryTarget: "100MiB"
-
-                storage:
-                  backend: "s3"
-                  localBasePath: "/pixelfed/storage"
-
-                  s3:
-                   enabled: true
-                   endpoint: "{{ .pixelfed_s3_endpoint }}"
-                   proxy: false
-                   useSSL: true
-                   # accessKey: ""
-                   # secretKey: ""
-                   # If this is set, accessKey, secretKey will not take place
-                   # Needs the S3_ACCESS_KEY_ID and S3_SECRET_ACCESS_KEY keys.
-                   existingSecret: "pixelfed-s3-credentials"
-                   bucket: "pixelfed"
-
-                oidc:
-                  enabled: false
-                  idpName: ""
-                  skipVerification: ""
-                  oidcScopes:
-                    - "openid"
-                    - "email"
-                    - "profile"
-                    - "groups"
-                  linkExisting: false
-                  adminGroups: []
-                  existingSecretName: "pixelfed-oidc-credentials"
-                  existingSecretKeys:
-                    issuer: "issuer"
-                    clientID: "client_id"
-                    clientSecret: "client_secret"
-
-                smtp:
-                  existingSecretName: "pixelfed-smtp-credentials"
-                  existingSecretKeys:
-                    username: "username"
-                    password: "password"
-                    port: "port"
-                    host: "host"
-                  from: "no-reply@{{ .pixelfed_hostname }}"
-                  discloseRecipients: false
-
-              extraConfig:
-                logLevel: "info"
-                metrics:
-                  enabled: true
-                  authEnabled: false
-                  # authUsername: ""
-                  # authPassword: ""
+            persistence:
+              enabled: true
+              existingClaim: "pixelfed"
 
             externalDatabase:
               enabled: true
@@ -215,16 +131,32 @@ spec:
             postgresql:
               enabled: false
 
-            service:
-              type: ClusterIP
-              port: 80
+            pixelfed:
+              storage:
+                backend: "s3"
+                localBasePath: "/pixelfed/storage"
 
-            externalAuth:
-              oidc:
-                enabled: false
-              oauth_global:
-                # -- Automatically redirect to OIDC, CAS or SAML, and don't use local account authentication when clicking on Sign-In
-                omniauth_only: false
+                s3:
+                 enabled: true
+                 endpoint: "{{ .pixelfed_s3_endpoint }}"
+                 proxy: false
+                 useSSL: true
+                 # accessKey: ""
+                 # secretKey: ""
+                 # If this is set, accessKey, secretKey will not take place
+                 # Needs the S3_ACCESS_KEY_ID and S3_SECRET_ACCESS_KEY keys.
+                 existingSecret: "pixelfed-s3-credentials"
+                 bucket: "pixelfed"
+
+              smtp:
+                existingSecretName: "pixelfed-smtp-credentials"
+                existingSecretKeys:
+                  username: "username"
+                  password: "password"
+                  port: "port"
+                  host: "host"
+                from: "no-reply@{{ .pixelfed_hostname }}"
+                discloseRecipients: false
 
             # -- https://github.com/pixelfed/pixelfed/blob/main/Dockerfile#L75
             # if you manually change the UID/GID environment variables, ensure these values match:
