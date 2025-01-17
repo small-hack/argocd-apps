@@ -116,6 +116,7 @@ spec:
 
             externalDatabase:
               enabled: true
+              connection: pgsql
               host: pixelfed-postgres-rw.pixelfed.svc
               port: "5432"
               database: pixelfed
@@ -127,7 +128,25 @@ spec:
               sslkey: "/etc/secrets/pixelfed/tls.key"
               ca_cert: "/etc/secrets/ca/ca.crt"
 
-            # https://github.com/bitnami/charts/tree/main/bitnami/postgresql#parameters
+            # External Redis Configuration. Use this if you set valkey.enabled: false
+            externalValkey:
+              # -- enable using an external valkey or redis cluster
+              enabled: true
+              client: "phpredis"
+              scheme: "tcp"
+              host: "valkey-headless"
+              port: "6379"
+              # -- get valkey credentials from an existing Kubernetes Secret
+              existingSecret: ""
+              existingSecretKeys:
+                # --  key in existing Kubernetes Secret for host. If set, ignores externalValkey.host
+                host: ""
+                # --  key in existing Kubernetes Secret for password. If set, ignores externalValkey.password
+                password: "password"
+
+            valkey:
+              enabled: false
+
             postgresql:
               enabled: false
 
@@ -329,6 +348,3 @@ spec:
 
             # -- timezone for all the pods
             timezone: '{{ .global_time_zone }}'
-
-            valkey:
-              enabled: false
