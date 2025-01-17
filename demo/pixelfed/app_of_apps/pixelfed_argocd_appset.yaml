@@ -329,3 +329,6 @@ spec:
 
             # -- timezone for all the pods
             timezone: '{{ .global_time_zone }}'
+
+            valkey:
+              enabled: false
