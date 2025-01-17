@@ -18,10 +18,6 @@ spec:
             secret_vars:
               - global_cluster_issuer
               - pixelfed_s3_endpoint
-              - pixelfed_s3_orig_video_bucket
-              - pixelfed_s3_web_video_bucket
-              - pixelfed_s3_streaming_bucket
-              - pixelfed_s3_user_exports_bucket
   template:
     metadata:
       name: pixelfed-s3-bucket-ingresses
@@ -56,7 +52,4 @@ spec:
 
             # -- all bucket names to create ingresses and certs for
             buckets:
-              - "{{ .pixelfed_s3_orig_video_bucket }}"
-              - "{{ .pixelfed_s3_web_video_bucket }}"
-              - "{{ .pixelfed_s3_streaming_bucket }}"
-              - "{{ .pixelfed_s3_user_exports_bucket }}"
+              - "pixelfed"
