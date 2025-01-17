@@ -2,7 +2,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: valkey-appset
+  name: pixelfed-valkey-appset
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "2"
@@ -19,7 +19,7 @@ spec:
               - global_time_zone
   template:
     metadata:
-      name: valkey-app
+      name: pixelfed-valkey-app
       annotations:
         argocd.argoproj.io/sync-wave: "1"
     spec:
