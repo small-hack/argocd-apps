@@ -4,7 +4,6 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: s3-{{ . }}-bucket-ingress
-  namespace: peertube
   {{- with $.Values.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
