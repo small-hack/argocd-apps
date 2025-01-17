@@ -132,31 +132,185 @@ spec:
               enabled: false
 
             pixelfed:
-              storage:
-                backend: "s3"
-                localBasePath: "/pixelfed/storage"
+              # -- Automatically run [artisan migrate --force] if new migrations are detected.
+              db_apply_new_migrations_automatically: false
 
-                s3:
-                 enabled: true
-                 endpoint: "{{ .pixelfed_s3_endpoint }}"
-                 proxy: false
-                 useSSL: true
-                 # accessKey: ""
-                 # secretKey: ""
-                 # If this is set, accessKey, secretKey will not take place
-                 # Needs the S3_ACCESS_KEY_ID and S3_SECRET_ACCESS_KEY keys.
-                 existingSecret: "pixelfed-s3-credentials"
-                 bucket: "pixelfed"
+              # -- timezone for docker container
+              timezone: "europe/amsterdam"
 
-              smtp:
+              # -- Experimental Configuration
+              exp_emc: true
+
+              # -- domain of admin interface
+              admin_domain: ""
+
+              # -- domain of session?
+              session_domain: ""
+
+              # -- trusted proxies
+              trusted_proxies: "*"
+
+              # app specific settings
+              app:
+                # -- The name of your server/instance
+                name: "Pixelfed"
+                # -- change this to the domain of your pixelfed instance
+                url: "https://{{ .pixelfed_hostname }}"
+                # -- change this to the language code of your pixelfed instance
+                locale: "en"
+                # -- The domain of your server, without https://
+                domain: "{{ .pixelfed_hostname }}"
+
+              # -- Enable open registration for new accounts
+              open_registration: true
+
+              # -- Enforce email verification
+              enforce_email_verification: true
+
+              # -- The min password length
+              min_password_length: 16
+
+              # -- Enable account deletion (may be a requirement in some jurisdictions)
+              account_deletion: true
+
+              # -- Enable oAuth support, required for mobile/3rd party apps
+              oauth_enabled: true
+
+              # -- Enable the Stories feature
+              stories_enabled: false
+
+              # -- Enable the config cache to allow you to manage settings via the admin dashboard
+              enable_config_cache: true
+
+              # -- Set the image optimization quality, between 1-100. Lower uses less space, higher more quality
+              image_quality: 80
+
+              # -- The max allowed account size in KB
+              max_account_size: 1000000
+
+              # -- The max photo/video size in KB
+              max_photo_size: 15000
+
+              # -- The max user avatar size in KB
+              max_avatar_size: 2000
+
+              # -- The max post caption length
+              max_caption_length: 1000
+
+              # -- The max user bio length
+              max_bio_length: 256
+
+              # -- The max user display name length
+              max_name_length: 32
+
+              # -- The max number of media per post album
+              max_album_length: 6
+
+              # -- Force https url generation
+              force_https_urls: true
+
+              # your whole instance, or server, settings
+              instance:
+                # -- your server description
+                description: "Pixelfed - Photo sharing for everyone"
+                # -- enable the instance contact form
+                contact_form: false
+                # -- Enable public access to the Discover feature
+                discover_public: false
+                # -- Allow anonymous access to hashtag feeds
+                public_hashtags: false
+                # -- The public contact email for your server
+                contact_email: ""
+                # -- Enable the profile embed feature
+                profile_embeds: true
+                # -- Enable the post embed feature
+                post_embeds: true
+                # -- Enable Curated Registration
+                cur_reg: false
+                # -- Enable the api/v1/peers API endpoint
+                show_peers: false
+
+                reports:
+                  # -- Send a report email to the admin account for new autospam/reports
+                  email_enabled: false
+                  # -- A list of email addresses to deliver admin reports to
+                  email_addresses: []
+                  # -- Enable autospam reports (require INSTANCE_REPORTS_EMAIL_ENABLED)
+                  email_autospam: false
+
+                landing:
+                  # -- Enable the profile directory on the landing page
+                  show_directory: true
+                  # -- Enable the popular post explore on the landing page
+                  show_explore: true
+
+              # public feed settings
+              pf:
+                # -- Hide sensitive posts from public/network feeds
+                hide_nsfw_on_public_feeds: false
+                # -- Store local avatars on S3 (Requires S3)
+                local_avatar_to_cloud: false
+                # -- Enable the Admin Invites feature
+                admin_invites_enabled: true
+                # -- The max number of user blocks per account
+                max_user_blocks: 50
+                # -- The max number of user mutes per account
+                max_user_mutes: 50
+                # -- The max number of domain blocks per account
+                max_domain_blocks: 50
+                # -- Enable S3/Object Storage
+                enable_cloud: false
+                # -- Limit max user registrations
+                max_users: 1000
+                # -- in KB
+                enforce_max_users: 2000
+                # -- Enable image optimization
+                optimize_images: true
+                # -- Enable video optimization
+                optimize_videos: true
+                # -- Max collection post limit
+                max_collection_length: 100
+
+              # ActivityPub Configuration
+              activity_pub:
+                enabled: false
+                remote_follow: false
+                inbox: false
+                outbox: false
+                sharedinbox: false
+
+              ###########################################################
+              # Federation
+              ###########################################################
+              # -- https://docs.pixelfed.org/technical-documentation/config/#atom_feeds
+              atom_feeds: "true"
+
+              # -- https://docs.pixelfed.org/technical-documentation/config/#nodeinfo
+              nodeinfo: "true"
+
+              # -- https://docs.pixelfed.org/technical-documentation/config/#webfinger
+              webfinger: "true"
+
+              mail:
+                driver: smtp
+                from_address: "no-reply@{{ .pixelfed_hostname }}"
+                from_name: "Pixelfed"
                 existingSecretName: "pixelfed-smtp-credentials"
                 existingSecretKeys:
                   username: "username"
                   password: "password"
                   port: "port"
                   host: "host"
-                from: "no-reply@{{ .pixelfed_hostname }}"
-                discloseRecipients: false
+
+              s3:
+               url: "https://{{ .pixelfed_s3_endpoint }}"
+               endpoint: "{{ .pixelfed_s3_endpoint }}"
+               # accessKey: ""
+               # secretKey: ""
+               # If this is set, accessKey, secretKey will not take place
+               # Needs the S3_ACCESS_KEY_ID and S3_SECRET_ACCESS_KEY keys.
+               existingSecret: "pixelfed-s3-credentials"
+               bucket: "pixelfed"
 
             # -- https://github.com/pixelfed/pixelfed/blob/main/Dockerfile#L75
             # if you manually change the UID/GID environment variables, ensure these values match:
