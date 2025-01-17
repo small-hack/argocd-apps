@@ -24,17 +24,20 @@ spec:
         argocd.argoproj.io/sync-wave: "2"
     spec:
       project: default
-      destination:
-        server: "https://kubernetes.default.svc"
-        namespace: pixelfed
+
       syncPolicy:
         syncOptions:
           - ApplyOutOfSyncOnly=true
         automated:
           prune: true
           selfHeal: true
+
+      destination:
+        server: "https://kubernetes.default.svc"
+        namespace: pixelfed
+
       source:
         repoURL: https://github.com/small-hack/argocd-apps.git
-        path: pixelfed/storage/seaweedfs/
+        path: demo/pixelfed/storage/seaweedfs/
         targetRevision: main
 
