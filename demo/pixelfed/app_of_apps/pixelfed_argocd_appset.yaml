@@ -312,9 +312,10 @@ spec:
 
               mail:
                 driver: smtp
+                encryption: tls
                 from_address: "no-reply@{{ .pixelfed_hostname }}"
                 from_name: "Pixelfed"
-                existingSecretName: "pixelfed-smtp-credentials"
+                existingSecret: "pixelfed-smtp-credentials"
                 existingSecretKeys:
                   username: "username"
                   password: "password"
