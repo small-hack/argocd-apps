@@ -135,15 +135,14 @@ spec:
               enabled: true
               client: "phpredis"
               scheme: "tcp"
-              host: "valkey-headless"
               port: "6379"
               # -- get valkey credentials from an existing Kubernetes Secret
-              existingSecret: ""
+              existingSecret: "pixelfed-valkey-credentials"
               existingSecretKeys:
                 # --  key in existing Kubernetes Secret for host. If set, ignores externalValkey.host
-                host: ""
+                host: "host"
                 # --  key in existing Kubernetes Secret for password. If set, ignores externalValkey.password
-                password: "password"
+                password: "valkey-password"
 
             valkey:
               enabled: false

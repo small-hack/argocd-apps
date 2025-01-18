@@ -13,6 +13,9 @@ pgsqlCredentialsBitwardenID: ""
 # -- OIDC Credentials
 oidcCredentialsBitwardenID: ""
 
+# -- valkey credentials
+valkeyCredentialsBitwardenID: ""
+
 ###############
 ### S3 Config #
 ###############
