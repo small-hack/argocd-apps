@@ -47,7 +47,7 @@ spec:
       # where the is coming from
       source:
         repoURL: https://small-hack.github.io/pixelfed-chart
-        targetRevision: 0.3.1
+        targetRevision: 0.3.2
         chart: pixelfed
         helm:
           releaseName: pixelfed
