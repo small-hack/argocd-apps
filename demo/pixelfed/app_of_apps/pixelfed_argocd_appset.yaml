@@ -58,6 +58,7 @@ spec:
             fullnameOverride: pixelfed
 
             image:
+              # https://quay.io/repository/zknt/pixelfed?tab=tags
               registry: quay.io
               repository: zknt/pixelfed
               tag: 2025-01-18-fpm
