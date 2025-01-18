@@ -340,12 +340,11 @@ spec:
             # -- https://github.com/pixelfed/pixelfed/blob/main/Dockerfile#L75
             # if you manually change the UID/GID environment variables, ensure these values match:
             podSecurityContext:
-              runAsUser: 0
+              runAsUser: 991
               runAsGroup: 991
               fsGroup: 991
 
-            securityContext:
-              runAsUser: 0
+            securityContext: {}
 
             serviceAccount:
               # -- Specifies whether a service account should be created
