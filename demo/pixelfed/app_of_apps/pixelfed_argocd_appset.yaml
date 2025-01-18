@@ -342,7 +342,8 @@ spec:
               runAsGroup: 991
               fsGroup: 991
 
-            securityContext: {}
+            securityContext:
+              runAsUser: 0
 
             serviceAccount:
               # -- Specifies whether a service account should be created
