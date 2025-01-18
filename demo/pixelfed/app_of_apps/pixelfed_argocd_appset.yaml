@@ -55,6 +55,8 @@ spec:
         helm:
           releaseName: pixelfed
           valuesObject:
+            image:
+              tag: v0.12.1-nginx
             fullnameOverride: pixelfed
 
             ingress:
