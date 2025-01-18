@@ -232,7 +232,7 @@ spec:
               # your whole instance, or server, settings
               instance:
                 # -- your server description
-                description: "Pix Pizza Enby City - a place for meepmorps"
+                description: "pixelfed"
                 # -- enable the instance contact form
                 contact_form: true
                 # -- Enable public access to the Discover feature
