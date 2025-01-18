@@ -47,7 +47,7 @@ spec:
       # where the is coming from
       source:
         repoURL: https://small-hack.github.io/pixelfed-chart
-        targetRevision: 0.4.0
+        targetRevision: 0.4.1
         chart: pixelfed
         helm:
           releaseName: pixelfed
@@ -117,16 +117,17 @@ spec:
             externalDatabase:
               enabled: true
               connection: pgsql
-              host: pixelfed-postgres-rw.pixelfed.svc
-              port: "5432"
-              database: pixelfed
-              username: pixelfed
-              existingSecret: "pixelfed-pgsql-credentials"
-              existingSecretPasswordKey: postgresPassword
               tls_mode: "disable"
               sslcert: "/etc/secrets/pixelfed/tls.crt"
               sslkey: "/etc/secrets/pixelfed/tls.key"
               ca_cert: "/etc/secrets/ca/ca.crt"
+              existingSecret: "pixelfed-pgsql-credentials"
+              existingSecretKeys:
+                password: postgresPassword
+                username: username
+                database: database
+                port: port
+                host: host
 
             # External Redis Configuration. Use this if you set valkey.enabled: false
             externalValkey:
