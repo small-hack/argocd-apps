@@ -50,14 +50,15 @@ spec:
       # where the is coming from
       source:
         repoURL: https://small-hack.github.io/pixelfed-chart
-        targetRevision: 0.4.2
+        targetRevision: 0.5.0
         chart: pixelfed
         helm:
           releaseName: pixelfed
           valuesObject:
+            fullnameOverride: pixelfed
+
             image:
               tag: v0.12.1-nginx
-            fullnameOverride: pixelfed
 
             ingress:
               enabled: true
