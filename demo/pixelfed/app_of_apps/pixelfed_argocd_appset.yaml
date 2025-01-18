@@ -20,6 +20,9 @@ spec:
             secret_vars:
               - pixelfed_hostname
               - pixelfed_s3_endpoint
+              - pixelfed_name
+              - pixelfed_description
+              - pixelfed_from_address
               - global_cluster_issuer
               - global_time_zone
   template:
@@ -172,7 +175,7 @@ spec:
               # app specific settings
               app:
                 # -- The name of your server/instance
-                name: "Pixelfed"
+                name: "{{ .pixelfed_name }}"
                 # -- change this to the domain of your pixelfed instance
                 url: "https://{{ .pixelfed_hostname }}"
                 # -- change this to the language code of your pixelfed instance
@@ -231,7 +234,7 @@ spec:
               # your whole instance, or server, settings
               instance:
                 # -- your server description
-                description: "pixelfed"
+                description: "{{ .pixelfed_description }}"
                 # -- enable the instance contact form
                 contact_form: true
                 # -- Enable public access to the Discover feature
@@ -313,8 +316,8 @@ spec:
               mail:
                 driver: smtp
                 encryption: tls
-                from_address: "no-reply@{{ .pixelfed_hostname }}"
-                from_name: "Pixelfed"
+                from_address: "{{ .pixelfed_from_address }}"
+                from_name: "{{ .pixelfed_name }}"
                 existingSecret: "pixelfed-smtp-credentials"
                 existingSecretKeys:
                   username: "username"
