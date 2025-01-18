@@ -62,11 +62,8 @@ spec:
               # registry: ghcr.io
               # repository: mattlqx/docker-pixelfed
               # tag: v0.12.1-nginx
-
-              # https://hub.docker.com/r/elestio/pixelfed/tags
-              registry: docker.io
-              repository: elestio/pixelfed
-              tag: v0.12.4
+              repository: jippi/docker-pixelfed
+              tag: v0.12.4-docker3-nginx-8.3-bookworm
 
               # this one requires a .env file
               # https://quay.io/repository/zknt/pixelfed?tab=tags
