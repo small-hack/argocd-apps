@@ -123,6 +123,12 @@ spec:
             extraInitContainers:
               - name: create-dot-env-file
                 image: alpine:latest
+                command: /bin/sh
+                args:
+                  - "-c"
+                  - "env"
+                  - ">"
+                  - ".env"
                 imagePullPolicy: Always
                 envFrom:
                   - configMapRef:
@@ -137,8 +143,7 @@ spec:
 
             extraVolumes:
               - name: dot-env-config
-                configmap:
-                  name: pixelfed-env
+                emptyDir: {}
 
             ## for postgres ssl certs
             #   - name: postgres-ca
