@@ -50,7 +50,7 @@ spec:
       # where the is coming from
       source:
         repoURL: https://small-hack.github.io/pixelfed-chart
-        targetRevision: 0.13.0
+        targetRevision: 0.14.0
         chart: pixelfed
         helm:
           releaseName: pixelfed
@@ -209,8 +209,49 @@ spec:
                 apply_new_migrations_automatically: false
                 connection: pgsql
 
+              filesystem:
+                # -- Many applications store files both locally and in the cloud.
+                # For this reason, you may specify a default “cloud” driver here.
+                # This driver will be bound as the Cloud disk implementation in the container.
+                cloud: "s3"
+                driver: "local"
+
+              covid:
+                enable_label: true
+                label_url: "https://www.who.int/emergencies/diseases/novel-coronavirus-2019/advice-for-public"
+                label_org: "visit the WHO website"
+
               laravel:
                 log_channel: stderr
+
+              # -- not entirely sure if this is a list of banned usernames or text to
+              # display instead of banned usernames
+              banned_usernames: ""
+
+              # -- delete local files after saving to the cloud
+              media_delete_local_after_cloud: true
+
+              # horizon - for interfacing with redis
+              horizon:
+                # -- prefix will be used when storing all Horizon data in Redis
+                prefix: "horizon-"
+                # -- darkmode for the web interface in the admin panel
+                dark_mode: false
+
+              # enable custom emojis
+              custom_emoji: true
+
+              # -- max size for custom emojis, in... bytes?
+              custom_emoji_max_size: 2000000
+
+              # -- types of media to allow
+              media_types: "image/jpeg,image/png,image/gif"
+
+              # -- exp loops (as in loops video? 🤷
+              exp_loops: false
+
+              # -- library to process images. options: "gd" (default), "imagick"
+              image_driver: "gd"
 
               # -- timezone for docker container
               timezone: "europe/amsterdam"
@@ -358,6 +399,8 @@ spec:
                 inbox: true
                 outbox: true
                 sharedinbox: true
+                # activity pub logger?
+                logger_enabled: false
 
               ###########################################################
               # Federation
