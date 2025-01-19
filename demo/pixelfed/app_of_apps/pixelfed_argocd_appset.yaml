@@ -50,7 +50,7 @@ spec:
       # where the is coming from
       source:
         repoURL: https://small-hack.github.io/pixelfed-chart
-        targetRevision: 0.11.1
+        targetRevision: 0.12.0
         chart: pixelfed
         helm:
           releaseName: pixelfed
@@ -226,6 +226,9 @@ spec:
 
               # app specific settings
               app:
+                # encryption key settings
+                existingSecret: ""
+                existingSecretKey: "key"
                 # -- The name of your server/instance
                 name: "{{ .pixelfed_name }}"
                 # -- change this to the domain of your pixelfed instance
