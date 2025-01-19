@@ -50,7 +50,7 @@ spec:
       # where the is coming from
       source:
         repoURL: https://small-hack.github.io/pixelfed-chart
-        targetRevision: 0.10.0
+        targetRevision: 0.11.0
         chart: pixelfed
         helm:
           releaseName: pixelfed
@@ -122,7 +122,7 @@ spec:
             # -- set sidecar containers to run along side the pixelfed container
             extraContainers: []
 
-            volumes: []
+            extraVolumes: []
             ## for postgres ssl certs
             #   - name: postgres-ca
             #     secret:
@@ -134,7 +134,7 @@ spec:
             #       secretName: pixelfed-postgres-pixelfed-cert
             #       defaultMode: 0640
 
-            volumeMounts: []
+            extraVolumeMounts: []
             ## for postgres ssl certs
             #   - name: postgres-ca
             #     mountPath: /etc/secrets/ca
