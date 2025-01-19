@@ -141,7 +141,6 @@ spec:
 
             externalDatabase:
               enabled: true
-              connection: pgsql
               tls_mode: "disable"
               sslcert: "/etc/secrets/pixelfed/tls.crt"
               sslkey: "/etc/secrets/pixelfed/tls.key"
@@ -176,8 +175,13 @@ spec:
               enabled: false
 
             pixelfed:
-              # -- Automatically run [artisan migrate --force] if new migrations are detected.
-              db_apply_new_migrations_automatically: false
+              db:
+                # -- Automatically run [artisan migrate --force] if new migrations are detected.
+                apply_new_migrations_automatically: false
+                connection: pgsql
+
+              laravel:
+                log_channel: stderr
 
               # -- timezone for docker container
               timezone: "europe/amsterdam"
