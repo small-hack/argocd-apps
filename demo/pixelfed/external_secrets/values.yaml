@@ -16,6 +16,9 @@ oidcCredentialsBitwardenID: ""
 # -- valkey credentials
 valkeyCredentialsBitwardenID: ""
 
+# -- pixelfed app key
+appKeyBitwardenID: ""
+
 ###############
 ### S3 Config #
 ###############
