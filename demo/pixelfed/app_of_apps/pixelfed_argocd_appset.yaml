@@ -120,30 +120,30 @@ spec:
             envFrom: []
 
             # -- set extra init containers
-            extraInitContainers:
-              - name: create-dot-env-file
-                image: alpine:latest
-                command: /bin/sh
-                args:
-                  - "-c"
-                  - "env"
-                  - ">"
-                  - ".env"
-                imagePullPolicy: Always
-                envFrom:
-                  - configMapRef:
-                    name: pixelfed-env
-                volumeMounts:
-                  - name: dot-env-config
-                    mountPath: /var/www
-                    subPath: .env
+            extraInitContainers: []
+            #   - name: create-dot-env-file
+            #     image: alpine:latest
+            #     command: /bin/sh
+            #     args:
+            #       - "-c"
+            #       - "env"
+            #       - ">"
+            #       - ".env"
+            #     imagePullPolicy: Always
+            #     envFrom:
+            #       - configMapRef:
+            #         name: pixelfed-env
+            #     volumeMounts:
+            #       - name: dot-env-config
+            #         mountPath: /var/www
+            #         subPath: .env
 
             # -- set sidecar containers to run along side the pixelfed container
             extraContainers: []
 
-            extraVolumes:
-              - name: dot-env-config
-                emptyDir: {}
+            extraVolumes: []
+            #  - name: dot-env-config
+            #    emptyDir: {}
 
             ## for postgres ssl certs
             #   - name: postgres-ca
