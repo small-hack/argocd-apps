@@ -186,14 +186,11 @@ spec:
             # -- PHP Configuration files
             # Will be injected in /usr/local/etc/php-fpm.d
             phpConfigs:
-              #  www.conf: |-
-              #    [www]
-              #    user = www-data
-              #    group = www-data
               www.conf: |-
                 [www]
+                user = www-data
+                group = www-data
                 security.limit_extensions = .php .css .js .html
-                listen = 127.0.0.1:9000
                 pm = dynamic
                 pm.max_children = 350
                 pm.start_servers = 100
