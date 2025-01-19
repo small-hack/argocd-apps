@@ -34,7 +34,7 @@ spec:
           selfHeal: true
       source:
         repoURL: 'https://small-hack.github.io/vouch-helm'
-        targetRevision: 4.3.0
+        targetRevision: 4.3.1
         chart: vouch
         helm:
           values: |
