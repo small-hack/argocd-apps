@@ -77,7 +77,7 @@ spec:
               # repository: jippi/docker-pixelfed
               # tag: v0.12.4-docker3-nginx-8.3-bookworm
 
-            revisionHistoryLimit: 3
+            revisionHistoryLimit: 2
 
             ingress:
               enabled: true
