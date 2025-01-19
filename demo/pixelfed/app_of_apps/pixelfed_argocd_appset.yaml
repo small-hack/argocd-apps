@@ -192,6 +192,7 @@ spec:
                 group = www-data
                 listen.owner = www-data
                 listen.group = www-data
+                listen.mode = 0660
                 security.limit_extensions = .php .css .js .html
                 pm = dynamic
                 pm.max_children = 350
