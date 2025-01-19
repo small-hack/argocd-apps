@@ -190,6 +190,8 @@ spec:
                 [www]
                 user = www-data
                 group = www-data
+                listen.owner = www-data
+                listen.group = www-data
                 security.limit_extensions = .php .css .js .html
                 pm = dynamic
                 pm.max_children = 350
