@@ -104,16 +104,14 @@ spec:
                 cpu: 500m
                 memory: 512Mi
 
-            # for postgres ssl certs
-            extraEnv:
-              - name: "PGSSLCERT"
-                value: /etc/secrets/pixelfed/tls.crt
-
-              - name: "PGSSLKEY"
-                value: /etc/secrets/pixelfed/tls.key
-
-              - name: "PGSSLROOTCERT"
-                value: /etc/secrets/ca/ca.crt
+            # for postgres ssl certs at a later time
+            # extraEnv:
+            #   - name: "PGSSLCERT"
+            #     value: /etc/secrets/pixelfed/tls.crt
+            #   - name: "PGSSLKEY"
+            #     value: /etc/secrets/pixelfed/tls.key
+            #   - name: "PGSSLROOTCERT"
+            #     value: /etc/secrets/ca/ca.crt
 
             # extraEnvFrom, just in case we need it later
             envFrom: []
@@ -124,25 +122,25 @@ spec:
             # -- set sidecar containers to run along side the pixelfed container
             extraContainers: []
 
-            # for postgres ssl certs
-            volumes:
-              - name: postgres-ca
-                secret:
-                  secretName: pixelfed-postgres-server-ca-key-pair
-                  defaultMode: 0640
+            volumes: []
+            ## for postgres ssl certs
+            #   - name: postgres-ca
+            #     secret:
+            #       secretName: pixelfed-postgres-server-ca-key-pair
+            #       defaultMode: 0640
 
-              - name: postgres-client-certs
-                secret:
-                  secretName: pixelfed-postgres-pixelfed-cert
-                  defaultMode: 0640
+            #   - name: postgres-client-certs
+            #     secret:
+            #       secretName: pixelfed-postgres-pixelfed-cert
+            #       defaultMode: 0640
 
-            # for postgres ssl certs
-            volumeMounts:
-              - name: postgres-ca
-                mountPath: /etc/secrets/ca
+            volumeMounts: []
+            ## for postgres ssl certs
+            #   - name: postgres-ca
+            #     mountPath: /etc/secrets/ca
 
-              - name: postgres-client-certs
-                mountPath: /etc/secrets/pixelfed
+            #   - name: postgres-client-certs
+            #     mountPath: /etc/secrets/pixelfed
 
             # not a thing yet
             # persistence:
@@ -152,9 +150,9 @@ spec:
             externalDatabase:
               enabled: true
               tls_mode: "disable"
-              sslcert: "/etc/secrets/pixelfed/tls.crt"
-              sslkey: "/etc/secrets/pixelfed/tls.key"
-              ca_cert: "/etc/secrets/ca/ca.crt"
+              # sslcert: "/etc/secrets/pixelfed/tls.crt"
+              # sslkey: "/etc/secrets/pixelfed/tls.key"
+              # ca_cert: "/etc/secrets/ca/ca.crt"
               existingSecret: "pixelfed-pgsql-credentials"
               existingSecretKeys:
                 password: postgresPassword
