@@ -193,12 +193,12 @@ spec:
                 listen.owner = www-data
                 listen.group = www-data
                 listen.mode = 0660
-                security.limit_extensions = .php .css .js .html
-                pm = dynamic
-                pm.max_children = 350
-                pm.start_servers = 100
-                pm.min_spare_servers = 100
-                pm.max_spare_servers = 280
+              #   security.limit_extensions = .php .css .js .html
+              #   pm = dynamic
+              #   pm.max_children = 350
+              #   pm.start_servers = 100
+              #   pm.min_spare_servers = 100
+              #   pm.max_spare_servers = 280
 
             pixelfed:
               db:
@@ -394,7 +394,8 @@ spec:
               runAsGroup: 33
               fsGroup: 33
 
-            securityContext: {}
+            securityContext:
+              runAsUser: 33
 
             serviceAccount:
               # -- Specifies whether a service account should be created
