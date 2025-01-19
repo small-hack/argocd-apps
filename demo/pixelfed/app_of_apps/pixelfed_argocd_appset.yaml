@@ -50,7 +50,7 @@ spec:
       # where the is coming from
       source:
         repoURL: https://small-hack.github.io/pixelfed-chart
-        targetRevision: 0.14.0
+        targetRevision: 0.14.1
         chart: pixelfed
         helm:
           releaseName: pixelfed
@@ -108,7 +108,7 @@ spec:
                 memory: 512Mi
 
             # for postgres ssl certs at a later time
-            # extraEnv:
+            extraEnv: []
             #   - name: "PGSSLCERT"
             #     value: /etc/secrets/pixelfed/tls.crt
             #   - name: "PGSSLKEY"
@@ -120,12 +120,26 @@ spec:
             envFrom: []
 
             # -- set extra init containers
-            extraInitContainers: []
+            extraInitContainers:
+              - name: create-dot-env-file
+                image: alpine:latest
+                imagePullPolicy: Always
+                envFrom:
+                  - configMapRef:
+                    name: pixelfed-env
+                volumeMounts:
+                  - name: dot-env-config
+                    mountPath: /var/www
+                    subPath: .env
 
             # -- set sidecar containers to run along side the pixelfed container
             extraContainers: []
 
-            extraVolumes: []
+            extraVolumes:
+              - name: dot-env-config
+                configmap:
+                  name: pixelfed-env
+
             ## for postgres ssl certs
             #   - name: postgres-ca
             #     secret:
