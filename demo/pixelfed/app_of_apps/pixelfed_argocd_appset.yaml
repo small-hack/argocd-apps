@@ -63,7 +63,10 @@ spec:
               repository: mattlqx/docker-pixelfed
               pullPolicy: "Always"
               # older image
-              # tag: v0.12.1-nginx
+              # tag: v0.12.4
+              #
+              # top of dev branch image
+              tag: dev-nginx
 
               ## these require an .env file
               #
