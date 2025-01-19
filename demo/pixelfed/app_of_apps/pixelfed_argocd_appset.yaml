@@ -182,6 +182,24 @@ spec:
             postgresql:
               enabled: false
 
+
+            # -- PHP Configuration files
+            # Will be injected in /usr/local/etc/php-fpm.d
+            phpConfigs:
+              #  www.conf: |-
+              #    [www]
+              #    user = www-data
+              #    group = www-data
+              www.conf: |-
+                [www]
+                security.limit_extensions = .php .css .js .html
+                listen = 127.0.0.1:9000
+                pm = dynamic
+                pm.max_children = 350
+                pm.start_servers = 100
+                pm.min_spare_servers = 100
+                pm.max_spare_servers = 280
+
             pixelfed:
               db:
                 # -- Automatically run [artisan migrate --force] if new migrations are detected.
