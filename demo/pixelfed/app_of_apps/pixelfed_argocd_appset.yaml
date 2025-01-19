@@ -115,8 +115,17 @@ spec:
               - name: "PGSSLROOTCERT"
                 value: /etc/secrets/ca/ca.crt
 
+            # extraEnvFrom, just in case we need it later
+            envFrom: []
+
+            # -- set extra init containers
+            extraInitContainers: []
+
+            # -- set sidecar containers to run along side the pixelfed container
+            extraContainers: []
+
             # for postgres ssl certs
-            extraVolumes:
+            volumes:
               - name: postgres-ca
                 secret:
                   secretName: pixelfed-postgres-server-ca-key-pair
@@ -128,16 +137,17 @@ spec:
                   defaultMode: 0640
 
             # for postgres ssl certs
-            extraVolumeMounts:
+            volumeMounts:
               - name: postgres-ca
                 mountPath: /etc/secrets/ca
 
               - name: postgres-client-certs
                 mountPath: /etc/secrets/pixelfed
 
-            persistence:
-              enabled: true
-              existingClaim: "pixelfed"
+            # not a thing yet
+            # persistence:
+            #   enabled: true
+            #   existingClaim: "pixelfed"
 
             externalDatabase:
               enabled: true
