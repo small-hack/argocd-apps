@@ -59,14 +59,15 @@ spec:
 
             image:
               # default for this chart
-              registry: ghcr.io
-              repository: mattlqx/docker-pixelfed
-              pullPolicy: "Always"
               # older image
               # tag: v0.12.4
-              #
               # top of dev branch image
-              tag: dev-nginx
+              # pullPolicy: "Always"
+              # tag: dev-nginx
+
+              # https://github.com/pixelfed-glitch/pixelfed/pkgs/container/pixelfed
+              repository: pixelfed-glitch/pixelfed
+              tag: nginx-8.4-0.12.4-glitch.1.8.0
 
               ## these require an .env file
               #
