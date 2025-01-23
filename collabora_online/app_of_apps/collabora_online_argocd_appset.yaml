@@ -35,7 +35,7 @@ spec:
           selfHeal: true
       source:
         repoURL: 'https://collaboraonline.github.io/online'
-        targetRevision: 1.1.30
+        targetRevision: 1.1.31
         chart: collabora-online
         helm:
           ## Collabora chart configuration
