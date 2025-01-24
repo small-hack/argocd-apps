@@ -41,8 +41,8 @@ spec:
           prune: true
           selfHeal: true
       source:
-        repoURL: 'https://charts.fsociety.social'
-        targetRevision: 1.0.0
+        repoURL: 'https://charts.schoenwald.aero'
+        targetRevision: 1.0.1
         chart: gotosocial
         helm:
           releaseName: gotosocial
