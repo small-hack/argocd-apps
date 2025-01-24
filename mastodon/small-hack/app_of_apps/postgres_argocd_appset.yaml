@@ -91,7 +91,7 @@ spec:
 
             postgresql:
               parameters:
-                max_wal_size: 10GB
+                max_wal_size: 512MB
                 wal_keep_size: 10GB
               pg_hba:
                 - hostnossl all all 0.0.0.0/0 reject
