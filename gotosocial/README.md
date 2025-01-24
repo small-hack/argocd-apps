@@ -12,6 +12,7 @@ In the [`./app_of_apps`](./app_of_apps) directory we create the manifests and he
 2. SeaweedFS file system and s3 endpoint with two buckets, one for Postgres backups and one for GoToSocial media
 3. Postgresql Cluster
 4. GoToSocial helm app
+  <img width="1274" alt="Screenshot of the GoToSocial Argo CD helm chart app in the web inteface using tree view mode. It shows a branching structured flow map that goes from left to right: gotosocial-web-app to gotosocial secret, gotosocial service (which branches to a gotosocial endpoint end endpoint slice), gotosocial service account, gotosocial deployment (which branches to a gotosocial replica set which branches to a gotosocial pod), and finally a gotosocial ingress which branches to a gotosocial TLS certificate" src="https://github.com/user-attachments/assets/e07af4db-5c55-4142-90c8-6fe61d5b684b" />
 
 ## Additional Info
 
