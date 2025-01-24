@@ -87,8 +87,9 @@ spec:
               enablePodMonitor: false
             postgresql:
               parameters:
-                max_wal_size: 512MB
-                wal_keep_size: 10GB
+                max_wal_size: "1GB"
+                wal_keep_size: "10GB"
+                max_slot_wal_keep_size: "10GB"
               pg_hba:
                 - host all all 0.0.0.0/0 md5
                 # uncomment when pgsql cert connections are working to gotosocial
