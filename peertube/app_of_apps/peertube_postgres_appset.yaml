@@ -95,6 +95,10 @@ spec:
               enablePodMonitor: true
 
             postgresql:
+              parameters:
+                max_wal_size: "1GB"
+                wal_keep_size: "10GB"
+                max_slot_wal_keep_size: "10GB"
               pg_hba:
                 - host all all 0.0.0.0/0 md5
 
