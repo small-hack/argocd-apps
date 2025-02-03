@@ -16,6 +16,17 @@ spec:
   # this generator allows us to values from an external k8s secret
   generators:
 
+    # local environment
+    - clusters:
+        selector:
+          matchLabels:
+            environment: "jesse-local"
+        # values to be templated into the Argo CD application
+        values:
+          # gets updated on push to main
+          version: 0.2.0
+          namespace: test
+
     # dev environment
     - clusters:
         selector:
@@ -24,7 +35,8 @@ spec:
         # values to be templated into the Argo CD application
         values:
           # gets updated on push to main
-          version: 0.2.0
+          version: 0.1.0
+          namespace: main
 
     # prod environment
     - clusters:
@@ -35,19 +47,20 @@ spec:
         values:
           # gets updated after user clicks approve button after main is successfully rolled out
           version: 0.1.0
+          namespace: main
 
   template:
     metadata:
       name: example-web-app
-      annotations:
-        argocd.argoproj.io/sync-wave: "4"
-        argocd.argoproj.io/sync-options: ApplyOnly=true
+
     spec:
       project: example
+
       # where the app is going
       destination:
-        server: https://kubernetes.default.svc
+        server: "{{ .server }}"
         namespace: example
+
       # reconciliation policy
       syncPolicy:
         syncOptions:
