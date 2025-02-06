@@ -11,7 +11,7 @@ spec:
   source:
     path: ''
     repoURL: 'https://cloudymax.github.io/kubevirt-community-stack/'
-    targetRevision: 0.4.10
+    targetRevision: 0.4.11
     chart: kubevirt-vm
     helm:
       valuesObject:
