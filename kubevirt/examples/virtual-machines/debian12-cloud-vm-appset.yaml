@@ -47,7 +47,7 @@ spec:
           selfHeal: true
       source:
         repoURL: 'https://cloudymax.github.io/kubevirt-community-stack/'
-        targetRevision: 0.4.11
+        targetRevision: 0.4.12
         chart: kubevirt-vm
         helm:
           valuesObject:
