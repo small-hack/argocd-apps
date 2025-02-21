@@ -9,7 +9,7 @@ spec:
     server: 'https://kubernetes.default.svc'
   source:
     repoURL: 'https://charts.jfrog.io'
-    targetRevision: 107.104.7
+    targetRevision: 107.104.9
     chart: artifactory-oss
     helm:
       parameters:
