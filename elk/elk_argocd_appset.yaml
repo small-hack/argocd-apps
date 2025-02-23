@@ -16,6 +16,7 @@ spec:
             secret_vars:
               - global_time_zone
               - global_cluster_issuer
+              - global_storage_class
               - elk_hostname
   template:
     metadata:
@@ -50,7 +51,7 @@ spec:
               enabled: false
               size: 1Gi
               accessMode: ReadWriteOnce
-              storageClass: ""
+              storageClass: "{{ .global_storage_class }}"
 
             ingress:
               enabled: true
