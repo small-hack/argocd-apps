@@ -51,6 +51,46 @@ spec:
             fullnameOverride: gotosocial
             image:
               repository: superseriousbusiness/gotosocial
+              tag: 0.18.0
+
+            startupProbe:
+              httpGet:
+                ## @param startupProbe.httpGet.path Path to access on the HTTP server
+                path: /livez
+                ## @param startupProbe.httpGet.port Port for startupProbe
+                port: http
+              ## @param startupProbe.failureThreshold Failure threshold for startupProbe
+              failureThreshold: 60
+              ## @param startupProbe.periodSeconds Period seconds for startupProbe
+              periodSeconds: 30
+              ## @param startupProbe.initialDelaySeconds ensures probes don't start prematurely.
+              initialDelaySeconds: 300
+
+            livenessProbe:
+              httpGet:
+                ## @param livenessProbe.httpGet.path Path to access on the HTTP server
+                path: /livez
+                ## @param livenessProbe.httpGet.port Port for livenessProbe
+                port: http
+              ## @param livenessProbe.failureThreshold Failure threshold for livenessProbe
+              failureThreshold: 20
+              ## @param livenessProbe.periodSeconds Period seconds for livenessProbe, Default: Check every 30 seconds to reduce overhead
+              periodSeconds: 30
+              ## @param livenessProbe.initialDelaySeconds ensures probes don't start prematurely.
+              initialDelaySeconds: 300
+
+            readinessProbe:
+              httpGet:
+                ## @param readinessProbe.httpGet.path Path to access on the HTTP server
+                path: /readyz
+                ## @param readinessProbe.httpGet.port Port for readinessProbe
+                port: http
+              ## @param readinessProbe.failureThreshold Failure threshold for readinessProbe
+              failureThreshold: 20
+              ## @param readinessProbe.periodSeconds Period seconds for readinessProbe, Default: Check every 10 seconds for readiness
+              periodSeconds: 30
+              ## @param readinessProbe.initialDelaySeconds ensures probes don't start prematurely.
+              initialDelaySeconds: 300
 
             ingress:
               enabled: true
