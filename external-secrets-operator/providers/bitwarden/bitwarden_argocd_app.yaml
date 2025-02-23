@@ -8,7 +8,7 @@ spec:
   project: external-secrets-operator
   source:
     repoURL: 'https://small-hack.github.io/bitwarden-eso-provider'
-    targetRevision: 0.11.0
+    targetRevision: 0.12.0
     chart: bitwarden-eso-provider
     helm:
       values: |
