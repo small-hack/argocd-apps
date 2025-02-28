@@ -42,7 +42,7 @@ spec:
       source:
         repoURL: https://argoproj.github.io/argo-helm
         chart: argo-cd
-        targetRevision: 7.8.5
+        targetRevision: 7.8.6
         helm:
           releaseName: argo-cd
           valuesObject:
