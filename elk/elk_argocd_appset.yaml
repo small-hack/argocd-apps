@@ -40,12 +40,15 @@ spec:
       # where to source this app from
       source:
         # https://github.com/0hlov3/charts/tree/main/charts/elk-frontend
-        repoURL: 'https://charts.schoenwald.aero'
-        targetRevision: 0.2.17
-        chart: elk-frontend
+        # repoURL: 'https://charts.schoenwald.aero'
+        # targetRevision: 0.2.17
+        # chart: elk-frontend
+        # temporary until we can get our PR merged: https://github.com/0hlov3/charts/pull/40
+        repoURL: https://github.com/jessebot/charts-1
+        targetRevision: add-elk-env-vars
+        path: charts/elk-frontend/
         helm:
           valuesObject:
-
             # disable persistence during testing
             persistence:
               enabled: false
@@ -68,3 +71,6 @@ spec:
                 - secretName: elk-tls
                   hosts:
                     - '{{ .elk_hostname }}'
+
+            elk:
+              existingEnvSecret: elk-env
