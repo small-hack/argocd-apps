@@ -26,6 +26,14 @@ k8up:
   # -- can be set to 's3' or 'local'
   backup_type: "s3"
 
+  retention:
+    # -- daily backups to keep
+    keepDaily: 7
+    # -- weekly backups to keep
+    keepWeekly: 2
+    # -- weekly backups to keep
+    keepMonthly: 1
+
   s3:
     # -- s3 bucket to backup to
     bucket: ''

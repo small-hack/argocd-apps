@@ -1,0 +1,75 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: kubevirt-manager-app-set
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "5"
+spec:
+  goTemplate: true
+  # generator allows us to source specific values from an external k8s secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - kubevirt_manager_hostname
+              - global_cluster_issuer
+              - vouch_hostname
+  template:
+    metadata:
+      name: kubevirt-manager
+      annotations:
+        argocd.argoproj.io/sync-wave: "5"
+    spec:
+      project: kubevirt
+      destination:
+        server: "https://kubernetes.default.svc"
+        namespace: kubevirt-manager
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+          - CreateNamespace=true
+        automated:
+          prune: true
+          selfHeal: true
+      source:
+        repoURL: 'https://cloudymax.github.io/kubevirt-community-stack/'
+        targetRevision: 0.2.2
+        chart: kubevirt-manager
+        helm:
+          valuesObject:
+            replicaCount: 1
+            service:
+              type: ClusterIP
+              port: 8080
+              protocol: TCP
+              name: http
+            prometheus:
+              enabled: true
+              serviceName: prometheus-prom-stack-prometheus-0
+              serviceNamespace: promethus
+            ingress:
+              enabled: true
+              className: "nginx"
+              hostname: kubevirt.buildstar.online
+              annotations:
+                cert-manager.io/cluster-issuer: "{{ .global_cluster_issuer }}"
+                nginx.ingress.kubernetes.io/auth-signin: "https://{{ .vouch_hostname }}/login?url=$scheme://$http_host$request_uri&vouch-failcount=$auth_resp_failcount&X-Vouch-Token=$auth_resp_jwt&error=$auth_resp_err"
+                nginx.ingress.kubernetes.io/auth-url: https://{{ .vouch_hostname }}/validate
+                nginx.ingress.kubernetes.io/auth-response-headers: X-Vouch-User
+                nginx.ingress.kubernetes.io/auth-snippet: |
+                  auth_request_set $auth_resp_jwt $upstream_http_x_vouch_jwt;
+                  auth_request_set $auth_resp_err $upstream_http_x_vouch_err;
+                  auth_request_set $auth_resp_failcount $upstream_http_x_vouch_failcount;
+                  # when VP is hosted externally to k8s ensure the SSL cert is valid to avoid MITM risk
+                  proxy_ssl_trusted_certificate /etc/ssl/certs/ca-certificates.crt;
+                  proxy_ssl_session_reuse on;
+                  proxy_ssl_verify_depth 2;
+                  proxy_ssl_verify on;
+              tls:
+                enabled: true
+                secretName: "tls-kubevirt-manager"

@@ -65,7 +65,7 @@ spec:
                   secretAccessKey:
                     name: mastodon-s3-credentials
                     key: "S3_PASSWORD"
-              retentionPolicy: "30d"
+              retentionPolicy: "7d"
 
             certificates:
               server:

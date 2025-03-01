@@ -37,19 +37,18 @@ spec:
           prune: true
           selfHeal: true
       source:
-        repoURL: 'https://git.deuxfleurs.fr/Deuxfleurs/garage'
+        # using fork until https://git.deuxfleurs.fr/Deuxfleurs/garage/pulls/923 is merged
+        repoURL: 'https://git.deuxfleurs.fr/jessebot/garage'
         path: 'script/helm/garage/'
-        targetRevision: main
+        targetRevision: allow-existing-configmap
         helm:
-          values: |
-            # Default values for garage.
-            # This is a YAML-formatted file.
-            # Declare variables to be passed into your templates.
-
+          # https://git.deuxfleurs.fr/Deuxfleurs/garage/src/branch/main/script/helm/garage/values.yaml
+          valuesObject:
             # Garage configuration. These values go to garage.toml
             garage:
               # Can be changed for better performance on certain systems
               # https://garagehq.deuxfleurs.fr/documentation/reference-manual/configuration/#db-engine-since-v0-8-0
+              # dbEngine: "lmdb"
               dbEngine: "sled"
 
               # Defaults is 1MB
@@ -83,48 +82,6 @@ spec:
                 web:
                   rootDomain: "{{ .garage_hostname }}"
                   index: "index.html"
-
-              # Template for the garage configuration
-              # Values can be templated
-              # ref: https://garagehq.deuxfleurs.fr/documentation/reference-manual/configuration/
-              garage.toml: |-
-                metadata_dir = "/mnt/meta"
-                data_dir = "/mnt/data"
-
-                db_engine = "sled"
-
-                block_size = "1048576"
-
-                sledCacheCapacity = "134217728"
-                sledFlushEveryMs = "2000"
-
-                replication_mode = "1"
-
-                compression_level = 1
-
-                rpc_bind_addr = "[::]:3901"
-                # rpc_secret will be populated by the init container from a k8s secret object
-                rpc_secret = "__RPC_SECRET_REPLACE__"
-
-                bootstrap_peers = []
-
-                [kubernetes_discovery]
-                namespace = "garage"
-                service_name = "garage"
-                skip_crd = false
-
-                [s3_api]
-                s3_region = "{{ .garage_s3_region }}"
-                api_bind_addr = "[::]:3900"
-                root_domain = "{{ .garage_s3_endpoint }}"
-
-                [s3_web]
-                bind_addr = "[::]:3902"
-                root_domain = "{{ .garage_hostname }}"
-                index = "index.html"
-
-                [admin]
-                api_bind_addr = "[::]:3903"
 
             # Data persistence
             persistence:
@@ -209,10 +166,10 @@ spec:
                   # you can find examples here https://kubernetes.io/docs/concepts/services-networking/ingress-controllers
                   className: "nginx"
                   annotations:
-                    cert-manager.io/cluster-issuer: {{ .global_cluster_issuer }}
+                    cert-manager.io/cluster-issuer: "{{ .global_cluster_issuer }}"
                   labels: {}
                   hosts:
-                    - host: "{{ .garage_s3_endpoint }}" 
+                    - host: "{{ .garage_s3_endpoint }}"
                       paths:
                         - path: /
                           pathType: Prefix
@@ -223,7 +180,7 @@ spec:
                   tls:
                     - secretName: garage-tls
                       hosts:
-                        - {{ .garage_s3_endpoint }}
+                        - "{{ .garage_s3_endpoint }}"
                 web:
                   enabled: false
                   # Rely either on the className or the annotation below but not both
@@ -231,7 +188,7 @@ spec:
                   # you can find examples here https://kubernetes.io/docs/concepts/services-networking/ingress-controllers
                   className: "nginx"
                   annotations:
-                    cert-manager.io/cluster-issuer: {{ .global_cluster_issuer }}
+                    cert-manager.io/cluster-issuer: "{{ .global_cluster_issuer }}"
                   labels: {}
                   hosts:
                    - host: "*.{{ .garage_hostname }}" # wildcard website access with bucket name prefix
@@ -245,7 +202,7 @@ spec:
                   tls:
                     - secretName: garage-cluster-tls
                       hosts:
-                        - {{ .garage_hostname }}
+                        - "{{ .garage_hostname }}"
 
             resources: {}
               # The following are indicative for a small-size deployement, for anything serious double them.
@@ -261,6 +218,12 @@ spec:
             tolerations: []
 
             affinity: {}
+
+            environment: {}
+
+            extraVolumes: {}
+
+            extraVolumeMounts: {}
 
             monitoring:
               metrics:

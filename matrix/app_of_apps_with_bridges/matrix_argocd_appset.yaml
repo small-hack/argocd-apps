@@ -15,9 +15,11 @@ spec:
         input:
           parameters:
             secret_vars:
+              - zitadel_hostname
               - matrix_hostname
               - matrix_element_hostname
               - matrix_federation_hostname
+              # - matrix_auth_hostname
               - matrix_admin_email
               - matrix_admin_users
               - matrix_s3_bucket
@@ -27,16 +29,6 @@ spec:
               - prometheus_alert_manager_hostname
               - prometheus_grafana_hostname
               - global_cluster_issuer
-  templatePatch: |
-    spec:
-      source:
-        helm:
-          parameters:
-            {{- $users := .matrix_admin_users }}
-            {{- range $index, $user := $users }}
-            - name: bridges.discord_mautrix.admin_users[{{ $index }}]
-              value: {{ $user }}
-            {{- end }}
   template:
     metadata:
       name: matrix-web-app
@@ -55,7 +47,7 @@ spec:
           selfHeal: true
       source:
         repoURL: 'https://small-hack.github.io/matrix-chart'
-        targetRevision: 16.0.1
+        targetRevision: 18.4.0
         chart: matrix
         # repoURL: 'https://github.com/small-hack/matrix-chart'
         # targetRevision: main
@@ -105,6 +97,14 @@ spec:
                 msc3202_device_masquerading: true
                 msc3202_transaction_extensions: true
                 msc2409_to_device_messages_enabled: true
+
+                # experimental_feature msc3861 - enable this if you want to use the matrix authentication service
+                msc3861:
+                  enabled: false
+                  # -- Matches the `client_auth_method` in the auth service config
+                  client_auth_method: client_secret_basic
+                  # -- URL to advertise to clients where users can self-manage their account
+                  # account_management_url: "https://{{ .matrix_auth_hostname }}/account"
 
               # Settings related to federation
               federation:
@@ -348,8 +348,6 @@ spec:
             synapse:
               revisionHistoryLimit: 1
               image:
-                # -- image registry and repository to use for synapse
-                repository: "matrixdotorg/synapse"
                 # -- pullPolicy for synapse image, Use Always if using image.tag: latest
                 pullPolicy: IfNotPresent
 
@@ -454,12 +452,201 @@ spec:
                 - name: PIP_CACHE_DIR
                   value: /tmp
 
+            mas:
+              enabled: false
+              fullnameOverride: "mas"
+
+              # ssl must be disabled till this is fixed:
+              # https://github.com/matrix-org/matrix-authentication-service/issues/2799
+              # extraVolumes:
+              #   - name: postgres-ca
+              #     secret:
+              #       secretName: mas-postgres-server-ca-key-pair
+              #       defaultMode: 0640
+
+              #   - name: postgres-client-certs
+              #     secret:
+              #       secretName: mas-postgres-mas-cert
+              #       defaultMode: 0640
+
+              # extraVolumeMounts:
+              #   - name: postgres-ca
+              #     mountPath: /etc/secrets/ca
+
+              #   - name: postgres-client-certs
+              #     mountPath: /etc/secrets/mas
+
+              externalDatabase:
+                enabled: true
+                # ssl must be disabled till this is fixed:
+                # https://github.com/matrix-org/matrix-authentication-service/issues/2799
+                # sslrootcert: /etc/secrets/ca/ca.crt
+                # sslcert: /etc/secrets/mas/tls.crt
+                # sslkey: /etc/secrets/mas/tls.key
+                sslmode: disable
+                port: 5432
+                username: mas
+                database: mas
+                existingSecret: "mas-pgsql-credentials"
+                secretKeys:
+                  databaseHostname: hostname
+                  database: database
+                  databaseUsername: username
+                  userPasswordKey: password
+                  adminPasswordKey: postgresPassword
+
+              networkPolicies:
+                enabled: false
+
+              # for storing your matrix authentication service config file
+              configVolume:
+                existingClaim: "mas-config"
+
+              ingress:
+                # MAS ingress
+                enabled: true
+                className: "nginx"
+                annotations:
+                  cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
+                hosts:
+                  - host: '{{ .matrix_auth_hostname }}'
+                    paths:
+                      - path: /
+                        pathType: Prefix
+                tls:
+                  - secretName: matrix-authentication-service-tls
+                    hosts:
+                      - '{{ .matrix_auth_hostname }}'
+
+              # templates out the Matrix Authentication Service config file
+              mas:
+                database:
+                  uri: ""
+
+                http:
+                  # -- Public URL base used when building absolute public URLs
+                  public_base: "https://{{ .matrix_auth_hostname }}/"
+                  # List of HTTP listeners, see below
+                  listeners:
+                    # The name of the listener, used in logs and metrics
+                    - name: web
+                      # List of resources to serve
+                      resources:
+                        # Serves the .well-known/openid-configuration document
+                        - name: discovery
+                        # Serves the human-facing pages, such as the login page
+                        - name: human
+                        # Serves the OAuth 2.0/OIDC endpoints
+                        - name: oauth
+                        # Serves the Matrix C-S API compatibility endpoints
+                        - name: compat
+                        # Serve the GraphQL API used by the frontend,
+                        # and optionally the GraphQL playground
+                        - name: graphql
+                        #   playground: true
+                        - name: health
+                        - name: assets
+                      # List of addresses and ports to listen to
+                      binds:
+                        # First option: listen to the given address
+                        # - address: "[::]:8080"
+                        # Second option: listen on the given host and port combination
+                        - host: 0.0.0.0
+                          port: 8080
+                      # Whether to enable the PROXY protocol on the listener
+                      proxy_protocol: false
+
+                policy:
+                  client_registration:
+                    # don't require URIs to be on the same host. default: false
+                    allow_host_mismatch: true
+                    # allow non-SSL and localhost URIs. default: false
+                    allow_insecure_uris: true
+
+                masClientSecret:
+                  # -- use an existing secret for clients section of config.yaml for:
+                  # mas.clients[0].client_id, mas.clients[0].client_secret
+                  # if set, ignores mas.clients[0].client_id, mas.clients[0].client_secret
+                  existingSecret: "matrix-authentication-service"
+                  secretKeys:
+                    # -- key in secret with the client_id
+                    client_id: "client_id"
+                    # -- key in secret with the client_secret
+                    client_secret: "client_secret"
+
+                # this is mostly ignored in favor of the above masClientSecret variable
+                clients:
+                  - client_id: ""
+                    client_auth_method: client_secret_basic
+                    client_secret: ""
+
+                matrix:
+                  homeserver: "{{ .matrix_hostname }}"
+                  endpoint: "https://{{ .matrix_hostname }}"
+                  existingSecret: "matrix-authentication-service"
+                  secretKey: "token"
+
+                upstream_oauth2:
+                  existingSecret: "synapse-oidc"
+                  secretKeys:
+                    # -- key in secret with the issuer
+                    issuer: "issuer"
+                    # -- key in secret with the client_id
+                    client_id: "client_id"
+                    # -- key in secret with the client_secret
+                    client_secret: "client_secret"
+                    # -- ulid for id
+                    id: "provider_id"
+
+                  providers:
+                    # -- A unique identifier for the provider
+                    # Must be a valid ULID, and can be generated using online tools like:
+                    # https://www.ulidtools.com
+                    - id: ""
+                      issuer: https://example.com/
+                      # human_name: zitadel
+                      # brand_name: zitadel
+                      client_id: ""
+                      client_secret: ""
+
+                      # owth Supported methods are:
+                      #   - `client_secret_post`
+                      #   - `client_secret_jwt`
+                      #   - `private_key_jwt` (using the keys defined in the `secrets.keys` section)
+                      token_endpoint_auth_method: client_secret_basic
+                      # for `private_key_jwt` or the `client_secret_jwt` auth methods
+                      # token_endpoint_auth_signing_alg: RS256
+                      scope: "openid email profile"
+                      discovery_mode: oidc
+                      # other values: always (use PKCE with the S256 method) or never
+                      pkce_method: auto
+                      # This takes precedence over the discovery mechanism
+                      # jwks_uri: https://example.com/oauth2/keys
+                      claims_imports:
+                        subject:
+                          template: "{{`{{ user.sub }}`}}"
+
+                        localpart:
+                          action: require
+                          template: "{{`{{ user.preferred_username }}`}}"
+
+                        displayname:
+                          action: suggest
+                          template: "{{`{{ user.name }}`}}"
+
+                        email:
+                          action: suggest
+                          template: "{{`{{ user.email }}`}}"
+                          set_email_verification: always
+
             # Element client configuration. see: https://element.io/
             element:
               # -- Set to false to disable a deployment of Element. Users will still be able
               # to connect via any other instances of Element e.g. https://app.element.io,
               # Element Desktop, or any other Matrix clients
               enabled: true
+
+              revisionHistoryLimit: 1
 
               ingress:
                 # -- enable ingress for element
@@ -619,7 +806,7 @@ spec:
 
               discord_mautrix:
                 # -- Set to true to enable the Discord bridge. Learn more in the [docs](https://docs.mau.fi/bridges/go/discord/index.html).
-                enabled: true
+                enabled: false
 
                 revisionHistoryLimit: 1
 

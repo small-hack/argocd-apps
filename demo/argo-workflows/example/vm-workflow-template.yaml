@@ -1,0 +1,240 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: kubevirt-vm-template
+  namespace: argocd
+spec:
+  serviceAccountName: operate-workflow-sa
+  entrypoint: create-argocd-application
+  templates:
+    - name: create-argocd-application
+      inputs:
+        parameters:
+          - name: action
+            value: "{{workflow.parameters.action}}"
+          - name: name
+            value: "{{workflow.parameters.name}}"
+      resource:
+        action: "{{inputs.parameters.action}}"
+        manifest: |
+          apiVersion: argoproj.io/v1alpha1
+          kind: Application
+          metadata:
+            name: "{{inputs.parameters.name}}"
+            namespace: argocd
+          spec:
+            project: default
+            destination:
+              namespace: kubevirt
+              server: 'https://kubernetes.default.svc'
+            syncPolicy:
+              automated:
+                prune: false
+                selfHeal: false
+              syncOptions:
+                - CreateNamespace=true
+            source:
+              repoURL: 'https://cloudymax.github.io/kubevirt-community-stack/'
+              targetRevision: 0.4.8
+              chart: kubevirt-vm
+              helm:
+                values: |
+                  virtualMachine:
+                    name: "{{inputs.parameters.name}}"
+                    namespace: kubevirt
+                    runStrategy: "Always"
+                    features:
+                      kvm:
+                        enabled: true
+                        hidden: false
+                      hyperv: false
+                      acpiEnabled: true
+                      autoattachPodInterface: true
+                      autoattachSerialConsole: true
+                      autoattachGraphicsDevice: true
+                      networkInterfaceMultiqueue: true
+                    clock:
+                      enabled: true
+                      timezone: utc
+                      hpet:
+                        enabled: true
+                        present: false
+                      pit:
+                        enabled: true
+                        tickPolicy: delay
+                      rtc:
+                        enabled: true
+                        tickPolicy: catchup
+                      kvm: true
+                      hyperv: false
+                    firmware:
+                      smmEnabled: false
+                      efi:
+                        enabled: true
+                        secureBoot: false
+                      uuid: 5d307ca9-b3ef-428c-8861-06e72d69f223
+                    machine:
+                      priorityClassName: vm-standard
+                      instancetype:
+                        enabled: false
+                        name: standard-small
+                        kind: virtualMachineClusterInstancetype
+                      architecture: amd64
+                      machineType: q35
+                      cpuModel: host-passthrough
+                      sockets: 2
+                      vCores: 1
+                      threads: 1
+                      pinCores: true
+                      emulatorThread: false
+                      memory:
+                        base: 2Gi
+                        overcommit:
+                          enabled: false
+                          limit: 4Gi
+                          overhead: false
+                    gpus: []
+                    interfaces:
+                      - masquerade: {}
+                        name: default
+                        model: virtio
+                    networks:
+                      - name: default
+                        pod: {}
+                  virtualMachinePool:
+                    enabled: false
+                    replicas: 2
+                    hpa:
+                      enabled: false
+                      maxReplicas: 5
+                      minReplicas: 1
+                  diskErrorPolicy: "report"
+                  disks:
+                    - name: harddrive
+                      type: disk
+                      bus: virtio
+                      bootorder: 2
+                      readonly: false
+                      pvc: debian12
+                      ephemeral: true
+                  userDataSecret:
+                    enabled: false
+                    name: ""
+                  cloudinit:
+                    enabled: true
+                    secret_name: "{{inputs.parameters.name}}-{{inputs.parameters.name}}-user-data"
+                    image: deserializeme/kv-cloud-init:v0.0.1
+                    serviceAccount:
+                      create: true
+                      name: "{{inputs.parameters.name}}-{{inputs.parameters.name}}-sa"
+                      existingServiceAccountName: ""
+                    existingConfigMap: false
+                    envsubst: true
+                    extraEnvVars:
+                      - name: VNC_PASS
+                        valueFrom:
+                          secretKeyRef:
+                            name: "{{inputs.parameters.name}}-password"
+                            key: "password"
+                    hostname: "{{inputs.parameters.name}}"
+                    namespace: kubevirt
+                    disable_root: false
+                    debug: false
+                    salt: "saltsaltlettuce"
+                    network:
+                      config: disabled
+                    wireguard: []
+                    users:
+                      - name: "{{inputs.parameters.name}}"
+                        groups: users, admin, docker, sudo, kvm
+                        sudo: ALL=(ALL) NOPASSWD:ALL
+                        shell: /bin/bash
+                        lock_passwd: false
+                        password:
+                          random: true
+                        ssh_import_id: []
+                        ssh_authorized_keys: []
+                    ca_certs: []
+                    boot_cmd: []
+                    write_files: []
+                    package_reboot_if_required: false
+                    package_update: true
+                    package_upgrade: false
+                    packages:
+                      - docker.io
+                    runcmd:
+                      - docker run -d --tmpfs /dev/shm:rw -p 8080:8080 -e PASSWD="$VNC_PASS" deserializeme/ubuntu-xfce
+                  service:
+                    - name: "{{inputs.parameters.name}}-service"
+                      type: NodePort
+                      externalTrafficPolicy: Cluster
+                      ports:
+                        - name: ssh
+                          port: 22
+                          targetPort: 22
+                          protocol: TCP
+                        - name: novnc
+                          port: 8080
+                          targetPort: 8080
+                          protocol: TCP
+                  ingress:
+                    enabled: true
+                    className: "nginx"
+                    hostname: "novnc.buildstar.online"
+                    annotations:
+                      cert-manager.io/cluster-issuer: "letsencrypt-prod"
+                    tls:
+                      enabled: true
+                      secretName: "tls-kubevirt-manager"
+                    paths:
+                      - path: /
+                        pathType: Prefix
+                        backend:
+                          service:
+                            name: "{{inputs.parameters.name}}-service"
+                            port:
+                              number: 8080
+                  networkPolicy:
+                    enabled: true
+                    egress:
+                      - to:
+                          - namespaceSelector:
+                              matchLabels:
+                                kubernetes.io/metadata.name: kube-system
+                          - podSelector:
+                              matchLabels:
+                                k8s-app: kube-dns
+                        ports:
+                          - protocol: UDP
+                            port: 53
+                      - to:
+                          - ipBlock:
+                              cidr: 0.0.0.0/0
+                              # Exclude traffic to Kubernetes service IPs and pods
+                              except:
+                                - 10.0.0.0/8
+                                - 172.16.0.0/12
+                                - 192.168.0.0/16
+                    ingress:
+                      - from:
+                          - namespaceSelector:
+                              matchLabels:
+                                kubernetes.io/metadata.name: "ingress-nginx"
+                          - podSelector:
+                              matchLabels:
+                                app.kubernetes.io/name: "ingress-nginx"
+                  livenessProbe:
+                    initialDelaySeconds: 60
+                    periodSeconds: 10
+                    tcpSocket:
+                      port: 8080
+                    timeoutSeconds: 10
+                  readinessProbe:
+                    initialDelaySeconds: 60
+                    periodSeconds: 10
+                    timeoutSeconds: 10
+                    failureThreshold: 6
+                    successThreshold: 1
+                    httpGet:
+                      port: 8080
+

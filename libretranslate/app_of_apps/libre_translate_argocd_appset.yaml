@@ -1,0 +1,213 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: libretranslate-app-set
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  goTemplate: true
+  # generator allows us to source specific values from an external k8s secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - global_cluster_issuer
+              - global_pvc_storage_class
+              - global_time_zone
+              - libre_translate_hostname
+  template:
+    metadata:
+      name: libretranslate-app
+      annotations:
+        argocd.argoproj.io/sync-wave: "2"
+    spec:
+      project: libretranslate
+      destination:
+        server: "https://kubernetes.default.svc"
+        namespace: libretranslate
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+        automated:
+          selfHeal: true
+      source:
+        repoURL: https://small-hack.github.io/libretranslate-helm-chart
+        chart: libretranslate
+        targetRevision: 0.6.5
+        helm:
+          releaseName: libre-translate
+          valuesObject:
+            fullnameOverride: libre-translate
+            # Number of replicas
+            replicaCount: 1
+
+            # Extra tolerations for pods
+            tolerations: []
+
+            # Image settings
+            image:
+              repository: libretranslate/libretranslate
+              pullPolicy: Always
+              tag: "latest"
+
+            # Service settings
+            service:
+              type: ClusterIP
+              port: 5000
+
+            # Ingress settings
+            ingress:
+              enabled: true
+              className: "nginx"  # set this to the name of the ingress controller class to use like nginx
+              annotations:
+                cert-manager.io/cluster-issuer: "{{ .global_cluster_issuer }}"
+                nginx.ingress.kubernetes.io/proxy-body-size: 10m
+                # Check for the adminUser key below.
+                # This will enable basic auth for the whole site.
+                # nginx.ingress.kubernetes.io/auth-type: basic
+                # nginx.ingress.kubernetes.io/auth-secret: libretranslate-auth
+                # nginx.ingress.kubernetes.io/auth-realm: 'Authentication Required'
+              hosts:
+                - host: '{{ .libre_translate_hostname }}'
+                  paths:
+                  - path: /
+                    pathType: Prefix
+              tls:
+                - secretName: libretranslate-secret-tls
+                  hosts:
+                    - '{{ .libre_translate_hostname }}'
+
+            # Security Context
+            securityContext:
+              fsGroup: 1032
+
+            # Security Context for init container
+            initContainerSecurityContext:
+              runAsUser: 0
+              runAsGroup: 0
+
+            # Pod Security Context
+            podSecurityContext:
+              runAsUser: 1032
+              runAsGroup: 1032
+
+            # Persistent settings
+            persistence:
+              enabled: true
+              db:
+                storageClass: "{{ .global_pvc_storage_class }}"
+                accessMode: "ReadWriteOnce"
+                size: "1Gi"
+              models:
+                storageClass: "{{ .global_pvc_storage_class }}"
+                accessMode: "ReadWriteOnce"
+                # as of August 2023, the models are about 6.6GB in size for all languages
+                size: "10Gi"
+
+            # Resource limits
+            resources:
+              limits:
+                cpu: 1500m
+                memory: 2Gi
+              requests:
+                cpu: 500m
+                memory: 1Gi
+
+            # Readiness probe for kubernetes
+            readinessProbe: {}
+            # exec:
+            #   command:
+            #   - /app/venv/bin/python
+            #   - /app/scripts/healthcheck.py
+            # initialDelaySeconds: 10
+            # periodSeconds: 5
+
+            # Liveness probe for kubernetes
+            livenessProbe: {}
+            # exec:
+            #   command:
+            #   - /app/venv/bin/python
+            #   - scripts/healthcheck.py
+            # initialDelaySeconds: 10
+            # periodSeconds: 5
+
+            # Auth secret for basic authentication
+            # generate base64-user-password-pair with:
+            #   htpasswd -nb <username> <password> | base64
+            #
+            # e.g.:
+            #
+            #     htpasswd -nb admin mySecretPassword | base64
+            # This is used by the nginx ingress controller to enable basic auth for the whole site.
+            # It will create a secret with the name libretranslate-auth.
+            adminUser:
+              # copy the username in base64 as a reference
+              name: ""
+              # copy the output from the htpasswd command here as a reference
+              auth: ""
+              # copy the password as base64 for the admin user here as a reference
+              password: ""
+              # use an existing secret for admin user
+              existingSecret: ""
+              # key in existing secret
+              secretKeys:
+                name: "name"
+                auth: "auth"
+                password: "password"
+
+            # Settings / Flags
+            appSettings:
+              # Enable debug environment (Default: Disabled)
+              debug: "true"
+              # Enable SSL (Default: Disabled)
+              ssl: "true"
+              # Enable API keys database for per-client rate limits when
+              # --req-limit is reached (Default: Don't use API keys)
+              apiKeys: "true"
+              # Require use of an API key for programmatic access to the API,
+              # unless the client also sends a secret match
+              # (Default: No secrets required)
+              requireApiKeySecret: ""
+              # Allow user suggestions (Default: Disabled)
+              suggestions: "true"
+              # Disable files translation (Default: File translation allowed)
+              disableFilesTranslation: "false"
+              disableWebUi: "false"
+              # Update language models at startup
+              # (Default: Only on if no models found)
+              updateModels: "true"
+              # Enable the /metrics endpoint for exporting Prometheus usage
+              # metrics (Default: Disabled)
+              metrics: "false"
+              # use an existing secret for api key origin and secret
+              existingSecret: "libretranslate-api-key"
+              # keys in existing secret
+              secretKeys:
+                apiKeyOrigin: ""
+                apiKeySecret: "secret"
+
+            # Configuration Parameters
+            appConfig:
+              host: "0.0.0.0"
+              port: "5000"
+              charLimit: "null"
+              reqLimit: "null"
+              reqLimitStorage: "memory://"
+              batchLimit: "null"
+              gaId: ""
+              frontendLanguageSource: "auto"
+              frontendLanguageTarget: "locale"
+              frontendTimeout: "500"
+              apiKeysDbPath: "/app/db/api_keys.db"
+              apiKeysDbPathMount: "/app/db"
+              apiKeysRemote: ""
+              getApiKeyLink: ""
+              sharedStorage: "memory://"
+              loadOnly: ""
+              threads: "4"
+              metricsAuthToken: ""

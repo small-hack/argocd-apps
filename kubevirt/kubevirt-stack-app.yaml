@@ -1,0 +1,276 @@
+# KubeVirt extends Kubernetes by adding additional virtualization resource types
+# (especially the VM type) through Kubernetes's Custom Resource Definitions API.
+# By using this mechanism, the Kubernetes API can be used to manage these VM resources
+# alongside all other resources Kubernetes provides.
+# https://github.com/kubevirt/kubevirt
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kubevirt-stack
+  namespace: argocd
+spec:
+  project: kubevirt
+  destination:
+    namespace: kubevirt
+    server: 'https://kubernetes.default.svc'
+  source:
+    repoURL: https://github.com/cloudymax/kubevirt-community-stack.git
+    targetRevision: HEAD
+    path: charts/kubevirt-stack/
+    helm:
+      valuesObject:
+        ################################################################################
+        #   ___  _ __   ___ _ __ __ _| |_ ___  _ __
+        #  / _ \| '_ \ / _ \ '__/ _` | __/ _ \| '__|
+        # | (_) | |_) |  __/ | | (_| | || (_) | |
+        #  \___/| .__/ \___|_|  \__,_|\__\___/|_|
+        #       |_|
+        ################################################################################
+        replicaCount: 1
+
+        serviceAccount:
+          create: true
+          annotations: {}
+          name: "kubevirt-operator"
+
+        securityContext:
+          privileged: true
+
+        resources: {}
+
+        nodeSelector: {}
+        tolerations:
+          - key: CriticalAddonsOnly
+            operator: Exists
+
+        monitorNamespace: "prometheus"
+        prometheus:
+          enabled: true
+          serviceName: "prom-stack-kube-prometheus-prometheus"
+          serviceNamesapce: "prometheus"
+
+        permittedHostDevices:
+          pciHostDevices:
+          - pciVendorSelector: "10de:2782"
+            resourceName: "nvidia.com/AD104_GeForce_RTX4070Ti"
+          # - pciVendorSelector: "10de:1e04"
+          #   resourceName: "nvidia.com/TU102_GeForce_RTX2080Ti"
+          # - pciVendorSelector: "10de:17fd"
+          #   resourceName: "nvidia.com/GM200GL_Tesla_M40"
+          mediatedDevices:
+          - mdevNameSelector: "GRID M60-2Q"
+            resourceName: "nvidia.com/GRID_M60-2Q"
+          - mdevNameSelector: "GRID RTX6000-4Q"
+            resourceName: "nvidia.com/GRID_RTX6000-4Q"
+
+        mediatedDevicesTypes:
+          - nvidia-18
+
+        useEmulation: false
+
+        featureGates:
+          - ExpandDisks
+          - CPUManager
+          - GPU
+          - HostDevices
+          - VMExport
+          - HotplugVolumes
+          - HostDisk
+          - Macvtap
+          - Passt
+          - HotplugNICs
+          - clientPassthrough
+          - Snapshot
+          - CPUNodeDiscovery
+
+        ################################################################################
+        #   ____ ____ ___
+        #  / ___|  _ \_ _|
+        # | |   | | | | |
+        # | |___| |_| | |
+        #  \____|____/___|
+        ################################################################################
+        cdi:
+          replicaCount: 1
+
+          serviceAccount:
+            # Specifies whether a service account should be created
+            create: true
+            # Annotations to add to the service account
+            annotations: {}
+            # The name of the service account to use.
+            # If not set and create is true, a name is generated using the fullname template
+            name: "kubevirt-cdi-service-account"
+
+          service:
+            type: ClusterIP
+            port: 8080
+            name: metrics
+            protocol: TCP
+
+          uploadProxy:
+            type: ClusterIP
+            port: 443
+            targetPort: 8443
+            protocol: TCP
+
+          ingress:
+            enabled: false
+
+          resources:
+            requests:
+              cpu: 10m
+              memory: 150Mi
+
+          tolerations:
+          - key: CriticalAddonsOnly
+            operator: Exists
+
+          affinity: {}
+
+          cdi:
+            featureGates:
+            - HonorWaitForFirstConsumer
+            resources:
+              limits:
+                cpu: "4"
+                memory: 4Gi
+              requests:
+                cpu: "1"
+                memory: 250Mi
+
+        ################################################################################
+        #  __  __
+        # |  \/  | __ _ _ __   __ _  __ _  ___ _ __
+        # | |\/| |/ _` | '_ \ / _` |/ _` |/ _ \ '__|
+        # | |  | | (_| | | | | (_| | (_| |  __/ |
+        # |_|  |_|\__,_|_| |_|\__,_|\__, |\___|_|
+        ################################################################################
+        manager:
+          enabled: true
+          replicaCount: 1
+          service:
+            type: ClusterIP
+            port: 8080
+            protocol: TCP
+            name: http
+          prometheus:
+            enabled: false
+            serviceName: "thanos-app-query-frontend"
+            serviceNamespace: "monitoring"
+          ingress:
+            enabled: true
+            className: "nginx"
+            hostname: kubevirt.buildstar.online
+            annotations:
+              cert-manager.io/cluster-issuer: "{{ .global_cluster_issuer }}"
+              nginx.ingress.kubernetes.io/auth-signin: "https://{{ .vouch_hostname }}/login?url=$scheme://$http_host$request_uri&vouch-failcount=$auth_resp_failcount&X-Vouch-Token=$auth_resp_jwt&error=$auth_resp_err"
+              nginx.ingress.kubernetes.io/auth-url: https://{{ .vouch_hostname }}/validate
+              nginx.ingress.kubernetes.io/auth-response-headers: X-Vouch-User
+              nginx.ingress.kubernetes.io/auth-snippet: |
+                auth_request_set $auth_resp_jwt $upstream_http_x_vouch_jwt;
+                auth_request_set $auth_resp_err $upstream_http_x_vouch_err;
+                auth_request_set $auth_resp_failcount $upstream_http_x_vouch_failcount;
+                # when VP is hosted externally to k8s ensure the SSL cert is valid to avoid MITM risk
+                proxy_ssl_trusted_certificate /etc/ssl/certs/ca-certificates.crt;
+                proxy_ssl_session_reuse on;
+                proxy_ssl_verify_depth 2;
+                proxy_ssl_verify on;
+            tls:
+              enabled: true
+              secretName: "tls-kubevirt-manager"
+
+        ################################################################################
+        #   ____ _           _                 _    ____ ___
+        #  / ___| |_   _ ___| |_ ___ _ __     / \  |  _ \_ _|
+        # | |   | | | | / __| __/ _ \ '__|   / _ \ | |_) | |
+        # | |___| | |_| \__ \ ||  __/ |     / ___ \|  __/| |
+        #  \____|_|\__,_|___/\__\___|_|    /_/   \_\_|  |___|
+        #
+        ################################################################################
+        capi:
+          enabled: false
+          core: "cluster-api:v1.9.1"
+          bootstrap: "kubeadm:v1.9.1"
+          controlPlane: "kubeadm:v1.9.1"
+          infrastructure: "kubevirt:v0.1.9"
+          addon: ""
+
+          manager: {}
+          #  featureGates:
+          #    kubeadm:
+          #      MachinePool: true
+          #      KubeadmBootstrapFormatIgnition: true
+          #    core:
+          #      MachinePool: true
+          #      KubeadmBootstrapFormatIgnition: true
+          #    kubevirt:
+          #      MachinePool: true
+          #      KubeadmBootstrapFormatIgnition: true
+          #    bootstrap:
+          #      MachinePool: true
+          #      KubeadmBootstrapFormatIgnition: true
+
+          configSecret: {}
+
+          replicaCount: 1
+
+          image:
+            manager:
+              repository: registry.k8s.io/capi-operator/cluster-api-operator
+              tag: v0.15.0
+              pullPolicy: IfNotPresent
+
+          env:
+            manager: []
+
+          imagePullSecrets: {}
+
+          args:
+            - --leader-elect
+
+          resources: {}
+          #  manager:
+          #    limits:
+          #      cpu: 100m
+          #      memory: 150Mi
+          #    requests:
+          #      cpu: 100m
+          #      memory: 100Mi
+
+          containerSecurityContext: {}
+
+          affinity:
+            nodeAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                nodeSelectorTerms:
+                  - matchExpressions:
+                      - key: kubernetes.io/arch
+                        operator: In
+                        values:
+                          - amd64
+                          - arm64
+                          - ppc64le
+                      - key: kubernetes.io/os
+                        operator: In
+                        values:
+                          - linux
+
+          tolerations:
+            - effect: NoSchedule
+              key: node-role.kubernetes.io/master
+            - effect: NoSchedule
+              key: node-role.kubernetes.io/control-plane
+
+          volumes:
+            - name: cert
+              secret:
+                defaultMode: 420
+                secretName: capi-operator-webhook-service-cert
+
+          volumeMounts:
+            manager:
+              - mountPath: /tmp/k8s-webhook-server/serving-certs
+                name: cert
+                readOnly: true

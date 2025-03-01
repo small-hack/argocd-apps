@@ -1,0 +1,307 @@
+---
+# third sync wave because it has to be up after postgres
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: gotosocial-app-set
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "4"
+spec:
+  # enable go templating
+  goTemplate: true
+  # this generator allows us to values from an external k8s secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - gotosocial_hostname
+              # - gotosocial_idp_name
+              - gotosocial_s3_endpoint
+              - global_cluster_issuer
+              - global_time_zone
+  template:
+    metadata:
+      name: gotosocial-web-app
+      annotations:
+        argocd.argoproj.io/sync-wave: "4"
+        argocd.argoproj.io/sync-options: ApplyOnly=true
+    spec:
+      project: gotosocial
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: gotosocial
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
+          selfHeal: true
+      source:
+        repoURL: 'https://charts.schoenwald.aero'
+        targetRevision: 1.0.2
+        chart: gotosocial
+        helm:
+          releaseName: gotosocial
+          # https://github.com/0hlov3/charts/blob/main/charts/gotosocial/values.yaml
+          valuesObject:
+            fullnameOverride: gotosocial
+            image:
+              repository: superseriousbusiness/gotosocial
+              tag: 0.18.1
+
+            startupProbe:
+              httpGet:
+                ## @param startupProbe.httpGet.path Path to access on the HTTP server
+                path: /livez
+                ## @param startupProbe.httpGet.port Port for startupProbe
+                port: http
+              ## @param startupProbe.failureThreshold Failure threshold for startupProbe
+              failureThreshold: 60
+              ## @param startupProbe.periodSeconds Period seconds for startupProbe
+              periodSeconds: 30
+              ## @param startupProbe.initialDelaySeconds ensures probes don't start prematurely.
+              initialDelaySeconds: 30
+
+            livenessProbe:
+              httpGet:
+                ## @param livenessProbe.httpGet.path Path to access on the HTTP server
+                path: /livez
+                ## @param livenessProbe.httpGet.port Port for livenessProbe
+                port: http
+              ## @param livenessProbe.failureThreshold Failure threshold for livenessProbe
+              failureThreshold: 20
+              ## @param livenessProbe.periodSeconds Period seconds for livenessProbe, Default: Check every 30 seconds to reduce overhead
+              periodSeconds: 30
+              ## @param livenessProbe.initialDelaySeconds ensures probes don't start prematurely.
+              initialDelaySeconds: 30
+
+            readinessProbe:
+              httpGet:
+                ## @param readinessProbe.httpGet.path Path to access on the HTTP server
+                path: /readyz
+                ## @param readinessProbe.httpGet.port Port for readinessProbe
+                port: http
+              ## @param readinessProbe.failureThreshold Failure threshold for readinessProbe
+              failureThreshold: 20
+              ## @param readinessProbe.periodSeconds Period seconds for readinessProbe, Default: Check every 10 seconds for readiness
+              periodSeconds: 30
+              ## @param readinessProbe.initialDelaySeconds ensures probes don't start prematurely.
+              initialDelaySeconds: 30
+
+            ingress:
+              enabled: true
+              annotations:
+                kubernetes.io/tls-acme: "true"
+                cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
+                nginx.ingress.kubernetes.io/proxy-body-size: 12m
+                nginx.ingress.kubernetes.io/server-snippet: |
+                  location /livez {
+                    return 404;
+                  }
+                  location /readyz {
+                    return 404;
+                  }
+                  location /metrics {
+                    return 404;
+                  }
+              className: nginx
+              hosts:
+                - host: '{{ .gotosocial_hostname }}'
+                  paths:
+                    - path: '/'
+                      pathType: ImplementationSpecific
+              tls:
+                - secretName: gotosocial-tls
+                  hosts:
+                    - '{{ .gotosocial_hostname }}'
+
+            # resource limits for gotosocial
+            resources:
+              limits:
+                cpu: 1500m
+                memory: 1Gi
+              requests:
+                cpu: 500m
+                memory: 512Mi
+
+            gotosocial:
+              # for postgres ssl certs
+              extraEnv:
+                - name: "PGSSLCERT"
+                  value: /etc/secrets/gotosocial/tls.crt
+
+                - name: "PGSSLKEY"
+                  value: /etc/secrets/gotosocial/tls.key
+
+                - name: "PGSSLROOTCERT"
+                  value: /etc/secrets/ca/ca.crt
+
+                - name: PGSSLMODE
+                  value: "verify-full"
+
+                - name: PGDATABASE
+                  value: "gotosocial"
+
+                - name: PGUSER
+                  value: "gotosocial"
+
+                - name: PGHOST
+                  value: "gotosocial-postgres-rw"
+
+                - name: PGPORT
+                  value: "5432"
+
+              # for postgres ssl certs
+              extraVolumes:
+                - name: postgres-ca
+                  secret:
+                    secretName: gotosocial-postgres-server-ca-key-pair
+                    defaultMode: 0640
+
+                - name: postgres-client-certs
+                  secret:
+                    secretName: gotosocial-postgres-gotosocial-cert
+                    defaultMode: 0640
+
+              # for postgres ssl certs
+              extraVolumeMounts:
+                - name: postgres-ca
+                  mountPath: /etc/secrets/ca
+
+                - name: postgres-client-certs
+                  mountPath: /etc/secrets/gotosocial
+
+              strategy:
+                type: Recreate
+
+              persistence:
+                enabled: true
+                existingClaim: "gotosocial"
+
+              tmpfs:
+                enabled: true
+                size: "1Gi"
+
+              extraConfig:
+                accounts-reason-required: true
+                accounts-allow-custom-css: true
+                media-remote-cache-days: 90
+                instance-languages: ["nl", "en"]
+                metrics-enabled: true
+
+              config:
+                applicationName: "gotosocial"
+                host: "{{ .gotosocial_hostname }}"
+                accountDomain: ""
+                protocol: "https"
+                bindAddress: "0.0.0.0"
+                trustedProxies:
+                  - "::1"
+                  - "10.0.0.0/8"
+                  - "172.16.0.0/12"
+                  - "192.168.0.0/16"
+                  - "192.168.1.1/32"
+
+                db: # general db config, for postgres or sqlite specific config scroll down.
+                  maxOpenConnsMultiplier: "8"
+                  cache:
+                    memoryTarget: "100MiB"
+
+                storage:
+                  backend: "s3"
+                  localBasePath: "/gotosocial/storage"
+
+                  s3:
+                   enabled: true
+                   endpoint: "{{ .gotosocial_s3_endpoint }}"
+                   proxy: false
+                   useSSL: true
+                   # If this is set, accessKey, secretKey will not take place
+                   # Needs the S3_ACCESS_KEY_ID and S3_SECRET_ACCESS_KEY keys.
+                   existingSecret: "gotosocial-s3-credentials"
+                   bucket: "gotosocial"
+
+                oidc:
+                  enabled: true
+                  idpName: "zitadel"
+                  skipVerification: ""
+                  oidcScopes:
+                    - "openid"
+                    - "email"
+                    - "profile"
+                    - "groups"
+                  linkExisting: true
+                  adminGroups: ['gotosocial_admins']
+                  existingSecretName: "gotosocial-oidc-credentials"
+                  existingSecretKeys:
+                    issuer: "issuer"
+                    clientID: "client_id"
+                    clientSecret: "client_secret"
+
+                smtp:
+                  existingSecretName: "gotosocial-smtp-credentials"
+                  existingSecretKeys:
+                    username: "username"
+                    password: "password"
+                    port: "port"
+                    host: "host"
+                  from: "no-reply@{{ .gotosocial_hostname }}"
+                  discloseRecipients: false
+
+              extraConfig:
+                logLevel: "info"
+                metrics:
+                  enabled: true
+                  authEnabled: false
+                  # authUsername: ""
+                  # authPassword: ""
+
+            externalPostgresql:
+              enabled: true
+              host: gotosocial-postgres-rw.gotosocial.svc
+              port: "5432"
+              database: gotosocial
+              username: gotosocial
+              existingSecret: "gotosocial-pgsql-credentials"
+              existingSecretPasswordKey: postgresPassword
+              tls_mode: "disable"
+              sslcert: "/etc/secrets/gotosocial/tls.crt"
+              sslkey: "/etc/secrets/gotosocial/tls.key"
+              ca_cert: "/etc/secrets/ca/ca.crt"
+
+            # https://github.com/bitnami/charts/tree/main/bitnami/postgresql#parameters
+            postgresql:
+              enabled: false
+
+            service:
+              type: ClusterIP
+              port: 80
+
+            externalAuth:
+              oidc:
+                enabled: true
+              oauth_global:
+                # -- Automatically redirect to OIDC, CAS or SAML, and don't use local account authentication when clicking on Sign-In
+                omniauth_only: true
+
+            # -- https://github.com/gotosocial/gotosocial/blob/main/Dockerfile#L75
+            # if you manually change the UID/GID environment variables, ensure these values match:
+            podSecurityContext:
+              runAsUser: 991
+              runAsGroup: 991
+              fsGroup: 991
+
+            securityContext: {}
+
+            serviceAccount:
+              # -- Specifies whether a service account should be created
+              create: true
+              # -- Annotations to add to the service account
+              annotations: {}
+
+            # -- timezone for all the pods
+            timezone: '{{ .global_time_zone }}'

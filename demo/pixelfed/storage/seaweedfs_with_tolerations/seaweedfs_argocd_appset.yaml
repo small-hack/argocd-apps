@@ -1,0 +1,287 @@
+---
+# webapp is deployed 3rd because we need secrets and persistent volumes up first
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: pixelfed-seaweedfs-appset
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  goTemplate: true
+  # generator allows us to source specific values from an external k8s secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - global_cluster_issuer
+              - pixelfed_s3_endpoint
+              - pixelfed_s3_region
+              - pixelfed_toleration_key
+              - pixelfed_toleration_operator
+              - pixelfed_toleration_value
+              - pixelfed_toleration_effect
+              - pixelfed_affinity_key
+              - pixelfed_affinity_value
+  template:
+    metadata:
+      name: pixelfed-seaweedfs-app
+      annotations:
+        argocd.argoproj.io/sync-wave: "2"
+    spec:
+      project: pixelfed
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: pixelfed
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
+          selfHeal: true
+      source:
+        repoURL: 'https://seaweedfs.github.io/seaweedfs/helm'
+        targetRevision: 3.68.0
+        chart: seaweedfs
+        helm:
+          releaseName: pixelfed-seaweedfs
+          valuesObject:
+            global:
+              createClusterRole: true
+              imageName: chrislusf/seaweedfs
+              imagePullPolicy: IfNotPresent
+              enableSecurity: false
+              securityConfig:
+                jwtSigning:
+                  volumeWrite: true
+                  volumeRead: false
+                  filerWrite: false
+                  filerRead: false
+              serviceAccountName: "pixelfed-seaweedfs"
+              certificates:
+                alphacrds: false
+              monitoring:
+                enabled: true
+                gatewayHost: null
+                gatewayPort: null
+              enableReplication: false
+              replicationPlacment: "001"
+              extraEnvironmentVars:
+                WEED_CLUSTER_DEFAULT: "sw"
+                WEED_CLUSTER_SW_MASTER: "seaweedfs-master:9333"
+                WEED_CLUSTER_SW_FILER: "seaweedfs-filer:8888"
+
+            image:
+              registry: ""
+              repository: ""
+
+            master:
+              enabled: true
+              replicas: 1
+              port: 9333
+              grpcPort: 19333
+              metricsPort: 9327
+              ipBind: "0.0.0.0"
+              loggingOverrideLevel: null
+              pulseSeconds: null
+              garbageThreshold: null
+              metricsIntervalSec: 15
+              defaultReplication: "000"
+              disableHttp: false
+
+              config: |-
+                # Enter any extra configuration for master.toml here.
+                # It may be be a multi-line string.
+
+              data:
+                type: "emptyDir"
+                # type: "existingClaim"
+                # claimName: "swfs-master-data"
+
+              logs:
+                type: "hostPath"
+                size: ""
+                storageClass: ""
+                hostPathPrefix: /storage
+
+              livenessProbe:
+                enabled: true
+                httpGet:
+                  path: /cluster/status
+                  scheme: HTTP
+                initialDelaySeconds: 10
+                periodSeconds: 2
+                successThreshold: 1
+                failureThreshold: 100
+                timeoutSeconds: 10
+
+              readinessProbe:
+                enabled: true
+                httpGet:
+                  path: /cluster/status
+                  scheme: HTTP
+                initialDelaySeconds: 10
+                periodSeconds: 2
+                successThreshold: 2
+                failureThreshold: 100
+                timeoutSeconds: 10
+
+              extraEnvironmentVars:
+                WEED_MASTER_VOLUME_GROWTH_COPY_1: '7'
+                WEED_MASTER_VOLUME_GROWTH_COPY_2: '6'
+                WEED_MASTER_VOLUME_GROWTH_COPY_3: '3'
+                WEED_MASTER_VOLUME_GROWTH_COPY_OTHER: '1'
+
+            volume:
+              enabled: true
+              port: 8080
+              grpcPort: 18080
+              metricsPort: 9327
+              ipBind: "0.0.0.0"
+              replicas: 1
+
+              tolerations: |
+                - key: '{{ .pixelfed_toleration_key }}'
+                  operator: '{{ .pixelfed_toleration_operator }}'
+                  value: '{{ .pixelfed_toleration_value }}'
+                  effect: '{{ .pixelfed_toleration_effect }}'
+
+              affinity: |
+                nodeAffinity:
+                  requiredDuringSchedulingIgnoredDuringExecution:
+                    nodeSelectorTerms:
+                      - matchExpressions:
+                        - key: '{{ .pixelfed_affinity_key }}'
+                          operator: In
+                          values:
+                            - '{{ .pixelfed_affinity_value }}'
+
+              fileSizeLimitMB: null
+              minFreeSpacePercent: 7
+              dataDirs:
+                - name: data
+                  type: "existingClaim"
+                  claimName: "swfs-volume-data"
+                  maxVolumes: 0
+              livenessProbe:
+                enabled: true
+                httpGet:
+                  path: /status
+                  scheme: HTTP
+                initialDelaySeconds: 10
+                periodSeconds: 2
+                successThreshold: 1
+                failureThreshold: 100
+                timeoutSeconds: 10
+              readinessProbe:
+                enabled: true
+                httpGet:
+                  path: /status
+                  scheme: HTTP
+                initialDelaySeconds: 10
+                periodSeconds: 2
+                successThreshold: 2
+                failureThreshold: 100
+                timeoutSeconds: 10
+
+            filer:
+              enabled: true
+              replicas: 1
+              port: 8888
+              grpcPort: 18888
+              metricsPort: 9327
+              encryptVolumeData: true
+              enablePVC: true
+              storage: 10Gi
+              data:
+                type: "existingClaim"
+                claimName: "swfs-filer-data"
+
+              ingress:
+                enabled: false
+
+              extraEnvironmentVars:
+                WEED_MYSQL_ENABLED: "false"
+                WEED_LEVELDB2_ENABLED: "true"
+
+              tolerations: |
+                - key: '{{ .pixelfed_toleration_key }}'
+                  operator: '{{ .pixelfed_toleration_operator }}'
+                  value: '{{ .pixelfed_toleration_value }}'
+                  effect: '{{ .pixelfed_toleration_effect }}'
+
+              affinity: |
+                nodeAffinity:
+                  requiredDuringSchedulingIgnoredDuringExecution:
+                    nodeSelectorTerms:
+                      - matchExpressions:
+                        - key: '{{ .pixelfed_affinity_key }}'
+                          operator: In
+                          values:
+                            - '{{ .pixelfed_affinity_value }}'
+
+              s3:
+                enabled: true
+                port: 8333
+                httpsPort: 0
+                allowEmptyFolder: false
+                domainName: '{{ .pixelfed_s3_endpoint }}'
+                enableAuth: true
+                existingConfigSecret: seaweedfs-s3-secret
+                createBuckets:
+                  - name: pixelfed
+                    anonymousRead: false
+                  - name: pixelfed-postgres
+                    anonymousRead: false
+                  - name: web-video
+                    anonymousRead: false
+                  - name: streaming
+                    anonymousRead: false
+                  - name: user-exports
+                    anonymousRead: false
+                  - name: orig-video
+                    anonymousRead: false
+
+              livenessProbe:
+                enabled: true
+                httpGet:
+                  path: /
+                  scheme: HTTP
+                initialDelaySeconds: 10
+                periodSeconds: 2
+                successThreshold: 1
+                failureThreshold: 100
+                timeoutSeconds: 10
+
+              readinessProbe:
+                enabled: true
+                httpGet:
+                  path: /
+                  scheme: HTTP
+                initialDelaySeconds: 10
+                periodSeconds: 2
+                successThreshold: 2
+                failureThreshold: 100
+                timeoutSeconds: 10
+            s3:
+              enabled: false
+              ingress:
+                enabled: true
+                className: "nginx"
+                # host: false for "*" hostname
+                host: '{{ .pixelfed_s3_endpoint }}'
+                # additional ingress annotations for the s3 endpoint
+                annotations:
+                  nginx.ingress.kubernetes.io/proxy-body-size: 1G
+                  cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
+                tls:
+                  - secretName: pixelfed-seaweedfs-tls
+                    hosts:
+                      - '{{ .pixelfed_s3_endpoint }}'
+                      - 'web-video.{{ .pixelfed_s3_endpoint }}'
+                      - 'orig-video.{{ .pixelfed_s3_endpoint }}'
+                      - 'streaming.{{ .pixelfed_s3_endpoint }}'
+                      - 'user-exports.{{ .pixelfed_s3_endpoint }}'

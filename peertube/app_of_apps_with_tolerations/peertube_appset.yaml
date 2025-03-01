@@ -1,0 +1,282 @@
+---
+# webapp is deployed 2nd because we need secrets and persistent volumes up 1st
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: peertube-web-app-set
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  goTemplate: true
+  # generator allows us to source specific values from an external k8s secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - global_cluster_issuer
+              - peertube_hostname
+              - peertube_toleration_key
+              - peertube_toleration_operator
+              - peertube_toleration_value
+              - peertube_toleration_effect
+              - peertube_affinity_key
+              - peertube_affinity_value
+  template:
+    # metadata about the Argo CD app the AppSet deploys
+    metadata:
+      name: peertube-web-app
+      namespace: peertube
+      annotations:
+        argocd.argoproj.io/sync-wave: "3"
+
+    spec:
+      project: default
+
+      # sync policy
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
+          selfHeal: true
+
+      # where it's going
+      destination:
+        server: "https://kubernetes.default.svc"
+        namespace: peertube
+
+      # where it's coming from
+      source:
+        repoURL: https://small-hack.github.io/peertube-helm-chart
+        targetRevision: 0.4.3
+        chart: peertube
+        helm:
+          releaseName: peertube
+          valuesObject:
+            fullnameOverride: "peertube"
+
+            # -- replica count if not using autoscaling
+            replicaCount: 1
+
+            # -- command to pass to docker container
+            containerCommand:
+              - gosu
+              - peertube
+              - npm
+              - start
+
+            tolerations:
+              - key: '{{ .peertube_toleration_key }}'
+                operator: '{{ .peertube_toleration_operator }}'
+                value: '{{ .peertube_toleration_value }}'
+                effect: '{{ .peertube_toleration_effect }}'
+
+            affinity:
+              nodeAffinity:
+                requiredDuringSchedulingIgnoredDuringExecution:
+                  nodeSelectorTerms:
+                    - matchExpressions:
+                      - key: '{{ .peertube_affinity_key }}'
+                        operator: In
+                        values:
+                          - '{{ .peertube_affinity_value }}'
+
+            peertube:
+              # -- set peertube's logging level
+              log_level: debug
+              # -- set peertube's trusted proxies
+              trust_proxy: '10.0.0.0/8'
+              # -- set peertube's hostname
+              webserver_hostname: "{{ .peertube_hostname }}"
+              # -- set peertube's port
+              webserver_port: 443
+              # -- enable https for peertube web frontend
+              webserver_https: true
+              # -- email address of peertube admin user
+              admin_email: "{{ .peertube_admin_email }}"
+              # -- use an existing Kubernetes Secret for Peetube's secret
+              existingSecret: "peertube-secret"
+              # -- a key in an existing Kubernetes Secret for Peetube's secret
+              existingSecretKey: "password"
+
+              # parameter for creating an initial admin password
+              admin:
+                existingSecret: "admin-credentials"
+                existingSecretKeys:
+                  # -- a key in an existing Kubernetes Secret for Peertube's admin user email
+                  email: "email"
+                  # -- a key in an existing Kubernetes Secret for Peertube's admin password
+                  password: "password"
+
+              s3:
+                # -- enable object storage, s3, for peertube
+                enabled: true
+                upload_acl_public: "public-read"
+                upload_acl_private: "private"
+                # -- get the credentials for s3 from an existing Kubernetes Secret
+                existingSecret: "peertube-s3-video-credentials"
+                existingSecretKeys:
+                  # -- key in existing secret for s3 bucket for streaming playlists
+                  streaming_playlists_bucket: "streaming_bucket"
+                  # -- key in existing secret for s3 bucket for web videos
+                  web_videos_bucket: "web_video_bucket"
+                  # -- key in existing secret for s3 bucket for user exports
+                  user_exports_bucket: "user_exports_bucket"
+                  # -- key in existing secret for s3 bucket for original video files
+                  original_video_files_bucket: "orig_video_bucket"
+                  # -- key in existing secret for s3 endpoint
+                  endpoint: "endpoint"
+                  # -- key in existing secret for s3 access_key_id
+                  access_key_id: "access_key_id"
+                  # -- key in existing secret for s3 secret_access_key
+                  secret_access_key: "secret_access_key"
+
+              smtp:
+                # -- mail tls setting
+                tls: true
+                # -- mail disable starttls
+                disable_starttls: false
+                # -- email address to send emails from
+                from_address: "no-reply@{{ .peertube_hostname }}"
+                # -- use an existing Kubernetes Secret to connect to SMTP host
+                # if set, ignores above smtp.host/port/username/password
+                existingSecret: "peertube-smtp-credentials"
+                # keys in an existing Kubernetes Secret to use for connecting to SMTP host
+                existingSecretKeys:
+                  # -- key in existing secret for smtp hostname
+                  host: "host"
+                  # -- key in existing secret for smtp port
+                  port: "port"
+                  # -- key in existing secret for smtp username
+                  username: "username"
+                  # -- key in existing secret for smtp password
+                  password: "password"
+
+            # external database credentials
+            # external database credentials
+            externalDatabase:
+              # -- enable external database, if postgresql.enabled=false is set
+              enabled: true
+              existingSecret: "peertube-pgsql-credentials"
+              # keys to use in an existing Kubernetes Secret to connect to PostgreSQL
+              existingSecretKeys:
+                hostname: "hostname"
+                database: "database"
+                username: "username"
+                password: "password"
+
+            externalValkey:
+              # -- enable external valkey/redis, if valkey.enabled=false is set
+              enabled: true
+              # -- hostname of external valkey/redis
+              hostname: "valkey-primary"
+              # -- use an existing Kubernetes Secret to connect to Redis/Valkey
+              existingSecret: "peertube-valkey-credentials"
+              # -- key to use in an existing Kubernetes Secret to connect to Redis/Valkey
+              existingSecretKey: valkey-password
+
+            # -- env from list for deployment main container
+            envFrom: []
+            # -- extra init containers for the default deployment
+            initcontainers: {}
+            # -- extra pod annotations for the deployment
+            podAnnotations: {}
+            # -- extra pod labels for the deployment
+            podLabels: {}
+
+            # -- pod securityContext deployment's main container
+            podSecurityContext: {}
+              # fsGroup: 2000
+
+            # -- securityContext whole deployment
+            securityContext: {}
+              # capabilities:
+              #   drop:
+              #   - ALL
+              # readOnlyRootFilesystem: true
+              # runAsNonRoot: true
+              # runAsUser: 1000
+
+            persistence:
+              # -- enable using a persistent volume claim
+              enabled: true
+              # -- use an exisitng persistent volume claim
+              existingClaim: "peertube-data"
+
+            # -- node selector for deployment
+            nodeSelector: {}
+
+            # -- resources for the deployment
+            resources:
+              limits:
+                cpu: 4000m
+                memory: 4Gi
+              requests:
+                cpu: 100m
+                memory: 512Mi
+
+            # -- livenessProbe for the deployment
+            livenessProbe:
+              httpGet:
+                path: /
+                port: peertube
+
+            # -- readinessProbe for the deployment
+            readinessProbe:
+              httpGet:
+                path: /
+                port: peertube
+
+            # -- autoscaling for the deployment
+            autoscaling:
+              enabled: false
+              minReplicas: 1
+              maxReplicas: 100
+              targetCPUUtilizationPercentage: 80
+              # targetMemoryUtilizationPercentage: 80
+
+            serviceAccount:
+              create: true
+              automount: true
+              annotations: {}
+              name: "peertube-sa"
+
+            service:
+              enabled: true
+              type: ClusterIP
+              port: 80
+
+            ingress:
+              enabled: true
+              className: "nginx"
+              annotations:
+                cert-manager.io/cluster-issuer: "{{ .global_cluster_issuer }}"
+                nginx.ingress.kubernetes.io/connection-proxy-header: "keep-alive"
+                nginx.ingress.kubernetes.io/enable-cors: "true"
+                nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+                nginx.ingress.kubernetes.io/ssl-redirect: "true"
+                nginx.ingress.kubernetes.io/proxy-body-size: 10G
+                nginx.ingress.kubernetes.io/configuration-snippet: |
+                  more_set_headers "X-Frame-Options: ALLOWALL";
+                  proxy_set_header Host $host;
+              hosts:
+                - host: "{{ .peertube_hostname }}"
+                  paths:
+                    - path: /
+                      pathType: Prefix
+              tls:
+                - secretName: peertube-tls
+                  hosts:
+                    - "{{ .peertube_hostname }}"
+
+            # optionally use the bundled Bitnami Valkey subchart
+            valkey:
+              enabled: false
+
+            # optionally use the bundled Bitnami PostgreSQL subchart
+            postgresql:
+              enabled: false

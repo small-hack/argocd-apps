@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: EventSource
+metadata:
+  name: vm-webhook
+  namespace: argocd
+spec:
+  service:
+    ports:
+      - port: 8080
+        targetPort: 8080
+  webhook:
+    # event-source can run multiple HTTP servers. Simply define a unique port to start a new HTTP server
+    vm:
+      # port to run HTTP server on
+      port: "8080"
+      # endpoint to listen to
+      endpoint: /api
+      # HTTP request method to allow. In this case, only POST requests are accepted
+      method: POST
+

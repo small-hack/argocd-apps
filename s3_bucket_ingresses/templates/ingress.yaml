@@ -1,0 +1,28 @@
+{{- range .Values.buckets }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: s3-{{ . }}-bucket-ingress
+  {{- with $.Values.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: {{ . }}.{{ $.Values.s3_hostname }}
+      http:
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: seaweedfs-s3
+                port:
+                  number: 8333
+  tls:
+    - secretName: s3-{{ . }}-bucket-tls
+      hosts:
+        - {{ . }}.{{ $.Values.s3_hostname }}
+{{- end }}

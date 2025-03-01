@@ -34,8 +34,6 @@ synapse:
   trusted_key_servers_bitwarden_ID: "not applicable"
 
 sliding_sync:
-  # -- postgresql credentials bitwarden item _ID
-  postgresql_credentials_bitwarden_ID: ""
   # -- sliding sync credentials
   sliding_sync_bitwarden_ID: ""
 
