@@ -32,44 +32,21 @@ spec:
         targetRevision: 1.16.2
         chart: harbor
         helm:
-          values: |
+          valuesObject:
             expose:
               # Set how to expose the service. Set the type as "ingress", "clusterIP", "nodePort" or "loadBalancer"
               # and fill the information in the corresponding section
               type: ingress
               tls:
-                # Enable TLS or not.
-                # Delete the "ssl-redirect" annotations in "expose.ingress.annotations" when TLS is disabled and "expose.type" is "ingress"
-                # Note: if the "expose.type" is "ingress" and TLS is disabled,
-                # the port must be included in the command when pulling/pushing images.
-                # Refer to https://github.com/goharbor/harbor/issues/5291 for details.
                 enabled: true
-                # The source of the tls certificate. Set as "auto", "secret"
-                # or "none" and fill the information in the corresponding section
-                # 1) auto: generate the tls certificate automatically
-                # 2) secret: read the tls certificate from the specified secret.
-                # The tls certificate can be generated manually or by cert manager
-                # 3) none: configure no tls certificate for the ingress. If the default
-                # tls certificate is configured in the ingress controller, choose this option
                 certSource: secret
                 auto:
-                  # The common name used to generate the certificate, it's necessary
-                  # when the type isn't "ingress"
                   commonName: ""
                 secret:
-                  # The name of secret which contains keys named:
-                  # "tls.crt" - the certificate
-                  # "tls.key" - the private key
                   secretName: "tls-harbor"
               ingress:
                 hosts:
                   core: {{ .harbor_hostname }}
-                # set to the type of ingress controller if it has specific requirements.
-                # leave as `default` for most ingress controllers.
-                # set to `gce` if using the GCE ingress controller
-                # set to `ncp` if using the NCP (NSX-T Container Plugin) ingress controller
-                # set to `alb` if using the ALB ingress controller
-                # set to `f5-bigip` if using the F5 BIG-IP ingress controller
                 controller: default
                 ## Allow .Capabilities.KubeVersion.Version to be overridden while creating ingress
                 kubeVersionOverride: ""
@@ -215,19 +192,10 @@ spec:
             # "swift" or "oss". Set it in the "imageChartStorage" section
             persistence:
               enabled: true
-              # Setting it to "keep" to avoid removing PVCs during a helm delete
-              # operation. Leaving it empty will delete PVCs after the chart deleted
-              # (this does not apply for PVCs that are created for internal database
-              # and redis components, i.e. they are never deleted automatically)
               resourcePolicy: "keep"
               persistentVolumeClaim:
                 registry:
-                  # Use the existing PVC which must be created manually before bound,
-                  # and specify the "subPath" if the PVC is shared with other components
                   existingClaim: ""
-                  # Specify the "storageClass" used to provision the volume. Or the default
-                  # StorageClass will be used (the default).
-                  # Set it to "-" to disable dynamic provisioning
                   storageClass: ""
                   subPath: ""
                   accessMode: ReadWriteOnce
@@ -277,7 +245,7 @@ spec:
                 # Refer to
                 # https://github.com/distribution/distribution/blob/main/docs/configuration.md#redirect
                 # for the detail.
-                disableredirect: false
+                disableredirect: true
                 # Specify the "caBundleSecretName" if the storage service uses a self-signed certificate.
                 # The secret must contain keys named "ca.crt" which will be injected into the trust store
                 # of registry's containers.
@@ -286,30 +254,13 @@ spec:
                 # Specify the type of storage: "filesystem", "azure", "gcs", "s3", "swift",
                 # "oss" and fill the information needed in the corresponding section. The type
                 # must be "filesystem" if you want to use persistent volumes for registry
-                type: filesystem
+                type: s3
                 filesystem:
                   rootdirectory: /storage
-                  #maxthreads: 100
-                azure:
-                  accountname: accountname
-                  accountkey: base64encodedaccountkey
-                  container: containername
-                  #realm: core.windows.net
-                  # To use existing secret, the key must be AZURE_STORAGE_ACCESS_KEY
-                  existingSecret: ""
-                gcs:
-                  bucket: bucketname
-                  # The base64 encoded json file which contains the key
-                  encodedkey: base64-encoded-json-key-file
-                  #rootdirectory: /gcs/object/name/prefix
-                  #chunksize: "5242880"
-                  # To use existing secret, the key must be GCS_KEY_DATA
-                  existingSecret: ""
-                  useWorkloadIdentity: false
                 s3:
                   # Set an existing secret for S3 accesskey and secretkey
                   # keys in the secret should be REGISTRY_STORAGE_S3_ACCESSKEY and REGISTRY_STORAGE_S3_SECRETKEY for registry
-                  #existingSecret: ""
+                  existingSecret: ""
                   region: us-west-1
                   bucket: bucketname
                   #accesskey: awsaccesskey
@@ -326,37 +277,6 @@ spec:
                   #multipartcopychunksize: "33554432"
                   #multipartcopymaxconcurrency: 100
                   #multipartcopythresholdsize: "33554432"
-                swift:
-                  authurl: https://storage.myprovider.com/v3/auth
-                  username: username
-                  password: password
-                  container: containername
-                  #region: fr
-                  #tenant: tenantname
-                  #tenantid: tenantid
-                  #domain: domainname
-                  #domainid: domainid
-                  #trustid: trustid
-                  #insecureskipverify: false
-                  #chunksize: 5M
-                  #prefix:
-                  #secretkey: secretkey
-                  #accesskey: accesskey
-                  #authversion: 3
-                  #endpointtype: public
-                  #tempurlcontainerkey: false
-                  #tempurlmethods:
-                oss:
-                  accesskeyid: accesskeyid
-                  accesskeysecret: accesskeysecret
-                  region: regionname
-                  bucket: bucketname
-                  #endpoint: endpoint
-                  #internal: false
-                  #encrypt: false
-                  #secure: true
-                  #chunksize: 10M
-                  #rootdirectory: rootdirectory
 
             imagePullPolicy: IfNotPresent
 
@@ -376,9 +296,9 @@ spec:
             # The initial password of Harbor admin. Change it from portal after launching Harbor
             # or give an existing secret for it
             # key in secret is given via (default to HARBOR_ADMIN_PASSWORD)
-            # existingSecretAdminPassword:
+            existingSecretAdminPassword: ""
             existingSecretAdminPasswordKey: HARBOR_ADMIN_PASSWORD
-            harborAdminPassword: "Harbor12345"
+            # harborAdminPassword: "Harbor12345"
 
             # The name of the secret which contains key named "ca.crt". Setting this enables the
             # download link on portal to download the CA certificate when the certificate isn't
