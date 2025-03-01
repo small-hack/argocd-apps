@@ -432,8 +432,7 @@ spec:
                 extraEnvVars: []
               replicas: 1
               revisionHistoryLimit: 10
-              nodeSelector:
-                kubernetes.io/hostname: ax102
+              nodeSelector: {}
               tolerations: []
               affinity: {}
               # Spread Pods across failure-domains like regions, availability zones or nodes
@@ -548,8 +547,7 @@ spec:
                   cpu: 1
                   memory: 1Gi
               extraEnvVars: []
-              nodeSelector:
-                kubernetes.io/hostname: ax102
+              nodeSelector: {}
               tolerations: []
               affinity: {}
               # Spread Pods across failure-domains like regions, availability zones or nodes
@@ -603,7 +601,7 @@ spec:
                 # support redis, redis+sentinel
                 # addr for redis: <host_redis>:<port_redis>
                 # addr for redis+sentinel: <host_sentinel1>:<port_sentinel1>,<host_sentinel2>:<port_sentinel2>,<host_sentinel3>:<port_sentinel3>
-                addr: "192.168.0.2:6379"
+                addr: "valkey-primary:6379"
                 # The name of the set of Redis instances to monitor, it must be set to support redis+sentinel
                 sentinelMasterSet: ""
                 # The "coreDatabaseIndex" must be "0" as the library Harbor
@@ -616,7 +614,7 @@ spec:
                 username: ""
                 password: ""
                 # If using existingSecret, the key must be REDIS_PASSWORD
-                existingSecret: ""
+                existingSecret: "harbor-valkey-credentials"
               ## Additional deployment annotations
               podAnnotations: {}
               ## Additional deployment labels
@@ -638,8 +636,7 @@ spec:
               image:
                 repository: goharbor/harbor-exporter
                 tag: dev
-              nodeSelector:
-                kubernetes.io/hostname: ax102
+              nodeSelector: {}
               tolerations: []
               affinity: {}
               # Spread Pods across failure-domains like regions, availability zones or nodes
