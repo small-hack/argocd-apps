@@ -16,7 +16,7 @@ spec:
             secret_vars:
               - global_time_zone
               - global_cluster_issuer
-              - global_storage_class
+              - global_pvc_storage_class
               - elk_hostname
   template:
     metadata:
