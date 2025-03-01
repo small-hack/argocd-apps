@@ -51,7 +51,7 @@ spec:
           valuesObject:
             # disable persistence during testing
             persistence:
-              enabled: false
+              enabled: true
               size: 1Gi
               accessMode: ReadWriteOnce
               storageClass: "{{ .global_storage_class }}"
