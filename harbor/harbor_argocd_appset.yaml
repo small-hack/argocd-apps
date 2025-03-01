@@ -296,8 +296,8 @@ spec:
             # The initial password of Harbor admin. Change it from portal after launching Harbor
             # or give an existing secret for it
             # key in secret is given via (default to HARBOR_ADMIN_PASSWORD)
-            existingSecretAdminPassword: ""
-            existingSecretAdminPasswordKey: HARBOR_ADMIN_PASSWORD
+            existingSecretAdminPassword: "harbor-admin-credentials"
+            existingSecretAdminPasswordKey: password
             # harborAdminPassword: "Harbor12345"
 
             # The name of the secret which contains key named "ca.crt". Setting this enables the
@@ -308,7 +308,7 @@ spec:
             # The secret key used for encryption. Must be a string of 16 chars.
             secretKey: "not-a-secure-key"
             # If using existingSecretSecretKey, the key must be secretKey
-            existingSecretSecretKey: ""
+            existingSecretSecretKey: "harbor-admin-credentials"
 
             # The proxy settings for updating trivy vulnerabilities from the Internet and replicating
             # artifacts from/to the registries that cannot be reached directly
@@ -494,7 +494,7 @@ spec:
               #     memory: 256Mi
               #     cpu: 100m
               extraEnvVars: []
-              nodeSelector: 
+              nodeSelector:
                 kubernetes.io/hostname: ax102
               tolerations: []
               affinity: {}
@@ -541,7 +541,7 @@ spec:
                 extraEnvVars: []
               replicas: 1
               revisionHistoryLimit: 10
-              nodeSelector: 
+              nodeSelector:
                 kubernetes.io/hostname: ax102
               tolerations: []
               affinity: {}
@@ -658,7 +658,7 @@ spec:
                   cpu: 1
                   memory: 1Gi
               extraEnvVars: []
-              nodeSelector: 
+              nodeSelector:
                 kubernetes.io/hostname: ax102
               tolerations: []
               affinity: {}
@@ -678,7 +678,7 @@ spec:
             database:
               # if external database is used, set "type" to "external"
               # and fill the connection information in "external" section
-              type: internal
+              type: external
               internal:
                 # set the service account to be used, default if left empty
                 serviceAccountName: ""
@@ -704,7 +704,7 @@ spec:
                 readinessProbe:
                   timeoutSeconds: 1
                 extraEnvVars: []
-                nodeSelector: 
+                nodeSelector:
                   kubernetes.io/hostname: ax102
                 tolerations: []
                 affinity: {}
@@ -722,13 +722,13 @@ spec:
                   #    memory: 128Mi
                   #    cpu: 100m
               external:
-                host: "192.168.0.1"
+                host: "harbor-postgrees-rw"
                 port: "5432"
-                username: "user"
-                password: "password"
+                username: "harbor"
+                #password: "password"
                 coreDatabase: "registry"
                 # if using existing secret, the key must be "password"
-                existingSecret: ""
+                existingSecret: "harbor-pgsql-credentials"
                 # "disable" - No SSL
                 # "require" - Always SSL (skip verification)
                 # "verify-ca" - Always SSL (verify that the certificate presented by the
@@ -766,7 +766,7 @@ spec:
                 #    memory: 256Mi
                 #    cpu: 100m
                 extraEnvVars: []
-                nodeSelector: 
+                nodeSelector:
                   kubernetes.io/hostname: ax102
                 tolerations: []
                 affinity: {}
@@ -812,7 +812,7 @@ spec:
               image:
                 repository: goharbor/harbor-exporter
                 tag: dev
-              nodeSelector: 
+              nodeSelector:
                 kubernetes.io/hostname: ax102
               tolerations: []
               affinity: {}
