@@ -51,7 +51,7 @@ spec:
             fullnameOverride: gotosocial
             image:
               repository: superseriousbusiness/gotosocial
-              tag: 0.18.0
+              tag: 0.18.1
 
             startupProbe:
               httpGet:
