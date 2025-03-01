@@ -16,8 +16,9 @@ spec:
             secret_vars:
               - global_time_zone
               - global_cluster_issuer
-              - global_storage_class
+              - global_pvc_storage_class
               - elk_hostname
+              - elk_default_instance
   template:
     metadata:
       name: elk-frontend
@@ -40,19 +41,22 @@ spec:
       # where to source this app from
       source:
         # https://github.com/0hlov3/charts/tree/main/charts/elk-frontend
-        repoURL: 'https://charts.schoenwald.aero'
-        targetRevision: 0.2.17
-        chart: elk-frontend
+        # repoURL: 'https://charts.schoenwald.aero'
+        # targetRevision: 0.2.17
+        # chart: elk-frontend
+        # temporary until we can get our PR merged: https://github.com/0hlov3/charts/pull/40
+        repoURL: https://github.com/jessebot/charts-1
+        targetRevision: add-elk-env-vars
+        path: charts/elk-frontend/
         helm:
           releaseName: elk-frontend
           valuesObject:
-
             # disable persistence during testing
             persistence:
-              enabled: false
+              enabled: true
               size: 1Gi
               accessMode: ReadWriteOnce
-              storageClass: "{{ .global_storage_class }}"
+              storageClass: "{{ .global_pvc_storage_class }}"
 
             ingress:
               enabled: true
@@ -69,3 +73,9 @@ spec:
                 - secretName: elk-tls
                   hosts:
                     - '{{ .elk_hostname }}'
+
+            elk:
+              env:
+                # default instance to load feeds from when a user goes to this elk frontend
+                public_default_server: "{{ .elk_default_instance }}"
+                public_single_instance: "{{ .elk_default_instance }}"
