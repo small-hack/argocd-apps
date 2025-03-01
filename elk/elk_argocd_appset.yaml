@@ -18,6 +18,7 @@ spec:
               - global_cluster_issuer
               - global_pvc_storage_class
               - elk_hostname
+              - elk_default_instance
   template:
     metadata:
       name: elk-frontend
@@ -73,4 +74,7 @@ spec:
                     - '{{ .elk_hostname }}'
 
             elk:
-              existingEnvSecret: elk-env
+              env:
+                # default instance to load feeds from when a user goes to this elk frontend
+                public_default_server: "{{ .elk_default_instance }}"
+                public_single_instance: "{{ .elk_default_instance }}"
