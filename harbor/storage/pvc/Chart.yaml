@@ -1,6 +1,6 @@
 apiVersion: v2
-name: gotosocial-pvcs
-description: A Helm chart for deploying PVCs to Kubernetes for Gotosocial
+name: harbor-pvcs
+description: A Helm chart for deploying PVCs to Kubernetes for harbor
 
 # A chart can be either an 'application' or a 'library' chart.
 #

@@ -1,20 +1,31 @@
-# gotosocial-pvcs
+# harbor-pvcs
 
 ![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.0](https://img.shields.io/badge/AppVersion-1.0.0-informational?style=flat-square)
 
-A Helm chart for deploying PVCs to Kubernetes for Gotosocial
+A Helm chart for deploying PVCs to Kubernetes for harbor
 
 ## Values
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | affinity | object | `{}` | tolerate affinity |
+| jobs_pvc.accessMode | string | `"ReadWriteOnce"` | default access mode for the config pvc |
+| jobs_pvc.storage | string | `"2Gi"` | storage capacity for the harbor config pvc |
+| jobs_pvc.storageClassName | string | `"local-path"` | default storage class name to use for config pvc |
 | k8up | object | `{"securityContext":{"runAsUser":0}}` | for enabling backups to a remote s3 provider or local disk backup |
 | k8up.securityContext | object | `{"runAsUser":0}` | user to run the backups as |
+| postgres_pvc.accessMode | string | `"ReadWriteOnce"` | default access mode for the config pvc |
+| postgres_pvc.storage | string | `"5Gi"` | storage capacity for the harbor config pvc |
+| postgres_pvc.storageClassName | string | `"local-path"` | default storage class name to use for config pvc |
+| rgistry_pvc.accessMode | string | `"ReadWriteOnce"` | default access mode for the config pvc |
+| rgistry_pvc.storage | string | `"64Gi"` | storage capacity for the harbor config pvc |
+| rgistry_pvc.storageClassName | string | `"local-path"` | default storage class name to use for config pvc |
 | tolerations | list | `[]` | tolerate taints |
+| trivy_pvc.accessMode | string | `"ReadWriteOnce"` | default access mode for the config pvc |
+| trivy_pvc.storage | string | `"5Gi"` | storage capacity for the harbor config pvc |
+| trivy_pvc.storageClassName | string | `"local-path"` | default storage class name to use for config pvc |
 | valkey_pvc.accessMode | string | `"ReadWriteOnce"` | default access mode for the config pvc |
-| valkey_pvc.enabled | bool | `true` | enable gotosocial configuration pvc |
-| valkey_pvc.storage | string | `"2Gi"` | storage capacity for the gotosocial config pvc |
+| valkey_pvc.storage | string | `"1Gi"` | storage capacity for the harbor config pvc |
 | valkey_pvc.storageClassName | string | `"local-path"` | default storage class name to use for config pvc |
 
 ----------------------------------------------

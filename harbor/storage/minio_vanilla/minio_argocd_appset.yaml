@@ -2,7 +2,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: gotosocial-minio-appset
+  name: harbor-minio-appset
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "2"
@@ -16,19 +16,19 @@ spec:
         input:
           parameters:
             secret_vars:
-              - gotosocial_s3_region
-              - gotosocial_s3_endpoint
+              - harbor_s3_region
+              - harbor_s3_endpoint
               - global_cluster_issuer
   template:
     metadata:
-      name: gotosocial-minio-app
+      name: harbor-minio-app
       annotations:
         argocd.argoproj.io/sync-wave: "2"
     spec:
-      project: gotosocial
+      project: harbor
       destination:
         server: https://kubernetes.default.svc
-        namespace: gotosocial
+        namespace: harbor
       syncPolicy:
         syncOptions:
           - ApplyOutOfSyncOnly=true
@@ -41,7 +41,7 @@ spec:
         chart: minio
         targetRevision: 5.4.0
         helm:
-          releaseName: gotosocial-minio
+          releaseName: harbor-minio
           values: |
             ## Use existing Secret that store following variables:
             ## .data.rootUser and .data.rootPassword are mandatory,
@@ -89,11 +89,11 @@ spec:
             ## In addition to default policies [readonly|readwrite|writeonly|consoleAdmin|diagnostics]
             ## you can define additional policies with custom supported actions and resources
             policies:
-              - name: "gotosocialReadWrite"
+              - name: "harborReadWrite"
                 statements:
                   - effect: Allow
                     resources:
-                      - 'arn:aws:s3:::gotosocial/*'
+                      - 'arn:aws:s3:::harbor/*'
                     actions:
                       - "s3:AbortMultipartUpload"
                       - "s3:GetObject"
@@ -103,17 +103,17 @@ spec:
                       - "s3:ListBucket"
                       - "s3:ListBucketMultipartUploads"
                     conditions:
-                      - StringEquals: '"aws:username": "gotosocial"'
+                      - StringEquals: '"aws:username": "harbor"'
                       - IpAddress: |
                           "aws:SourceIp": [
                             "10.0.0.0/8",
                             "192.168.0.0/24"
                           ]
-              - name: "gotosocialPostgresReadWrite"
+              - name: "harborPostgresReadWrite"
                 statements:
                   - effect: Allow
                     resources:
-                      - 'arn:aws:s3:::gotosocial-postgres/*'
+                      - 'arn:aws:s3:::harbor-postgres/*'
                     actions:
                       - "s3:AbortMultipartUpload"
                       - "s3:GetObject"
@@ -123,7 +123,7 @@ spec:
                       - "s3:ListBucket"
                       - "s3:ListBucketMultipartUploads"
                     conditions:
-                      - StringEquals: '"aws:username": "gotosocial-postgres"'
+                      - StringEquals: '"aws:username": "harbor-postgres"'
                       - IpAddress: |
                           "aws:SourceIp": [
                             "10.0.0.0/8",
@@ -148,11 +148,11 @@ spec:
               ## Default policies are [readonly|readwrite|writeonly|consoleAdmin|diagnostics]
               ## Add new policies as explained here https://min.io/docs/minio/kubernetes/upstream/administration/identity-access-management.html#access-management
               # Or you can refer to specific secret
-              - accessKey: gotosocial
-                existingSecret: gotosocial-s3-credentials
+              - accessKey: harbor
+                existingSecret: harbor-s3-credentials
                 existingSecretKey: password
                 policy: readwrite
-              - accessKey: gotosocial-postgres
+              - accessKey: harbor-postgres
                 existingSecret: s3-postgres-credentials
                 existingSecretKey: password
                 policy: readwrite
@@ -172,7 +172,7 @@ spec:
             ## List of buckets to be created after minio install
             ##
             buckets:
-              - name: gotosocial
+              - name: harbor
                 # Policy to be set on the bucket [none|download|upload|public]
                 policy: none
                 # Purge if bucket exists already
@@ -181,7 +181,7 @@ spec:
                 versioning: true
                 # set objectlocking for bucket [true|false]
                 objectlocking: false
-              - name: gotosocial-postgres
+              - name: harbor-postgres
                 # Policy to be set on the bucket [none|download|upload|public]
                 policy: none
                 # Purge if bucket exists already
