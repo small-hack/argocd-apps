@@ -20,7 +20,7 @@ spec:
               - elk_hostname
   template:
     metadata:
-      name: elk
+      name: elk-frontend
     spec:
       project: elk
 
