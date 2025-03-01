@@ -1,0 +1,96 @@
+---
+# webapp is deployed 2nd because we need secrets and persistent volumes up 1st
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: harbor-postgres-app-set
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+spec:
+  goTemplate: true
+  # generator allows us to source specific values from an external k8s secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - harbor_s3_endpoint
+              - harbor_postgres_backup_schedule
+  template:
+    metadata:
+      name: harbor-postgres-cluster
+      namespace: harbor
+      annotations:
+        argocd.argoproj.io/sync-wave: "3"
+    spec:
+      project: harbor
+      destination:
+        server: "https://kubernetes.default.svc"
+        namespace: harbor
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
+          selfHeal: true
+      source:
+        repoURL: https://small-hack.github.io/cloudnative-pg-cluster-chart
+        chart: cnpg-cluster
+        targetRevision: 0.4.0
+        helm:
+          releaseName: harbor-postgres-cluster
+          valuesObject:
+            name: harbor-postgres
+            instances: 1
+            bootstrap:
+              initdb:
+                database: harbor
+                owner: harbor
+                secret:
+                  name: harbor-pgsql-credentials
+            backup:
+              # barman is a utility for backing up postgres to s3
+              barmanObjectStore:
+                destinationPath: "s3://harbor-postgres"
+                endpointURL: "https://{{ .harbor_s3_endpoint }}"
+                s3Credentials:
+                  accessKeyId:
+                    name: s3-postgres-credentials
+                    key: "accessKeyId"
+                  secretAccessKey:
+                    name: s3-postgres-credentials
+                    key: "secretAccessKey"
+              retentionPolicy: "30d"
+            certificates:
+              server:
+                enabled: true
+                generate: true
+              client:
+                enabled: true
+                generate: true
+              user:
+                enabled: true
+                username:
+                  - harbor
+            scheduledBackup:
+              name: harbor-pg-backup
+              spec:
+                # hourly backups for postgres data
+                schedule: '{{ .harbor_postgres_backup_schedule }}'
+                backupOwnerReference: self
+                cluster:
+                  name: harbor-postgres
+            monitoring:
+              enablePodMonitor: false
+            postgresql:
+              parameters:
+                max_wal_size: "1GB"
+                wal_keep_size: "10GB"
+                max_slot_wal_keep_size: "10GB"
+              pg_hba:
+                - host all all 0.0.0.0/0 md5
+                # uncomment when pgsql cert connections are working to harbor
+                # - hostssl all all 0.0.0.0/0 cert clientcert=verify-full
