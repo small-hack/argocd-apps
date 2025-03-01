@@ -54,7 +54,7 @@ spec:
               enabled: true
               size: 1Gi
               accessMode: ReadWriteOnce
-              storageClass: "{{ .global_storage_class }}"
+              storageClass: "{{ .global_pvc_storage_class }}"
 
             ingress:
               enabled: true
