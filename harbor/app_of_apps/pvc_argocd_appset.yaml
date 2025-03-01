@@ -2,7 +2,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: gotosocial-pvc-appset
+  name: harbor-pvc-appset
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "1"
@@ -17,18 +17,18 @@ spec:
           parameters:
             secret_vars:
               - global_pvc_storage_class
-              - gotosocial_storage
-              - gotosocial_access_mode
+              - harbor_storage
+              - harbor_access_mode
   template:
     metadata:
-      name: gotosocial-pvc
+      name: harbor-pvc
       annotations:
         argocd.argoproj.io/sync-wave: "1"
     spec:
-      project: gotosocial
+      project: harbor
       destination:
         server: "https://kubernetes.default.svc"
-        namespace: gotosocial
+        namespace: harbor
       syncPolicy:
         syncOptions:
           - ApplyOutOfSyncOnly=true
@@ -37,12 +37,12 @@ spec:
           selfHeal: true
       source:
         repoURL: https://github.com/small-hack/argocd-apps.git
-        path: gotosocial/storage/pvc/
+        path: harbor/storage/pvc/
         targetRevision: main
         helm:
           valuesObject:
-            # -- enable gotosocial valkeyuration pvc
+            # -- enable harbor valkeyuration pvc
             pvc:
               storageClassName: '{{ .global_pvc_storage_class }}'
-              accessMode: '{{ .gotosocial_access_mode }}'
-              storage: '{{ .gotosocial_storage }}'
+              accessMode: '{{ .harbor_access_mode }}'
+              storage: '{{ .harbor_storage }}'
