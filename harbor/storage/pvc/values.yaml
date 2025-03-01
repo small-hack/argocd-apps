@@ -3,7 +3,7 @@ rgistry_pvc:
   storageClassName: "local-path"
   # -- default access mode for the config pvc
   accessMode: "ReadWriteOnce"
-  # -- storage capacity for the gotosocial config pvc
+  # -- storage capacity for the harbor config pvc
   storage: "64Gi"
 
 jobs_pvc:
@@ -11,7 +11,7 @@ jobs_pvc:
   storageClassName: "local-path"
   # -- default access mode for the config pvc
   accessMode: "ReadWriteOnce"
-  # -- storage capacity for the gotosocial config pvc
+  # -- storage capacity for the harbor config pvc
   storage: "2Gi"
 
 postgres_pvc:
@@ -19,7 +19,7 @@ postgres_pvc:
   storageClassName: "local-path"
   # -- default access mode for the config pvc
   accessMode: "ReadWriteOnce"
-  # -- storage capacity for the gotosocial config pvc
+  # -- storage capacity for the harbor config pvc
   storage: "5Gi"
 
 trivy_pvc:
@@ -27,7 +27,7 @@ trivy_pvc:
   storageClassName: "local-path"
   # -- default access mode for the config pvc
   accessMode: "ReadWriteOnce"
-  # -- storage capacity for the gotosocial config pvc
+  # -- storage capacity for the harbor config pvc
   storage: "5Gi"
 
 valkey_pvc:
@@ -35,7 +35,7 @@ valkey_pvc:
   storageClassName: "local-path"
   # -- default access mode for the config pvc
   accessMode: "ReadWriteOnce"
-  # -- storage capacity for the gotosocial config pvc
+  # -- storage capacity for the harbor config pvc
   storage: "1Gi"
 
 # -- tolerate affinity
@@ -48,5 +48,5 @@ tolerations: []
 k8up:
   # -- user to run the backups as
   securityContext:
-    # this may need to be 33 (apache) or 82 (nginx) depending on how you run gotosocial
+    # this may need to be 33 (apache) or 82 (nginx) depending on how you run harbor
     runAsUser: 0

@@ -3,7 +3,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: gotosocial-seaweedfs-appset
+  name: harbor-seaweedfs-appset
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "2"
@@ -17,19 +17,19 @@ spec:
         input:
           parameters:
             secret_vars:
-              - gotosocial_s3_endpoint
-              - gotosocial_s3_region
+              - harbor_s3_endpoint
+              - harbor_s3_region
               - global_cluster_issuer
   template:
     metadata:
-      name: gotosocial-seaweedfs-app
+      name: harbor-seaweedfs-app
       annotations:
         argocd.argoproj.io/sync-wave: "2"
     spec:
-      project: gotosocial
+      project: harbor
       destination:
         server: https://kubernetes.default.svc
-        namespace: gotosocial
+        namespace: harbor
       syncPolicy:
         syncOptions:
           - ApplyOutOfSyncOnly=true
@@ -41,7 +41,7 @@ spec:
         targetRevision: 3.68.0
         chart: seaweedfs
         helm:
-          releaseName: gotosocial-seaweedfs
+          releaseName: harbor-seaweedfs
           valuesObject:
             global:
               createClusterRole: true
@@ -54,7 +54,7 @@ spec:
                   volumeRead: false
                   filerWrite: false
                   filerRead: false
-              serviceAccountName: "gotosocial-seaweedfs"
+              serviceAccountName: "harbor-seaweedfs"
               certificates:
                 alphacrds: false
               monitoring:
@@ -167,13 +167,13 @@ spec:
                 port: 8333
                 httpsPort: 0
                 allowEmptyFolder: false
-                domainName: '{{ .gotosocial_s3_endpoint }}'
+                domainName: '{{ .harbor_s3_endpoint }}'
                 enableAuth: true
                 existingConfigSecret: seaweedfs-s3-secret
                 createBuckets:
-                  - name: gotosocial
+                  - name: harbor
                     anonymousRead: false
-                  - name: gotosocial-postgres
+                  - name: harbor-postgres
                     anonymousRead: false
               livenessProbe:
                 enabled: true
@@ -201,12 +201,12 @@ spec:
                 enabled: true
                 className: "nginx"
                 # host: false for "*" hostname
-                host: '{{ .gotosocial_s3_endpoint }}'
+                host: '{{ .harbor_s3_endpoint }}'
                 # additional ingress annotations for the s3 endpoint
                 annotations:
                   nginx.ingress.kubernetes.io/proxy-body-size: 1G
                   cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}-http01'
                 tls:
-                  - secretName: gotosocial-seaweedfs-tls
+                  - secretName: harbor-seaweedfs-tls
                     hosts:
-                      - '{{ .gotosocial_s3_endpoint }}'
+                      - '{{ .harbor_s3_endpoint }}'

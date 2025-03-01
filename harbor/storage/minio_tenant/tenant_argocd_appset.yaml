@@ -2,7 +2,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: gotosocial-minio-tenant-app-set
+  name: harbor-minio-tenant-app-set
   namespace: argocd
 spec:
   goTemplate: true
@@ -14,19 +14,19 @@ spec:
         input:
           parameters:
             secret_vars:
-              - gotosocial_s3_endpoint
-              - gotosocial_s3_region
+              - harbor_s3_endpoint
+              - harbor_s3_region
               - global_cluster_issuer
   template:
     metadata:
-      name: gotosocial-minio-tenant
+      name: harbor-minio-tenant
       annotations:
         argocd.argoproj.io/sync-wave: "2"
     spec:
-      project: gotosocial
+      project: harbor
       destination:
         server: "https://kubernetes.default.svc"
-        namespace: gotosocial
+        namespace: harbor
       syncPolicy:
         syncOptions:
           - ApplyOutOfSyncOnly=true
@@ -39,7 +39,7 @@ spec:
         chart: tenant
         targetRevision: 6.0.4
         helm:
-          releaseName: gotosocial-minio-tenant
+          releaseName: harbor-minio-tenant
           values: |
             ## Secret with default environment variable configurations to be used by MinIO Tenant.
             secrets:
@@ -48,7 +48,7 @@ spec:
             ## MinIO Tenant Definition
             tenant:
               # Tenant name
-              name: gotosocial-tenant
+              name: harbor-tenant
 
               ## Secret name that contains additional environment variable configurations.
               ## The secret is expected to have a key named config.env containing environment variables exports.
@@ -130,7 +130,7 @@ spec:
                 #     type: cert-manager.io/v1
                 #   - name: minio-user-console-tls
                 #     type: cert-manager.io/v1
-                #   - name: gotosocial-minio-pods-tls
+                #   - name: harbor-minio-pods-tls
                 #    type: cert-manager.io/v1
 
               ## MinIO features to enable or disable in the MinIO Tenant
@@ -140,16 +140,16 @@ spec:
 
                 domains:
                   minio:
-                  - https://{{ .gotosocial_s3_endpoint }}
+                  - https://{{ .harbor_s3_endpoint }}
 
                 enableSFTP: false
 
               ## List of bucket definitions to create during tenant provisioning.
               buckets:
-                - name: gotosocial
+                - name: harbor
                   objectLock: false
-                  region: {{ .gotosocial_s3_region }}
-                - name: gotosocial-postgresql
+                  region: {{ .harbor_s3_region }}
+                - name: harbor-postgresql
                   objectLock: false
 
               ## PodManagement policy for MinIO Tenant Pods. Can be "OrderedReady" or "Parallel"
@@ -164,7 +164,7 @@ spec:
 
               # kubernetes service account associated with a specific tenant
               # https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
-              serviceAccountName: "gotosocial-minio-tenant"
+              serviceAccountName: "harbor-minio-tenant"
 
               # Tenant scrape configuration will be added to prometheus managed by the prometheus-operator.
               prometheusOperator: false
@@ -180,10 +180,10 @@ spec:
               # stolen from https://github.com/minio/operator/blob/master/examples/kustomization/tenant-letsencrypt/tenant.yaml
               env:
                 - name: MINIO_DOMAIN
-                  value: "{{ .gotosocial_s3_endpoint }}"
+                  value: "{{ .harbor_s3_endpoint }}"
 
                 - name: MINIO_SERVER_URL
-                  value: "https://{{ .gotosocial_s3_endpoint }}"
+                  value: "https://{{ .harbor_s3_endpoint }}"
 
             ingress:
 
@@ -195,10 +195,10 @@ spec:
                   cert-manager.io/cluster-issuer: {{ .global_cluster_issuer }}
                   nginx.ingress.kubernetes.io/proxy-body-size: 64M
                 tls:
-                  - secretName: gotosocial-minio-api-tls
+                  - secretName: harbor-minio-api-tls
                     hosts:
-                      - "{{ .gotosocial_s3_endpoint }}"
-                host: {{ .gotosocial_s3_endpoint }}
+                      - "{{ .harbor_s3_endpoint }}"
+                host: {{ .harbor_s3_endpoint }}
                 path: /
                 pathType: Prefix
 
