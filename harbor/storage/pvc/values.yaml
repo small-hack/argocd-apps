@@ -1,0 +1,44 @@
+harbor_pvc:
+  # -- default storage class name to use for config pvc
+  storageClassName: "local-path"
+  # -- default access mode for the config pvc
+  accessMode: "ReadWriteOnce"
+  # -- storage capacity for the gotosocial config pvc
+  storage: "10Gi"
+
+postgres_pvc:
+  # -- default storage class name to use for config pvc
+  storageClassName: "local-path"
+  # -- default access mode for the config pvc
+  accessMode: "ReadWriteOnce"
+  # -- storage capacity for the gotosocial config pvc
+  storage: "10Gi"
+
+trivy_pvc:
+  # -- default storage class name to use for config pvc
+  storageClassName: "local-path"
+  # -- default access mode for the config pvc
+  accessMode: "ReadWriteOnce"
+  # -- storage capacity for the gotosocial config pvc
+  storage: "10Gi"
+
+valkey_pvc:
+  # -- default storage class name to use for config pvc
+  storageClassName: "local-path"
+  # -- default access mode for the config pvc
+  accessMode: "ReadWriteOnce"
+  # -- storage capacity for the gotosocial config pvc
+  storage: "10Gi"
+
+# -- tolerate affinity
+affinity: {}
+
+# -- tolerate taints
+tolerations: []
+
+# -- for enabling backups to a remote s3 provider or local disk backup
+k8up:
+  # -- user to run the backups as
+  securityContext:
+    # this may need to be 33 (apache) or 82 (nginx) depending on how you run gotosocial
+    runAsUser: 0
