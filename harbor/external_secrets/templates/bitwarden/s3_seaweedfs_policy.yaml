@@ -23,19 +23,19 @@ spec:
                 "secretKey": "{{ `{{ .adminSecretKey }}` }}"}
              ],
              "actions": ["Admin","Read","Write"]},
-            {"name": "gotosocial",
+            {"name": "harbor",
              "credentials": [
                {"accessKey": "{{ `{{ .userAccessKey }}` }}",
                 "secretKey": "{{ `{{ .userSecretKey }}` }}"}
              ],
-             "actions": ["Read:gotosocial","Write:gotosocial","List:gotosocial"]},
-            {"name": "anonymous", "actions": ["Read:gotosocial"]},
-            {"name": "gotosocial-postgres",
+             "actions": ["Read:harbor","Write:harbor","List:harbor"]},
+            {"name": "anonymous", "actions": ["Read:harbor"]},
+            {"name": "harbor-postgres",
              "credentials": [
                {"accessKey": "{{ `{{ .dbUserAccessKey }}` }}",
                 "secretKey": "{{ `{{ .dbUserSecretKey }}` }}"}
              ],
-             "actions": ["Read:gotosocial-postgres","Write:gotosocial-postgres","List:gotosocial-postgres"]}
+             "actions": ["Read:harbor-postgres","Write:harbor-postgres","List:harbor-postgres"]}
           ]}
   data:
     - secretKey: adminAccessKey
@@ -44,7 +44,7 @@ spec:
           name: bitwarden-login
           kind: ClusterSecretStore
       remoteRef:
-        key: {{ .Values.s3AdminCredentialsBitwardenID }} 
+        key: {{ .Values.s3AdminCredentialsBitwardenID }}
         property: username
 
     - secretKey: adminSecretKey
@@ -62,7 +62,7 @@ spec:
           name: bitwarden-login
           kind: ClusterSecretStore
       remoteRef:
-        key: {{ .Values.s3GotosocialCredentialsBitwardenID }} 
+        key: {{ .Values.s3GotosocialCredentialsBitwardenID }}
         property: username
 
     - secretKey: userSecretKey
@@ -80,7 +80,7 @@ spec:
           name: bitwarden-login
           kind: ClusterSecretStore
       remoteRef:
-        key: {{ .Values.s3PostgresCredentialsBitwardenID }} 
+        key: {{ .Values.s3PostgresCredentialsBitwardenID }}
         property: username
 
     - secretKey: dbUserSecretKey
