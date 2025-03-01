@@ -1,0 +1,106 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: mastodon-s3-pvc-app-set
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  goTemplate: true
+  # generator allows us to source specific values from an external k8s secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - mastodon_s3_provider
+              - mastodon_s3_backup_endpoint
+              - mastodon_s3_backup_bucket
+              - mastodon_s3_backup_region
+              - mastodon_s3_pvc_capacity
+              - mastodon_pvc_backup_schedule
+              - mastodon_s3_pvc_storage_class
+              - mastodon_toleration_key
+              - mastodon_toleration_operator
+              - mastodon_toleration_value
+              - mastodon_toleration_effect
+              - mastodon_affinity_key
+              - mastodon_affinity_value
+  template:
+    metadata:
+      name: mastodon-s3-pvc
+      annotations:
+        argocd.argoproj.io/sync-wave: "1"
+    spec:
+      project: mastodon
+      destination:
+        server: "https://kubernetes.default.svc"
+        namespace: mastodon
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
+          selfHeal: true
+      source:
+        repoURL: https://github.com/small-hack/argocd-apps.git
+        path: s3_persistence_and_backups/
+        targetRevision: main
+        helm:
+          valuesObject:
+            app: mastodon
+            provider: '{{ .mastodon_s3_provider }}'
+            pvc_capacity: '{{ .mastodon_s3_pvc_capacity }}'
+            pvc_storageClassName: '{{ .mastodon_s3_pvc_storage_class }}'
+
+            tolerations:
+              - key: '{{ .mastodon_toleration_key }}'
+                operator: '{{ .mastodon_toleration_operator }}'
+                value: '{{ .mastodon_toleration_value }}'
+                effect: '{{ .mastodon_toleration_effect }}'
+
+            affinity:
+              nodeAffinity:
+                requiredDuringSchedulingIgnoredDuringExecution:
+                  nodeSelectorTerms:
+                    - matchExpressions:
+                      - key: '{{ .mastodon_affinity_key }}'
+                        operator: In
+                        values:
+                          - '{{ .mastodon_affinity_value }}'
+
+            # not in use yet
+            k8up:
+              securityContext:
+                runAsUser: 0
+
+              backup_name: "mastodon-nightly-backup"
+
+              # -- can be set to 's3' or 'local'
+              backup_type: "s3"
+
+              s3:
+                bucket: '{{ .mastodon_s3_backup_bucket }}'
+                endpoint: '{{ .mastodon_s3_backup_endpoint }}'
+                accessKeyIDSecretRef:
+                  name: 's3-backups-credentials'
+                  key: 'accessKeyId'
+                  optional: false
+                secretAccessKeySecretRef:
+                  name: 's3-backups-credentials'
+                  key: 'secretAccessKey'
+                  optional: false
+
+              repoPasswordSecretRef:
+                name: 's3-backups-credentials'
+                key: 'resticRepoPassword'
+
+              prometheus_url: 'push-gateway.prometheus.svc:9091'
+
+              schedules:
+                backup: '{{ .mastodon_pvc_backup_schedule }}'
+                check: "48 13 * * *"
+                prune: "49 13 * * *"

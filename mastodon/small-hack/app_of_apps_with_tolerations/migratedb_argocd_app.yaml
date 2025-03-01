@@ -1,0 +1,22 @@
+# ---
+# apiVersion: argoproj.io/v1alpha1
+# kind: Application
+# metadata:
+#   name: mastodon-db-migrate-job
+#   namespace: argocd
+#   annotations:
+#     argocd.argoproj.io/sync-wave: "4"
+# spec:
+#   project: default
+#   destination:
+#     server: "https://kubernetes.default.svc"
+#     namespace: mastodon
+#   source:
+#     repoURL: https://github.com/small-hack/argocd-apps.git
+#     path: mastodon/manifests/migrate-job/
+#   syncPolicy:
+#     syncOptions:
+#       - Replace=true
+#     automated:
+#       prune: true
+#       selfHeal: false

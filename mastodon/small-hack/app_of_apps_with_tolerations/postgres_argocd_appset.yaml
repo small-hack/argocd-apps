@@ -1,0 +1,99 @@
+---
+# webapp is deployed 2nd because we need secrets and persistent volumes up 1st
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: mastodon-postgres-app-set
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+spec:
+  goTemplate: true
+  # generator allows us to source specific values from an external k8s secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - mastodon_s3_endpoint
+              - mastodon_postgres_backup_schedule
+  template:
+    metadata:
+      name: mastodon-postgres-cluster
+      namespace: mastodon
+      annotations:
+        argocd.argoproj.io/sync-wave: "3"
+    spec:
+      project: mastodon
+      destination:
+        server: "https://kubernetes.default.svc"
+        namespace: mastodon
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
+          selfHeal: true
+      source:
+        repoURL: https://small-hack.github.io/cloudnative-pg-cluster-chart
+        chart: cnpg-cluster
+        targetRevision: 0.4.0
+        helm:
+          releaseName: mastodon-postgres-cluster
+          valuesObject:
+            name: mastodon-postgres
+            instances: 2
+
+            bootstrap:
+              initdb:
+                database: mastodon
+                owner: mastodon
+
+            backup:
+              # barman is a utility for backing up postgres to s3
+              barmanObjectStore:
+                destinationPath: "s3://mastodon-postgres"
+                endpointURL: "https://{{ .mastodon_s3_endpoint }}"
+                s3Credentials:
+                  accessKeyId:
+                    name: s3-postgres-credentials
+                    key: "accessKeyId"
+                  secretAccessKey:
+                    name: s3-postgres-credentials
+                    key: "secretAccessKey"
+              retentionPolicy: "7d"
+
+            certificates:
+              server:
+                enabled: true
+                generate: true
+              client:
+                enabled: true
+                generate: true
+              user:
+                enabled: true
+                username:
+                  - mastodon
+
+            scheduledBackup:
+              name: mastodon-pg-backup
+              spec:
+                # hourly backups for postgres data
+                schedule: '{{ .mastodon_postgres_backup_schedule }}'
+                backupOwnerReference: self
+                cluster:
+                  name: mastodon-postgres
+
+            monitoring:
+              enablePodMonitor: false
+
+            postgresql:
+              parameters:
+                max_wal_size: "1GB"
+                wal_keep_size: "10GB"
+                max_slot_wal_keep_size: "10GB"
+              pg_hba:
+                - hostnossl all all 0.0.0.0/0 reject
+                - hostssl all all 0.0.0.0/0 cert clientcert=verify-full
