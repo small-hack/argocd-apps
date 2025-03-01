@@ -44,6 +44,7 @@ spec:
         targetRevision: 0.2.17
         chart: elk-frontend
         helm:
+          releaseName: elk-frontend
           valuesObject:
 
             # disable persistence during testing
