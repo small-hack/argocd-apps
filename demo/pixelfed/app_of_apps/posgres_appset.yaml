@@ -69,7 +69,7 @@ spec:
                   compression: gzip
                   maxParallel: 8
                   encryption: AES256
-              retentionPolicy: "30d"
+              retentionPolicy: "7d"
 
             certificates:
               server:

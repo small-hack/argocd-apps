@@ -1,11 +1,11 @@
 # SeaweedFS Backups and Recovery with k8up
 
-This guide will walk you through the creation, backup, and recovery processes for a local [SeaweedFS](https://github.com/seaweedfs/seaweedfs) deployment and [CloudNative Postgres](https://cloudnative-pg.io/documentation/current/) cluster using [K8up](https://k8up.io/) and [Backblaze B2](https://www.backblaze.com/docs/cloud-storage). 
+This guide will walk you through the creation, backup, and recovery processes for a local [SeaweedFS](https://github.com/seaweedfs/seaweedfs) deployment and [CloudNative Postgres](https://cloudnative-pg.io/documentation/current/) cluster using [K8up](https://k8up.io/) and [Backblaze B2](https://www.backblaze.com/docs/cloud-storage).
 
 Recommended reading: [S3 as the universal infrastructure backend](https://medium.com/innovationendeavors/s3-as-the-universal-infrastructure-backend-a104a8cc6991) - Davis Treybig
 
 > For the purposes of this demo, backups are set to run every minute. Plain-text passwords are also used for convenience - do NOT do that in production.
-> 
+>
 ## Outline
 
 1. [K3s Cluster creation](#k3s-cluster-creation)
@@ -71,7 +71,7 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
     --create-namespace \
     --version v1.13.2
     ```
-    
+
 5. Install CNPG Operator
 
     ```bash
@@ -82,7 +82,7 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
       cnpg/cloudnative-pg \
       --version 0.19.0
     ```
-    
+
 6. Install the CNPG cluster chart
 
    ```bash
@@ -95,7 +95,7 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
     ```bash
     repo add k8up-io https://k8up-io.github.io/k8up
     helm repo update
-    
+
     kubectl apply -f https://github.com/k8up-io/k8up/releases/download/k8up-4.4.3/k8up-crd.yaml
     helm install k8up k8up-io/k8up
     ```
@@ -184,11 +184,11 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
     ```
 
 5. Configure the AWS CLI
-   
+
     - get the `admin_access_key_id` and `admin_secret_access_key` from the secret `seaweedfs-s3-secret`
-    
+
     - run `aws configure`
-    
+
     - Populate the `AWS Access Key ID` and `AWS Secret Access Key` fileds, all other values can be blank
 
 6. Export your NodeIP as an env var
@@ -198,7 +198,7 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
    ```
 
 7. Create a bucket for backups
-   
+
     - The endpoint-url is the IP of our node + the nodePort form our service
 
       ```bash
@@ -236,7 +236,7 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
         username:
           - "app"
     backup:
-      retentionPolicy: "30d"
+      retentionPolicy: "7d"
       barmanObjectStore:
         destinationPath: "s3://postgres15-backups"
         endpointURL: "http://seaweedfs-s3.default.svc.cluster.local:8333"
@@ -318,29 +318,29 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
 4. Create a table for the demo data:
 
     ```bash
-    psql "sslkey=./tls.key 
-          sslcert=./tls.crt 
-          sslrootcert=./ca.crt 
+    psql "sslkey=./tls.key
+          sslcert=./tls.crt
+          sslrootcert=./ca.crt
           host=$NODE_IP
-          port=30001 
-          dbname=app 
+          port=30001
+          dbname=app
           user=app" -c 'CREATE TABLE processors (data JSONB);'
     ```
 
 5. Download demo data and use script to populate the table
 
     - Grab a copy of the demo data
-   
+
       ```bash
       wget https://raw.githubusercontent.com/small-hack/argocd-apps/main/postgres/operators/cloud-native-postgres/backups/demo-data.json
       ```
 
     - Create a script to add the demo data to your table
-    
+
       ```
-      /bin/cat << 'EOF' > populate.sh 
+      /bin/cat << 'EOF' > populate.sh
       #!/bin/bash
-      
+
       COUNT=$(jq length demo-data.json)
 
       for (( i=0; i<$COUNT; i++ ))
@@ -356,22 +356,22 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
       done
       EOF
       ```
-    
+
     - Run the script
 
-      ```bash  
+      ```bash
       bash populate.sh
       ```
 
 6. Perform a test query against the DB
 
     ```bash
-    psql "sslkey=./tls.key 
-         sslcert=./tls.crt 
-         sslrootcert=./ca.crt 
-         host=$NODE_IP 
-         port=30001 
-         dbname=app 
+    psql "sslkey=./tls.key
+         sslcert=./tls.crt
+         sslrootcert=./ca.crt
+         host=$NODE_IP
+         port=30001
+         dbname=app
          user=app" -c "SELECT data -> 'cpu_name' AS Cpu,
                               data -> 'cpu_cores' AS Cores,
                               data -> 'cpu_threads' AS Threads,
@@ -382,7 +382,7 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
     ```
 
     Expected Output:
-    
+
     > ```console
     >               cpu           | cores | threads | releasedate | singlecoreperf
     > ------------------------+-------+---------+-------------+----------------
@@ -427,13 +427,13 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
  1. Create a secret containing your external S3 credentials
 
     - You will need to get these from your provider (Backblaze, Wasabi etc..):
-    
+
       ```bash
       export ACCESS_KEY_ID=$(echo -n "" | base64)
-      
+
       export ACCESS_SECRET_KEY=$(echo -n "" |base64)
       ```
-      
+
       ```bash
       /bin/cat << EOF > backblaze-secret.yaml
       apiVersion: v1
@@ -465,15 +465,15 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
 
       kubectl apply -f k8up.yaml
       ```
- 
+
  2. Create a secret containing a random password for restic
 
   - Generate a password and base64 encode it.
-    
+
     ```bash
     export RESTIC_PASS=$(openssl rand -base64 32)
     ```
-    
+
   - Create a secret manifest
 
     ```bash
@@ -487,7 +487,7 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
       "password": "$RESTIC_PASS"
     EOF
     ```
-    
+
   - Create the secret
 
     ```bash
@@ -496,7 +496,7 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
 
 3. Create a scheduled backups
 
-  - Create a manifest for the backup 
+  - Create a manifest for the backup
 
     ```bash
     /bin/cat << EOF > backup.yaml
@@ -543,10 +543,10 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
 
    ```bash
    helm uninstall cnpg-cluster
-   
+
    k delete -f manifests.yaml
-   
-   kubectl delete -f backup.yaml 
+
+   kubectl delete -f backup.yaml
    ```
 
 2. Create PVCs to hold our restored data
@@ -596,7 +596,7 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
           storage: 10Gi
     EOF
     ```
-  
+
   - Create the PVCs
 
     ```bash
@@ -608,7 +608,7 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
     ```bash
     # the password used in your restic-repo secret
     export RESTIC_PASSWORD=""
-    
+
     # Your S3 credentials
     export AWS_ACCESS_KEY_ID=""
     export AWS_SECRET_ACCESS_KEY=""
@@ -631,9 +631,9 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
     4 snapshots
     ```
 
-4. Use the K8up CLI or a declarative setup to restore data to the PVC. You will need to do this for each PVC that needs to be restored 
-    
-  - Example manifest for a S3-to-PVC restore job which uses the restic snapshots shown above. 
+4. Use the K8up CLI or a declarative setup to restore data to the PVC. You will need to do this for each PVC that needs to be restored
+
+  - Example manifest for a S3-to-PVC restore job which uses the restic snapshots shown above.
 
     ```bash
     /bin/cat << EOF > s3-to-pvc.yaml
@@ -713,12 +713,12 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
     ```bash
     kubectl apply -f s3-to-pvc.yaml
     ```
-    
+
 5. Re-deploy Seaweedfs from the existing PVCs
 
     ```yaml
     cd seaweedfs/k8s/charts/seaweedfs/
-    
+
     /bin/cat << EOF > restore-values.yaml
     master:
       data:
@@ -816,12 +816,12 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
 5. Verify that your data is restored
 
     ```bash
-    psql "sslkey=./tls.key 
-         sslcert=./tls.crt 
-         sslrootcert=./ca.crt 
+    psql "sslkey=./tls.key
+         sslcert=./tls.crt
+         sslrootcert=./ca.crt
          host=$NODE_IP
-         port=30001 
-         dbname=app 
+         port=30001
+         dbname=app
          user=app" -c "SELECT data -> 'cpu_name' AS Cpu,
                               data -> 'cpu_cores' AS Cores,
                               data -> 'cpu_threads' AS Threads,
@@ -832,7 +832,7 @@ Recommended reading: [S3 as the universal infrastructure backend](https://medium
     ```
 
     Expected Output:
-     
+
     > ```console
     >           cpu           | cores | threads | releasedate | singlecoreperf
     > ------------------------+-------+---------+-------------+----------------
