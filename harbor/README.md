@@ -2,7 +2,7 @@
 
 This ApplicationSet deploys [Harbor](https://goharbor.io/), an open source registry that secures artifacts with policies and role-based access control, ensures images are scanned and free from vulnerabilities, and signs images as trusted. Harbor, a CNCF Graduated project, delivers compliance, performance, and interoperability to help you consistently and securely manage artifacts across cloud native compute platforms like Kubernetes and Docker.
 
-We deploy this helm chart, [https://github.com/goharbor/harbor-helm](https://github.com/goharbor/harbor-helm/tree/main).
+We used to deploy this helm chart, [goharbor/harbor-helm](https://github.com/goharbor/harbor-helm/tree/main), however, after much issues with helm lookups (which are not supported by Argo CD at this time), we decided to go to with the [Bitnami Harbor Chart](https://github.com/bitnami/charts/tree/main/bitnami/harbor).
 
 ## Sync Waves
 
