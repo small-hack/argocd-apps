@@ -1,7 +1,7 @@
 # -- Use external secrets. Set to bitwarden to use this chart. other providers may be supported in the future
 provider: ""
 
-# -- admin credentials - currently NOT in use
+# -- admin credentials
 adminCredentialsBitwardenID: ""
 
 # -- smtp credentials
