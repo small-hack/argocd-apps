@@ -51,6 +51,7 @@ spec:
                 owner: harbor
                 secret:
                   name: harbor-pgsql-credentials
+
             backup:
               # barman is a utility for backing up postgres to s3
               barmanObjectStore:
@@ -63,7 +64,9 @@ spec:
                   secretAccessKey:
                     name: s3-postgres-credentials
                     key: "secretAccessKey"
+
               retentionPolicy: "7d"
+
             certificates:
               server:
                 enabled: true
@@ -75,6 +78,7 @@ spec:
                 enabled: true
                 username:
                   - harbor
+
             scheduledBackup:
               name: harbor-pg-backup
               spec:
@@ -83,8 +87,10 @@ spec:
                 backupOwnerReference: self
                 cluster:
                   name: harbor-postgres
+
             monitoring:
               enablePodMonitor: false
+
             postgresql:
               parameters:
                 max_wal_size: "1GB"

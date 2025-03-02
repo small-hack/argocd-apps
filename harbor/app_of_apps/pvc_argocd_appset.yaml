@@ -19,6 +19,18 @@ spec:
               - global_pvc_storage_class
               - harbor_storage
               - harbor_access_mode
+              - harbor_trivy_pvc_storage
+              - harbor_trivy_storage_class
+              - harbor_trivy_access_mode
+              - harbor_registry_pvc_storage
+              - harbor_registry_storage_class
+              - harbor_registry_access_mode
+              - harbor_jobs_pvc_storage
+              - harbor_jobs_storage_class
+              - harbor_jobs_access_mode
+              - harbor_valkey_storage
+              - harbor_valkey_storage_class
+              - harbor_valkey_access_mode
   template:
     metadata:
       name: harbor-pvc
@@ -42,8 +54,46 @@ spec:
         targetRevision: harbor-refresh
         helm:
           valuesObject:
-            # -- enable harbor valkeyuration pvc
-            pvc:
-              storageClassName: '{{ .global_pvc_storage_class }}'
-              accessMode: '{{ .harbor_access_mode }}'
-              storage: '{{ .harbor_storage }}'
+            registry_pvc:
+              # -- default storage class name to use for registry pvc
+              storageClassName: "{{ .harbor_registry_storage_class }}"
+              # -- default access mode for the registry pvc
+              accessMode: "{{ .harbor_registry_access_mode }}"
+              # -- storage capacity for the harbor registry pvc
+              storage: "{{ .harbor_registry_pvc_storage }}"
+
+            jobs_pvc:
+              # -- default storage class name to use for jobs pvc
+              storageClassName: "{{ .harbor_jobs_storage_class }}"
+              # -- default access mode for the jobs pvc
+              accessMode: "{{ .harbor_jobs_access_mode }}"
+              # -- storage capacity for the harbor jobs pvc
+              storage: "{{ .harbor_jobs_pvc_storage }}"
+
+            trivy_pvc:
+              # -- default storage class name to use for trivy pvc
+              storageClassName: "{{ .harbor_trivy_storage_class }}"
+              # -- default access mode for the trivy pvc
+              accessMode: "{{ .harbor_trivy_access_mode }}"
+              # -- storage capacity for the harbor trivy pvc
+              storage: "{{ .harbor_trivy_pvc_storage }}"
+
+            valkey_pvc:
+              # -- default storage class name to use for valkey pvc
+              storageClassName: "{{ .harbor_valkey_storage_class }}"
+              # -- default access mode for the valkey pvc
+              accessMode: "{{ .harbor_valkey_access_mode }}"
+              # -- storage capacity for the harbor valkey pvc
+              storage: "{{ .harbor_valkey_pvc_storage }}"
+
+            # -- tolerate affinity
+            affinity: {}
+
+            # -- tolerate taints
+            tolerations: []
+
+            # -- for enabling backups to a remote s3 provider or local disk backup
+            k8up:
+              # -- user to run the backups as
+              securityContext:
+                runAsUser: 0
