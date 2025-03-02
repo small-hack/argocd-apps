@@ -211,14 +211,11 @@ spec:
             # key in secret is given via (default to HARBOR_ADMIN_PASSWORD)
             existingSecretAdminPassword: "harbor-admin-credentials"
             existingSecretAdminPasswordKey: password
-            # harborAdminPassword: "Harbor12345"
 
             # The name of the secret which contains key named "ca.crt". Setting this enables the
             # download link on portal to download the CA certificate when the certificate isn't
             # generated automatically
             caSecretName: ""
-            # The secret key used for encryption. Must be a string of 16 chars.
-            secretKey: "not-a-secure-key"
             # If using existingSecretSecretKey, the key must be secretKey
             existingSecretSecretKey: "harbor-admin-credentials"
             # The proxy settings for updating trivy vulnerabilities from the Internet and replicating
