@@ -6,9 +6,9 @@ metadata:
   annotations:
     k8up.io/backup: 'true'
 spec:
-  storageClassName: {{ .Values.harbor_pvc.storageClassName }}
+  storageClassName: {{ .Values.trivy_pvc.storageClassName }}
   accessModes:
-    - {{ .Values.harbor_pvc.accessMode }}
+    - {{ .Values.trivy_pvc.accessMode }}
   resources:
     requests:
-      storage: {{ .Values.harbor_pvc.storage }}
+      storage: {{ .Values.trivy_pvc.storage }}

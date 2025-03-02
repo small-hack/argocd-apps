@@ -1,3 +1,11 @@
+postgres_pvc:
+  # -- default storage class name to use for config pvc
+  storageClassName: "local-path"
+  # -- default access mode for the config pvc
+  accessMode: "ReadWriteOnce"
+  # -- storage capacity for the harbor config pvc
+  storage: "5Gi"
+
 rgistry_pvc:
   # -- default storage class name to use for config pvc
   storageClassName: "local-path"
@@ -13,14 +21,6 @@ jobs_pvc:
   accessMode: "ReadWriteOnce"
   # -- storage capacity for the harbor config pvc
   storage: "2Gi"
-
-postgres_pvc:
-  # -- default storage class name to use for config pvc
-  storageClassName: "local-path"
-  # -- default access mode for the config pvc
-  accessMode: "ReadWriteOnce"
-  # -- storage capacity for the harbor config pvc
-  storage: "5Gi"
 
 trivy_pvc:
   # -- default storage class name to use for config pvc
@@ -48,5 +48,4 @@ tolerations: []
 k8up:
   # -- user to run the backups as
   securityContext:
-    # this may need to be 33 (apache) or 82 (nginx) depending on how you run harbor
     runAsUser: 0
