@@ -4,6 +4,9 @@ provider: ""
 # -- admin credentials
 adminCredentialsBitwardenID: ""
 
+# -- registry credentials
+registryCredentialsBitwardenID: ""
+
 # -- smtp credentials
 smtpCredentialsBitwardenID: ""
 
