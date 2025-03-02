@@ -1,0 +1,14 @@
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: trivy
+  annotations:
+    k8up.io/backup: 'true'
+spec:
+  storageClassName: {{ .Values.trivy_pvc.storageClassName }}
+  accessModes:
+    - {{ .Values.trivy_pvc.accessMode }}
+  resources:
+    requests:
+      storage: {{ .Values.trivy_pvc.storage }}
