@@ -1,0 +1,5 @@
+# -- application name that needs valkey
+app: ""
+
+# -- storage class for valkey
+storageClass: ""
