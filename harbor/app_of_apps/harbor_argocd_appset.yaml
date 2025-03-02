@@ -340,6 +340,14 @@ spec:
             trivy:
               # enabled the flag to enable Trivy scanner
               enabled: true
+              ## @param trivy.existingEnvVarsSecret Existing secret for trivy
+              ## The secret must contain the keys:
+              ## `SCANNER_TRIVY_GITHUB_TOKEN` (optional)
+              ## `SCANNER_REDIS_URL` (required - if using the internal Redis - set to base64 of "redis://harbor-redis-master:6379/5")
+              ## `SCANNER_STORE_REDIS_URL` (required - if using the internal Redis - set to base64 of "redis://harbor-redis-master:6379/5")
+              ## `SCANNER_JOB_QUEUE_REDIS_URL` (required - if using the internal Redis - set to base64 of "redis://harbor-redis-master:6379/5")
+              ##
+              existingEnvVarsSecret: ""
 
             externalDatabase:
               host: "harbor-postgrees-rw"
