@@ -8,7 +8,7 @@ A Helm chart for Harbor External Secrets using the Bitwarden ESO provider on Kub
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| adminCredentialsBitwardenID | string | `""` | admin credentials - currently NOT in use |
+| adminCredentialsBitwardenID | string | `""` | admin credentials |
 | oidcCredentialsBitwardenID | string | `""` | OIDC Credentials |
 | pgsqlCredentialsBitwardenID | string | `""` | postgres credentials |
 | provider | string | `""` | Use external secrets. Set to bitwarden to use this chart. other providers may be supported in the future |
