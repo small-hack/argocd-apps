@@ -5,7 +5,7 @@ metadata:
   name: harbor-valkey-appset
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "1"
+    argocd.argoproj.io/sync-wave: "2"
 spec:
   goTemplate: true
   # generator allows us to source specific values from an external k8s secret
@@ -18,21 +18,29 @@ spec:
             secret_vars:
               - global_storage_class
   template:
+    # metadata of the Argo CD Application that the ApplicationSet deploys
     metadata:
       name: harbor-valkey
       annotations:
-        argocd.argoproj.io/sync-wave: "1"
+        argocd.argoproj.io/sync-wave: "2"
+
     spec:
       project: harbor
-      destination:
-        server: "https://kubernetes.default.svc"
-        namespace: harbor
+
+      # how to reconcile differences should the application change on the cluster
       syncPolicy:
         syncOptions:
           - ApplyOutOfSyncOnly=true
         automated:
           prune: true
           selfHeal: true
+
+      # where this is going to be deployed
+      destination:
+        server: "https://kubernetes.default.svc"
+        namespace: harbor
+
+      # the source of this Argo CD Application
       source:
         repoURL: 'registry-1.docker.io'
         chart: bitnamicharts/valkey
