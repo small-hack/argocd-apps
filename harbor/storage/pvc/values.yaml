@@ -1,41 +1,33 @@
-postgres_pvc:
-  # -- default storage class name to use for config pvc
+registry_pvc:
+  # -- default storage class name to use for registry pvc
   storageClassName: "local-path"
-  # -- default access mode for the config pvc
+  # -- default access mode for the registry pvc
   accessMode: "ReadWriteOnce"
-  # -- storage capacity for the harbor config pvc
-  storage: "5Gi"
-
-rgistry_pvc:
-  # -- default storage class name to use for config pvc
-  storageClassName: "local-path"
-  # -- default access mode for the config pvc
-  accessMode: "ReadWriteOnce"
-  # -- storage capacity for the harbor config pvc
+  # -- storage capacity for the harbor registry pvc
   storage: "64Gi"
 
 jobs_pvc:
-  # -- default storage class name to use for config pvc
+  # -- default storage class name to use for jobs pvc
   storageClassName: "local-path"
-  # -- default access mode for the config pvc
+  # -- default access mode for the jobs pvc
   accessMode: "ReadWriteOnce"
-  # -- storage capacity for the harbor config pvc
+  # -- storage capacity for the harbor jobs pvc
   storage: "2Gi"
 
 trivy_pvc:
-  # -- default storage class name to use for config pvc
+  # -- default storage class name to use for trivy pvc
   storageClassName: "local-path"
-  # -- default access mode for the config pvc
+  # -- default access mode for the trivy pvc
   accessMode: "ReadWriteOnce"
-  # -- storage capacity for the harbor config pvc
+  # -- storage capacity for the harbor trivy pvc
   storage: "5Gi"
 
 valkey_pvc:
-  # -- default storage class name to use for config pvc
+  # -- default storage class name to use for valkey pvc
   storageClassName: "local-path"
-  # -- default access mode for the config pvc
+  # -- default access mode for the valkey pvc
   accessMode: "ReadWriteOnce"
-  # -- storage capacity for the harbor config pvc
+  # -- storage capacity for the harbor valkey pvc
   storage: "1Gi"
 
 # -- tolerate affinity
