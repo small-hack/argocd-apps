@@ -31,4 +31,4 @@ spec:
     # path: charts/openbao/
     repoURL: 'https://openbao.github.io/openbao-helm'
     chart: openbao
-    targetRevision: 0.8.1
+    targetRevision: 0.9.0
