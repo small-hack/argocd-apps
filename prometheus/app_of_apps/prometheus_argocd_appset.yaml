@@ -40,7 +40,7 @@ spec:
       source:
         repoURL: https://prometheus-community.github.io/helm-charts
         chart: kube-prometheus-stack
-        targetRevision: 69.7.3
+        targetRevision: 69.7.4
         helm:
           releaseName: prom-stack
           valuesObject:
