@@ -58,8 +58,10 @@ spec:
             fullnameOverride: mastodon
             # original repository: ghcr.io/mastodon/mastodon
             image:
-              repository: jessebot/mastodon-glitch-soc
-              tag: v4.3.3
+              repository: ghcr.io/glitch-soc/mastodon
+              tag: nightly.2025-03-07
+              # repository: jessebot/mastodon-glitch-soc
+              # tag: v4.3.3
 
             tolerations:
               - key: '{{ .mastodon_toleration_key }}'
