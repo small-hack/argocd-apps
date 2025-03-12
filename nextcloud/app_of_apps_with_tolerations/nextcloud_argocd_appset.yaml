@@ -55,7 +55,7 @@ spec:
       source:
         repoURL: 'https://nextcloud.github.io/helm'
         chart: nextcloud
-        targetRevision: 6.6.7
+        targetRevision: 6.6.8
         helm:
           # release name for this helm chart release. If this is not set,
           # Argo CD will use the name of the Application as the release name
