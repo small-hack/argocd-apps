@@ -59,7 +59,8 @@ spec:
             # original repository: ghcr.io/mastodon/mastodon
             image:
               repository: ghcr.io/glitch-soc/mastodon
-              tag: v4.3.4
+              tag: nightly.2025-03-07
+              # tag: v4.3.4
 
             tolerations:
               - key: '{{ .mastodon_toleration_key }}'
