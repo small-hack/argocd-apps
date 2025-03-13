@@ -50,7 +50,7 @@ spec:
       source:
         # forked from: https://github.com/mastodon/chart/tree/main
         repoURL: 'https://small-hack.github.io/mastodon-helm-chart'
-        targetRevision: 9.8.3
+        targetRevision: 9.8.4
         chart: mastodon
         helm:
           releaseName: mastodon
@@ -59,7 +59,7 @@ spec:
             # original repository: ghcr.io/mastodon/mastodon
             image:
               repository: ghcr.io/glitch-soc/mastodon
-              tag: v4.3.5
+              tag: v4.3.6
 
             tolerations:
               - key: '{{ .mastodon_toleration_key }}'
