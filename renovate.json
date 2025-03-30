@@ -39,6 +39,13 @@
         ],
         "executionMode": "branch"
       }
+    },
+    {
+      "matchManagers": ["argocd", "helmv3", "helm-values", "kubernetes", "github-actions"],
+      "matchUpdateTypes": ["patch"],
+      "automerge": true,
+      "automergeType": "branch",
+      "ignoreTests": true
     }
   ]
 }
