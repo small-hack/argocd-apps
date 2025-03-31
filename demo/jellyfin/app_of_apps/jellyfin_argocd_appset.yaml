@@ -42,7 +42,7 @@ spec:
           selfHeal: true
       source:
         repoURL: 'https://jellyfin.github.io/jellyfin-helm'
-        targetRevision: 2.1.0
+        targetRevision: 2.3.0
         chart: jellyfin
         helm:
           valuesObject:
