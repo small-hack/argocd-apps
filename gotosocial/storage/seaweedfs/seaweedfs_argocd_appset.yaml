@@ -205,7 +205,7 @@ spec:
                 # additional ingress annotations for the s3 endpoint
                 annotations:
                   nginx.ingress.kubernetes.io/proxy-body-size: 1G
-                  cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}-http01'
+                  cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
                 tls:
                   - secretName: gotosocial-seaweedfs-tls
                     hosts:
