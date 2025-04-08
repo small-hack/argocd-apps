@@ -93,8 +93,8 @@ spec:
                   value: /media
                 - name: JELLYFIN_CONFIG_DIR
                   value: /config
-                - name: JELLYFIN_WEB_DIR
-                  value: /jellyfin/jellyfin-web
+                # - name: JELLYFIN_WEB_DIR
+                #   value: /jellyfin/jellyfin-web
 
             persistence:
               config:
@@ -109,16 +109,16 @@ spec:
                 ## -- Use an existing PVC for this mount
                 existingClaim: 'jellyfin-media'
 
-            # -- Additional volumes to mount in the Jellyfin pod.
-            volumes:
-             - name: jellyfin-web
-               persistentVolumeClaim:
-                 claimName: jellyfin-web
+            # # -- Additional volumes to mount in the Jellyfin pod.
+            # volumes:
+            #  - name: jellyfin-web
+            #    persistentVolumeClaim:
+            #      claimName: jellyfin-web
 
-            # -- Additional volume mounts for the Jellyfin container.
-            volumeMounts:
-              - name: jellyfin-web
-                mountPath: "/jellyfin/jellyfin-web"
+            # # -- Additional volume mounts for the Jellyfin container.
+            # volumeMounts:
+            #   - name: jellyfin-web
+            #     mountPath: "/jellyfin/jellyfin-web"
 
             metrics:
               # -- Enable or disable metrics collection

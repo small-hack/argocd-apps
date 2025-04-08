@@ -21,7 +21,7 @@ A Helm chart for deploying PVCs to Kubernetes for jellyfin
 | media_pvc.storageClassName | string | `"local-path"` | default storage class name to use for media pvc |
 | tolerations | list | `[]` | tolerate taints |
 | web_pvc.accessMode | string | `"ReadWriteOnce"` | default access mode for the web pvc |
-| web_pvc.enabled | string | `"true"` | enable jellyfin web pvc |
+| web_pvc.enabled | string | `"false"` | enable jellyfin web pvc |
 | web_pvc.storage | string | `"1Gi"` | storage capacity for the jellyfin web pvc |
 | web_pvc.storageClassName | string | `"local-path"` | default storage class name to use for web pvc |
 
