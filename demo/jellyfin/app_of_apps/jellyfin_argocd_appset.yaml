@@ -88,7 +88,11 @@ spec:
               # -- Additional arguments for the entrypoint command.
               args: []
               # -- Additional environment variables for the container.
-              env: []
+              env:
+                - name: JELLYFIN_DATA_DIR
+                  vaklue: /media
+                - name: JELLYFIN_CONFIG_DIR
+                  vaklue: /config
 
             persistence:
               config:
