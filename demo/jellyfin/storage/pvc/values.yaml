@@ -1,6 +1,6 @@
 media_pvc:
   # -- enable jellyfin media pvc
-  enabled: true
+  enabled: "true"
   # -- default storage class name to use for media pvc
   storageClassName: "local-path"
   # -- default access mode for the media pvc
@@ -10,7 +10,7 @@ media_pvc:
 
 config_pvc:
   # -- enable jellyfin configuration pvc
-  enabled: true
+  enabled: "true"
   # -- default storage class name to use for config pvc
   storageClassName: "local-path"
   # -- default access mode for the config pvc
@@ -20,7 +20,7 @@ config_pvc:
 
 web_pvc:
   # -- enable jellyfin web pvc
-  enabled: true
+  enabled: "true"
   # -- default storage class name to use for web pvc
   storageClassName: "local-path"
   # -- default access mode for the web pvc

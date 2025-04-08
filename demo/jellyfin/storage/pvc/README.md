@@ -10,18 +10,18 @@ A Helm chart for deploying PVCs to Kubernetes for jellyfin
 |-----|------|---------|-------------|
 | affinity | object | `{}` | tolerate affinity |
 | config_pvc.accessMode | string | `"ReadWriteOnce"` | default access mode for the config pvc |
-| config_pvc.enabled | bool | `true` | enable jellyfin configuration pvc |
+| config_pvc.enabled | string | `"true"` | enable jellyfin configuration pvc |
 | config_pvc.storage | string | `"2Gi"` | storage capacity for the jellyfin config pvc |
 | config_pvc.storageClassName | string | `"local-path"` | default storage class name to use for config pvc |
 | k8up | object | `{"securityContext":{"runAsUser":0}}` | for enabling backups to a remote s3 provider or local disk backup |
 | k8up.securityContext | object | `{"runAsUser":0}` | user to run the backups as |
 | media_pvc.accessMode | string | `"ReadWriteOnce"` | default access mode for the media pvc |
-| media_pvc.enabled | bool | `true` | enable jellyfin media pvc |
+| media_pvc.enabled | string | `"true"` | enable jellyfin media pvc |
 | media_pvc.storage | string | `"100Gi"` | storage capacity for the jellyfin media pvc |
 | media_pvc.storageClassName | string | `"local-path"` | default storage class name to use for media pvc |
 | tolerations | list | `[]` | tolerate taints |
 | web_pvc.accessMode | string | `"ReadWriteOnce"` | default access mode for the web pvc |
-| web_pvc.enabled | bool | `true` | enable jellyfin web pvc |
+| web_pvc.enabled | string | `"true"` | enable jellyfin web pvc |
 | web_pvc.storage | string | `"1Gi"` | storage capacity for the jellyfin web pvc |
 | web_pvc.storageClassName | string | `"local-path"` | default storage class name to use for web pvc |
 
