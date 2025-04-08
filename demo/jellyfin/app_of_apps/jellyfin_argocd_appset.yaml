@@ -94,7 +94,7 @@ spec:
                 - name: JELLYFIN_CONFIG_DIR
                   value: /config
                 - name: JELLYFIN_WEB_DIR
-                  value: /jellyfin
+                  value: /jellyfin/jellyfin-web
 
             persistence:
               config:
@@ -118,7 +118,7 @@ spec:
             # -- Additional volume mounts for the Jellyfin container.
             volumeMounts:
               - name: jellyfin-web
-                mountPath: "/jellyfin"
+                mountPath: "/jellyfin/jellyfin-web"
 
             metrics:
               # -- Enable or disable metrics collection
