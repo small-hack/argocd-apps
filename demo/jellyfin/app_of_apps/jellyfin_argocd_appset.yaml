@@ -90,9 +90,9 @@ spec:
               # -- Additional environment variables for the container.
               env:
                 - name: JELLYFIN_DATA_DIR
-                  vaklue: /media
+                  value: /media
                 - name: JELLYFIN_CONFIG_DIR
-                  vaklue: /config
+                  value: /config
 
             persistence:
               config:
