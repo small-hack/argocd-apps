@@ -18,6 +18,16 @@ config_pvc:
   # -- storage capacity for the jellyfin config pvc
   storage: "2Gi"
 
+web_pvc:
+  # -- enable jellyfin web pvc
+  enabled: true
+  # -- default storage class name to use for web pvc
+  storageClassName: "local-path"
+  # -- default access mode for the web pvc
+  accessMode: "ReadWriteOnce"
+  # -- storage capacity for the jellyfin web pvc
+  storage: "1Gi"
+
 # -- tolerate affinity
 affinity: {}
 
