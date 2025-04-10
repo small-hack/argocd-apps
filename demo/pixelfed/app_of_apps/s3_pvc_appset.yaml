@@ -1,0 +1,84 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: pixelfed-s3-pvc-app-set
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  goTemplate: true
+  # generator allows us to source specific values from an external k8s secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - pixelfed_s3_provider
+              - pixelfed_s3_backup_endpoint
+              - pixelfed_s3_backup_bucket
+              - pixelfed_s3_backup_region
+              - pixelfed_s3_pvc_capacity
+              - pixelfed_pvc_backup_schedule
+  template:
+    metadata:
+      name: pixelfed-s3-pvc
+      annotations:
+        argocd.argoproj.io/sync-wave: "1"
+    spec:
+      project: default
+      destination:
+        server: "https://kubernetes.default.svc"
+        namespace: pixelfed
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
+          selfHeal: true
+      source:
+        repoURL: https://github.com/small-hack/argocd-apps.git
+        path: s3_persistence_and_backups/
+        targetRevision: main
+        helm:
+          valuesObject:
+            provider: seaweedfs
+            pvc_capacity: 10Gi
+
+            seaweedfs:
+              master_pvc: false
+
+            # not in use yet
+            k8up:
+              backup_name: "pixelfed-nightly-backup"
+
+              securityContext:
+                runAsUser: 0
+
+              # -- can be set to 's3' or 'local'
+              backup_type: "s3"
+
+              s3:
+                bucket: pixelfed-postgres
+                endpoint: "{{ .pixelfed_s3_backup_endpoint }}"
+                accessKeyIDSecretRef:
+                  name: 'pixelfed-s3-postgres-credentials'
+                  key: 'accessKeyId'
+                  optional: false
+                secretAccessKeySecretRef:
+                  name: 'pixelfed-s3-postgres-credentials'
+                  key: 'secretAccessKey'
+                  optional: false
+
+              repoPasswordSecretRef:
+                name: 'pixelfed-s3-postgres-credentials'
+                key: 'resticRepoPassword'
+
+              prometheus_url: 'push-gateway.prometheus.svc:9091'
+
+              schedules:
+                backup: "0 0 0 * * *"
+                check: "0 2 * * *"
+                prune: "0 2 * * *"

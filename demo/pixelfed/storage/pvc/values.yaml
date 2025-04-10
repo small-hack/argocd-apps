@@ -1,0 +1,22 @@
+pvc:
+  # -- enable nextcloud files pvc
+  enabled: true
+  # -- default storage class name to use for files pvc
+  storageClassName: "local-path"
+  # -- default access mode for the files pvc
+  accessMode: "ReadWriteOnce"
+  # -- storage capacity for the nextcloud files pvc
+  storage: "5Gi"
+
+# -- tolerate affinity
+affinity: {}
+
+# -- tolerate taints
+tolerations: []
+
+# -- for enabling backups to a remote s3 provider or local disk backup
+k8up:
+  # -- user to run the backups as
+  securityContext:
+    # this may need to be 33 (apache) or 82 (nginx) depending on how you run nextcloud
+    runAsUser: 0

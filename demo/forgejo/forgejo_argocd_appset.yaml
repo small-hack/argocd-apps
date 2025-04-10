@@ -23,7 +23,7 @@ spec:
       # annotations:
       #   argocd.argoproj.io/sync-wave: "3"
     spec:
-      project: forgejo
+      project: default
       destination:
         server: https://kubernetes.default.svc
         namespace: forgejo
@@ -35,11 +35,11 @@ spec:
           prune: true
           selfHeal: true
       source:
-        repoURL: 'oci://codeberg.org/'
-        targetRevision: 10.1.2
-        chart: forgejo-contrib/forgejo
+        repoURL: 'code.forgejo.org'
+        targetRevision: 11.0.5
+        chart: forgejo-helm/forgejo
         helm:
-          values: |
+          valuesObject:
             # Default values for gitea.
             # This is a YAML-formatted file.
             # Declare variables to be passed into your templates.
@@ -50,20 +50,34 @@ spec:
             ## @param global.storageClass global storage class override
             ## @param global.hostAliases global hostAliases which will be added to the pod's hosts files
             global:
-              imageRegistry: ""
+              imageRegistry: ''
               ## E.g.
               ## imagePullSecrets:
               ##   - myRegistryKeySecretName
               ##
               imagePullSecrets: []
-              storageClass: ""
+              storageClass: ''
               hostAliases: []
               # - ip: 192.168.137.2
               #   hostnames:
               #   - example.com
 
-            ## @param replicaCount number of replicas for the statefulset
+            ## @param namespaceOverride String to fully override common.names.namespace
+            ##
+            namespaceOverride: ''
+
+            ## @param replicaCount number of replicas for the deployment
             replicaCount: 1
+
+            ## @section strategy
+            ## @param strategy.type strategy type
+            ## @param strategy.rollingUpdate.maxSurge maxSurge
+            ## @param strategy.rollingUpdate.maxUnavailable maxUnavailable
+            strategy:
+              type: 'RollingUpdate'
+              rollingUpdate:
+                maxSurge: '100%'
+                maxUnavailable: 0
 
             ## @param clusterDomain cluster domain
             clusterDomain: cluster.local
@@ -71,16 +85,20 @@ spec:
             ## @section Image
             ## @param image.registry image registry, e.g. gcr.io,docker.io
             ## @param image.repository Image to start for this pod
-            ## @param image.tag Visit: [Image tag](https://codeberg.org/forgejo/-/packages/container/forgejo/versions). Defaults to `appVersion` within Chart.yaml.
+            ## @param image.tag Visit: [Image tag](https://code.forgejo.org/forgejo/-/packages/container/forgejo/versions). Defaults to `appVersion` within Chart.yaml.
+            ## @param image.digest Image digest. Allows to pin the given image tag. Useful for having control over mutable tags like `latest`
             ## @param image.pullPolicy Image pull policy
-            ## @param image.rootless Wether or not to pull the rootless version of Forgejo, only works on Forgejo 1.14.x or higher
+            ## @param image.rootless Wether or not to pull the rootless version of Forgejo
+            ## @param image.fullOverride Completely overrides the image registry, path/image, tag and digest. **Adjust `image.rootless` accordingly and review [Rootless defaults](#rootless-defaults).**
             image:
-              registry: "codeberg.org"
+              registry: code.forgejo.org
               repository: forgejo/forgejo
               # Overrides the image tag whose default is the chart appVersion.
-              tag: ""
-              pullPolicy: Always
-              rootless: false # only possible when running 1.14 or later
+              tag: ''
+              digest: ''
+              pullPolicy: IfNotPresent
+              rootless: true
+              fullOverride: ''
 
             ## @param imagePullSecrets Secret to use for pulling the image
             imagePullSecrets: []
@@ -110,14 +128,22 @@ spec:
             #   runAsNonRoot: true
             #   runAsUser: 1000
 
+            ## @deprecated The securityContext variable has been split two:
+            ## - containerSecurityContext
+            ## - podSecurityContext.
             ## @param securityContext Run init and Forgejo containers as a specific securityContext
             securityContext: {}
+
+            ## @param podDisruptionBudget Pod disruption budget
+            podDisruptionBudget: {}
+            #  maxUnavailable: 1
+            #  minAvailable: 1
 
             ## @section Service
             service:
               ## @param service.http.type Kubernetes service type for web traffic
               ## @param service.http.port Port number for web traffic
-              ## @param service.http.clusterIP ClusterIP setting for http autosetup for statefulset is None
+              ## @param service.http.clusterIP ClusterIP setting for http autosetup for deployment is None
               ## @param service.http.loadBalancerIP LoadBalancer IP setting
               ## @param service.http.nodePort NodePort for http service
               ## @param service.http.externalTrafficPolicy If `service.http.type` is `NodePort` or `LoadBalancer`, set this to `Local` to enable source IP preservation
@@ -126,6 +152,8 @@ spec:
               ## @param service.http.ipFamilies HTTP service dual-stack familiy selection,for dual-stack parameters see official kubernetes [dual-stack concept documentation](https://kubernetes.io/docs/concepts/services-networking/dual-stack/).
               ## @param service.http.loadBalancerSourceRanges Source range filter for http loadbalancer
               ## @param service.http.annotations HTTP service annotations
+              ## @param service.http.labels HTTP service additional labels
+              ## @param service.http.loadBalancerClass Loadbalancer class
               http:
                 type: ClusterIP
                 port: 3000
@@ -138,9 +166,11 @@ spec:
                 ipFamilies:
                 loadBalancerSourceRanges: []
                 annotations: {}
+                labels: {}
+                loadBalancerClass:
               ## @param service.ssh.type Kubernetes service type for ssh traffic
               ## @param service.ssh.port Port number for ssh traffic
-              ## @param service.ssh.clusterIP ClusterIP setting for ssh autosetup for statefulset is None
+              ## @param service.ssh.clusterIP ClusterIP setting for ssh autosetup for deployment is None
               ## @param service.ssh.loadBalancerIP LoadBalancer IP setting
               ## @param service.ssh.nodePort NodePort for ssh service
               ## @param service.ssh.externalTrafficPolicy If `service.ssh.type` is `NodePort` or `LoadBalancer`, set this to `Local` to enable source IP preservation
@@ -150,6 +180,8 @@ spec:
               ## @param service.ssh.hostPort HostPort for ssh service
               ## @param service.ssh.loadBalancerSourceRanges Source range filter for ssh loadbalancer
               ## @param service.ssh.annotations SSH service annotations
+              ## @param service.ssh.labels SSH service additional labels
+              ## @param service.ssh.loadBalancerClass Loadbalancer class
               ssh:
                 type: ClusterIP
                 port: 22
@@ -163,30 +195,119 @@ spec:
                 hostPort:
                 loadBalancerSourceRanges: []
                 annotations: {}
+                labels: {}
+                loadBalancerClass:
 
+            ## @section Ingress
+            ## @param ingress.enabled Enable ingress
+            ## @param ingress.className Ingress class name
+            ## @param ingress.annotations Ingress annotations
+            ## @param ingress.hosts[0].host Default Ingress host
+            ## @param ingress.hosts[0].paths[0].path Default Ingress path
+            ## @param ingress.hosts[0].paths[0].pathType Ingress path type
+            ## @param ingress.tls Ingress tls settings
+            ## @extra ingress.apiVersion Specify APIVersion of ingress object. Mostly would only be used for argocd.
             ingress:
               enabled: true
               className: nginx
               annotations:
-                cert-manager.io/cluster-issuer: {{ .global_cluster_issuer }}
+                cert-manager.io/cluster-issuer: letsencrypt-prod
+                kubernetes.io/tls-acme: "true"
               hosts:
-                - host: {{ .forgejo_hostname }}
+                - host: forgejo.buildstar.online
                   paths:
                     - path: /
                       pathType: Prefix
               tls:
                 - secretName: forgejo-tls
                   hosts:
-                    - {{ .forgejo_hostname }}
+                   - forgejo.buildstar.online
               # Mostly for argocd or any other CI that uses `helm template | kubectl apply` or similar
               # If helm doesn't correctly detect your ingress API version you can set it here.
               # apiVersion: networking.k8s.io/v1
 
-            ## @param statefulset.env  Additional environment variables to pass to containers
-            ## @param statefulset.terminationGracePeriodSeconds How long to wait until forcefully kill the pod
-            ## @param statefulset.labels Labels for the statefulset
-            ## @param statefulset.annotations Annotations for the Forgejo StatefulSet to be created
-            statefulset:
+            ## @section Route
+            ## @param route.enabled Enable route
+            ## @param route.annotations Route annotations
+            ## @param route.host Host to use for the route (will be assigned automatically by OKD / OpenShift is not defined)
+            ## @param route.wildcardPolicy Wildcard policy if any for the route, currently only 'Subdomain' or 'None' is allowed.
+            ## @param route.tls.termination termination type (see [OKD documentation](https://docs.okd.io/latest/rest_api/network_apis/route-route-openshift-io-v1.html#spec-tls))
+            ## @param route.tls.insecureEdgeTerminationPolicy the desired behavior for insecure connections to a route (e.g. with http)
+            ## @param route.tls.existingSecret the name of a predefined secret of type kubernetes.io/tls with both key (tls.crt and tls.key) set accordingly (if defined attributes 'certificate', 'caCertificate' and 'privateKey' are ignored)
+            ## @param route.tls.certificate PEM encoded single certificate
+            ## @param route.tls.privateKey PEM encoded private key
+            ## @param route.tls.caCertificate PEM encoded CA certificate or chain that issued the certificate
+            ## @param route.tls.destinationCACertificate PEM encoded CA certificate used to verify the authenticity of final end point when 'termination' is set to 'passthrough' (ignored otherwise)
+            route:
+              enabled: false
+              annotations: {}
+              host:
+              wildcardPolicy:
+              tls:
+                termination: edge
+                insecureEdgeTerminationPolicy: Redirect
+                existingSecret:
+                certificate:
+                # certificate: |-
+                # -----BEGIN CERTIFICATE-----
+                # ...
+                # -----END CERTIFICATE-----
+                privateKey:
+                # privateKey: |-
+                # -----BEGIN PRIVATE KEY-----
+                # ...
+                # -----END PRIVATE KEY-----
+                caCertificate:
+                # caCertificate: |-
+                # -----BEGIN CERTIFICATE-----
+                # ...
+                # -----END CERTIFICATE-----
+                destinationCACertificate:
+                # destinationCACertificate: |-
+                # -----BEGIN CERTIFICATE-----
+                # ...
+                # -----END CERTIFICATE-----
+
+            ## @section deployment
+            #
+            ## @param resources Kubernetes resources
+            resources:
+              # We usually recommend not to specify default resources and to leave this as a conscious
+              # choice for the user. This also increases chances charts run on environments with little
+              # resources, such as Minikube. If you do want to specify resources, uncomment the following
+              # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+              limits:
+                cpu: 2
+                memory: 2048Mi
+              requests:
+                cpu: 100m
+                memory: 128Mi
+
+            ## Use an alternate scheduler, e.g. "stork".
+            ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+            ##
+            ## @param schedulerName Use an alternate scheduler, e.g. "stork"
+            schedulerName: ''
+
+            ## @param nodeSelector NodeSelector for the deployment
+            nodeSelector: {}
+
+            ## @param tolerations Tolerations for the deployment
+            tolerations: []
+
+            ## @param affinity Affinity for the deployment
+            affinity: {}
+
+            ## @param topologySpreadConstraints TopologySpreadConstraints for the deployment
+            topologySpreadConstraints: []
+
+            ## @param dnsConfig dnsConfig for the deployment
+            dnsConfig: {}
+
+            ## @param priorityClassName priorityClassName for the deployment
+            priorityClassName: ''
+
+            deployment:
               env:
                 []
                 # - name: VARIABLE
@@ -195,52 +316,51 @@ spec:
               labels: {}
               annotations: {}
 
-            ## @section Persistence
-            #
-            ## @param persistence.enabled Enable persistent storage
-            ## @param persistence.existingClaim Use an existing claim to store repository information
-            ## @param persistence.size Size for persistence to store repo information
-            ## @param persistence.accessModes AccessMode for persistence
-            ## @param persistence.labels Labels for the persistence volume claim to be created
-            ## @param persistence.annotations Annotations for the persistence volume claim to be created
-            ## @param persistence.storageClass Name of the storage class to use
-            ## @param persistence.subPath Subdirectory of the volume to mount at
+            ## @section ServiceAccount
+
+            serviceAccount:
+              create: false
+              name: ''
+              automountServiceAccountToken: false
+              imagePullSecrets: []
+              # - name: private-registry-access
+              annotations: {}
+              labels: {}
+
             persistence:
               enabled: true
-              existingClaim:
+              create: true
+              mount: true
+              claimName: gitea-shared-storage
               size: 10Gi
               accessModes:
                 - ReadWriteOnce
               labels: {}
-              annotations: {}
-              storageClass:
+              storageClass: local-path
               subPath:
+              volumeName: ''
+              annotations:
+                helm.sh/resource-policy: keep
 
-            ## @param extraVolumes Additional volumes to mount to the Forgejo statefulset
+            ## @param extraVolumes Additional volumes to mount to the Forgejo deployment
             extraVolumes: []
             # - name: postgres-ssl-vol
             #   secret:
             #     secretName: gitea-postgres-ssl
 
-            ## @param extraContainerVolumeMounts Mounts that are only mapped into the Forgejo runtime/main container, to e.g. override custom templates.
             extraContainerVolumeMounts: []
 
-            ## @param extraInitVolumeMounts Mounts that are only mapped into the init-containers. Can be used for additional preconfiguration.
             extraInitVolumeMounts: []
+
+            extraVolumeMounts: []
+            # - name: postgres-ssl-vol
+            #   readOnly: true
+            #   mountPath: "/pg-ssl"
 
             ## @section Init
             ## @param initPreScript Bash shell script copied verbatim to the start of the init-container.
-            initPreScript: ""
-            #
-            # initPreScript: |
-            #   mkdir -p /data/git/.postgresql
-            #   cp /pg-ssl/* /data/git/.postgresql/
-            #   chown -R git:git /data/git/.postgresql/
-            #   chmod 400 /data/git/.postgresql/postgresql.key
+            initPreScript: ''
 
-            ## @param initContainers.resources.limits initContainers.limits Kubernetes resource limits for init containers
-            ## @param initContainers.resources.requests.cpu initContainers.requests.cpu Kubernetes cpu resource limits for init containers
-            ## @param initContainers.resources.requests.memory initContainers.requests.memory Kubernetes memory resource limits for init containers
             initContainers:
               resources:
                 limits: {}
@@ -248,67 +368,38 @@ spec:
                   cpu: 100m
                   memory: 128Mi
 
-            # Configure commit/action signing prerequisites
-            ## @section Signing
-            #
-            ## @param signing.enabled Enable commit/action signing
-            ## @param signing.gpgHome GPG home directory
-            ## @param signing.privateKey Inline private gpg key for signed Forgejo actions
-            ## @param signing.existingSecret Use an existing secret to store the value of `signing.privateKey`
             signing:
               enabled: false
               gpgHome: /data/git/.gnupg
-              privateKey: ""
+              privateKey: ''
               # privateKey: |-
               #   -----BEGIN PGP PRIVATE KEY BLOCK-----
               #   ...
               #   -----END PGP PRIVATE KEY BLOCK-----
-              existingSecret: ""
+              existingSecret: ''
 
             ## @section Gitea
             #
             gitea:
-              ## @param gitea.admin.username Username for the Forgejo admin user
-              ## @param gitea.admin.existingSecret Use an existing secret to store admin user credentials
-              ## @param gitea.admin.password Password for the Forgejo admin user
-              ## @param gitea.admin.email Email for the Forgejo admin user
               admin:
-                # existingSecret: gitea-admin-secret
-                existingSecret:
-                username: gitea_admin
-                password: r8sA8CPHD9!bt6d
-                email: "gitea@local.domain"
+                existingSecret: gitea-admin-secret
+                email: 'gitea@local.domain'
+                passwordMode: keepUpdated
 
-              ## @param gitea.metrics.enabled Enable Forgejo metrics
-              ## @param gitea.metrics.serviceMonitor.enabled Enable Forgejo metrics service monitor
               metrics:
-                enabled: false
+                enabled: true
                 serviceMonitor:
-                  enabled: false
+                  enabled: true
+                  namespace: 'monitoring'
                   #  additionalLabels:
                   #    prometheus-release: prom1
 
               ## @param gitea.ldap LDAP configuration
-              ldap:
-                []
-                # - name: "LDAP 1"
-                #  existingSecret:
-                #  securityProtocol:
-                #  host:
-                #  port:
-                #  userSearchBase:
-                #  userFilter:
-                #  adminFilter:
-                #  emailAttribute:
-                #  bindDn:
-                #  bindPassword:
-                #  usernameAttribute:
-                #  publicSSHKeyAttribute:
+              ldap: []
 
               # Either specify inline `key` and `secret` or refer to them via `existingSecret`
               ## @param gitea.oauth OAuth configuration
-              oauth:
-                []
+              oauth: []
                 # - name: 'OAuth 1'
                 #   provider:
                 #   key:
@@ -321,17 +412,6 @@ spec:
                 #   customProfileUrl:
                 #   customEmailUrl:
 
-              ## @param gitea.config  Configuration for the Forgejo server,ref: [config-cheat-sheet](https://docs.gitea.io/en-us/config-cheat-sheet/)
-              config: {}
-              #  APP_NAME: "Forgejo: Git with a cup of tea"
-              #  RUN_MODE: dev
-              #
-              #  server:
-              #    SSH_PORT: 22
-              #
-              #  security:
-              #    PASSWORD_COMPLEXITY: spec
-
               ## @param gitea.additionalConfigSources Additional configuration from secret or configmap
               additionalConfigSources: []
               #   - secret:
@@ -340,25 +420,185 @@ spec:
               #       name: gitea-app-ini-plaintext
 
               ## @param gitea.additionalConfigFromEnvs Additional configuration sources from environment variables
-              additionalConfigFromEnvs: []
+              additionalConfigFromEnvs:
+              - name: FORGEJO__CACHE__HOST
+                valueFrom:
+                  secretKeyRef:
+                    name: redis-creds
+                    key: REDIS_URL
+              - name: FORGEJO__QUEUE__CONN_STR
+                valueFrom:
+                  secretKeyRef:
+                    name: redis-creds
+                    key: REDIS_URL
+              - name: FORGEJO__DATABASE__USER
+                valueFrom:
+                  secretKeyRef:
+                    name: gitea-pgsql-credentials
+                    key: username
+              - name: FORGEJO__DATABASE__PASSWD
+                valueFrom:
+                  secretKeyRef:
+                    name: gitea-pgsql-credentials
+                    key: password
 
               ## @param gitea.podAnnotations Annotations for the Forgejo pod
               podAnnotations: {}
 
               ## @param gitea.ssh.logLevel Configure OpenSSH's log level. Only available for root-based Forgejo image.
               ssh:
-                logLevel: "INFO"
+                logLevel: 'INFO'
 
-              ## @section LivenessProbe
-              #
-              ## @param gitea.livenessProbe.enabled Enable liveness probe
-              ## @param gitea.livenessProbe.tcpSocket.port Port to probe for liveness
-              ## @param gitea.livenessProbe.initialDelaySeconds Initial delay before liveness probe is initiated
-              ## @param gitea.livenessProbe.timeoutSeconds Timeout for liveness probe
-              ## @param gitea.livenessProbe.periodSeconds Period for liveness probe
-              ## @param gitea.livenessProbe.successThreshold Success threshold for liveness probe
-              ## @param gitea.livenessProbe.failureThreshold Failure threshold for liveness probe
-              # Modify the liveness probe for your needs or completely disable it by commenting out.
+              config:
+                # values in the DEFAULT section
+                # (https://forgejo.org/docs/latest/admin/config-cheat-sheet/#overall-default)
+                # are un-namespaced
+
+                ## @param gitea.config.APP_NAME Application name, used in the page title
+                APP_NAME: 'Forgejo: Beyond coding. We forge.'
+
+                ## @param gitea.config.RUN_MODE Application run mode, affects performance and debugging: `dev` or `prod`
+                RUN_MODE: prod
+
+                ## @param gitea.config.repository General repository settings
+                repository: {}
+
+                ## @param gitea.config.cors Cross-origin resource sharing settings
+                cors: {}
+
+                ## @param gitea.config.ui User interface settings
+                ui: {}
+
+                ## @param gitea.config.markdown Markdown parser settings
+                markdown: {}
+
+                ## @param gitea.config.server [object] General server settings
+                server:
+                  SSH_PORT: 22 # rootful image
+                  SSH_LISTEN_PORT: 2222 # rootless image
+
+                ## @param gitea.config.database Database configuration (only necessary with an [externally managed DB](https://code.forgejo.org/forgejo-helm/forgejo-helm#external-database)).
+                database:
+                  DB_TYPE: postgres
+                  HOST: forgejo-postgres-rw:5432
+                  NAME: forgejo
+                  SSL_MODE: disable
+
+                ## @param gitea.config.indexer Settings for what content is indexed and how
+                indexer: {}
+
+                ## @param gitea.config.queue Job queue configuration
+                queue:
+                  TYPE: redis
+
+                ## @param gitea.config.admin Admin user settings
+                admin: {}
+
+                ## @param gitea.config.security Site security settings
+                security: {}
+
+                ## @param gitea.config.camo Settings for the [camo](https://github.com/cactus/go-camo) media proxy server (disabled by default)
+                camo: {}
+
+                ## @param gitea.config.openid Configuration for authentication with OpenID (disabled by default)
+                openid: {}
+
+                ## @param gitea.config.oauth2_client OAuth2 client settings
+                oauth2_client: {}
+
+                ## @param gitea.config.service Configuration for miscellaneous Forgejo services
+                service: {}
+
+                ## @param gitea.config.ssh.minimum_key_sizes SSH minimum key sizes
+                ssh.minimum_key_sizes: {}
+
+                ## @param gitea.config.webhook Webhook settings
+                webhook: {}
+
+                ## @param gitea.config.mailer Mailer configuration (disabled by default)
+                mailer: {}
+
+                ## @param gitea.config.email.incoming Configuration for handling incoming mail (disabled by default)
+                email.incoming: {}
+
+                ## @param gitea.config.cache Cache configuration
+                cache: {}
+
+                ## @param gitea.config.session Session/cookie handling
+                session: {}
+
+                ## @param gitea.config.picture User avatar settings
+                picture: {}
+
+                ## @param gitea.config.project Project board defaults
+                project: {}
+
+                ## @param gitea.config.attachment Issue and PR attachment configuration
+                attachment: {}
+
+                ## @param gitea.config.log Logging configuration
+                log: {}
+
+                ## @param gitea.config.cron Cron job configuration
+                cron: {}
+
+                ## @param gitea.config.git Global settings for Git
+                git: {}
+
+                ## @param gitea.config.metrics Settings for the Prometheus endpoint (disabled by default)
+                metrics: {}
+
+                ## @param gitea.config.api Settings for the Swagger API documentation endpoints
+                api: {}
+
+                ## @param gitea.config.oauth2 Settings for the [OAuth2 provider](https://forgejo.org/docs/latest/admin/oauth2-provider/)
+                oauth2: {}
+
+                ## @param gitea.config.i18n Internationalization settings
+                i18n: {}
+
+                ## @param gitea.config.markup Configuration for advanced markup processors
+                markup: {}
+
+                ## @param gitea.config.highlight.mapping File extension to language mapping overrides for syntax highlighting
+                highlight.mapping: {}
+
+                ## @param gitea.config.time Locale settings
+                time: {}
+
+                ## @param gitea.config.migrations Settings for Git repository migrations
+                migrations: {}
+
+                ## @param gitea.config.federation Federation configuration
+                federation: {}
+
+                ## @param gitea.config.packages Package registry settings
+                packages: {}
+
+                ## @param gitea.config.mirror Configuration for repository mirroring
+                mirror: {}
+
+                ## @param gitea.config.lfs Large File Storage configuration
+                lfs: {}
+
+                ## @param gitea.config.repo-avatar Repository avatar storage configuration
+                repo-avatar: {}
+
+                ## @param gitea.config.avatar User/org avatar storage configuration
+                avatar: {}
+
+                ## @param gitea.config.storage General storage settings
+                storage: {}
+
+                ## @param gitea.config.proxy Proxy configuration (disabled by default)
+                proxy: {}
+
+                ## @param gitea.config.actions Configuration for [Forgejo Actions](https://forgejo.org/docs/latest/user/actions/)
+                actions: {}
+
+                ## @param gitea.config.other Uncategorized configuration options
+                other: {}
+
               livenessProbe:
                 enabled: true
                 tcpSocket:
@@ -369,16 +609,6 @@ spec:
                 successThreshold: 1
                 failureThreshold: 10
 
-              ## @section ReadinessProbe
-              #
-              ## @param gitea.readinessProbe.enabled Enable readiness probe
-              ## @param gitea.readinessProbe.tcpSocket.port Port to probe for readiness
-              ## @param gitea.readinessProbe.initialDelaySeconds Initial delay before readiness probe is initiated
-              ## @param gitea.readinessProbe.timeoutSeconds Timeout for readiness probe
-              ## @param gitea.readinessProbe.periodSeconds Period for readiness probe
-              ## @param gitea.readinessProbe.successThreshold Success threshold for readiness probe
-              ## @param gitea.readinessProbe.failureThreshold Failure threshold for readiness probe
-              # Modify the readiness probe for your needs or completely disable it by commenting out.
               readinessProbe:
                 enabled: true
                 tcpSocket:
@@ -389,16 +619,6 @@ spec:
                 successThreshold: 1
                 failureThreshold: 3
 
-              # # Uncomment the startup probe to enable and modify it for your needs.
-              ## @section StartupProbe
-              #
-              ## @param gitea.startupProbe.enabled Enable startup probe
-              ## @param gitea.startupProbe.tcpSocket.port Port to probe for startup
-              ## @param gitea.startupProbe.initialDelaySeconds Initial delay before startup probe is initiated
-              ## @param gitea.startupProbe.timeoutSeconds Timeout for startup probe
-              ## @param gitea.startupProbe.periodSeconds Period for startup probe
-              ## @param gitea.startupProbe.successThreshold Success threshold for startup probe
-              ## @param gitea.startupProbe.failureThreshold Failure threshold for startup probe
               startupProbe:
                 enabled: false
                 tcpSocket:
@@ -409,60 +629,18 @@ spec:
                 successThreshold: 1
                 failureThreshold: 10
 
-            ## @section Memcached
-            ## @descriptionStart
-            ## Memcached is loaded as a dependency from [Bitnami](https://github.com/bitnami/charts/tree/master/bitnami/memcached) if enabled in the values. Complete Configuration can be taken from their website.
-            ## @descriptionEnd
-            #
-            ## @param memcached.enabled Memcached is loaded as a dependency from [Bitnami](https://github.com/bitnami/charts/tree/master/bitnami/memcached) if enabled in the values. Complete Configuration can be taken from their website.
-            ## ref: https://hub.docker.com/r/bitnami/memcached/tags/
-            ## @param memcached.service.ports.memcached Port for Memcached
-            memcached:
-              enabled: true
-              # image:
-              #   registry: docker.io
-              #   repository: bitnami/memcached
-              #   tag: ""
-              #   digest: ""
-              #   pullPolicy: IfNotPresent
-              #   pullSecrets: []
-              service:
-                ports:
-                  memcached: 11211
+            redis-cluster:
+              enabled: false
 
-            ## @section PostgreSQL
-            ## @descriptionStart
-            ## PostgreSQL is loaded as a dependency from [Bitnami](https://github.com/bitnami/charts/tree/master/bitnami/postgresql) if enabled in the values. Complete Configuration can be taken from their website.
-            ## @descriptionEnd
-            #
-            ## @param postgresql.enabled Enable PostgreSQL
-            ## @param postgresql.global.postgresql.auth.password Password for the `gitea` user (overrides `auth.password`)
-            ## @param postgresql.global.postgresql.auth.database Name for a custom database to create (overrides `auth.database`)
-            ## @param postgresql.global.postgresql.auth.username Name for a custom user to create (overrides `auth.username`)
-            ## @param postgresql.global.postgresql.service.ports.postgresql PostgreSQL service port (overrides `service.ports.postgresql`)
-            ## @param postgresql.primary.persistence.size PVC Storage Request for PostgreSQL volume
+            redis:
+              enabled: false
+
+            postgresql-ha:
+              enabled: false
+
             postgresql:
-              enabled: true
-              global:
-                postgresql:
-                  auth:
-                    password: gitea
-                    database: gitea
-                    username: gitea
-                  service:
-                    ports:
-                      postgresql: 5432
-              primary:
-                persistence:
-                  size: 10Gi
+              enabled: false
 
-            # By default, removed or moved settings that still remain in a user defined values.yaml will cause Helm to fail running the install/update.
-            # Set it to false to skip this basic validation check.
-            ## @section Advanced
-            ## @param checkDeprecation Set it to false to skip this basic validation check.
-            ## @param test.enabled Set it to false to disable test-connection Pod.
-            ## @param test.image.name Image name for the wget container used in the test-connection Pod.
-            ## @param test.image.tag Image tag for the wget container used in the test-connection Pod.
             checkDeprecation: true
             test:
               enabled: true
@@ -470,6 +648,5 @@ spec:
                 name: busybox
                 tag: latest
 
-            ## @param extraDeploy Array of extra objects to deploy with the release
-            ##
             extraDeploy: []
+

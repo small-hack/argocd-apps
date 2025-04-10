@@ -44,7 +44,7 @@ spec:
       source:
         # forked from: https://github.com/mastodon/chart/tree/main
         repoURL: 'https://small-hack.github.io/mastodon-helm-chart'
-        targetRevision: 9.8.1
+        targetRevision: 9.8.4
         chart: mastodon
         helm:
           releaseName: mastodon
@@ -53,7 +53,7 @@ spec:
             # original repository: ghcr.io/mastodon/mastodon
             image:
               repository: jessebot/mastodon-glitch-soc
-              tag: v4.3.2
+              tag: v4.3.3
 
             mastodon:
               hooks:

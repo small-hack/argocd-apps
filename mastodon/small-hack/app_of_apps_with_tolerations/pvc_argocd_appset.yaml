@@ -1,0 +1,57 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: mastodon-pvc-appset
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  goTemplate: true
+  # generator allows us to source specific values from an external k8s secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - global_pvc_storage_class
+              - mastodon_valkey_pvc_enabled
+              - mastodon_valkey_storage
+              - mastodon_valkey_access_mode
+              - mastodon_valkey_storage_class
+              - mastodon_toleration_key
+              - mastodon_toleration_operator
+              - mastodon_toleration_value
+              - mastodon_toleration_effect
+              - mastodon_affinity_key
+              - mastodon_affinity_value
+  template:
+    metadata:
+      name: mastodon-pvc
+      annotations:
+        argocd.argoproj.io/sync-wave: "1"
+    spec:
+      project: mastodon
+      destination:
+        server: "https://kubernetes.default.svc"
+        namespace: mastodon
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
+          selfHeal: true
+      source:
+        repoURL: https://github.com/small-hack/argocd-apps.git
+        path: mastodon/small-hack/storage/pvc/
+        targetRevision: main
+        helm:
+          valuesObject:
+            # -- enable mastodon valkey pvc
+            valkey_pvc:
+              enabled: '{{ .mastodon_valkey_pvc_enabled }}'
+              storageClassName: '{{ .mastodon_valkey_storage_class }}'
+              accessMode: '{{ .mastodon_valkey_access_mode }}'
+              storage: '{{ .mastodon_valkey_storage }}'

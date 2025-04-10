@@ -180,7 +180,11 @@
 * make the profile banner a decent size
 * -----------------------------------------*/
 .account__header__image {
-  height: 210px;
+  height: 250px;
+}
+
+.account__header__bar {
+  position: inherit !important;
 }
 
 /*---------------------------------------------

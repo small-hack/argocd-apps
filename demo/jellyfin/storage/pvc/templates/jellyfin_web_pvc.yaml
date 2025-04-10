@@ -1,0 +1,16 @@
+{{- if eq .Values.web_pvc.enabled "true" }}
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: jellyfin-web
+  annotations:
+    k8up.io/backup: 'true'
+spec:
+  storageClassName: {{ .Values.web_pvc.storageClassName }}
+  accessModes:
+    - {{ .Values.web_pvc.accessMode }}
+  resources:
+    requests:
+      storage: {{ .Values.web_pvc.storage }}
+{{- end }}

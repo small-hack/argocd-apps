@@ -68,7 +68,7 @@ spec:
                   secretAccessKey:
                     name: zitadel-db-credentials
                     key: "SECRET_KEY"
-              retentionPolicy: "30d"
+              retentionPolicy: "7d"
 
             certificates:
               server:

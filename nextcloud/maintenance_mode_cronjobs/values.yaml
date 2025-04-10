@@ -7,7 +7,7 @@ image:
   # -- docker image repo
   repository: "nextcloud"
   # -- docker image tag
-  tag: "30.0.4-fpm-alpine"
+  tag: "31.0.2-fpm-alpine"
 
 maintenance_mode_on:
   # -- cron schedule to turn on maintenance mode for nextcloud

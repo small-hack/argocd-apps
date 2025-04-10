@@ -1,0 +1,53 @@
+# run k exec -it postgres-- psql
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: postgres
+spec:
+  restartPolicy: Always
+  containers:
+    - name: onboardme
+      image: postgres
+      command: ["sleep", "infinity"]
+      imagePullPolicy: IfNotPresent
+      env:
+        - name: PGSSLCERT
+          value: "/etc/secrets/app/tls.crt"
+        - name: PGSSLKEY
+          value: "/etc/secrets/app/tls.key"
+        - name: PGSSLROOTCERT
+          value: "/etc/secrets/ca/ca.crt"
+        - name: PGSSLMODE
+          value: "verify-full"
+        - name: PGDATABASE
+          value: "gotosocial"
+        - name: PGUSER
+          value: "gotosocial"
+        - name: PGHOST
+          value: "gotosocial-postgres-rw"
+        - name: PGPORT
+          value: "5432"
+      ports:
+        - containerPort: 80
+          name: "http"
+        - containerPort: 443
+          name: "https"
+        - containerPort: 22
+          name: "ssh"
+        - containerPort: 5900
+          name: "vnc"
+      volumeMounts:
+      - name: secret-volume-root-ca
+        mountPath: /etc/secrets/ca
+      - name: secret-volume-app
+        mountPath: /etc/secrets/app
+  volumes:
+  - name: secret-volume-root-ca
+    secret:
+      secretName: gotosocial-postgres-server-ca-key-pair
+      defaultMode: 384
+  - name: secret-volume-app
+    secret:
+      secretName: gotosocial-postgres-gotosocial-cert
+      defaultMode: 384

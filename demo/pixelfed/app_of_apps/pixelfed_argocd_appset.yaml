@@ -1,0 +1,477 @@
+---
+# third sync wave because it has to be up after postgres
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: pixelfed-app-set
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "4"
+spec:
+  # enable go templating
+  goTemplate: true
+  # this generator allows us to values from an external k8s secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - pixelfed_hostname
+              - pixelfed_s3_endpoint
+              - pixelfed_name
+              - pixelfed_description
+              - pixelfed_from_address
+              - global_cluster_issuer
+              - global_time_zone
+  template:
+    metadata:
+      name: pixelfed-web-app
+      annotations:
+        argocd.argoproj.io/sync-wave: "4"
+        argocd.argoproj.io/sync-options: ApplyOnly=true
+    spec:
+      project: pixelfed
+
+      # where the app is going
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: pixelfed
+
+      # reconciliation policy
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
+          selfHeal: true
+
+      # where the is coming from
+      source:
+        repoURL: https://small-hack.github.io/pixelfed-chart
+        targetRevision: 0.19.3
+        chart: pixelfed
+        helm:
+          releaseName: pixelfed
+          valuesObject:
+            fullnameOverride: pixelfed
+
+            image:
+              # default for this chart
+              # older image
+              # tag: v0.12.4
+              # top of dev branch image
+              # pullPolicy: "Always"
+              # tag: dev-nginx
+
+              # https://github.com/pixelfed-glitch/pixelfed/pkgs/container/pixelfed
+              registry: docker.io
+              repository: jessebot/pixelfed-glitch
+              tag: latest
+
+              ## these require an .env file
+              #
+              # https://quay.io/repository/zknt/pixelfed?tab=tags
+              # registry: quay.io
+              # repository: zknt/pixelfed
+              # tag: 2025-01-18-fpm
+              #
+              # most popular on github
+              # https://ghcr.io/jippi/docker-pixelfed
+              # repository: jippi/docker-pixelfed
+              # tag: v0.12.4-docker3-nginx-8.3-bookworm
+
+            revisionHistoryLimit: 2
+
+            ingress:
+              enabled: true
+              className: nginx
+              annotations:
+                cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
+                nginx.ingress.kubernetes.io/proxy-body-size: 1g
+              hosts:
+                - host: '{{ .pixelfed_hostname }}'
+                  paths:
+                    - path: '/'
+                      pathType: ImplementationSpecific
+              tls:
+                - secretName: pixelfed-tls
+                  hosts:
+                    - '{{ .pixelfed_hostname }}'
+
+            # resource limits for pixelfed
+            resources:
+              limits:
+                cpu: 1500m
+                memory: 1Gi
+              requests:
+                cpu: 500m
+                memory: 512Mi
+
+            # for postgres ssl certs at a later time
+            extraEnv: []
+            #   - name: "PGSSLCERT"
+            #     value: /etc/secrets/pixelfed/tls.crt
+            #   - name: "PGSSLKEY"
+            #     value: /etc/secrets/pixelfed/tls.key
+            #   - name: "PGSSLROOTCERT"
+            #     value: /etc/secrets/ca/ca.crt
+
+            # extraEnvFrom, just in case we need it later
+            envFrom: []
+
+            # -- set extra init containers
+            extraInitContainers: []
+            #   - name: create-dot-env-file
+            #     image: alpine:latest
+            #     command: /bin/sh
+            #     args:
+            #       - "-c"
+            #       - "env"
+            #       - ">"
+            #       - ".env"
+            #     imagePullPolicy: Always
+            #     envFrom:
+            #       - configMapRef:
+            #         name: pixelfed-env
+            #     volumeMounts:
+            #       - name: dot-env-config
+            #         mountPath: /var/www
+            #         subPath: .env
+
+            # -- set sidecar containers to run along side the pixelfed container
+            extraContainers: []
+
+            extraVolumes: []
+            #  - name: dot-env-config
+            #    emptyDir: {}
+
+            ## for postgres ssl certs
+            #   - name: postgres-ca
+            #     secret:
+            #       secretName: pixelfed-postgres-server-ca-key-pair
+            #       defaultMode: 0640
+
+            #   - name: postgres-client-certs
+            #     secret:
+            #       secretName: pixelfed-postgres-pixelfed-cert
+            #       defaultMode: 0640
+
+            extraVolumeMounts: []
+            ## for postgres ssl certs
+            #   - name: postgres-ca
+            #     mountPath: /etc/secrets/ca
+
+            #   - name: postgres-client-certs
+            #     mountPath: /etc/secrets/pixelfed
+
+            # not a thing yet
+            # persistence:
+            #   enabled: true
+            #   existingClaim: "pixelfed"
+
+            externalDatabase:
+              enabled: true
+              tls_mode: "disable"
+              # sslcert: "/etc/secrets/pixelfed/tls.crt"
+              # sslkey: "/etc/secrets/pixelfed/tls.key"
+              # ca_cert: "/etc/secrets/ca/ca.crt"
+              existingSecret: "pixelfed-pgsql-credentials"
+              existingSecretKeys:
+                password: postgresPassword
+                username: username
+                database: database
+                port: port
+                host: host
+
+            # External Redis Configuration. Use this if you set valkey.enabled: false
+            externalValkey:
+              # -- enable using an external valkey or redis cluster
+              enabled: true
+              client: "phpredis"
+              scheme: "tcp"
+              # -- get valkey credentials from an existing Kubernetes Secret
+              existingSecret: "pixelfed-valkey-credentials"
+              existingSecretKeys:
+                port: port
+                # --  key in existing Kubernetes Secret for host. If set, ignores externalValkey.host
+                host: "host"
+                # --  key in existing Kubernetes Secret for password. If set, ignores externalValkey.password
+                password: "valkey-password"
+
+            valkey:
+              enabled: false
+
+            postgresql:
+              enabled: false
+
+
+            # -- PHP Configuration files
+            # Will be injected in /usr/local/etc/php-fpm.d
+            phpConfigs:
+              www.conf: |-
+                [www]
+                user = www-data
+                group = www-data
+                listen.owner = www-data
+                listen.group = www-data
+                listen.mode = 0660
+              #   security.limit_extensions = .php .css .js .html
+              #   pm = dynamic
+              #   pm.max_children = 350
+              #   pm.start_servers = 100
+              #   pm.min_spare_servers = 100
+              #   pm.max_spare_servers = 280
+
+            pixelfed:
+              db:
+                # -- Automatically run [artisan migrate --force] if new migrations are detected.
+                apply_new_migrations_automatically: false
+                connection: pgsql
+
+              filesystem:
+                # -- Many applications store files both locally and in the cloud.
+                # For this reason, you may specify a default “cloud” driver here.
+                # This driver will be bound as the Cloud disk implementation in the container.
+                cloud: "s3"
+                driver: "local"
+
+              covid:
+                enable_label: true
+                label_url: "https://www.who.int/emergencies/diseases/novel-coronavirus-2019/advice-for-public"
+                label_org: "visit the WHO website"
+
+              laravel:
+                log_channel: stderr
+
+              # -- not entirely sure if this is a list of banned usernames or text to
+              # display instead of banned usernames
+              banned_usernames: ""
+
+              # -- delete local files after saving to the cloud
+              media_delete_local_after_cloud: true
+
+              # horizon - for interfacing with redis
+              horizon:
+                # -- prefix will be used when storing all Horizon data in Redis
+                prefix: "horizon-"
+                # -- darkmode for the web interface in the admin panel
+                dark_mode: false
+
+              # enable custom emojis
+              custom_emoji: true
+
+              # -- max size for custom emojis, in... bytes?
+              custom_emoji_max_size: 2000000
+
+              # -- types of media to allow
+              media_types: "image/jpeg,image/png,image/gif"
+
+              # -- exp loops (as in loops video? 🤷
+              exp_loops: false
+
+              # -- library to process images. options: "gd" (default), "imagick"
+              image_driver: "gd"
+
+              # -- timezone for docker container
+              timezone: "europe/amsterdam"
+
+              # -- Experimental Configuration
+              exp_emc: true
+
+              # -- domain of admin interface
+              admin_domain: "{{ .pixelfed_hostname }}"
+
+              # -- domain of session?
+              session_domain: "{{ .pixelfed_hostname }}"
+
+              # -- trusted proxies
+              trusted_proxies: "*"
+
+              # app specific settings
+              app:
+                # encryption key settings
+                existingSecret: ""
+                existingSecretKey: "key"
+                # -- The name of your server/instance
+                name: "{{ .pixelfed_name }}"
+                # -- change this to the domain of your pixelfed instance
+                url: "https://{{ .pixelfed_hostname }}"
+                # -- change this to the language code of your pixelfed instance
+                locale: "en"
+                # -- The domain of your server, without https://
+                domain: "{{ .pixelfed_hostname }}"
+
+              # -- Enable open registration for new accounts
+              open_registration: false
+
+              # -- Enforce email verification
+              enforce_email_verification: true
+
+              # -- The min password length
+              min_password_length: 16
+
+              # -- Enable account deletion (may be a requirement in some jurisdictions)
+              account_deletion: true
+
+              # -- Enable oAuth support, required for mobile/3rd party apps
+              oauth_enabled: true
+
+              # -- Enable the Stories feature
+              stories_enabled: false
+
+              # -- Enable the config cache to allow you to manage settings via the admin dashboard
+              enable_config_cache: true
+
+              # -- Set the image optimization quality, between 1-100. Lower uses less space, higher more quality
+              image_quality: 80
+
+              # -- The max allowed account size in KB
+              max_account_size: 1000000
+
+              # -- The max photo/video size in KB
+              max_photo_size: 15000
+
+              # -- The max user avatar size in KB
+              max_avatar_size: 2000
+
+              # -- The max post caption length
+              max_caption_length: 1000
+
+              # -- The max user bio length
+              max_bio_length: 256
+
+              # -- The max user display name length
+              max_name_length: 32
+
+              # -- The max number of media per post album
+              max_album_length: 6
+
+              # -- Force https url generation
+              force_https_urls: true
+
+              # your whole instance, or server, settings
+              instance:
+                # -- your server description
+                description: "{{ .pixelfed_description }}"
+                # -- enable the instance contact form
+                contact_form: true
+                # -- Enable public access to the Discover feature
+                discover_public: true
+                # -- Allow anonymous access to hashtag feeds
+                public_hashtags: true
+                # -- The public contact email for your server
+                contact_email: ""
+                # -- Enable the profile embed feature
+                profile_embeds: true
+                # -- Enable the post embed feature
+                post_embeds: true
+                # -- Enable Curated Registration
+                cur_reg: false
+                # -- Enable the api/v1/peers API endpoint
+                show_peers: false
+
+                reports:
+                  # -- Send a report email to the admin account for new autospam/reports
+                  email_enabled: false
+                  # -- A list of email addresses to deliver admin reports to
+                  email_addresses: []
+                  # -- Enable autospam reports (require INSTANCE_REPORTS_EMAIL_ENABLED)
+                  email_autospam: false
+
+                landing:
+                  # -- Enable the profile directory on the landing page
+                  show_directory: true
+                  # -- Enable the popular post explore on the landing page
+                  show_explore: true
+
+              # public feed settings
+              pf:
+                # -- Hide sensitive posts from public/network feeds
+                hide_nsfw_on_public_feeds: false
+                # -- Store local avatars on S3 (Requires S3)
+                local_avatar_to_cloud: false
+                # -- Enable the Admin Invites feature
+                admin_invites_enabled: true
+                # -- The max number of user blocks per account
+                max_user_blocks: 50
+                # -- The max number of user mutes per account
+                max_user_mutes: 50
+                # -- The max number of domain blocks per account
+                max_domain_blocks: 50
+                # -- Enable S3/Object Storage
+                enable_cloud: false
+                # -- Limit max user registrations
+                max_users: 1000
+                # -- in KB
+                enforce_max_users: 2000
+                # -- Enable image optimization
+                optimize_images: true
+                # -- Enable video optimization
+                optimize_videos: true
+                # -- Max collection post limit
+                max_collection_length: 100
+
+              # ActivityPub Configuration
+              activity_pub:
+                enabled: true
+                remote_follow: true
+                inbox: true
+                outbox: true
+                sharedinbox: true
+                # activity pub logger?
+                logger_enabled: false
+
+              ###########################################################
+              # Federation
+              ###########################################################
+              # -- https://docs.pixelfed.org/technical-documentation/config/#atom_feeds
+              atom_feeds: "true"
+
+              # -- https://docs.pixelfed.org/technical-documentation/config/#nodeinfo
+              nodeinfo: "true"
+
+              # -- https://docs.pixelfed.org/technical-documentation/config/#webfinger
+              webfinger: "true"
+
+              mail:
+                driver: smtp
+                encryption: tls
+                from_address: "{{ .pixelfed_from_address }}"
+                from_name: "{{ .pixelfed_name }}"
+                existingSecret: "pixelfed-smtp-credentials"
+                existingSecretKeys:
+                  username: "username"
+                  password: "password"
+                  port: "port"
+                  host: "host"
+
+              s3:
+               url: "https://{{ .pixelfed_s3_endpoint }}"
+               endpoint: "{{ .pixelfed_s3_endpoint }}"
+               # accessKey: ""
+               # secretKey: ""
+               # If this is set, accessKey, secretKey will not take place
+               # Needs the S3_ACCESS_KEY_ID and S3_SECRET_ACCESS_KEY keys.
+               existingSecret: "pixelfed-s3-credentials"
+               bucket: "pixelfed"
+
+            # -- https://github.com/pixelfed/pixelfed/blob/main/Dockerfile#L75
+            # if you manually change the UID/GID environment variables, ensure these values match:
+            podSecurityContext:
+              runAsUser: 33
+              runAsGroup: 33
+              fsGroup: 33
+
+            securityContext:
+              runAsUser: 33
+
+            serviceAccount:
+              # -- Specifies whether a service account should be created
+              create: true
+              # -- Annotations to add to the service account
+              annotations: {}
+
+            # -- timezone for all the pods
+            timezone: '{{ .global_time_zone }}'

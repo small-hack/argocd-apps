@@ -1,0 +1,26 @@
+{{- if eq .Values.provider "bitwarden" }}
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: pixelfed-app-key
+  namespace: pixelfed
+spec:
+  target:
+    name: pixelfed-app-key
+    deletionPolicy: Delete
+    template:
+      type: Opaque
+      data:
+        key: |-
+          {{ `{{ .secretKey }}` }}
+  data:
+    - secretKey: secretKey
+      sourceRef:
+        storeRef:
+          name: bitwarden-login
+          kind: ClusterSecretStore
+      remoteRef:
+        key: {{ .Values.appKeyBitwardenID }}
+        property: password
+{{- end }}

@@ -1,0 +1,161 @@
+---
+# webapp is deployed 2nd because we need secrets and persistent volumes up 1st
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: jellyfin-web-app-set
+  namespace: argocd
+spec:
+  goTemplate: true
+  # generator allows us to source specific values from an external k8s secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - jellyfin_hostname
+              - global_cluster_issuer
+              - jellyfin_toleration_key
+              - jellyfin_toleration_operator
+              - jellyfin_toleration_value
+              - jellyfin_toleration_effect
+              - jellyfin_affinity_key
+              - jellyfin_affinity_value
+  template:
+    metadata:
+      name: jellyfin-web-app
+      # annotations:
+      #   argocd.argoproj.io/sync-wave: "3"
+    spec:
+      project: default
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: jellyfin
+      syncPolicy:
+        syncOptions:
+          - CreateNamespace=true
+          - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
+          selfHeal: true
+      source:
+        repoURL: 'https://jellyfin.github.io/jellyfin-helm'
+        targetRevision: 2.3.0
+        chart: jellyfin
+        helm:
+          valuesObject:
+
+            ingress:
+              enabled: true
+              className: "nginx"
+              annotations:
+                cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
+                nginx.ingress.kubernetes.io/proxy-body-size: 10G
+              hosts:
+                - host: "{{ .jellyfin_hostname }}"
+                  paths:
+                    - path: /
+                      pathType: ImplementationSpecific
+              tls:
+                - secretName: jellyfin-tls
+                  hosts:
+                    - "{{ .jellyfin_hostname }}"
+
+            tolerations:
+              - key: '{{ .jellyfin_toleration_key }}'
+                operator: '{{ .jellyfin_toleration_operator }}'
+                value: '{{ .jellyfin_toleration_value }}'
+                effect: '{{ .jellyfin_toleration_effect }}'
+
+            affinity:
+              nodeAffinity:
+                requiredDuringSchedulingIgnoredDuringExecution:
+                  nodeSelectorTerms:
+                    - matchExpressions:
+                      - key: '{{ .jellyfin_affinity_key }}'
+                        operator: In
+                        values:
+                          - '{{ .jellyfin_affinity_value }}'
+
+            jellyfin:
+              # -- Enable DLNA. Requires host network.
+              # See: https://jellyfin.org/docs/general/networking/dlna.html
+              enableDLNA: false
+              # -- Custom command to use as container entrypoint.
+              command: []
+              # -- Additional arguments for the entrypoint command.
+              args: []
+              # -- Additional environment variables for the container.
+              env:
+                - name: JELLYFIN_DATA_DIR
+                  value: /media
+                - name: JELLYFIN_CONFIG_DIR
+                  value: /config
+                # - name: JELLYFIN_WEB_DIR
+                #   value: /jellyfin/jellyfin-web
+
+            persistence:
+              config:
+                # -- set to false to use emptyDir
+                enabled: true
+                ## -- Use an existing PVC for this mount
+                existingClaim: 'jellyfin-config'
+
+              media:
+                # -- set to false to use emptyDir
+                enabled: true
+                ## -- Use an existing PVC for this mount
+                existingClaim: 'jellyfin-media'
+
+            # # -- Additional volumes to mount in the Jellyfin pod.
+            # volumes:
+            #  - name: jellyfin-web
+            #    persistentVolumeClaim:
+            #      claimName: jellyfin-web
+
+            # # -- Additional volume mounts for the Jellyfin container.
+            # volumeMounts:
+            #   - name: jellyfin-web
+            #     mountPath: "/jellyfin/jellyfin-web"
+
+            metrics:
+              # -- Enable or disable metrics collection
+              enabled: false
+              command:
+                - bash
+                - '-c'
+                - >-
+                  sed 's,<EnableMetrics>false</EnableMetrics>,<EnableMetrics>true</EnableMetrics>,' -i /config/config/system.xml &&
+                  /jellyfin/jellyfin
+              # -- Configuration for the Prometheus ServiceMonitor
+              serviceMonitor:
+                # -- Enable or disable the creation of a ServiceMonitor resource
+                enabled: false
+                # -- Namespace where the ServiceMonitor resource should be created. Defaults to Release.Namespace
+                namespace: ''
+                # -- Labels to add to the ServiceMonitor resource
+                labels: {}
+                # -- Interval at which metrics should be scraped
+                interval: 30s
+                # -- Timeout for scraping metrics
+                scrapeTimeout: 30s
+                # -- Path to scrape for metrics
+                path: /metrics
+                # -- Scheme to use for scraping metrics (http or https)
+                scheme: http
+                # -- TLS configuration for scraping metrics
+                tlsConfig: {}
+                # -- Relabeling rules for the scraped metrics
+                relabelings: []
+                # -- Relabeling rules for the metrics before ingestion
+                metricRelabelings: []
+                # -- Target labels to add to the scraped metrics
+                targetLabels: []
+
+            # -- additional init containers to run inside the pod.
+            extraInitContainers: []
+
+            # -- additional sidecar containers to run inside the pod.
+            extraContainers: []

@@ -1,0 +1,83 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: capi-operator
+  namespace: argocd
+spec:
+  destination:
+    namespace: capi
+    server: https://kubernetes.default.svc
+  project: kubevirt
+  source:
+    path: charts/capi-operator
+    repoURL: https://github.com/cloudymax/kubevirt-community-stack
+    targetRevision: feb2bdb4e5a513831b88ddc385cf78da81630599
+    helm:
+      releaseName: capi-operator
+      values: |
+        addon: ""
+        affinity:
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+              - matchExpressions:
+                - key: kubernetes.io/arch
+                  operator: In
+                  values:
+                  - amd64
+                  - arm64
+                  - ppc64le
+                - key: kubernetes.io/os
+                  operator: In
+                  values:
+                  - linux
+        bootstrap: kubeadm:v1.7.2
+        configSecret: {}
+        containerSecurityContext: {}
+        controlPlane: kubeadm:v1.7.2
+        core: cluster-api:v1.7.2
+        diagnosticsAddress: "8443"
+        env:
+          manager: []
+        healthAddr: :8081
+        image:
+          manager:
+            pullPolicy: IfNotPresent
+            repository: registry.k8s.io/capi-operator/cluster-api-operator
+            tag: v0.15.0
+        imagePullSecrets: {}
+        infrastructure: kubevirt:v0.1.8
+        insecureDiagnostics: false
+        leaderElection:
+          enabled: true
+        logLevel: 2
+        manager.featureGates: {}
+        replicaCount: 1
+        resources:
+          manager:
+            limits:
+              cpu: 100m
+              memory: 150Mi
+            requests:
+              cpu: 100m
+              memory: 100Mi
+        tolerations:
+        - effect: NoSchedule
+          key: node-role.kubernetes.io/master
+        - effect: NoSchedule
+          key: node-role.kubernetes.io/control-plane
+        volumeMounts:
+          manager:
+          - mountPath: /tmp/k8s-webhook-server/serving-certs
+            name: cert
+            readOnly: true
+        volumes:
+        - name: cert
+          secret:
+            defaultMode: 420
+            secretName: capi-operator-webhook-service-cert
+        watchConfigSecret: false
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+    - ApplyOutOfSyncOnly=true

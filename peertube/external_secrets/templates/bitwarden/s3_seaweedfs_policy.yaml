@@ -1,0 +1,135 @@
+{{- if and (eq .Values.provider "bitwarden") (eq .Values.s3_provider "seaweedfs") }}
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: seaweedfs-s3-secret
+spec:
+  target:
+    name: seaweedfs-s3-secret
+    deletionPolicy: Delete
+    template:
+      type: Opaque
+      data:
+        admin_access_key_id: |-
+          {{ `{{ .adminAccessKey }}` }}
+        admin_secret_access_key:  |-
+          {{ `{{ .adminSecretKey }}` }}
+        seaweedfs_s3_config: |-
+          {
+          "identities": [
+            {
+              "name": "anvAdmin",
+              "credentials": [
+                {
+                  "accessKey": "{{ `{{ .adminAccessKey }}` }}",
+                  "secretKey": "{{ `{{ .adminSecretKey }}` }}"
+                }
+              ],
+              "actions": [
+                "Admin",
+                "Read",
+                "Write"
+              ]
+            },
+            {
+              "name": "peertube-postgres",
+              "credentials": [
+                {
+                  "accessKey": "{{ `{{ .dbAccessKey }}` }}",
+                  "secretKey": "{{ `{{ .dbSecretKey }}` }}"
+                }
+              ],
+              "actions": [
+                "Read:peertube-postgres",
+                "Write:peertube-postgres",
+                "List:peertube-postgres"
+              ]
+            },
+            {
+              "name": "data",
+              "credentials": [
+                {
+                  "accessKey": "{{ `{{ .videoAccessKey }}` }}",
+                  "secretKey": "{{ `{{ .videoSecretKey }}` }}"
+                }
+              ],
+              "actions": [
+                {{- with .Values.s3_buckets }}
+                "Read:{{ .web_video }}",
+                "Write:{{ .web_video }}",
+                "List:{{ .web_video }}",
+                "Read:{{ .orig_video }}",
+                "Write:{{ .orig_video }}",
+                "List:{{ .orig_video }}",
+                "Read:{{ .streaming }}",
+                "Write:{{ .streaming }}",
+                "List:{{ .streaming }}",
+                "Read:{{ .user_exports }}",
+                "Write:{{ .user_exports }}",
+                "List:{{ .user_exports }}"
+                {{- end }}
+              ]
+            },
+            {
+              "name": "anonymous",
+              "actions": [
+                "Read:{{ .Values.s3_buckets.streaming }}"
+              ]
+            }
+          ]}
+  data:
+    - secretKey: adminAccessKey
+      sourceRef:
+        storeRef:
+          name: bitwarden-login
+          kind: ClusterSecretStore
+      remoteRef:
+        key: {{ .Values.s3AdminCredentialsBitwardenID }}
+        property: username
+
+    - secretKey: adminSecretKey
+      sourceRef:
+        storeRef:
+          name: bitwarden-login
+          kind: ClusterSecretStore
+      remoteRef:
+        key: {{ .Values.s3AdminCredentialsBitwardenID }}
+        property: password
+
+    - secretKey: dbAccessKey
+      sourceRef:
+        storeRef:
+          name: bitwarden-login
+          kind: ClusterSecretStore
+      remoteRef:
+        key: {{ .Values.s3PostgresCredentialsBitwardenID }}
+        property: username
+
+    - secretKey: dbSecretKey
+      sourceRef:
+        storeRef:
+          name: bitwarden-login
+          kind: ClusterSecretStore
+      remoteRef:
+        key: {{ .Values.s3PostgresCredentialsBitwardenID }}
+        property: password
+
+    - secretKey: videoAccessKey
+      sourceRef:
+        storeRef:
+          name: bitwarden-fields
+          kind: ClusterSecretStore
+      remoteRef:
+        key: {{ .Values.s3PeertubeCredentialsBitwardenID }}
+        property: s3PeertubeVideoAccessID
+
+    - secretKey: videoSecretKey
+      sourceRef:
+        storeRef:
+          name: bitwarden-fields
+          kind: ClusterSecretStore
+      remoteRef:
+        key: {{ .Values.s3PeertubeCredentialsBitwardenID }}
+        property: s3PeertubeVideoAccessKey
+{{- end }}

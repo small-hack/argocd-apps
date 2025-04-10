@@ -3,7 +3,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: nextcloud-web-app-set
+  name: nextcloud-appset
   namespace: argocd
 spec:
   goTemplate: true
@@ -25,30 +25,46 @@ spec:
               - nextcloud_s3_region
   template:
     metadata:
-      name: nextcloud-web-app
+      name: nextcloud-app
       annotations:
         argocd.argoproj.io/sync-wave: "3"
+
     spec:
+      # project in Argo CD
       project: nextcloud
+
+      # which k8s cluster this goes to (this assumes the local cluster)
       destination:
         server: https://kubernetes.default.svc
         namespace: nextcloud
+
+      # the sync policy for this Argo CD Application
       syncPolicy:
         syncOptions:
           - ApplyOutOfSyncOnly=true
         automated:
           prune: true
           selfHeal: true
+
       source:
         repoURL: 'https://nextcloud.github.io/helm'
-        targetRevision: 6.4.0
         chart: nextcloud
+        targetRevision: 6.6.9
         helm:
+          # release name for this helm chart release. If this is not set,
+          # Argo CD will use the name of the Application as the release name
+          releaseName: nextcloud
+          # all values to pass into the helm chart
           valuesObject:
             image:
+              # this is a custom nextcloud image with ffmpeg on it
+              # it's otherwise exact the same as nextcloud:fpm-alpine
               repository: jessebot/nextcloud
-              tag: 30.0.4-fpm-alpine
+              tag: 31.0.0-fpm-alpine
               pullPolicy: IfNotPresent
+
+            podLabels:
+              deploymentName: nextcloud
 
             ingress:
               enabled: true
@@ -621,15 +637,29 @@ spec:
             ## for more options see https://github.com/CollaboraOnline/online/tree/master/kubernetes/helm/collabora-online
             collabora:
               enabled: true
+
               # please check collabora README.md first
               autoscaling:
                 enabled: false
 
+              image:
+                repository: collabora/code
+                pullPolicy: IfNotPresent
+                tag: 24.04.10.2.1
+
               collabora:
+                fullnameOverrride: "collabora"
+
                 ## HTTPS nextcloud domain, if needed
-                # aliasgroups:
-                #   - host: "https://nextcloud.domain:443"
-                # extra_params: --o:ssl.enable=false --o:ssl.termination=true
+                aliasgroups:
+                  - host: "https://{{ .nextcloud_hostname }}:443"
+
+                extra_params: >
+                  --o:ssl.enable=false
+                  --o:ssl.termination=true
+                  --o:fetch_update_check=0
+                  --o:num_prespawn_children=3
+                  --o:remote_font_config.url=https://{{ .nextcloud_hostname }}/apps/richdocuments/settings/fonts.json
 
                 ## Specify server_name when the hostname is not reachable directly for example behind reverse-proxy
                 server_name: '{{ .nextcloud_collabora_hostname }}'
@@ -648,6 +678,15 @@ spec:
                 # please check collabora values.yaml for nginx/haproxy annotations examples
                 annotations:
                   cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
+                  nginx.ingress.kubernetes.io/upstream-hash-by: "$arg_WOPISrc"
+                  nginx.ingress.kubernetes.io/proxy-body-size: "0"
+                  nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+                  nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+                  nginx.ingress.kubernetes.io/server-snippet: |
+                    # block admin and metrics endpoint from outside by default
+                    location /cool/getMetrics { deny all; return 403; }
+                    location /cool/adminws/ { deny all; return 403; }
+                    location /browser/dist/admin/admin.html { deny all; return 403; }
                 hosts:
                   - host: '{{ .nextcloud_collabora_hostname }}'
                     paths:
@@ -659,4 +698,11 @@ spec:
                      - '{{ .nextcloud_collabora_hostname }}'
 
               # see collabora helm README.md for recommended values
-              resources: {}
+              # https://github.com/CollaboraOnline/online/tree/master/kubernetes/helm/collabora-online#deploying-collabora-online-in-kubernetes
+              resources:
+                limits:
+                  cpu: "8000m"
+                  memory: "8000Mi"
+                requests:
+                  cpu: "1800m"
+                  memory: "2000Mi"
