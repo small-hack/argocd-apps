@@ -67,6 +67,12 @@ spec:
           valuesObject:
             fullnameOverride: home-assistant
 
+            strategy:
+              # set the home assistant deployment to recreate instead RollingUpdate
+              # because the device we are mounting may only be available for one pod
+              # at a time
+              type: Recreate
+
             ingress:
               # Enable ingress for home assistant
               enabled: true
