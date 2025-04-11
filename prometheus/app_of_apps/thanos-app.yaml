@@ -1,0 +1,197 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: thanos-app
+  namespace: argocd
+spec:
+  project: default
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: monitoring
+  source:
+    repoURL: registry-1.docker.io
+    chart: bitnamicharts/thanos
+    targetRevision: 15.9.2
+    helm:
+      version: v3
+      skipCrds: true
+      valuesObject:
+        fullnameOverride: thanos
+        existingObjstoreSecret: thanos-objstore-config
+
+        https:
+          enabled: false
+
+        ########################################################################
+        #   ___
+        #  / _ \ _   _  ___ _ __ _   _
+        # | | | | | | |/ _ \ '__| | | |
+        # | |_| | |_| |  __/ |  | |_| |
+        #  \__\_\\__,_|\___|_|   \__, |
+        #                        |___/
+        ########################################################################
+        query:
+          # Only for SideCar
+          dnsDiscovery: {}
+          #  sidecarsService: "prometheus-operated"
+          #  sidecarsNamespace: "prometheus"
+          autoscaling:
+            enabled: false
+            minReplicas: "1"
+            maxReplicas: "4"
+            targetCPU: 70
+            targetMemory: 80
+
+          extraEnvVars:
+            - name: "THANOS_ALLOW_EXISTING_BUCKET_USE"
+              value: "true"
+
+          resources:
+            requests:
+              cpu: 250m
+              memory: 1024M
+            limits:
+              cpu: 2
+              memory: 4096M
+
+          revisionHistoryLimit: 2
+
+        ########################################################################
+        #   ___                          _____                _                 _
+        #  / _ \ _   _  ___ _ __ _   _  |  ___| __ ___  _ __ | |_ ___ _ __   __| |
+        # | | | | | | |/ _ \ '__| | | | | |_ | '__/ _ \| '_ \| __/ _ \ '_ \ / _` |
+        # | |_| | |_| |  __/ |  | |_| | |  _|| | | (_) | | | | ||  __/ | | | (_| |
+        #  \__\_\\__,_|\___|_|   \__, | |_|  |_|  \___/|_| |_|\__\___|_| |_|\__,_|
+        #                        |___/
+        ########################################################################
+        queryFrontend:
+          ingress:
+            enabled: false
+          revisionHistoryLimit: 2
+
+        ########################################################################
+        #   ____                                 _
+        #  / ___|___  _ __ ___  _ __   __ _  ___| |_ ___  _ __
+        # | |   / _ \| '_ ` _ \| '_ \ / _` |/ __| __/ _ \| '__|
+        # | |__| (_) | | | | | | |_) | (_| | (__| || (_) | |
+        #  \____\___/|_| |_| |_| .__/ \__,_|\___|\__\___/|_|
+        #                      |_|
+        ########################################################################
+        compactor:
+          enabled: true
+          revisionHistoryLimit: 2
+
+          retentionResolutionRaw: 30d
+          retentionResolution5m: 30d
+          retentionResolution1h: 10y
+
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512M
+            limits:
+              cpu: 2
+              memory: 2048M
+
+          persistence:
+            enabled: true
+            storageClass: local-path
+            size: 32Gi
+
+          serviceAccount:
+            create: true
+
+          extraEnvVars:
+            - name: "THANOS_ALLOW_EXISTING_BUCKET_USE"
+              value: "true"
+
+        ########################################################################
+        #  ____  _                                ____       _
+        # / ___|| |_ ___  _ __ __ _  __ _  ___   / ___| __ _| |_ _____      ____ _ _   _
+        # \___ \| __/ _ \| '__/ _` |/ _` |/ _ \ | |  _ / _` | __/ _ \ \ /\ / / _` | | | |
+        #  ___) | || (_) | | | (_| | (_| |  __/ | |_| | (_| | ||  __/\ V  V / (_| | |_| |
+        # |____/ \__\___/|_|  \__,_|\__, |\___|  \____|\__,_|\__\___| \_/\_/ \__,_|\__, |
+        #                           |___/                                          |___/
+        ########################################################################
+        storegateway:
+          enabled: true
+
+          resourcesPreset: "small"
+
+          persistence:
+            enabled: true
+            storageClass: local-path
+            size: 8Gi
+
+          serviceAccount:
+            create: true
+
+          extraEnvVars:
+            - name: "THANOS_ALLOW_EXISTING_BUCKET_USE"
+              value: "true"
+
+
+        ########################################################################
+        #  ____               _
+        # |  _ \ ___  ___ ___(_)_   _____ _ __
+        # | |_) / _ \/ __/ _ \ \ \ / / _ \ '__|
+        # |  _ <  __/ (_|  __/ |\ V /  __/ |
+        # |_| \_\___|\___\___|_| \_/ \___|_|
+        ########################################################################
+        receive:
+          enabled: true
+
+          modes: standalone
+
+          logLevel: info
+          logFormat: logfmt
+
+          replicationFactor: 1
+
+          replicaCount: 2
+
+          config: []
+
+          tsdbPath: ""
+
+          existingConfigmap: ""
+
+          replicaLabel: replica
+
+          extraEnvVars:
+            - name: TZ
+              value: "Europe/Amsterdam"
+
+          resources:
+            requests:
+              cpu: 250m,
+              memory: 1024M
+            limits:
+              cpu: 2
+              memory: 8192M
+
+          persistence:
+            storageClass: local-path
+            size: 64Gi
+
+
+        ########################################################################
+        #  __  __      _        _
+        # |  \/  | ___| |_ _ __(_) ___ ___
+        # | |\/| |/ _ \ __| '__| |/ __/ __|
+        # | |  | |  __/ |_| |  | | (__\__ \
+        # |_|  |_|\___|\__|_|  |_|\___|___/
+        ########################################################################
+        metrics:
+          enabled: true
+          serviceMonitor:
+            enabled: true
+
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+      - ApplyOutOfSyncOnly=true
+      - Retry=true
+    automated:
+      selfHeal: false
+      prune: true
