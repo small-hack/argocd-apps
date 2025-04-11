@@ -44,7 +44,7 @@ spec:
       source:
         repoURL: 'registry-1.docker.io'
         chart: bitnamicharts/valkey
-        targetRevision: 2.0.0
+        targetRevision: 3.0.1
         helm:
           # helm parameter overrides
           valuesObject:
