@@ -77,7 +77,7 @@ spec:
               ## @param livenessProbe.periodSeconds Period seconds for livenessProbe, Default: Check every 30 seconds to reduce overhead
               periodSeconds: 30
               ## @param livenessProbe.initialDelaySeconds ensures probes don't start prematurely.
-              initialDelaySeconds: 30
+              initialDelaySeconds: 10
 
             readinessProbe:
               httpGet:
@@ -90,7 +90,7 @@ spec:
               ## @param readinessProbe.periodSeconds Period seconds for readinessProbe, Default: Check every 10 seconds for readiness
               periodSeconds: 30
               ## @param readinessProbe.initialDelaySeconds ensures probes don't start prematurely.
-              initialDelaySeconds: 30
+              initialDelaySeconds: 10
 
             ingress:
               enabled: true
