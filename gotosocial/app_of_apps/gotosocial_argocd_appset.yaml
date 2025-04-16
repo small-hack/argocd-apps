@@ -193,7 +193,7 @@ spec:
                   mountPath: /etc/secrets/gotosocial
 
                 - name: themes
-                  mountPath: /gotosocial/web/assets/themes
+                  mountPath: /gotosocial/web/assets/themes/catppucin-mocha-blue.css
                   subpath: catppucin-mocha-blue.css
 
               persistence:
