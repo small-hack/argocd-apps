@@ -194,7 +194,7 @@ spec:
 
                 - name: themes
                   mountPath: /gotosocial/web/assets/themes/catppucin-mocha-blue.css
-                  subpath: catppucin-mocha-blue.css
+                  subPath: catppucin-mocha-blue.css
 
               persistence:
                 enabled: true
