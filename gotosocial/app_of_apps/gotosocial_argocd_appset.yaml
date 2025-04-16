@@ -179,6 +179,11 @@ spec:
                     secretName: gotosocial-postgres-gotosocial-cert
                     defaultMode: 0640
 
+                - name: themes
+                  secret:
+                    secretName: gotosocial-themes
+                    defaultMode: 0640
+
               # for postgres ssl certs
               extraVolumeMounts:
                 - name: postgres-ca
@@ -187,8 +192,8 @@ spec:
                 - name: postgres-client-certs
                   mountPath: /etc/secrets/gotosocial
 
-              strategy:
-                type: Recreate
+                - name: themes
+                  mountPath: /gotosocial/web/themes
 
               persistence:
                 enabled: true
