@@ -3,7 +3,9 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: gotosocial-themes
-data:
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+stringData:
   catppucin-mocha-blue.css: |
     /*
             theme-title: Catppuccin mocha blue
