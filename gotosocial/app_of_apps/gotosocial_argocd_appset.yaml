@@ -159,6 +159,10 @@ spec:
                 - name: GTS_TRUSTED_PROXIES
                   value: "192.168.0.0/16,10.42.0.0/16"
 
+                # allow exceptions to rate limiting for the above
+                - name: GTS_ADVANCED_RATE_LIMIT_EXCEPTIONS
+                  value: "192.168.0.0/16,10.42.0.0/16"
+
               # for postgres ssl certs
               extraVolumes:
                 - name: postgres-ca
