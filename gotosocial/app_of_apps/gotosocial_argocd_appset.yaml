@@ -129,6 +129,10 @@ spec:
                 memory: 512Mi
 
             gotosocial:
+              strategy:
+                # gotosocial.strategy.type GoToSocial deployment strategy type,
+                # should be Recreate if ReadWriteMany not enabled.
+                type: Recreate
               # for postgres ssl certs
               extraEnv:
                 - name: "PGSSLCERT"
