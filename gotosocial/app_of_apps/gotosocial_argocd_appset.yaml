@@ -64,7 +64,7 @@ spec:
               ## @param startupProbe.periodSeconds Period seconds for startupProbe
               periodSeconds: 30
               ## @param startupProbe.initialDelaySeconds ensures probes don't start prematurely.
-              initialDelaySeconds: 30
+              initialDelaySeconds: 10
 
             livenessProbe:
               httpGet:
