@@ -155,9 +155,9 @@ spec:
                 - name: PGPORT
                   value: "5432"
 
-                # allow local host to connect
+                # allow local host and k8s cni to connect
                 - name: GTS_TRUSTED_PROXIES
-                  value: "192.168.0.0/16"
+                  value: "192.168.0.0/16,10.42.0.0/16"
 
               # for postgres ssl certs
               extraVolumes:
