@@ -132,7 +132,7 @@ spec:
               strategy:
                 # gotosocial.strategy.type GoToSocial deployment strategy type,
                 # should be Recreate if ReadWriteMany not enabled.
-                type: Recreate
+                type: RollingUpdate
               # for postgres ssl certs
               extraEnv:
                 - name: "PGSSLCERT"
@@ -193,7 +193,7 @@ spec:
                   mountPath: /etc/secrets/gotosocial
 
                 - name: themes
-                  mountPath: /gotosocial/web/themes
+                  mountPath: /gotosocial/web/assets/themes
 
               persistence:
                 enabled: true
