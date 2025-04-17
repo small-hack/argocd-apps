@@ -179,9 +179,9 @@ spec:
                     secretName: gotosocial-postgres-gotosocial-cert
                     defaultMode: 0640
 
-                - name: themes
+                - name: theme-catppucin-mocha-blue
                   secret:
-                    secretName: gotosocial-themes
+                    secretName: catppucin-mocha-blue
                     defaultMode: 0640
 
               # for postgres ssl certs
@@ -192,7 +192,7 @@ spec:
                 - name: postgres-client-certs
                   mountPath: /etc/secrets/gotosocial
 
-                - name: themes
+                - name: theme-catppucin-mocha-blue
                   mountPath: /gotosocial/web/assets/themes/catppucin-mocha-blue.css
                   subPath: catppucin-mocha-blue.css
 
