@@ -11,7 +11,7 @@ spec:
   source:
     repoURL: registry-1.docker.io
     chart: bitnamicharts/thanos
-    targetRevision: 15.14.1
+    targetRevision: 16.0.3
     helm:
       version: v3
       skipCrds: true
