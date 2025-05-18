@@ -79,7 +79,7 @@ spec:
                 clientSecret:
                   name: argocd-oidc-credentials
                   key: oidc.clientSecret
-                redirectUrl: "https://'{{ .workflows_hostname }}'/oauth2/callback"
+                redirectUrl: 'https://{{ .workflows_hostname }}/oauth2/callback'
                 rbac:
                   enabled: true
                   secretWhitelist: []
