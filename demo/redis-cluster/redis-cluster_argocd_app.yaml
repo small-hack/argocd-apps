@@ -38,7 +38,7 @@ spec:
       source:
         repoURL: 'https://charts.bitnami.com/bitnami'
         chart: redis-cluster
-        targetRevision: 11.5.0
+        targetRevision: 11.5.2
         helm:
           releaseName: redis
           valuesObject:
