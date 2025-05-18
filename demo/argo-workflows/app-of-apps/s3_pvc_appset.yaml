@@ -24,14 +24,14 @@ spec:
               - workflows_pvc_backup_schedule
   template:
     metadata:
-      name: zitadel-s3-pvc
+      name: workflows-s3-pvc
       annotations:
         argocd.argoproj.io/sync-wave: "1"
     spec:
-      project: zitadel
+      project: argo-cd
       destination:
         server: "https://kubernetes.default.svc"
-        namespace: zitadel
+        namespace: argocd
       syncPolicy:
         syncOptions:
           - ApplyOutOfSyncOnly=true
