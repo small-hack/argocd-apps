@@ -11,7 +11,7 @@ spec:
   source:
     repoURL: 'https://grafana.github.io/helm-charts'
     chart: loki-distributed
-    targetRevision: 0.79.3
+    targetRevision: 0.80.3
     helm:
       version: v3
       skipCrds: true

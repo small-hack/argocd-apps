@@ -1,0 +1,172 @@
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: catppucin-mocha-blue
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+stringData:
+  catppucin-mocha-blue.css: |
+    /*
+        theme-title: Catppuccin mocha blue
+        theme-description: Soothing pastel theme for the high spirited
+    */
+
+    @import url('./catppuccin.css');
+
+    :root {
+          --ctp-mocha-rosewater: #f5e0dc;
+          --ctp-mocha-rosewater-rgb: 245 224 220;
+          --ctp-mocha-rosewater-hsl: 9.600 55.556% 91.176%;
+          --ctp-mocha-flamingo: #f2cdcd;
+          --ctp-mocha-flamingo-rgb: 242 205 205;
+          --ctp-mocha-flamingo-hsl: 0.000 58.730% 87.647%;
+          --ctp-mocha-pink: #f5c2e7;
+          --ctp-mocha-pink-rgb: 245 194 231;
+          --ctp-mocha-pink-hsl: 316.471 71.831% 86.078%;
+          --ctp-mocha-mauve: #cba6f7;
+          --ctp-mocha-mauve-rgb: 203 166 247;
+          --ctp-mocha-mauve-hsl: 267.407 83.505% 80.980%;
+          --ctp-mocha-red: #f38ba8;
+          --ctp-mocha-red-rgb: 243 139 168;
+          --ctp-mocha-red-hsl: 343.269 81.250% 74.902%;
+          --ctp-mocha-maroon: #eba0ac;
+          --ctp-mocha-maroon-rgb: 235 160 172;
+          --ctp-mocha-maroon-hsl: 350.400 65.217% 77.451%;
+          --ctp-mocha-peach: #fab387;
+          --ctp-mocha-peach-rgb: 250 179 135;
+          --ctp-mocha-peach-hsl: 22.957 92.000% 75.490%;
+          --ctp-mocha-yellow: #f9e2af;
+          --ctp-mocha-yellow-rgb: 249 226 175;
+          --ctp-mocha-yellow-hsl: 41.351 86.047% 83.137%;
+          --ctp-mocha-green: #a6e3a1;
+          --ctp-mocha-green-rgb: 166 227 161;
+          --ctp-mocha-green-hsl: 115.455 54.098% 76.078%;
+          --ctp-mocha-teal: #94e2d5;
+          --ctp-mocha-teal-rgb: 148 226 213;
+          --ctp-mocha-teal-hsl: 170.000 57.353% 73.333%;
+          --ctp-mocha-sky: #89dceb;
+          --ctp-mocha-sky-rgb: 137 220 235;
+          --ctp-mocha-sky-hsl: 189.184 71.014% 72.941%;
+          --ctp-mocha-sapphire: #74c7ec;
+          --ctp-mocha-sapphire-rgb: 116 199 236;
+          --ctp-mocha-sapphire-hsl: 198.500 75.949% 69.020%;
+          --ctp-mocha-blue: #89b4fa;
+          --ctp-mocha-blue-rgb: 137 180 250;
+          --ctp-mocha-blue-hsl: 217.168 91.870% 75.882%;
+          --ctp-mocha-lavender: #b4befe;
+          --ctp-mocha-lavender-rgb: 180 190 254;
+          --ctp-mocha-lavender-hsl: 231.892 97.368% 85.098%;
+          --ctp-mocha-text: #cdd6f4;
+          --ctp-mocha-text-rgb: 205 214 244;
+          --ctp-mocha-text-hsl: 226.154 63.934% 88.039%;
+          --ctp-mocha-subtext1: #bac2de;
+          --ctp-mocha-subtext1-rgb: 186 194 222;
+          --ctp-mocha-subtext1-hsl: 226.667 35.294% 80.000%;
+          --ctp-mocha-subtext0: #a6adc8;
+          --ctp-mocha-subtext0-rgb: 166 173 200;
+          --ctp-mocha-subtext0-hsl: 227.647 23.611% 71.765%;
+          --ctp-mocha-overlay2: #9399b2;
+          --ctp-mocha-overlay2-rgb: 147 153 178;
+          --ctp-mocha-overlay2-hsl: 228.387 16.757% 63.725%;
+          --ctp-mocha-overlay1: #7f849c;
+          --ctp-mocha-overlay1-rgb: 127 132 156;
+          --ctp-mocha-overlay1-hsl: 229.655 12.775% 55.490%;
+          --ctp-mocha-overlay0: #6c7086;
+          --ctp-mocha-overlay0-rgb: 108 112 134;
+          --ctp-mocha-overlay0-hsl: 230.769 10.744% 47.451%;
+          --ctp-mocha-surface2: #585b70;
+          --ctp-mocha-surface2-rgb: 88 91 112;
+          --ctp-mocha-surface2-hsl: 232.500 12.000% 39.216%;
+          --ctp-mocha-surface1: #45475a;
+          --ctp-mocha-surface1-rgb: 69 71 90;
+          --ctp-mocha-surface1-hsl: 234.286 13.208% 31.176%;
+          --ctp-mocha-surface0: #313244;
+          --ctp-mocha-surface0-rgb: 49 50 68;
+          --ctp-mocha-surface0-hsl: 236.842 16.239% 22.941%;
+          --ctp-mocha-base: #1e1e2e;
+          --ctp-mocha-base-rgb: 30 30 46;
+          --ctp-mocha-base-hsl: 240.000 21.053% 14.902%;
+          --ctp-mocha-mantle: #181825;
+          --ctp-mocha-mantle-rgb: 24 24 37;
+          --ctp-mocha-mantle-hsl: 240.000 21.311% 11.961%;
+          --ctp-mocha-crust: #11111b;
+          --ctp-mocha-crust-rgb: 17 17 27;
+          --ctp-mocha-crust-hsl: 240.000 22.727% 8.627%;
+          --blue1: var(--ctp-mocha-blue);
+          --blue2: var(--ctp-mocha-blue);
+          --blue3: var(--ctp-mocha-blue);
+          --orange1: var(--ctp-mocha-blue);
+          --orange2: var(--ctp-mocha-blue);
+
+          --gray1: var(--ctp-mocha-surface0);
+          --gray2: var(--ctp-mocha-surface0);
+          --gray3: var(--ctp-mocha-surface1);
+
+          --bg: var(--ctp-mocha-base);
+          --bg-accent: var(--ctp-mocha-surface0);
+          --fg: var(--ctp-mocha-text);
+          --fg-reduced: var(--ctp-mocha-text);
+
+          --profile-bg: var(--ctp-mocha-surface1);
+          --status-bg: var(--ctp-mocha-surface1);
+          --status-focus-bg: var(--ctp-mocha-surface1);
+          --status-info-bg: var(--ctp-mocha-surface2);
+          --status-focus-info-bg: var(--ctp-mocha-surface2);
+
+          --button-fg: var(--ctp-mocha-crust);
+
+          --boxshadow-border: 0.1rem solid var(--ctp-mocha-mantle);
+    }
+
+    .profile .profile-header {
+            border: var(--box-shadow-border);
+    }
+
+    .profile .profile-header .basic-info .namerole .role {
+            border: var(--box-shadow-border);
+    }
+
+    .profile .col-header {
+            border: var(--boxshadow-border);
+    }
+
+    .profile .about-user .col-header {
+            margin-bottom: initial;
+            border-bottom: none;
+            border-top: var(--boxshadow-border);
+            border-left: var(--boxshadow-border);
+            border-right: var(--boxshadow-border);
+    }
+
+    .profile .about-user .fields {
+            border-left: var(--boxshadow-border);
+            border-right: var(--boxshadow-border);
+    }
+
+    .profile .about-user .fields .field {
+            border-bottom: 0.1rem solid var(--ctp-mocha-mantle);
+    }
+
+    .profile .about-user .fields .field:first-child {
+            border-top: 0.1rem solid var(--ctp-mocha-mantle);
+    }
+
+    .profile .about-user .bio {
+            border-left: var(--boxshadow-border);
+            border-right: var(--boxshadow-border);
+    }
+
+    .profile .about-user .accountstats {
+            border-top: 1px solid var(--ctp-mocha-mantle);
+            border-bottom: var(--boxshadow-border);
+            border-left: var(--boxshadow-border);
+            border-right: var(--boxshadow-border);
+    }
+
+    .status .media .media-wrapper {
+            border: 0.1rem solid var(--ctp-mocha-mantle);
+    }
+    .status .media .media-wrapper details .unknown-attachment .placeholder {
+            color: var(--ctp-mocha-crust);
+    }
