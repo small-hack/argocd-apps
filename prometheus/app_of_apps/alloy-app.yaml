@@ -16,7 +16,7 @@ spec:
   source:
     repoURL: 'https://grafana.github.io/helm-charts'
     chart: alloy
-    targetRevision: 0.12.6
+    targetRevision: 1.0.0
     helm:
       version: v3
       skipCrds: true
