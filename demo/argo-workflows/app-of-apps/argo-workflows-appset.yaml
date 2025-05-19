@@ -17,6 +17,7 @@ spec:
         input:
           parameters:
             secret_vars:
+              - argo_cd_hostname
               - workflows_hostname
               - argo_cd_oidc_issuer
               - global_cluster_issuer
@@ -79,9 +80,9 @@ spec:
                 clientSecret:
                   name: argocd-oidc-credentials
                   key: oidc.clientSecret
-                redirectUrl: 'https://{{ .workflows_hostname }}/oauth2/callback'
+                redirectUrl: 'https://{{ .argo_cd_hostname: }}/oauth2/callback'
                 rbac:
-                  enabled: false
+                  enabled: true
                   secretWhitelist: []
                 scopes:
                   - openid
