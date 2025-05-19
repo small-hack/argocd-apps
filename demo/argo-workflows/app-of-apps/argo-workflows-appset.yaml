@@ -44,7 +44,7 @@ spec:
               install: true
               keep: true
               annotations: {}
-            
+
             server:
               enabled: true
               authModes: ["sso"]
@@ -52,10 +52,10 @@ spec:
                 level: info
                 globallevel: "0"
                 format: "text"
-            
+
               ingress:
                 enabled: true
-                annotations: 
+                annotations:
                   cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
                 labels: {}
                 ingressClassName: "nginx"
@@ -69,19 +69,19 @@ spec:
                   - secretName: argoworkflows-example-tls
                     hosts:
                       - '{{ .workflows_hostname }}'
-            
+
               sso:
                 enabled: true
                 issuer:  '{{ .argo_cd_oidc_issuer }}'
                 clientId:
-                  name: argocd-oidc-credentials 
+                  name: argocd-oidc-credentials
                   key: oidc.clientID
                 clientSecret:
                   name: argocd-oidc-credentials
                   key: oidc.clientSecret
                 redirectUrl: 'https://{{ .workflows_hostname }}/oauth2/callback'
                 rbac:
-                  enabled: true
+                  enabled: false
                   secretWhitelist: []
                 scopes:
                   - openid
@@ -90,7 +90,7 @@ spec:
                   # - groups
                 sessionExpiry: "10h"
                 insecureSkipVerify: false
-            
+
             # -- Use static credentials for S3 (eg. when not using AWS IRSA)
             useStaticCredentials: true
             artifactRepository:
@@ -113,7 +113,7 @@ spec:
                 # useSDKCreds: true
                 # encryptionOptions:
                 #   enableEncryption: true
-                         
+
             persistence:
               connectionPool:
                 maxIdleConns: 100
