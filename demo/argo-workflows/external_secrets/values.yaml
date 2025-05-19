@@ -2,4 +2,14 @@
 # other providers may be supported in the future
 provider: "bitwarden"
 
-workflowsPgsqlConfigBitwardenID: ""
+bitwardenCoreItemID: ""
+bitwardenDBItemID: ""
+
+# s3 related credentials
+s3_provider: "seaweedfs"
+s3AdminCredentialsBitwardenID: ""
+s3PostgresCredentialsBitwardenID: ""
+s3BackupsCredentialsBitwardenID: ""
+
+# fake postgresql credentials
+postgresqlBitwardenID: ""
