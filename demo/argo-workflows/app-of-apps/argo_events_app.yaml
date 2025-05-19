@@ -1,0 +1,190 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argo-events-argo-app
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  project: argo-cd
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: argocd
+  syncPolicy:
+    syncOptions:
+      - ApplyOutOfSyncOnly=true
+    automated:
+      prune: true
+      selfHeal: true
+  source:
+    # official helm repo
+    repoURL: 'https://argoproj.github.io/argo-helm/'
+    chart: argo-events
+    targetRevision: 2.4.9
+    helm:
+      valuesObject:
+        nameOverride: argo-events
+
+        openshift: false
+        createAggregateRoles: false
+
+        crds:
+          install: true
+          keep: true
+          annotations: {}
+
+        global:
+            repository: quay.io/argoproj/argo-events
+            imagePullPolicy: IfNotPresent
+
+        configs:
+          nats:
+            versions:
+              - version: latest
+              - version: 0.22.1
+
+          ## JetStream event bus
+          jetstream:
+            settings:
+              maxMemoryStore: -1
+              maxFileStore: -1
+            streamConfig:
+              # -- Maximum number of messages before expiring oldest message
+              maxMsgs: 1000000
+              # -- Maximum age of existing messages, i.e. “72h”, “4h35m”
+              maxAge: 72h
+              # Total size of messages before expiring oldest message, 0 means unlimited.
+              maxBytes: 1GB
+              # -- Number of replicas, defaults to 3 and requires minimal 3
+              replicas: 3
+              # -- Not documented at the moment
+              duplicates: 300s
+              # -- 0: Limits, 1: Interest, 2: WorkQueue
+              retention: 0
+              # -- 0: DiscardOld, 1: DiscardNew
+              discard: 0
+
+        ## Argo Events controller
+        controller:
+          # -- Argo Events controller name string
+          name: controller-manager
+
+          rbac:
+            # -- Create events controller RBAC
+            enabled: true
+            # -- Restrict events controller to operate only in a single namespace instead of cluster-wide scope.
+            namespaced: false
+            # -- Additional namespace to be monitored by the controller
+            managedNamespace: ""
+            # -- Additional user rules for event controller's rbac
+            rules: []
+
+          # -- The number of events controller pods to run.
+          replicas: 1
+
+          readinessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          livenessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+
+          # -- Resource limits and requests for the events controller pods
+          resources: {}
+          #  limits:
+          #    cpu: 500m
+          #    memory: 512Mi
+          #  requests:
+          #    cpu: 250m
+          #    memory: 256Mi
+
+          serviceAccount:
+            # -- Create a service account for the events controller
+            create: true
+            # -- Service account name
+            name: ""
+            # -- Annotations applied to created service account
+            annotations: {}
+            # -- Automount API credentials for the Service Account
+            automountServiceAccountToken: true
+
+          ## Events controller metrics configuration
+          metrics:
+            # -- Deploy metrics service
+            enabled: true
+            service:
+              # -- Metrics service annotations
+              annotations: {}
+              # -- Metrics service labels
+              labels: {}
+              # -- Metrics service port
+              servicePort: 8082
+            serviceMonitor:
+              # -- Enable a prometheus ServiceMonitor
+              enabled: true
+              # -- Prometheus ServiceMonitor interval
+              interval: 30s
+              # -- Prometheus [RelabelConfigs] to apply to samples before scraping
+              relabelings: []
+              # -- Prometheus [MetricRelabelConfigs] to apply to samples before ingestion
+              metricRelabelings: []
+              # -- Prometheus ServiceMonitor selector
+              selector: {}
+                # prometheus: kube-prometheus
+              # -- Prometheus ServiceMonitor namespace
+              namespace: "" # "monitoring"
+              # -- Prometheus ServiceMonitor labels
+              additionalLabels: {}
+
+        ## Argo Events admission webhook
+        webhook:
+          # -- Enable admission webhook. Applies only for cluster-wide installation
+          enabled: true
+
+          # -- Argo Events admission webhook name string
+          name: events-webhook
+
+          # -- The number of webhook pods to run.
+          replicas: 1
+
+          # -- Port to listen on
+          port: 443
+
+          readinessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          livenessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+
+          # -- Resource limits and requests for the event controller pods
+          resources: {}
+          #  limits:
+          #    cpu: 500m
+          #    memory: 512Mi
+          #  requests:
+          #    cpu: 250m
+          #    memory: 256Mi
+
+          serviceAccount:
+            # -- Create a service account for the admission webhook
+            create: true
+            # -- Service account name
+            name: ""
+            # -- Annotations applied to created service account
+            annotations: {}
+            # -- Automount API credentials for the Service Account
+            automountServiceAccountToken: true
