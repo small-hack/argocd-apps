@@ -55,3 +55,19 @@ spec:
               storageClassName: '{{ .mastodon_valkey_storage_class }}'
               accessMode: '{{ .mastodon_valkey_access_mode }}'
               storage: '{{ .mastodon_valkey_storage }}'
+
+            tolerations:
+              - key: '{{ .mastodon_toleration_key }}'
+                operator: '{{ .mastodon_toleration_operator }}'
+                value: '{{ .mastodon_toleration_value }}'
+                effect: '{{ .mastodon_toleration_effect }}'
+
+            affinity:
+              nodeAffinity:
+                requiredDuringSchedulingIgnoredDuringExecution:
+                  nodeSelectorTerms:
+                    - matchExpressions:
+                      - key: '{{ .mastodon_affinity_key }}'
+                        operator: In
+                        values:
+                          - '{{ .mastodon_affinity_value }}'
