@@ -51,6 +51,13 @@ spec:
         helm:
           releaseName: elk-frontend
           valuesObject:
+            image:
+              # repository: docker.io
+              # image: 0hlov3/elk-frontend
+              repository: ghcr.io
+              image: elk-zone/elk
+              tag: v0.16.0
+
             # disable persistence during testing
             persistence:
               enabled: true
