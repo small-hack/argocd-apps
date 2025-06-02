@@ -60,7 +60,7 @@ spec:
               # this is a custom nextcloud image with ffmpeg on it
               # it's otherwise exact the same as nextcloud:fpm-alpine
               repository: jessebot/nextcloud
-              tag: 31.0.4-fpm-alpine
+              tag: 31.0.5-fpm-alpine
               pullPolicy: IfNotPresent
 
             podLabels:
