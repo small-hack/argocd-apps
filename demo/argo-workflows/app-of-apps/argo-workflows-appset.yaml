@@ -75,10 +75,10 @@ spec:
                 enabled: true
                 issuer:  '{{ .argo_cd_oidc_issuer }}'
                 clientId:
-                  name: workflow-oidc-credentials
+                  name: workflows-oidc-credentials
                   key: oidc.clientID
                 clientSecret:
-                  name: workflow-oidc-credentials
+                  name: workflows-oidc-credentials
                   key: oidc.clientSecret
                 redirectUrl: 'https://{{ .workflows_hostname }}/oauth2/callback'
                 rbac:
