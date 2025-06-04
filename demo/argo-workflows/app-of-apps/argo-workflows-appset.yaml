@@ -88,7 +88,7 @@ spec:
                   - openid
                   - profile
                   - email
-                  # - groups
+                  - groups
                 sessionExpiry: "10h"
                 insecureSkipVerify: false
 
