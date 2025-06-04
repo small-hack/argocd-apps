@@ -48,7 +48,7 @@ spec:
 
             server:
               enabled: true
-              authModes: ["sso"]
+              authModes: ["client"]
               logging:
                 level: info
                 globallevel: "0"
