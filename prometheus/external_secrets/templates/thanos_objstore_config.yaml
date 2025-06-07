@@ -28,7 +28,7 @@ spec:
           name: bitwarden-fields
           kind: ClusterSecretStore
       remoteRef:
-        key: {{ .Values.oidcCredentialsBitwardenID }}
+        key: {{ .Values.thanosObjstoreBitwardenID }}
         property: bucket
 
     - secretKey: endpoint
@@ -37,7 +37,7 @@ spec:
           name: bitwarden-fields
           kind: ClusterSecretStore
       remoteRef:
-        key: {{ .Values.oidcCredentialsBitwardenID }}
+        key: {{ .Values.thanosObjstoreBitwardenID }}
         property: endpoint
 
     - secretKey: region
@@ -46,7 +46,7 @@ spec:
           name: bitwarden-fields
           kind: ClusterSecretStore
       remoteRef:
-        key: {{ .Values.oidcCredentialsBitwardenID }}
+        key: {{ .Values.thanosObjstoreBitwardenID }}
         property: region
 
     - secretKey: insecure
@@ -55,7 +55,7 @@ spec:
           name: bitwarden-fields
           kind: ClusterSecretStore
       remoteRef:
-        key: {{ .Values.oidcCredentialsBitwardenID }}
+        key: {{ .Values.thanosObjstoreBitwardenID }}
         property: insecure
 
     - secretKey: accessKey
@@ -64,7 +64,7 @@ spec:
           name: bitwarden-fields
           kind: ClusterSecretStore
       remoteRef:
-        key: {{ .Values.oidcCredentialsBitwardenID }}
+        key: {{ .Values.thanosObjstoreBitwardenID }}
         property: accessKey
 
     - secretKey: secretKey
@@ -73,5 +73,5 @@ spec:
           name: bitwarden-fields
           kind: ClusterSecretStore
       remoteRef:
-        key: {{ .Values.oidcCredentialsBitwardenID }}
+        key: {{ .Values.thanosObjstoreBitwardenID }}
         property: secretKey
