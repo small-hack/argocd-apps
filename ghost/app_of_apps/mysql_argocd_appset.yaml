@@ -1,0 +1,95 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: ghost-mysql-app-set
+  namespace: argocd
+spec:
+  goTemplate: true
+  # generator allows us to source specific values from an external k8s secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - global_cluster_issuer
+              - ghost_hostname
+              - ghost_s3_endpoint
+
+  template:
+    metadata:
+      name: ghost-mysql
+      annotations:
+        # needs to be up before ghost but after the external secrets
+        argocd.argoproj.io/sync-wave: "2"
+    spec:
+      project: ghost
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: ghost
+
+      # reconcilation policy for this Argo CD Application
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
+          selfHeal: true
+
+      source:
+        repoURL: registry-1.docker.io
+        chart: bitnamicharts/mysql
+        targetRevision: 23.0.10
+        helm:
+          releaseName: "mysql"
+          # ref: https://github.com/bitnami/charts/blob/main/bitnami/mysql/values.yaml
+          valuesObject:
+
+            fullnameOverride: "mysql"
+
+            ## @param mysql.architecture MySQL architecture. Allowed values: `standalone` or `replication`
+            architecture: standalone
+
+            ## MySQL Authentication parameters
+            ## ref: https://github.com/bitnami/containers/tree/main/bitnami/mysql#setting-the-root-password-on-first-run
+            ##      https://github.com/bitnami/containers/tree/main/bitnami/mysql/#creating-a-database-on-first-run
+            ##      https://github.com/bitnami/containers/tree/main/bitnami/mysql/#creating-a-database-user-on-first-run
+            auth:
+              database: bitnami_ghost
+              username: bn_ghost
+              ## @param mysql.auth.existingSecret Existing secret with MySQL credentials
+              ## @param auth.existingSecret Use existing secret for password details. The secret has to contain the keys `mysql-root-password`, `mysql-replication-password` and `mysql-password`
+              existingSecret: ""
+
+            ## MySQL Primary configuration
+            primary:
+              ## MySQL Primary Persistence parameters
+              ## ref: https://kubernetes.io/docs/concepts/storage/persistent-volumes/
+              ## @param mysql.primary.persistence.enabled Enable persistence on MySQL using PVC(s)
+              ## @param mysql.primary.persistence.storageClass Persistent Volume storage class
+              ## @param mysql.primary.persistence.accessModes [array] Persistent Volume access modes
+              ## @param mysql.primary.persistence.size Persistent Volume size
+              persistence:
+                enabled: true
+                storageClass: ""
+                accessModes:
+                  - ReadWriteOnce
+                size: 8Gi
+
+              ## MySQL primary container's resource requests and limits
+              ## @param mysql.primary.resourcesPreset Set container resources according to one common preset (allowed values: none, nano, small, medium, large, xlarge, 2xlarge). This is ignored if primary.resources is set (primary.resources is recommended for production).
+              ## More information: https://github.com/bitnami/charts/blob/main/bitnami/common/templates/_resources.tpl#L15
+              resourcesPreset: "small"
+
+              ## @param mysql.primary.resources Set container requests and limits for different resources like CPU or memory (essential for production workloads)
+              ## Example:
+              ## resources:
+              ##   requests:
+              ##     cpu: 2
+              ##     memory: 512Mi
+              ##   limits:
+              ##     cpu: 3
+              ##     memory: 1024Mi
+              resources: {}
