@@ -2,7 +2,7 @@
 {{- if eq .Values.provider "bitwarden" }}
 ---
 # secret for a seaweedfs postgres DB
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
   name: seaweedfs-pgsql-credentials

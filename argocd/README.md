@@ -35,7 +35,7 @@ When creating external secrets for argocd, don't forget to set `spec.target.temp
 
 ```yaml
 ---
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
   name: argocd-oidc
