@@ -44,103 +44,81 @@ spec:
           valuesObject:
             fullnameOverride: "ghost"
 
-            global:
-              imageRegistry: ""
-              ## E.g.
-              ## imagePullSecrets:
-              ##   - myRegistryKeySecretName
-              imagePullSecrets: []
-              defaultStorageClass: ""
-              ## Security parameters
-              security:
-                ## @param global.security.allowInsecureImages Allows skipping image verification
-                allowInsecureImages: false
-
-            ## @param commonLabels Labels to add to all deployed objects
-            commonLabels: {}
-            ## @param commonAnnotations Annotations to add to all deployed objects
-            commonAnnotations: {}
-            ## @param clusterDomain Kubernetes cluster domain name
-            clusterDomain: cluster.local
-            ## @param extraDeploy Array of extra objects to deploy with the release
-            extraDeploy: []
-            ## @param usePasswordFiles Mount credentials as files instead of using environment variables
+            # Mount credentials as files instead of using environment variables
             usePasswordFiles: true
-            ## Enable diagnostic mode in the deployment
+            # Enable diagnostic mode in the deployment
             diagnosticMode:
-              ## @param diagnosticMode.enabled Enable diagnostic mode (all probes will be disabled and the command will be overridden)
+              # Enable diagnostic mode (all probes will be disabled and the command will be overridden)
               enabled: false
-              ## @param diagnosticMode.command Command to override all containers in the deployment
+              # Command to override all containers in the deployment
               command:
                 - sleep
-              ## @param diagnosticMode.args Args to override all containers in the deployment
+              # Args to override all containers in the deployment
               args:
                 - infinity
 
-            ## @section Ghost Configuration parameters
             ## Ghost settings based on environment variables
             ## ref: https://github.com/bitnami/containers/tree/main/bitnami/ghost#configuration
 
-            ## @param ghostUsername Ghost user name
+            ## Ghost user name
             ghostUsername: user
-            ## @param ghostPassword Ghost user password
-            ## Defaults to a random 10-character alphanumeric string if not set
-            ghostPassword: ""
             ## @param existingSecret Name of existing secret containing Ghost credentials
             ## NOTE: Must contain key `ghost-password`
             ## NOTE: When it's set, the `ghostPassword` parameter is ignored
             existingSecret: ""
-            ## @param ghostEmail Ghost user email
+
+            # Ghost user email
             ghostEmail: user@example.com
-            ## @param ghostBlogTitle Ghost Blog title
+            # Ghost Blog title
             ghostBlogTitle: User's Blog
-            ## @param ghostHost Ghost host to create application URLs
+            # Ghost host to create application URLs
             ghostHost: ""
-            ## @param ghostPath URL sub path where to server the Ghost application
+            # ghostPath URL sub path where to server the Ghost application
             ghostPath: /
-            ## @param ghostEnableHttps Configure Ghost to build application URLs using https
+            # ghostEnableHttps Configure Ghost to build application URLs using https
             ghostEnableHttps: false
+
             ## SMTP mail delivery configuration
             ## ref: https://github.com/bitnami/containers/tree/main/bitnami/ghost/#smtp-configuration
-            ## @param smtpHost SMTP server host
-            ## @param smtpPort SMTP server port
-            ## @param smtpUser SMTP username
-            ## @param smtpPassword SMTP user password
-            ## @param smtpService SMTP service
-            ## @param smtpProtocol SMTP protocol (ssl or tls)
+            # smtpService SMTP service
+            # smtpProtocol SMTP protocol (ssl or tls)
             smtpHost: ""
             smtpPort: ""
             smtpUser: ""
             smtpPassword: ""
             smtpService: ""
             smtpProtocol: ""
-            ## @param smtpExistingSecret The name of an existing secret with SMTP credentials
+
+            # The name of an existing secret with SMTP credentials
             ## NOTE: Must contain key `smtp-password`
             ## NOTE: When it's set, the `smtpPassword` parameter is ignored
             smtpExistingSecret: ""
-            ## @param allowEmptyPassword Allow the container to be started with blank passwords
+
+            # Allow the container to be started with blank passwords
             allowEmptyPassword: true
-            ## @param ghostSkipInstall Skip performing the initial bootstrapping for Ghost
+            # Skip performing the initial bootstrapping for Ghost
             ghostSkipInstall: false
-            ## @param command Override default container command (useful when using custom images)
+            # Override default container command (useful when using custom images)
             command: []
-            ## @param args Override default container args (useful when using custom images)
+            # Override default container args (useful when using custom images)
             args: []
-            ## @param extraEnvVars Array with extra environment variables to add to the Ghost container
+            # Array with extra environment variables to add to the Ghost container
             ## e.g:
             ## extraEnvVars:
             ##   - name: FOO
             ##     value: "bar"
             extraEnvVars: []
-            ## @param extraEnvVarsCM Name of existing ConfigMap containing extra env vars
+            # Name of existing ConfigMap containing extra env vars
             extraEnvVarsCM: ""
-            ## @param extraEnvVarsSecret Name of existing Secret containing extra env vars
+            # Name of existing Secret containing extra env vars
             extraEnvVarsSecret: ""
-            ## @section Ghost deployment parameters
+
+            # Ghost deployment parameters
 
             ## @param replicaCount Number of Ghost replicas to deploy
             ## NOTE: ReadWriteMany PVC(s) are required if replicaCount > 1
             replicaCount: 1
+
             ## @param updateStrategy.type Ghost deployment strategy type
             ## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
             ## NOTE: Set it to `Recreate` if you use a PV that cannot be mounted on multiple pods
