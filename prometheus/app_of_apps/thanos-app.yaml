@@ -49,10 +49,10 @@ spec:
           resources:
             requests:
               cpu: 250m
-              memory: 1024M
+              memory: 1024Mi
             limits:
               cpu: 2
-              memory: 4096M
+              memory: 4096Mi
 
           revisionHistoryLimit: 2
 
@@ -88,10 +88,10 @@ spec:
           resources:
             requests:
               cpu: 250m
-              memory: 512M
+              memory: 512Mi
             limits:
               cpu: 2
-              memory: 2048M
+              memory: 2048Mi
 
           persistence:
             enabled: true
@@ -165,10 +165,10 @@ spec:
           resources:
             requests:
               cpu: 250m,
-              memory: 1024M
+              memory: 1024Mi
             limits:
               cpu: 2000m
-              memory: 8192M
+              memory: 8192Mi
 
           persistence:
             storageClass: local-path
