@@ -65,7 +65,7 @@ spec:
           kind: ClusterSecretStore
       remoteRef:
         key: {{ .Values.thanosObjstoreBitwardenID }}
-        property: accessKey
+        property: access_key
 
     - secretKey: secretKey
       sourceRef:
@@ -74,4 +74,4 @@ spec:
           kind: ClusterSecretStore
       remoteRef:
         key: {{ .Values.thanosObjstoreBitwardenID }}
-        property: secretKey
+        property: secret_key
