@@ -1,0 +1,16 @@
+---
+# Dynamic Persistent volume claim for postgresql specifically to persist
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: ghost
+  name: ghost
+  annotations:
+    k8up.io/backup: 'true'
+spec:
+  storageClassName: {{ .Values.pvc_storageClassName }}
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.pvc_capacity }}

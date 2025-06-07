@@ -66,22 +66,16 @@ spec:
             ## MySQL Primary configuration
             primary:
               ## MySQL Primary Persistence parameters
-              ## ref: https://kubernetes.io/docs/concepts/storage/persistent-volumes/
-              ## @param mysql.primary.persistence.enabled Enable persistence on MySQL using PVC(s)
-              ## @param mysql.primary.persistence.storageClass Persistent Volume storage class
-              ## @param mysql.primary.persistence.accessModes [array] Persistent Volume access modes
-              ## @param mysql.primary.persistence.size Persistent Volume size
               persistence:
                 enabled: true
-                storageClass: ""
-                accessModes:
-                  - ReadWriteOnce
-                size: 8Gi
+                ## @param primary.persistence.existingClaim Name of an existing `PersistentVolumeClaim` for MySQL primary replicas
+                ## NOTE: When it's set the rest of persistence parameters are ignored
+                existingClaim: ""
 
               ## MySQL primary container's resource requests and limits
               ## @param mysql.primary.resourcesPreset Set container resources according to one common preset (allowed values: none, nano, small, medium, large, xlarge, 2xlarge). This is ignored if primary.resources is set (primary.resources is recommended for production).
               ## More information: https://github.com/bitnami/charts/blob/main/bitnami/common/templates/_resources.tpl#L15
-              resourcesPreset: "small"
+              resourcesPreset: "medium"
 
               ## @param mysql.primary.resources Set container requests and limits for different resources like CPU or memory (essential for production workloads)
               ## Example:
