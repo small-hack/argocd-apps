@@ -4,3 +4,4 @@ provider: ""
 
 # -- zitadel OIDC Credentials
 oidcCredentialsBitwardenID: ""
+thanosObjstoreBitwardenID: ""
