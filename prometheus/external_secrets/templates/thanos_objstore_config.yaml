@@ -1,0 +1,77 @@
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: thanos-objstore-config
+spec:
+  target:
+    # Name for the secret to be created on the cluster
+    name: thanos-objstore-config
+    deletionPolicy: Delete
+    template:
+      engineVersion: v2
+      data:
+        objstore.yml: |-
+          type: s3
+          config:
+            bucket: {{ `{{ .bucket }}` }}
+            endpoint: {{ `{{ .endpoint }}` }}
+            region: {{ `{{ .region }}` }}
+            insecure: {{ `{{ .insecure }}` }}
+            access_key: {{ `{{ .accessKey }}` }}
+            secret_key: {{ `{{ .secretKey }}` }}
+
+  data:
+    - secretKey: bucket
+      sourceRef:
+        storeRef:
+          name: bitwarden-fields
+          kind: ClusterSecretStore
+      remoteRef:
+        key: {{ .Values.oidcCredentialsBitwardenID }}
+        property: bucket
+
+    - secretKey: endpoint
+      sourceRef:
+        storeRef:
+          name: bitwarden-fields
+          kind: ClusterSecretStore
+      remoteRef:
+        key: {{ .Values.oidcCredentialsBitwardenID }}
+        property: endpoint
+
+    - secretKey: region
+      sourceRef:
+        storeRef:
+          name: bitwarden-fields
+          kind: ClusterSecretStore
+      remoteRef:
+        key: {{ .Values.oidcCredentialsBitwardenID }}
+        property: region
+
+    - secretKey: insecure
+      sourceRef:
+        storeRef:
+          name: bitwarden-fields
+          kind: ClusterSecretStore
+      remoteRef:
+        key: {{ .Values.oidcCredentialsBitwardenID }}
+        property: insecure
+
+    - secretKey: accessKey
+      sourceRef:
+        storeRef:
+          name: bitwarden-fields
+          kind: ClusterSecretStore
+      remoteRef:
+        key: {{ .Values.oidcCredentialsBitwardenID }}
+        property: accessKey
+
+    - secretKey: secretKey
+      sourceRef:
+        storeRef:
+          name: bitwarden-fields
+          kind: ClusterSecretStore
+      remoteRef:
+        key: {{ .Values.oidcCredentialsBitwardenID }}
+        property: secretKey
