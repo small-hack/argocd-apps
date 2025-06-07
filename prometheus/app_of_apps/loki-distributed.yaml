@@ -46,6 +46,8 @@ spec:
         #                     |_|
         ########################################################################
         compactor:
+          enabled: true
+
           serviceAccount:
             create: true
 
@@ -58,7 +60,17 @@ spec:
                 fieldRef:
                   fieldPath: status.podIP
 
-          shared_store: s3
+          kind: StatefulSet
+          replicas: 1
+
+          persistence:
+            enabled: true
+            size: 32Gi
+            storageClass: local-path
+            enableStatefulSetAutoDeletePVC: true
+            whenDeleted: retain
+            whenScaled: retain
+
 
         ########################################################################
         #   ____       _
@@ -77,6 +89,11 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: status.podIP
+
+          replicas: 1
+
+          autoscaling:
+            enabled: false
 
         ########################################################################
         #  __  __                               _              _
@@ -122,6 +139,11 @@ spec:
                 fieldRef:
                   fieldPath: status.podIP
 
+          replicas: 1
+
+          autoscaling:
+            enabled: false
+
         ########################################################################
         #  ___                       _
         # |_ _|_ __   __ _  ___  ___| |_ ___ _ __
@@ -139,6 +161,9 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: status.podIP
+
+          wal:
+            enabled: false
 
           resources:
             requests:
@@ -175,6 +200,11 @@ spec:
               scaleDown: {}
               # -- define scale up policies, must conform to HPAScalingRules
               scaleUp: {}
+
+        indexGateway:
+          enabled: true
+
+          replicas: 1
 
         ########################################################################
         #   ___
