@@ -107,13 +107,9 @@ spec:
 
           bloom_build:
             enabled: false
-            builder:
-              planner_address: '{{ include "loki.bloomPlannerAddress" . }}'
 
           bloom_gateway:
             enabled: false
-            client:
-              addresses: '{{ include "loki.bloomGatewayAddresses" . }}'
 
         test:
           enabled: false
