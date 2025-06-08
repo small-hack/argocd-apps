@@ -34,7 +34,7 @@ spec:
           extraVolumes: []
           extraVolumeMounts: []
 
-        fullnameOverride: loki
+        fullnameOverride: loki-distributed
 
         deploymentMode: Distributed
 
