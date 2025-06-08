@@ -120,7 +120,7 @@ spec:
                     access: proxy
                     editable: false
                     isDefault: true
-                    url: http://thanos-query-frontend.monitoring.svc:9090/query
+                    url: http://thanos-query-frontend.monitoring.svc:9090
                     jsonData:
                       tlsSkipVerify: true
 
