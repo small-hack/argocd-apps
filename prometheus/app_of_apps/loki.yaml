@@ -215,7 +215,7 @@ spec:
           replicas: 0
 
           autoscaling:
-            enabled: false
+            enabled: true
 
           affinity: {}
 
@@ -235,7 +235,7 @@ spec:
           replicas: 0
 
           autoscaling:
-            enabled: false
+            enabled: true
 
           resources: {}
 
@@ -263,7 +263,7 @@ spec:
 
           autoscaling:
             # -- Enable autoscaling for the query-frontend
-            enabled: false
+            enabled: true
 
           resources: {}
 
