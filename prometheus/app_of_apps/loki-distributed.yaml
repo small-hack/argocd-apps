@@ -351,6 +351,33 @@ spec:
             size: 10Gi
             storageClass: local-path
 
+          extraContainers:
+            - name: load-rule-configmaps
+              image: kiwigrid/k8s-sidecar:1.19.5
+              imagePullPolicy: ifNotPresent
+
+              volumeMounts:
+                - name: fake
+                  mountPath: /etc/loki/rules/fake/
+
+              env:
+                - name: LABEL
+                  value: "loki-ruler-alerts"
+
+                - name: FOLDER
+                  value: /etc/loki/rukles/fake
+
+                - name: RESOURCE
+                  value: configmap
+
+          extraVolumes:
+            - name: fake
+              emptyDir: {}
+
+          extraVolumeMounts:
+            - name: fake
+              mountPath: /etc/loki/rules/fake
+
   syncPolicy:
     syncOptions:
       - ApplyOutOfSyncOnly=true
