@@ -264,10 +264,25 @@ spec:
           autoscaling:
             # -- Enable autoscaling for the query-frontend
             enabled: true
+            minReplicas: 1
+            maxReplicas: 3
+            targetCPUUtilizationPercentage: 60
+            targetMemoryUtilizationPercentage: null
+            customMetrics: []
+            behavior:
+              enabled: false
+              scaleDown: {}
+              scaleUp: {}
 
           resources: {}
 
-          affinity: {}
+          affinity:
+            podAntiAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - labelSelector:
+                    matchLabels:
+                      app.kubernetes.io/component: nope
+                  topologyKey: kubernetes.io/hostname
 
           nodeSelector: {}
 
