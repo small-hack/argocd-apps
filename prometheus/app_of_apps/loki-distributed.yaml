@@ -16,7 +16,7 @@ spec:
       version: v3
       skipCrds: true
       valuesObject:
-        fullnameOverride: loki
+        fullnameOverride: loki-distributed
 
         serviceAccount:
           create: true

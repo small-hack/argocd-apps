@@ -1,0 +1,190 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: grafana-appset
+  namespace: argocd
+spec:
+  goTemplate: true
+  # generator allows us to source specific values from an external secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - prometheus_hostname
+              - prometheus_alert_manager_hostname
+              - prometheus_grafana_hostname
+              - zitadel_hostname
+              - vouch_hostname
+              - global_cluster_issuer
+  template:
+    metadata:
+      name: grafana-app
+    spec:
+      project: default
+      destination:
+        server: "https://kubernetes.default.svc"
+        namespace: monitoring
+
+      syncPolicy:
+        syncOptions:
+          - CreateNamespace=true
+          - ApplyOutOfSyncOnly=true
+          - Retry=true
+        automated:
+          selfHeal: false
+          prune: true
+
+      source:
+        repoURL: https://grafana.github.io/helm-charts
+        chart: grafana
+        targetRevision: 12.0.1
+        helm:
+          version: v3
+          skipCrds: true
+          valuesObject:
+            replicas: 1
+
+            autoscaling:
+              enabled: false
+              minReplicas: 1
+              maxReplicas: 5
+              targetCPU: "60"
+              targetMemory: ""
+              behavior: {}
+
+            defaultDashboardsEmanled: false
+
+            serviceMonitor:
+              enabled: true
+              path: /metrics
+              #  namespace: monitoring  (defaults to use the namespace this chart is deployed to)
+              labels: {}
+              interval: 30s
+              scheme: http
+              tlsConfig: {}
+              scrapeTimeout: 30s
+              relabelings: []
+              metricRelabelings: []
+              basicAuth: {}
+              targetLabels: []
+
+            ingress:
+              enabled: true
+              annotations:
+                kubernetes.io/ingress.class: nginx
+                cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
+              hosts:
+                - '{{ .prometheus_grafana_hostname }}'
+              ## Extra paths to prepend to every host configuration. This is useful when working with annotation based services.
+              tls:
+                - secretName: grafana-tls
+                  hosts:
+                  - '{{ .prometheus_grafana_hostname }}'
+
+            resources: {}
+
+            nodeSelector: {}
+
+            # Use an existing secret for the admin user.
+            admin:
+              ## Name of the secret. Can be templated.
+              existingSecret: ""
+              userKey: admin-user
+              passwordKey: admin-password
+
+            extraSecretMounts: []
+
+            lifecycleHooks: {}
+
+            plugins:
+              - redis-datasource
+              - grafana-piechart-panel
+              - camptocamp-prometheus-alertmanager-datasource
+              - grafana-github-datasource
+              - simpod-json-datasource
+              - grafana-lokiexplore-app
+
+            datasources:
+              datasources.yaml:
+                apiVersion: 1
+                datasources:
+                  - name: Thanos
+                    uid: thanos
+                    type: prometheus
+                    access: proxy
+                    editable: false
+                    isDefault: true
+                    url: http://thanos-query-frontend.monitoring.svc:9090/query
+                    jsonData:
+                      tlsSkipVerify: true
+
+                  - name: Loki
+                    access: proxy
+                    editable: false
+                    type: loki
+                    url: http://loki-distributed-query-frontend:3100
+                    jsonData:
+                      timeout: 30
+                      maxlines: 1000
+
+                  - name: camptocamp-prometheus-alertmanager-datasource
+                    type: camptocamp-prometheus-alertmanager-datasource
+                    editable: false
+                    url: http://alertmanager/
+                    isDefault: false
+                    basicAuth: false
+                    access: proxy
+
+            dashboards: {}
+
+            grafana.ini:
+              auth:
+                disable_login_form: false
+                publicDashboards: true
+
+              feature_toggles:
+                publicDashboards: true
+                alertStateHistoryLokiSecondary: true
+                alertStateHistoryLokiPrimary: true
+                alertStateHistoryLokiOnly: true
+
+              [auth.generic_oauth]:
+                name: Zitadel
+                enabled: true
+                scopes: openid email profile groups
+                attribute_path: email
+                login_attribute: preferred_username
+                name_attribute: name
+                auth_url: https://{{ .zitadel_hostname }}/oauth/v2/authorize
+                token_url: https://{{ .zitadel_hostname }}/oauth/v2/token
+                api_url: https://{{ .zitadel_hostname }}/oauth/v1/userinfo
+
+              users:
+                allow_sign_up: false
+                auto_assign_org: true
+                auto_assign_org_role: Admin
+
+              unified_alerting.state_history:
+                enabled: true
+                backend: "loki"
+                loki_remote_url: "http://loki-distributed-query-frontend:3100"
+
+              log:
+                mode: console
+
+              server:
+                domain: "{{ .prometheus_grafana_hostname }}"
+                root_url: "%(protocol)ss://%(domain)s/"
+
+            sidecar:
+              dashboards:
+                enabled: true
+                label: grafana_dashboard
+                labelValues: "1"
+                folder: /var/lib/grafana/dashboards
+                provider:
+                  foldersFromFileStructure: true
+                searchNamespace: monitoring
