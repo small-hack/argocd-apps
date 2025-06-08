@@ -61,7 +61,17 @@ spec:
             compactor_address: '{{ include "loki.compactorAddress" . }}'
 
           pattern_ingester:
-            enabled: true
+            enabled: false
+
+          schemaConfig:
+            configs:
+            - from: 2023-10-20
+              store: tsdb
+              object_store: aws
+              schema: v13
+              index:
+                prefix: index_
+                period: 24h
 
           ui:
             enabled: true
