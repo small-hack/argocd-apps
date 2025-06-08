@@ -75,7 +75,7 @@ spec:
         ingester:
           replicas: 0
 
-          affinity: {}
+          affinity: null
           topologySpreadConstraints: []
 
           autoscaling:
@@ -108,7 +108,7 @@ spec:
 
           topologySpreadConstraints: []
 
-          affinity: {}
+          affinity: null
 
           autoscaling:
             enabled: true
@@ -230,7 +230,7 @@ spec:
 
           joinMemberlist: true
 
-          affinity: {}
+          affinity: null
 
           persistence:
             enabled: false
@@ -309,7 +309,7 @@ spec:
             - name: fake
               mountPath: /etc/loki/rules/fake
 
-          affinity: {}
+          affinity: null
 
           nodeSelector: {}
 
