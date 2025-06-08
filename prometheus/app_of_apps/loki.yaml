@@ -37,20 +37,99 @@ spec:
         deploymentMode: Distributed
 
         ingester:
-          replicas: 3
+          replicas: 0
+
+          affinity: {}
+          topologySpreadConstraints: []
+
+          autoscaling:
+            enabled: true
+            minReplicas: 1
+            maxReplicas: 3
+            targetCPUUtilizationPercentage: 60
+            targetMemoryUtilizationPercentage: null
+            customMetrics: []
+            behavior:
+              enabled: false
+              scaleDown: {}
+              scaleUp: {}
+
+          zoneAwareReplication:
+            # -- Enable zone awareness.
+            enabled: false
+
         querier:
-          replicas: 3
+          replicas: 0
+
           maxUnavailable: 2
+
+          topologySpreadConstraints: []
+
+          affinity: {}
+
+          autoscaling:
+            enabled: true
+            minReplicas: 1
+            maxReplicas: 3
+            targetCPUUtilizationPercentage: 60
+            targetMemoryUtilizationPercentage: null
+            customMetrics: []
+            behavior:
+              enabled: false
+              scaleDown: {}
+              scaleUp: {}
+
+          persistence:
+            enabled: true
+            size: 10Gi
+            storageClass: local-path
+
+
         queryFrontend:
-          replicas: 2
+          replicas: 0
           maxUnavailable: 1
+
+          affinity: {}
+
+          autoscaling:
+            enabled: true
+            minReplicas: 1
+            maxReplicas: 3
+            targetCPUUtilizationPercentage: 60
+            targetMemoryUtilizationPercentage: null
+            customMetrics: []
+            behavior:
+              enabled: false
+              scaleDown: {}
+              scaleUp: {}
+
         queryScheduler:
-          replicas: 2
+          replicas: 1
+
         distributor:
-          replicas: 3
+          replicas: 0
+
           maxUnavailable: 2
+
+          affinity: {}
+          topologySpreadConstraints: []
+
+          autoscaling:
+            enabled: true
+            minReplicas: 1
+            maxReplicas: 3
+            targetCPUUtilizationPercentage: 60
+            targetMemoryUtilizationPercentage: null
+            customMetrics: []
+            behavior:
+              enabled: false
+              scaleDown: {}
+              scaleUp: {}
+
+
         compactor:
           replicas: 1
+
         indexGateway:
           replicas: 2
           maxUnavailable: 1
@@ -58,8 +137,10 @@ spec:
         # optional experimental components
         bloomPlanner:
           replicas: 0
+
         bloomBuilder:
           replicas: 0
+
         bloomGateway:
           replicas: 0
 
