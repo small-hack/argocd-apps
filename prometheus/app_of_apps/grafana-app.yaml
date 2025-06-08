@@ -109,7 +109,6 @@ spec:
               - camptocamp-prometheus-alertmanager-datasource
               - grafana-github-datasource
               - simpod-json-datasource
-              - grafana-lokiexplore-app
 
             datasources:
               datasources.yaml:
