@@ -46,19 +46,38 @@ spec:
         # |_____\___/|_|\_\_|
         ########################################################################
         loki:
-          configStorageType: Secret
-          configObjectName: "loki-config"
+          configStorageType: ConfigMap
           # -- The name of the Secret or ConfigMap that will be created by this chart.
           # If empty, no configmap or secret will be created.
-          generatedConfigObjectName: ''
-
           # Should authentication be enabled
-          auth_enabled: false
+          auth_enabled: true
+          # -- memberlist configuration (overrides embedded default)
+          memberlistConfig: {}
+          # -- Extra memberlist configuration
+          extraMemberlistConfig: {}
+          # -- Tenants list to be created on nginx htpasswd file, with name and password keys
+          tenants: []
+          # -- Check https://grafana.com/docs/loki/latest/configuration/#server for more info on the server configuration.
+          server:
+            http_listen_port: 3100
+            grpc_listen_port: 9095
+            http_server_read_timeout: 600s
+            http_server_write_timeout: 600s
+
+          limits_config:
+            reject_old_samples: true
+            reject_old_samples_max_age: 168h
+            max_cache_freshness_per_query: 10m
+            split_queries_by_interval: 15m
+            query_timeout: 300s
+            volume_enabled: true
+
+          runtimeConfig: {}
 
           commonConfig:
             path_prefix: /var/loki
             replication_factor: 3
-            compactor_address: '{{ include "loki.compactorAddress" . }}'
+            compactor_address: 'http://loki-distributed-compactor:3100'
 
           pattern_ingester:
             enabled: false
