@@ -138,12 +138,7 @@ spec:
           replicas: 0
           maxUnavailable: 1
 
-          affinity:
-            podAntiAffinity:
-              requiredDuringSchedulingIgnoredDuringExecution:
-                - labelSelector:
-                    matchLabels:
-                      beta.kubernetes.io/os: linux
+          affinity: null
 
           autoscaling:
             enabled: true
@@ -179,12 +174,7 @@ spec:
 
           maxUnavailable: 2
 
-          affinity:
-            podAntiAffinity:
-              requiredDuringSchedulingIgnoredDuringExecution:
-                - labelSelector:
-                    matchLabels:
-                      beta.kubernetes.io/os: linux
+          affinity: null
 
           topologySpreadConstraints: []
 
@@ -211,12 +201,7 @@ spec:
         compactor:
           replicas: 1
 
-          affinity:
-            podAntiAffinity:
-              requiredDuringSchedulingIgnoredDuringExecution:
-                - labelSelector:
-                    matchLabels:
-                      beta.kubernetes.io/os: linux
+          affinity: null
 
           persistence:
             enabled: true
