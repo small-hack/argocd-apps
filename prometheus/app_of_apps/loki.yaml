@@ -48,6 +48,121 @@ spec:
         loki:
           configStorageType: Secret
           configObjectName: "loki-config"
+          # -- The name of the Secret or ConfigMap that will be created by this chart.
+          # If empty, no configmap or secret will be created.
+          generatedConfigObjectName: ''
+
+          # Should authentication be enabled
+          auth_enabled: false
+
+          commonConfig:
+            path_prefix: /var/loki
+            replication_factor: 3
+            compactor_address: '{{ include "loki.compactorAddress" . }}'
+
+          pattern_ingester:
+            enabled: false
+
+          schemaConfig:
+            configs:
+            - from: 2023-10-20
+              store: tsdb
+              object_store: aws
+              schema: v13
+              index:
+                prefix: index_
+                period: 24h
+
+          ui:
+            enabled: true
+            gateway:
+              # enable gateway proxying to UI under /ui
+              enabled: true
+
+          index_gateway:
+            mode: simple
+
+          # -- Enable tracing
+          tracing:
+            enabled: false
+
+          bloom_build:
+            enabled: false
+            builder:
+              planner_address: '{{ include "loki.bloomPlannerAddress" . }}'
+
+          bloom_gateway:
+            enabled: false
+            client:
+              addresses: '{{ include "loki.bloomGatewayAddresses" . }}'
+
+        test:
+          enabled: false
+
+        lokiCanary:
+          enabled: false
+
+        serviceAccount:
+          create: true
+
+        # Configuration for the memberlist service
+        memberlist:
+          service:
+            publishNotReadyAddresses: false
+            annotations: {}
+
+        # Configuration for the gateway
+        gateway:
+          # -- Specifies whether the gateway should be enabled
+          enabled: false
+
+        # -- Ingress configuration Use either this ingress or the gateway, but not both at once.
+        # If you enable this, make sure to disable the gateway.
+        # You'll need to supply authn configuration for your ingress controller.
+        ingress:
+          enabled: false
+          ingressClassName: ""
+          annotations: {}
+          labels: {}
+          paths:
+            # -- Paths that are exposed by Loki Distributor.
+            distributor:
+              - /api/prom/push
+              - /loki/api/v1/push
+              - /otlp/v1/logs
+            # -- Paths that are exposed by Loki Query Frontend.
+            queryFrontend:
+              - /api/prom/query
+              # this path covers labels and labelValues endpoints
+              - /api/prom/label
+              - /api/prom/series
+              - /api/prom/tail
+              - /loki/api/v1/query
+              - /loki/api/v1/query_range
+              - /loki/api/v1/tail
+              # this path covers labels and labelValues endpoints
+              - /loki/api/v1/label
+              - /loki/api/v1/labels
+              - /loki/api/v1/series
+              - /loki/api/v1/index/stats
+              - /loki/api/v1/index/volume
+              - /loki/api/v1/index/volume_range
+              - /loki/api/v1/format_query
+              - /loki/api/v1/detected_field
+              - /loki/api/v1/detected_fields
+              - /loki/api/v1/detected_labels
+              - /loki/api/v1/patterns
+            # -- Paths that are exposed by Loki Ruler.
+            ruler:
+              - /api/prom/rules
+              - /api/prom/api/v1/rules
+              - /api/prom/api/v1/alerts
+              - /loki/api/v1/rules
+              - /prometheus/api/v1/rules
+              - /prometheus/api/v1/alerts
+          hosts:
+            - loki.example.com
+          tls: []
 
         ########################################################################
         #  ___                       _
