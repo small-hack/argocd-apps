@@ -137,9 +137,7 @@ spec:
         queryFrontend:
           replicas: 0
           maxUnavailable: 1
-
           affinity: null
-
           autoscaling:
             enabled: true
             minReplicas: 1
