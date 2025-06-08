@@ -163,7 +163,7 @@ spec:
         #            |___/
         ########################################################################
         ingester:
-          replicas: 1
+          replicas: 0
 
           autoscaling:
             enabled: false
@@ -202,7 +202,7 @@ spec:
         # |____/|_|___/\__|_|  |_|_.__/ \__,_|\__\___/|_|
         ########################################################################
         distributor:
-          replicas: 1
+          replicas: 0
 
           autoscaling:
             enabled: false
@@ -222,7 +222,7 @@ spec:
         #  \__\_\\__,_|\___|_|  |_|\___|_|
         ########################################################################
         querier:
-          replicas: 1
+          replicas: 0
 
           autoscaling:
             enabled: false
@@ -249,7 +249,7 @@ spec:
         ########################################################################
         queryFrontend:
           # -- Number of replicas for the query-frontend
-          replicas: 1
+          replicas: 0
 
           autoscaling:
             # -- Enable autoscaling for the query-frontend
@@ -286,7 +286,7 @@ spec:
         #                                                                 |___/
         ########################################################################
         indexGateway:
-          replicas: 1
+          replicas: 0
 
           joinMemberlist: true
 
@@ -314,7 +314,7 @@ spec:
         #                     |_|
         ########################################################################
         compactor:
-          replicas: 1
+          replicas: 0
 
           affinity: {}
 
@@ -377,7 +377,7 @@ spec:
 
           sidecar: false
 
-          replicas: 1
+          replicas: 0
 
           extraContainers:
             - name: load-rule-configmaps
@@ -431,7 +431,7 @@ spec:
           enabled: true
           defaultValidity: 12h
           timeout: 500ms
-          replicas: 1
+          replicas: 0
           port: 11211
           allocatedMemory: 1024
           maxItemMemory: 5
@@ -455,7 +455,7 @@ spec:
           parallelism: 5
           timeout: 2000ms
           defaultValidity: 0s
-          replicas: 1
+          replicas: 0
           port: 11211
           allocatedMemory: 8192
           maxItemMemory: 5
