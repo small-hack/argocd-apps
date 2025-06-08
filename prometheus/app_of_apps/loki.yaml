@@ -17,14 +17,6 @@ spec:
       skipCrds: true
       valuesObject:
         fullnameOverride: loki-distributed
-        global:
-          extraArgs:
-            - -memberlist.bind-addr=$(MY_POD_IP)
-          extraEnv:
-            - name: MY_POD_IP
-              valueFrom:
-                fieldRef:
-                  fieldPath: status.podIP
         ########################################################################
         #  _          _    _
         # | |    ___ | | _(_)
