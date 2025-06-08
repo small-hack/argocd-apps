@@ -339,13 +339,16 @@ spec:
         #                     |_|
         ########################################################################
         compactor:
-          replicas: 1
+          replicas: 0
 
           affinity: {}
 
           resources: {}
 
           nodeSelector: {}
+
+          autoscaling:
+            enabled: true
 
           persistence:
             enabled: true
