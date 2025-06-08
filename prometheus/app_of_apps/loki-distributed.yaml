@@ -70,9 +70,9 @@ spec:
             enabled: true
             size: 32Gi
             storageClass: local-path
-            enableStatefulSetAutoDeletePVC: true
-            whenDeleted: retain
-            whenScaled: retain
+            enableStatefulSetAutoDeletePVC: false
+            whenDeleted: Retain
+            whenScaled: Retain
 
         ########################################################################
         #   ____       _
