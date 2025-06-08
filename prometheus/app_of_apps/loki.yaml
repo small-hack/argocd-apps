@@ -177,21 +177,9 @@ spec:
         #                     |_|
         ########################################################################
         compactor:
-          replicas: 0
+          replicas: 1
 
           affinity: {}
-
-          autoscaling:
-            enabled: true
-            minReplicas: 1
-            maxReplicas: 3
-            targetCPUUtilizationPercentage: 60
-            targetMemoryUtilizationPercentage: null
-            customMetrics: []
-            behavior:
-              enabled: false
-              scaleDown: {}
-              scaleUp: {}
 
           persistence:
             enabled: true
@@ -215,8 +203,21 @@ spec:
         #                                                                 |___/
         ########################################################################
         indexGateway:
-          replicas: 2
+          replicas: 1
           maxUnavailable: 1
+
+          joinMemberlist: true
+
+          affinity: {}
+
+          persistence:
+            enabled: false
+            inMemory: false
+            size: 10Gi
+            storageClass: local-path
+            enableStatefulSetAutoDeletePVC: false
+            whenDeleted: Retain
+            whenScaled: Retain
 
         # optional experimental components
         bloomPlanner:
