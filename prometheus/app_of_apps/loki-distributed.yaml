@@ -172,6 +172,8 @@ spec:
         ingester:
           kind: StatefulSet
 
+          autoforget_unhealthy: true
+
           extraArgs:
             - -memberlist.bind-addr=$(MY_POD_IP)
 
@@ -208,15 +210,7 @@ spec:
           affinity: ""
 
           persistence:
-            enabled: true
-            inMemory: false
-            claims:
-              - name: data
-                size: 10Gi
-                storageClass: local-path
-            enableStatefulSetAutoDeletePVC: false
-            whenDeleted: Retain
-            whenScaled: Retain
+            enabled: false
 
         ########################################################################
         #   ___           _              ____       _
