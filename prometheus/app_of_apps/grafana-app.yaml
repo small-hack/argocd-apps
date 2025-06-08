@@ -92,6 +92,17 @@ spec:
 
             lifecycleHooks: {}
 
+            envValueFrom:
+              GF_AUTH_GENERIC_OAUTH_CLIENT_ID:
+                secretKeyRef:
+                  name: grafana-oidc-credentials
+                  key: client_id
+
+              GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET:
+                secretKeyRef:
+                  name: grafana-oidc-credentials
+                  key: client_secret
+
             plugins:
               - redis-datasource
               - grafana-piechart-panel
