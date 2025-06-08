@@ -16,8 +16,8 @@ spec:
       version: v3
       skipCrds: true
       valuesObject:
+        fullnameOverride: loki-distributed
         global:
-          fullnameOverride: loki-distributed
           extraArgs:
             - -memberlist.bind-addr=$(MY_POD_IP)
           extraEnv:
