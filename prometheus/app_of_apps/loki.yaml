@@ -1,0 +1,510 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: loki-distributed-app
+  namespace: argocd
+spec:
+  project: default
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: monitoring
+  source:
+    repoURL: 'https://grafana.github.io/helm-charts'
+    chart: loki
+    targetRevision: 6.30.1
+    helm:
+      version: v3
+      skipCrds: true
+      valuesObject:
+        global:
+          clusterDomain: "cluster.local"
+          dnsService: "kube-dns"
+          dnsNamespace: "kube-system"
+
+          extraArgs:
+            - -memberlist.bind-addr=$(MY_POD_IP)
+
+          extraEnv:
+            - name: MY_POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+
+          extraEnvFrom: []
+          extraVolumes: []
+          extraVolumeMounts: []
+
+        fullnameOverride: loki
+
+        deploymentMode: Distributed
+
+        ########################################################################
+        #  _          _    _
+        # | |    ___ | | _(_)
+        # | |   / _ \| |/ / |
+        # | |__| (_) |   <| |
+        # |_____\___/|_|\_\_|
+        ########################################################################
+        loki:
+          configStorageType: Secret
+          configObjectName: "loki-config"
+          # -- The name of the Secret or ConfigMap that will be created by this chart.
+          # If empty, no configmap or secret will be created.
+          generatedConfigObjectName: ''
+
+          # Should authentication be enabled
+          auth_enabled: false
+
+          commonConfig:
+            path_prefix: /var/loki
+            replication_factor: 3
+            compactor_address: '{{ include "loki.compactorAddress" . }}'
+
+          pattern_ingester:
+            enabled: true
+
+          ui:
+            enabled: true
+            gateway:
+              # enable gateway proxying to UI under /ui
+              enabled: true
+
+          index_gateway:
+            mode: simple
+
+          # -- Enable tracing
+          tracing:
+            enabled: false
+
+          bloom_build:
+            enabled: false
+            builder:
+              planner_address: '{{ include "loki.bloomPlannerAddress" . }}'
+
+          bloom_gateway:
+            enabled: false
+            client:
+              addresses: '{{ include "loki.bloomGatewayAddresses" . }}'
+
+        test:
+          enabled: true
+
+        lokiCanary:
+          enabled: false
+
+        serviceAccount:
+          create: true
+
+        # Configuration for the memberlist service
+        memberlist:
+          service:
+            publishNotReadyAddresses: false
+            annotations: {}
+
+        # Configuration for the gateway
+        gateway:
+          # -- Specifies whether the gateway should be enabled
+          enabled: false
+
+        # -- Ingress configuration Use either this ingress or the gateway, but not both at once.
+        # If you enable this, make sure to disable the gateway.
+        # You'll need to supply authn configuration for your ingress controller.
+        ingress:
+          enabled: false
+          ingressClassName: ""
+          annotations: {}
+          labels: {}
+          paths:
+            # -- Paths that are exposed by Loki Distributor.
+            distributor:
+              - /api/prom/push
+              - /loki/api/v1/push
+              - /otlp/v1/logs
+            # -- Paths that are exposed by Loki Query Frontend.
+            queryFrontend:
+              - /api/prom/query
+              # this path covers labels and labelValues endpoints
+              - /api/prom/label
+              - /api/prom/series
+              - /api/prom/tail
+              - /loki/api/v1/query
+              - /loki/api/v1/query_range
+              - /loki/api/v1/tail
+              # this path covers labels and labelValues endpoints
+              - /loki/api/v1/label
+              - /loki/api/v1/labels
+              - /loki/api/v1/series
+              - /loki/api/v1/index/stats
+              - /loki/api/v1/index/volume
+              - /loki/api/v1/index/volume_range
+              - /loki/api/v1/format_query
+              - /loki/api/v1/detected_field
+              - /loki/api/v1/detected_fields
+              - /loki/api/v1/detected_labels
+              - /loki/api/v1/patterns
+            # -- Paths that are exposed by Loki Ruler.
+            ruler:
+              - /api/prom/rules
+              - /api/prom/api/v1/rules
+              - /api/prom/api/v1/alerts
+              - /loki/api/v1/rules
+              - /prometheus/api/v1/rules
+              - /prometheus/api/v1/alerts
+          hosts:
+            - loki.example.com
+          tls: []
+
+        ########################################################################
+        #  ___                       _
+        # |_ _|_ __   __ _  ___  ___| |_ ___ _ __
+        #  | || '_ \ / _` |/ _ \/ __| __/ _ \ '__|
+        #  | || | | | (_| |  __/\__ \ ||  __/ |
+        # |___|_| |_|\__, |\___||___/\__\___|_|
+        #            |___/
+        ########################################################################
+        ingester:
+          replicas: 1
+
+          autoscaling:
+            enabled: false
+            minReplicas: 1
+            maxReplicas: 3
+            targetCPUUtilizationPercentage: 60
+            targetMemoryUtilizationPercentage: null
+            customMetrics: []
+            behavior:
+              enabled: false
+              scaleDown: {}
+              scaleUp: {}
+
+          topologySpreadConstraints: []
+
+          affinity: {}
+
+          nodeSelector: {}
+
+          persistence:
+            # -- Enable creating PVCs which is required when using boltdb-shipper
+            enabled: false
+
+          appProtocol:
+            grpc: ""
+
+          zoneAwareReplication:
+            # -- Enable zone awareness.
+            enabled: false
+
+        ########################################################################
+        #  ____  _     _        _ _           _
+        # |  _ \(_)___| |_ _ __(_) |__  _   _| |_ ___  _ __
+        # | | | | / __| __| '__| | '_ \| | | | __/ _ \| '__|
+        # | |_| | \__ \ |_| |  | | |_) | |_| | || (_) | |
+        # |____/|_|___/\__|_|  |_|_.__/ \__,_|\__\___/|_|
+        ########################################################################
+        distributor:
+          replicas: 1
+
+          autoscaling:
+            enabled: false
+
+          affinity: {}
+
+          nodeSelector: {}
+
+          topologySpreadConstraints: []
+
+
+        ########################################################################
+        #   ___                  _
+        #  / _ \ _   _  ___ _ __(_) ___ _ __
+        # | | | | | | |/ _ \ '__| |/ _ \ '__|
+        # | |_| | |_| |  __/ |  | |  __/ |
+        #  \__\_\\__,_|\___|_|  |_|\___|_|
+        ########################################################################
+        querier:
+          replicas: 1
+
+          autoscaling:
+            enabled: false
+
+          resources: {}
+
+          topologySpreadConstraints: []
+
+          affinity: {}
+
+          nodeSelector: {}
+
+          persistence:
+            enabled: true
+            size: 10Gi
+            storageClass: local-path
+
+        ########################################################################
+        #   ___    _____                _                 _
+        #  / _ \  |  ___| __ ___  _ __ | |_ ___ _ __   __| |
+        # | | | | | |_ | '__/ _ \| '_ \| __/ _ \ '_ \ / _` |
+        # | |_| | |  _|| | | (_) | | | | ||  __/ | | | (_| |
+        #  \__\_\ |_|  |_|  \___/|_| |_|\__\___|_| |_|\__,_|
+        ########################################################################
+        queryFrontend:
+          # -- Number of replicas for the query-frontend
+          replicas: 1
+
+          autoscaling:
+            # -- Enable autoscaling for the query-frontend
+            enabled: false
+
+          resources: {}
+
+          affinity: {}
+
+          nodeSelector: {}
+
+        ########################################################################
+        #   ___    ____       _              _       _
+        #  / _ \  / ___|  ___| |__   ___  __| |_   _| | ___ _ __
+        # | | | | \___ \ / __| '_ \ / _ \/ _` | | | | |/ _ \ '__|
+        # | |_| |  ___) | (__| | | |  __/ (_| | |_| | |  __/ |
+        #  \__\_\ |____/ \___|_| |_|\___|\__,_|\__,_|_|\___|_|
+        ########################################################################
+        queryScheduler:
+          replicas: 0
+
+          resources: {}
+
+          affinity: {}
+
+          nodeSelector: {}
+
+        ########################################################################
+        #   ___           _              ____       _
+        #  |_ _|_ __   __| | _____  __  / ___| __ _| |_ _____      ____ _ _   _
+        #   | || '_ \ / _` |/ _ \ \/ / | |  _ / _` | __/ _ \ \ /\ / / _` | | | |
+        #   | || | | | (_| |  __/>  <  | |_| | (_| | ||  __/\ V  V / (_| | |_| |
+        #  |___|_| |_|\__,_|\___/_/\_\  \____|\__,_|\__\___| \_/\_/ \__,_|\__, |
+        #                                                                 |___/
+        ########################################################################
+        indexGateway:
+          replicas: 1
+
+          joinMemberlist: true
+
+          resources: {}
+
+          affinity: {}
+
+          nodeSelector: {}
+
+          persistence:
+            enabled: false
+            inMemory: false
+            size: 10Gi
+            storageClass: local-path
+            enableStatefulSetAutoDeletePVC: false
+            whenDeleted: Retain
+            whenScaled: Retain
+
+        ########################################################################
+        #  ____                                 _
+        # / ___|___  _ __ ___  _ __   __ _  ___| |_ ___  _ __
+        #| |   / _ \| '_ ` _ \| '_ \ / _` |/ __| __/ _ \| '__|
+        #| |__| (_) | | | | | | |_) | (_| | (__| || (_) | |
+        # \____\___/|_| |_| |_| .__/ \__,_|\___|\__\___/|_|
+        #                     |_|
+        ########################################################################
+        compactor:
+          replicas: 1
+
+          affinity: {}
+
+          resources: {}
+
+          nodeSelector: {}
+
+          persistence:
+            enabled: true
+            size: 10Gi
+            storageClass: local-path
+            annotations: {}
+            claims:
+              - name: data
+                size: 10Gi
+                storageClass: local-path
+            enableStatefulSetAutoDeletePVC: false
+            whenDeleted: Retain
+            whenScaled: Retain
+
+          serviceAccount:
+            create: true
+
+        bloomGateway:
+          # -- Number of replicas for the bloom-gateway
+          replicas: 0
+
+        bloomPlanner:
+          # -- Number of replicas for the bloom-planner
+          replicas: 0
+
+        bloomBuilder:
+          # -- Number of replicas for the bloom-builder
+          replicas: 0
+          # -- hostAliases to add
+
+        patternIngester:
+          # -- Number of replicas for the pattern ingester
+          replicas: 0
+
+          affinity: {}
+
+          resources: {}
+
+          nodeSelector: {}
+
+          persistence:
+            enabled: false
+
+        ########################################################################
+        #  ____        _
+        # |  _ \ _   _| | ___ _ __
+        # | |_) | | | | |/ _ \ '__|
+        # |  _ <| |_| | |  __/ |
+        # |_| \_\\__,_|_|\___|_|
+        #
+        ########################################################################
+        ruler:
+          enabled: true
+
+          sidecar: false
+
+          replicas: 1
+
+          extraContainers:
+            - name: load-rule-configmaps
+              image: kiwigrid/k8s-sidecar:1.19.5
+              imagePullPolicy: IfNotPresent
+
+              volumeMounts:
+                - name: fake
+                  mountPath: /etc/loki/rules/fake/
+
+              env:
+                - name: LABEL
+                  value: "loki-ruler-alerts"
+
+                - name: FOLDER
+                  value: /etc/loki/rukles/fake
+
+                - name: RESOURCE
+                  value: configmap
+
+          extraVolumes:
+            - name: fake
+              emptyDir: {}
+
+          extraVolumeMounts:
+            - name: fake
+              mountPath: /etc/loki/rules/fake
+
+          affinity: {}
+
+          nodeSelector: {}
+
+          persistence:
+            enabled: true
+            size: 10Gi
+            storageClass: local-path
+            annotations: {}
+
+        # -- Configuration for the overrides-exporter
+        overridesExporter:
+          # -- The overrides-exporter component is optional and can be disabled if desired.
+          enabled: false
+
+        memcachedExporter:
+          enabled: true
+          resources:
+            requests: {}
+            limits: {}
+
+        resultsCache:
+          enabled: true
+          defaultValidity: 12h
+          timeout: 500ms
+          replicas: 1
+          port: 11211
+          allocatedMemory: 1024
+          maxItemMemory: 5
+          connectionLimit: 16384
+          writebackSizeLimit: 500MB
+          writebackBuffer: 500000
+          writebackParallelism: 1
+          initContainers: []
+          annotations: {}
+          nodeSelector: {}
+          affinity: {}
+          topologySpreadConstraints: []
+          tolerations: []
+          podManagementPolicy: Parallel
+          persistence:
+            enabled: false
+
+        chunksCache:
+          enabled: true
+          batchSize: 4
+          parallelism: 5
+          timeout: 2000ms
+          defaultValidity: 0s
+          replicas: 1
+          port: 11211
+          allocatedMemory: 8192
+          maxItemMemory: 5
+          connectionLimit: 16384
+          writebackSizeLimit: 500MB
+          writebackBuffer: 500000
+          writebackParallelism: 1
+          initContainers: []
+          annotations: {}
+          nodeSelector: {}
+          affinity: {}
+          topologySpreadConstraints: []
+          tolerations: []
+          podManagementPolicy: Parallel
+          persistence:
+            enabled: false
+
+        # Subchart configurations
+        rollout_operator:
+          enabled: false
+        minio:
+          enabled: false
+        sidecar:
+          image:
+            repository: kiwigrid/k8s-sidecar
+            tag: 1.30.3
+            sha: ""
+            pullPolicy: IfNotPresent
+          resources: {}
+
+          rules:
+            enabled: true
+            label: loki_rule
+            labelValue: ""
+            folder: /rules
+            searchNamespace: null
+            watchMethod: WATCH
+            resource: both
+            script: null
+            watchServerTimeout: 60
+            watchClientTimeout: 60
+            logLevel: INFO
+
+        # DEPRECATED VALUES
+        monitoring:
+          dashboards:
+            enabled: false
+          selfMonitoring:
+            enabled: false
+        tableManager:
+          enabled: false
+
