@@ -173,7 +173,7 @@ spec:
         #            |___/
         ########################################################################
         ingester:
-          replicas: 0
+          replicas: 1
 
           autoscaling:
             enabled: false
