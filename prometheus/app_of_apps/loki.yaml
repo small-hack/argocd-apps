@@ -16,6 +16,15 @@ spec:
       version: v3
       skipCrds: true
       valuesObject:
+        global:
+          fullnameOverride: loki-distributed
+          extraArgs:
+            - -memberlist.bind-addr=$(MY_POD_IP)
+          extraEnv:
+            - name: MY_POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
         ########################################################################
         #  _          _    _
         # | |    ___ | | _(_)
