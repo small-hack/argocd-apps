@@ -39,6 +39,14 @@ spec:
 
           existingSecretForConfig: "loki-config"
 
+          pattern_ingester:
+            enabled: true
+
+          limits_config:
+            allow_structured_metadata: true
+
+          volume_enabled: true
+
         ########################################################################
         #  ____                                 _
         # / ___|___  _ __ ___  _ __   __ _  ___| |_ ___  _ __
