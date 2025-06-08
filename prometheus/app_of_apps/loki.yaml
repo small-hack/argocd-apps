@@ -75,7 +75,13 @@ spec:
         ingester:
           replicas: 0
 
-          affinity: null
+          affinity:
+            podAntiAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - labelSelector:
+                    matchLabels:
+                      app.kubernetes.io/component: butts
+                  topologyKey: kubernetes.io/hostname
           topologySpreadConstraints: []
 
           autoscaling:
