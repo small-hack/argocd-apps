@@ -38,7 +38,7 @@ spec:
                   period: 24h
 
           ui:
-            enabled: false
+            enabled: true
             gateway:
               # enable gateway proxying to UI under /ui
               enabled: true
