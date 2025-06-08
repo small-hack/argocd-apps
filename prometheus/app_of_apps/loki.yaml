@@ -25,6 +25,8 @@ spec:
         # |_____\___/|_|\_\_|
         ########################################################################
         loki:
+          auth_enabled: false
+
           schemaConfig:
             configs:
               - from: 2024-04-01
@@ -34,13 +36,31 @@ spec:
                 index:
                   prefix: loki_index_
                   period: 24h
+
+          ui:
+            enabled: true
+            gateway:
+              # enable gateway proxying to UI under /ui
+              enabled: true
+
           ingester:
             chunk_encoding: snappy
+
           tracing:
-            enabled: true
+            enabled: false
+
           querier:
             # Default is 4, if you have enough memory and CPU you can increase, reduce if OOMing
             max_concurrent: 4
+
+        test:
+          enabled: false
+
+        lokiCanary:
+          enabled: false
+
+        serviceAccount:
+          create: true
 
         deploymentMode: Distributed
 
@@ -256,3 +276,57 @@ spec:
 
         singleBinary:
           replicas: 0
+
+
+        ########################################################################
+        #  ____        _
+        # |  _ \ _   _| | ___ _ __
+        # | |_) | | | | |/ _ \ '__|
+        # |  _ <| |_| | |  __/ |
+        # |_| \_\\__,_|_|\___|_|
+        #
+        ########################################################################
+        ruler:
+          enabled: true
+
+          sidecar: false
+
+          replicas: 0
+
+          extraContainers:
+            - name: load-rule-configmaps
+              image: kiwigrid/k8s-sidecar:1.19.5
+              imagePullPolicy: IfNotPresent
+
+              volumeMounts:
+                - name: fake
+                  mountPath: /etc/loki/rules/fake/
+
+              env:
+                - name: LABEL
+                  value: "loki-ruler-alerts"
+
+                - name: FOLDER
+                  value: /etc/loki/rukles/fake
+
+                - name: RESOURCE
+                  value: configmap
+
+          extraVolumes:
+            - name: fake
+              emptyDir: {}
+
+          extraVolumeMounts:
+            - name: fake
+              mountPath: /etc/loki/rules/fake
+
+          affinity: {}
+
+          nodeSelector: {}
+
+          persistence:
+            enabled: true
+            size: 10Gi
+            storageClass: local-path
+            annotations: {}
+
