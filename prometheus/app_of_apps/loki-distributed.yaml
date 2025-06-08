@@ -354,7 +354,7 @@ spec:
           extraContainers:
             - name: load-rule-configmaps
               image: kiwigrid/k8s-sidecar:1.19.5
-              imagePullPolicy: ifNotPresent
+              imagePullPolicy: IfNotPresent
 
               volumeMounts:
                 - name: fake
