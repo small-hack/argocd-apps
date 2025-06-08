@@ -138,7 +138,13 @@ spec:
           replicas: 0
           maxUnavailable: 1
 
-          affinity: null
+          affinity:
+            podAntiAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - labelSelector:
+                    matchLabels:
+                      app.kubernetes.io/component: butts
+                  topologyKey: kubernetes.io/hostname
 
           autoscaling:
             enabled: true
