@@ -38,7 +38,7 @@ spec:
                   period: 24h
 
           ui:
-            enabled: true
+            enabled: false
             gateway:
               # enable gateway proxying to UI under /ui
               enabled: true
@@ -175,8 +175,7 @@ spec:
 
           maxUnavailable: 2
 
-          affinity:
-            podAntiAffinity: {}
+          affinity: null
 
           topologySpreadConstraints: []
 
@@ -203,8 +202,7 @@ spec:
         compactor:
           replicas: 1
 
-          affinity:
-            podAntiAffinity: {}
+          affinity: null
 
           persistence:
             enabled: true
