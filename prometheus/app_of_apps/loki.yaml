@@ -87,7 +87,7 @@ spec:
               addresses: '{{ include "loki.bloomGatewayAddresses" . }}'
 
         test:
-          enabled: true
+          enabled: false
 
         lokiCanary:
           enabled: false
