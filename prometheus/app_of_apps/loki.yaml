@@ -117,7 +117,13 @@ spec:
           replicas: 0
           maxUnavailable: 1
 
-          affinity: {}
+          affinity:
+            podAntiAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - labelSelector:
+                    matchLabels:
+                      app.kubernetes.io/component: nope
+                  topologyKey: kubernetes.io/hostname
 
           autoscaling:
             enabled: true
