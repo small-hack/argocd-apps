@@ -179,7 +179,13 @@ spec:
         compactor:
           replicas: 1
 
-          affinity: {}
+          affinity:
+            podAntiAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - labelSelector:
+                    matchLabels:
+                      app.kubernetes.io/component: nope
+                  topologyKey: kubernetes.io/hostname
 
           persistence:
             enabled: true
