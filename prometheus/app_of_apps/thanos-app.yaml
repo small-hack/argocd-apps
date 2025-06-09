@@ -356,7 +356,7 @@ spec:
               requiredDuringSchedulingIgnoredDuringExecution:
                  - labelSelector:
                     matchExpressions:
-                      - key: nope
+                      - key: app
                         operator: In
                         values:
                           - nope
