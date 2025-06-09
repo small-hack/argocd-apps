@@ -1,0 +1,96 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: ghost-pvc-appset
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  goTemplate: true
+  # generator allows us to source specific values from an external k8s secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - global_pvc_storage_class
+              - ghost_pvc_capacity
+              - ghost_pvc_backup_schedule
+              - ghost_s3_backup_endpoint
+              - ghost_s3_backup_bucket
+              - ghost_s3_backup_region
+              - ghost_toleration_key
+              - ghost_toleration_operator
+              - ghost_toleration_value
+              - ghost_toleration_effect
+              - ghost_affinity_key
+              - ghost_affinity_value
+  template:
+    metadata:
+      name: ghost-pvc
+      annotations:
+        argocd.argoproj.io/sync-wave: "1"
+    spec:
+      project: ghost
+      destination:
+        server: "https://kubernetes.default.svc"
+        namespace: ghost
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
+          selfHeal: true
+      source:
+        repoURL: https://github.com/small-hack/argocd-apps.git
+        path: ghost/storage/
+        targetRevision: main
+        helm:
+          valuesObject:
+            pvc_capacity: '{{ .ghost_pvc_capacity }}'
+            pvc_storageClassName: '{{ .global_pvc_storage_class }}'
+
+            # not in use yet
+            k8up:
+              # -- for setting tolerations of node taints
+              tolerations:
+                key: '{{ .ghost_toleration_key }}'
+                operator: '{{ .ghost_toleration_operator }}'
+                value: '{{ .ghost_toleration_value }}'
+                effect: '{{ .ghost_toleration_effect }}'
+
+              # -- for setting affinity to a specific node by matchExpressions
+              affinity:
+                key: '{{ .ghost_affinity_key }}'
+                value: '{{ .ghost_affinity_value }}'
+
+              backup_name: 'ghost-nightly-backup'
+
+              # -- can be set to 's3' or 'local'
+              backup_type: 's3'
+
+              s3:
+                bucket: '{{ .ghost_s3_backup_bucket }}'
+                endpoint: '{{ .ghost_s3_backup_endpoint }}'
+                accessKeyIDSecretRef:
+                  name: 's3-backups-credentials'
+                  key: 'accessKeyId'
+                  optional: false
+                secretAccessKeySecretRef:
+                  name: 's3-backups-credentials'
+                  key: 'secretAccessKey'
+                  optional: false
+
+              repoPasswordSecretRef:
+                name: 's3-backups-credentials'
+                key: 'resticRepoPassword'
+
+              prometheus_url: 'push-gateway.prometheus.svc:9091'
+
+              schedules:
+                backup: '{{ .ghost_pvc_backup_schedule }}'
+                check: '0 0 * * *'
+                prune: '0 0 * * *'

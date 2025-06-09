@@ -1,0 +1,500 @@
+---
+# third sync wave because it has to be up after mysql
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: ghost-app-set
+  namespace: argocd
+spec:
+  goTemplate: true
+  # generator allows us to source specific values from an external k8s secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - global_cluster_issuer
+              - ghost_hostname
+              - ghost_admin_user
+              - ghost_admin_email
+              - ghost_blog_title
+              - ghost_smtp_hostname
+              - ghost_smtp_port
+              - ghost_smtp_user
+              - ghost_toleration_key
+              - ghost_toleration_operator
+              - ghost_toleration_value
+              - ghost_toleration_effect
+              - ghost_affinity_key
+              - ghost_affinity_value
+              # - ghost_s3_endpoint
+  template:
+    metadata:
+      name: ghost-web-app
+      annotations:
+        argocd.argoproj.io/sync-wave: "3"
+    spec:
+      project: ghost
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: ghost
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
+          selfHeal: true
+      source:
+        repoURL: registry-1.docker.io
+        chart: bitnamicharts/ghost
+        targetRevision: 23.0.10
+        helm:
+          releaseName: "ghost"
+          valuesObject:
+            fullnameOverride: "ghost"
+
+            tolerations:
+              - key: '{{ .ghost_toleration_key }}'
+                operator: '{{ .ghost_toleration_operator }}'
+                value: '{{ .ghost_toleration_value }}'
+                effect: '{{ .ghost_toleration_effect }}'
+
+            affinity:
+              nodeAffinity:
+                requiredDuringSchedulingIgnoredDuringExecution:
+                  nodeSelectorTerms:
+                    - matchExpressions:
+                      - key: '{{ .ghost_affinity_key }}'
+                        operator: In
+                        values:
+                          - '{{ .ghost_affinity_value }}'
+
+            # Mount credentials as files instead of using environment variables
+            usePasswordFiles: true
+
+            # Enable diagnostic mode in the deployment
+            diagnosticMode:
+              # Enable diagnostic mode (all probes will be disabled and the command will be overridden)
+              enabled: false
+              # Command to override all containers in the deployment
+              command:
+                - sleep
+              # Args to override all containers in the deployment
+              args:
+                - infinity
+
+            ## Ghost settings based on environment variables
+            ## ref: https://github.com/bitnami/containers/tree/main/bitnami/ghost#configuration
+
+            # Ghost user name
+            ghostUsername: '{{ .ghost_admin_user }}'
+
+            # Name of existing secret containing Ghost credentials
+            # NOTE: Must contain key `ghost-password`
+            existingSecret: "ghost-admin-credentials"
+
+            # Ghost user email
+            ghostEmail: '{{ .ghost_admin_email }}'
+
+            # Ghost Blog title
+            ghostBlogTitle: '{{ .ghost_blog_title }}'
+
+            # Ghost host to create application URLs
+            ghostHost: '{{ .ghost_hostname }}'
+
+            # ghostPath URL sub path where to server the Ghost application
+            ghostPath: /
+
+            # ghostEnableHttps Configure Ghost to build application URLs using https
+            ghostEnableHttps: false
+
+            ## SMTP mail delivery configuration
+            ## ref: https://github.com/bitnami/containers/tree/main/bitnami/ghost/#smtp-configuration
+            # smtpService SMTP service
+            # smtpProtocol SMTP protocol (ssl or tls)
+            smtpHost: "{{ .ghost_smtp_hostname }}"
+            smtpPort: "{{ .ghost_smtp_port }}"
+            smtpUser: "{{ .ghost_smtp_user }}"
+            smtpService: ""
+            smtpProtocol: "tls"
+
+            # The name of an existing secret with SMTP credentials
+            ## NOTE: Must contain key `smtp-password`
+            smtpExistingSecret: "ghost-smtp-credentials"
+
+            # Allow the container to be started with blank passwords
+            allowEmptyPassword: true
+
+            # Skip performing the initial bootstrapping for Ghost
+            ghostSkipInstall: false
+
+            # Array with extra environment variables to add to the Ghost container
+            ## e.g:
+            ## extraEnvVars:
+            ##   - name: FOO
+            ##     value: "bar"
+            extraEnvVars: []
+
+            # Name of existing ConfigMap containing extra env vars
+            extraEnvVarsCM: ""
+
+            # Name of existing Secret containing extra env vars
+            extraEnvVarsSecret: ""
+
+            # Ghost deployment parameters
+
+            # Number of Ghost replicas to deploy
+            # NOTE: ReadWriteMany PVC(s) are required if replicaCount > 1
+            replicaCount: 1
+
+            # Ghost deployment strategy type
+            # ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
+            # NOTE: Set it to `Recreate` if you use a PV that cannot be mounted on multiple pods
+            # e.g:
+            # updateStrategy:
+            #  type: RollingUpdate
+            #  rollingUpdate:
+            #    maxSurge: 25%
+            #    maxUnavailable: 25%
+            updateStrategy:
+              type: RollingUpdate
+
+            # Ghost pod priority class name
+            priorityClassName: ""
+
+            # Name of the k8s scheduler (other than default)
+            # ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+            schedulerName: ""
+
+            # Topology Spread Constraints for pod assignment
+            # https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints/
+            # The value is evaluated as a template
+            topologySpreadConstraints: []
+
+            # Mount Service Account token in pod
+            automountServiceAccountToken: false
+
+            # Ghost pod host aliases
+            # https://kubernetes.io/docs/concepts/services-networking/add-entries-to-pod-etc-hosts-with-host-aliases/
+            hostAliases: []
+
+            # Optionally specify extra list of additional volumes for Ghost pods
+            extraVolumes: []
+
+            # Add additional init containers to the Ghost pods
+            # ref: https://kubernetes.io/docs/concepts/workloads/pods/init-containers/
+            # e.g:
+            # initContainers:
+            #  - name: your-image-name
+            #    image: your-image
+            #    imagePullPolicy: Always
+            #    ports:
+            #      - name: portname
+            #        containerPort: 1234
+            initContainers: []
+
+            # Pod Disruption Budget configuration
+            # ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb
+            pdb:
+              # Enable/disable a Pod Disruption Budget creation
+              create: true
+              # Minimum number/percentage of pods that should remain scheduled
+              minAvailable: ""
+              # Maximum number/percentage of pods that may be made unavailable. Defaults to `1` if both `pdb.minAvailable` and `pdb.maxUnavailable` are empty.
+              maxUnavailable: ""
+
+            # Add lifecycle hooks to the Ghost deployment
+            lifecycleHooks: {}
+
+            # Extra labels for Ghost pods
+            # ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+            podLabels: {}
+
+            # Annotations for Ghost pods
+            ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+            podAnnotations: {}
+
+            # Pod affinity preset. Ignored if `affinity` is set. Allowed values: `soft` or `hard`
+            # ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#inter-pod-affinity-and-anti-affinity
+            podAffinityPreset: ""
+
+            # Affinity for pod assignment
+            # Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+            # NOTE: podAffinityPreset, podAntiAffinityPreset, and nodeAffinityPreset will be ignored when it's set
+            affinity: {}
+
+            # Node labels for pod assignment
+            nodeSelector: {}
+
+            # Tolerations for pod assignment
+            tolerations: []
+
+            ## Ghost containers' resource requests and limits
+            ## ref: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
+            ## @param resourcesPreset Set container resources according to one common preset (allowed values: none, nano, micro, small, medium, large, xlarge, 2xlarge). This is ignored if resources is set (resources is recommended for production).
+            ## More information: https://github.com/bitnami/charts/blob/main/bitnami/common/templates/_resources.tpl#L15
+            resourcesPreset: "micro"
+
+            # Set container requests and limits for different resources like CPU or memory (essential for production workloads)
+            # Example:
+            # resources:
+            #   requests:
+            #     cpu: 2
+            #     memory: 512Mi
+            #   limits:
+            #     cpu: 3
+            #     memory: 1024Mi
+            resources: {}
+
+            # Container ports
+            containerPorts:
+              # Ghost HTTP container port
+              http: 2368
+              # Ghost HTTPS container port
+              https: 2368
+
+            # Configure Pods Security Context
+            # ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
+            # Set filesystem group change policy
+            # Set kernel settings using the sysctl interface
+            # Set filesystem extra groups
+            # Set Ghost pod's Security Context fsGroup
+            podSecurityContext:
+              enabled: true
+              fsGroupChangePolicy: Always
+              sysctls: []
+              supplementalGroups: []
+              fsGroup: 1001
+
+            # Configure Container Security Context (only main container)
+            # ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
+            containerSecurityContext:
+              enabled: true
+              seLinuxOptions: {}
+              runAsUser: 1001
+              runAsGroup: 1001
+              runAsNonRoot: true
+              privileged: false
+              readOnlyRootFilesystem: true
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop: ["ALL"]
+              seccompProfile:
+                type: "RuntimeDefault"
+
+            # Configure extra options for Ghost containers' liveness, readiness and startup probes
+            # ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes
+            startupProbe:
+              enabled: false
+              initialDelaySeconds: 120
+              periodSeconds: 10
+              timeoutSeconds: 5
+              failureThreshold: 6
+              successThreshold: 1
+
+            livenessProbe:
+              enabled: true
+              initialDelaySeconds: 120
+              periodSeconds: 10
+              timeoutSeconds: 5
+              failureThreshold: 6
+              successThreshold: 1
+
+            readinessProbe:
+              enabled: true
+              initialDelaySeconds: 30
+              periodSeconds: 5
+              timeoutSeconds: 3
+              failureThreshold: 6
+              successThreshold: 1
+
+            # Custom livenessProbe that overrides the default one
+            customLivenessProbe: {}
+
+            # Custom readinessProbe that overrides the default one
+            customReadinessProbe: {}
+
+            ## Ghost service parameters
+            service:
+              # Ghost service type
+              type: LoadBalancer
+
+              # Ghost service HTTP port
+              # Ghost service HTTPS port
+              ports:
+                http: 80
+                https: 443
+
+              ## Node ports to expose
+              # Node port for HTTP
+              # Node port for HTTPS
+              # NOTE: choose port between <30000-32767>
+              nodePorts:
+                http: ""
+                https: ""
+
+              # Ghost service Cluster IP
+              ## e.g.:
+              ## clusterIP: None
+              clusterIP: ""
+
+              # Ghost service Load Balancer IP
+              ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-loadbalancer
+              loadBalancerIP: ""
+
+              # Ghost service Load Balancer sources
+              # ref: https://kubernetes.io/docs/tasks/access-application-cluster/configure-cloud-provider-firewall/#restrict-access-for-loadbalancer-service
+              # e.g:
+              # loadBalancerSourceRanges:
+              #   - 10.10.10.0/24
+              loadBalancerSourceRanges: []
+
+              ## @param service.externalTrafficPolicy Ghost service external traffic policy
+              ## ref https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip
+              externalTrafficPolicy: Cluster
+
+              ## @param service.annotations Additional custom annotations for Ghost service
+              annotations: {}
+
+            ## Configure the ingress resource that allows you to access the Ghost installation
+            ingress:
+              # Enable ingress record generation for Ghost
+              enabled: true
+
+              # Ingress path type
+              pathType: ImplementationSpecific
+
+              # Default host for the ingress record
+              hostname: '{{ .ghost_hostname }}'
+
+              # Default path for the ingress record
+              # NOTE: You may need to set this to '/*' in order to use this with ALB ingress controllers
+              path: /
+
+              # Additional annotations for the Ingress resource. To enable certificate autogeneration, place here your cert-manager annotations.
+              # For a full list of possible ingress annotations, please see
+              # ref: https://github.com/kubernetes/ingress-nginx/blob/main/docs/user-guide/nginx-configuration/annotations.md
+              # Use this parameter to set the required annotations for cert-manager, see
+              # ref: https://cert-manager.io/docs/usage/ingress/#supported-annotations
+              #
+              # e.g:
+              # annotations:
+              #   kubernetes.io/ingress.class: nginx
+              #   cert-manager.io/cluster-issuer: cluster-issuer-name
+              annotations: {}
+
+              ## @param ingress.tls Enable TLS configuration for the host defined at `ingress.hostname` parameter
+              ## TLS certificates will be retrieved from a TLS secret with name: `{{- printf "%s-tls" .Values.ingress.hostname }}`
+              ## You can:
+              ##   - Use the `ingress.secrets` parameter to create this TLS secret
+              ##   - Rely on cert-manager to create it by setting the corresponding annotations
+              ##   - Rely on Helm to create self-signed certificates by setting `ingress.selfSigned=true`
+              tls: true
+
+              ## @param ingress.selfSigned Create a TLS secret for this ingress record using self-signed certificates generated by Helm
+              selfSigned: false
+
+              ## @param ingress.ingressClassName IngressClass that will be be used to implement the Ingress (Kubernetes 1.18+)
+              ## This is supported in Kubernetes 1.18+ and required if you have more than one IngressClass marked as the default for your cluster .
+              ## ref: https://kubernetes.io/blog/2020/04/02/improvements-to-the-ingress-api-in-kubernetes-1.18/
+              ingressClassName: "nginx"
+
+            ## Persistence Parameters
+            ## ref: https://kubernetes.io/docs/concepts/storage/persistent-volumes/
+            persistence:
+              # Enable persistence using Persistent Volume Claims
+              enabled: true
+              # The name of an existing PVC to use for persistence
+              existingClaim: ""
+
+            ## 'volumePermissions' init container parameters
+            ## Changes the owner and group of the persistent volume mount point to runAsUser:fsGroup values
+            ##   based on the podSecurityContext/containerSecurityContext parameters
+            volumePermissions:
+              # Enable init container that changes the owner/group of the PV mount point to `runAsUser:fsGroup`
+              enabled: false
+
+              # OS Shell + Utility image
+              # ref: https://hub.docker.com/r/bitnami/os-shell/tags/
+              image:
+                registry: docker.io
+                repository: bitnami/os-shell
+                tag: 12-debian-12-r46
+                digest: ""
+                pullPolicy: IfNotPresent
+
+              # Init container's resource requests and limits
+              # ref: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
+              # @param volumePermissions.resourcesPreset Set container resources according to one common preset (allowed values: none, nano, micro, small, medium, large, xlarge, 2xlarge). This is ignored if volumePermissions.resources is set (volumePermissions.resources is recommended for production).
+              # More information: https://github.com/bitnami/charts/blob/main/bitnami/common/templates/_resources.tpl#L15
+              resourcesPreset: "none"
+
+              # Set container requests and limits for different resources like CPU or memory (essential for production workloads)
+              # Example:
+              # resources:
+              #   requests:
+              #     cpu: 2
+              #     memory: 512Mi
+              #   limits:
+              #     cpu: 3
+              #     memory: 1024Mi
+              resources: {}
+
+              # Init container Container Security Context
+              # ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
+              # NOTE: when runAsUser is set to special value "auto", init container will try to chown the
+              #   data folder to auto-determined user&group, using commands: `id -u`:`id -G | cut -d" " -f2`
+              #   "auto" is especially useful for OpenShift which has scc with dynamic user ids (and 0 is not allowed)
+              securityContext:
+                # [object,nullable] Set SELinux options in container
+                seLinuxOptions: {}
+                runAsUser: 0
+
+            ## MySQL chart configuration
+            mysql:
+              ## To use an external database set this to false and configure the `externalDatabase.*` parameters
+              enabled: false
+
+            # External Database Configuration
+            # All of these values are only used if `mysql.enabled=false`
+            externalDatabase:
+              # External Database server host
+              host: localhost
+              # External Database server port
+              port: 3306
+              # External Database username
+              user: bn_ghost
+              # External Database database name
+              database: bitnami_ghost
+              # The name of an existing secret with database credentials
+              ## NOTE: Must contain key `mysql-password`
+              ## NOTE: When it's set, the `externalDatabase.password` parameter is ignored
+              existingSecret: ""
+              # External Database ssl
+              ssl: false
+              # External Database ssl CA filepath
+              sslCaFile: ""
+
+            # Network Policy configuration
+            # ref: https://kubernetes.io/docs/concepts/services-networking/network-policies/
+            networkPolicy:
+              # Specifies whether a NetworkPolicy should be created
+              enabled: true
+              # Don't require server label for connections
+              # The Policy model to apply. When set to false, only pods with the correct
+              # server label will have network access to the ports server is listening
+              # on. When true, server will accept connections from any source
+              # (with the correct destination port).
+              allowExternal: true
+              # Allow the pod to access any range of port and all destinations.
+              allowExternalEgress: true
+              # [object] Labels to match to allow traffic from other namespaces
+              ingressNSMatchLabels: {}
+              # [object] Pod labels to match to allow traffic from other namespaces
+              ingressNSPodMatchLabels: {}
+
+            # Pods Service Account
+            serviceAccount:
+              create: true
