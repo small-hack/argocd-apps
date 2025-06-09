@@ -25,33 +25,8 @@ spec:
         # |_____\___/|_|\_\_|
         ########################################################################
         loki:
-          auth_enabled: false
-
-          schemaConfig:
-            configs:
-              - from: 2024-04-01
-                store: tsdb
-                object_store: s3
-                schema: v13
-                index:
-                  prefix: loki_index_
-                  period: 24h
-
-          ui:
-            enabled: true
-            gateway:
-              # enable gateway proxying to UI under /ui
-              enabled: true
-
-          ingester:
-            chunk_encoding: snappy
-
-          tracing:
-            enabled: false
-
-          querier:
-            # Default is 4, if you have enough memory and CPU you can increase, reduce if OOMing
-            max_concurrent: 4
+          configStorageType: Secret
+          configObjectName: 'loki-config'
 
         test:
           enabled: false
