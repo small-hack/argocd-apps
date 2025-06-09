@@ -241,22 +241,20 @@ spec:
           enabled: true
 
           logLevel: debug
-          logFormat: json
 
-          startupProbes:
-            enabled: false
+          logFormat: json
 
           replicaLabel: replica
 
           replicationProtocol: capnproto
+
+          replicaCount: 1
 
           replicationFactor: 1
 
           extraEnvVars:
             - name: TZ
               value: "Europe/Amsterdam"
-
-          replicaCount: 2
 
           updateStrategy:
             type: RollingUpdate
