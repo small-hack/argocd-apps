@@ -5,7 +5,7 @@ metadata:
   name: grafana-dashboards
   namespace: argocd
 spec:
-  project: prometheus
+  project: default
   source:
     repoURL: 'https://github.com/small-hack/argocd-apps'
     targetRevision: monitoring-distributed
