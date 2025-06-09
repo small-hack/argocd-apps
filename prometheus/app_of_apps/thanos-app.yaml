@@ -351,6 +351,14 @@ spec:
             targetCPU: 70
             targetMemory: 80
 
+          affinity:
+            podAntiAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - labelSelector:
+                    matchLabels:
+                      app.kubernetes.io/component: butts
+                  topologyKey: kubernetes.io/hostname
+
           extraFlags:
             - --web.route-prefix=ruler
             - --web.external-prefix=ruler
