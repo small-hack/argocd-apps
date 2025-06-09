@@ -115,8 +115,8 @@ spec:
                     forward_to = [prometheus.remote_write.default.receiver]
 
                     scrape {
-                      default_scrape_interval = "30s"
-                      default_scrape_timeout = "10s"
+                      default_scrape_interval = "10s"
+                      default_scrape_timeout = "8s"
                     }
                   }
 
