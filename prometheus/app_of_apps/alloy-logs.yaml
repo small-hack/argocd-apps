@@ -32,12 +32,57 @@ spec:
           skipCrds: true
           valuesObject:
             fullnameOverride: alloy-logs
+
+            configReloader:
+              enabled: true
+              resources:
+                requests:
+                  cpu: "1m"
+                  memory: "5Mi"
+
+            controller:
+              type: 'deployment'
+              replicas: 1
+              parallelRollout: true
+              terminationGracePeriodSeconds: null
+
+            tolerations: []
+
+            topologySpreadConstraints: []
+            priorityClassName: ''
+            podAnnotations: {}
+            podLabels: {}
+            podDisruptionBudget:
+              enabled: false
+              minAvailable: null
+              maxUnavailable: null
+
+            enableStatefulSetAutoDeletePVC: false
+
+            autoscaling:
+              enabled: false
+
+            serviceMonitor:
+              enabled: true
+              additionalLabels: {}
+              interval: ""
+              metricRelabelings: {}
+
+            alloy:
+              securityContext:
+                runAsUser: 473
+                runAsGroup: 473
+
             alloy:
               configMap:
                 content: |-
                   logging {
                     level = "debug"
                     format = "logfmt"
+                  }
+
+                  livedebugging {
+                    enabled = true
                   }
 
                   discovery.kubernetes "pods" {
