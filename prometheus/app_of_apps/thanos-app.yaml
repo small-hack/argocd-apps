@@ -36,7 +36,7 @@ spec:
           #  sidecarsService: "prometheus-operated"
           #  sidecarsNamespace: "prometheus"
 
-          logfmt: json
+          logFormat: json
 
           autoscaling:
             enabled: true
@@ -71,7 +71,7 @@ spec:
           ingress:
             enabled: false
 
-          logfmt: json
+          logFormat: json
 
           autoscaling:
             enabled: true
@@ -102,7 +102,7 @@ spec:
 
           logLevel: info
 
-          logfmt: json
+          logFormat: json
 
           refresh: 30m
 
@@ -148,7 +148,7 @@ spec:
           enabled: true
           revisionHistoryLimit: 2
 
-          logfmt: json
+          logFormat: json
 
           retentionResolutionRaw: 30d
           retentionResolution5m: 30d
@@ -192,7 +192,7 @@ spec:
 
           replicaCount: 2
 
-          logfmt: json
+          logFormat: json
 
           resources:
             requests:
@@ -228,6 +228,48 @@ spec:
             enabled: false
 
         ########################################################################
+        #  ____  _     _        _ _           _
+        # |  _ \(_)___| |_ _ __(_) |__  _   _| |_ ___  _ __
+        # | | | | / __| __| '__| | '_ \| | | | __/ _ \| '__|
+        # | |_| | \__ \ |_| |  | | |_) | |_| | || (_) | |
+        # |____/|_|___/\__|_|  |_|_.__/ \__,_|\__\___/|_|
+        ########################################################################
+        receiveDistributor:
+          enabled: true
+
+          logLevel: debug
+          logFormat: json
+
+          startupProbes:
+            enabled: false
+
+          replicaLabel: replica
+
+          replicationProtocol: capnproto
+
+          replicationFactor: 1
+
+          extraEnvVars:
+            - name: TZ
+              value: "Europe/Amsterdam"
+
+          replicaCount: 2
+
+          updateStrategy:
+            type: RollingUpdate
+
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 2
+              memory: 2048Mi
+
+          serviceAccount:
+            create: true
+
+        ########################################################################
         #  ____               _
         # |  _ \ ___  ___ ___(_)_   _____ _ __
         # | |_) / _ \/ __/ _ \ \ \ / / _ \ '__|
@@ -237,16 +279,20 @@ spec:
         receive:
           enabled: true
 
-          modes: standalone
+          modes: dual-mode
 
           logLevel: info
-          logFormat: logfmt
+          logFormat: json
 
           replicationFactor: 1
 
-          replicaCount: 2
+          replicaCount: 3
 
-          config: []
+          config:
+            - endpoints:
+              - "thanos-receive-0.thanos-receive-headless.monitoring.svc.cluster.local:10901"
+              - "thanos-receive-1.thanos-receive-headless.monitoring.svc.cluster.local:10901"
+              - "thanos-receive-3.thanos-receive-headless.monitoring.svc.cluster.local:10901"
 
           tsdbPath: ""
 
@@ -260,16 +306,112 @@ spec:
 
           resources:
             requests:
-              cpu: 250m
-              memory: 1024Mi
+              cpu: 100m
+              memory: 256Mi
             limits:
-              cpu: 2000m
-              memory: 8192Mi
+              cpu: 1000m
+              memory: 4096Mi
 
           persistence:
             storageClass: local-path
-            size: 64Gi
+            size: 32Gi
 
+
+        ########################################################################
+        #  ____        _
+        # |  _ \ _   _| | ___ _ __
+        # | |_) | | | | |/ _ \ '__|
+        # |  _ <| |_| | |  __/ |
+        # |_| \_\\__,_|_|\___|_|
+        ########################################################################
+        ruler:
+          enabled: true
+
+          logFormat: json
+
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 2
+              memory: 2048Mi
+
+          autoscaling:
+            enabled: true
+            minReplicas: "1"
+            maxReplicas: "4"
+            targetCPU: 70
+            targetMemory: 80
+
+          extraFlags:
+            - --web.route-prefix=ruler
+            - --web.external-prefix=ruler
+            - --query=https://thanos.buildstars.online/query
+            - --rule-file=/extra-rules/*.yml
+
+          sidecars:
+            - name: load-rule-configmaps
+              image: kiwigrid/k8s-sidecar:1.19.5
+              imagePullPolicy: IfNotPresent
+
+          volumeMounts:
+            - name: extra-rules
+              mountPath: /extra/rules/
+
+          env:
+            - name: LABEL
+              value: "thanos-ruler-alerts"
+
+            - name: FOLDER
+              value: /extra-rules/
+
+            - name: RESOURCE
+              value: configmap
+
+            - name: REQ_URL
+              value: https://thanos.buildstars.online/ruler/-/reload
+
+            - name: REQ_METHOD
+              value: POST
+
+          replicaLabel: replica
+
+          dnsDiscovery:
+            enabled: false
+
+          queryURL: "http://thanos-query.monitoring.svc.cluster.local:9090"
+
+          alertmanagers:
+            - http://alertmanager:9093
+
+          alertmanagersConfig: {}
+
+          evalInterval: 1m
+
+          clusterName: ""
+
+          config: ""
+
+          existingConfigmap: ""
+
+          extraVolumes:
+            - name: extra-rules
+              emptyDir: {}
+
+          extraVolumeMounts:
+            - name: extra-rules
+              mountPath: /extra-rules
+
+          extraEnvVars:
+            - name: TZ
+              value: "Europe/Amsterdam"
+
+          persistence:
+            enabled: true
+            storageClass: "local-path"
+            size: 8Gi
+            annotations: {}
 
         ########################################################################
         #  __  __      _        _
