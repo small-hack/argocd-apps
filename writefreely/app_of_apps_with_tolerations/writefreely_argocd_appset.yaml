@@ -1,0 +1,244 @@
+---
+# third sync wave because it has to be up after mysql
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: writefreely-app-set
+  namespace: argocd
+spec:
+  goTemplate: true
+  # generator allows us to source specific values from an external k8s secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - global_cluster_issuer
+              - writefreely_hostname
+              - writefreely_admin_user
+              - writefreely_admin_email
+              - writefreely_blog_title
+              - writefreely_smtp_hostname
+              - writefreely_smtp_port
+              - writefreely_smtp_user
+              - writefreely_toleration_key
+              - writefreely_toleration_operator
+              - writefreely_toleration_value
+              - writefreely_toleration_effect
+              - writefreely_affinity_key
+              - writefreely_affinity_value
+              # - writefreely_s3_endpoint
+  template:
+    metadata:
+      name: writefreely-web-app
+      annotations:
+        argocd.argoproj.io/sync-wave: "3"
+    spec:
+      project: writefreely
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: writefreely
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
+          selfHeal: true
+      source:
+        repoURL: registry-1.docker.io
+        chart: bitnamicharts/writefreely
+        targetRevision: 23.0.10
+        helm:
+          releaseName: "writefreely"
+          valuesObject:
+            fullnameOverride: "writefreely"
+
+            tolerations:
+              - key: '{{ .writefreely_toleration_key }}'
+                operator: '{{ .writefreely_toleration_operator }}'
+                value: '{{ .writefreely_toleration_value }}'
+                effect: '{{ .writefreely_toleration_effect }}'
+
+            affinity:
+              nodeAffinity:
+                requiredDuringSchedulingIgnoredDuringExecution:
+                  nodeSelectorTerms:
+                    - matchExpressions:
+                      - key: '{{ .writefreely_affinity_key }}'
+                        operator: In
+                        values:
+                          - '{{ .writefreely_affinity_value }}'
+
+            # writefreely user name
+            writefreelyUsername: '{{ .writefreely_admin_user }}'
+
+            # Name of existing secret containing writefreely credentials
+            # NOTE: Must contain key `writefreely-password`
+            existingSecret: "writefreely-admin-credentials"
+
+            # writefreely user email
+            writefreelyEmail: '{{ .writefreely_admin_email }}'
+
+            # writefreely Blog title
+            writefreelyBlogTitle: '{{ .writefreely_blog_title }}'
+
+            # writefreely host to create application URLs
+            writefreelyHost: '{{ .writefreely_hostname }}'
+
+            ## SMTP mail delivery configuration
+            ## ref: https://github.com/bitnami/containers/tree/main/bitnami/writefreely/#smtp-configuration
+            # smtpService SMTP service
+            # smtpProtocol SMTP protocol (ssl or tls)
+            smtpHost: "{{ .writefreely_smtp_hostname }}"
+            smtpPort: "{{ .writefreely_smtp_port }}"
+            smtpUser: "{{ .writefreely_smtp_user }}"
+            smtpService: ""
+            smtpProtocol: "tls"
+
+            # The name of an existing secret with SMTP credentials
+            ## NOTE: Must contain key `smtp-password`
+            smtpExistingSecret: "writefreely-smtp-credentials"
+
+            # writefreely deployment parameters
+
+            # Number of writefreely replicas to deploy
+            # NOTE: ReadWriteMany PVC(s) are required if replicaCount > 1
+            replicaCount: 1
+
+            # writefreely deployment strategy type
+            # ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
+            # NOTE: Set it to `Recreate` if you use a PV that cannot be mounted on multiple pods
+            # e.g:
+            # updateStrategy:
+            #  type: RollingUpdate
+            #  rollingUpdate:
+            #    maxSurge: 25%
+            #    maxUnavailable: 25%
+            updateStrategy:
+              type: RollingUpdate
+
+            # Configure Pods Security Context
+            # ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
+            # Set filesystem group change policy
+            # Set kernel settings using the sysctl interface
+            # Set filesystem extra groups
+            # Set writefreely pod's Security Context fsGroup
+            podSecurityContext:
+              enabled: true
+              fsGroupChangePolicy: Always
+              sysctls: []
+              supplementalGroups: []
+              fsGroup: 1001
+
+            # Configure extra options for writefreely containers' liveness, readiness and startup probes
+            # ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes
+            startupProbe:
+              enabled: false
+              initialDelaySeconds: 120
+              periodSeconds: 10
+              timeoutSeconds: 5
+              failureThreshold: 6
+              successThreshold: 1
+
+            livenessProbe:
+              enabled: true
+              initialDelaySeconds: 120
+              periodSeconds: 10
+              timeoutSeconds: 5
+              failureThreshold: 6
+              successThreshold: 1
+
+            readinessProbe:
+              enabled: true
+              initialDelaySeconds: 30
+              periodSeconds: 5
+              timeoutSeconds: 3
+              failureThreshold: 6
+              successThreshold: 1
+
+            ## writefreely service parameters
+            service:
+              # writefreely service type
+              type: LoadBalancer
+
+              # writefreely service HTTP port
+              # writefreely service HTTPS port
+              ports:
+                http: 80
+                https: 443
+
+            ## Configure the ingress resource that allows you to access the writefreely installation
+            ingress:
+              # Enable ingress record generation for writefreely
+              enabled: true
+
+              # Ingress path type
+              pathType: ImplementationSpecific
+
+              # Default host for the ingress record
+              hostname: '{{ .writefreely_hostname }}'
+
+              # Default path for the ingress record
+              # NOTE: You may need to set this to '/*' in order to use this with ALB ingress controllers
+              path: /
+
+              # Additional annotations for the Ingress resource. To enable certificate autogeneration, place here your cert-manager annotations.
+              # For a full list of possible ingress annotations, please see
+              # ref: https://github.com/kubernetes/ingress-nginx/blob/main/docs/user-guide/nginx-configuration/annotations.md
+              # Use this parameter to set the required annotations for cert-manager, see
+              # ref: https://cert-manager.io/docs/usage/ingress/#supported-annotations
+              #
+              # e.g:
+              # annotations:
+              #   kubernetes.io/ingress.class: nginx
+              #   cert-manager.io/cluster-issuer: cluster-issuer-name
+              annotations: {}
+
+              ## @param ingress.tls Enable TLS configuration for the host defined at `ingress.hostname` parameter
+              ## TLS certificates will be retrieved from a TLS secret with name: `{{- printf "%s-tls" .Values.ingress.hostname }}`
+              ## You can:
+              ##   - Use the `ingress.secrets` parameter to create this TLS secret
+              ##   - Rely on cert-manager to create it by setting the corresponding annotations
+              ##   - Rely on Helm to create self-signed certificates by setting `ingress.selfSigned=true`
+              tls: true
+
+              ## @param ingress.selfSigned Create a TLS secret for this ingress record using self-signed certificates generated by Helm
+              selfSigned: false
+
+              ## @param ingress.ingressClassName IngressClass that will be be used to implement the Ingress (Kubernetes 1.18+)
+              ## This is supported in Kubernetes 1.18+ and required if you have more than one IngressClass marked as the default for your cluster .
+              ## ref: https://kubernetes.io/blog/2020/04/02/improvements-to-the-ingress-api-in-kubernetes-1.18/
+              ingressClassName: "nginx"
+
+            ## Persistence Parameters
+            ## ref: https://kubernetes.io/docs/concepts/storage/persistent-volumes/
+            persistence:
+              # Enable persistence using Persistent Volume Claims
+              enabled: true
+              # The name of an existing PVC to use for persistence
+              existingClaim: "writefreely"
+
+            ## MySQL chart configuration
+            mysql:
+              ## To use an external database set this to false and configure the `externalDatabase.*` parameters
+              enabled: false
+
+            # External Database Configuration
+            # All of these values are only used if `mysql.enabled=false`
+            externalDatabase:
+              # External Database server host
+              host: mysql-headless.writefreely.svc.cluster.local
+              # External Database server port
+              port: 3306
+              # External Database username
+              user: writefreely
+              # External Database database name
+              database: writefreely
+              # The name of an existing secret with database credentials
+              ## NOTE: Must contain key `mysql-password`
+              ## NOTE: When it's set, the `externalDatabase.password` parameter is ignored
+              existingSecret: "writefreely-mysql-credentials"
+              # External Database ssl
+              ssl: false
