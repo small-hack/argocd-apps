@@ -195,7 +195,7 @@ spec:
             configAnnotations: {}
 
             config:
-              enabled: true
+              enabled: false
               global: {}
                 # slack_api_url: ''
 
