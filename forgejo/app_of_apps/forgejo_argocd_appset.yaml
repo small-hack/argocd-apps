@@ -390,7 +390,7 @@ spec:
                 enabled: true
                 serviceMonitor:
                   enabled: true
-                  namespace: 'monitoring'
+                  # namespace: 'monitoring'
                   #  additionalLabels:
                   #    prometheus-release: prom1
 
