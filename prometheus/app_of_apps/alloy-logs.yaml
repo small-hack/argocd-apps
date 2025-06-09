@@ -148,11 +148,11 @@ spec:
 
                   loki.source.file "system_logs" {
                       targets = [
-                        {"__path__" = "/var/log/syslog"},
-                        {"__path__" = "/var/log/auth.log"},
-                        {"__path__" = "/var/log/fail2ban.log},
-                        {"__path__" = "/var/log/kern.log"},
-                        {"__path__" = "/var/log/cron.log"},
+                        {"__path__" = "/var/log/syslog", "color" = "pink"},
+                        {"__path__" = "/var/log/auth.log", "color" = "blue"},
+                        {"__path__" = "/var/log/fail2ban.log, "color" = "red"},
+                        {"__path__" = "/var/log/kern.log", "color" = "green"},
+                        {"__path__" = "/var/log/cron.log", "color" = "yellow"},
                       ]
                     forward_to = [loki.write.loki.receiver]
                   }
