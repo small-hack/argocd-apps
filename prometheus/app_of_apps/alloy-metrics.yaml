@@ -141,7 +141,7 @@ spec:
 
                     rule {
                       source_labels = ["__meta_kubernetes_node_address_Hostname"]
-                      taregt_label  = "node"
+                      target_label  = "node"
                     }
                   }
 
@@ -178,7 +178,7 @@ spec:
 
                     rule {
                       source_labels = ["__meta_kubernetes_node_address_Hostname"]
-                      taregt_label  = "node"
+                      target_label  = "node"
                     }
                   }
 
