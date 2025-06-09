@@ -354,13 +354,13 @@ spec:
           affinity:
             podAntiAffinity:
               requiredDuringSchedulingIgnoredDuringExecution:
-              - labelSelector:
-                  matchExpressions:
+                - labelSelector:
+                    matchExpressions:
                     - key: app
                       operator: In
                       values:
                         - nope
-                    topologyKey: "kubernetes.io/hostname"
+                  topologyKey: "kubernetes.io/hostname"
 
           extraFlags:
             - --web.route-prefix=ruler
