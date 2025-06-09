@@ -86,7 +86,7 @@ spec:
                     enabled = true
                   }
 
-                  prometheus.remote_write "metrics_service" {
+                  prometheus.remote_write "default" {
                       endpoint {
                           name = "thanos"
                           url = "http://thanos-receive:19291/api/v1/receive"
