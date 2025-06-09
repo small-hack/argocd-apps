@@ -220,17 +220,6 @@ spec:
             # ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#inter-pod-affinity-and-anti-affinity
             podAffinityPreset: ""
 
-            # Affinity for pod assignment
-            # Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
-            # NOTE: podAffinityPreset, podAntiAffinityPreset, and nodeAffinityPreset will be ignored when it's set
-            affinity: {}
-
-            # Node labels for pod assignment
-            nodeSelector: {}
-
-            # Tolerations for pod assignment
-            tolerations: []
-
             ## Ghost containers' resource requests and limits
             ## ref: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
             ## @param resourcesPreset Set container resources according to one common preset (allowed values: none, nano, micro, small, medium, large, xlarge, 2xlarge). This is ignored if resources is set (resources is recommended for production).
