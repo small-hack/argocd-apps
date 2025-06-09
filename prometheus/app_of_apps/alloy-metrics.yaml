@@ -79,7 +79,7 @@ spec:
                 content: |-
                   logging {
                     level = "debug"
-                    format = "logfmt"
+                    format = "json"
                   }
 
                   livedebugging {

@@ -72,13 +72,13 @@ spec:
 
             alloy:
               securityContext:
-                runAsUser: 0
-                runAsGroup: 0
+                runAsUser: 473
+                runAsGroup: 473
               configMap:
                 content: |-
                   logging {
                     level = "debug"
-                    format = "logfmt"
+                    format = "json"
                   }
 
                   livedebugging {
