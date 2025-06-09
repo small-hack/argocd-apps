@@ -142,7 +142,14 @@ spec:
                   }
 
                   local.file_match "local_files" {
-                    path_targets = [{"__path__" = "/var/log/*.log"}]
+                    path_targets = [
+                      {"__path__" = "/var/log/*.log"},
+                      {"__path__" = "/var/log/syslog"},
+                      {"__path__" = "/var/log/auth.log"},
+                      {"__path__" = "/var/log/fail2ban.log},
+                      {"__path__" = "/var/log/kern.log"},
+                      {"__path__" = "/var/log/cron.log"},
+                    ]
                     sync_period = "5s"
                   }
 
