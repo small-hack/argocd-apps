@@ -101,10 +101,10 @@ spec:
                             max_backoff            = "30s"
                           }
                       }
-                  }
 
-                  external_labels = {
-                    "clusterName" = "{{.name}}",
+                    external_labels = {
+                      "clusterName" = "{{.name}}",
+                    }
                   }
 
                   prometheus.operator.servicemonitors "default" {
