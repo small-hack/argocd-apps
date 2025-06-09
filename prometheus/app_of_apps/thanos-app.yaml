@@ -353,12 +353,13 @@ spec:
 
           affinity:
             podAntiAffinity:
-              preferredDuringSchedulingIgnoredDuringExecution:
-                - weight: 100
-                  podAffinityTerm:
-                    labelSelector:
-                      matchLabels:
-                        app.kubernetes.io/component: linux
+              requiredDuringSchedulingIgnoredDuringExecution:
+                 - labelSelector:
+                    matchExpressions:
+                      - key: nope
+                        operator: In
+                        values:
+                          - nope
                     topologyKey: kubernetes.io/hostname
 
           extraFlags:
