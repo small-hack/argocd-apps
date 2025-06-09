@@ -163,6 +163,7 @@ spec:
 
                   loki.source.kubernetes_events "k8s_events" {
                       forward_to = [loki.write.loki.receiver]
+                      log_format = "json"
                   }
 
                   loki.source.kubernetes "pod_logs" {
