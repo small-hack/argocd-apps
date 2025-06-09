@@ -62,7 +62,7 @@ spec:
               #   readOnly: true
 
             nameOverride: ""
-            fullnameOverride: ""
+            fullnameOverride: "alertmanager"
 
             automountServiceAccountToken: true
 
