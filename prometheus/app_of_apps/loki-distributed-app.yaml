@@ -297,7 +297,7 @@ spec:
 
           sidecar: false
 
-          replicas: 0
+          replicas: 1
 
           extraContainers:
             - name: load-rule-configmaps
