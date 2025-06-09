@@ -186,7 +186,7 @@ spec:
             command: []
 
             persistence:
-              enabled: true
+              enabled: false
               storageClass: "local-path"
               accessModes:
                 - ReadWriteOnce
