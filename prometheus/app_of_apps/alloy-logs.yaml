@@ -70,8 +70,8 @@ spec:
 
             alloy:
               securityContext:
-                runAsUser: 473
-                runAsGroup: 473
+                runAsUser: 0
+                runAsGroup: 0
 
             alloy:
               configMap:
