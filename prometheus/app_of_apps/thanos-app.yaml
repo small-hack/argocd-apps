@@ -332,7 +332,7 @@ spec:
         # |_| \_\\__,_|_|\___|_|
         ########################################################################
         ruler:
-          enabled: false
+          enabled: true
 
           logFormat: json
 
@@ -398,8 +398,6 @@ spec:
 
           clusterName: ""
 
-          config: ""
-
           existingConfigmap: ""
 
           extraVolumes:
@@ -420,6 +418,19 @@ spec:
             size: 8Gi
             annotations: {}
 
+          config: |
+            groups:
+              - name: general.rules
+                rules:
+                  - alert: Watchdog
+                    annotations:
+                      description: "watchdog description"
+                      summary: "watchdog summary"
+                      runbook_url: "https://icanhazip.com"
+                    expr: vector(1)
+                    labels:
+                    severity: watchdog
+
         ########################################################################
         #  __  __      _        _
         # |  \/  | ___| |_ _ __(_) ___ ___
@@ -431,6 +442,7 @@ spec:
           enabled: true
           serviceMonitor:
             enabled: true
+            namespace: monitoring
 
   syncPolicy:
     syncOptions:
