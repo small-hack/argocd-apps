@@ -8,7 +8,7 @@ spec:
   project: default
   source:
     repoURL: 'https://github.com/small-hack/argocd-apps'
-    targetRevision: monitoring-distributed
+    targetRevision: main
     path: prometheus/dashboards/
   destination:
     server: "https://kubernetes.default.svc"
