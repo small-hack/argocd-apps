@@ -258,7 +258,7 @@ spec:
             - endpoints:
               - "thanos-receive-0.thanos-receive-headless.monitoring.svc.cluster.local:10901"
               - "thanos-receive-1.thanos-receive-headless.monitoring.svc.cluster.local:10901"
-              - "thanos-receive-3.thanos-receive-headless.monitoring.svc.cluster.local:10901"
+              - "thanos-receive-2.thanos-receive-headless.monitoring.svc.cluster.local:10901"
 
           tsdbPath: ""
 
