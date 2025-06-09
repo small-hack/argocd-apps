@@ -358,7 +358,7 @@ spec:
                   podAffinityTerm:
                     labelSelector:
                       matchLabels:
-                        app.kubernetes.io/component: butts
+                        app.kubernetes.io/component: linux
                     topologyKey: kubernetes.io/hostname
 
           extraFlags:
