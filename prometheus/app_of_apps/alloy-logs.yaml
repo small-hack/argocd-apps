@@ -68,12 +68,12 @@ spec:
               interval: ""
               metricRelabelings: {}
 
+
+
             alloy:
               securityContext:
                 runAsUser: 0
                 runAsGroup: 0
-
-            alloy:
               configMap:
                 content: |-
                   logging {
