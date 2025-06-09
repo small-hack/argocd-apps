@@ -10,8 +10,8 @@ spec:
     namespace: monitoring
   source:
     repoURL: 'https://grafana.github.io/helm-charts'
-    chart: meta-loki
-    targetRevision: 1.6.39
+    chart: meta-monitoring
+    targetRevision: 1.3.0
     helm:
       version: v3
       skipCrds: true
@@ -32,7 +32,7 @@ spec:
             type: prometheus
             url: "http://thanos-receive:19291/api/v1/receive"
             auth:
-              type: basic
+              type: none
               usernameKey: username
               passwordKey: password
             secret:
@@ -44,7 +44,7 @@ spec:
             type: loki
             url: "http://loki-distributed-distributor-headless:3100/loki/api/v1/push"
             auth:
-              type: basic
+              type: none
               usernameKey: username
               passwordKey: password
             secret:
