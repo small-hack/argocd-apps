@@ -352,7 +352,12 @@ spec:
             targetMemory: 80
 
           affinity:
-            podAntiAffinity: {}
+            podAntiAffinity:
+              preferredDuringSchedulingIgnoredDuringExecution:
+                - labelSelector:
+                    matchLabels:
+                      app.kubernetes.io/component: butts
+                  topologyKey: kubernetes.io/hostname
 
           extraFlags:
             - --web.route-prefix=ruler
