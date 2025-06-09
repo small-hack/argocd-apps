@@ -94,18 +94,18 @@ spec:
               ##     memory: 1024Mi
               resources: {}
 
-            tolerations:
-              - key: '{{ .ghost_toleration_key }}'
-                operator: '{{ .ghost_toleration_operator }}'
-                value: '{{ .ghost_toleration_value }}'
-                effect: '{{ .ghost_toleration_effect }}'
+              tolerations:
+                - key: '{{ .ghost_toleration_key }}'
+                  operator: '{{ .ghost_toleration_operator }}'
+                  value: '{{ .ghost_toleration_value }}'
+                  effect: '{{ .ghost_toleration_effect }}'
 
-            affinity:
-              nodeAffinity:
-                requiredDuringSchedulingIgnoredDuringExecution:
-                  nodeSelectorTerms:
-                    - matchExpressions:
-                      - key: '{{ .ghost_affinity_key }}'
-                        operator: In
-                        values:
-                          - '{{ .ghost_affinity_value }}'
+              affinity:
+                nodeAffinity:
+                  requiredDuringSchedulingIgnoredDuringExecution:
+                    nodeSelectorTerms:
+                      - matchExpressions:
+                        - key: '{{ .ghost_affinity_key }}'
+                          operator: In
+                          values:
+                            - '{{ .ghost_affinity_value }}'
