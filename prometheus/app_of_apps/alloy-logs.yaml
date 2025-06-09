@@ -139,7 +139,6 @@ spec:
                       regex = "^(\\S+):\\/\\/.+$"
                       replacement = "$1"
                     }
-
                   }
 
                   local.file_match "local_files" {
@@ -150,7 +149,7 @@ spec:
                   loki.source.file "log_scrape" {
                     targets    = local.file_match.local_files.targets
                     forward_to = [loki.process.filter_logs.receiver]
-                    tail_from_end = true
+                    tail_from_end = false
                   }
 
                   loki.process "filter_logs" {
