@@ -11,7 +11,7 @@ spec:
   source:
     repoURL: registry-1.docker.io
     chart: bitnamicharts/thanos
-    targetRevision: 16.0.7
+    targetRevision: 17.0.2
     helm:
       version: v3
       skipCrds: true
@@ -35,8 +35,11 @@ spec:
           dnsDiscovery: {}
           #  sidecarsService: "prometheus-operated"
           #  sidecarsNamespace: "prometheus"
+
+          logfmt: json
+
           autoscaling:
-            enabled: false
+            enabled: true
             minReplicas: "1"
             maxReplicas: "4"
             targetCPU: 70
@@ -49,10 +52,10 @@ spec:
           resources:
             requests:
               cpu: 250m
-              memory: 1024Mi
+              memory: 128Mi
             limits:
-              cpu: 2
-              memory: 4096Mi
+              cpu: 1
+              memory: 2048Mi
 
           revisionHistoryLimit: 2
 
@@ -67,7 +70,71 @@ spec:
         queryFrontend:
           ingress:
             enabled: false
+
+          logfmt: json
+
+          autoscaling:
+            enabled: true
+            minReplicas: "1"
+            maxReplicas: "4"
+            targetCPU: 70
+            targetMemory: 80
+
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 1
+              memory: 2048Mi
+
           revisionHistoryLimit: 2
+
+        ########################################################################
+        #  ____             _        _ __        __   _
+        # | __ ) _   _  ___| | _____| |\ \      / /__| |__
+        # |  _ \| | | |/ __| |/ / _ \ __\ \ /\ / / _ \ '_ \
+        # | |_) | |_| | (__|   <  __/ |_ \ V  V /  __/ |_) |
+        # |____/ \__,_|\___|_|\_\___|\__| \_/\_/ \___|_.__/
+        ########################################################################
+        bucketweb:
+          enabled: true
+
+          logLevel: info
+
+          logfmt: json
+
+          refresh: 30m
+
+          timeout: 5m
+
+          revisionHistoryLimit: 2
+
+          extraFlges:
+            - --web.route-prefix=bucket
+            - --web.external-prefix=bucket
+
+          serviceAccount:
+            create: true
+
+          autoscaling:
+            enabled: true
+            minReplicas: "1"
+            maxReplicas: "4"
+            targetCPU: 70
+            targetMemory: 80
+
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 1
+              memory: 2048Mi
+
+          extraEnvVars:
+            - name: TZ
+              value: "Europe/Amsterdam"
 
         ########################################################################
         #   ____                                 _
@@ -81,17 +148,24 @@ spec:
           enabled: true
           revisionHistoryLimit: 2
 
+          logfmt: json
+
           retentionResolutionRaw: 30d
           retentionResolution5m: 30d
           retentionResolution1h: 10y
 
           resources:
             requests:
-              cpu: 250m
-              memory: 512Mi
+              cpu: 100m
+              memory: 128Mi
             limits:
               cpu: 2
               memory: 2048Mi
+
+          retentionResolutionRaw: 14d
+          retentionResolution5m: 30d
+          retentionResolution1h: 120d
+          consistencyDelay: 30m
 
           persistence:
             enabled: true
@@ -116,7 +190,24 @@ spec:
         storegateway:
           enabled: true
 
-          resourcesPreset: "small"
+          replicaCount: 2
+
+          logfmt: json
+
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 2
+              memory: 2048Mi
+
+          autoscaling:
+            enabled: true
+            minReplicas: "1"
+            maxReplicas: "4"
+            targetCPU: 70
+            targetMemory: 80
 
           persistence:
             enabled: true
@@ -130,6 +221,11 @@ spec:
             - name: "THANOS_ALLOW_EXISTING_BUCKET_USE"
               value: "true"
 
+          readinessProbes:
+            enabled: false
+
+          livenessProbes:
+            enabled: false
 
         ########################################################################
         #  ____               _
