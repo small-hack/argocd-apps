@@ -10,7 +10,7 @@ spec:
 
   template:
     metadata:
-      name: "'{{.name}}'-alloy-metrics"
+      name: '{{.name}}-alloy-metrics'
     spec:
       project: default
       syncPolicy:
