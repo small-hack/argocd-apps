@@ -150,7 +150,7 @@ spec:
                       targets = [
                         {"__path__" = "/var/log/syslog", "color" = "pink"},
                         {"__path__" = "/var/log/auth.log", "color" = "blue"},
-                        {"__path__" = "/var/log/fail2ban.log, "color" = "red"},
+                        {"__path__" = "/var/log/fail2ban.log", "color" = "red"},
                         {"__path__" = "/var/log/kern.log", "color" = "green"},
                         {"__path__" = "/var/log/cron.log", "color" = "yellow"},
                       ]
