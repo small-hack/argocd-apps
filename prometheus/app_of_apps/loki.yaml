@@ -55,8 +55,30 @@ spec:
         serviceAccount:
           create: true
 
+
+        # optional experimental components
+        bloomPlanner:
+          replicas: 0
+
+        bloomBuilder:
+          replicas: 0
+
+        bloomGateway:
+          replicas: 0
+
+        # Enable minio for storage
         minio:
           enabled: false
+
+        # Zero out replica counts of other deployment modes
+        backend:
+          replicas: 0
+        read:
+          replicas: 0
+        write:
+          replicas: 0
+        singleBinary:
+          replicas: 0
 
         deploymentMode: Distributed
 
@@ -260,31 +282,6 @@ spec:
             enableStatefulSetAutoDeletePVC: false
             whenDeleted: Retain
             whenScaled: Retain
-
-        # optional experimental components
-        bloomPlanner:
-          replicas: 0
-
-        bloomBuilder:
-          replicas: 0
-
-        bloomGateway:
-          replicas: 0
-
-        # Enable minio for storage
-        minio:
-          enabled: true
-
-        # Zero out replica counts of other deployment modes
-        backend:
-          replicas: 0
-        read:
-          replicas: 0
-        write:
-          replicas: 0
-
-        singleBinary:
-          replicas: 0
 
 
         ########################################################################
