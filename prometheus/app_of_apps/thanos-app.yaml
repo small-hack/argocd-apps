@@ -231,6 +231,61 @@ spec:
             enabled: false
 
         ########################################################################
+        #  ____               _
+        # |  _ \ ___  ___ ___(_)_   _____ _ __
+        # | |_) / _ \/ __/ _ \ \ \ / / _ \ '__|
+        # |  _ <  __/ (_|  __/ |\ V /  __/ |
+        # |_| \_\___|\___\___|_| \_/ \___|_|
+        ########################################################################
+        receive:
+          enabled: true
+
+          mode: dual-mode
+
+          logLevel: info
+
+          logFormat: json
+
+          tsdbRetention: 1d
+
+          replicationFactor: 1
+
+          replicaCount: 3
+
+          replicaLabel: replica
+
+          config:
+            - endpoints:
+              - "thanos-receive-0.thanos-receive-headless.monitoring.svc.cluster.local:10901"
+              - "thanos-receive-1.thanos-receive-headless.monitoring.svc.cluster.local:10901"
+              - "thanos-receive-3.thanos-receive-headless.monitoring.svc.cluster.local:10901"
+
+          tsdbPath: ""
+
+          existingConfigmap: ""
+
+          extraEnvVars:
+            - name: TZ
+              value: "Europe/Amsterdam"
+
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 1000m
+              memory: 4096Mi
+
+          persistence:
+            storageClass: local-path
+            size: 32Gi
+
+          service:
+            additionalHeadless: true
+            headless:
+              annotations: {}
+
+        ########################################################################
         #  ____  _     _        _ _           _
         # |  _ \(_)___| |_ _ __(_) |__  _   _| |_ ___  _ __
         # | | | | / __| __| '__| | '_ \| | | | __/ _ \| '__|
@@ -248,7 +303,7 @@ spec:
 
           replicationProtocol: capnproto
 
-          replicaCount: 1
+          replicaCount: 2
 
           replicationFactor: 1
 
@@ -269,55 +324,6 @@ spec:
 
           serviceAccount:
             create: true
-
-        ########################################################################
-        #  ____               _
-        # |  _ \ ___  ___ ___(_)_   _____ _ __
-        # | |_) / _ \/ __/ _ \ \ \ / / _ \ '__|
-        # |  _ <  __/ (_|  __/ |\ V /  __/ |
-        # |_| \_\___|\___\___|_| \_/ \___|_|
-        ########################################################################
-        receive:
-          enabled: true
-
-          modes: dual-mode
-
-          logLevel: info
-          logFormat: json
-
-          replicationFactor: 1
-
-          replicaCount: 3
-
-          config:
-            - endpoints:
-              - "thanos-receive-0.thanos-receive-headless.monitoring.svc.cluster.local:10901"
-              - "thanos-receive-1.thanos-receive-headless.monitoring.svc.cluster.local:10901"
-              - "thanos-receive-3.thanos-receive-headless.monitoring.svc.cluster.local:10901"
-
-          tsdbPath: ""
-
-          existingConfigmap: ""
-
-          replicaLabel: replica
-
-          extraEnvVars:
-            - name: TZ
-              value: "Europe/Amsterdam"
-
-          resources:
-            requests:
-              cpu: 100m
-              memory: 256Mi
-            limits:
-              cpu: 1000m
-              memory: 4096Mi
-
-          persistence:
-            storageClass: local-path
-            size: 32Gi
-
-
         ########################################################################
         #  ____        _
         # |  _ \ _   _| | ___ _ __
