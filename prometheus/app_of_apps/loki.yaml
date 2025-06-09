@@ -68,7 +68,7 @@ spec:
 
         # Enable minio for storage
         minio:
-          enabled: false
+          enabled: true
 
         # Zero out replica counts of other deployment modes
         backend:
