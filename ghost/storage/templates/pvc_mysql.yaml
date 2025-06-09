@@ -3,8 +3,8 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  namespace: ghost-mysql
-  name: ghost
+  namespace: ghost
+  name: ghost-mysql
   annotations:
     k8up.io/backup: 'true'
 spec:
