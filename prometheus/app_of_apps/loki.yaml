@@ -5,6 +5,14 @@ metadata:
   namespace: argocd
 spec:
   project: default
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+      - ApplyOutOfSyncOnly=true
+      - Retry=true
+    automated:
+      selfHeal: false
+      prune: true
   destination:
     server: "https://kubernetes.default.svc"
     namespace: monitoring
