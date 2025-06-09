@@ -57,11 +57,11 @@ spec:
             ##      https://github.com/bitnami/containers/tree/main/bitnami/mysql/#creating-a-database-on-first-run
             ##      https://github.com/bitnami/containers/tree/main/bitnami/mysql/#creating-a-database-user-on-first-run
             auth:
-              database: bitnami_ghost
-              username: bn_ghost
+              database: ghost
+              username: ghost
               ## @param mysql.auth.existingSecret Existing secret with MySQL credentials
               ## @param auth.existingSecret Use existing secret for password details. The secret has to contain the keys `mysql-root-password`, `mysql-replication-password` and `mysql-password`
-              existingSecret: ""
+              existingSecret: "ghost-mysql-credentials"
 
             ## MySQL Primary configuration
             primary:
@@ -70,7 +70,7 @@ spec:
                 enabled: true
                 ## @param primary.persistence.existingClaim Name of an existing `PersistentVolumeClaim` for MySQL primary replicas
                 ## NOTE: When it's set the rest of persistence parameters are ignored
-                existingClaim: ""
+                existingClaim: "ghost-mysql"
 
               ## MySQL primary container's resource requests and limits
               ## @param mysql.primary.resourcesPreset Set container resources according to one common preset (allowed values: none, nano, small, medium, large, xlarge, 2xlarge). This is ignored if primary.resources is set (primary.resources is recommended for production).
