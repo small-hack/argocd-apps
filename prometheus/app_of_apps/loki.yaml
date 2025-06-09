@@ -47,6 +47,9 @@ spec:
         serviceAccount:
           create: true
 
+        minio:
+          enabled: false
+
         deploymentMode: Distributed
 
         ########################################################################
