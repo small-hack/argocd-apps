@@ -142,15 +142,19 @@ spec:
                   }
 
                   local.file_match "local_files" {
-                    path_targets = [
-                      {"__path__" = "/var/log/*.log"},
-                      {"__path__" = "/var/log/syslog"},
-                      {"__path__" = "/var/log/auth.log"},
-                      {"__path__" = "/var/log/fail2ban.log},
-                      {"__path__" = "/var/log/kern.log"},
-                      {"__path__" = "/var/log/cron.log"},
-                    ]
+                    path_targets = [{"__path__" = "/var/log/*.log"}]
                     sync_period = "5s"
+                  }
+
+                  loki.source.file "system_logs" {
+                      targets = [
+                        {"__path__" = "/var/log/syslog"},
+                        {"__path__" = "/var/log/auth.log"},
+                        {"__path__" = "/var/log/fail2ban.log},
+                        {"__path__" = "/var/log/kern.log"},
+                        {"__path__" = "/var/log/cron.log"},
+                      ]
+                    forward_to = [loki.write.loki.receiver]
                   }
 
                   loki.source.file "log_scrape" {
