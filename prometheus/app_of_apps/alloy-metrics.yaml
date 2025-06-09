@@ -95,7 +95,7 @@ spec:
                             capacity               = 10000
                             min_shards             = 1
                             max_shards             = 50
-                            max_samples_per_second = 1000
+                            max_samples_per_send   = 1000
                             batch_send_deadline    = "100s"
                             min_backoff            = "1s"
                             max_backoff            = "30s"
