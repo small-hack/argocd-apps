@@ -354,10 +354,12 @@ spec:
           affinity:
             podAntiAffinity:
               preferredDuringSchedulingIgnoredDuringExecution:
-                - labelSelector:
-                    matchLabels:
-                      app.kubernetes.io/component: butts
-                  topologyKey: kubernetes.io/hostname
+                - weight: 100
+                  podAffinityTerm:
+                    labelSelector:
+                      matchLabels:
+                        app.kubernetes.io/component: butts
+                    topologyKey: kubernetes.io/hostname
 
           extraFlags:
             - --web.route-prefix=ruler
