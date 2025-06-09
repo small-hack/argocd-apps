@@ -163,8 +163,11 @@ spec:
               memory: 2048Mi
 
           retentionResolutionRaw: 14d
+
           retentionResolution5m: 30d
+
           retentionResolution1h: 120d
+
           consistencyDelay: 30m
 
           persistence:
@@ -325,7 +328,7 @@ spec:
         # |_| \_\\__,_|_|\___|_|
         ########################################################################
         ruler:
-          enabled: true
+          enabled: false
 
           logFormat: json
 
