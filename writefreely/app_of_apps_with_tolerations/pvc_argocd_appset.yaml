@@ -1,0 +1,96 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: writefreely-pvc-appset
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  goTemplate: true
+  # generator allows us to source specific values from an external k8s secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - global_pvc_storage_class
+              - writefreely_pvc_capacity
+              - writefreely_pvc_backup_schedule
+              - writefreely_s3_backup_endpoint
+              - writefreely_s3_backup_bucket
+              - writefreely_s3_backup_region
+              - writefreely_toleration_key
+              - writefreely_toleration_operator
+              - writefreely_toleration_value
+              - writefreely_toleration_effect
+              - writefreely_affinity_key
+              - writefreely_affinity_value
+  template:
+    metadata:
+      name: writefreely-pvc
+      annotations:
+        argocd.argoproj.io/sync-wave: "1"
+    spec:
+      project: writefreely
+      destination:
+        server: "https://kubernetes.default.svc"
+        namespace: writefreely
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
+          selfHeal: true
+      source:
+        repoURL: https://github.com/small-hack/argocd-apps.git
+        path: writefreely/storage/
+        targetRevision: main
+        helm:
+          valuesObject:
+            pvc_capacity: '{{ .writefreely_pvc_capacity }}'
+            pvc_storageClassName: '{{ .global_pvc_storage_class }}'
+
+            # not in use yet
+            k8up:
+              # -- for setting tolerations of node taints
+              tolerations:
+                key: '{{ .writefreely_toleration_key }}'
+                operator: '{{ .writefreely_toleration_operator }}'
+                value: '{{ .writefreely_toleration_value }}'
+                effect: '{{ .writefreely_toleration_effect }}'
+
+              # -- for setting affinity to a specific node by matchExpressions
+              affinity:
+                key: '{{ .writefreely_affinity_key }}'
+                value: '{{ .writefreely_affinity_value }}'
+
+              backup_name: 'writefreely-nightly-backup'
+
+              # -- can be set to 's3' or 'local'
+              backup_type: 's3'
+
+              s3:
+                bucket: '{{ .writefreely_s3_backup_bucket }}'
+                endpoint: '{{ .writefreely_s3_backup_endpoint }}'
+                accessKeyIDSecretRef:
+                  name: 's3-backups-credentials'
+                  key: 'accessKeyId'
+                  optional: false
+                secretAccessKeySecretRef:
+                  name: 's3-backups-credentials'
+                  key: 'secretAccessKey'
+                  optional: false
+
+              repoPasswordSecretRef:
+                name: 's3-backups-credentials'
+                key: 'resticRepoPassword'
+
+              prometheus_url: 'push-gateway.prometheus.svc:9091'
+
+              schedules:
+                backup: '{{ .writefreely_pvc_backup_schedule }}'
+                check: '0 0 * * *'
+                prune: '0 0 * * *'
