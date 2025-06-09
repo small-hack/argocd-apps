@@ -195,9 +195,42 @@ spec:
             configAnnotations: {}
 
             config:
-              enabled: false
-              global: {}
-                # slack_api_url: ''
+              enabled: true
+              global:
+                resolve_timeout: 5m
+
+                inhibit_rules:
+                  - source_matchers:
+                      - 'severity = critical'
+                    target_matchers:
+                      - 'severity =~ info'
+                    equal:
+                      - 'namespace'
+                      - 'alertname'
+
+                  - source_matchers:
+                      - 'severity = warning'
+                    target_matchers:
+                      - 'severity =~ info'
+                    equal:
+                      - 'namespace'
+                      - 'alertname'
+
+                  - source_matchers:
+                      - 'alertname = InfoInhibitor'
+                    target_matchers:
+                      - 'severity =~ info'
+                    equal:
+                      - 'namespace'
+
+                  - target_matchers:
+                      - 'alertname = InfoInhibitor'
+
+                  - target_matchers:
+                      - 'alertname = Watchdog'
+
+                  - target_matchers:
+                      - 'alertname = KubeVersionMismatch'
 
               templates:
                 - '/etc/alertmanager/*.tmpl'
