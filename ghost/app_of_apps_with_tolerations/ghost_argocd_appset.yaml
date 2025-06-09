@@ -454,13 +454,13 @@ spec:
               # External Database server port
               port: 3306
               # External Database username
-              user: bn_ghost
+              user: ghost
               # External Database database name
-              database: bitnami_ghost
+              database: ghost
               # The name of an existing secret with database credentials
               ## NOTE: Must contain key `mysql-password`
               ## NOTE: When it's set, the `externalDatabase.password` parameter is ignored
-              existingSecret: ""
+              existingSecret: "ghost-mysql-credentials"
               # External Database ssl
               ssl: false
               # External Database ssl CA filepath
