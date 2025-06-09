@@ -1,0 +1,199 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: alloy-metrics-appset
+  namespace: argocd
+spec:
+  goTemplate: true
+  generators:
+    - clusters: {}
+
+  template:
+    metadata:
+      name: "'{{.name}}'-alloy-metrics"
+    spec:
+      project: default
+      syncPolicy:
+        automated:
+          selfHeal: true
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+
+      destination:
+        server: '{{.server}}'
+        namespace: monitoring
+
+      source:
+        repoURL: 'https://grafana.github.io/helm-charts'
+        chart: alloy
+        targetRevision: 1.1.1
+        helm:
+          version: v3
+          skipCrds: true
+          valuesObject:
+            fullnameOverride: 'alloy-metrics'
+            crds:
+              create: true
+
+            configReloader:
+              enabled: true
+              resources:
+                requests:
+                  cpu: "1m"
+                  memory: "5Mi"
+
+            controller:
+              type: 'deployment'
+              replicas: 1
+              parallelRollout: true
+              terminationGracePeriodSeconds: null
+
+            tolerations: []
+
+            topologySpreadConstraints: []
+            priorityClassName: ''
+            podAnnotations: {}
+            podLabels: {}
+            podDisruptionBudget:
+              enabled: false
+              minAvailable: null
+              maxUnavailable: null
+
+            enableStatefulSetAutoDeletePVC: false
+
+            autoscaling:
+              enabled: false
+
+            serviceMonitor:
+              enabled: true
+              additionalLabels: {}
+              interval: ""
+              metricRelabelings: {}
+
+            alloy:
+              securityContext:
+                runAsUser: 473
+                runAsGroup: 473
+
+              configMap:
+                content: |-
+                  logging {
+                    level = "debug"
+                    format = "logfmt"
+                  }
+
+                  livedebugging {
+                    enabled = true
+                  }
+
+                  prometheus.remote_write "metrics_service" {
+                      endpoint {
+                          name = "thanos"
+                          url = "http://thanos-receive:19291/api/v1/receive"
+
+                          queue_config {
+                            capacity               = 10000
+                            min_shards             = 1
+                            max_shards             = 50
+                            max_samples_per_second = 1000
+                            batch_send_deadline    = "100s"
+                            min_backoff            = "1s"
+                            max_backoff            = "30s"
+                          }
+                      }
+                  }
+
+                  external_labels = {
+                    "clusterName" = "'{{.name}}'"
+                  }
+
+                  prometheus.operator.servicemonitors "default" {
+                    forward_to = [prometheus.remote_write.default.receiver]
+                  }
+
+                  prometheus.operator.podmonitors "default" {
+                    forward_to = [prometheus.remote_write.default.receiver]
+
+                    scrape {
+                      default_scrape_interval = "30s"
+                      default_scrape_timeout = "10s"
+                    }
+                  }
+
+                  discovery.kubernetes "k8s_nodes" {
+                    role = "node"
+                  }
+
+                  discovery.relabel "cadvisor" {
+                    targets = discovery.kubernetes.k8s_nodes.targets
+
+                    rule {
+                      replacement   = "kubernetes.default.svc:443"
+                      target_label  = "__address__"
+                    }
+
+                    rule {
+                      regex         = "(.+)"
+                      source_labels = ["__meta_kubernetes_node_name"]
+                      replacement   = "/api/v1/nodes/$1/proxy/metrics/cadvisor"
+                      target_label  = "__metrics_path_"
+                    }
+
+                    rule {
+                      source_labels = ["__meta_kubernetes_node_address_Hostname"]
+                      taregt_label  = "node"
+                    }
+                  }
+
+                  prometheus.scrape "cadvisor" {
+                    job_name   = "integrations/kubernetes/cadvisor"
+                    targets    = discovery.relabel.cadvisor.output
+                    scheme     = "https"
+
+                    bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
+
+                    tls_config {
+                      ca_file              = "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
+                      server_name          = "kubernetes"
+                      insecure_skip_verify = false
+                    }
+
+                    forward_to = [prometheus.remote_write.default.receiver]
+                  }
+
+                  discovery.relabel "kubelet" {
+                    targets = discovery.kubernetes.k8s_nodes.targets
+
+                    rule {
+                      replacement   = "kubernetes.default.svc:443"
+                      target_label  = "__address__"
+                    }
+
+                    rule {
+                      regex         = "(.+)"
+                      source_labels = ["__meta_kubernetes_node_name"]
+                      replacement   = "/api/v1/nodes/$1/proxy/metrics/cadvisor"
+                      target_label  = "__metrics_path_"
+                    }
+
+                    rule {
+                      source_labels = ["__meta_kubernetes_node_address_Hostname"]
+                      taregt_label  = "node"
+                    }
+                  }
+
+                  prometheus.scrape "kubelet" {
+                    job_name   = "integrations/kubernetes/kubelet"
+                    targets    = discovery.relabel.kubelet.output
+                    scheme     = "https"
+
+                    bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
+
+                    tls_config {
+                      ca_file              = "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
+                      server_name          = "kubernetes"
+                      insecure_skip_verify = false
+                    }
+
+                    forward_to = [prometheus.remote_write.default.receiver]
+                  }
