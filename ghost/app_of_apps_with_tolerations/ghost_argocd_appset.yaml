@@ -450,7 +450,7 @@ spec:
             # All of these values are only used if `mysql.enabled=false`
             externalDatabase:
               # External Database server host
-              host: mysql.ghost.svc.cluster.local
+              host: mysql-headless.ghost.svc.cluster.local
               # External Database server port
               port: 3306
               # External Database username
