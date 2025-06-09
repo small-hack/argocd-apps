@@ -352,12 +352,7 @@ spec:
             targetMemory: 80
 
           affinity:
-            podAntiAffinity:
-              requiredDuringSchedulingIgnoredDuringExecution:
-                - labelSelector:
-                    matchLabels:
-                      beta.kubernetes.io/os: windows
-                  topologyKey: kubernetes.io/hostname
+            podAntiAffinity: {}
 
           extraFlags:
             - --web.route-prefix=ruler
