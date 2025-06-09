@@ -356,7 +356,7 @@ spec:
               requiredDuringSchedulingIgnoredDuringExecution:
                 - labelSelector:
                     matchLabels:
-                      app.kubernetes.io/component: butts
+                      beta.kubernetes.io/os: windows
                   topologyKey: kubernetes.io/hostname
 
           extraFlags:
