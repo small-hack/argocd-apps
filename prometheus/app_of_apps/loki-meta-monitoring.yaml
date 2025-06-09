@@ -20,6 +20,15 @@ spec:
         global:
           scrapeInterval: 10s
 
+        externalServices:
+          loki:
+            authMode: none
+          prometheus:
+            authMode: none
+
+        traces:
+          enabled: false
+
         # Global Label to be added to all telemetry data. Should reflect a recognizable name for the cluster.
         cluster:
           name: loki-meta-monitoring-cluster
