@@ -146,12 +146,6 @@ spec:
                     sync_period = "5s"
                   }
 
-                  loki.source.file "syslog" {
-                    targets = [{"__path__" = "/var/log/syslog"}]
-                    tail_from_end = false
-                    forward_to = [loki.write.loki.receiver]
-                  }
-
                   loki.source.file "log_scrape" {
                     targets    = local.file_match.local_files.targets
                     forward_to = [loki.process.filter_logs.receiver]
