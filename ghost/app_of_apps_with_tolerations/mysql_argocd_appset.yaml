@@ -17,6 +17,12 @@ spec:
               - global_cluster_issuer
               - ghost_hostname
               - ghost_s3_endpoint
+              - ghost_toleration_key
+              - ghost_toleration_operator
+              - ghost_toleration_value
+              - ghost_toleration_effect
+              - ghost_affinity_key
+              - ghost_affinity_value
 
   template:
     metadata:
@@ -87,3 +93,19 @@ spec:
               ##     cpu: 3
               ##     memory: 1024Mi
               resources: {}
+
+            tolerations:
+              - key: '{{ .ghost_toleration_key }}'
+                operator: '{{ .ghost_toleration_operator }}'
+                value: '{{ .ghost_toleration_value }}'
+                effect: '{{ .ghost_toleration_effect }}'
+
+            affinity:
+              nodeAffinity:
+                requiredDuringSchedulingIgnoredDuringExecution:
+                  nodeSelectorTerms:
+                    - matchExpressions:
+                      - key: '{{ .ghost_affinity_key }}'
+                        operator: In
+                        values:
+                          - '{{ .ghost_affinity_value }}'
