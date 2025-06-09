@@ -103,7 +103,8 @@ spec:
                       }
 
                     external_labels = {
-                      "clusterName" = "{{.name}}",
+                      "clusterName"     = "{{.name}}",
+                      "clusterEndpoint" = "{{.server}}",
                     }
                   }
 
