@@ -396,7 +396,7 @@ spec:
               # Enable persistence using Persistent Volume Claims
               enabled: true
               # The name of an existing PVC to use for persistence
-              existingClaim: ""
+              existingClaim: "ghost"
 
             ## 'volumePermissions' init container parameters
             ## Changes the owner and group of the persistent volume mount point to runAsUser:fsGroup values
