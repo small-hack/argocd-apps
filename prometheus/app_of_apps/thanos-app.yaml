@@ -351,17 +351,10 @@ spec:
             targetCPU: 70
             targetMemory: 80
 
-          affinity:
-            podAntiAffinity:
-              preferredDuringSchedulingIgnoredDuringExecution:
-              - podAffinityTerm:
-                  labelSelector:
-                    matchLabels:
-                      app.kubernetes.io/component: nope
-                      app.kubernetes.io/instance: thanos-app
-                      app.kubernetes.io/name: thanos
-                  topologyKey: kubernetes.io/hostname
-                weight: 1
+          nodeAffinityPreset:
+            type: hard
+            key: node.kubernetes.io/instance-type
+            values: ["k3s"]
 
           extraFlags:
             - --web.route-prefix=ruler
