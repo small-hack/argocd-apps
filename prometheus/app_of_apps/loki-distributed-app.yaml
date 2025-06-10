@@ -97,8 +97,8 @@ spec:
 
           autoscaling:
             enabled: true
-            minReplicas: 3
-            maxReplicas: 3
+            minReplicas: 2
+            maxReplicas: 2
             targetCPUUtilizationPercentage: 60
             targetMemoryUtilizationPercentage: null
             customMetrics: []
@@ -130,7 +130,7 @@ spec:
           autoscaling:
             enabled: true
             minReplicas: 1
-            maxReplicas: 3
+            maxReplicas: 2
             targetCPUUtilizationPercentage: 60
             targetMemoryUtilizationPercentage: null
             customMetrics: []
@@ -155,18 +155,10 @@ spec:
           replicas: 0
           maxUnavailable: 1
 
-          affinity:
-            podAntiAffinity:
-              requiredDuringSchedulingIgnoredDuringExecution:
-                - labelSelector:
-                    matchLabels:
-                      app.kubernetes.io/component: butts
-                  topologyKey: kubernetes.io/hostname
-
           autoscaling:
             enabled: true
             minReplicas: 1
-            maxReplicas: 3
+            maxReplicas: 2
             targetCPUUtilizationPercentage: 60
             targetMemoryUtilizationPercentage: null
             customMetrics: []
