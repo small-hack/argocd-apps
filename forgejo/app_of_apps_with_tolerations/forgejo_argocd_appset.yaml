@@ -42,7 +42,7 @@ spec:
           selfHeal: true
       source:
         repoURL: 'code.forgejo.org'
-        targetRevision: 11.0.5
+        targetRevision: 12.5.1
         chart: forgejo-helm/forgejo
         helm:
           valuesObject:
