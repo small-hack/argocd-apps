@@ -95,6 +95,14 @@ spec:
 
           affinity: {}
 
+          resources:
+            requests:
+              cpu: 250m
+              memory: 1024Mi
+            limits:
+              cpu: 2
+              memory: 4096Mi
+
           autoscaling:
             enabled: true
             minReplicas: 2
@@ -127,6 +135,14 @@ spec:
 
           affinity: {}
 
+          resources:
+            requests:
+              cpu: 250m
+              memory: 1024Mi
+            limits:
+              cpu: 2
+              memory: 4096Mi
+
           autoscaling:
             enabled: true
             minReplicas: 1
@@ -155,6 +171,14 @@ spec:
           replicas: 0
           maxUnavailable: 1
 
+          resources:
+            requests:
+              cpu: 250m
+              memory: 1024Mi
+            limits:
+              cpu: 2
+              memory: 4096Mi
+
           autoscaling:
             enabled: true
             minReplicas: 1
@@ -177,6 +201,14 @@ spec:
         queryScheduler:
           replicas: 1
 
+          resources:
+            requests:
+              cpu: 250m
+              memory: 1024Mi
+            limits:
+              cpu: 2
+              memory: 4096Mi
+
         ########################################################################
         #  ____  _     _        _ _           _
         # |  _ \(_)___| |_ _ __(_) |__  _   _| |_ ___  _ __
@@ -192,6 +224,14 @@ spec:
           affinity: {}
 
           topologySpreadConstraints: []
+
+          resources:
+            requests:
+              cpu: 250m
+              memory: 1024Mi
+            limits:
+              cpu: 2
+              memory: 4096Mi
 
           autoscaling:
             enabled: true
@@ -217,6 +257,14 @@ spec:
           replicas: 1
 
           affinity: {}
+
+          resources:
+            requests:
+              cpu: 250m
+              memory: 1024Mi
+            limits:
+              cpu: 2
+              memory: 4096Mi
 
           persistence:
             enabled: true
@@ -247,6 +295,14 @@ spec:
 
           affinity: {}
 
+          resources:
+            requests:
+              cpu: 250m
+              memory: 1024Mi
+            limits:
+              cpu: 2
+              memory: 4096Mi
+
           persistence:
             enabled: false
             inMemory: false
@@ -273,6 +329,14 @@ spec:
           replicas: 1
 
           affinity: {}
+
+          resources:
+            requests:
+              cpu: 250m
+              memory: 1024Mi
+            limits:
+              cpu: 2
+              memory: 4096Mi
 
           extraContainers:
             - name: load-rule-configmaps
