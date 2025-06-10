@@ -24,7 +24,7 @@ spec:
       annotations:
         argocd.argoproj.io/sync-wave: "2"
     spec:
-      project: valkey
+      project: default
 
       # the sync policy for this Argo CD Application
       syncPolicy:
