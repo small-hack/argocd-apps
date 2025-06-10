@@ -113,18 +113,36 @@ spec:
               enabled: true
               resourcesPreset: nano
 
-            tolerations:
-              - key: '{{ .forgejo_toleration_key }}'
-                operator: '{{ .forgejo_toleration_operator }}'
-                value: '{{ .forgejo_toleration_value }}'
-                effect: '{{ .forgejo_toleration_effect }}'
+            primary:
+              tolerations:
+                - key: '{{ .forgejo_toleration_key }}'
+                  operator: '{{ .forgejo_toleration_operator }}'
+                  value: '{{ .forgejo_toleration_value }}'
+                  effect: '{{ .forgejo_toleration_effect }}'
 
-            affinity:
-              nodeAffinity:
-                requiredDuringSchedulingIgnoredDuringExecution:
-                  nodeSelectorTerms:
-                    - matchExpressions:
-                      - key: '{{ .forgejo_affinity_key }}'
-                        operator: In
-                        values:
-                          - '{{ .forgejo_affinity_value }}'
+              affinity:
+                nodeAffinity:
+                  requiredDuringSchedulingIgnoredDuringExecution:
+                    nodeSelectorTerms:
+                      - matchExpressions:
+                        - key: '{{ .forgejo_affinity_key }}'
+                          operator: In
+                          values:
+                            - '{{ .forgejo_affinity_value }}'
+
+            replica:
+              tolerations:
+                - key: '{{ .forgejo_toleration_key }}'
+                  operator: '{{ .forgejo_toleration_operator }}'
+                  value: '{{ .forgejo_toleration_value }}'
+                  effect: '{{ .forgejo_toleration_effect }}'
+
+              affinity:
+                nodeAffinity:
+                  requiredDuringSchedulingIgnoredDuringExecution:
+                    nodeSelectorTerms:
+                      - matchExpressions:
+                        - key: '{{ .forgejo_affinity_key }}'
+                          operator: In
+                          values:
+                            - '{{ .forgejo_affinity_value }}'
