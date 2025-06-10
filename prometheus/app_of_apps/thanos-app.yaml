@@ -363,10 +363,24 @@ spec:
             - name: load-rule-configmaps
               image: kiwigrid/k8s-sidecar:1.19.5
               imagePullPolicy: IfNotPresent
+              env:
+              - name: LABEL
+                value: "thanos-ruler-alerts"
 
-          volumeMounts:
-            - name: extra-rules
-              mountPath: /extra/rules/
+              - name: FOLDER
+                value: /extra-rules/
+
+              - name: RESOURCE
+                value: configmap
+
+              - name: REQ_URL
+                value: http://thanos-ruler.monitoring.svc.cluster.local:9090/reload
+
+              - name: REQ_METHOD
+                value: POST
+              volumeMounts:
+                - name: extra-rules
+                  mountPath: /extra/rules/
 
           replicaLabel: replica
 
@@ -397,21 +411,6 @@ spec:
           extraEnvVars:
             - name: TZ
               value: "Europe/Amsterdam"
-
-            - name: LABEL
-              value: "thanos-ruler-alerts"
-
-            - name: FOLDER
-              value: /extra-rules/
-
-            - name: RESOURCE
-              value: configmap
-
-            - name: REQ_URL
-              value: http://thanos-ruler.monitoring.svc.cluster.local:9090/reload
-
-            - name: REQ_METHOD
-              value: POST
 
           persistence:
             enabled: false
