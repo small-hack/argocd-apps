@@ -373,3 +373,9 @@ spec:
             storageClass: local-path
             annotations: {}
 
+        monitoring:
+          dashboards:
+            enabled: true
+          serviceMonitor:
+            enabled: true
+            interval: 10s
