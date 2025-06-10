@@ -351,15 +351,7 @@ spec:
             targetCPU: 70
             targetMemory: 80
 
-          affinity:
-            nodeAffinity:
-              requiredDuringSchedulingIgnoredDuringExecution:
-                nodeSelectorTerms:
-                - matchExpressions:
-                  - key: kubernetes.io/arch
-                    operator: In
-                    values:
-                    - amd64
+          affinity: {}
 
           extraFlags:
             - --web.route-prefix=ruler
