@@ -351,16 +351,7 @@ spec:
             targetCPU: 70
             targetMemory: 80
 
-          affinity:
-            podAntiAffinity:
-              requiredDuringSchedulingIgnoredDuringExecution:
-                - labelSelector:
-                    matchExpressions:
-                    - key: app
-                      operator: In
-                      values:
-                        - nope
-                  topologyKey: "kubernetes.io/hostname"
+          affinity: {}
 
           extraFlags:
             - --web.route-prefix=ruler
