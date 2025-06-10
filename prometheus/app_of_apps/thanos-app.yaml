@@ -423,7 +423,7 @@ spec:
               value: "Europe/Amsterdam"
 
           persistence:
-            enabled: true
+            enabled: false
             storageClass: "local-path"
             size: 8Gi
             annotations: {}
