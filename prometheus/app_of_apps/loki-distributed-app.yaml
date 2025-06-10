@@ -11,7 +11,7 @@ spec:
       - ApplyOutOfSyncOnly=true
       - Retry=true
     automated:
-      selfHeal: false
+      selfHeal: true
       prune: true
   destination:
     server: "https://kubernetes.default.svc"
