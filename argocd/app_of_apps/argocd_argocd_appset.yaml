@@ -375,6 +375,15 @@ spec:
                   background-color: #a0d0ee;
                   color: #495763;
                }
+               .application-summary__label {
+                  background-color: #2d3147;
+                  color: #40aeff;
+                  border-radius: 5px;
+                  padding: 4px;
+                  line-height: 14px;
+                  margin: .3em 0;
+                  margin-right: 2px;
+               }
                .theme-dark .application-status-panel {
                   background-color: #404767;
                   color: #dee6eb;
