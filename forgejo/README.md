@@ -6,6 +6,9 @@
 
 We're using this [helm chart](https://code.forgejo.org/forgejo-contrib/forgejo-helm) to experiment right now.
 
+<img width="1042" alt="Screenshot of the the forgejo app in the Argo CD web interface using tree view mode. You can see the forgejo app branches into 4 appsets that all have their own corresponding apps, including: forgejo-bitwarden-eso, forgejo-postgres-app-set, forgejo-valkey-cluster-appset, and forgejo-web-app-set" src="https://github.com/user-attachments/assets/e712db42-8241-41ab-8a3d-ae05daa8991a" />
+
+
 ## IMPORTANT
 
 This uses an oci image repo which can only be used if it is added as a repo to argocd:
