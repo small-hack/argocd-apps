@@ -46,30 +46,7 @@ spec:
         chart: forgejo-helm/forgejo
         helm:
           valuesObject:
-            # Default values for gitea.
-            # This is a YAML-formatted file.
-            # Declare variables to be passed into your templates.
-            ## @section Global
-            #
-            ## @param global.imageRegistry global image registry override
-            ## @param global.imagePullSecrets global image pull secrets override; can be extended by `imagePullSecrets`
-            ## @param global.storageClass global storage class override
-            ## @param global.hostAliases global hostAliases which will be added to the pod's hosts files
-            global:
-              imageRegistry: ''
-              ## E.g.
-              ## imagePullSecrets:
-              ##   - myRegistryKeySecretName
-              ##
-              imagePullSecrets: []
-              storageClass: ''
-              hostAliases: []
-              # - ip: 192.168.137.2
-              #   hostnames:
-              #   - example.com
-
             ## @param namespaceOverride String to fully override common.names.namespace
-            ##
             namespaceOverride: ''
 
             ## @param replicaCount number of replicas for the deployment
@@ -323,18 +300,9 @@ spec:
 
             persistence:
               enabled: true
-              create: true
+              create: false
               mount: true
-              claimName: gitea-shared-storage
-              size: 10Gi
-              accessModes:
-                - ReadWriteOnce
-              labels: {}
-              storageClass: local-path
-              subPath:
-              volumeName: ''
-              annotations:
-                helm.sh/resource-policy: keep
+              claimName: forgejo
 
             ## @param extraVolumes Additional volumes to mount to the Forgejo deployment
             extraVolumes: []
