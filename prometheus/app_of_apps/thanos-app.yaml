@@ -352,7 +352,7 @@ spec:
             targetMemory: 80
 
           affinity:
-            podAntiAffinity: ""
+            podAntiAffinity: {}
 
           nodeAffinityPreset:
             type: hard
