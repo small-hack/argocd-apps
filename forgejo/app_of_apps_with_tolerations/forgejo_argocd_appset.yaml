@@ -216,13 +216,11 @@ spec:
                   paths:
                     - path: /
                       pathType: Prefix
+                      port: http
               tls:
                 - secretName: forgejo-tls
                   hosts:
                    - '{{ .forgejo_hostname }}'
-              # Mostly for argocd or any other CI that uses `helm template | kubectl apply` or similar
-              # If helm doesn't correctly detect your ingress API version you can set it here.
-              apiVersion: networking.k8s.io/v1
 
             ## @section Route
             ## @param route.enabled Enable route
@@ -281,12 +279,6 @@ spec:
                 cpu: 100m
                 memory: 128Mi
 
-            ## Use an alternate scheduler, e.g. "stork".
-            ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
-            ##
-            ## @param schedulerName Use an alternate scheduler, e.g. "stork"
-            schedulerName: ''
-
             ## @param nodeSelector NodeSelector for the deployment
             nodeSelector: {}
 
@@ -327,13 +319,7 @@ spec:
             ## @section ServiceAccount
 
             serviceAccount:
-              create: false
-              name: ''
-              automountServiceAccountToken: false
-              imagePullSecrets: []
-              # - name: private-registry-access
-              annotations: {}
-              labels: {}
+              create: true
 
             persistence:
               enabled: true
