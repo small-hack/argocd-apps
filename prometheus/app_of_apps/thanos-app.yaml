@@ -431,7 +431,7 @@ spec:
                       runbook_url: "https://icanhazip.com"
                     expr: vector(1)
                     labels:
-                    severity: watchdog
+                      severity: watchdog
 
         ########################################################################
         #  __  __      _        _
