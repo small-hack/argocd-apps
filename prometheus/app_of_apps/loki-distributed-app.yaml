@@ -302,16 +302,7 @@ spec:
 
           replicas: 1
 
-          affinity:
-            podAntiAffinity:
-              requiredDuringSchedulingIgnoredDuringExecution:
-                - labelSelector:
-                    matchExpressions:
-                      - key: app
-                        operator: In
-                        values:
-                          - nope
-                  topologyKey: kubernetes.io/hostname
+          affinity: {}
 
           extraContainers:
             - name: load-rule-configmaps
@@ -339,8 +330,6 @@ spec:
           extraVolumeMounts:
             - name: fake
               mountPath: /etc/loki/rules/fake
-
-          affinity: null
 
           nodeSelector: {}
 
