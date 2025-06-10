@@ -42,7 +42,7 @@ spec:
           selfHeal: true
       source:
         repoURL: 'https://charts.schoenwald.aero'
-        targetRevision: 1.2.0
+        targetRevision: 1.2.1
         chart: gotosocial
         helm:
           releaseName: gotosocial
