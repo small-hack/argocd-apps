@@ -375,7 +375,7 @@ spec:
                   background-color: #a0d0ee;
                   color: #495763;
                }
-               .application-summary__label .application-node-info__label {
+               .application-summary__label .application-node-info__label .application-resource-tree__node-label{
                   background-color: #2d3147 !important;
                   color: #40aeff !important;
                }
