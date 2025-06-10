@@ -329,18 +329,9 @@ spec:
 
             persistence:
               enabled: true
-              create: true
+              create: false
               mount: true
-              claimName: gitea-shared-storage
-              size: 10Gi
-              accessModes:
-                - ReadWriteOnce
-              labels: {}
-              storageClass: local-path
-              subPath:
-              volumeName: ''
-              annotations:
-                helm.sh/resource-policy: keep
+              claimName: forgejo
 
             ## @param extraVolumes Additional volumes to mount to the Forgejo deployment
             extraVolumes: []
