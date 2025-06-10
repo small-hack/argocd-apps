@@ -69,14 +69,11 @@ spec:
             primary:
               persistence:
                 enabled: true
-                existingClaim: "valkey-index-primary"
 
             # valkey replica configuration
             replica:
               persistence:
                 enabled: true
-                existingClaim: "valkey-index-replica"
-
 
             # persistnent volume retention policy for the StatefulSet
             persistentVolumeClaimRetentionPolicy:
