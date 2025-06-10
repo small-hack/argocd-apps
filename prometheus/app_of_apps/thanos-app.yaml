@@ -368,22 +368,6 @@ spec:
             - name: extra-rules
               mountPath: /extra/rules/
 
-          env:
-            - name: LABEL
-              value: "thanos-ruler-alerts"
-
-            - name: FOLDER
-              value: /extra-rules/
-
-            - name: RESOURCE
-              value: configmap
-
-            - name: REQ_URL
-              value: http://thanos-ruler.monitoring.svc.cluster.local:9090/reload
-
-            - name: REQ_METHOD
-              value: POST
-
           replicaLabel: replica
 
           dnsDiscovery:
@@ -413,6 +397,21 @@ spec:
           extraEnvVars:
             - name: TZ
               value: "Europe/Amsterdam"
+
+            - name: LABEL
+              value: "thanos-ruler-alerts"
+
+            - name: FOLDER
+              value: /extra-rules/
+
+            - name: RESOURCE
+              value: configmap
+
+            - name: REQ_URL
+              value: http://thanos-ruler.monitoring.svc.cluster.local:9090/reload
+
+            - name: REQ_METHOD
+              value: POST
 
           persistence:
             enabled: false
