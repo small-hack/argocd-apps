@@ -220,14 +220,14 @@ spec:
                 cert-manager.io/cluster-issuer: letsencrypt-prod
                 kubernetes.io/tls-acme: "true"
               hosts:
-                - host: forgejo.buildstar.online
+                - host: '{{ .forgejo_hostname }}'
                   paths:
                     - path: /
                       pathType: Prefix
               tls:
                 - secretName: forgejo-tls
                   hosts:
-                   - forgejo.buildstar.online
+                   - '{{ .forgejo_hostname }}'
               # Mostly for argocd or any other CI that uses `helm template | kubectl apply` or similar
               # If helm doesn't correctly detect your ingress API version you can set it here.
               # apiVersion: networking.k8s.io/v1
