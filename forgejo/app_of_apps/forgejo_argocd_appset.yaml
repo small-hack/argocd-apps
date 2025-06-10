@@ -608,6 +608,15 @@ spec:
               #  periodSeconds: 10
               #  successThreshold: 1
               #  failureThreshold: 10
+              livenessProbe:
+                enabled: true
+                tcpSocket:
+                  port: http
+                initialDelaySeconds: 200
+                timeoutSeconds: 1
+                periodSeconds: 10
+                successThreshold: 1
+                failureThreshold: 10
 
               #readinessProbe:
               #  enabled: true
@@ -616,6 +625,15 @@ spec:
               #  periodSeconds: 10
               #  successThreshold: 1
               #  failureThreshold: 3
+              readinessProbe:
+                enabled: true
+                tcpSocket:
+                  port: http
+                initialDelaySeconds: 5
+                timeoutSeconds: 1
+                periodSeconds: 10
+                successThreshold: 1
+                failureThreshold: 3
 
               #startupProbe:
               #  enabled: false
@@ -626,6 +644,15 @@ spec:
               #  periodSeconds: 10
               #  successThreshold: 1
               #  failureThreshold: 10
+              startupProbe:
+                enabled: false
+                tcpSocket:
+                  port: http
+                initialDelaySeconds: 60
+                timeoutSeconds: 1
+                periodSeconds: 10
+                successThreshold: 1
+                failureThreshold: 10
 
             redis-cluster:
               enabled: false
