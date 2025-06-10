@@ -351,6 +351,9 @@ spec:
             targetCPU: 70
             targetMemory: 80
 
+          affinity:
+            podAntiAffinity: ""
+
           nodeAffinityPreset:
             type: hard
             key: node.kubernetes.io/instance-type
