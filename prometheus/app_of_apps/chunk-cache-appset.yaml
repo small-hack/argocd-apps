@@ -84,8 +84,9 @@ spec:
 
             metrics:
               enabled: true
-              service:
+              serviceMonitor:
                 enabled: true
+                interval: 10s
 
             # definitions: https://github.com/bitnami/charts/blob/main/bitnami/common/templates/_resources.tpl#L15
             # Options: nano, micro, small, medium, large, xlarge, 2xlarge
