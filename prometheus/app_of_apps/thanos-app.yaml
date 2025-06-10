@@ -356,7 +356,7 @@ spec:
           extraFlags:
             - --web.route-prefix=ruler
             - --web.external-prefix=ruler
-            - --query=https://thanos.buildstars.online/query
+            - --query=http://thanos-query.monitoring.svc.cluster.local:9090
             - --rule-file=/extra-rules/*.yml
 
           sidecars:
@@ -379,7 +379,7 @@ spec:
               value: configmap
 
             - name: REQ_URL
-              value: https://thanos.buildstars.online/ruler/-/reload
+              value: http://thanos-ruler.monitoring.svc.cluster.local:9090/reload
 
             - name: REQ_METHOD
               value: POST
