@@ -352,12 +352,14 @@ spec:
             targetMemory: 80
 
           affinity:
-            podAntiAffinity: {}
-
-          nodeAffinityPreset:
-            type: hard
-            key: node.kubernetes.io/instance-type
-            values: ["k3s"]
+            nodeAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                nodeSelectorTerms:
+                - matchExpressions:
+                  - key: kubernetes.io/arch
+                    operator: In
+                    values:
+                    - amd64
 
           extraFlags:
             - --web.route-prefix=ruler
