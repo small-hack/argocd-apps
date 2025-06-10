@@ -93,14 +93,7 @@ spec:
         ingester:
           replicas: 0
 
-          affinity:
-            podAntiAffinity:
-              requiredDuringSchedulingIgnoredDuringExecution:
-                - labelSelector:
-                    matchLabels:
-                      app.kubernetes.io/component: butts
-                  topologyKey: kubernetes.io/hostname
-          topologySpreadConstraints: []
+          affinity: {}
 
           autoscaling:
             enabled: true
@@ -132,7 +125,7 @@ spec:
 
           topologySpreadConstraints: []
 
-          affinity: null
+          affinity: {}
 
           autoscaling:
             enabled: true
@@ -204,13 +197,7 @@ spec:
 
           maxUnavailable: 2
 
-          affinity:
-            podAntiAffinity:
-              requiredDuringSchedulingIgnoredDuringExecution:
-                - labelSelector:
-                    matchLabels:
-                      app.kubernetes.io/component: butts
-                  topologyKey: kubernetes.io/hostname
+          affinity: {}
 
           topologySpreadConstraints: []
 
@@ -237,16 +224,7 @@ spec:
         compactor:
           replicas: 1
 
-          affinity:
-            podAntiAffinity:
-              requiredDuringSchedulingIgnoredDuringExecution:
-                - labelSelector:
-                    matchExpressions:
-                      - key: app
-                        operator: In
-                        values:
-                          - nope
-                  topologyKey: kubernetes.io/hostname
+          affinity: {}
 
           persistence:
             enabled: true
@@ -275,7 +253,7 @@ spec:
 
           joinMemberlist: true
 
-          affinity: null
+          affinity: {}
 
           persistence:
             enabled: false
@@ -302,15 +280,7 @@ spec:
 
           replicas: 1
 
-          affinity:
-            nodeAffinity:
-              requiredDuringSchedulingIgnoredDuringExecution:
-                nodeSelectorTerms:
-                - matchExpressions:
-                  - key: kubernetes.io/arch
-                    operator: In
-                    values:
-                    - amd64
+          affinity: {}
 
           extraContainers:
             - name: load-rule-configmaps
