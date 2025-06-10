@@ -241,8 +241,11 @@ spec:
             podAntiAffinity:
               requiredDuringSchedulingIgnoredDuringExecution:
                 - labelSelector:
-                    matchLabels:
-                      app.kubernetes.io/component: butts
+                    matchExpressions:
+                      - key: app
+                        operator: In
+                        values:
+                          - nope
                   topologyKey: kubernetes.io/hostname
 
           persistence:
@@ -298,6 +301,17 @@ spec:
           sidecar: false
 
           replicas: 1
+
+          affinity:
+            podAntiAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - labelSelector:
+                    matchExpressions:
+                      - key: app
+                        operator: In
+                        values:
+                          - nope
+                  topologyKey: kubernetes.io/hostname
 
           extraContainers:
             - name: load-rule-configmaps
