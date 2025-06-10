@@ -599,33 +599,33 @@ spec:
                 ## @param gitea.config.other Uncategorized configuration options
                 other: {}
 
-              livenessProbe:
-                enabled: true
-                tcpSocket:
-                  port: http
-                initialDelaySeconds: 200
-                timeoutSeconds: 1
-                periodSeconds: 10
-                successThreshold: 1
-                failureThreshold: 10
+              #livenessProbe:
+              #  enabled: true
+              #  tcpSocket:
+              #    port: http
+              #  initialDelaySeconds: 200
+              #  timeoutSeconds: 1
+              #  periodSeconds: 10
+              #  successThreshold: 1
+              #  failureThreshold: 10
 
-              readinessProbe:
-                enabled: true
-                initialDelaySeconds: 5
-                timeoutSeconds: 1
-                periodSeconds: 10
-                successThreshold: 1
-                failureThreshold: 3
+              #readinessProbe:
+              #  enabled: true
+              #  initialDelaySeconds: 5
+              #  timeoutSeconds: 1
+              #  periodSeconds: 10
+              #  successThreshold: 1
+              #  failureThreshold: 3
 
-              startupProbe:
-                enabled: false
-                tcpSocket:
-                  port: http
-                initialDelaySeconds: 60
-                timeoutSeconds: 1
-                periodSeconds: 10
-                successThreshold: 1
-                failureThreshold: 10
+              #startupProbe:
+              #  enabled: false
+              #  tcpSocket:
+              #    port: http
+              #  initialDelaySeconds: 60
+              #  timeoutSeconds: 1
+              #  periodSeconds: 10
+              #  successThreshold: 1
+              #  failureThreshold: 10
 
             redis-cluster:
               enabled: false
