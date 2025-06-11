@@ -25,26 +25,6 @@ spec:
       skipCrds: true
       valuesObject:
         fullnameOverride: loki-distributed
-        ########################################################################
-        #  _          _    _
-        # | |    ___ | | _(_)
-        # | |   / _ \| |/ / |
-        # | |__| (_) |   <| |
-        # |_____\___/|_|\_\_|
-        ########################################################################
-        loki:
-          configStorageType: Secret
-          configObjectName: 'loki-config'
-
-          schemaConfig:
-            configs:
-              - from: 2024-04-01
-                store: tsdb
-                object_store: s3
-                schema: v13
-                index:
-                  prefix: loki_index_
-                  period: 24h
 
         test:
           enabled: false
@@ -81,19 +61,40 @@ spec:
           replicas: 0
 
         # disable memcached embedded cache
-        memcached:
+        memcachedExporter:
           enabled: false
 
-          memcachedExporter:
-            enabled: false
+        chuncksCache:
+          enabled: false
 
-          chuncksCache:
-            enabled: false
-
-          resultsCache:
-            enabled: false
+        resultsCache:
+          enabled: false
 
         deploymentMode: Distributed
+
+        ########################################################################
+        #  _          _    _
+        # | |    ___ | | _(_)
+        # | |   / _ \| |/ / |
+        # | |__| (_) |   <| |
+        # |_____\___/|_|\_\_|
+        ########################################################################
+        loki:
+          configStorageType: Secret
+          configObjectName: 'loki-config'
+
+          schemaConfig:
+            configs:
+              - from: 2024-04-01
+                store: tsdb
+                object_store: s3
+                schema: v13
+                index:
+                  prefix: loki_index_
+                  period: 24h
+
+          memcached:
+            enabled: false
 
         ########################################################################
         #  ___                       _
