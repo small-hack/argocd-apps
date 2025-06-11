@@ -80,6 +80,12 @@ spec:
         singleBinary:
           replicas: 0
 
+        # disable memcached embedded cache
+        chuncksCache:
+          enabled: false
+        resultsCache:
+          enabled: false
+
         deploymentMode: Distributed
 
         ########################################################################
