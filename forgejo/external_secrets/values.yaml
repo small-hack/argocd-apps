@@ -7,8 +7,7 @@ s3_provider: "seaweedfs"
 
 # -- existing kubernetes secret with s3 admin credentials
 s3AdminCredentialsBitwardenID: ""
-# -- existing kubernetes secret with s3 forgejo credentials
-s3forgejoCredentialsBitwardenID: ""
+
 # -- existing kubernetes secret with s3 postgres credentials
 s3PostgresCredentialsBitwardenID: ""
 

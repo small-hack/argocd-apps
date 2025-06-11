@@ -18,7 +18,6 @@ A Helm chart for Forgejo External Secrets using the Bitwarden ESO provider on Ku
 | s3BackupCredentialsBitwardenID | string | `""` | existing kubernetes secret with s3 credentials for the remote backups |
 | s3PostgresCredentialsBitwardenID | string | `""` | existing kubernetes secret with s3 postgres credentials |
 | s3_provider | string | `"seaweedfs"` | if set to seaweedfs we deploy a policy secret. can also be minio |
-| s3forgejoCredentialsBitwardenID | string | `""` | existing kubernetes secret with s3 forgejo credentials |
 | serverInfoTokenBitwardenID | string | `""` | forgejo server info token for metrics |
 | smtpCredentialsBitwardenID | string | `""` | forgejo smtp Credentials |
 
