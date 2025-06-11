@@ -81,8 +81,15 @@ spec:
           replicas: 0
 
         # disable memcached embedded cache
+        memcached:
+          enabled: false
+
+        memcachedExporter:
+          enabled: false
+
         chuncksCache:
           enabled: false
+
         resultsCache:
           enabled: false
 
