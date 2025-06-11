@@ -19,21 +19,14 @@ s3BackupCredentialsBitwardenID: ""
 # -- forgejo admin Credentials
 adminCredentialsBitwardenID: ""
 
-# -- forgejo server info token for metrics
-serverInfoTokenBitwardenID: ""
-
 # -- forgejo smtp Credentials
 smtpCredentialsBitwardenID: ""
 
 # -- forgejo postgres Credentials
 postgresqlBitwardenID: ""
 
-# -- forgejo redis Credentials
-redisBitwardenID: ""
+# -- forgejo valkey Credentials
+valkeyBitwardenID: ""
 
 # -- forgejo OIDC Credentials
 oidcCredentialsBitwardenID: ""
-
-collabora:
-  # -- collabora online admin crdentials bitwarden ID
-  adminCredentialsBitwardenID: ""
