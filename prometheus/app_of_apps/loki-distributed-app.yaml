@@ -84,14 +84,14 @@ spec:
         memcached:
           enabled: false
 
-        memcachedExporter:
-          enabled: false
+          memcachedExporter:
+            enabled: false
 
-        chuncksCache:
-          enabled: false
+          chuncksCache:
+            enabled: false
 
-        resultsCache:
-          enabled: false
+          resultsCache:
+            enabled: false
 
         deploymentMode: Distributed
 
