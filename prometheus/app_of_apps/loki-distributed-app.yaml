@@ -35,7 +35,6 @@ spec:
         serviceAccount:
           create: true
 
-
         # optional experimental components
         bloomPlanner:
           replicas: 0
@@ -64,10 +63,7 @@ spec:
         memcachedExporter:
           enabled: false
 
-        chuncksCache:
-          enabled: false
-
-        resultsCache:
+        chunksCache:
           enabled: false
 
         deploymentMode: Distributed
@@ -92,9 +88,6 @@ spec:
                 index:
                   prefix: loki_index_
                   period: 24h
-
-          memcached:
-            enabled: false
 
         ########################################################################
         #  ___                       _
