@@ -83,9 +83,6 @@ spec:
               rootless: true
               fullOverride: ''
 
-            ## @param imagePullSecrets Secret to use for pulling the image
-            imagePullSecrets: []
-
             ## @section Security
             # Security context is only usable with rootless image due to image design
             ## @param podSecurityContext.fsGroup Set the shared file system group for all containers in the pod.
@@ -344,7 +341,7 @@ spec:
             #
             gitea:
               admin:
-                existingSecret: gitea-admin-secret
+                existingSecret: forgejo-admin-credentials
                 email: 'gitea@local.domain'
                 passwordMode: keepUpdated
 
@@ -355,9 +352,6 @@ spec:
                   # namespace: 'monitoring'
                   #  additionalLabels:
                   #    prometheus-release: prom1
-
-              ## @param gitea.ldap LDAP configuration
-              ldap: []
 
               # Either specify inline `key` and `secret` or refer to them via `existingSecret`
               ## @param gitea.oauth OAuth configuration
@@ -381,33 +375,33 @@ spec:
               #   - configMap:
               #       name: gitea-app-ini-plaintext
 
-              ## @param gitea.additionalConfigFromEnvs Additional configuration sources from environment variables
+              # Additional configuration sources from environment variables
               additionalConfigFromEnvs:
               - name: FORGEJO__CACHE__HOST
                 valueFrom:
                   secretKeyRef:
-                    name: redis-creds
+                    name: forgejo-valkey-credentials
                     key: REDIS_URL
+
               - name: FORGEJO__QUEUE__CONN_STR
                 valueFrom:
                   secretKeyRef:
-                    name: redis-creds
+                    name: forgejo-valkey-credentials
                     key: REDIS_URL
+
               - name: FORGEJO__DATABASE__USER
                 valueFrom:
                   secretKeyRef:
-                    name: gitea-pgsql-credentials
+                    name: forgejo-pgsql-credentials
                     key: username
+
               - name: FORGEJO__DATABASE__PASSWD
                 valueFrom:
                   secretKeyRef:
-                    name: gitea-pgsql-credentials
+                    name: forgejo-pgsql-credentials
                     key: password
 
-              ## @param gitea.podAnnotations Annotations for the Forgejo pod
-              podAnnotations: {}
-
-              ## @param gitea.ssh.logLevel Configure OpenSSH's log level. Only available for root-based Forgejo image.
+              # Configure OpenSSH's log level. Only available for root-based Forgejo image.
               ssh:
                 logLevel: 'INFO'
 
@@ -416,16 +410,16 @@ spec:
                 # (https://forgejo.org/docs/latest/admin/config-cheat-sheet/#overall-default)
                 # are un-namespaced
 
-                ## @param gitea.config.APP_NAME Application name, used in the page title
+                # Application name, used in the page title
                 APP_NAME: 'Forgejo: Beyond coding. We forge.'
 
-                ## @param gitea.config.RUN_MODE Application run mode, affects performance and debugging: `dev` or `prod`
+                # Application run mode, affects performance and debugging: `dev` or `prod`
                 RUN_MODE: prod
 
-                ## @param gitea.config.repository General repository settings
+                # General repository settings
                 repository: {}
 
-                ## @param gitea.config.cors Cross-origin resource sharing settings
+                # Cross-origin resource sharing settings
                 cors: {}
 
                 ## @param gitea.config.ui User interface settings
