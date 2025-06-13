@@ -23,12 +23,6 @@ spec:
                 "secretKey": "{{ `{{ .adminSecretKey }}` }}"}
              ],
              "actions": ["Admin","Read","Write"]},
-            {"name": "forgejo",
-             "credentials": [
-               {"accessKey": "{{ `{{ .userAccessKey }}` }}",
-                "secretKey": "{{ `{{ .userSecretKey }}` }}"}
-             ],
-             "actions": ["Read:forgejo-data","Write:forgejo-data","List:forgejo-data"]},
             {"name": "forgejo-postgres",
              "credentials": [
                {"accessKey": "{{ `{{ .dbUserAccessKey }}` }}",
@@ -53,24 +47,6 @@ spec:
           kind: ClusterSecretStore
       remoteRef:
         key: {{ .Values.s3AdminCredentialsBitwardenID }}
-        property: password
-
-    - secretKey: userAccessKey
-      sourceRef:
-        storeRef:
-          name: bitwarden-login
-          kind: ClusterSecretStore
-      remoteRef:
-        key: {{ .Values.s3NextcloudCredentialsBitwardenID }}
-        property: username
-
-    - secretKey: userSecretKey
-      sourceRef:
-        storeRef:
-          name: bitwarden-login
-          kind: ClusterSecretStore
-      remoteRef:
-        key: {{ .Values.s3NextcloudCredentialsBitwardenID }}
         property: password
 
     - secretKey: dbUserAccessKey
