@@ -340,12 +340,12 @@ spec:
               
               echo "making directory /data/git/.postgresql"
               mkdir -p /data/git/.postgresql
-              
-              echo "verifying it was created"
-              ls -hal /data/git/.postgresql/
 
               echo "sleeping"
               sleep 600
+              
+              echo "verifying it was created"
+              ls -hal /data/git/.postgresql/
               
               echo "copy postgres certs from /etc/secrets to /data/git/.postgres..."
               cp /etc/secrets/app/tls.crt /data/git/.postgresql/postgresql.crt
