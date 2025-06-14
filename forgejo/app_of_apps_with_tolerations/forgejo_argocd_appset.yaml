@@ -344,6 +344,9 @@ spec:
               echo "verifying it was created"
               ls -hal /data/git/.postgresql/
 
+              echo "sleeping"
+              sleep 600
+              
               echo "copy postgres certs from /etc/secrets to /data/git/.postgres..."
               cp /etc/secrets/app/tls.crt /data/git/.postgresql/postgresql.crt
               cp /etc/secrets/app/tls.key /data/git/.postgresql/postgresql.key
