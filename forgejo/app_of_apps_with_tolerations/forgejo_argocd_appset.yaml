@@ -282,15 +282,7 @@ spec:
             priorityClassName: ''
 
             deployment:
-              env:
-                - name: PGSSLCERT
-                  value: "/etc/secrets/app/tls.crt"
-                - name: PGSSLKEY
-                  value: "/etc/secrets/app/tls.key"
-                - name: PGSSLROOTCERT
-                  value: "/etc/secrets/ca/ca.crt"
-                - name: PGSSLMODE
-                  value: "verify-full"
+              env: []
 
               terminationGracePeriodSeconds: 60
               labels: {}
@@ -338,7 +330,13 @@ spec:
 
             ## @section Init
             ## @param initPreScript Bash shell script copied verbatim to the start of the init-container.
-            initPreScript: ''
+            initPreScript: |
+              mkdir -p /data/git/.postgresql
+              cp /etc/secrets/app/tls.crt /data/git/.postgresql/
+              cp /etc/secrets/app/tls.key /data/git/.postgresql/
+              cp /etc/secrets/ca/ca.crt /data/git/.postgresql/
+              chown -R git:git /data/git/.postgresql/
+              chmod 400 /data/git/.postgresql/tls.key
 
             initContainers:
               resources:
