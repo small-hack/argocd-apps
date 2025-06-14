@@ -333,10 +333,14 @@ spec:
             initPreScript: |
               echo "pg secrets dir"
               ls -hal /etc/secrets/app/
-              echo "I am $whoami"
-              echo "you are here in $pwd"
+              
+              echo "I am $(whoami)"
+              
+              echo "you are here in $(pwd)"
+              
               echo "making directory /data/git/.postgresql"
               mkdir -p /data/git/.postgresql
+              
               echo "verifying it was created"
               ls -hal /data/git/.postgresql/
 
