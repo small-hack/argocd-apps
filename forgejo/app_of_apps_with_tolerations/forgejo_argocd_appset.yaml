@@ -336,7 +336,7 @@ spec:
               cp /etc/secrets/app/tls.key /data/git/.postgresql/postgresql.key
               cp /etc/secrets/ca/ca.crt /data/git/.postgresql/root.crt
               chown -R git:git /data/git/.postgresql/
-              chmod 400 /data/git/.postgresql/postgresql.key
+              chmod -R 0600 /data/git/.postgresql/
               ls -hal /data/git/.postgresql/
               env
 
@@ -397,25 +397,25 @@ spec:
 
               # Additional configuration sources from environment variables
               additionalConfigFromEnvs:
-              - name: FORGEJO__CACHE__HOST
+              - name: GITEA__CACHE__HOST
                 valueFrom:
                   secretKeyRef:
                     name: forgejo-valkey-credentials
                     key: REDIS_URL
 
-              - name: FORGEJO__QUEUE__CONN_STR
+              - name: GITEA__QUEUE__CONN_STR
                 valueFrom:
                   secretKeyRef:
                     name: forgejo-valkey-credentials
                     key: REDIS_URL
 
-              - name: FORGEJO__DATABASE__USER
+              - name: GITEA__DATABASE__USER
                 valueFrom:
                   secretKeyRef:
                     name: forgejo-pgsql-credentials
                     key: username
 
-              - name: FORGEJO__DATABASE__PASSWD
+              - name: GITEA__DATABASE__PASSWD
                 valueFrom:
                   secretKeyRef:
                     name: forgejo-pgsql-credentials
