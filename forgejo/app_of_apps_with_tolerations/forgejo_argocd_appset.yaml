@@ -346,13 +346,10 @@ spec:
               echo "Show files we copied:"
               ls -hal /data/git/.postgresql/
 
-              #echo "sleeping"
-              #sleep 60
-
-              #echo "changing directory ownership on /data/git/.postgresql"
-              #chown -R git:git /data/git/.postgresql/
-              #chmod -R 0600 /data/git/.postgresql/
-              #ls -hal /data/git/.postgresql/
+              echo "changing directory ownership on /data/git/.postgresql"
+              chown -R git:git /data/git/.postgresql/
+              chmod -R 0600 /data/git/.postgresql/
+              ls -hal /data/git/.postgresql/
 
             initContainers:
               resources:
