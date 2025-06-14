@@ -1,0 +1,16 @@
+---
+# Holds postgres certs
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: forgejo
+  name: postgres-certs
+  annotations:
+    k8up.io/backup: 'true'
+spec:
+  storageClassName: {{ .Values.pvc_storageClassName }}
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 64Mi
