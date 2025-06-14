@@ -337,7 +337,7 @@ spec:
               cp /etc/secrets/ca/ca.crt /data/git/.postgresql/root.crt
               chown -R git:git /data/git/.postgresql/
               chmod 400 /data/git/.postgresql/postgresql.key
-              la -hal /data/git/.postgresql/
+              ls -hal /data/git/.postgresql/
               env
 
             initContainers:
