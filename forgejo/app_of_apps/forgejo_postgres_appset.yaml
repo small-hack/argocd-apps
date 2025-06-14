@@ -97,4 +97,4 @@ spec:
 
             postgresql:
               pg_hba:
-                - hostssl all all 0.0.0.0/0 cert
+                - host all all 0.0.0.0/0 md5
