@@ -302,19 +302,33 @@ spec:
               claimName: forgejo
 
             ## @param extraVolumes Additional volumes to mount to the Forgejo deployment
-            extraVolumes: []
             # - name: postgres-ssl-vol
             #   secret:
             #     secretName: gitea-postgres-ssl
+            extraVolumes:
+              - name: postgres-ca
+                secret:
+                  secretName: forgejo-postgres-server-ca-key-pair
+                  defaultMode: 0640
+
+              - name: postgres-client-certs
+                secret:
+                  secretName: forgejo-postgres-forgejo-cert
+                  defaultMode: 0640
 
             extraContainerVolumeMounts: []
 
             extraInitVolumeMounts: []
 
-            extraVolumeMounts: []
             # - name: postgres-ssl-vol
             #   readOnly: true
             #   mountPath: "/pg-ssl"
+            extraVolumeMounts:
+              - name: postgres-ca
+                mountPath: /etc/secrets/ca
+
+              - name: postgres-client-certs
+                mountPath: /etc/secrets/nextcloud
 
             ## @section Init
             ## @param initPreScript Bash shell script copied verbatim to the start of the init-container.
@@ -436,7 +450,7 @@ spec:
                 ## @param gitea.config.database Database configuration (only necessary with an [externally managed DB](https://code.forgejo.org/forgejo-helm/forgejo-helm#external-database)).
                 database:
                   DB_TYPE: postgres
-                  HOST: forgejo-postgres-rw:5432
+                  HOST: forgejo-postgres-rw.forgejo.svc:5432
                   NAME: forgejo
                   USER: forgejo
 
