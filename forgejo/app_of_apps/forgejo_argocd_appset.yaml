@@ -373,7 +373,7 @@ spec:
             #
             gitea:
               admin:
-                existingSecret: gitea-admin-secret
+                existingSecret: forgejo-admin-credentials
                 email: 'gitea@local.domain'
                 passwordMode: keepUpdated
 
@@ -415,7 +415,7 @@ spec:
               - name: FORGEJO__CACHE__HOST
                 valueFrom:
                   secretKeyRef:
-                    name: redis-creds
+                    name: forgejo-valkey-credentials
                     key: REDIS_URL
               - name: FORGEJO__QUEUE__CONN_STR
                 valueFrom:
@@ -425,12 +425,12 @@ spec:
               - name: FORGEJO__DATABASE__USER
                 valueFrom:
                   secretKeyRef:
-                    name: gitea-pgsql-credentials
+                    name: forgejo-pgsql-credentials
                     key: username
               - name: FORGEJO__DATABASE__PASSWD
                 valueFrom:
                   secretKeyRef:
-                    name: gitea-pgsql-credentials
+                    name: forgejo-pgsql-credentials
                     key: password
 
               ## @param gitea.podAnnotations Annotations for the Forgejo pod
