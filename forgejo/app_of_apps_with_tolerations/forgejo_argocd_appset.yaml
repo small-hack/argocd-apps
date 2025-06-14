@@ -332,6 +332,7 @@ spec:
             ## @param initPreScript Bash shell script copied verbatim to the start of the init-container.
             initPreScript: |
               mkdir -p /data/git/.postgresql
+              chmod -R 0600 /data/git/.postgresql/
               ls -hal /data/git/.postgresql/
               ls -hal /etc/secrets/app/
               whoami
