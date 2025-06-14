@@ -314,6 +314,9 @@ spec:
                   secretName: forgejo-postgres-forgejo-cert
                   defaultMode: 438
 
+              - name: postgres-certs
+                emptyDir: {}
+
             extraContainerVolumeMounts: []
 
             extraInitVolumeMounts: []
@@ -327,6 +330,9 @@ spec:
 
               - name: postgres-client-certs
                 mountPath: /etc/secrets/app
+                
+              - name: postgres-certs
+                mountPath: /data/git/.postgresql           
 
             ## @section Init
             ## @param initPreScript Bash shell script copied verbatim to the start of the init-container.
