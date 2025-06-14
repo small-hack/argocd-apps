@@ -307,12 +307,12 @@ spec:
               - name: postgres-ca
                 secret:
                   secretName: forgejo-postgres-server-ca-key-pair
-                  defaultMode: 420
+                  defaultMode: 438
 
               - name: postgres-client-certs
                 secret:
                   secretName: forgejo-postgres-forgejo-cert
-                  defaultMode: 420
+                  defaultMode: 438
 
             extraContainerVolumeMounts: []
 
