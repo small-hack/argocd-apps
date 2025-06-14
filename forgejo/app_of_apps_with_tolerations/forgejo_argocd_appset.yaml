@@ -331,34 +331,34 @@ spec:
             ## @section Init
             ## @param initPreScript Bash shell script copied verbatim to the start of the init-container.
             initPreScript: |
-              echo "pg secrets dir"
-              ls -hal /etc/secrets/app/
+              #echo "pg secrets dir"
+              #ls -hal /etc/secrets/app/
               
-              echo "I am $(whoami)"
+              #echo "I am $(whoami)"
               
-              echo "you are here in $(pwd)"
+              #echo "you are here in $(pwd)"
               
-              echo "making directory /data/git/.postgresql"
-              mkdir -p /data/git/.postgresql
+              #echo "making directory /data/git/.postgresql"
+              #mkdir -p /data/git/.postgresql
 
               echo "sleeping"
               sleep 600
               
-              echo "verifying it was created"
-              ls -hal /data/git/.postgresql/
+              #echo "verifying it was created"
+              #ls -hal /data/git/.postgresql/
               
-              echo "copy postgres certs from /etc/secrets to /data/git/.postgres..."
-              cp /etc/secrets/app/tls.crt /data/git/.postgresql/postgresql.crt
-              cp /etc/secrets/app/tls.key /data/git/.postgresql/postgresql.key
-              cp /etc/secrets/ca/ca.crt /data/git/.postgresql/root.crt
+              #echo "copy postgres certs from /etc/secrets to /data/git/.postgres..."
+              #cp /etc/secrets/app/tls.crt /data/git/.postgresql/postgresql.crt
+              #cp /etc/secrets/app/tls.key /data/git/.postgresql/postgresql.key
+              #cp /etc/secrets/ca/ca.crt /data/git/.postgresql/root.crt
 
-              echo "Show files we copied:"
-              ls -hal /data/git/.postgresql/
+              #echo "Show files we copied:"
+              #ls -hal /data/git/.postgresql/
 
-              echo "changing directory ownership on /data/git/.postgresql"
-              chown -R git:git /data/git/.postgresql/
-              chmod -R 0600 /data/git/.postgresql/
-              ls -hal /data/git/.postgresql/
+              #echo "changing directory ownership on /data/git/.postgresql"
+              #chown -R git:git /data/git/.postgresql/
+              #chmod -R 0600 /data/git/.postgresql/
+              #ls -hal /data/git/.postgresql/
 
             initContainers:
               resources:
