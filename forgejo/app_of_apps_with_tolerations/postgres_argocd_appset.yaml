@@ -97,5 +97,6 @@ spec:
 
             postgresql:
               pg_hba:
-                - hostnossl all all 0.0.0.0/0 reject
-                - hostssl forgejo forgejo 0.0.0.0/0 scram-sha-256 clientcert=verify-full
+                - host all all 0.0.0.0/0 md5
+                #- hostnossl all all 0.0.0.0/0 reject
+                #- hostssl forgejo forgejo 0.0.0.0/0 scram-sha-256 clientcert=verify-full
