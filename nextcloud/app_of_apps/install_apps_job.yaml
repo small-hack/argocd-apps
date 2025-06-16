@@ -17,11 +17,11 @@ spec:
             claimName: nextcloud-files
         - configMap:
             defaultMode: 420
-            name: nextcloud-web-app-config
+            name: nextcloud-config
           name: nextcloud-config
         - configMap:
             defaultMode: 420
-            name: nextcloud-web-app-phpconfig
+            name: nextcloud-phpconfig
           name: nextcloud-phpconfig
         - name: postgres-ca
           secret:
