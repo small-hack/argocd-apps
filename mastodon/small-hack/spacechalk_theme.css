@@ -56,7 +56,7 @@
 --textPageBold: #7aa2f7;
 --textPageMuted: #f6f76a;
 
---bgHead: #323232;
+--bgHead: #292938;
 --textHead: #5cc9fd;
 --accent: #fdcd36;
 --accentText: #ffd147;
@@ -91,6 +91,7 @@
   transform: scale(2);
   transition: all 0.2s ease;
   position: absolute;
+  background-color: var(--bg);
 }
 
 /*------------------------------------------------------------------------------
@@ -133,6 +134,16 @@
 }
 
 /*------------------------------------------
+* profile headers should be purple
+--------------------------------------------*/
+
+.account__header__bio .account__header__fields dt {
+	color: #927bff !important;
+	text-transform: uppercase;
+	width: auto;
+}
+
+/*------------------------------------------
 *   followers icon should always be yellow
 --------------------------------------------*/
 
@@ -148,9 +159,9 @@
   color: #f289f9 !important;
 }
 
-/*-----------------------------------------
-* 󰗊  translate icon should always be white
-------------------------------------------*/
+/*------------------------------------
+* 󰗊  translate should always be white
+--------------------------------------*/
 .dropdown-button .icon-undefined {
   color: var(--text) !important;
 }
@@ -170,7 +181,7 @@
 }
 
 /*---------------------------------------------
-*     compose new toot form and search bar
+*     compose form for new toot and search bar
 -----------------------------------------------*/
 .autosuggest-textarea__textarea::placeholder, .search__input::placeholder {
   color: var(--textPageBold) !important;
@@ -180,7 +191,7 @@
 * make the profile banner a decent size
 * -----------------------------------------*/
 .account__header__image {
-  height: 250px;
+  height: 225px;
 }
 
 .account__header__bar {
