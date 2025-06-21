@@ -56,11 +56,10 @@ spec:
           releaseName: mastodon
           valuesObject:
             fullnameOverride: mastodon
-            # original repository: ghcr.io/mastodon/mastodon
             image:
               repository: ghcr.io/glitch-soc/mastodon
-              # tag: nightly.2025-03-14-security
-              tag: v4.4.0-beta.1
+              # tag: v4.4.0-beta.1
+              tag: v4.4.0-beta.2
 
             tolerations:
               - key: '{{ .mastodon_toleration_key }}'
