@@ -27,16 +27,19 @@ spec:
               - prometheus_alert_manager_hostname
               - prometheus_grafana_hostname
               - global_cluster_issuer
-  templatePatch: |
-    spec:
-      source:
-        helm:
-          parameters:
-            {{- $users := .matrix_admin_users }}
-            {{- range $index, $user := $users }}
-            - name: bridges.discord_mautrix.admin_users[{{ $index }}]
-              value: {{ $user }}
-            {{- end }}
+
+  # you can use this for creating mautrix bridges
+  # templatePatch: |
+  #   spec:
+  #     source:
+  #       helm:
+  #         parameters:
+  #           {{- $users := .matrix_admin_users }}
+  #           {{- range $index, $user := $users }}
+  #           - name: bridges.discord_mautrix.admin_users[{{ $index }}]
+  #             value: {{ $user }}
+  #           {{- end }}
+
   template:
     metadata:
       name: matrix-web-app
@@ -92,7 +95,7 @@ spec:
               # -- Settings related to image and multimedia uploads
               uploads:
                 # -- Max upload size in bytes
-                maxSize: 100M
+                maxSize: 2G
 
                 # -- Max image size in pixels
                 maxPixels: 64M
@@ -507,6 +510,8 @@ spec:
               # Element Desktop, or any other Matrix clients
               enabled: true
 
+              revisionHistoryLimit: 1
+
               ingress:
                 # -- enable ingress for element
                 enabled: true
@@ -665,7 +670,7 @@ spec:
 
               discord_mautrix:
                 # -- Set to true to enable the Discord bridge. Learn more in the [docs](https://docs.mau.fi/bridges/go/discord/index.html).
-                enabled: true
+                enabled: false
 
                 revisionHistoryLimit: 1
 
