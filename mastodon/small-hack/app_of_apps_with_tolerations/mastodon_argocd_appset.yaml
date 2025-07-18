@@ -168,8 +168,10 @@ spec:
               # These can be used for configuration not included in this chart (including configuration for Mastodon varietals.)
               # ref: https://github.com/glitch-soc/mastodon/blob/main/.env.production.sample#L256
               extraEnvVars:
-                - name: SKIP_POST_DEPLOYMENT_MIGRATIONS
-                  value: "true"
+                # enable pre-deployment migrations
+                # - name: SKIP_POST_DEPLOYMENT_MIGRATIONS
+                #   value: "true"
+
                 # Maximum allowed character count
                 - name: MAX_TOOT_CHARS
                   value: "2750"
