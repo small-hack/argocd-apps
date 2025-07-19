@@ -77,6 +77,8 @@ spec:
               securityContext:
                 runAsUser: 0
 
+              affinity: false
+
               backup_name: "mastodon-nightly-backup"
 
               # -- can be set to 's3' or 'local'
