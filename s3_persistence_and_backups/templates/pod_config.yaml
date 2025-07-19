@@ -16,7 +16,7 @@ spec:
             - name: {{ .Values.app }}
               value: "true"
 
-      {{- if .Values.tolerations }}
+      {{- if and .Values.tolerations .Values.k8up.tolerations }}
       tolerations:
         {{- range .Values.tolerations }}
         - effect: {{ .effect }}
@@ -26,7 +26,7 @@ spec:
         {{- end }}
       {{- end }}
 
-      {{- with .Values.affinity}}
+      {{- with and .Values.k8up.tolerations .Values.affinity}}
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
