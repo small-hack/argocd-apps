@@ -25,7 +25,7 @@ spec:
     metadata:
       name: argo-workflows-helm
     spec:
-      project: argocd
+      project: argo-cd
       syncPolicy:
         syncOptions:
           - ApplyOutOfSyncOnly=true
