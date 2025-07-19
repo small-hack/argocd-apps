@@ -46,6 +46,8 @@ spec:
             name: mastodon-postgres
             instances: 2
 
+            imageName: ghcr.io/cloudnative-pg/postgresql:16
+
             bootstrap:
               initdb:
                 database: mastodon
