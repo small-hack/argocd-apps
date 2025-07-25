@@ -53,7 +53,7 @@ spec:
             image:
               # original repository: ghcr.io/mastodon/mastodon
               repository: ghcr.io/glitch-soc/mastodon
-              tag: v4.4.1
+              tag: v4.4.2
 
             mastodon:
               hooks:
