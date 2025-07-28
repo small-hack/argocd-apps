@@ -75,10 +75,10 @@ spec:
                 enabled: true
                 issuer:  '{{ .argo_cd_oidc_issuer }}'
                 clientId:
-                  name: workflows-oidc-credentials
+                  name: argocd-oidc-credentials
                   key: oidc.clientID
                 clientSecret:
-                  name: workflows-oidc-credentials
+                  name: argocd-oidc-credentials
                   key: oidc.clientSecret
                 redirectUrl: 'https://{{ .workflows_hostname }}/oauth2/callback'
                 rbac:
@@ -89,7 +89,7 @@ spec:
                   - profile
                   - email
                   - groups
-                sessionExpiry: "10h"
+                sessionExpiry: ""
                 insecureSkipVerify: false
 
             # -- Use static credentials for S3 (eg. when not using AWS IRSA)
