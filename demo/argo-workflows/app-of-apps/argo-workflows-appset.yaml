@@ -82,7 +82,7 @@ spec:
                   key: oidc.clientSecret
                 redirectUrl: 'https://{{ .workflows_hostname }}/oauth2/callback'
                 rbac:
-                  enabled: true
+                  enabled: false
                   secretWhitelist: []
                 scopes:
                   - openid
