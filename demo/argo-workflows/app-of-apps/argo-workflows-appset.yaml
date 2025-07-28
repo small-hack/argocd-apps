@@ -48,7 +48,7 @@ spec:
 
             server:
               enabled: true
-              authModes: ["client"]
+              authModes: ["sso"]
               logging:
                 level: info
                 globallevel: "0"
@@ -97,11 +97,14 @@ spec:
             artifactRepository:
               archiveLogs: false
               s3:
+                bucket: artifacts
+                endpoint: s3.workflows.buildstar.online
+                useSDKCreds: true
                 accessKeySecret:
-                  name: "{{ .Release.Name }}-minio"
+                  name: "workflows-s3-artifact-credentials"
                   key: accesskey
                 secretKeySecret:
-                  name: "{{ .Release.Name }}-minio"
+                  name: "workflows-s3-artifact-credentials"
                   key: secretkey
                 # insecure: false
                 # caSecret:
