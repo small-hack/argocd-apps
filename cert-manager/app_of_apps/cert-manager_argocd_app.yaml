@@ -14,6 +14,11 @@ spec:
     targetRevision: v1.18.2
     helm:
       releaseName: cert-manager
+      config:
+        featureGates:
+          # Disable the use of Exact PathType in Ingress resources, to work around a bug in ingress-nginx
+          # https://github.com/kubernetes/ingress-nginx/issues/11176
+          ACMEHTTP01IngressPathTypeExact: false
   destination:
     server: "https://kubernetes.default.svc"
     namespace: cert-manager
