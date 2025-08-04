@@ -2,7 +2,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: zitadel-s3-provider-app-set
+  name: kubevirt-s3-provider-app-set
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "2"
@@ -16,17 +16,17 @@ spec:
         input:
           parameters:
             secret_vars:
-              - zitadel_s3_provider
+              - kubevirt_s3_provider
   template:
     metadata:
-      name: zitadel-{{ .zitadel_s3_provider }}
+      name: kubevirt-{{ .kubevirt_s3_provider }}
       annotations:
         argocd.argoproj.io/sync-wave: "2"
     spec:
-      project: zitadel
+      project: kubevirt
       destination:
         server: "https://kubernetes.default.svc"
-        namespace: zitadel
+        namespace: kubevirt
       syncPolicy:
         syncOptions:
           - ApplyOutOfSyncOnly=true
@@ -35,5 +35,5 @@ spec:
           selfHeal: true
       source:
         repoURL: https://github.com/small-hack/argocd-apps.git
-        path: zitadel/storage/{{ .zitadel_s3_provider }}/
-        targetRevision: no-smtp-env-vars
+        path: kubevirt/storage/{{ .kubevirt_s3_provider }}/
+        targetRevision: main
