@@ -70,3 +70,8 @@ spec:
                 # This example is using kubernetes-style naming.
                 server_address: dns:///index-gateway.prometheus.svc.cluster.local:9095
               shared_store: gcs
+
+        ingester:
+          zoneAwareReplication:
+            # -- Enable zone awareness.
+            enabled: false
