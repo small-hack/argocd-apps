@@ -8,37 +8,13 @@ metadata:
     argocd.argoproj.io/sync-wave: "4"
 spec:
   project: default
+
+  # where to put the argocd app
   destination:
     server: "https://kubernetes.default.svc"
     namespace: prometheus
-  source:
-    repoURL: 'https://github.com/grafana/helm-charts'
-    path: charts/loki-stack
-    targetRevision: HEAD
-    helm:
-      skipCrds: true
-      values: |
-        loki:
-          isDefault: false
-          storageConfig:
-            tsdb_shipper:
-              active_index_directory: /data/tsdb-index
-              cache_location: /data/tsdb-cache
-              index_gateway_client:
-                # only applicable if using microservices where index-gateways are independently deployed.
-                # This example is using kubernetes-style naming.
-                server_address: dns:///index-gateway.prometheus.svc.cluster.local:9095
-              shared_store: gcs
-        promtail:
-          enabled: true
-          extraScrapeConfigs: |
-            - job_name: system
-              static_configs:
-              - targets:
-                - localhost
-              labels:
-                job: varlogs
-                __path__: /var/log/*log
+
+  # how to sync the argocd app
   syncPolicy:
     syncOptions:
       - CreateNamespace=true
@@ -47,3 +23,22 @@ spec:
     automated:
       selfHeal: true
       prune: true
+
+  source:
+    repoURL: 'https://grafana.github.io/helm-charts'
+    path: loki
+    targetRevision: 6.35.1
+    helm:
+      skipCrds: true
+      # values for the loki helm chart
+      valuesObject:
+        loki:
+          storage_config:
+            tsdb_shipper:
+              active_index_directory: /data/tsdb-index
+              cache_location: /data/tsdb-cache
+              index_gateway_client:
+                # only applicable if using microservices where index-gateways are independently deployed.
+                # This example is using kubernetes-style naming.
+                server_address: dns:///index-gateway.prometheus.svc.cluster.local:9095
+              shared_store: gcs
