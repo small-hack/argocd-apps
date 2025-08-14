@@ -6,6 +6,7 @@ metadata:
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "4"
+
 spec:
   project: default
 
@@ -20,6 +21,7 @@ spec:
       - CreateNamespace=true
       - ApplyOutOfSyncOnly=true
       - Retry=true
+
     automated:
       selfHeal: true
       prune: true
@@ -28,7 +30,8 @@ spec:
     # Official Grafana Loki helm chart
     # https://github.com/grafana/loki/tree/main/production/helm/loki
     repoURL: 'https://grafana.github.io/helm-charts'
-    path: loki
+    chart: loki
+    # this'll be set automatically by kargo down the line
     targetRevision: 6.35.1
     helm:
       releaseName: loki
