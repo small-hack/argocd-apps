@@ -25,14 +25,20 @@ spec:
       prune: true
 
   source:
+    # Official Grafana Loki helm chart
+    # https://github.com/grafana/loki/tree/main/production/helm/loki
     repoURL: 'https://grafana.github.io/helm-charts'
     path: loki
     targetRevision: 6.35.1
     helm:
+      releaseName: loki
       skipCrds: true
       # values for the loki helm chart
+      # ref: https://github.com/grafana/loki/blob/main/production/helm/loki/values.yaml
       valuesObject:
         loki:
+          configStorageType: Secret
+
           storage_config:
             tsdb_shipper:
               active_index_directory: /data/tsdb-index
