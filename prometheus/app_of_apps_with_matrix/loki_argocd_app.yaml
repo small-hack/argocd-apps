@@ -29,7 +29,7 @@ spec:
   source:
     # Official Grafana Loki helm chart
     # https://github.com/grafana/loki/tree/main/production/helm/loki
-    repoURL: oci://ghcr.io/grafana/helm-charts
+    repoURL: ghcr.io/grafana/helm-charts
     chart: loki
     # this'll be set automatically by kargo down the line
     targetRevision: 6.36.0
