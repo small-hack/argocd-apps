@@ -45,6 +45,7 @@
 *      #3d59a1 medium bluish gray   |   #414868 dark blue gray
 *      #565f89 light blue grey
 ------------------------------------------------------------------------------*/
+
 :root {
 --bg: #232336;
 --text: #bdd8ff;
@@ -56,7 +57,7 @@
 --textPageBold: #7aa2f7;
 --textPageMuted: #f6f76a;
 
---bgHead: #323232;
+--bgHead: #292938;
 --textHead: #5cc9fd;
 --accent: #fdcd36;
 --accentText: #ffd147;
@@ -91,6 +92,7 @@
   transform: scale(2);
   transition: all 0.2s ease;
   position: absolute;
+  background-color: var(--bg);
 }
 
 /*------------------------------------------------------------------------------
@@ -133,6 +135,24 @@
 }
 
 /*------------------------------------------
+* profile headers should be purple
+--------------------------------------------*/
+
+.account__header__bio .account__header__fields dt {
+	color: #927bff !important;
+	text-transform: uppercase;
+	width: auto;
+}
+
+/*------------------------------------------
+* profile personal notes should be magenta
+--------------------------------------------*/
+
+.account__header__account-note__content {
+	color: #f289f9 !important;
+}
+
+/*------------------------------------------
 *   followers icon should always be yellow
 --------------------------------------------*/
 
@@ -148,9 +168,9 @@
   color: #f289f9 !important;
 }
 
-/*-----------------------------------------
-* 󰗊  translate icon should always be white
-------------------------------------------*/
+/*------------------------------------
+* 󰗊  translate should always be white
+--------------------------------------*/
 .dropdown-button .icon-undefined {
   color: var(--text) !important;
 }
@@ -170,17 +190,24 @@
 }
 
 /*---------------------------------------------
-*     compose new toot form and search bar
+*     compose form for new toot and search bar
 -----------------------------------------------*/
 .autosuggest-textarea__textarea::placeholder, .search__input::placeholder {
   color: var(--textPageBold) !important;
+}
+
+/*---------------------------------------------
+*    make the main feed border color cornflower blue
+-----------------------------------------------*/
+.scrollable {
+  border-color: #7aa2f7 !important;
 }
 
 /*-----------------------------------------
 * make the profile banner a decent size
 * -----------------------------------------*/
 .account__header__image {
-  height: 250px;
+  height: 225px;
 }
 
 .account__header__bar {
@@ -1145,4 +1172,17 @@ accented links
 .column-list {
     border-color: var(--borderColor);
     background: var(--bgPage);
+}
+
+/* highlight missing alt text */
+.media-gallery__item-thumbnail img:not([alt]),
+.media-gallery__item-thumbnail img[alt|=""],
+.audio-player__canvas:not([aria-label]),
+.audio-player__canvas[aria-label|=""],
+.video-player video:not([aria-label]),
+.video-player video[aria-label|=""],
+.media-gallery__gifv video:not([aria-label]),
+.media-gallery__gifv video[aria-label|=""] {
+    border: medium dashed rgba(255, 0, 0, 0.75);
+    box-sizing: border-box;
 }
