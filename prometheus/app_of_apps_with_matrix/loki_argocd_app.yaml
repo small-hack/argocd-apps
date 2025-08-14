@@ -29,10 +29,10 @@ spec:
   source:
     # Official Grafana Loki helm chart
     # https://github.com/grafana/loki/tree/main/production/helm/loki
-    repoURL: 'https://grafana.github.io/helm-charts'
+    repoURL: oci://ghcr.io/grafana/helm-charts
     chart: loki
     # this'll be set automatically by kargo down the line
-    targetRevision: 6.35.1
+    targetRevision: 6.36.0
     helm:
       releaseName: loki
       skipCrds: true
