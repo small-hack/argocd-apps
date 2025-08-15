@@ -1,0 +1,423 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    grafana_dashboard: "1"
+  name: modsecurity-dashboard-configmap
+data:
+  modsecurity-dashboard.json: |-
+    {
+      "annotations": {
+        "list": [
+          {
+            "builtIn": 1,
+            "datasource": {
+              "type": "datasource",
+              "uid": "grafana"
+            },
+            "enable": true,
+            "hide": true,
+            "iconColor": "rgba(0, 211, 255, 1)",
+            "name": "Annotations & Alerts",
+            "target": {
+              "limit": 100,
+              "matchAny": false,
+              "tags": [],
+              "type": "dashboard"
+            },
+            "type": "dashboard"
+          }
+        ]
+      },
+      "description": "Dashboard to work with ModSecurity and the OWASP Coreruleset.",
+      "editable": true,
+      "fiscalYearStartMonth": 0,
+      "gnetId": 15495,
+      "graphTooltip": 0,
+      "links": [
+        {
+          "asDropdown": true,
+          "icon": "external link",
+          "includeVars": false,
+          "keepTime": false,
+          "tags": [],
+          "targetBlank": false,
+          "title": "Dashboards",
+          "tooltip": "",
+          "type": "dashboards",
+          "url": ""
+        }
+      ],
+      "liveNow": false,
+      "panels": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "continuous-BlYlRd"
+              },
+              "mappings": [
+                {
+                  "options": {
+                    "Value": {
+                      "index": 0,
+                      "text": "no ip"
+                    }
+                  },
+                  "type": "value"
+                }
+              ],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 10,
+            "w": 6,
+            "x": 0,
+            "y": 0
+          },
+          "id": 8,
+          "maxDataPoints": 1,
+          "options": {
+            "displayMode": "lcd",
+            "maxVizHeight": 300,
+            "minVizHeight": 10,
+            "minVizWidth": 0,
+            "namePlacement": "auto",
+            "orientation": "horizontal",
+            "reduceOptions": {
+              "calcs": [
+                "sum"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showUnfilled": true,
+            "sizing": "auto",
+            "text": {},
+            "valueMode": "color"
+          },
+          "pluginVersion": "11.0.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "loki",
+                "uid": "${DS_LOKI}"
+              },
+              "editorMode": "builder",
+              "expr": "sum by (client_ip) (count_over_time({job=\"ingress-nginx/ingress-nginx\"} \n|~ `ModSecurity` != `http_referrer` \n| json messages_details_match=\"transaction.messages[0].details.match\", \nmessages_details_reference=\"transaction.messages[0].details.reference\", \nmessages_details_ruleId=\"transaction.messages[0].details.ruleId\", \nmessages_details_file=\"transaction.messages[0].details.file\", \nmessages_details_lineNumber=\"transaction.messages[0].details.lineNumber\", \nmessages_details_data=\"transaction.messages[0].details.data\", \nmessages_details_severity=\"transaction.messages[0].details.severity\", \nmessages_details_ver=\"transaction.messages[0].details.ver\", \nmessages_details_rev=\"transaction.messages[0].details.rev\", \nmessages_details_tags=\"transaction.messages[0].details.tags\", \nmessages_details_maturity=\"transaction.messages[0].details.maturity\",\nmessages_details_accuracy=\"transaction.messages[0].details.accuracy\", \ntransaction_date=\"transaction.time_stamp\", \nclient_ip=\"transaction.client_ip\", \ntransaction_host_ip=\"transaction.host_ip\", \ntransaction_host_port=\"transaction.host_port\", \ntranaction_request_uri=\"transaction.request.uri\" | __error__=\"\" [$__interval]))",
+              "legendFormat": "{{client_ip}}",
+              "queryType": "range",
+              "refId": "A",
+              "step": ""
+            }
+          ],
+          "title": "👿 Top Attackers - Client IP",
+          "transformations": [
+            {
+              "id": "renameByRegex",
+              "options": {
+                "regex": "Value",
+                "renamePattern": "No IP"
+              }
+            }
+          ],
+          "type": "bargauge"
+        },
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "continuous-BlYlRd"
+              },
+              "mappings": [],
+              "noValue": "oof",
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 10,
+            "w": 18,
+            "x": 6,
+            "y": 0
+          },
+          "id": 5,
+          "maxDataPoints": 10,
+          "options": {
+            "displayMode": "lcd",
+            "maxVizHeight": 49,
+            "minVizHeight": 19,
+            "minVizWidth": 8,
+            "namePlacement": "left",
+            "orientation": "horizontal",
+            "reduceOptions": {
+              "calcs": [
+                "sum"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showUnfilled": true,
+            "sizing": "manual",
+            "text": {
+              "titleSize": 10,
+              "valueSize": 20
+            },
+            "valueMode": "color"
+          },
+          "pluginVersion": "11.0.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "loki",
+                "uid": "${DS_LOKI}"
+              },
+              "editorMode": "builder",
+              "expr": "sum by(message, ruleId, vhost) (count_over_time({job=\"ingress-nginx/ingress-nginx\"} |~ `ModSecurity` != `http_referrer` | json messages_details_match=\"transaction.messages[0].details.match\", messages_details_reference=\"transaction.messages[0].details.reference\", ruleId=\"transaction.messages[0].details.ruleId\", messages_details_file=\"transaction.messages[0].details.file\", messages_details_lineNumber=\"transaction.messages[0].details.lineNumber\", messages_details_data=\"transaction.messages[0].details.data\", messages_details_severity=\"transaction.messages[0].details.severity\", messages_details_ver=\"transaction.messages[0].details.ver\", messages_details_rev=\"transaction.messages[0].details.rev\", messages_details_tags=\"transaction.messages[0].details.tags\", messages_details_maturity=\"transaction.messages[0].details.maturity\", messages_details_accuracy=\"transaction.messages[0].details.accuracy\", transaction_date=\"transaction.time_stamp\", client_ip=\"transaction.client_ip\", transaction_host_port=\"transaction.host_port\", tranaction_request_uri=\"transaction.request.uri\", message=\"transaction.messages[0].message\", vhost=\"transaction.request.headers.host\" | __error__=`` [$__interval]))",
+              "legendFormat": "{{vhost}}: {{message}}",
+              "queryType": "range",
+              "refId": "A",
+              "step": ""
+            }
+          ],
+          "title": "Rule Hits by Hostname",
+          "transformations": [
+            {
+              "id": "renameByRegex",
+              "options": {
+                "regex": "/^(:)/",
+                "renamePattern": "No hostname:"
+              }
+            }
+          ],
+          "type": "bargauge"
+        },
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 43,
+                "gradientMode": "hue",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "stepBefore",
+                "lineStyle": {
+                  "fill": "solid"
+                },
+                "lineWidth": 1,
+                "pointSize": 4,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": true,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 8,
+            "x": 0,
+            "y": 10
+          },
+          "id": 7,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "maxHeight": 600,
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "8.1.7",
+          "targets": [
+            {
+              "datasource": {
+                "type": "loki",
+                "uid": "${DS_LOKI}"
+              },
+              "editorMode": "code",
+              "expr": "sum by (severity) (count_over_time({job=\"ingress-nginx/ingress-nginx\"} \n|~ `ModSecurity` != `http_referrer` \n| json messages_details_match=\"transaction.messages[0].details.match\", \nmessages_details_reference=\"transaction.messages[0].details.reference\", \nmessages_details_ruleId=\"transaction.messages[0].details.ruleId\", \nmessages_details_file=\"transaction.messages[0].details.file\", \nmessages_details_lineNumber=\"transaction.messages[0].details.lineNumber\", \nmessages_details_data=\"transaction.messages[0].details.data\", \nseverity=\"transaction.messages[0].details.severity\", \nmessages_details_ver=\"transaction.messages[0].details.ver\", \nmessages_details_rev=\"transaction.messages[0].details.rev\", \nmessages_details_tags=\"transaction.messages[0].details.tags\", \nmessages_details_maturity=\"transaction.messages[0].details.maturity\", \nmessages_details_accuracy=\"transaction.messages[0].details.accuracy\", \ntransaction_date=\"transaction.time_stamp\", \ntransaction_client_ip=\"transaction.client_ip\", \ntransaction_host_ip=\"transaction.host_ip\", \ntransaction_host_port=\"transaction.host_port\", \ntranaction_request_uri=\"transaction.request.uri\" | __error__=\"\" [$__interval]))",
+              "legendFormat": "{{severity}}",
+              "queryType": "range",
+              "refId": "A",
+              "step": ""
+            },
+            {
+              "datasource": {
+                "type": "loki",
+                "uid": "${DS_LOKI}"
+              },
+              "expr": "{job=\"nginx_error\"}",
+              "queryType": "range",
+              "refId": "B"
+            }
+          ],
+          "thresholds": [],
+          "title": "🔎  Detection of Activity by Severity",
+          "transformations": [
+            {
+              "id": "renameByRegex",
+              "options": {
+                "regex": "Value",
+                "renamePattern": "1"
+              }
+            }
+          ],
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 16,
+            "x": 8,
+            "y": 10
+          },
+          "id": 4,
+          "options": {
+            "dedupStrategy": "numbers",
+            "enableLogDetails": true,
+            "prettifyLogMessage": false,
+            "showCommonLabels": true,
+            "showLabels": false,
+            "showTime": false,
+            "sortOrder": "Descending",
+            "wrapLogMessage": false
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "loki",
+                "uid": "${DS_LOKI}"
+              },
+              "editorMode": "builder",
+              "expr": "{job=\"ingress-nginx/ingress-nginx\"} |= `ModSecurity` != `http_referrer` |= `match` | json messages_details_match=\"transaction.messages[0].details.match\", messages_details_reference=\"transaction.messages[0].details.reference\", messages_details_ruleId=\"transaction.messages[0].details.ruleId\", messages_details_file=\"transaction.messages[0].details.file\", messages_details_lineNumber=\"transaction.messages[0].details.lineNumber\", messages_details_data=\"transaction.messages[0].details.data\", messages_details_severity=\"transaction.messages[0].details.severity\", messages_details_ver=\"transaction.messages[0].details.ver\", messages_details_rev=\"transaction.messages[0].details.rev\", messages_details_tags=\"transaction.messages[0].details.tags\", messages_details_maturity=\"transaction.messages[0].details.maturity\", messages_details_accuracy=\"transaction.messages[0].details.accuracy\", transaction_date=\"transaction.time_stamp\", transaction_client_ip=\"transaction.client_ip\", transaction_host_ip=\"transaction.host_ip\", transaction_host_port=\"transaction.host_port\", tranaction_request_uri=\"transaction.request.uri\", messages_message=\"transaction.messages[0].message\" | __error__=`` | line_format `{{.transaction_date}} Severity: {{.messages_details_severity}} Rule: {{.messages_details_ruleId}} Reason: {{.messages_message}} Event: request for {{.transaction_host_ip}}:{{.transaction_host_port}}{{.tranaction_request_uri}} from {{.transaction_client_ip}}`",
+              "queryType": "range",
+              "refId": "A"
+            }
+          ],
+          "title": "⚠️ Anomaly Detection Logs",
+          "type": "logs"
+        }
+      ],
+      "refresh": "2m",
+      "schemaVersion": 39,
+      "tags": [
+        "nginx"
+      ],
+      "templating": {
+        "list": [
+          {
+            "description": "loki",
+            "hide": 0,
+            "includeAll": false,
+            "label": "loki",
+            "multi": false,
+            "name": "DS_LOKI",
+            "options": [],
+            "query": "loki",
+            "refresh": 1,
+            "regex": "",
+            "skipUrlSync": false,
+            "type": "datasource"
+          }
+        ]
+      },
+      "time": {
+        "from": "now-12h",
+        "to": "now"
+      },
+      "timeRangeUpdatedDuringEditOrView": false,
+      "timepicker": {},
+      "timezone": "",
+      "title": "ModSecurity OWASP CRS",
+      "uid": "edqfpnv9fn2m8f",
+      "version": 1,
+      "weekStart": ""
+    }

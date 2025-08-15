@@ -1,0 +1,299 @@
+# installs whole kube-prometheus-stack which includes grafana and alert manager
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: prometheus-appset
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  goTemplate: true
+  # generator allows us to source specific values from an external secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - matrix_hostname
+              - matrix_sliding_sync_bitwarden_id
+              - prometheus_hostname
+              - prometheus_alert_manager_hostname
+              - prometheus_grafana_hostname
+              - prometheus_alert_manager_secret
+              - zitadel_hostname
+              - vouch_hostname
+              - global_cluster_issuer
+  template:
+    metadata:
+      name: prometheus-stack-helm-chart
+    spec:
+      project: prometheus
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+        automated:
+          selfHeal: true
+          prune: true
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: prometheus
+      source:
+        repoURL: https://prometheus-community.github.io/helm-charts
+        chart: kube-prometheus-stack
+        targetRevision: 70.10.0
+        helm:
+          releaseName: prom-stack
+          valuesObject:
+            fullnameOverride: prom-stack
+            global:
+              evaluation_interval: 5s
+              scrape_interval: 5s
+              scrape_timeout: 10s
+
+            crds:
+              enabled: false
+
+            ## Provide custom recording or alerting rules to be deployed into the cluster.
+            additionalPrometheusRulesMap:
+              # basic Argo CD alerts from awesome prometheus alerts
+              prometheus.rules:
+                groups:
+                  - name: argo_cd
+                    rules:
+                      - alert: ArgocdServiceNotSynced
+                        expr: argocd_app_info{sync_status!="Synced"} != 0
+                        for: 15m
+                        labels:
+                          severity: warning
+                        annotations:
+                          summary: ArgoCD service not synced (instance {{`{{ $labels.instance }}`}})
+                          description: "Service {{`{{ $labels.name }}`}} run by argo is currently not in sync.\n  VALUE = {{`{{ $value }}`}}\n  LABELS = {{`{{ $labels }}`}}"
+
+                      - alert: ArgocdServiceUnhealthy
+                        expr: argocd_app_info{health_status!="Healthy"} != 0
+                        for: 15m
+                        labels:
+                          severity: warning
+                        annotations:
+                          summary: ArgoCD service unhealthy (instance {{`{{ $labels.instance }}`}})
+                          description: "Service {{`{{ $labels.name }}`}} run by argo is currently not healthy.\n  VALUE = {{`{{ $value }}`}}\n  LABELS = {{`{{ $labels }}`}}"
+
+              # basic linkerd alerts from awesome prometheus alerts
+              #
+              # linkerd:
+              #   groups:
+              #     - name: linkerd
+              #       rules:
+              #         - alert: LinkerdHighErrorRate
+              #           expr: sum(rate(request_errors_total[1m])) by (deployment, statefulset, daemonset) / sum(rate(request_total[1m])) by (deployment, statefulset, daemonset) * 100 > 10
+              #           for: 1m
+              #           labels:
+              #             severity: warning
+              #           annotations:
+              #             summary: Linkerd high error rate (instance {{ $labels.instance }})
+              #             description: "Linkerd error rate for {{ $labels.deployment | $labels.statefulset | $labels.daemonset }} is over 10%\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+
+            prometheus:
+              enabled: true
+              ingress:
+                enabled: true
+                ingressClassName: nginx
+                annotations:
+                  cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
+                  nginx.ingress.kubernetes.io/auth-signin: 'https://{{ .vouch_hostname }}/login?url=$scheme://$http_host$request_uri&vouch-failcount=$auth_resp_failcount&X-Vouch-Token=$auth_resp_jwt&error=$auth_resp_err'
+                  nginx.ingress.kubernetes.io/auth-url: 'https://{{ .vouch_hostname }}/validate'
+                  nginx.ingress.kubernetes.io/auth-response-headers: X-Vouch-User
+                  nginx.ingress.kubernetes.io/auth-snippet: |
+                    auth_request_set $auth_resp_jwt $upstream_http_x_vouch_jwt;
+                    auth_request_set $auth_resp_err $upstream_http_x_vouch_err;
+                    auth_request_set $auth_resp_failcount $upstream_http_x_vouch_failcount;
+                    # when VP is hosted externally to k8s ensure the SSL cert is valid to avoid MITM risk
+                    proxy_ssl_trusted_certificate /etc/ssl/certs/ca-certificates.crt;
+                    proxy_ssl_session_reuse on;
+                    proxy_ssl_verify_depth 2;
+                    proxy_ssl_verify on;
+                hosts:
+                  - '{{ .prometheus_hostname }}'
+                paths:
+                  - /
+                tls:
+                  - secretName: prometheus-tls
+                    hosts:
+                    - '{{ .prometheus_hostname }}'
+              prometheusSpec:
+                probeSelectorNilUsesHelmValues: false
+                probeSelector: {}
+                probeNamespaceSelector: {}
+
+                podMonitorSelectorNilUsesHelmValues: false
+                podMonitorSelector: {}
+                podMonitorNamespaceSelector: {}
+
+                ruleSelectorNilUsesHelmValues: false
+                ruleSelector: {}
+                ruleNamespaceSelector: {}
+
+                serviceMonitorSelectorNilUsesHelmValues: false
+                serviceMonitorSelector: {}
+                serviceMonitorNamespaceSelector: {}
+
+                additionalScrapeConfigsSecret:
+                  enabled: false
+                  name: additional-scrape-configs
+                  key: scrape-targets.yaml
+
+                storageSpec:
+                  volumeClaimTemplate:
+                    spec:
+                      storageClassName: local-path
+                      accessModes: ["ReadWriteOnce"]
+                      resources:
+                        requests:
+                          storage: 32Gi
+                retention: 30d
+                logLevel: info
+
+              prometheusOperator:
+                namespaces:
+                  releaseNamespace: true
+                  additional:
+                    - kube-system
+                    - nextcloud
+                    - k8up
+                    - zitadel
+                admissionWebhooks:
+                  certManager:
+                    enabled: true
+                  patch:
+                    enabled: false
+
+            alertmanager:
+              enabled: true
+              annotations: {}
+              ## Alertmanager configuration directives
+              ## ref: https://prometheus.io/docs/alerting/configuration/#configuration-file
+              ##      https://prometheus.io/webtools/alerting/routing-tree-editor/
+              ##
+              config:
+                global:
+                  resolve_timeout: 5m
+                inhibit_rules:
+                  - source_matchers:
+                      - 'severity = critical'
+                    target_matchers:
+                      - 'severity =~ warning|info'
+                    equal:
+                      - 'namespace'
+                      - 'alertname'
+                  - source_matchers:
+                      - 'severity = warning'
+                    target_matchers:
+                      - 'severity = info'
+                    equal:
+                      - 'namespace'
+                      - 'alertname'
+                  - source_matchers:
+                      - 'alertname = InfoInhibitor'
+                    target_matchers:
+                      - 'severity = info'
+                    equal:
+                      - 'namespace'
+                  - target_matchers:
+                      - 'alertname = InfoInhibitor'
+                route:
+                  group_by: ['namespace']
+                  group_wait: 30s
+                  group_interval: 5m
+                  repeat_interval: 12h
+                  receiver: 'matrix'
+                  routes:
+                    - receiver: 'matrix'
+                      matchers:
+                        - alertname = "Watchdog"
+                receivers:
+                  - name: 'matrix'
+                    webhook_configs:
+                      - url: "http://matrix-stack-bridge-alertmanager.matrix.svc.cluster.local:3000/alerts?secret={{ .matrix_sliding_sync_bitwarden_id }}"
+                  - name: 'null'
+
+                templates:
+                  - '/etc/alertmanager/config/*.tmpl'
+
+              ingress:
+                enabled: true
+                ingressClassName: nginx
+                annotations:
+                  cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
+                  nginx.ingress.kubernetes.io/auth-signin: 'https://{{ .vouch_hostname }}/login?url=$scheme://$http_host$request_uri&vouch-failcount=$auth_resp_failcount&X-Vouch-Token=$auth_resp_jwt&error=$auth_resp_err'
+                  nginx.ingress.kubernetes.io/auth-url: 'https://{{ .vouch_hostname }}/validate'
+                  nginx.ingress.kubernetes.io/auth-response-headers: X-Vouch-User
+                  nginx.ingress.kubernetes.io/auth-snippet: |
+                    auth_request_set $auth_resp_jwt $upstream_http_x_vouch_jwt;
+                    auth_request_set $auth_resp_err $upstream_http_x_vouch_err;
+                    auth_request_set $auth_resp_failcount $upstream_http_x_vouch_failcount;
+                hosts:
+                  - '{{ .prometheus_alert_manager_hostname }}'
+                paths:
+                  - /
+                tls:
+                  - secretName: alertmanager-tls
+                    hosts:
+                    - '{{ .prometheus_alert_manager_hostname }}'
+
+            grafana:
+              envValueFrom:
+                GF_AUTH_GENERIC_OAUTH_CLIENT_ID:
+                  secretKeyRef:
+                    name: grafana-oidc-credentials
+                    key: client_id
+
+                GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET:
+                  secretKeyRef:
+                    name: grafana-oidc-credentials
+                    key: client_secret
+
+              grafana.ini:
+                auth:
+                  disable_login_form: true
+
+                "auth.generic_oauth":
+                  name: Zitadel
+                  enabled: true
+                  scopes: openid email profile groups
+                  attribute_path: email
+                  login_attribute: preferred_username
+                  name_attribute: name
+                  auth_url: https://{{ .zitadel_hostname }}/oauth/v2/authorize
+                  token_url: https://{{ .zitadel_hostname }}/oauth/v2/token
+                  api_url: https://{{ .zitadel_hostname }}/oauth/v1/userinfo
+
+                users:
+                  allow_sign_up: false
+                  auto_assign_org: true
+                  auto_assign_org_role: Admin
+
+                server:
+                  root_url: "https://{{ .prometheus_grafana_hostname }}"
+
+              ingress:
+                enabled: true
+                ingressClassName: nginx
+                annotations:
+                  cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
+                hosts:
+                  - '{{ .prometheus_grafana_hostname }}'
+                tls:
+                  - secretName: grafana-tls
+                    hosts:
+                    - '{{ .prometheus_grafana_hostname }}'
+
+            scrape_configs:
+            - job_name: ingress
+              honor_timestamps: true
+              scrape_interval: 1m
+              scrape_timeout: 1m
+              metrics_path: /metrics
+              scheme: http

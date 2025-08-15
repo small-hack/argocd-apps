@@ -1,0 +1,96 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: loki
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "4"
+
+spec:
+  project: default
+
+  # where to put the argocd app
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: monitoring
+
+  # how to sync the argocd app
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+      - ApplyOutOfSyncOnly=true
+      - Retry=true
+
+    automated:
+      selfHeal: true
+      prune: true
+
+  source:
+    # Official Grafana Loki helm chart
+    # https://github.com/grafana/loki/tree/main/production/helm/loki
+    repoURL: ghcr.io/grafana/helm-charts
+    chart: loki
+    # this'll be set automatically by kargo down the line
+    targetRevision: 6.36.0
+    helm:
+      releaseName: loki
+      skipCrds: true
+      # values for the loki helm chart
+      # ref: https://github.com/grafana/loki/blob/main/production/helm/loki/values.yaml
+      valuesObject:
+        # Note: SimpleScalable and Distributed REQUIRE the use of object storage.
+        deploymentMode: Distributed
+
+        loki:
+          configStorageType: Secret
+          # comes from an externalsecret so we can pass in S3 credentials securely
+          configObjectName: loki-config
+
+          pattern_ingester:
+            enabled: true
+
+          # Check here for more info on how to configure schemas:
+          # https://grafana.com/docs/loki/latest/configuration/#schema_config
+          schemaConfig:
+            configs:
+              - from: 2025-04-01
+                store: tsdb
+                object_store: s3
+                schema: v13
+                index:
+                  prefix: index_
+                  period: 24h
+
+          storage:
+            bucketNames:
+              chunks: chunks
+              ruler: ruler
+
+          storage_config:
+            tsdb_shipper:
+              active_index_directory: /data/tsdb-index
+              cache_location: /data/tsdb-cache
+              index_gateway_client:
+                # only applicable if using microservices where index-gateways are independently deployed.
+                # This example is using kubernetes-style naming.
+                server_address: dns:///index-gateway.prometheus.svc.cluster.local:9095
+              shared_store: gcs
+
+        # this part consumes metrics from alloy or promtail
+        ingester:
+          replicas: 0
+          autoscaling:
+            # -- Enable autoscaling for the ingester
+            enabled: true
+            # -- Minimum autoscaling replicas for the ingester
+            minReplicas: 1
+            # -- Maximum autoscaling replicas for the ingester
+            maxReplicas: 2
+            # -- Target CPU utilisation percentage for the ingester
+            targetCPUUtilizationPercentage: 60
+            # -- Target memory utilisation percentage for the ingester
+            targetMemoryUtilizationPercentage: null
+          zoneAwareReplication:
+            # -- Enable zone awareness.
+            enabled: false
