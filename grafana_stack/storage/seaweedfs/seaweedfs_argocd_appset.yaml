@@ -174,7 +174,11 @@ spec:
                 createBuckets:
                   - name: loki
                     anonymousRead: false
-                  - name: mimir
+                  - name: mimir-ruler
+                    anonymousRead: false
+                  - name: mimir-blocks
+                    anonymousRead: false
+                  - name: mimir-alertmanager
                     anonymousRead: false
               livenessProbe:
                 enabled: true
