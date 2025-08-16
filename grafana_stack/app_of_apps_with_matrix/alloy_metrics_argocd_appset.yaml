@@ -38,6 +38,7 @@ spec:
 
       # where to source this application from
       source:
+        # https://github.com/grafana/alloy/tree/main/operations/helm/charts/alloy
         repoURL: https://grafana.github.io/helm-charts
         chart: alloy
         targetRevision: 1.2.1
