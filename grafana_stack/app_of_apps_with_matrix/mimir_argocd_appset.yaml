@@ -89,6 +89,9 @@ spec:
               enabled: true
               replicas: 1
 
+            compactor:
+              topologySpreadConstraints: []
+
             # -- KEDA Autoscaling configuration
             kedaAutoscaling:
               # -- A Prometheus-compatible URL. Cadvisor and Mimir metrics for the Mimir pods are expected in this server.
