@@ -22,7 +22,7 @@ spec:
               - grafana_stack_s3_endpoint
   template:
     metadata:
-      name: grafana_stack-seaweedfs-app
+      name: grafana-stack-seaweedfs-app
       annotations:
         argocd.argoproj.io/sync-wave: "2"
     spec:
