@@ -17,7 +17,7 @@ spec:
               - grafana_stack_s3_provider
   template:
     metadata:
-      name: grafana_stack-{{ .grafana_stack_s3_provider }}
+      name: grafana-stack-{{ .grafana_stack_s3_provider }}
       annotations:
         argocd.argoproj.io/sync-wave: "2"
     spec:
