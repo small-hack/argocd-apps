@@ -77,3 +77,9 @@ spec:
             # we don't need minio because we provide s3 via seaweedfs
             minio:
               enabled: false
+
+
+            memcachedExporter:
+              # -- Whether memcached metrics should be exported
+              # we will use valkey so we don't need this
+              enabled: false
