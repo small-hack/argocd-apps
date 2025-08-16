@@ -63,3 +63,17 @@ spec:
                     secret_access_key: "${AWS_SECRET_ACCESS_KEY}" # This is a secret injected via an environment variable
                     http:
                       insecure_skip_verify: true
+
+            ingester:
+              # -- Total number of replicas for the ingester across all availability zones
+              # If ingester.zoneAwareReplication.enabled=false, this number is taken as is.
+              # Otherwise each zone starts `ceil(replicas / number_of_zones)` number of pods.
+              #   E.g. if 'replicas' is set to 4 and there are 3 zones, then 4/3=1.33 and after rounding up it means 2 pods per zone are started.
+              replicas: 3
+              zoneAwareReplication:
+                # -- Enable zone-aware replication for ingester
+                enabled: false
+
+            # we don't need minio because we provide s3 via seaweedfs
+            minio:
+              enabled: false
