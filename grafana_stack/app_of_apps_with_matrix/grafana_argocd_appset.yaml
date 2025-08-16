@@ -81,6 +81,28 @@ spec:
               server:
                 root_url: "https://{{ .grafana_stack_grafana_hostname }}"
 
+
+
+            #Configure grafana datasources
+            #ref: http://docs.grafana.org/administration/provisioning/#datasources
+            datasources:
+              datasources.yaml:
+                apiVersion: 1
+                datasources:
+                  # metrics
+                  - name: mimir
+                    type: prometheus
+                    url: http://mimir-gateway/query
+                    access: proxy
+                    isDefault: true
+
+                  # logs
+                  - name: loki
+                    type: loki
+                    url: http://loki-gateway/query
+                    access: proxy
+                    isDefault: true
+
             ingress:
               enabled: true
               ingressClassName: nginx
