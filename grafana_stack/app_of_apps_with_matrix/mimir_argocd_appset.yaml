@@ -95,6 +95,19 @@ spec:
             ruler:
               topologySpreadConstraints: []
 
+            query_scheduler:
+              topologySpreadConstraints: []
+
+            querier:
+              topologySpreadConstraints: []
+
+            query_frontend:
+              topologySpreadConstraints: []
+
+            nginx:
+              topologySpreadConstraints: []
+            
+
             # -- KEDA Autoscaling configuration
             kedaAutoscaling:
               # -- A Prometheus-compatible URL. Cadvisor and Mimir metrics for the Mimir pods are expected in this server.
