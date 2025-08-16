@@ -105,7 +105,10 @@ spec:
                   cpu: "10m"
                   memory: "50Mi"
               # Security context to apply to the Grafana configReloader container.
-              securityContext: {}
+              securityContext:
+                # this is the UID of the "nobody" user that the configReloader image runs as
+                runAsUser: 65534
+                runAsGroup: 65534
 
             controller:
               # Must be one of 'daemonset', 'deployment', or 'statefulset'.

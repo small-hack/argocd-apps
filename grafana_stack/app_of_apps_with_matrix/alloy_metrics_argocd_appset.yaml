@@ -66,6 +66,10 @@ spec:
                 # Name for the port used for clustering, useful if running inside an Istio Mesh
                 portName: http
 
+              securityContext:
+                runAsUser: 473
+                runAsGroup: 473
+
             # Options for the extra controller used for config reloading.
             configReloader:
               # Enables automatically reloading when the Alloy config changes.
@@ -76,7 +80,10 @@ spec:
                   cpu: "10m"
                   memory: "50Mi"
               # Security context to apply to the Grafana configReloader container.
-              securityContext: {}
+              securityContext:
+                # this is the UID of the "nobody" user that the configReloader image runs as
+                runAsUser: 65534
+                runAsGroup: 65534
 
             controller:
               # Must be one of 'daemonset', 'deployment', or 'statefulset'.
