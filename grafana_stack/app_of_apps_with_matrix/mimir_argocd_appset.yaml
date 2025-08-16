@@ -80,7 +80,7 @@ spec:
 
             # -- Name of the Secret or ConfigMap that contains the configuration
             # (used for naming even if config is internal).
-            externalConfigSecretName: '{{ include "mimir.resourceName" (dict "ctx" . "component" "config") }}'
+            # externalConfigSecretName: '{{ include "mimir.resourceName" (dict "ctx" . "component" "config") }}'
 
             ingester:
               replicas: 3
