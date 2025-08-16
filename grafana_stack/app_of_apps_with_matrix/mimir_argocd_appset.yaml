@@ -41,7 +41,7 @@ spec:
       # where to source this application from
       source:
         # https://github.com/grafana/mimir/tree/main/operations/helm/charts/mimir-distributed
-        repoURL: https://mimir.github.io/helm-charts
+        repoURL: https://grafana.github.io/helm-charts
         chart: mimir-distributed
         targetRevision: 5.8.0-rc.0
         helm:
