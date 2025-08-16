@@ -92,7 +92,7 @@ spec:
                   # metrics
                   - name: mimir
                     type: prometheus
-                    url: http://mimir-gateway/query
+                    url: http://mimir-nginx/prometheus
                     access: proxy
                     isDefault: true
 
@@ -100,7 +100,7 @@ spec:
                   - name: loki
                     type: loki
                     access: proxy
-                    url: http://loki-gateway/query
+                    url: http://loki-gateway/loki/api/v1/tail
                     jsonData:
                       timeout: 60
                       maxLines: 1000
