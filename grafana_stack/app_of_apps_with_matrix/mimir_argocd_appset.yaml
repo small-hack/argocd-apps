@@ -48,22 +48,6 @@ spec:
           releaseName: mimir
           valuesObject:
             fullnameOverride: mimir
-            # -- Additional structured values on top of the text based 'mimir.config'. Applied after the text based config is evaluated for templates. Enables adding and modifying YAML elements in the evaulated 'mimir.config'.
-            #
-            # Additionally, consider the optional "insecure_skip_verify" key below, it allows you to skip_verify_false in case the s3_endpoint certificate is not trusted.
-            # For more information see https://grafana.com/docs/mimir/latest/references/configuration-parameters/
-            structuredConfig:
-              common:
-                storage:
-                  backend: s3
-                  s3:
-                    bucket_name: "${BUCKET_NAME}"
-                    endpoint: "${BUCKET_HOST}:${BUCKET_PORT}"
-                    access_key_id: "${AWS_ACCESS_KEY_ID}" # This is a secret injected via an environment variable
-                    secret_access_key: "${AWS_SECRET_ACCESS_KEY}" # This is a secret injected via an environment variable
-                    http:
-                      insecure_skip_verify: true
-
             # -- Configuration is loaded from the secret called 'externalConfigSecretName'.
             # If 'useExternalConfig' is true, then the configuration is not generated, just consumed.
             useExternalConfig: false
@@ -85,9 +69,6 @@ spec:
             # mimir's ingester
             ingester:
               topologySpreadConstraints: []
-              #  maxSkew: 1
-              #  topologyKey: kubernetes.io/hostname
-              #  whenUnsatisfiable: ScheduleAnyway
               replicas: 1
               zoneAwareReplication:
                 # -- Enable zone-aware replication for ingester
@@ -95,6 +76,7 @@ spec:
 
             # mimir's store_gateway
             store_gateway:
+              topologySpreadConstraints: []
               replicas: 1
               enabled: true
               zoneAwareReplication:
@@ -103,6 +85,7 @@ spec:
 
             # mimir's forked alertmanager
             alertmanager:
+              topologySpreadConstraints: []
               enabled: true
               replicas: 1
 
