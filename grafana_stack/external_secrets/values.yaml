@@ -2,7 +2,28 @@
 # we may support other secret providers in the future
 provider: ""
 
-# -- zitadel OIDC Credentials
-oidcCredentialsBitwardenID: ""
 thanosObjstoreBitwardenID: ""
+
+# -- configmap for loki
 lokiConfigBitwardenID: ""
+
+# -- if set to seaweedfs we deploy a policy secret. can also be minio
+s3_provider: "seaweedfs"
+
+# -- existing kubernetes secret with s3 admin credentials
+s3AdminCredentialsBitwardenID: ""
+
+# -- existing kubernetes secret with s3 loki credentials
+s3LokiCredentialsBitwardenID: ""
+
+# -- existing kubernetes secret with s3 mimir credentials
+s3MimirCredentialsBitwardenID: ""
+
+# -- existing kubernetes secret with s3 credentials for the remote backups
+s3BackupCredentialsBitwardenID: ""
+
+# -- loki redis Credentials
+redisBitwardenID: ""
+
+# -- grafana OIDC Credentials
+oidcCredentialsBitwardenID: ""
