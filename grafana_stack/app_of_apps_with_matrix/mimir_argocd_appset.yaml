@@ -84,7 +84,7 @@ spec:
 
             # mimir's ingester
             ingester:
-              topologySpreadConstraints: {}
+              topologySpreadConstraints: []
               #  maxSkew: 1
               #  topologyKey: kubernetes.io/hostname
               #  whenUnsatisfiable: ScheduleAnyway
