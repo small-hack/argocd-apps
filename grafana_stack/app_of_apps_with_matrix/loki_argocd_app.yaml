@@ -8,7 +8,7 @@ metadata:
     argocd.argoproj.io/sync-wave: "4"
 
 spec:
-  project: default
+  project: monitoring
 
   # where to put the argocd app
   destination:

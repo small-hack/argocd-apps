@@ -25,14 +25,14 @@ spec:
               - global_pvc_storage_class
   template:
     metadata:
-      name: grafana_stack-s3-pvc
+      name: grafana-stack-s3-pvc
       annotations:
         argocd.argoproj.io/sync-wave: "1"
     spec:
-      project: grafana_stack
+      project: monitoring
       destination:
         server: "https://kubernetes.default.svc"
-        namespace: grafana_stack
+        namespace: monitoring
       syncPolicy:
         syncOptions:
           - ApplyOutOfSyncOnly=true

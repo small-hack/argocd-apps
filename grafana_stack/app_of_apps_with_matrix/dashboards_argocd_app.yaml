@@ -6,7 +6,7 @@ metadata:
   namespace: argocd
 
 spec:
-  project: grafana_stack
+  project: monitoring
 
   source:
     repoURL: 'https://github.com/small-hack/argocd-apps'

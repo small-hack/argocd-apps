@@ -21,16 +21,19 @@ spec:
       annotations:
         argocd.argoproj.io/sync-wave: "2"
     spec:
-      project: grafana_stack
-      destination:
-        server: "https://kubernetes.default.svc"
-        namespace: grafana_stack
+      project: monitoring
+
       syncPolicy:
         syncOptions:
           - ApplyOutOfSyncOnly=true
         automated:
           prune: true
           selfHeal: true
+
+      destination:
+        server: "https://kubernetes.default.svc"
+        namespace: monitoring
+
       source:
         repoURL: https://github.com/small-hack/argocd-apps.git
         path: grafana_stack/storage/{{ .grafana_stack_s3_provider }}/
