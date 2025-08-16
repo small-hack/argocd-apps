@@ -52,9 +52,38 @@ spec:
                 # Create a new ConfigMap for the config file.
                 create: true
                 # Content to assign to the new ConfigMap.  This is passed into `tpl` allowing for templating from values.
-                content: ''
+                content: |
+                  logging {
+                      level  = "info"
+                      format = "logfmt"
+                  }
+
+                  discovery.kubernetes "pods" {
+                          role = "pod"
+                  }
+
+                  discovery.kubernetes "nodes" {
+                          role = "node"
+                  }
+
+                  discovery.kubernetes "services" {
+                          role = "service"
+                  }
+
+                  discovery.kubernetes "endpoints" {
+                          role = "endpoints"
+                  }
+
+                  discovery.kubernetes "endpointslices" {
+                          role = "endpointslice"
+                  }
+
+                  discovery.kubernetes "ingresses" {
+                          role = "ingress"
+                  }
+
                 # Name of existing ConfigMap to use. Used when create is false.
-                name: null
+                name: alloy-metrics-cfg
                 # Key in ConfigMap to get config from.
                 key: null
 
