@@ -84,7 +84,7 @@ spec:
 
             # mimir's ingester
             ingester:
-              replicas: 2
+              replicas: 1
               zoneAwareReplication:
                 # -- Enable zone-aware replication for ingester
                 enabled: false
