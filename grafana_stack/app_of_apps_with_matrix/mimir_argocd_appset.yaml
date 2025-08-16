@@ -64,22 +64,52 @@ spec:
                     http:
                       insecure_skip_verify: true
 
+            # -- Configuration is loaded from the secret called 'externalConfigSecretName'.
+            # If 'useExternalConfig' is true, then the configuration is not generated, just consumed.
+            useExternalConfig: false
+
+            # -- Defines what kind of object stores the configuration, a ConfigMap or a Secret.
+            # In order to move sensitive information (such as credentials) from
+            # the ConfigMap/Secret to a more secure location (e.g. vault),
+            # it is possible to use [environment variables in the configuration](https://grafana.com/docs/mimir/latest/reference-configuration-parameters/#use-environment-variables-in-the-configuration).
+            # Such environment variables can be then stored in a separate Secret
+            # and injected via the global.extraEnvFrom value. For details about
+            # environment injection from a Secret please see
+            # [Secrets](https://kubernetes.io/docs/concepts/configuration/secret/#use-case-as-container-environment-variables).
+            configStorageType: Secret
+
+            # -- Name of the Secret or ConfigMap that contains the configuration
+            # (used for naming even if config is internal).
+            externalConfigSecretName: '{{ include "mimir.resourceName" (dict "ctx" . "component" "config") }}'
+
             ingester:
-              # -- Total number of replicas for the ingester across all availability zones
-              # If ingester.zoneAwareReplication.enabled=false, this number is taken as is.
-              # Otherwise each zone starts `ceil(replicas / number_of_zones)` number of pods.
-              #   E.g. if 'replicas' is set to 4 and there are 3 zones, then 4/3=1.33 and after rounding up it means 2 pods per zone are started.
               replicas: 3
               zoneAwareReplication:
                 # -- Enable zone-aware replication for ingester
                 enabled: false
 
-            # we don't need minio because we provide s3 via seaweedfs
-            minio:
-              enabled: false
+            # mimir's forked alertmanager
+            alertmanager:
+              enabled: true
+              replicas: 1
 
+            # -- KEDA Autoscaling configuration
+            kedaAutoscaling:
+              # -- A Prometheus-compatible URL. Cadvisor and Mimir metrics for the Mimir pods are expected in this server.
+              # For more information on the required metrics see [Monitor system health](https://grafana.com/docs/helm-charts/mimir-distributed/latest/run-production-environment-with-helm/monitor-system-health/).
+              # If empty, the helm chart uses the metamonitoring URL from metaMonitoring.grafanaAgent.metrics.remote.url.
+              # If that is empty, then the Mimir cluster is used.
+              prometheusAddress: ""
+              customHeaders: {}
+              pollingInterval: 10
+              ignoreNullValues: true
+              unsafeSsl: false
 
             memcachedExporter:
               # -- Whether memcached metrics should be exported
               # we will use valkey so we don't need this
+              enabled: false
+
+            # don't need minio because we provide s3 via seaweedfs
+            minio:
               enabled: false
