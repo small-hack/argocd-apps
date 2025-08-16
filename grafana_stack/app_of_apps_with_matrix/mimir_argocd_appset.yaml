@@ -89,6 +89,9 @@ spec:
               enabled: true
               replicas: 1
 
+            distributor:
+              topologySpreadConstraints: []
+
             compactor:
               topologySpreadConstraints: []
 
