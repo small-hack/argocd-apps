@@ -1,0 +1,117 @@
+{{- if and (eq .Values.provider "bitwarden") (eq .Values.s3_provider "seaweedfs") }}
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: seaweedfs-s3-secret
+spec:
+  target:
+    name: seaweedfs-s3-secret
+    deletionPolicy: Delete
+    template:
+      type: Opaque
+      data:
+        admin_access_key_id: |-
+          {{ `{{ .adminAccessKey }}` }}
+        admin_secret_access_key: |-
+          {{ `{{ .adminSecretKey }}` }}
+        seaweedfs_s3_config: |-
+          {"identities":[
+            {"name": "anvAdmin",
+             "credentials": [
+               {"accessKey": "{{ `{{ .adminAccessKey }}` }}",
+                "secretKey": "{{ `{{ .adminSecretKey }}` }}"}
+             ],
+             "actions": ["Admin","Read","Write"]},
+            {"name": "monitoring",
+             "credentials": [
+               {"accessKey": "{{ `{{ .userAccessKey }}` }}",
+                "secretKey": "{{ `{{ .userSecretKey }}` }}"}
+             ],
+             "actions": ["Read:loki","Write:loki","List:loki"]},
+            {"name": "loki",
+             "credentials": [
+               {"accessKey": "{{ `{{ .lokiAccessKey }}` }}",
+                "secretKey": "{{ `{{ .lokiSecretKey }}` }}"}
+             ],
+             "actions": ["Read:loki","Write:loki","List:loki"]},
+            {"name": "mimir",
+             "credentials": [
+               {"accessKey": "{{ `{{ .mimirAccessKey }}` }}",
+                "secretKey": "{{ `{{ .mimirSecretKey }}` }}"}
+             ],
+             "actions": ["Read:mimir","Write:mimir","List:mimir"]}
+          ]}
+  data:
+    - secretKey: adminAccessKey
+      sourceRef:
+        storeRef:
+          name: bitwarden-login
+          kind: ClusterSecretStore
+      remoteRef:
+        key: {{ .Values.s3AdminCredentialsBitwardenID }}
+        property: username
+
+    - secretKey: adminSecretKey
+      sourceRef:
+        storeRef:
+          name: bitwarden-login
+          kind: ClusterSecretStore
+      remoteRef:
+        key: {{ .Values.s3AdminCredentialsBitwardenID }}
+        property: password
+
+    - secretKey: userAccessKey
+      sourceRef:
+        storeRef:
+          name: bitwarden-login
+          kind: ClusterSecretStore
+      remoteRef:
+        key: {{ .Values.s3monitoringCredentialsBitwardenID }}
+        property: username
+
+    - secretKey: userSecretKey
+      sourceRef:
+        storeRef:
+          name: bitwarden-login
+          kind: ClusterSecretStore
+      remoteRef:
+        key: {{ .Values.s3monitoringCredentialsBitwardenID }}
+        property: password
+
+    - secretKey: lokiAccessKey
+      sourceRef:
+        storeRef:
+          name: bitwarden-login
+          kind: ClusterSecretStore
+      remoteRef:
+        key: {{ .Values.s3LokiCredentialsBitwardenID }}
+        property: username
+
+    - secretKey: lokiSecretKey
+      sourceRef:
+        storeRef:
+          name: bitwarden-login
+          kind: ClusterSecretStore
+      remoteRef:
+        key: {{ .Values.s3LokiCredentialsBitwardenID }}
+        property: password
+
+    - secretKey: mimirAccessKey
+      sourceRef:
+        storeRef:
+          name: bitwarden-login
+          kind: ClusterSecretStore
+      remoteRef:
+        key: {{ .Values.s3MimirCredentialsBitwardenID }}
+        property: username
+
+    - secretKey: mimirSecretKey
+      sourceRef:
+        storeRef:
+          name: bitwarden-login
+          kind: ClusterSecretStore
+      remoteRef:
+        key: {{ .Values.s3MimirCredentialsBitwardenID }}
+        property: password
+{{- end }}
