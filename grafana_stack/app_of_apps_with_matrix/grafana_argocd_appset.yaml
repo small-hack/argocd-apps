@@ -83,8 +83,8 @@ spec:
 
 
 
-            #Configure grafana datasources
-            #ref: http://docs.grafana.org/administration/provisioning/#datasources
+            # Configure grafana datasources. docs:
+            # http://docs.grafana.org/administration/provisioning/#datasources
             datasources:
               datasources.yaml:
                 apiVersion: 1
@@ -100,11 +100,14 @@ spec:
                   - name: loki
                     type: loki
                     access: proxy
-                    url: http://loki-gateway/loki/api/v1/tail
+                    # this didn't work...
+                    # url: http://loki-gateway/loki/api/v1/tail
+                    url: http://loki-gateway.monitoring.svc.cluster.local
                     jsonData:
                       timeout: 60
                       maxLines: 1000
 
+            # configure ingress - outside cluster
             ingress:
               enabled: true
               ingressClassName: nginx
