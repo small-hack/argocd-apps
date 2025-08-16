@@ -23,12 +23,6 @@ spec:
                 "secretKey": "{{ `{{ .adminSecretKey }}` }}"}
              ],
              "actions": ["Admin","Read","Write"]},
-            {"name": "monitoring",
-             "credentials": [
-               {"accessKey": "{{ `{{ .userAccessKey }}` }}",
-                "secretKey": "{{ `{{ .userSecretKey }}` }}"}
-             ],
-             "actions": ["Read:loki","Write:loki","List:loki"]},
             {"name": "loki",
              "credentials": [
                {"accessKey": "{{ `{{ .lokiAccessKey }}` }}",
@@ -59,24 +53,6 @@ spec:
           kind: ClusterSecretStore
       remoteRef:
         key: {{ .Values.s3AdminCredentialsBitwardenID }}
-        property: password
-
-    - secretKey: userAccessKey
-      sourceRef:
-        storeRef:
-          name: bitwarden-login
-          kind: ClusterSecretStore
-      remoteRef:
-        key: {{ .Values.s3monitoringCredentialsBitwardenID }}
-        property: username
-
-    - secretKey: userSecretKey
-      sourceRef:
-        storeRef:
-          name: bitwarden-login
-          kind: ClusterSecretStore
-      remoteRef:
-        key: {{ .Values.s3monitoringCredentialsBitwardenID }}
         property: password
 
     - secretKey: lokiAccessKey
