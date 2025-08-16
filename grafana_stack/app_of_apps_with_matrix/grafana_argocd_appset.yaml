@@ -99,9 +99,11 @@ spec:
                   # logs
                   - name: loki
                     type: loki
-                    url: http://loki-gateway/query
                     access: proxy
-                    isDefault: true
+                    url: http://loki-gateway/query
+                    jsonData:
+                      timeout: 60
+                      maxLines: 1000
 
             ingress:
               enabled: true
