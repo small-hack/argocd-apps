@@ -82,8 +82,17 @@ spec:
             # (used for naming even if config is internal).
             # externalConfigSecretName: '{{ include "mimir.resourceName" (dict "ctx" . "component" "config") }}'
 
+            # mimir's ingester
             ingester:
-              replicas: 3
+              replicas: 2
+              zoneAwareReplication:
+                # -- Enable zone-aware replication for ingester
+                enabled: false
+
+            # mimir's store_gateway
+            store_gateway:
+              replicas: 1
+              enabled: true
               zoneAwareReplication:
                 # -- Enable zone-aware replication for ingester
                 enabled: false
