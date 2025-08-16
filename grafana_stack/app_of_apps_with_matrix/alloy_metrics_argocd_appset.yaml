@@ -46,3 +46,63 @@ spec:
           releaseName: alloy-metrics
           valuesObject:
             fullnameOverride: alloy-metrics
+
+            alloy:
+              configMap:
+                # Create a new ConfigMap for the config file.
+                create: true
+                # Content to assign to the new ConfigMap.  This is passed into `tpl` allowing for templating from values.
+                content: ''
+                # Name of existing ConfigMap to use. Used when create is false.
+                name: null
+                # Key in ConfigMap to get config from.
+                key: null
+
+              clustering:
+                # Deploy Alloy in a cluster to allow for load distribution.
+                enabled: false
+                # Name for the Alloy cluster. Used for differentiating between clusters.
+                name: ""
+                # Name for the port used for clustering, useful if running inside an Istio Mesh
+                portName: http
+
+            # Options for the extra controller used for config reloading.
+            configReloader:
+              # Enables automatically reloading when the Alloy config changes.
+              enabled: true
+              # Resource requests and limits to apply to the config reloader container.
+              resources:
+                requests:
+                  cpu: "10m"
+                  memory: "50Mi"
+              # Security context to apply to the Grafana configReloader container.
+              securityContext: {}
+
+            controller:
+              # Must be one of 'daemonset', 'deployment', or 'statefulset'.
+              type: 'deployment'
+              # Number of pods to deploy.
+              replicas: 1
+
+            networkPolicy:
+              enabled: false
+              flavor: kubernetes
+
+              policyTypes:
+                - Ingress
+                - Egress
+
+              # Default allow all traffic because Alloy is so configurable
+              # It is recommended to change this before deploying to production
+              # To disable each policyType, set value to `null`
+              ingress:
+                - {}
+              egress:
+                - {}
+
+            serviceMonitor:
+              enabled: false
+              # Additional labels for the service monitor.
+              additionalLabels: {}
+              # Scrape interval. If not set, the Prometheus default scrape interval is used.
+              interval: ""
