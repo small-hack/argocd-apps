@@ -77,7 +77,7 @@ spec:
                 server_address: dns:///index-gateway.prometheus.svc.cluster.local:9095
               shared_store: gcs
 
-        # this part consumes metrics from alloy or promtail
+        # this part consumes metrics from alloy
         ingester:
           replicas: 0
           autoscaling:

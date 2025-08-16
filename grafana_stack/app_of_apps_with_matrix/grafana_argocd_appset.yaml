@@ -1,0 +1,94 @@
+# installs grafana
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: grafana-appset
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  goTemplate: true
+  # generator allows us to source specific values from an external secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - grafana_stack_grafana_hostname
+              - zitadel_hostname
+              - global_cluster_issuer
+  template:
+    metadata:
+      name: grafana
+
+    spec:
+      project: monitoring
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+        automated:
+          selfHeal: true
+          prune: true
+
+      # where to deploy this application
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: monitoring
+
+      # where to source this application from
+      source:
+        repoURL: https://grafana.github.io/helm-charts
+        chart: grafana
+        targetRevision: 9.3.2
+        helm:
+          releaseName: grafana
+          valuesObject:
+            fullnameOverride: grafana
+            envValueFrom:
+              GF_AUTH_GENERIC_OAUTH_CLIENT_ID:
+                secretKeyRef:
+                  name: grafana-oidc-credentials
+                  key: client_id
+
+              GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET:
+                secretKeyRef:
+                  name: grafana-oidc-credentials
+                  key: client_secret
+
+            grafana.ini:
+              auth:
+                disable_login_form: true
+
+              "auth.generic_oauth":
+                name: Zitadel
+                enabled: true
+                scopes: openid email profile groups
+                attribute_path: email
+                login_attribute: preferred_username
+                name_attribute: name
+                auth_url: https://{{ .zitadel_hostname }}/oauth/v2/authorize
+                token_url: https://{{ .zitadel_hostname }}/oauth/v2/token
+                api_url: https://{{ .zitadel_hostname }}/oauth/v1/userinfo
+
+              users:
+                allow_sign_up: false
+                auto_assign_org: true
+                auto_assign_org_role: Admin
+
+              server:
+                root_url: "https://{{ .grafana_stack_grafana_hostname }}"
+
+            ingress:
+              enabled: true
+              ingressClassName: nginx
+              annotations:
+                cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
+              hosts:
+                - '{{ .grafana_stack_grafana_hostname }}'
+              tls:
+                - secretName: grafana-tls
+                  hosts:
+                  - '{{ .grafana_stack_grafana_hostname }}'
