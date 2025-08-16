@@ -7,6 +7,9 @@ thanosObjstoreBitwardenID: ""
 # -- configmap for loki
 lokiConfigBitwardenID: ""
 
+# -- config for mimir
+mimirConfigBitwardenID: ""
+
 # -- if set to seaweedfs we deploy a policy secret. can also be minio
 s3_provider: "seaweedfs"
 
