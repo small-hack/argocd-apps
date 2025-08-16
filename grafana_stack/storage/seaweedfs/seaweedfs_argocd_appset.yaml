@@ -43,7 +43,7 @@ spec:
         targetRevision: 3.68.0
         chart: seaweedfs
         helm:
-          releaseName: grafana_stack-seaweedfs
+          releaseName: grafana-stack-seaweedfs
           valuesObject:
             global:
               createClusterRole: true
@@ -208,7 +208,7 @@ spec:
                   nginx.ingress.kubernetes.io/proxy-body-size: 1G
                   cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
                 tls:
-                  - secretName: grafana_stack-seaweedfs-tls
+                  - secretName: grafana-stack-seaweedfs-tls
                     hosts:
                       - '{{ .grafana_stack_s3_endpoint }}'
             cosi:
