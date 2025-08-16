@@ -4,15 +4,19 @@ kind: Application
 metadata:
   name: grafana-dashboards
   namespace: argocd
+
 spec:
-  project: prometheus
+  project: grafana_stack
+
   source:
     repoURL: 'https://github.com/small-hack/argocd-apps'
     targetRevision: main
-    path: prometheus/dashboards/
+    path: grafana_stack/dashboards/
+
   destination:
     server: "https://kubernetes.default.svc"
-    namespace: prometheus
+    namespace: monitoring
+
   syncPolicy:
     syncOptions:
       - Replace=true
