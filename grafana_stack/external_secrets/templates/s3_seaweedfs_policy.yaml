@@ -34,7 +34,7 @@ spec:
                {"accessKey": "{{ `{{ .mimirAccessKey }}` }}",
                 "secretKey": "{{ `{{ .mimirSecretKey }}` }}"}
              ],
-             "actions": ["Read:mimir","Write:mimir","List:mimir"]}
+             "actions": ["Read:mimir-*","Write:mimir-*","List:mimir-*"]}
           ]}
   data:
     - secretKey: adminAccessKey
