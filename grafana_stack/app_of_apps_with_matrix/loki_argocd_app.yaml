@@ -161,6 +161,7 @@ spec:
         # allows querying from grafana, cli, and api
         querier:
           replicas: 2
+          maxUnavailable: 1
 
         # manages distribution of requests to queriers
         queryFrontend:
