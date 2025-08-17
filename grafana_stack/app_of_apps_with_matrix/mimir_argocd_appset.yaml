@@ -128,7 +128,7 @@ spec:
                 ingressClassName: nginx
                 annotations: {}
                 hosts:
-                  - host: nginx.mimir.vleermuis.tech
+                  - host: mimir.vleermuis.tech
                     paths:
                       - path: /
                         pathType: Prefix
@@ -136,7 +136,7 @@ spec:
                 tls:
                   - secretName: mimir-nginx-tls
                     hosts:
-                      - nginx.mimir.vleermuis.tech
+                      - mimir.vleermuis.tech
 
             # -- KEDA Autoscaling configuration
             kedaAutoscaling:
