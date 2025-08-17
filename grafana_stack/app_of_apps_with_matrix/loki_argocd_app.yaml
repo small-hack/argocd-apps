@@ -93,12 +93,19 @@ spec:
           extraArgs:
             - -config.expand-env=true
 
-          # we need this for the memberlist
           extraEnv:
+            # we need this for the memberlist ring sync thing
             - name: MY_POD_IP
               valueFrom:
                 fieldRef:
                   fieldPath: status.podIP
+
+            # we need this for valkey
+            - name: VALKEY_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: loki-valkey-credentials
+                  key: password
 
           # need this for the S3 credentials
           extraEnvFrom:
