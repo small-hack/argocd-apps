@@ -150,10 +150,9 @@ spec:
                 server_address: dns:///loki-index-gateway.monitoring.svc.cluster.local:9095
               shared_store: s3
 
-
         # I don't think we need this yet
         queryScheduler:
-          replicas: 0
+          replicas: 1
 
         # compacts the tsdb volume
         compactor:
@@ -161,15 +160,20 @@ spec:
 
         # allows querying from grafana, cli, and api
         querier:
-          replicas: 1
+          replicas: 2
 
         # manages distribution of requests to queriers
         queryFrontend:
-          replicas: 1
+          replicas: 2
 
         # -- Configuration for the index-gateway
         indexGateway:
           # -- Number of replicas for the index-gateway
+          replicas: 1
+
+        # --  Configuration for the distributor
+        distributor:
+          # -- Number of replicas for the distributor
           replicas: 1
 
         # ingester consumes metrics from alloy
@@ -182,13 +186,13 @@ spec:
             # -- Enable autoscaling for the ingester
             enabled: true
             # -- Minimum autoscaling replicas for the ingester
-            minReplicas: 1
+            minReplicas: 2
             # -- Maximum autoscaling replicas for the ingester
-            maxReplicas: 2
+            maxReplicas: 3
             # -- Target CPU utilisation percentage for the ingester
-            targetCPUUtilizationPercentage: 60
+            targetCPUUtilizationPercentage: 75
             # -- Target memory utilisation percentage for the ingester
-            targetMemoryUtilizationPercentage: null
+            targetMemoryUtilizationPercentage: 80
 
           zoneAwareReplication:
             # -- Enable zone awareness.
