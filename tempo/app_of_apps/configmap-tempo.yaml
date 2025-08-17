@@ -64,14 +64,15 @@ stringData:
 
     memberlist:
       abort_if_cluster_join_fails: false
-      bind_addr: []
+      bind_addr:
+        - ${MY_POD_IP}
       bind_port: 7946
-      cluster_label: 'release-name.argocd'
+      cluster_label: 'tempo.monitoring'
       gossip_interval: 1s
       gossip_nodes: 2
       gossip_to_dead_nodes_time: 30s
       join_members:
-      - dns+release-name-tempo-gossip-ring:7946
+        - dns+tempo-tempo-gossip-ring:7946
       leave_timeout: 5s
       left_ingesters_timeout: 5m
       max_join_backoff: 1m
