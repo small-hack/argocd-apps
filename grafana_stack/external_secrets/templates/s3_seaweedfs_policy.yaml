@@ -34,7 +34,13 @@ spec:
                {"accessKey": "{{ `{{ .mimirAccessKey }}` }}",
                 "secretKey": "{{ `{{ .mimirSecretKey }}` }}"}
              ],
-             "actions": ["Read:mimir-*","Write:mimir-*","List:mimir-*"]}
+             "actions": ["Read:mimir-*","Write:mimir-*","List:mimir-*"]},
+            {"name": "tempo",
+             "credentials": [
+               {"accessKey": "{{ `{{ .tempoAccessKey }}` }}",
+                "secretKey": "{{ `{{ .tempoSecretKey }}` }}"}
+             ],
+             "actions": ["Read:tempo-*","Write:tempo-*","List:tempo-*"]}
           ]}
   data:
     - secretKey: adminAccessKey
@@ -83,6 +89,24 @@ spec:
         property: username
 
     - secretKey: mimirSecretKey
+      sourceRef:
+        storeRef:
+          name: bitwarden-login
+          kind: ClusterSecretStore
+      remoteRef:
+        key: {{ .Values.s3MimirCredentialsBitwardenID }}
+        property: password
+
+    - secretKey: tempoAccessKey
+      sourceRef:
+        storeRef:
+          name: bitwarden-login
+          kind: ClusterSecretStore
+      remoteRef:
+        key: {{ .Values.s3MimirCredentialsBitwardenID }}
+        property: username
+
+    - secretKey: tempoSecretKey
       sourceRef:
         storeRef:
           name: bitwarden-login

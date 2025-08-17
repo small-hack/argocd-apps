@@ -52,7 +52,7 @@ spec:
             fullnameOverride: "tempo-valkey"
 
             usePassword: true
-            existingSecret: "loki-valkey-credentials"
+            existingSecret: "tempo-valkey-credentials"
             existingSecretPasswordKey: "password"
 
             tls:

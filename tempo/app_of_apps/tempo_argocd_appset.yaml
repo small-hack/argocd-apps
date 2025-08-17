@@ -90,7 +90,7 @@ spec:
                   valueFrom:
                     secretKeyRef:
                       # TODO: change this to tempo later
-                      name: loki-valkey-credentials
+                      name: tempo-valkey-credentials
                       key: password
 
             # Configuration for the ingester
