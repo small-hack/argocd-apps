@@ -89,19 +89,25 @@ spec:
               datasources.yaml:
                 apiVersion: 1
                 datasources:
-                  # metrics
-                  - name: mimir
+                  # metrics from mimir
+                  - name: Mimir
+                    uid: mimir
                     type: prometheus
-                    url: http://mimir-nginx/prometheus
+                    url: http://mimir-nginx.monitoring.svc/prometheus
                     access: proxy
                     isDefault: true
+                    jsonData:
+                      httpMethod: "POST"
+                      prometheusType: "Mimir"
+                      # prometheusVersion: "2.9.1"
+                      tlsSkipVerify: true
+                      timeout: 30
 
-                  # logs
-                  - name: loki
+                  # logs from loki
+                  - name: Loki
+                    uid: loki
                     type: loki
                     access: proxy
-                    # this didn't work...
-                    # url: http://loki-gateway/loki/api/v1/tail
                     url: http://loki-gateway.monitoring.svc.cluster.local
                     jsonData:
                       timeout: 60
