@@ -115,8 +115,24 @@ spec:
               topologySpreadConstraints: []
 
             nginx:
+              replicas: 1
+              autoscaling:
+                enabled: false
+                minReplicas: 1
+                maxReplicas: 3
+
               topologySpreadConstraints: []
-            
+
+            ingress:
+              enabled: true
+              ingressClassName: nginx
+              annotations: {}
+              hosts:
+                - mimir.vleermuis.tech
+              tls:
+                - secretName: mimir-distributed-tls
+                  hosts:
+                    - mimir.vleermuis.tech
 
             # -- KEDA Autoscaling configuration
             kedaAutoscaling:
