@@ -81,7 +81,11 @@ spec:
         ingester:
           # set this to 0 when autocaling is on
           replicas: 0
+          topologySpreadConstraints: []
+
           affinity: {}
+
+          nodeSelector: {}
 
           autoscaling:
             # -- Enable autoscaling for the ingester
