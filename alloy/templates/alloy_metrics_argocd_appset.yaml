@@ -72,6 +72,16 @@ spec:
                 runAsUser: 473
                 runAsGroup: 473
 
+              extraPorts:
+              - name: otlp-grpc
+                port: 4317
+                targetPort: 4317
+                protocol: TCP
+              - name: otlp-http
+                port: 4318
+                targetPort: 4318
+                protocol: TCP
+
             # Options for the extra controller used for config reloading.
             configReloader:
               # Enables automatically reloading when the Alloy config changes.
@@ -115,3 +125,4 @@ spec:
               additionalLabels: {}
               # Scrape interval. If not set, the Prometheus default scrape interval is used.
               interval: ""
+
