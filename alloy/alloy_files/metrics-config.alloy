@@ -11,24 +11,61 @@ discovery.kubernetes "pods" {
         role = "pod"
 }
 
+prometheus.scrape "pods" {
+        scrape_interval = "10s"
+        targets         = discovery.kubernetes.pods.target
+        forward_to      = [prometheus.remote_write.default.receiver]
+}
+
+
 discovery.kubernetes "services" {
         role = "service"
+}
+
+prometheus.scrape "services" {
+        scrape_interval = "10s"
+        targets         = discovery.kubernetes.services.target
+        forward_to      = [prometheus.remote_write.default.receiver]
 }
 
 discovery.kubernetes "endpoints" {
         role = "endpoints"
 }
 
+prometheus.scrape "endpoints" {
+        scrape_interval = "10s"
+        targets         = discovery.kubernetes.endpoints.target
+        forward_to      = [prometheus.remote_write.default.receiver]
+}
+
 discovery.kubernetes "endpointslices" {
         role = "endpointslice"
+}
+
+prometheus.scrape "endpointslices" {
+        scrape_interval = "10s"
+        targets         = discovery.kubernetes.endpointslices.target
+        forward_to      = [prometheus.remote_write.default.receiver]
 }
 
 discovery.kubernetes "ingresses" {
         role = "ingress"
 }
 
+prometheus.scrape "ingresses" {
+        scrape_interval = "10s"
+        targets         = discovery.kubernetes.ingresses.target
+        forward_to      = [prometheus.remote_write.default.receiver]
+}
+
 discovery.kubernetes "nodes" {
         role = "node"
+}
+
+prometheus.scrape "nodes" {
+        scrape_interval = "10s"
+        targets         = discovery.kubernetes.nodes.target
+        forward_to      = [prometheus.remote_write.default.receiver]
 }
 
 discovery.relabel "kubelet" {
@@ -55,25 +92,17 @@ discovery.relabel "kubelet" {
 prometheus.operator.servicemonitors "default" {
         forward_to = [prometheus.remote_write.default.receiver]
         scrape {
-            default_scrape_interval = "15s"
-            default_scrape_timeout  = "10s"
+            default_scrape_interval = "10s"
+            default_scrape_timeout  = "5s"
         }
 }
 
 prometheus.operator.podmonitors "default" {
         forward_to = [prometheus.remote_write.default.receiver]
         scrape {
-            default_scrape_interval = "15s"
-            default_scrape_timeout  = "10s"
+            default_scrape_interval = "10s"
+            default_scrape_timeout  = "5s"
         }
-}
-
-
-prometheus.scrape "pods" {
-        scrape_interval = "10s"
-        forward_to      = [prometheus.remote_write.default.receiver]
-        targets         = discovery.kubernetes.pods.targets
-	targets         = discovery.kubernetes.services.targets
 }
 
 prometheus.remote_write "default" {
