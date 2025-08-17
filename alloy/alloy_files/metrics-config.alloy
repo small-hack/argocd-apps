@@ -75,8 +75,7 @@ prometheus.scrape "pods" {
         targets         = [discovery.kubernetes.pods.targets,
                            discovery.kubernetes.services.targets,
                            discovery.kubernetes.endpoints.targets,
-                           discovery.kubernetes.endpointslices.targets,
-                           discovery.kubernetes.ingresses.targets]
+                           discovery.kubernetes.endpointslices.targets]
 }
 
 prometheus.remote_write "default" {
