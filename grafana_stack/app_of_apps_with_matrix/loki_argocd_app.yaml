@@ -90,21 +90,18 @@ spec:
             publishNotReadyAddresses: true
 
         global:
-          # extraVolumes:
-          #   - name: data
-          #     emptyDir: {}
-          # extraVolumeMounts:
-          #   - mountPath: /data
-          #     name: data
+          # need this to expand env variables in configs
           extraArgs:
             - -config.expand-env=true
 
+          # we need this for the memberlist
           extraEnv:
             - name: MY_POD_IP
               valueFrom:
                 fieldRef:
                   fieldPath: status.podIP
 
+          # need this for the S3 credentials
           extraEnvFrom:
             - secretRef:
                 name: s3-loki-credentials
@@ -144,12 +141,15 @@ spec:
               index_gateway_client:
                 # only applicable if using microservices where index-gateways are independently deployed.
                 # This example is using kubernetes-style naming.
-                server_address: dns:///index-gateway.prometheus.svc.cluster.local:9095
+                server_address: dns:///loki-index-gateway.monitoring.svc.cluster.local:9095
               shared_store: s3
 
 
         queryScheduler:
           replicas: 0
+
+        compactor:
+          replicas: 1
 
         # ingester consumes metrics from alloy
         ingester:
