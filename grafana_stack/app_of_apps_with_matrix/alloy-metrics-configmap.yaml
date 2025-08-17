@@ -42,6 +42,6 @@ data:
 
     prometheus.remote_write "default" {
             endpoint {
-                url = "http://localhost:9090/api/v1/write"
+                url = "http://mimir-distributor-headless.monitoring.svc:9095/api/v1/push"
             }
     }
