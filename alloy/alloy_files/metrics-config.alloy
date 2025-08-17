@@ -153,7 +153,7 @@ otelcol.exporter.otlp "tempo2" {
     // Define the client for exporting.
     client {
         // Send to the locally running Tempo instance
-        endpoint = "http://tempo-distributor.monitoring.svc.cluster.local:9095"
+        endpoint = "tempo-distributor.monitoring.svc:9095"
         // Disable TLS for OTLP remote write.
         tls {
             // The connection is insecure.
