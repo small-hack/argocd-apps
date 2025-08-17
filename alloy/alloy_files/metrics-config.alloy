@@ -13,7 +13,7 @@ discovery.kubernetes "pods" {
 
 prometheus.scrape "pods" {
         scrape_interval = "10s"
-        targets         = discovery.kubernetes.pods.target
+        targets         = discovery.kubernetes.pods.targets
         forward_to      = [prometheus.remote_write.default.receiver]
 }
 
@@ -24,7 +24,7 @@ discovery.kubernetes "services" {
 
 prometheus.scrape "services" {
         scrape_interval = "10s"
-        targets         = discovery.kubernetes.services.target
+        targets         = discovery.kubernetes.services.targets
         forward_to      = [prometheus.remote_write.default.receiver]
 }
 
@@ -34,7 +34,7 @@ discovery.kubernetes "endpoints" {
 
 prometheus.scrape "endpoints" {
         scrape_interval = "10s"
-        targets         = discovery.kubernetes.endpoints.target
+        targets         = discovery.kubernetes.endpoints.targets
         forward_to      = [prometheus.remote_write.default.receiver]
 }
 
@@ -44,7 +44,7 @@ discovery.kubernetes "endpointslices" {
 
 prometheus.scrape "endpointslices" {
         scrape_interval = "10s"
-        targets         = discovery.kubernetes.endpointslices.target
+        targets         = discovery.kubernetes.endpointslices.targets
         forward_to      = [prometheus.remote_write.default.receiver]
 }
 
@@ -54,7 +54,7 @@ discovery.kubernetes "ingresses" {
 
 prometheus.scrape "ingresses" {
         scrape_interval = "10s"
-        targets         = discovery.kubernetes.ingresses.target
+        targets         = discovery.kubernetes.ingresses.targets
         forward_to      = [prometheus.remote_write.default.receiver]
 }
 
@@ -64,7 +64,7 @@ discovery.kubernetes "nodes" {
 
 prometheus.scrape "nodes" {
         scrape_interval = "10s"
-        targets         = discovery.kubernetes.nodes.target
+        targets         = discovery.kubernetes.nodes.targets
         forward_to      = [prometheus.remote_write.default.receiver]
 }
 
