@@ -3,7 +3,7 @@ logging {
     format = "json"
 }
 
-liveDebugging {
+livedebugging {
         enabled = true
 }
 
