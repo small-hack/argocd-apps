@@ -343,36 +343,6 @@ spec:
                 # storage backends specified in https://grafana.com/docs/tempo/latest/configuration/#storage
                 backend: s3
 
-                # S3 configuration. Will be used only if value of backend is "s3"
-                # Check the S3 doc within this folder for information on s3 specific permissions.
-                s3:
-                    # Bucket name in s3
-                    bucket: ${S3_BUCKET}
-                    # use any S3 compatible object storage endpoint.
-                    endpoint: ${S3_HOSTNAME}
-
-                    # optional.
-                    # By default the region is inferred from the endpoint,
-                    # but is required for some S3-compatible storage engines.
-                    region: eu-central-1
-
-                    # optional.
-                    # access key when using static credentials.
-                    access_key: ${S3_USER}
-
-                    # optional.
-                    # secret key when using static credentials.
-                    secret_key: ${S3_PASSWORD}
-
-                    # optional.
-                    # enable to use path-style requests.
-                    forcepathstyle: true
-
-                    # options: 0: BucketLookupAuto, 1: BucketLookupDNS, 2: BucketLookupPath
-                    # Notice: ignore this option if `forcepathstyle` is set true,
-                    # this option allow expose minio's sdk configure.
-                    bucket_lookup_type: 2
-
                 # The worker pool is used primarily when finding traces by id, but is also used by others.
                 pool:
                   # -- Total number of workers pulling jobs from the queue
