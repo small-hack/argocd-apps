@@ -167,6 +167,11 @@ spec:
         queryFrontend:
           replicas: 1
 
+        # -- Configuration for the index-gateway
+        indexGateway:
+          # -- Number of replicas for the index-gateway
+          replicas: 1
+
         # ingester consumes metrics from alloy
         ingester:
           # set this to 0 when autocaling is on
