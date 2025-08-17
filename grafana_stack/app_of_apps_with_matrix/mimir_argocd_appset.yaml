@@ -75,7 +75,7 @@ spec:
 
             # mimir's ingester
             ingester:
-              topologySpreadConstraints: []
+              #topologySpreadConstraints: []
               replicas: 2
               zoneAwareReplication:
                 # -- Enable zone-aware replication for ingester
@@ -83,8 +83,8 @@ spec:
 
             # mimir's store_gateway
             store_gateway:
-              topologySpreadConstraints: []
-              replicas: 1
+              #topologySpreadConstraints: []
+              replicas: 2
               enabled: true
               zoneAwareReplication:
                 # -- Enable zone-aware replication for ingester
@@ -92,30 +92,30 @@ spec:
 
             # mimir's forked alertmanager
             alertmanager:
-              topologySpreadConstraints: []
+              #topologySpreadConstraints: []
               enabled: true
-              replicas: 1
+              replic§as: 2
 
-            distributor:
-              topologySpreadConstraints: []
+            #distributor:
+            #  topologySpreadConstraints: []
 
-            compactor:
-              topologySpreadConstraints: []
+            #compactor:
+            #  topologySpreadConstraints: []
 
-            ruler:
-              topologySpreadConstraints: []
+            #ruler:
+            #  topologySpreadConstraints: []
 
-            query_scheduler:
-              topologySpreadConstraints: []
+            #query_scheduler:
+            #  topologySpreadConstraints: []
 
-            querier:
-              topologySpreadConstraints: []
+            #querier:
+            #  topologySpreadConstraints: []
 
-            query_frontend:
-              topologySpreadConstraints: []
+            #query_frontend:
+            #  topologySpreadConstraints: []
 
             nginx:
-              replicas: 1
+              replicas: 2
               autoscaling:
                 enabled: false
                 minReplicas: 1
@@ -124,7 +124,7 @@ spec:
               basicAuth:
                 enabled: true
 
-              topologySpreadConstraints: []
+              # topologySpreadConstraints: []
 
               ingress:
                 enabled: true
