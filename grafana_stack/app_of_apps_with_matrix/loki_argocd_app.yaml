@@ -83,7 +83,8 @@ spec:
           replicas: 0
           topologySpreadConstraints: []
 
-          affinity: null
+          affinity:
+            podAntiAffinity: {}
 
           nodeSelector: null
 
