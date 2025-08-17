@@ -33,3 +33,21 @@ data:
     discovery.kubernetes "ingresses" {
             role = "ingress"
     }
+
+    prometheus.scrape "default" {
+	targets    = [
+	discovery.kubernetes.pods.targets,
+	discovery.kubernetes.nodes.targets,
+	discovery.kubernetes.endpoints.targets,
+	discovery.kubernetes.endpointslices.targets,
+	discovery.kubernetes.ingresses.targets,
+	]
+
+	forward_to = [prometheus.remote_write.default.receiver]
+    }
+
+    prometheus.remote_write "default" {
+	endpoint {
+	    url = "mimir-distributor-headless.monitoring.svc:9095/api/v1/push"
+	}
+    }
