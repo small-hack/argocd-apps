@@ -38,7 +38,7 @@ spec:
 
       # where to source this application from
       source:
-        repoURL: https://tempo.github.io/helm-charts
+        repoURL: https://grafana.github.io/helm-charts
         # https://github.com/grafana/helm-charts/tree/main/charts/tempo-distributed
         chart: tempo-distributed
         targetRevision: 1.46.3
