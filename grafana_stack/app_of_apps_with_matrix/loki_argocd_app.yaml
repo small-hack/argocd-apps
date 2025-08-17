@@ -42,6 +42,11 @@ spec:
         # Note: SimpleScalable and Distributed REQUIRE the use of object storage.
         deploymentMode: Distributed
 
+        global:
+          extraEnvFrom:
+            - secretRef:
+                name: s3-loki-credentials
+
         loki:
           configStorageType: Secret
           # comes from an externalsecret so we can pass in S3 credentials securely
