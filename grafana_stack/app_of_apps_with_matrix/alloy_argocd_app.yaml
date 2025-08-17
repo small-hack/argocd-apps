@@ -1,0 +1,27 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: alloy-opinionated
+  namespace: argocd
+
+spec:
+  project: monitoring
+
+  syncPolicy:
+    syncOptions:
+      - Replace=true
+      - CreateNamespace=true
+    automated:
+      prune: true
+      selfHeal: true
+
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: monitoring
+
+  source:
+    repoURL: 'https://github.com/small-hack/argocd-apps'
+    targetRevision: main
+    path: alloy/
+
