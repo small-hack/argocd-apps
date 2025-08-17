@@ -326,14 +326,6 @@ spec:
                     expiration: 0
 
                     # optional.
-                    # Enable connecting to redis with TLS. (default false)
-                    tls-enabled: false
-
-                    # optional.
-                    # Skip validating server certificate. (default false)
-                    tls-insecure-skip-verify: true
-
-                    # optional.
                     # Password to use when connecting to redis. (default "")
                     password: ${VALKEY_PASSWORD}
 
