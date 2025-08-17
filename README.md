@@ -29,16 +29,18 @@ Here's some quick guidelines, but you if you'd like to contribute, please read t
 * [Ingress](#ingress)
 * [Monitoring](#monitoring)
   * [Experimental](#experimental-2)
+  * [Deprecated](#deprecated)
 * [Networking](#networking)
   * [Experimental](#experimental-3)
 * [Other](#other)
   * [Experimental](#experimental-4)
 * [Security](#security)
-* [Secrets Management](#secrets-management)
   * [Experimental](#experimental-5)
+* [Secrets Management](#secrets-management)
+  * [Experimental](#experimental-6)
 * [Social Media and chat](#social-media-and-chat)
 * [Virtual Machines](#virtual-machines)
-  * [Experimental](#experimental-6)
+  * [Experimental](#experimental-7)
 * [Troubleshooting Tips](#troubleshooting-tips)
 * [Art](#art)
   * [Argo CD Squid riding a Docker whale](#argo-cd-squid-riding-a-docker-whale)
@@ -52,12 +54,12 @@ Here's some quick guidelines, but you if you'd like to contribute, please read t
 
 ## Database and Key Value Stores
 
-| App Directory                                                                | Description                                                                                                |
-|:-----------------------------------------------------------------------------|:-----------------------------------------------------------------------------------------------------------|
+| App Directory                                                       | Description                                                                                                |
+|:--------------------------------------------------------------------|:-----------------------------------------------------------------------------------------------------------|
 | [cloud-native-postgres](./postgres/operators/cloud-native-postgres) | PostgreSQL database management operator to spin up postgres instances, collect metrics, and create backups |
-| [postgresql](./postgres/bitnami)                                             | Just a bitnami PostgreSQL database helm chart on k8s, in case you need that for something                  |
-| [valkey](./valkey)                                                           | Bitnami Valkey helm chart on k8s. Valkey is a more FOSS alternative to Redis.                              |
-| [valkey Cluster](./valkey_cluster)                                           | Bitnami Valkey Cluster helm chart on k8s. Valkey is a more FOSS alternative to Redis Cluster.              |
+| [postgresql](./postgres/bitnami)                                    | Just a bitnami PostgreSQL database helm chart on k8s, in case you need that for something                  |
+| [valkey](./valkey)                                                  | Bitnami Valkey helm chart on k8s. Valkey is a more FOSS alternative to Redis.                              |
+| [valkey Cluster](./valkey_cluster)                                  | Bitnami Valkey Cluster helm chart on k8s. Valkey is a more FOSS alternative to Redis Cluster.              |
 
 
 ## File Storage and Backups
@@ -72,6 +74,7 @@ Here's some quick guidelines, but you if you'd like to contribute, please read t
 
 
 #### Experimental
+
 |        App Directory        | Description                                                                                                                                                                          |
 |:---------------------------:|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 |   [garage](./demo/garage)   | [Garage](https://git.deuxfleurs.fr/Deuxfleurs/garage/src/branch/main) is a self hosted S3 compatible Object Store                                                                    |
@@ -95,8 +98,8 @@ Here's some quick guidelines, but you if you'd like to contribute, please read t
 
 ## Ingress
 
-|          App Directory                   | Description                                                                                                                                       |
-|:----------------------------------------:|:--------------------------------------------------------------------------------------------------------------------------------------------------|
+|           App Directory          | Description                                                                                                                                       |
+|:--------------------------------:|:--------------------------------------------------------------------------------------------------------------------------------------------------|
 |  [cert-manager](./cert-manager)  | helm chart for [cert-manager](https://cert-manager.io), for providing TLS certificates based on nginx ingress annotations                         |
 | [ingress-nginx](./ingress-nginx) | helm chart for [ingress-nginx](https://github.com/kubernetes/ingress-nginx), an nginx ingress controller to allow external traffic to the cluster |
 
@@ -109,6 +112,8 @@ The main thing we deploy is the Grafana Stack which includes:
 - Loki
 - Grafana
 
+We also offer Tempo for telemetry.
+
 | App Directory                    | Description                                                                                                                                                                                                                                           |
 |:---------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | [grafana_stack](./grafana_stack) | [Alloy](https://grafana.com/docs/alloy/latest/), [Mimir](https://grafana.com/docs/mimir/latest/), [Loki](https://grafana.com/docs/loki/latest/), [Grafana](https://grafana.com) for collecting metrics for monitoring/alerting, and dashboards/charts |
@@ -119,6 +124,7 @@ The main thing we deploy is the Grafana Stack which includes:
 |      App Directory      | Description                                                                                                                                                                                                                                                                                                               |
 |:-----------------------:|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | [kepler](./demo/kepler) | helm chart for [Kepler](https://github.com/sustainable-computing-io/kepler), (Kubernetes-based Efficient Power Level Exporter), which uses eBPF to probe performance counters and other system stats, use ML models to estimate workload energy consumption based on these stats, and exports them as Prometheus metrics. |
+|     [tempo](./tempo)    | [Tempo](https://grafana.com/docs/tempo/latest/) for collecting telemetry and exposing it through Grafana. Useful for supporting developers who make heavy use of tracing.                                                                                                                                                 |
 
 #### Deprecated
 
@@ -156,46 +162,49 @@ Other useful tools that don't fit neatly into any one category.
 
 #### Experimental
 
-|     App Directory    | Description                                                      |
-|:--------------------:|:-----------------------------------------------------------------|
-| [k8tz](./demo/k8tz) | A helm chart for k8tz, to inject timezone info into cronjob pods |
+|            App Directory           | Description                                                      |
+|:----------------------------------:|:-----------------------------------------------------------------|
+|         [k8tz](./demo/k8tz)        | A helm chart for k8tz, to inject timezone info into cronjob pods |
 | [LibreTranslate](./libretranslate) | A helm chart for LibreTranslate, to self host a translation tool |
 
 
 ## Security
 
-| App Directory              | Description                         |
-|:---------------------------|:------------------------------------|
+#### Experimental
+
+| App Directory             | Description                         |
+|:--------------------------|:------------------------------------|
 | [kyverno](./demo/kyverno) | Kubernetes-native policy management |
+| [opa](./opa)              | Open Policy Agent Gatekeeper        |
 
 
 ## Secrets Management
 
-| App Directory                                              | Description                                                                                                                          |
-|:-----------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------|
-| [external-secrets-operator](./external-secrets-operator)   | ESO ([External Secrets Operator](https://external-secrets.io/latest/)) used for sourcing k8s secrets from an external provider       |
+| App Directory                                                                 | Description                                                                                                                          |
+|:------------------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------|
+| [external-secrets-operator](./external-secrets-operator)                      | ESO ([External Secrets Operator](https://external-secrets.io/latest/)) used for sourcing k8s secrets from an external provider       |
 | [bitwarden-external-secrets](./external-secrets-operator/providers/bitwarden) | ESO [Bitwarden](https://external-secrets.io/v0.9.1/examples/bitwarden/) SecretStore, for using secrets directly from bitwarden items |
 
 #### Experimental
 
-| App Directory            | Description                                                                                                                                                |
-|:-------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------|
+| App Directory                 | Description                                                                                                                                                |
+|:------------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------|
 | [infisical](./demo/infisical) | [Infisical](https://infisical.com/docs/integrations/platforms/kubernetes) is an open source secrets management solution and it has a k8s secrets operator. |
 | [openbao](./demo/openbao)     | [OpenBao](https://github.com/openbao/openbao) is an open source secrets management solution forked from Vault and supported by the Linux Foundation.       |
 | [vault](./demo/vault)         | [Vault](https://github.com/hashicorp/vault) is an open source secrets management solution by Hashicorp.                                                    |
 
 ## Social Media and chat
 
-| App Directory              | Description                                                                                                                                                                                                                                                                                                                                                                                               |
-|:---------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [coturn](./coturn)         | TURN/STUN server for connecting VoIP peers                                                                                                                                                                                                                                                                                                                                                                |
-| [elk](./elk)               | [Elk](https://github.com/elk-zone/elk) is a selfhosted frontend to Mastodon and GoToSocial.                                                                                                                                                                                                                                                                                                               |
-| [ghost](./ghost) | [Ghost](https://ghost.org/) is a selfhosted blogging platform.                                                                                                                                                                                                                                                   |
-| [gotosocial](./gotosocial) | [GoToSocial](https://gotosocial.org) is a selfhosted social media site, includes postgresql. Advertised as lighter weight in requirements than Mastodon.                                                                                                                                                                                                                                                  |
-| [mastodon](./mastodon)     | [Mastodon](https://en.wikipedia.org/wiki/Mastodon_(social_network)) is a selfhosted social media site, includes [postgresql](https://github.com/bitnami/charts/tree/main/bitnami/postgresql), [elastic search](https://github.com/bitnami/charts/tree/main/bitnami/elasticsearch) (for full text searching), and [valkey](https://github.com/bitnami/charts/tree/main/bitnami/valkey) (in memory caching) |
-| [matrix](./matrix)         | [matrix](https://matrix.org) is a selfhosted chat server that plugs into a bunch of other chat apps                                                                                                                                                                                                                                                                                                       |
-| [peertube](./peertube)     | [PeerTube](https://joinpeertube.org/en_US) is a selfhosted video hosting website that acts a replacement for YouTube. This app of apps includes postgresql, valkey, and S3 (via SeaweedFS).                                                                                                                                                                                                               |
-| [writefreely](./writefreely) | [WriteFreely](https://writefreely.org/) is a slim selfhosted blogging platform.                                                                                                                                                                                                                                                   |
+| App Directory                | Description                                                                                                                                                                                                                                                                                                                                                                                               |
+|:-----------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [coturn](./coturn)           | TURN/STUN server for connecting VoIP peers                                                                                                                                                                                                                                                                                                                                                                |
+| [elk](./elk)                 | [Elk](https://github.com/elk-zone/elk) is a selfhosted frontend to Mastodon and GoToSocial.                                                                                                                                                                                                                                                                                                               |
+| [ghost](./ghost)             | [Ghost](https://ghost.org/) is a selfhosted blogging platform.                                                                                                                                                                                                                                                                                                                                            |
+| [gotosocial](./gotosocial)   | [GoToSocial](https://gotosocial.org) is a selfhosted social media site, includes postgresql. Advertised as lighter weight in requirements than Mastodon.                                                                                                                                                                                                                                                  |
+| [mastodon](./mastodon)       | [Mastodon](https://en.wikipedia.org/wiki/Mastodon_(social_network)) is a selfhosted social media site, includes [postgresql](https://github.com/bitnami/charts/tree/main/bitnami/postgresql), [elastic search](https://github.com/bitnami/charts/tree/main/bitnami/elasticsearch) (for full text searching), and [valkey](https://github.com/bitnami/charts/tree/main/bitnami/valkey) (in memory caching) |
+| [matrix](./matrix)           | [matrix](https://matrix.org) is a selfhosted chat server that plugs into a bunch of other chat apps                                                                                                                                                                                                                                                                                                       |
+| [peertube](./peertube)       | [PeerTube](https://joinpeertube.org/en_US) is a selfhosted video hosting website that acts a replacement for YouTube. This app of apps includes postgresql, valkey, and S3 (via SeaweedFS).                                                                                                                                                                                                               |
+| [writefreely](./writefreely) | [WriteFreely](https://writefreely.org/) is a slim selfhosted blogging platform.                                                                                                                                                                                                                                                                                                                           |
 
 ## Virtual Machines
 

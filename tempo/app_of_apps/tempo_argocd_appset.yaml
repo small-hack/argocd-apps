@@ -1,0 +1,71 @@
+# installs tempo
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: tempo-appset
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  goTemplate: true
+  # generator allows us to source specific values from an external secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - tempo_stack_tempo_hostname
+              - global_cluster_issuer
+  template:
+    metadata:
+      name: tempo
+
+    spec:
+      project: monitoring
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+        automated:
+          selfHeal: true
+          prune: true
+
+      # where to deploy this application
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: monitoring
+
+      # where to source this application from
+      source:
+        repoURL: https://tempo.github.io/helm-charts
+        chart: tempo
+        targetRevision: 9.3.2
+        helm:
+          releaseName: tempo
+          valuesObject:
+            fullnameOverride: tempo
+            envValueFrom:
+              GF_AUTH_GENERIC_OAUTH_CLIENT_ID:
+                secretKeyRef:
+                  name: tempo-oidc-credentials
+                  key: client_id
+
+              GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET:
+                secretKeyRef:
+                  name: tempo-oidc-credentials
+                  key: client_secret
+
+            # configure ingress - outside cluster
+            ingress:
+              enabled: true
+              ingressClassName: nginx
+              annotations:
+                cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
+              hosts:
+                - '{{ .tempo_stack_tempo_hostname }}'
+              tls:
+                - secretName: tempo-tls
+                  hosts:
+                  - '{{ .tempo_stack_tempo_hostname }}'
