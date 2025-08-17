@@ -11,15 +11,31 @@ stringData:
   tempo.yaml: |
     cache:
       caches:
-        - memcached:
-            consistent_hash: true
-            host: 'release-name-tempo-memcached'
-            service: memcached-client
+        # Redis configuration block
+        # EXPERIMENTAL
+        - redis:
+            # Redis endpoint to use when caching.
+            endpoint: tempo-valkey-headless.monitoring.svc
+
+            # optional.
+            # Maximum time to wait before giving up on redis requests. (default 100ms)
             timeout: 500ms
-          roles:
-            - parquet-footer
-            - bloom
-            - frontend-search
+
+            # optional.
+            # How long keys stay in the redis. (default 0)
+            expiration: 0
+
+            # optional.
+            # Enable connecting to redis with TLS. (default false)
+            tls-enabled: false
+
+            # optional.
+            # Skip validating server certificate. (default false)
+            tls-insecure-skip-verify: true
+
+            # optional.
+            # Password to use when connecting to redis. (default "")
+            password: ${VALKEY_PASSWORD}
 
     compactor:
       compaction:
