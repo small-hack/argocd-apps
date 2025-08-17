@@ -1,0 +1,48 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: opa-gatekeeper-appset
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  goTemplate: true
+  # generator allows us to source specific values from an external secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - global_cluster_issuer
+  template:
+    metadata:
+      name: opa-gatekeeper
+    spec:
+      project: gatekeeper
+
+      # sync policy for opa gatekeeper
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+        automated:
+          selfHeal: false
+          prune: false
+
+      # where to install opa gatekeeper
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: gatekeeper-system
+
+      # where to source opa gatekeeper from
+      source:
+        repoURL: https://open-policy-agent.github.io/gatekeeper/charts
+        chart: gatekeeper
+        targetRevision: 3.21.0-beta.0
+        helm:
+          releaseName: gatekeeper
+          # https://github.com/open-policy-agent/gatekeeper/tree/master/charts/gatekeeper
+          valuesObject:
+            fullnameOverride: gatekeeper
