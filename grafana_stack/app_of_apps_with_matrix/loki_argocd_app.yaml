@@ -43,6 +43,14 @@ spec:
         deploymentMode: Distributed
 
         global:
+          extraVolumes:
+            - name: data
+              emptyDir: {}
+
+          extraVolumeMounts:
+            - mountPath: /data
+              name: data
+
           extraEnvFrom:
             - secretRef:
                 name: s3-loki-credentials
