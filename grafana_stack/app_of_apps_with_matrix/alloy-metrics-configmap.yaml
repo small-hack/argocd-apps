@@ -34,8 +34,8 @@ data:
             role = "ingress"
     }
 
-    prometheus.scrape "scrape_metrics" {
-            targets         = [discovery.kubernetes.pods.targets, discovery.kubernetes.nodes.targets]
+    prometheus.scrape "pods" {
+            targets         = discovery.kubernetes.pods.targets
             forward_to      = [prometheus.remote_write.default.receiver]
             scrape_interval = "10s"
     }
