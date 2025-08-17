@@ -108,3 +108,24 @@ spec:
           zoneAwareReplication:
             # -- Enable zone awareness.
             enabled: false
+
+          podLabels:
+            loki-component: ingester
+
+          # -- topologySpread for ingester pods.
+          # @default -- Defaults to allow skew no more than 1 node
+          topologySpreadConstraints:
+            - maxSkew: 3
+              topologyKey: kubernetes.io/hostname
+              whenUnsatisfiable: ScheduleAnyway
+              labelSelector:
+                matchLabels:
+                  loki-component: ingester
+
+          affinity:
+            podAntiAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - labelSelector:
+                    matchLabels:
+                      loki-component: ingester
+                  topologyKey: kubernetes.io/hostname
