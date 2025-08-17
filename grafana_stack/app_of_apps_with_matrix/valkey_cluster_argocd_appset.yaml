@@ -20,11 +20,11 @@ spec:
               - global_storage_class
   template:
     metadata:
-      name: valkey-cluster-app
+      name: loki-valkey-cluster
       annotations:
         argocd.argoproj.io/sync-wave: "2"
     spec:
-      project: valkey
+      project: monitoring
 
       # the sync policy for this Argo CD Application
       syncPolicy:
@@ -38,7 +38,7 @@ spec:
       # where this Argo CD Application should be deployed
       destination:
         server: https://kubernetes.default.svc
-        namespace: valkey
+        namespace: monitoring
 
       source:
         repoURL: 'registry-1.docker.io'
@@ -52,7 +52,7 @@ spec:
             fullnameOverride: "valkey"
 
             usePassword: true
-            existingSecret: "valkey-credentials"
+            existingSecret: "loki-valkey-credentials"
             existingSecretPasswordKey: "password"
 
             tls:

@@ -2,11 +2,6 @@
 # we may support other secret providers in the future
 provider: ""
 
-thanosObjstoreBitwardenID: ""
-
-# -- configmap for loki
-lokiConfigBitwardenID: ""
-
 # -- config for mimir
 mimirConfigBitwardenID: ""
 
@@ -30,3 +25,6 @@ redisBitwardenID: ""
 
 # -- grafana OIDC Credentials
 oidcCredentialsBitwardenID: ""
+
+# -- valkey Credentials for loki
+lokiValkeyCredentialsBitwardenID: ""
