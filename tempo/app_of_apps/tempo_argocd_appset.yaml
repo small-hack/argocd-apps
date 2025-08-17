@@ -385,14 +385,9 @@ spec:
             # Configuration for the gateway
             gateway:
               # -- Specifies whether the gateway should be enabled
-              enabled: false
+              enabled: true
               # -- Number of replicas for the gateway
               replicas: 1
-              # -- hostAliases to add
-              hostAliases: []
-              #  - ip: 1.2.3.4
-              #    hostnames:
-              #      - domain.tld
               autoscaling:
                 # -- Enable autoscaling for the gateway
                 enabled: false
