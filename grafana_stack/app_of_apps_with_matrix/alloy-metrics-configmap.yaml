@@ -35,9 +35,9 @@ data:
     }
 
     prometheus.scrape "default" {
-	targets = ["discovery.kubernetes.pods.targets", "discovery.kubernetes.nodes.targets", "discovery.kubernetes.endpoints.targets", "discovery.kubernetes.endpointslices.targets", "discovery.kubernetes.ingresses.targets"]
-
-	forward_to = [prometheus.remote_write.default.receiver]
+	targets         = [discovery.kubernetes.pods.targets, discovery.kubernetes.nodes.targets, discovery.kubernetes.endpoints.targets, discovery.kubernetes.endpointslices.targets, discovery.kubernetes.ingresses.targets]
+	forward_to      = [prometheus.remote_write.default.receiver]
+        scrape_interval = "10s"
     }
 
     prometheus.remote_write "default" {
