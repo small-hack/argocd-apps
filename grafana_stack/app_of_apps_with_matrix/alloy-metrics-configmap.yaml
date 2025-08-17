@@ -35,7 +35,7 @@ data:
     }
 
     prometheus.scrape "scrape_metrics" {
-            targets         = [discovery.kubernetes.pods, discovery.kubernetes.nodes]
+            targets         = [discovery.kubernetes.pods.targets, discovery.kubernetes.nodes.targets]
             forward_to      = [prometheus.remote_write.default.receiver]
             scrape_interval = "10s"
     }
