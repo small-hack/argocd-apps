@@ -34,8 +34,14 @@ data:
             role = "ingress"
     }
 
+    prometheus.scrape "scrape_metrics" {
+            targets         = [discovery.kubernetes.pods, discovery.kubernetes.nodes]
+            forward_to      = [prometheus.remote_write.default.receiver]
+            scrape_interval = "10s"
+    }
+
     prometheus.remote_write "default" {
-	endpoint {
-	  url = "mimir-distributor-headless.monitoring.svc:9095/api/v1/push"
-	}
+            endpoint {
+                url = "http://localhost:9090/api/v1/write"
+            }
     }
