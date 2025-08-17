@@ -11,55 +11,82 @@ data:
     }
 
     discovery.kubernetes "pods" {
-            role = "pod"
+        role = "pod"
+    }
+
+    discovery.relabel "pod_logs" {
+        targets = discovery.kubernetes.pods.targets
+
+        rule {
+          source_labels = ["__meta_kubernetes_namespace"]
+          target_label  = "namespace"
+          action        = "replace"
+        }
+
+        rule {
+          source_labels = ["__meta_kubernetes_pod_name"]
+          action = "replace"
+          target_label = "pod"
+        }
+
+        rule {
+          source_labels = ["__meta_kubernetes_pod_container_name"]
+          action = "replace"
+          target_label = "container"
+        }
+
+        rule {
+          source_labels = ["__meta_kubernetes_pod_label_app_kubernetes_io_name"]
+          action = "replace"
+          target_label = "app"
+        }
+
+        rule {
+          source_labels = ["__meta_kubernetes_namespace", "__meta_kubernetes_pod_container_name"]
+          action = "replace"
+          target_label = "job"
+          separator = "/"
+          replacement = "$1"
+        }
+
+        rule {
+          source_labels = ["__meta_kubernetes_pod_uid", "__meta_kubernetes_pod_container_name"]
+          action = "replace"
+          target_label = "__path__"
+          separator = "/"
+          replacement = "/var/log/pods/*$1/*.log"
+        }
+
+        rule {
+          source_labels = ["__meta_kubernetes_pod_container_id"]
+          action = "replace"
+          target_label = "container_runtime"
+          regex = "^(\\S+):\\/\\/.+$"
+          replacement = "$1"
+        }
     }
 
     discovery.kubernetes "nodes" {
-            role = "node"
+        role = "node"
     }
 
-    // creates a local.file_match component named local_files which does the following:
-    // - It tells Alloy which files to source.
-    // - It checks for new files every 5 seconds.
-    local.file_match "local_files" {
-        path_targets = [{"__path__" = "/var/log/*.log"}]
-        sync_period = "5s"
+    loki.source.kubernetes "pod_logs" {
+        targets    = discovery.relabel.pod_logs.output
+        forward_to = [loki.process.pod_logs.receiver]
     }
 
-    // creates a loki.source.file component named log_scrape which does the following:
-    // - It connects to the local_files component as its source or target.
-    // - It forwards the logs it scrapes to the receiver of another component called filter_logs.
-    // - It provides extra attributes and options to tail the log files from the end so you don’t ingest the entire log file history.
-    loki.source.file "log_scrape" {
-        targets    = local.file_match.local_files.targets
-        forward_to = [loki.process.filter_logs.receiver]
-        tail_from_end = true
+    loki.process "pod_logs" {
+        stage.static_labels {
+            values = {
+              cluster = "${cluster_name}",
+            }
+        }
+
+        forward_to = [loki.write.loki.receiver]
     }
 
-    // creates a loki.process component named filter_logs which does the following:
-    // - It receives scraped log entries from the default log_scrape component.
-    // - It uses the stage.drop block to define what to drop from the scraped logs.
-    // - It uses the expression parameter to identify the specific log entries to drop.
-    // - It uses an optional string label drop_counter_reason to show the reason for dropping the log entries.
-    // - It forwards the processed logs to the receiver of another component called grafana_loki.
-    loki.process "filter_logs" {
-        stage.drop {
-            source = ""
-            expression  = ".*Connection closed by authenticating user root"
-            drop_counter_reason = "noisy"
-          }
-        forward_to = [loki.write.grafana_loki.receiver]
-    }
-
-    // creates a loki.write component named grafana_loki that points to
-    // http://loki-gateway/loki/api/v1/push
-    loki.write "grafana_loki" {
-      endpoint {
-        url = "http://loki-gateway/loki/api/v1/push"
-
-        // basic_auth {
-        //  username = "admin"
-        //  password = "admin"
-        // }
-      }
+    loki.write "loki" {
+        endpoint {
+          url = "http://loki-gateway/loki/api/v1/push"
+        }
     }
