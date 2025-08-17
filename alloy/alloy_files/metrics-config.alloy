@@ -73,8 +73,7 @@ prometheus.scrape "pods" {
         scrape_interval = "10s"
         forward_to      = [prometheus.remote_write.default.receiver]
         targets         = [discovery.kubernetes.pods.targets,
-                           discovery.kubernetes.services.targets,
-                           discovery.kubernetes.endpoints.targets]
+                           discovery.kubernetes.services.targets]
 }
 
 prometheus.remote_write "default" {
