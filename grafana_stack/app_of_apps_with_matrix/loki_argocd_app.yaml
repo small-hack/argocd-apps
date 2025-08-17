@@ -145,10 +145,20 @@ spec:
               shared_store: s3
 
 
+        # I don't think we need this yet
         queryScheduler:
           replicas: 0
 
+        # compacts the tsdb volume
         compactor:
+          replicas: 1
+
+        # allows querying from grafana, cli, and api
+        querier:
+          replicas: 1
+
+        # manages distribution of requests to queriers
+        queryFrontend:
           replicas: 1
 
         # ingester consumes metrics from alloy
