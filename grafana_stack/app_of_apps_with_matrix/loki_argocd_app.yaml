@@ -84,7 +84,12 @@ spec:
           topologySpreadConstraints: []
 
           affinity:
-            podAntiAffinity: {}
+            podAntiAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - labelSelector:
+                    matchLabels:
+                      app.kubernetes.io/component: saltsaltlettuce
+                  topologyKey: kubernetes.io/hostname
 
           nodeSelector: null
 
