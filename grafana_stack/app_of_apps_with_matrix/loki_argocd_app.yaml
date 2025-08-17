@@ -96,16 +96,6 @@ spec:
         ingester:
           # set this to 0 when autocaling is on
           replicas: 0
-          topologySpreadConstraints: []
-
-          affinity:
-            podAntiAffinity:
-              requiredDuringSchedulingIgnoredDuringExecution:
-                - labelSelector:
-                    matchLabels:
-                      app.kubernetes.io/component: saltsaltlettuce
-                  topologyKey: kubernetes.io/hostname
-
           nodeSelector: null
 
           autoscaling:
