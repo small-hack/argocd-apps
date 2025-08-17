@@ -131,8 +131,39 @@ stringData:
 
     storage:
       trace:
-        backend: local
+        backend: s3
         blocklist_poll: 5m
+        # S3 configuration. Will be used only if value of backend is "s3"
+        # Check the S3 doc within this folder for information on s3 specific permissions.
+        s3:
+            # Bucket name in s3
+            bucket: ${S3_BUCKET}
+
+            # api endpoint to connect to. use AWS S3 or any S3 compatible object storage endpoint.
+            endpoint: ${S3_HOSTNAME}
+
+            # optional.
+            # By default the region is inferred from the endpoint,
+            # but is required for some S3-compatible storage engines.
+            region: eu-central-1
+
+            # optional.
+            # access key when using static credentials.
+            access_key: ${S3_USER}
+
+            # optional.
+            # secret key when using static credentials.
+            secret_key: ${S3_PASSWORD}
+
+            # optional.
+            # enable to use path-style requests.
+            forcepathstyle: true
+
+            # options: 0: BucketLookupAuto, 1: BucketLookupDNS, 2: BucketLookupPath
+            # Notice: ignore this option if `forcepathstyle` is set true,
+            # this option allow expose minio's sdk configure.
+            bucket_lookup_type: 2
+
         local:
           path: /var/tempo/traces
         pool:
