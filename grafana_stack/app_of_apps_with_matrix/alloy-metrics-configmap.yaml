@@ -14,10 +14,6 @@ data:
             role = "pod"
     }
 
-    discovery.kubernetes "nodes" {
-            role = "node"
-    }
-
     discovery.kubernetes "services" {
             role = "service"
     }
