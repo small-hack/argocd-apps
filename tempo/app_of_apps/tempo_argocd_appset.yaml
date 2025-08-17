@@ -93,6 +93,30 @@ spec:
                       name: tempo-valkey-credentials
                       key: password
 
+                - name: S3_HOSTNAME
+                  valueFrom:
+                    secretKeyRef:
+                      name: s3-tempo-credentials
+                      key: S3_HOSTNAME
+
+                - name: S3_BUCKET
+                  valueFrom:
+                    secretKeyRef:
+                      name: s3-tempo-credentials
+                      key: S3_BUCKET
+
+                - name: S3_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: s3-tempo-credentials
+                      key: S3_USER
+
+                - name: S3_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: s3-tempo-credentials
+                      key: S3_PASSWORD
+
             # Configuration for the ingester
             ingester:
               # -- Number of replicas for the ingester
