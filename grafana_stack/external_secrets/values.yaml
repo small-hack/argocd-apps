@@ -2,9 +2,6 @@
 # we may support other secret providers in the future
 provider: ""
 
-# -- config for mimir
-mimirConfigBitwardenID: ""
-
 # -- if set to seaweedfs we deploy a policy secret. can also be minio
 s3_provider: "seaweedfs"
 
