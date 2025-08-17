@@ -110,3 +110,20 @@ prometheus.remote_write "default" {
             url = "http://mimir-nginx.monitoring.svc:80/api/v1/push"
         }
 }
+
+tracing {
+  sampling_fraction = 0.1
+
+  write_to = [otelcol.exporter.otlp.tempo.input]
+}
+
+otelcol.exporter.otlp "tempo" {
+  // Send traces to a locally running Tempo without TLS enabled.
+  client {
+    endpoint = sys.env("http://tempo-gateway.monitoring.svc:9095/v1/traces")
+
+    tls {
+      insecure = true
+    }
+  }
+}
