@@ -137,11 +137,11 @@ spec:
                     paths:
                       - path: /
                         pathType: Prefix
-                    # -- TLS configuration for the nginx ingress
-                    tls:
-                      - secretName: mimir-nginx-tls
-                        hosts:
-                          - mimir.vleermuis.tech
+                # -- TLS configuration for the nginx ingress
+                tls:
+                - secretName: mimir-nginx-tls
+                  hosts:
+                    - mimir.vleermuis.tech
 
             # -- KEDA Autoscaling configuration
             kedaAutoscaling:
