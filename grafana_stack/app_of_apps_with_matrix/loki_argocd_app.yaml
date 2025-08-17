@@ -221,10 +221,14 @@ spec:
                       loki-component: ingester
                   topologyKey: kubernetes.io/hostname
 
+        # -- Configuration for the pattern ingester
+        patternIngester:
+          # -- Number of replicas for the pattern ingester
+          replicas: 1
+
         # The Loki canary pushes logs to and queries from this loki installation
         # to test that it's working correctly
         lokiCanary:
-          enabled: false
+          enabled: true
           # This can be a DaemonSet or Deployment.
           kind: DaemonSet
-
