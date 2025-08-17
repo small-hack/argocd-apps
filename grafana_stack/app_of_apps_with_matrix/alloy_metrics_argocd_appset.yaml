@@ -48,6 +48,10 @@ spec:
             fullnameOverride: alloy-metrics
 
             alloy:
+              # Enables sending Grafana Labs anonymous usage stats to help
+              # improve Grafana Alloy.
+              enableReporting: false
+
               configMap:
                 # Create a new ConfigMap for the config file.
                 create: false
