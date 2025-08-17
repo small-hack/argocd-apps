@@ -44,6 +44,11 @@ spec:
         # Note: Distributed REQUIRES the use of object storage.
         deploymentMode: Distributed
 
+        # Configuration for the memberlist service
+        memberlist:
+          service:
+            publishNotReadyAddresses: true
+
         global:
           extraVolumes:
             - name: data
