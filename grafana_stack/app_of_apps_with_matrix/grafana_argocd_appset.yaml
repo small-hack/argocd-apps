@@ -89,7 +89,7 @@ spec:
               datasources.yaml:
                 apiVersion: 1
                 datasources:
-                  # metrics from mimir
+                  # metrics from Grafana Mimir
                   - name: Mimir
                     uid: mimir
                     type: prometheus
@@ -103,12 +103,22 @@ spec:
                       tlsSkipVerify: true
                       timeout: 30
 
-                  # logs from loki
+                  # logs from Grafana Loki
                   - name: Loki
                     uid: loki
                     type: loki
                     access: proxy
                     url: http://loki-gateway.monitoring.svc.cluster.local
+                    jsonData:
+                      timeout: 60
+                      maxLines: 1000
+
+                  # traces/telemetry from Grafana Tempo
+                  - name: Tempo
+                    uid: tempo
+                    type: tempo
+                    access: proxy
+                    url: http://tempo-gateway.monitoring.svc.cluster.local
                     jsonData:
                       timeout: 60
                       maxLines: 1000
