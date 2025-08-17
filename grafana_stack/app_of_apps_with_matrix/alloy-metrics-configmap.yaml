@@ -35,12 +35,10 @@ data:
     }
 
     prometheus.scrape "default" {
-	targets    = [discovery.kubernetes.pods.targets,
-	discovery.kubernetes.nodes.targets,
-	discovery.kubernetes.endpoints.targets,
-	discovery.kubernetes.endpointslices.targets,
-	discovery.kubernetes.ingresses.targets,
-        ]
+	targets = ["discovery.kubernetes.pods.targets", "discovery.kubernetes.nodes.targets",
+	"discovery.kubernetes.endpoints.targets,"
+	"discovery.kubernetes.endpointslices.targets,"
+	"discovery.kubernetes.ingresses.targets"]
 
 	forward_to = [prometheus.remote_write.default.receiver]
     }
