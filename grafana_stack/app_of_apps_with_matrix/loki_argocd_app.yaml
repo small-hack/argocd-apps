@@ -39,7 +39,9 @@ spec:
       # values for the loki helm chart
       # ref: https://github.com/grafana/loki/blob/main/production/helm/loki/values.yaml
       valuesObject:
-        # Note: SimpleScalable and Distributed REQUIRE the use of object storage.
+        fullnameOverride: loki
+
+        # Note: Distributed REQUIRES the use of object storage.
         deploymentMode: Distributed
 
         global:
