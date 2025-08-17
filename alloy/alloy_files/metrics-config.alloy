@@ -114,7 +114,7 @@ prometheus.remote_write "default" {
 tracing {
   sampling_fraction = 0.1
 
-  write_to = [otelcol.exporter.otlp.tempo.input]
+  write_to = [otelcol.exporter.otlp.tempo1.input, otelcol.exporter.otlp.tempo2.input]
 }
 
 otelcol.receiver.otlp "otlp_receiver" {
@@ -135,7 +135,7 @@ otelcol.receiver.otlp "otlp_receiver" {
   }
 
   output {
-    traces = [otelcol.exporter.otlp.tempo.input]
+    traces = [otelcol.exporter.otlp.tempo1.input, otelcol.exporter.otlp.tempo2.input,]
   }
 }
 
