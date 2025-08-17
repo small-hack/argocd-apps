@@ -49,15 +49,15 @@ spec:
           valuesObject:
             fullnameOverride: mimir
             image:
-            # -- Grafana Mimir container image repository. Note: for Grafana Enterprise Metrics use the value 'enterprise.image.repository'
-            repository: grafana/mimir
-            # -- Grafana Mimir container image tag. Note: for Grafana Enterprise Metrics use the value 'enterprise.image.tag'
-            tag: 2.17.0
-            # -- Container pull policy - shared between Grafana Mimir and Grafana Enterprise Metrics
-            pullPolicy: IfNotPresent
-            # -- Configuration is loaded from the secret called 'externalConfigSecretName'.
-            # If 'useExternalConfig' is true, then the configuration is not generated, just consumed.
-            useExternalConfig: false
+              # -- Grafana Mimir container image repository. Note: for Grafana Enterprise Metrics use the value 'enterprise.image.repository'
+              repository: grafana/mimir
+              # -- Grafana Mimir container image tag. Note: for Grafana Enterprise Metrics use the value 'enterprise.image.tag'
+              tag: 2.17.0
+              # -- Container pull policy - shared between Grafana Mimir and Grafana Enterprise Metrics
+              pullPolicy: IfNotPresent
+              # -- Configuration is loaded from the secret called 'externalConfigSecretName'.
+              # If 'useExternalConfig' is true, then the configuration is not generated, just consumed.
+              useExternalConfig: false
 
             # -- Defines what kind of object stores the configuration, a ConfigMap or a Secret.
             # In order to move sensitive information (such as credentials) from
