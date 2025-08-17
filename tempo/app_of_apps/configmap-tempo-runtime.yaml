@@ -1,0 +1,11 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tempo-runtime-config
+  labels:
+    app.kubernetes.io/name: tempo
+data:
+  overrides.yaml: |
+    overrides:
+      null
