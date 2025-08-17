@@ -103,26 +103,37 @@ Here's some quick guidelines, but you if you'd like to contribute, please read t
 
 ## Monitoring
 
-The main thing we deploy is the Kube Prometheus Stack which includes:
-- Prometheus
-- Alertmanager
-- Grafana
+The main thing we deploy is the Grafana Stack which includes:
+- Alloy
+- Mimir
 - Loki
-- Thanos
+- Grafana
 
-| App Directory                                                           | Description                                                                                                                                                                         |
-|:------------------------------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [kube-prometheus-stack](./prometheus/app_of_apps/)     | [prometheus](https://prometheus.io/docs/introduction/overview/), alertmanager, [grafana](https://grafana.com) for collecting metrics for monitoring/alerting, and dashboards/charts |
-| [loki-stack](./prometheus/app_of_apps/loki_argocd_app.yaml)                         | [loki](https://grafana.com/oss/loki/) and [promtail](https://grafana.com/docs/loki/latest/clients/promtail/) for collecting logs in prometheus                                      |
-| [prometheus-push-gateway](./prometheus/app_of_apps/push-gateway_argocd_appset.yaml) | Installs the [Prometheus Push Gateway](https://prometheus.io/docs/instrumenting/pushing/) which enables pushing metrics from jobs that would be difficult or impossible to scrape   |
+| App Directory                    | Description                                                                                                                                                                                                                                           |
+|:---------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [grafana_stack](./grafana_stack) | [Alloy](https://grafana.com/docs/alloy/latest/), [Mimir](https://grafana.com/docs/mimir/latest/), [Loki](https://grafana.com/docs/loki/latest/), [Grafana](https://grafana.com) for collecting metrics for monitoring/alerting, and dashboards/charts |
 
 
 #### Experimental
 
-|       App Directory      | Description                                                                                                                                                                                                                                                                                                               |
-|:------------------------:|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|      App Directory      | Description                                                                                                                                                                                                                                                                                                               |
+|:-----------------------:|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | [kepler](./demo/kepler) | helm chart for [Kepler](https://github.com/sustainable-computing-io/kepler), (Kubernetes-based Efficient Power Level Exporter), which uses eBPF to probe performance counters and other system stats, use ML models to estimate workload energy consumption based on these stats, and exports them as Prometheus metrics. |
 
+#### Deprecated
+
+We used to deploy the Kube Prometheus Stack, but these days we focus on the Grafana stack above, and so this is just left for legacy setups that might be using this repo. This includes:
+- promtail (now Deprecated upstream)
+- Prometheus
+- Alertmanager
+- Grafana
+- Loki
+
+| App Directory                                                                       | Description                                                                                                                                                                         |
+|:------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [kube-prometheus-stack](./prometheus/app_of_apps/)                                  | [prometheus](https://prometheus.io/docs/introduction/overview/), alertmanager, [grafana](https://grafana.com) for collecting metrics for monitoring/alerting, and dashboards/charts |
+| [loki-stack](./prometheus/app_of_apps/loki_argocd_app.yaml)                         | [loki](https://grafana.com/oss/loki/) and [promtail](https://grafana.com/docs/loki/latest/clients/promtail/) for collecting logs in prometheus                                      |
+| [prometheus-push-gateway](./prometheus/app_of_apps/push-gateway_argocd_appset.yaml) | Installs the [Prometheus Push Gateway](https://prometheus.io/docs/instrumenting/pushing/) which enables pushing metrics from jobs that would be difficult or impossible to scrape   |
 
 ## Networking
 
