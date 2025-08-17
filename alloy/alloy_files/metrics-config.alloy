@@ -117,13 +117,30 @@ tracing {
   write_to = [otelcol.exporter.otlp.tempo.input]
 }
 
-otelcol.exporter.otlp "tempo" {
-  // Send traces to a locally running Tempo without TLS enabled.
-  client {
-    endpoint = sys.env("http://tempo-gateway.monitoring.svc/v1/traces")
-
-    tls {
-      insecure = true
-    }
+otelcol.receiver.otlp "otlp_receiver" {
+  // Listen on all available bindable addresses on port 4317 (which is the
+  // default OTLP gRPC port) for the OTLP protocol.
+  grpc {
+    endpoint = "0.0.0.0:4317"
   }
+  output {
+    traces = [
+      otelcol.exporter.otlp.tempo.input,
+    ]
+  }
+}
+
+otelcol.exporter.otlp "tempo" {
+    // Define the client for exporting.
+    client {
+        // Send to the locally running Tempo instance
+        endpoint = "http://tempo-distributor.monitoring.svc.cluster.local:9095"
+        // Disable TLS for OTLP remote write.
+        tls {
+            // The connection is insecure.
+            insecure = true
+            // Do not verify TLS certificates when connecting.
+            insecure_skip_verify = true
+        }
+    }
 }
