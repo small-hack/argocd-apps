@@ -123,16 +123,19 @@ spec:
 
               topologySpreadConstraints: []
 
-            ingress:
-              enabled: true
-              ingressClassName: nginx
-              annotations: {}
-              hosts:
-                - mimir.vleermuis.tech
-              tls:
-                - secretName: mimir-distributed-tls
-                  hosts:
-                    - mimir.vleermuis.tech
+              ingress:
+                enabled: true
+                ingressClassName: nginx
+                annotations: {}
+                hosts:
+                  - mimir.vleermuis.tech
+                  paths:
+                    - path: /
+                      pathType: Prefix
+                tls:
+                  - secretName: mimir-distributed-tls
+                    hosts:
+                      - mimir.vleermuis.tech
 
             # -- KEDA Autoscaling configuration
             kedaAutoscaling:
