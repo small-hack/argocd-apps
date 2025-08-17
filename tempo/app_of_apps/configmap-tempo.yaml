@@ -13,7 +13,9 @@ stringData:
       caches:
         # Redis configuration block
         # EXPERIMENTAL
-        - redis:
+        - roles:
+            - frontend-search
+          redis:
             # Redis endpoint to use when caching.
             endpoint: tempo-valkey-headless.monitoring.svc
 

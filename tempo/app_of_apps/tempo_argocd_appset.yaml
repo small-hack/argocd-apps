@@ -313,7 +313,9 @@ spec:
             # https://grafana.com/docs/tempo/latest/configuration/#cache
             cache:
               caches:
-                - redis:
+                - roles:
+                    - frontend-search
+                  redis:
                     # Redis endpoint to use when caching.
                     endpoint: tempo-valkey-headless.monitoring.svc
 
