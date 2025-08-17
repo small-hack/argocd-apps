@@ -37,7 +37,7 @@ spec:
       releaseName: loki
       skipCrds: true
       # values for the loki helm chart
-      # ref: https://github.com/grafana/loki/blob/main/production/helm/loki/values.yaml
+      # https://github.com/grafana/loki/blob/main/production/helm/loki/values.yaml
       valuesObject:
         fullnameOverride: loki
 
@@ -73,16 +73,15 @@ spec:
         BloomGateway:
           replicas: 0
 
+        # DEPRECATED Monitoring section determines which monitoring features to
+        # enable, this section is being replaced by:
+        # https://github.com/grafana/meta-monitoring-chart
         monitoring:
           dashboards:
             enabled: true
           serviceMonitor:
             enabled: true
             interval: 10s
-
-        serviceMonitor:
-          # -- for collecting metrics on loki itself
-          enabled: true
 
         # Configuration for the memberlist service
         memberlist:
@@ -203,3 +202,11 @@ spec:
                     matchLabels:
                       loki-component: ingester
                   topologyKey: kubernetes.io/hostname
+
+        # The Loki canary pushes logs to and queries from this loki installation
+        # to test that it's working correctly
+        lokiCanary:
+          enabled: false
+          # This can be a DaemonSet or Deployment.
+          kind: DaemonSet
+
