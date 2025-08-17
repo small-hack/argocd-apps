@@ -44,19 +44,66 @@ spec:
         # Note: Distributed REQUIRES the use of object storage.
         deploymentMode: Distributed
 
+        # disables SSD mode
+        write:
+          replicas: 0
+        read:
+          replicas: 0
+        backend:
+          replicas: 0
+        # disables sbd mode
+        singleBinary:
+          replicas: 0
+
+        # this is only used for memcache which we don't use
+        chunksCache:
+          enabled: false
+        resultsCache:
+          enabled: false
+
+        test:
+          # don't use the chart's testing params
+          enabled: false
+
+        # bloom stuff is all experimental still
+        bloomPlanner:
+          replicas: 0
+        bloomBuilder:
+          replicas: 0
+        BloomGateway:
+          replicas: 0
+
+        monitoring:
+          dashboards:
+            enabled: true
+          serviceMonitor:
+            enabled: true
+            interval: 10s
+
+        serviceMonitor:
+          # -- for collecting metrics on loki itself
+          enabled: true
+
         # Configuration for the memberlist service
         memberlist:
           service:
             publishNotReadyAddresses: true
 
         global:
-          extraVolumes:
-            - name: data
-              emptyDir: {}
+          # extraVolumes:
+          #   - name: data
+          #     emptyDir: {}
+          # extraVolumeMounts:
+          #   - mountPath: /data
+          #     name: data
+          extraArgs:
+            - -config.expand-env=true
 
-          extraVolumeMounts:
-            - mountPath: /data
-              name: data
+          extraEnv:
+            - name: MY_POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
 
           extraEnvFrom:
             - secretRef:
