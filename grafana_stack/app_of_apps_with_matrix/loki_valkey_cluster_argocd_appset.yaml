@@ -49,7 +49,7 @@ spec:
             global:
               storageClass: "{{ .global_storage_class }}"
 
-            fullnameOverride: "valkey"
+            fullnameOverride: "loki-valkey"
 
             usePassword: true
             existingSecret: "loki-valkey-credentials"
