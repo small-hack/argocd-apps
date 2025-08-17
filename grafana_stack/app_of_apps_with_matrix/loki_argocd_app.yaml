@@ -165,6 +165,7 @@ spec:
         # manages distribution of requests to queriers
         queryFrontend:
           replicas: 2
+          maxUnavailable: 1
 
         # -- Configuration for the index-gateway
         indexGateway:
