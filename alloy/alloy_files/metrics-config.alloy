@@ -140,15 +140,16 @@ otelcol.receiver.otlp "otlp_receiver" {
 }
 
 // OTLP exporter to Tempo
-otelcol.exporter.otlp "tempo" {
+otelcol.exporter.otlp "tempo1" {
   client {
     endpoint = "tempo-distributor.monitoring.svc:9095"
     tls {
       insecure = true
     }
   }
+}
 
-otelcol.exporter.otlp "tempo" {
+otelcol.exporter.otlp "tempo2" {
     // Define the client for exporting.
     client {
         // Send to the locally running Tempo instance
