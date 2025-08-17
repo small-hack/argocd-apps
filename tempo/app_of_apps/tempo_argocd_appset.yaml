@@ -270,7 +270,7 @@ spec:
             # https://grafana.com/docs/tempo/latest/configuration/#memberlist
             memberlist:
               node_name: ""
-              cluster_label: "{{ .Release.Name }}.{{ .Release.Namespace }}"
+              cluster_label: "tempo.monitoring"
               randomize_node_name: true
               stream_timeout: "10s"
               retransmit_factor: 2
@@ -285,7 +285,8 @@ spec:
               rejoin_interval: "0s"
               left_ingesters_timeout: "5m"
               leave_timeout: "5s"
-              bind_addr: []
+              bind_addr:
+                - ${MY_POD_IP}
               bind_port: 7946
               packet_dial_timeout: "5s"
               packet_write_timeout: "5s"
