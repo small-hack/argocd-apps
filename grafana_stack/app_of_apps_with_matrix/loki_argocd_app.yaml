@@ -136,8 +136,8 @@ spec:
 
           storage_config:
             tsdb_shipper:
-              active_index_directory: /data/tsdb-index
-              cache_location: /data/tsdb-cache
+              active_index_directory: /var/loki/tsdb-index
+              cache_location: /var/loki/tsdb-cache
               index_gateway_client:
                 # only applicable if using microservices where index-gateways are independently deployed.
                 # This example is using kubernetes-style naming.
