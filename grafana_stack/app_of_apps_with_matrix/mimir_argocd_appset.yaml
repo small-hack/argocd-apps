@@ -123,6 +123,7 @@ spec:
 
               basicAuth:
                 enabled: true
+                existingSecret: nginx-auth
 
               # topologySpreadConstraints: []
 
