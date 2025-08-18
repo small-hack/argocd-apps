@@ -145,6 +145,7 @@ otelcol.exporter.otlp "tempo1" {
     endpoint = "tempo-gateway.monitoring.svc:4317"
     tls {
       insecure = true
+      insecure_skip_verify = true
     }
   }
 }
