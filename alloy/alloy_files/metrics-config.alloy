@@ -142,7 +142,7 @@ otelcol.receiver.otlp "otlp_receiver" {
 // OTLP exporter to Tempo
 otelcol.exporter.otlp "tempo1" {
   client {
-    endpoint = "tempo-distributor.monitoring.svc:4318"
+    endpoint = "tempo-gateway.monitoring.svc:4317"
     tls {
       insecure = true
     }
