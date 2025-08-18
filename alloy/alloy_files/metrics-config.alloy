@@ -116,6 +116,10 @@ prometheus.remote_write "default" {
         endpoint {
             url = "http://mimir-nginx.monitoring.svc:80/api/v1/push"
         }
+
+	external_labels = {
+	    "clusterName" = "default"
+	}
 }
 
 tracing {
