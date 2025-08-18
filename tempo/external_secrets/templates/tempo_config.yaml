@@ -144,6 +144,9 @@ spec:
             storage:
               path: /var/tempo/wal
 
+            traces_storage:
+              path: /var/tempo/traces
+
             processor:
               local_blocks:
                 filter_server_spans: false
@@ -224,11 +227,14 @@ spec:
 
               local:
                 path: /var/tempo/traces
+
               pool:
                 max_workers: 400
                 queue_depth: 20000
+
               search:
                 prefetch_trace_count: 1000
+
               wal:
                 path: /var/tempo/wal
 
