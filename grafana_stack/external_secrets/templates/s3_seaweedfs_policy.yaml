@@ -40,7 +40,7 @@ spec:
                {"accessKey": "{{ `{{ .tempoAccessKey }}` }}",
                 "secretKey": "{{ `{{ .tempoSecretKey }}` }}"}
              ],
-             "actions": ["Read:tempo-*","Write:tempo-*","List:tempo-*"]}
+             "actions": ["Read:tempo","Write:tempo","List:tempo"]}
           ]}
   data:
     - secretKey: adminAccessKey
