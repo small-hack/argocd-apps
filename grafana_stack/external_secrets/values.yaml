@@ -14,6 +14,9 @@ s3LokiCredentialsBitwardenID: ""
 # -- existing kubernetes secret with s3 mimir credentials
 s3MimirCredentialsBitwardenID: ""
 
+# -- optional existing kubernetes secret with s3 tempo credentials
+s3TempoCredentialsBitwardenID: ""
+
 # -- existing kubernetes secret with s3 credentials for the remote backups
 s3BackupCredentialsBitwardenID: ""
 

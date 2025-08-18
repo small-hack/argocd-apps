@@ -103,7 +103,7 @@ spec:
           name: bitwarden-login
           kind: ClusterSecretStore
       remoteRef:
-        key: {{ .Values.s3MimirCredentialsBitwardenID }}
+        key: {{ .Values.s3TempoCredentialsBitwardenID | default .Values.s3MimirCredentialsBitwardenID }}
         property: username
 
     - secretKey: tempoSecretKey
@@ -112,6 +112,6 @@ spec:
           name: bitwarden-login
           kind: ClusterSecretStore
       remoteRef:
-        key: {{ .Values.s3MimirCredentialsBitwardenID }}
+        key: {{ .Values.s3TempoCredentialsBitwardenID | default .Values.s3MimirCredentialsBitwardenID }}
         property: password
 {{- end }}
