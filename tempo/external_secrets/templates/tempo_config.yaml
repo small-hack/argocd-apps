@@ -103,7 +103,9 @@ spec:
           multitenancy_enabled: false
 
           overrides:
-            defaults: {}
+            defaults:
+              metrics_generator:
+                processors: [local-blocks]
             per_tenant_override_config: /runtime-config/overrides.yaml
 
           querier:
