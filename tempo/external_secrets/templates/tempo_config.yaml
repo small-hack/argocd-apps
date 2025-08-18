@@ -24,7 +24,7 @@ spec:
                   - frontend-search
                 redis:
                   # Redis endpoint to use when caching.
-                  endpoint: tempo-valkey-headless.monitoring.svc
+                  endpoint: tempo-valkey-headless.monitoring.svc:6379
 
                   # optional.
                   # Maximum time to wait before giving up on redis requests. (default 100ms)
@@ -36,7 +36,7 @@ spec:
 
                   # optional.
                   # Password to use when connecting to redis. (default "")
-                  password: ${VALKEY_PASSWORD}
+                  password: {{ `{{ .valkeypassword }}` }}
 
           compactor:
             compaction:
@@ -220,4 +220,14 @@ spec:
       remoteRef:
         key: {{ .Values.s3CredentialsBitwardenID }}
         property: bucket
+
+    # Key given to the secret to be created on the cluster
+    - secretKey: valkeypassword
+      sourceRef:
+        storeRef:
+          name: bitwarden-login
+          kind: ClusterSecretStore
+      remoteRef:
+        key: {{ .Values.valkeyCredentialsBitwardenID }}
+        property: password
 {{- end }}
