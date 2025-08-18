@@ -83,7 +83,7 @@ spec:
 
             valkey:
 
-              configmap:
+              configmap: |
                 maxmemory 6gb
                 maxmemory-policy allkeys-lru
 
