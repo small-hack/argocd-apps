@@ -49,7 +49,11 @@ data:
           store: memberlist
 
     distributor:
-      receivers: null
+      receivers:
+        otlp:
+          protocols:
+              grpc: localhost:4317
+              http: localhost:4318
       ring:
         kvstore:
           store: memberlist
