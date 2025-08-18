@@ -118,7 +118,7 @@ prometheus.remote_write "default" {
         }
 
 	external_labels = {
-	    "clusterName" = "default"
+	    "clusterName" = "default",
 	}
 }
 
