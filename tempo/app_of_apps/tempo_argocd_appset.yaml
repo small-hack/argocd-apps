@@ -342,7 +342,7 @@ spec:
                     - frontend-search
                   redis:
                     # Redis endpoint to use when caching.
-                    endpoint: tempo-valkey-headless.monitoring.svc
+                    endpoint: tempo-valkey-headless.monitoring.svc:6379
 
                     # optional.
                     # Maximum time to wait before giving up on redis requests. (default 100ms)
