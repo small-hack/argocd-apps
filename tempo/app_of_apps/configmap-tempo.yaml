@@ -180,5 +180,9 @@ data:
         wal:
           path: /var/tempo/wal
 
+    metrics_generator:
+      storage:
+        path: /var/tempo/wal
+
     usage_report:
       reporting_enabled: false
