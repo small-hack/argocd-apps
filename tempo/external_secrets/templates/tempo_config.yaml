@@ -136,6 +136,7 @@ spec:
               query_shards: 50
 
           metrics_generator:
+            metrics_ingestion_time_range_slack: 30s
             ring:
               kvstore:
                 store: memberlist
@@ -148,13 +149,34 @@ spec:
                 filter_server_spans: false
                 flush_to_storage: true
               service_graphs:
-                enable_virtual_node_label: true
+                dimensions: []
+                histogram_buckets:
+                  - 0.1
+                  - 0.2
+                  - 0.4
+                  - 0.8
+                  - 1.6
+                  - 3.2
+                  - 6.4
+                  - 12.8
+                max_items: 10000
+                wait: 10s
+                workers: 10
               span_metrics:
-                enable_target_info: true
-
-
-
-
+                dimensions: []
+                histogram_buckets:
+                  - 0.002
+                  - 0.004
+                  - 0.008
+                  - 0.016
+                  - 0.032
+                  - 0.064
+                  - 0.128
+                  - 0.256
+                  - 0.512
+                  - 1.02
+                  - 2.05
+                  - 4.1
 
           server:
             grpc_server_max_recv_msg_size: 4194304
