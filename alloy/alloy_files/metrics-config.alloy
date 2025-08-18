@@ -100,6 +100,28 @@ prometheus.operator.podmonitors "default" {
         }
 }
 
+discovery.relabel "cadvisor" {
+  targets = discovery.kubernetes.nodes.targets
+
+  rule {
+    replacement   = "/metrics/cadvisor"
+    target_label  = "__metrics_path__"
+  }
+}
+
+prometheus.scrape "cadvisor" {
+  job_name   = "integrations/kubernetes/cadvisor"
+  targets    = discovery.relabel.cadvisor.output
+  scheme     = "https"
+  scrape_interval = "10s"
+  bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
+  tls_config {
+    insecure_skip_verify = true
+  }
+
+  forward_to = [prometheus.remote_write.default.receiver]
+}
+
 prometheus.remote_write "default" {
         endpoint {
             url = "http://mimir-nginx.monitoring.svc:80/api/v1/push"
