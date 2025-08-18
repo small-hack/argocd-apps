@@ -62,7 +62,7 @@ discovery.relabel "kubelet" {
 prometheus.scrape "kubelet" {
 	job_name = "integrations/kubernetes/kubelet"
 	targets  = discovery.relabel.kubelet.output
-	scheme   = https
+	scheme   = "https"
 
 	tls_config {
 	    sever_name		 = "kubernetes"
