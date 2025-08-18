@@ -147,6 +147,8 @@ spec:
               kind: Deployment
               # -- Number of replicas for the metrics-generator
               replicas: 1
+              extraArgs:
+                - -config.expand-env=true
 
             # Configuration for the distributor
             distributor:
