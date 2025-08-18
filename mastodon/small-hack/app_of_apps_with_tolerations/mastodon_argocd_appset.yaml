@@ -58,8 +58,7 @@ spec:
             fullnameOverride: mastodon
             image:
               repository: ghcr.io/glitch-soc/mastodon
-              # tag: v4.4.1
-              tag: v4.4.2
+              tag: v4.4.3
 
             tolerations:
               - key: '{{ .mastodon_toleration_key }}'
