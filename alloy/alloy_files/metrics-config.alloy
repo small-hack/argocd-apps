@@ -38,16 +38,6 @@ prometheus.scrape "nodes" {
         forward_to      = [prometheus.remote_write.default.receiver]
 }
 
-discovery.kubelet "k8s_pods" {
-  bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
-}
-
-prometheus.scrape "demo" {
-  targets    = discovery.kubelet.k8s_pods.targets
-  forward_to = [prometheus.remote_write.default.receiver]
-}
-
-
 discovery.relabel "kubelet" {
         targets = discovery.kubernetes.nodes.targets
 
