@@ -82,6 +82,11 @@ spec:
               whenDeleted: Retain
 
             valkey:
+
+              configmap: |
+                maxmemory 6gb
+                maxmemory-policy allkeys-lru
+
               updateStrategy:
                 type: RollingUpdate
                 rollingUpdate:
@@ -90,7 +95,7 @@ spec:
               podManagementPolicy: Parallel
               automountServiceAccountToken: false
               hostNetwork: false
-              useAOFPersistence: "yes"
+              useAOFPersistence: "no"
 
               containerPorts:
                 valkey: 6379
@@ -99,7 +104,14 @@ spec:
               # definitions: https://github.com/bitnami/charts/blob/main/bitnami/common/templates/_resources.tpl#L15
               # Options: nano, micro, small, medium, large, xlarge, 2xlarge
               # default: nano
-              resourcesPreset: "micro"
+              #resourcesPreset: "micro"
+              resources:
+                requests:
+                  cpu: 100m
+                  memory: 1Gi
+                limits:
+                  cpu: 2000m
+                  memory: 8Gi
 
             cluster:
               init: true
@@ -116,7 +128,9 @@ spec:
                   loadBalancerSourceRanges: []
 
             metrics:
-              enabled: false
+              enabled: true
               resourcesPreset: "nano"
               serviceMonitor:
-                enabled: false
+                enabled: true
+                interval: 10s
+                scrapeTimeout: 5s
