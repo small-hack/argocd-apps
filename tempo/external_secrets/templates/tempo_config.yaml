@@ -136,6 +136,11 @@ spec:
           metrics_generator:
             storage:
               path: /var/tempo/wal
+            processor:
+              service_graphs:
+                enable_virtual_node_label: true
+              span_metrics:
+                enable_target_info: true
 
           server:
             grpc_server_max_recv_msg_size: 4194304
