@@ -14,6 +14,15 @@ spec:
       labels:
         name: cadvisor
     spec:
+      tolerations:
+        - effect: NoSchedule
+          key: home-assistant
+          operator: Equal
+          value: true
+        - effect: NoSchedule
+          key: dedicated
+          operator: Equal
+          value: nextcloud
       containers:
       - name: cadvisor
         image: gcr.io/cadvisor/cadvisor:v0.45.0
