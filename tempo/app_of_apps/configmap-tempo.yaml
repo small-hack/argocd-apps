@@ -95,7 +95,7 @@ data:
 
     querier:
       frontend_worker:
-        frontend_address: release-name-tempo-query-frontend-discovery:9095
+        frontend_address: tempo-query-frontend-discovery:9095
       max_concurrent_queries: 20
       search:
         query_timeout: 30s
