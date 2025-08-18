@@ -18,7 +18,7 @@ spec:
         - effect: NoSchedule
           key: home-assistant
           operator: Equal
-          value: true
+          value: "true"
         - effect: NoSchedule
           key: dedicated
           operator: Equal
