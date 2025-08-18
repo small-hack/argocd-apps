@@ -137,11 +137,18 @@ spec:
             ring:
               kvstore:
                 store: memberlist
+
             storage:
               path: /var/tempo/wal
+
             processor:
-              service_graphs:
+              local_blocks:
+                filter_server_spans: false
+                flush_to_storage: true
+
+              service_graphs
                 enable_virtual_node_label: true
+
               span_metrics:
                 enable_target_info: true
 
