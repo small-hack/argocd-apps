@@ -81,7 +81,7 @@ prometheus.scrape "kubelet" {
 	}
 
 	bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
-	forward_to	  = [prometheus.remote_write.default.targets]
+	forward_to	  = [prometheus.remote_write.default.receiver]
 }
 
 prometheus.operator.servicemonitors "default" {
