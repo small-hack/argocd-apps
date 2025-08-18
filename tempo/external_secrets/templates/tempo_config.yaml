@@ -134,6 +134,9 @@ spec:
               query_shards: 50
 
           metrics_generator:
+            ring:
+              kvstore:
+                store: memberlist
             storage:
               path: /var/tempo/wal
             processor:
