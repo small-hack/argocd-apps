@@ -38,6 +38,16 @@ prometheus.scrape "nodes" {
         forward_to      = [prometheus.remote_write.default.receiver]
 }
 
+discovery.kubelet "k8s_pods" {
+  bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
+}
+
+prometheus.scrape "demo" {
+  targets    = discovery.kubelet.k8s_pods.targets
+  forward_to = [prometheus.remote_write.default.receiver]
+}
+
+
 discovery.relabel "kubelet" {
         targets = discovery.kubernetes.nodes.targets
 
@@ -65,7 +75,7 @@ prometheus.scrape "kubelet" {
 	scheme   = "https"
 
 	tls_config {
-	    sever_name		 = "kubernetes"
+	    server_name		 = "kubernetes"
 	    ca_file		 = "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
 	    insecure_skip_verify = false
 	}
