@@ -142,7 +142,7 @@ otelcol.receiver.otlp "otlp_receiver" {
 // OTLP exporter to Tempo
 otelcol.exporter.otlp "tempo1" {
   client {
-    endpoint = "tempo-gateway.monitoring.svc:80/v1/traces"
+    endpoint = "tempo-gateway.monitoring.svc:4317"
     tls {
       insecure = true
     }
@@ -153,7 +153,7 @@ otelcol.exporter.otlp "tempo2" {
     // Define the client for exporting.
     client {
         // Send to the locally running Tempo instance
-        endpoint = "tempo-gateway.monitoring.svc:80/v1/traces"
+        endpoint = "tempo-gateway.monitoring.svc:4317"
         // Disable TLS for OTLP remote write.
         tls {
             // The connection is insecure.
