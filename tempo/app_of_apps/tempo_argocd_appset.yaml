@@ -136,6 +136,8 @@ spec:
                 targetCPUUtilizationPercentage: 60
                 # -- Target memory utilisation percentage for the ingester
                 targetMemoryUtilizationPercentage:
+              extraArgs:
+                - -config.expand-env=true
 
             # Configuration for the metrics-generator
             metricsGenerator:
@@ -147,7 +149,6 @@ spec:
               annotations: {}
               # -- Number of replicas for the metrics-generator
               replicas: 1
-
 
             # Configuration for the distributor
             distributor:
@@ -166,11 +167,13 @@ spec:
                 targetCPUUtilizationPercentage: 60
                 # -- Target memory utilisation percentage for the distributor
                 targetMemoryUtilizationPercentage:
-
-
+              extraArgs:
+                - -config.expand-env=true
 
             # Configuration for the compactor
             compactor:
+              extraArgs:
+                - -config.expand-env=true
               # -- Number of replicas for the compactor
               replicas: 1
               # -- Autoscaling configurations
@@ -220,6 +223,8 @@ spec:
 
             # Configuration for the querier
             querier:
+              extraArgs:
+                - -config.expand-env=true
               # -- Number of replicas for the querier
               replicas: 1
               autoscaling:
@@ -240,7 +245,8 @@ spec:
             queryFrontend:
               # -- Number of replicas for the query-frontend
               replicas: 1
-
+              extraArgs:
+                - -config.expand-env=true
 
             traces:
               jaeger:
