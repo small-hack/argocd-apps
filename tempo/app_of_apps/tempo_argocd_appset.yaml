@@ -120,7 +120,7 @@ spec:
             # Configuration for the ingester
             ingester:
               # -- Number of replicas for the ingester
-              replicas: 1
+              replicas: 2
               autoscaling:
                 # -- Enable autoscaling for the ingester.
                 # WARNING: Autoscaling ingesters can result in lost data.
@@ -153,7 +153,7 @@ spec:
             # Configuration for the distributor
             distributor:
               # -- Number of replicas for the distributor
-              replicas: 1
+              replicas: 2
               autoscaling:
                 # -- Enable autoscaling for the distributor
                 enabled: false
