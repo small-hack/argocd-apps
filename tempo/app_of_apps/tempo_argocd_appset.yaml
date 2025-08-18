@@ -278,12 +278,12 @@ spec:
               otlp:
                 http:
                   # -- Enable Tempo to ingest Open Telemetry HTTP traces
-                  enabled: false
+                  enabled: true
                   # -- HTTP receiver advanced config
                   receiverConfig: {}
                 grpc:
                   # -- Enable Tempo to ingest Open Telemetry GRPC traces
-                  enabled: false
+                  enabled: true
                   # -- GRPC receiver advanced config
                   receiverConfig: {}
                   # -- Default OTLP gRPC port
