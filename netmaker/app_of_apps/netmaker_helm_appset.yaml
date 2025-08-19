@@ -37,7 +37,7 @@ spec:
         namespace: netmaker
       source:
         repoURL: 'https://small-hack.github.io/netmaker-helm'
-        targetRevision: 1.0.0
+        targetRevision: 2.0.0
         chart: netmaker
         helm:
           releaseName: netmaker
