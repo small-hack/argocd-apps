@@ -81,6 +81,8 @@ spec:
               zoneAwareReplication:
                 # -- Enable zone-aware replication for ingester
                 enabled: false
+              persistentVolume:
+                storageClass: fast-raid
 
             # mimir's store_gateway
             store_gateway:
@@ -90,17 +92,23 @@ spec:
               zoneAwareReplication:
                 # -- Enable zone-aware replication for ingester
                 enabled: false
+              persistentVolume:
+                storageClass: fast-raid
 
             # mimir's forked alertmanager
             alertmanager:
               #topologySpreadConstraints: []
               enabled: true
               replic§as: 2
+              persistentVolume:
+                storageClass: fast-raid
 
             #distributor:
             #  topologySpreadConstraints: []
 
-            #compactor:
+            compactor:
+              persistentVolume:
+                storageClass: fast-raid
             #  topologySpreadConstraints: []
 
             #ruler:
