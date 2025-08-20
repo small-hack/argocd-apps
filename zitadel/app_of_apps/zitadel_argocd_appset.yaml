@@ -171,6 +171,15 @@ spec:
               className: "nginx"
               annotations:
                 cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
+                nginx.ingress.kubernetes.io/modsecurity-snippet: |
+                    SecRuleRemoveById 949110
+                nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
+                nginx.ingress.kubernetes.io/configuration-snippet: |
+                    grpc_set_header Host $host;
+                    more_clear_input_headers "Host" "X-Forwarded-Host";
+                    proxy_set_header Host $http_host;
+                    proxy_set_header X-Forwarded-Host $http_x_forwarded_host;
+                nginx.ingress.kubernetes.io/server-snippet: "grpc_buffer_size 8k;"
               hosts:
                 - host: '{{ .zitadel_hostname }}'
                   paths:
