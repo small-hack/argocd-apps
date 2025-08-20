@@ -47,8 +47,7 @@ spec:
           valuesObject:
             provider: '{{ .grafana_stack_s3_provider }}'
             pvc_capacity: '{{ .grafana_stack_s3_pvc_capacity }}'
-            # pvc_storageClassName: '{{ .global_pvc_storage_class }}'
-            pvc_storageClassName: fast-raid
+            pvc_storageClassName: '{{ .global_pvc_storage_class }}'
 
             seaweedfs:
               # -- deploy a master data PVC for seaweedfs
