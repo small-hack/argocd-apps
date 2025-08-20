@@ -81,7 +81,11 @@ spec:
               server:
                 root_url: "https://{{ .grafana_stack_grafana_hostname }}"
 
-
+            sidecar:
+              dashboards:
+                enabled: false
+                label: grafana_dashboard
+                labelValue: "1"
 
             # Configure grafana datasources. docs:
             # http://docs.grafana.org/administration/provisioning/#datasources
