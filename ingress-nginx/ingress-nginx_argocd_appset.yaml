@@ -72,7 +72,6 @@ spec:
                     memory: 128Mi
 
               config:
-                grpc-buffer-size-kb: 8
                 annotations-risk-level: Critical
                 # set log format to json
                 log-format-escape-json: "true"
