@@ -605,6 +605,11 @@ spec:
                   nginx.ingress.kubernetes.io/backend-protocol: HTTPS
                   nginx.ingress.kubernetes.io/ssl-passthrough: true
                   nginx.ingress.kubernetes.io/server-snippet: "grpc_buffer_size 8k;"
+                  nginx.ingress.kubernetes.io/configuration-snippet: |
+                    grpc_set_header Host $host;
+                    more_clear_input_headers "Host" "X-Forwarded-Host";
+                    proxy_set_header Host $http_host;
+                    proxy_set_header X-Forwarded-Host $http_x_forwarded_host;
                 hostname: '{{ .argo_cd_hostname }}'
                 tls:
                   - secretName: argocd-secret
