@@ -47,7 +47,6 @@ spec:
         helm:
           valuesObject:
             global:
-              #storageClass: "{{ .global_storage_class }}"
               storageClass: fast-raid
 
             fullnameOverride: "loki-valkey"
