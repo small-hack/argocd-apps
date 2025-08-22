@@ -9,7 +9,7 @@ metadata:
     cdi.kubevirt.io/storage.bind.immediate.requested: "true"
     cdi.kubevirt.io/storage.import.endpoint: "https://cloud.debian.org/images/cloud/trixie/latest/debian-13-generic-arm64.qcow2"
 spec:
-  storageClassName: local-path
+  storageClassName: fast-raid
   accessModes:
     - ReadWriteOnce
   resources:
