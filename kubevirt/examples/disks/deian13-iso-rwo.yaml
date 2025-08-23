@@ -2,16 +2,16 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: "debian12"
+  name: "debian13-iso"
   labels:
     app: containerized-data-importer
   annotations:
     cdi.kubevirt.io/storage.bind.immediate.requested: "true"
-    cdi.kubevirt.io/storage.import.endpoint: "https://cloud.debian.org/images/cloud/bookworm/daily/latest/debian-12-generic-amd64-daily.qcow2"
+    cdi.kubevirt.io/storage.import.endpoint: "https://cdimage.debian.org/cdimage/trixie_di_rc3/amd64/iso-dvd/debian-trixie-DI-rc3-amd64-DVD-1.iso"
 spec:
-  storageClassName: local-path
+  storageClassName: fast-raid
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 32Gi
+      storage: 5Gi

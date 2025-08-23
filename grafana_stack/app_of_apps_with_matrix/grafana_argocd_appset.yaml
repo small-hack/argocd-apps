@@ -58,6 +58,12 @@ spec:
                   name: grafana-oidc-credentials
                   key: client_secret
 
+            sidecar:
+              dashboards:
+                enabled: true
+                label: grafana_dashboard
+                labelValue: "1"
+
             grafana.ini:
               auth:
                 disable_login_form: true
@@ -80,8 +86,6 @@ spec:
 
               server:
                 root_url: "https://{{ .grafana_stack_grafana_hostname }}"
-
-
 
             # Configure grafana datasources. docs:
             # http://docs.grafana.org/administration/provisioning/#datasources
