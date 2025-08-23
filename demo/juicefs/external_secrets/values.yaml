@@ -2,7 +2,7 @@
 provider: "bitwarden"
 
 # -- if set to seaweedfs we deploy a policy secret. can also be minio
-s3_provider: "seaweedfs"
+s3_provider: "juicefs"
 
 # -- existing kubernetes secret with s3 postgres credentials
 s3CredentialsBitwardenID: "juicefs-s3-credentials"
