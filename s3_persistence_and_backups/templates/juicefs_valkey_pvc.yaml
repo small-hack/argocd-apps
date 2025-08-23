@@ -1,0 +1,30 @@
+{{- if eq .Values.provider "juicefs" }}
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: juicefs-valkey-primary
+  annotations:
+    k8up.io/backup: "true"
+spec:
+  storageClassName: {{ .Values.pvc_storageClassName }}
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.pvc_capacity }}
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: juicefs-valkey-replica
+  annotations:
+    k8up.io/backup: "true"
+spec:
+  storageClassName: {{ .Values.pvc_storageClassName }}
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.pvc_capacity }}
+{{- end }}
