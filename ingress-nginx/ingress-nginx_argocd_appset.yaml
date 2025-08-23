@@ -70,6 +70,10 @@ spec:
                   requests:
                     cpu: 100m
                     memory: 128Mi
+                    
+              nodeSelector:
+                kubernetes.io/os: linux
+                ingress-ready: "true"
 
               config:
                 annotations-risk-level: Critical
