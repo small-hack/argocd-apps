@@ -1,0 +1,102 @@
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: swfs-volume-pv
+spec:
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /mnt/raid1/
+  storageClassName: ""
+  capacity:
+    storage: 2Ti
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - bambino
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: swfs-volume-pv
+spec:
+  storageClassName: ""
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Ti
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: swfs-master-pv
+spec:
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /mnt/raid1/
+  storageClassName: ""
+  capacity:
+    storage: 5Gi
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - bambino
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: swfs-master-pv
+spec:
+  storageClassName: ""
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: swfs-filer-pv
+spec:
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /mnt/raid1/
+  storageClassName: ""
+  capacity:
+    storage: 5Gi
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - bambino
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: swfs-filer-pv
+spec:
+  storageClassName: ""
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
