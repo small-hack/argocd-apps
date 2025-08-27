@@ -1,6 +1,6 @@
 apiVersion: v2
-name: nextcloud-eso-bitwarden-chart
-description: A Helm chart for JuiceFS External Secrets using the Bitwarden ESO provider on Kubernetes 
+name: grafana-stack-eso-chart
+description: A Helm chart for Grafana Monitoring Stack External Secrets using the Bitwarden ESO provider on Kubernetes
 
 # A chart can be either an 'application' or a 'library' chart.
 #
