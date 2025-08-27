@@ -11,22 +11,21 @@ discovery.kubernetes "pods" {
         role = "pod"
 }
 
-prometheus.scrape "pods" {
-        scrape_interval = "10s"
-        targets         = discovery.kubernetes.pods.targets
-        forward_to      = [prometheus.remote_write.default.receiver]
-}
-
+//prometheus.scrape "pods" {
+//        scrape_interval = "10s"
+//        targets         = discovery.kubernetes.pods.targets
+//        forward_to      = [prometheus.remote_write.default.receiver]
+//}
 
 discovery.kubernetes "services" {
         role = "service"
 }
 
-prometheus.scrape "services" {
-        scrape_interval = "10s"
-        targets         = discovery.kubernetes.services.targets
-        forward_to      = [prometheus.remote_write.default.receiver]
-}
+//prometheus.scrape "services" {
+//        scrape_interval = "10s"
+//        targets         = discovery.kubernetes.services.targets
+//        forward_to      = [prometheus.remote_write.default.receiver]
+//}
 
 discovery.kubernetes "nodes" {
         role = "node"
