@@ -202,7 +202,7 @@ spec:
                 enabled: true
                 className: "nginx"
                 # host: false for "*" hostname
-                host: '{{ .harbor_s3_endpoint }}'
+                host: 's3-{{ .harbor_hostname }}'
                 # additional ingress annotations for the s3 endpoint
                 annotations:
                   nginx.ingress.kubernetes.io/proxy-body-size: 1G
@@ -210,4 +210,4 @@ spec:
                 tls:
                   - secretName: harbor-seaweedfs-tls
                     hosts:
-                      - '{{ .harbor_s3_endpoint }}'
+                      - 's3-{{ .harbor_hostname }}'
