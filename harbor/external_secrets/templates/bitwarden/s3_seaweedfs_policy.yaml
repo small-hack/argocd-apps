@@ -77,11 +77,11 @@ spec:
     - secretKey: testSecretKey
       sourceRef:
         storeRef:
-          name: bitwarden-login
+          name: bitwarden-fields
           kind: ClusterSecretStore
       remoteRef:
         key: {{ .Values.S3HarborCredentialsBitwardenID }}
-        property: password
+        property: s3Endpoint
 
     - secretKey: userAccessKey
       sourceRef:
