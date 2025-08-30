@@ -1,5 +1,5 @@
 # -- Use external secrets. Set to bitwarden to use this chart. other providers may be supported in the future
-provider: ""
+provider: "bitwarden"
 
 # -- admin credentials
 adminCredentialsBitwardenID: ""
@@ -24,13 +24,13 @@ valkeyCredentialsBitwardenID: ""
 ###############
 
 # -- if set to seaweedfs we deploy a policy secret. can also be minio
-s3_provider: "seaweedfs"
+s3_provider: ""
 
 # -- existing kubernetes secret with s3 admin credentials
 s3AdminCredentialsBitwardenID: ""
 
 # -- existing kubernetes secret with s3 Harbor credentials
-s3HarborCredentialsBitwardenID: "27411808-d76b-43e8-ad4f-b29400980d9e"
+s3HarborCredentialsBitwardenID: ""
 
 # -- existing kubernetes secret with s3 postgres credentials
 s3PostgresCredentialsBitwardenID: ""
