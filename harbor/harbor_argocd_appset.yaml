@@ -574,8 +574,7 @@ spec:
               #     memory: 256Mi
               #     cpu: 100m
               extraEnvVars: []
-              nodeSelector: 
-                kubernetes.io/hostname: ax102
+              nodeSelector: []
               tolerations: []
               affinity: {}
               # Spread Pods across failure-domains like regions, availability zones or nodes
@@ -621,8 +620,7 @@ spec:
                 extraEnvVars: []
               replicas: 1
               revisionHistoryLimit: 10
-              nodeSelector: 
-                kubernetes.io/hostname: ax102
+              nodeSelector: []
               tolerations: []
               affinity: {}
               # Spread Pods across failure-domains like regions, availability zones or nodes
@@ -738,8 +736,7 @@ spec:
                   cpu: 1
                   memory: 1Gi
               extraEnvVars: []
-              nodeSelector: 
-                kubernetes.io/hostname: ax102
+              nodeSelector: []
               tolerations: []
               affinity: {}
               # Spread Pods across failure-domains like regions, availability zones or nodes
@@ -784,8 +781,7 @@ spec:
                 readinessProbe:
                   timeoutSeconds: 1
                 extraEnvVars: []
-                nodeSelector: 
-                  kubernetes.io/hostname: ax102
+                nodeSelector: []
                 tolerations: []
                 affinity: {}
                 ## The priority class to run the pod as
@@ -846,8 +842,7 @@ spec:
                 #    memory: 256Mi
                 #    cpu: 100m
                 extraEnvVars: []
-                nodeSelector: 
-                  kubernetes.io/hostname: ax102
+                nodeSelector: []
                 tolerations: []
                 affinity: {}
                 ## The priority class to run the pod as
@@ -892,8 +887,7 @@ spec:
               image:
                 repository: goharbor/harbor-exporter
                 tag: dev
-              nodeSelector: 
-                kubernetes.io/hostname: ax102
+              nodeSelector: {}
               tolerations: []
               affinity: {}
               # Spread Pods across failure-domains like regions, availability zones or nodes
@@ -947,10 +941,10 @@ spec:
                   #   action: replace
 
             trace:
-              enabled: false
+              enabled: true
               # trace provider: jaeger or otel
               # jaeger should be 1.26+
-              provider: jaeger
+              provider: otel
               # set sample_rate to 1 if you wanna sampling 100% of trace data; set 0.5 if you wanna sampling 50% of trace data, and so forth
               sample_rate: 1
               # namespace used to differentiate different harbor services
@@ -969,7 +963,7 @@ spec:
                 # export trace data by jaeger.thrift in compact mode
                 # agent_port: 6831
               otel:
-                endpoint: hostname:4318
+                endpoint: alloy-metrics.monitoring.svc.cluster.local:4318
                 url_path: /v1/traces
                 compression: false
                 insecure: true
