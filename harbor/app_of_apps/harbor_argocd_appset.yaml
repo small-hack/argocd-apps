@@ -298,6 +298,37 @@ spec:
               ##   As a EnvVars secret, this secret also store redis config urls
               ##   The HARBOR_ADMIN_PASSWORD is only required at initial deployment, once the password is set in database, it is not used anymore
               existingEnvVarsSecret: "harbor-registry-credentials"
+              extraEnvVars:
+              - name: OIDC_CLIENT_ID
+                valueFrom:
+                  secretKeyRef:
+                    name: oidc-harbor
+                    key: client_id
+              - name: OIDC_CLIENT_SECRET
+                valueFrom:
+                  secretKeyRef:
+                    name: oidc-harbor
+                    key: client_secret
+              - name: OIDC_ENDPOINT
+                valueFrom:
+                  secretKeyRef:
+                    name: oidc-harbor
+                    key: client_secret
+              - name: CONFIG_OVERWRITE_JSON
+                value: |
+                  {
+                    "auth_mode": "oidc_auth",
+                    "oidc_name": "Zitadel",
+                    "oidc_endpoint": "$(OIDC_ENDPOINT)",
+                    "oidc_groups_claim": "groups",
+                    "oidc_admin_group": "harbor_admins",
+                    "oidc_client_id": "$(OIDC_CLIENT_ID)",
+                    "oidc_client_secret": "$(OIDC_CLIENT_SECRET)",
+                    "oidc_scope": "openid,email,groups,name",
+                    "oidc_verify_cert": "false",
+                    "oidc_auto_onboard": "true",
+                    "oidc_user_claim": "name"
+                  }
 
             jobservice:
               # Secret is used when job service communicates with other components.
