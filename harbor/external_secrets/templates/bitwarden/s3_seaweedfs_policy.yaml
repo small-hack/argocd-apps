@@ -74,6 +74,15 @@ spec:
         key: {{ .Values.s3PostgresCredentialsBitwardenID }}
         property: password
 
+    - secretKey: testSecretKey
+      sourceRef:
+        storeRef:
+          name: bitwarden-login
+          kind: ClusterSecretStore
+      remoteRef:
+        key: {{ .Values.S3HarborCredentialsBitwardenID }}
+        property: password
+
     - secretKey: userAccessKey
       sourceRef:
         storeRef:
