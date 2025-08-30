@@ -32,8 +32,8 @@ spec:
             {"name": "anonymous", "actions": ["Read:harbor"]},
             {"name": "harbor-postgres",
              "credentials": [
-               {"accessKey": "{{ `{{ .dbUserAccessKey }}` }}",
-                "secretKey": "{{ `{{ .dbUserSecretKey }}` }}"}
+               {"accessKey": "{{ `{{ .dbAccessKey }}` }}",
+                "secretKey": "{{ `{{ .dbSecretKey }}` }}"}
              ],
              "actions": ["Read:harbor-postgres","Write:harbor-postgres","List:harbor-postgres"]}
           ]}
@@ -56,6 +56,24 @@ spec:
         key: {{ .Values.s3AdminCredentialsBitwardenID }}
         property: password
 
+    - secretKey: dbAccessKey
+      sourceRef:
+        storeRef:
+          name: bitwarden-login
+          kind: ClusterSecretStore
+      remoteRef:
+        key: {{ .Values.s3PostgresCredentialsBitwardenID }}
+        property: username
+
+    - secretKey: dbSecretKey
+      sourceRef:
+        storeRef:
+          name: bitwarden-login
+          kind: ClusterSecretStore
+      remoteRef:
+        key: {{ .Values.s3PostgresCredentialsBitwardenID }}
+        property: password
+
     - secretKey: userAccessKey
       sourceRef:
         storeRef:
@@ -74,21 +92,5 @@ spec:
         key: {{ .Values.s3HarborCredentialsBitwardenID }}
         property: password
 
-    - secretKey: dbUserAccessKey
-      sourceRef:
-        storeRef:
-          name: bitwarden-login
-          kind: ClusterSecretStore
-      remoteRef:
-        key: {{ .Values.s3PostgresCredentialsBitwardenID }}
-        property: username
 
-    - secretKey: dbUserSecretKey
-      sourceRef:
-        storeRef:
-          name: bitwarden-login
-          kind: ClusterSecretStore
-      remoteRef:
-        key: {{ .Values.s3PostgresCredentialsBitwardenID }}
-        property: password
 {{- end }}
