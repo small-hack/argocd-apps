@@ -32,7 +32,7 @@ spec:
         targetRevision: 1.17.2
         chart: harbor
         helm:
-          values: |
+          valuesObject:
             expose:
               # Set how to expose the service. Set the type as "ingress", "clusterIP", "nodePort" or "loadBalancer"
               # and fill the information in the corresponding section
