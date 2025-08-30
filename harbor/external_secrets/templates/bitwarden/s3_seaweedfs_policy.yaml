@@ -62,7 +62,7 @@ spec:
           name: bitwarden-login
           kind: ClusterSecretStore
       remoteRef:
-        key: {{ .Values.s3HarborUserCredentialsBitwardenID }}
+        key: {{ .Values.s3PostgresCredentialsBitwardenID }}
         property: username
 
     - secretKey: dbSecretKey
@@ -71,7 +71,7 @@ spec:
           name: bitwarden-login
           kind: ClusterSecretStore
       remoteRef:
-        key: {{ .Values.s3HarborUserCredentialsBitwardenID }}
+        key: {{ .Values.s3PostgresCredentialsBitwardenID }}
         property: password
 
     - secretKey: userAccessKey
