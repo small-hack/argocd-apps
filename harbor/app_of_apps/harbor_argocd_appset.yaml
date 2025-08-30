@@ -313,7 +313,7 @@ spec:
                 valueFrom:
                   secretKeyRef:
                     name: oidc-harbor
-                    key: client_secret
+                    key: endpoint
               - name: CONFIG_OVERWRITE_JSON
                 value: |
                   {
