@@ -18,6 +18,7 @@ spec:
           parameters:
             secret_vars:
               - harbor_s3_endpoint
+              - harbor_hostname
               - harbor_s3_region
               - global_cluster_issuer
   template:
@@ -167,7 +168,7 @@ spec:
                 port: 8333
                 httpsPort: 0
                 allowEmptyFolder: false
-                domainName: '{{ .harbor_s3_endpoint }}'
+                domainName: 's3-{{ .harbor_hostname }}'
                 enableAuth: true
                 existingConfigSecret: seaweedfs-s3-secret
                 createBuckets:
