@@ -56,7 +56,7 @@ spec:
             auth:
               enabled: true
               existingSecret: "valkey-credentials"
-              existingSecretPasswordKey: "password"
+              existingSecretPasswordKey: "valkey_password:"
 
             # TLS settings
             tls:
