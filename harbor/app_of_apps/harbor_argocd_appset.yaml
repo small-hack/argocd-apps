@@ -77,7 +77,7 @@ spec:
                   secretName: ""
               ingress:
                 hosts:
-                  core: "core-{{ .harbor_hostname }}"
+                  core: "{{ .harbor_hostname }}"
                 # set to the type of ingress controller if it has specific requirements.
                 # leave as `default` for most ingress controllers.
                 # set to `gce` if using the GCE ingress controller
