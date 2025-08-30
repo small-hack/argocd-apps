@@ -80,7 +80,7 @@ spec:
           name: bitwarden-fields
           kind: ClusterSecretStore
       remoteRef:
-        key: {{ .Values.s3HarborCredentialsBitwardenID }}
+        key: {{ .Values.test }}
         property: s3Endpoint
 
     - secretKey: userAccessKey
