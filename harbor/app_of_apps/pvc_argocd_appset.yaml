@@ -84,7 +84,7 @@ spec:
               # -- default access mode for the valkey pvc
               accessMode: "{{ .harbor_valkey_access_mode }}"
               # -- storage capacity for the harbor valkey pvc
-              storage: "{{ .harbor_valkey_pvc_storage }}"
+              storage: "{{ .harbor_valkey_storage }}"
 
             # -- tolerate affinity
             affinity: {}
