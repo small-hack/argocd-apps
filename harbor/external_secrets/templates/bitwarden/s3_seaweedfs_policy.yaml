@@ -74,15 +74,6 @@ spec:
         key: {{ .Values.s3HarborUserCredentialsBitwardenID }}
         property: password
 
-    - secretKey: testSecretKey
-      sourceRef:
-        storeRef:
-          name: bitwarden-fields
-          kind: ClusterSecretStore
-      remoteRef:
-        key: {{ .Values.s3HarborUserCredentialsBitwardenID }}
-        property: s3Endpoint
-
     - secretKey: userAccessKey
       sourceRef:
         storeRef:
