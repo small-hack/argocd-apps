@@ -97,17 +97,10 @@ spec:
                   # note different ingress controllers may require a different ssl-redirect annotation
                   # for Envoy, use ingress.kubernetes.io/force-ssl-redirect: "true" and remove the nginx lines below
                   cert-manager.io/cluster-issuer: "{{ .global_cluster_issuer }}"
-                  nginx.ingress.kubernetes.io/auth-signin: "https://{{ .vouch_hostname }}/login?url=$scheme://$http_host$request_uri&vouch-failcount=$auth_resp_failcount&X-Vouch-Token=$auth_resp_jwt&error=$auth_resp_err"
-                  nginx.ingress.kubernetes.io/auth-url: https://{{ .vouch_hostname }}/validate
-                  nginx.ingress.kubernetes.io/auth-response-headers: X-Vouch-User
                   ngress.kubernetes.io/ssl-redirect: "true"
                   ingress.kubernetes.io/proxy-body-size: "0"
                   nginx.ingress.kubernetes.io/ssl-redirect: "true"
                   nginx.ingress.kubernetes.io/proxy-body-size: "0"
-                  nginx.ingress.kubernetes.io/auth-snippet: |
-                    auth_request_set $auth_resp_jwt $upstream_http_x_vouch_jwt;
-                    auth_request_set $auth_resp_err $upstream_http_x_vouch_err;
-                    auth_request_set $auth_resp_failcount $upstream_http_x_vouch_failcount;
 
             # If Harbor is deployed behind the proxy, set it as the URL of proxy
             externalURL: https://{{ .harbor_hostname }}
@@ -277,6 +270,37 @@ spec:
               priorityClassName:
 
             core:
+              extraEnvVars:
+              - name: OIDC_CLIENT_ID
+                valueFrom:
+                  secretKeyRef:
+                    name: oidc-harbor
+                    key: client_id
+              - name: OIDC_CLIENT_SECRET
+                valueFrom:
+                  secretKeyRef:
+                    name: oidc-harbor
+                    key: client_secret
+              - name: OIDC_ENDPOINT
+                valueFrom:
+                  secretKeyRef:
+                    name: oidc-harbor
+                    key: client_secret
+              - name: CONFIG_OVERWRITE_JSON
+                value: |
+                  {
+                    "auth_mode": "oidc_auth",
+                    "oidc_name": "Zitadel",
+                    "oidc_endpoint": "$(OIDC_ENDPOINT)",
+                    "oidc_groups_claim": "groups",
+                    "oidc_admin_group": "harbor_admins",
+                    "oidc_client_id": "$(OIDC_CLIENT_ID)",
+                    "oidc_client_secret": "$(OIDC_CLIENT_SECRET)",
+                    "oidc_scope": "openid,email,groups,name",
+                    "oidc_verify_cert": "false",
+                    "oidc_auto_onboard": "true",
+                    "oidc_user_claim": "name"
+                  }
               image:
                 repository: goharbor/harbor-core
                 tag: dev
