@@ -89,7 +89,7 @@ spec:
           name: bitwarden-login
           kind: ClusterSecretStore
       remoteRef:
-        key: {{ .Values.s3HarborCredentialsBitwardenID }}
+        key: {{ .Values.s3HarborUserCredentialsBitwardenID }}
         property: username
 
     - secretKey: userSecretKey
