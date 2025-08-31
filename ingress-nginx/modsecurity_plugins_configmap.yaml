@@ -183,7 +183,7 @@ data:
       pass,\
       nolog,\
       t:none,\
-      setvar:'tx.allowed_request_content_type=application/activity+json'"
+      setvar:'tx.allowed_request_content_type=|application/activity+json|'"
 
     SecRule REQUEST_URI "@beginsWith /users/.*/inbox" \
       "id:560001,\
@@ -192,7 +192,7 @@ data:
       pass,\
       nolog,\
       t:none,\
-      setvar:'tx.allowed_request_content_type=application/activity+json'"
+      setvar:'tx.allowed_request_content_type=|application/activity+json|'"
 
     SecRule REQUEST_URI "@beginsWith /inbox" \
       "id:560002,\
