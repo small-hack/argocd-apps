@@ -141,10 +141,10 @@ data:
       ctl:ruleRemoveTargetById=933150;ARGS:json.data.unique_id"
 
   loki-rule-exclusions-before.conf: |-
-    # Allow PUT method to /loki/<org name>/
+    # Allow PUT method to /loki/<org name>/ rule 911100
     # this is for when loki tries to flush chunks
     SecRule REQUEST_URI "@beginsWith /loki?orgId" \
-      "id:911100,\
+      "id:30001,\
       phase:1,\
       ver:'loki-exclusions-plugin/1.0.0',\
       pass,\
@@ -153,9 +153,9 @@ data:
       setvar:'tx.allowed_methods=PUT POST'"
 
   mastodon-rule-exclusions-before.conf: |-
-    # Allow posting to mastodon 
-    SecRule REQUEST_URI "@beginsWith /loki?orgId" \
-      "id:920420,\
+    # Allow posting to mastodon rule 920420
+    SecRule REQUEST_URI "@beginsWith /inbox" \
+      "id:40001,\
       phase:1,\
       ver:'mastodon-exclusions-plugin/1.0.0',\
       pass,\
