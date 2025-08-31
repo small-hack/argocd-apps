@@ -332,6 +332,18 @@ data:
       t:none,\
       setvar:'tx.allowed_request_content_type=|application/octet-stream|'"
 
+  mimir-rule-exclusions-before.conf: |-
+    # Exception for Request content type is not allowed by policy. Rule 920420
+    SecRule REQUEST_URI "@beginsWith /mimir-blocks/anonymous" \
+      "id:680001,\
+      phase:1,\
+      ver:'mimir-exclusions-plugin/1.0.0',\
+      pass,\
+      nolog,\
+      t:none,\
+      setvar:'tx.allowed_request_content_type=|application/octet-stream|'"
+
+
   matrix-rule-exclusions-before.conf: |-
     # -------------------------------------------------------------------------
     # allow uploads for matrix via element web and mobile
