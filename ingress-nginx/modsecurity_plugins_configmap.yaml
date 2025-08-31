@@ -204,7 +204,7 @@ data:
       pass,\
       nolog,\
       t:none,\
-      ctl:ruleRemoveTargetById=920600"
+      ctl:ruleRemoveById=920600"
 
   matrix-rule-exclusions-before.conf: |-
     # -------------------------------------------------------------------------
