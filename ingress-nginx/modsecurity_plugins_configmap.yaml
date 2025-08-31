@@ -213,10 +213,28 @@ data:
       t:none,\
       setvar:'tx.allowed_methods=PUT POST GET HEAD OPTIONS'"
 
-    # allow searching for statuses - rule 920600
+    # allow searching for statuses - rule 920600, 920470 and 920420
     # see: https://github.com/coreruleset/coreruleset/issues/3497
+    SecRule REQUEST_URI "@beginsWith /users/.*/statuses/.*$" \
+      "id:560006,\
+      phase:1,\
+      ver:'activitypub-exclusions-plugin/1.0.0',\
+      pass,\
+      nolog,\
+      t:none,\
+      setvar:'tx.allowed_request_content_type=|application/activity+json|application/ld+json|'"
+
     SecRule REQUEST_URI "@rx ^/@.*/statuses/.*$" \
       "id:560004,\
+      phase:1,\
+      ver:'activitypub-exclusions-plugin/1.0.0',\
+      pass,\
+      nolog,\
+      t:none,\
+      ctl:ruleRemoveById=920600"
+
+    SecRule REQUEST_URI "@beginsWith /users/.*/statuses/.*$" \
+      "id:560005,\
       phase:1,\
       ver:'activitypub-exclusions-plugin/1.0.0',\
       pass,\
