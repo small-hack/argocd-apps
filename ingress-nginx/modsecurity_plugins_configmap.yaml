@@ -253,6 +253,17 @@ data:
       t:none,\
       setvar:'tx.allowed_methods=PUT POST GET HEAD OPTIONS DELETE'"
 
+    # allow "Request Containing Content, but Missing Content-Type header"  rule 920340
+    # rule 920340
+    SecRule REQUEST_URI "@rx ^(.*-postgres\/.*-postgres\/wals\/)?" \
+      "id:570001,\
+      phase:1,\
+      ver:'postgres-exclusions-plugin/1.0.0',\
+      pass,\
+      nolog,\
+      t:none,\
+      ctl:ruleRemoveById=920340"
+
   matrix-rule-exclusions-before.conf: |-
     # -------------------------------------------------------------------------
     # allow uploads for matrix via element web and mobile
