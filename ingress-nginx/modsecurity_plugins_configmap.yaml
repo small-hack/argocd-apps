@@ -176,6 +176,7 @@ data:
 
   activitypub-rule-exclusions-before.conf: |-
     # Allow posting to mastodon inbox - rules 920420, 920470
+    # rule 920420 :Request content type is not allowed by policy
     SecRule REQUEST_URI "@beginsWith /inbox" \
       "id:560000,\
       phase:1,\
@@ -194,6 +195,7 @@ data:
       t:none,\
       setvar:'tx.allowed_request_content_type=|application/activity+json|'"
 
+    # avoids rule 920600
     SecRule REQUEST_URI "@beginsWith /inbox" \
       "id:560002,\
       phase:1,\
@@ -213,7 +215,7 @@ data:
       t:none,\
       setvar:'tx.allowed_methods=PUT POST GET HEAD OPTIONS'"
 
-    # allow searching for statuses - rule 920600, 920470 and 920420
+    # allow searching for statuses - rule 920470 and 920420
     # see: https://github.com/coreruleset/coreruleset/issues/3497
     SecRule REQUEST_URI "@rx ^/users/.*/statuses/.*$" \
       "id:560006,\
@@ -224,6 +226,8 @@ data:
       t:none,\
       setvar:'tx.allowed_request_content_type=|application/activity+json|application/ld+json|'"
 
+    # these are both for getting statuses (like if a status is searched for)
+    # avoids rule 920600
     SecRule REQUEST_URI "@rx ^/@.*/statuses/.*$" \
       "id:560004,\
       phase:1,\
@@ -242,16 +246,17 @@ data:
       t:none,\
       ctl:ruleRemoveById=920600"
 
-    # Request content type is not allowed by policy
-    # removing rule from gotosocial because attachments can be almost anything
-    SecRule REQUEST_URI "@rx ^(.gotosocial\/.*\/attachment\/.*=)?" \
-      "id:560007,\
+    # avoids rule 920420 :Request content type is not allowed by policy
+    # this is actually for minio or seaweedfs to be able to support GoToSocial
+    # S3 enabled bucket lookups for images
+    SecRule REQUEST_URI "@rx ^/.*/.*/attachment/original/.*uploads.*$"
+      "id:560006,\
       phase:1,\
       ver:'activitypub-exclusions-plugin/1.0.0',\
       pass,\
       nolog,\
       t:none,\
-    ctl:ruleRemoveById=920420"
+      setvar:'tx.allowed_request_content_type=|image/png|image/jpg|image/jpeg|image/webp|image/gif|video/mpeg|video/mp4|video/webm|"
 
     # Request content type is not allowed by policy
     # removing rule from mastodon because attachments can be almost anything
@@ -262,7 +267,7 @@ data:
       pass,\
       nolog,\
       t:none,\
-    ctl:ruleRemoveById=920420"
+      setvar:'tx.allowed_request_content_type=|image/png|image/jpg|image/jpeg|image/webp|image/gif|video/mpeg|video/mp4|video/webm|"
 
   postgres-rule-exclusions-before.conf: |-
     # Prevents blocking pgbarmand backup operations
