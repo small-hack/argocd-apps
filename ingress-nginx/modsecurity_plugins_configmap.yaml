@@ -275,6 +275,19 @@ data:
       t:none,\
       ctl:ruleRemoveById=920340"
 
+    # Ignore false positive:
+    # Remote Command Execution: Java process spawn (CVE-2017-9805)
+    # 944110
+    SecRule REQUEST_URI "@rx ^(.*-postgres\/.*-postgres\/wals\/)?" \
+      "id:570001,\
+      phase:1,\
+      ver:'postgres-exclusions-plugin/1.0.0',\
+      pass,\
+      nolog,\
+      t:none,\
+      ctl:ruleRemoveById=944110"
+
+
   tempo-rule-exclusions-before.conf: |-
     # Prevents blocking remote-writes for parquet
     SecRule REQUEST_URI "@beginsWith /tempo/single-tenant" \
