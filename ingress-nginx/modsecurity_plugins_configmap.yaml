@@ -286,6 +286,16 @@ data:
       t:none,\
       ctl:ruleRemoveById=920340"
 
+    # Exception for Request content type is not allowed by policy. Rule 920420
+    SecRule REQUEST_URI "@beginsWith /tempo/single-tenant" \
+      "id:580002,\
+      phase:1,\
+      ver:'tempo-exclusions-plugin/1.0.0',\
+      pass,\
+      nolog,\
+      t:none,\
+      setvar:'tx.allowed_request_content_type=|application/octet-stream|'"
+
   matrix-rule-exclusions-before.conf: |-
     # -------------------------------------------------------------------------
     # allow uploads for matrix via element web and mobile
