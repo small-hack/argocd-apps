@@ -242,6 +242,18 @@ data:
       t:none,\
       ctl:ruleRemoveById=920600"
 
+    # Request content type is not allowed by policy
+    # removing rule because attachments can be almost anything
+    SecRule REQUEST_URI "@rx ^(.gotosocial\/.*\/attachment\/.*=)?" \
+      "id:560006,\
+      phase:1,\
+      ver:'activitypub-exclusions-plugin/1.0.0',\
+      pass,\
+      nolog,\
+      t:none,\
+    ctl:ruleRemoveById=920420"
+
+
   postgres-rule-exclusions-before.conf: |-
     # Prevents blocking pgbarmand backup operations
     SecRule REQUEST_URI "@rx ^(.*-postgres\/.*-postgres\/wals\/)?" \
