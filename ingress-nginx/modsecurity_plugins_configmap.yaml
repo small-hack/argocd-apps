@@ -265,6 +265,18 @@ data:
       t:none,\
       setvar:'tx.allowed_request_content_type=|image/png|image/jpg|image/jpeg|image/webp|image/gif|video/mpeg|video/mp4|video/webm|"
 
+    # Ignore "Illegal Accept header: charset parameter" for gotosocial profiles
+    # see: https://github.com/coreruleset/coreruleset/issues/3497
+    # Rule: 920600
+    SecRule REQUEST_URI "@rx ^/users/.*$" \
+      "id:560003,\
+      phase:1,\
+      ver:'activitypub-exclusions-plugin/1.0.0',\
+      pass,\
+      nolog,\
+      t:none,\
+      ctl:ruleRemoveById=920600"
+
   postgres-rule-exclusions-before.conf: |-
     # Prevents blocking pgbarmand backup operations
     SecRule REQUEST_URI "@rx ^(.*-postgres\/.*-postgres\/wals\/)?" \
