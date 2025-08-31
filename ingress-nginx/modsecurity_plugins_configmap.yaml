@@ -198,7 +198,7 @@ data:
     # allow searching for statuses - rule 920600
     # see: https://github.com/coreruleset/coreruleset/issues/3497
     SecRule REQUEST_URI "@rx ^/@.*/statuses/.*$" \
-      "id:560001,\
+      "id:560002,\
       phase:1,\
       ver:'activitypub-exclusions-plugin/1.0.0',\
       pass,\
