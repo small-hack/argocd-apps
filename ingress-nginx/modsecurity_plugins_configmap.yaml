@@ -245,7 +245,7 @@ data:
     # avoids rule 920420 :Request content type is not allowed by policy
     # this is actually for minio or seaweedfs to be able to support GoToSocial
     # S3 enabled bucket lookups for images (Uploads)
-    SecRule REQUEST_URI "@rx ^/.*/.*/(attachment|emoji)/original/.*$"
+    SecRule REQUEST_URI "@rx ^/.*/.*/(attachment|emoji)/(small|original)/.*$"
       "id:560005,\
       phase:1,\
       ver:'activitypub-exclusions-plugin/1.0.0',\
