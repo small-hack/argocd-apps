@@ -185,9 +185,18 @@ data:
       t:none,\
       setvar:'tx.allowed_request_content_type=application/activity+json'"
 
+    SecRule REQUEST_URI "@beginsWith /users/.*/inbox" \
+      "id:560001,\
+      phase:1,\
+      ver:'activitypub-exclusions-plugin/1.0.0',\
+      pass,\
+      nolog,\
+      t:none,\
+      setvar:'tx.allowed_request_content_type=application/activity+json'"
+
     # allow editing statuses on mastodon - rule 911100
     SecRule REQUEST_URI "@beginsWith /api/v1/statuses" \
-      "id:560001,\
+      "id:560002,\
       phase:1,\
       ver:'activitypub-exclusions-plugin/1.0.0',\
       pass,\
@@ -198,7 +207,7 @@ data:
     # allow searching for statuses - rule 920600
     # see: https://github.com/coreruleset/coreruleset/issues/3497
     SecRule REQUEST_URI "@rx ^/@.*/statuses/.*$" \
-      "id:560002,\
+      "id:560003,\
       phase:1,\
       ver:'activitypub-exclusions-plugin/1.0.0',\
       pass,\
