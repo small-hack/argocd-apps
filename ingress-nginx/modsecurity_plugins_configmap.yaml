@@ -269,7 +269,7 @@ data:
     # see: https://github.com/coreruleset/coreruleset/issues/3497
     # Rule: 920600
     SecRule REQUEST_URI "@rx ^/users/.*$" \
-      "id:560003,\
+      "id:560007,\
       phase:1,\
       ver:'activitypub-exclusions-plugin/1.0.0',\
       pass,\
