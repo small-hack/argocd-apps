@@ -253,18 +253,6 @@ data:
       t:none,\
       setvar:'tx.allowed_request_content_type=|image/png|image/jpg|image/jpeg|image/webp|image/gif|video/mpeg|video/mp4|video/webm|"
 
-    # avoids rule 920420 :Request content type is not allowed by policy
-    # this is actually for minio or seaweedfs to be able to support GoToSocial
-    # S3 enabled bucket lookups for images (Downloads)
-    SecRule REQUEST_URI "@rx ^(.*\/.*\/attachment\/.*\/.*.uploadId=.*)?"
-      "id:560007,\
-      phase:1,\
-      ver:'activitypub-exclusions-plugin/1.0.0',\
-      pass,\
-      nolog,\
-      t:none,\
-      setvar:'tx.allowed_request_content_type=|image/png|image/jpg|image/jpeg|image/webp|image/gif|video/mpeg|video/mp4|video/webm|"
-
   postgres-rule-exclusions-before.conf: |-
     # Prevents blocking pgbarmand backup operations
     SecRule REQUEST_URI "@rx ^(.*-postgres\/.*-postgres\/wals\/)?" \
