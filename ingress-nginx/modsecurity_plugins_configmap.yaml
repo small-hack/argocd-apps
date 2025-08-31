@@ -143,7 +143,7 @@ data:
   loki-rule-exclusions-before.conf: |-
     # Allow PUT method to /loki/<org name>/ rule 911100
     # this is for when loki tries to flush chunks
-    SecRule REQUEST_URI "@beginsWith /loki" \
+    SecRule REQUEST_URI "@beginsWith /loki/fake" \
       "id:550000,\
       phase:1,\
       ver:'loki-exclusions-plugin/1.0.0',\
@@ -154,7 +154,7 @@ data:
 
     # allow "Request Containing Content, but Missing Content-Type header"  rule 920340
     # rule 920340
-    SecRule REQUEST_URI "@beginsWith /loki" \
+    SecRule REQUEST_URI "@beginsWith /loki/fake" \
       "id:550001,\
       phase:1,\
       ver:'loki-exclusions-plugin/1.0.0',\
@@ -163,6 +163,17 @@ data:
       t:none,\
       ctl:ruleRemoveById=920340"
 
+    # Dont treat loki writes as an http smuggeling attack
+    # Rule 921110
+    SecRule REQUEST_URI "@beginsWith /loki/fake" \
+      "id:550002,\
+      phase:1,\
+      ver:'loki-exclusions-plugin/1.0.0',\
+      pass,\
+      nolog,\
+      t:none,\
+      ctl:ruleRemoveById=921110"
+      
   mastodon-rule-exclusions-before.conf: |-
     # Allow posting to mastodon inbox rule 920420
     SecRule REQUEST_URI "@beginsWith /inbox" \
