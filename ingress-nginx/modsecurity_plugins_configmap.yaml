@@ -146,7 +146,7 @@ data:
     SecRule REQUEST_URI "@beginsWith /loki?orgId" \
       "id:911100,\
       phase:1,\
-      ver:'home-assistant-rule-exclusions-plugin/1.0.0',\
+      ver:'loki-exclusions-plugin/1.0.0',\
       pass,\
       nolog,\
       t:none,\
