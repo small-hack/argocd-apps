@@ -177,6 +177,7 @@ data:
   activitypub-rule-exclusions-before.conf: |-
     # Allow posting to mastodon inbox - rules 920420, 920470
     # rule 920420 :Request content type is not allowed by policy
+    # also bypasses rule 920600.
     SecRule REQUEST_URI "@beginsWith /inbox" \
       "id:560000,\
       phase:1,\
@@ -184,7 +185,8 @@ data:
       pass,\
       nolog,\
       t:none,\
-      setvar:'tx.allowed_request_content_type=|application/activity+json|'"
+      setvar:'tx.allowed_request_content_type=|application/activity+json|',\
+      ctl:ruleRemoveById=920600"
 
     SecRule REQUEST_URI "@rx ^/users/.*/inbox" \
       "id:560001,\
@@ -195,19 +197,9 @@ data:
       t:none,\
       setvar:'tx.allowed_request_content_type=|application/activity+json|'"
 
-    # avoids rule 920600
-    SecRule REQUEST_URI "@beginsWith /inbox" \
-      "id:560002,\
-      phase:1,\
-      ver:'activitypub-exclusions-plugin/1.0.0',\
-      pass,\
-      nolog,\
-      t:none,\
-      ctl:ruleRemoveById=920600"
-
     # allow editing statuses on mastodon - rule 911100
     SecRule REQUEST_URI "@beginsWith /api/v1/statuses" \
-      "id:560003,\
+      "id:560002,\
       phase:1,\
       ver:'activitypub-exclusions-plugin/1.0.0',\
       pass,\
@@ -218,27 +210,19 @@ data:
     # allow searching for statuses - rule 920470 and 920420
     # see: https://github.com/coreruleset/coreruleset/issues/3497
     SecRule REQUEST_URI "@rx ^/users/.*/statuses/.*$" \
-      "id:560004,\
+      "id:560003,\
       phase:1,\
       ver:'activitypub-exclusions-plugin/1.0.0',\
       pass,\
       nolog,\
       t:none,\
-      setvar:'tx.allowed_request_content_type=|application/activity+json|application/ld+json|'"
+      setvar:'tx.allowed_request_content_type=|application/activity+json|application/ld+json|',\
+      ctl:ruleRemoveById=920600"
 
     # these are both for getting statuses (like if a status is searched for)
     # avoids rule 920600
     SecRule REQUEST_URI "@rx ^/@.*/statuses/.*$" \
-      "id:560005,\
-      phase:1,\
-      ver:'activitypub-exclusions-plugin/1.0.0',\
-      pass,\
-      nolog,\
-      t:none,\
-      ctl:ruleRemoveById=920600"
-
-    SecRule REQUEST_URI "@rx ^/users/.*/statuses/.*$" \
-      "id:560006,\
+      "id:560004,\
       phase:1,\
       ver:'activitypub-exclusions-plugin/1.0.0',\
       pass,\
@@ -250,7 +234,7 @@ data:
     # this is actually for minio or seaweedfs to be able to support GoToSocial
     # S3 enabled bucket lookups for images
     SecRule REQUEST_URI "@rx ^/.*/.*/attachment/original/.*uploads.*$"
-      "id:560007,\
+      "id:560005,\
       phase:1,\
       ver:'activitypub-exclusions-plugin/1.0.0',\
       pass,\
@@ -261,7 +245,7 @@ data:
     # Request content type is not allowed by policy
     # removing rule from mastodon because attachments can be almost anything
     SecRule REQUEST_URI "@beginsWith /mastodon/cache/media_attachments/files" \
-      "id:560008,\
+      "id:560006,\
       phase:1,\
       ver:'activitypub-exclusions-plugin/1.0.0',\
       pass,\
@@ -498,7 +482,7 @@ data:
     # allow postgresql to upload wal archives to s3
     # allow PUT, DELETE, and POST methods for base backups
     # -------------------------------------------------------------------------
-    SecRule REQUEST_URI "@rx ^/(?:matrix|zitadel|nextcloud)-postgres/(?:matrix|zitadel|nextcloud)-postgres/(?:wals|base)/.*$" \
+    SecRule REQUEST_URI "@rx ^/(?:matrix|zitadel|nextcloud|gotosocial|mastodon|harbor)-postgres/(?:matrix|zitadel|nextcloud|gotosocial|mastodon|harbor)-postgres/(?:wals|base)/.*$" \
       "id:20000,\
       phase:1,\
       ver:'postgres-rule-exclusions-plugin/1.0.0',\
