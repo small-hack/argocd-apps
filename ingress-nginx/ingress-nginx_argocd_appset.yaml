@@ -109,6 +109,7 @@ spec:
                   Include /etc/nginx/owasp-modsecurity-crs/plugins/zitadel-rule-exclusions-before.conf
                   Include /etc/nginx/owasp-modsecurity-crs/plugins/activitypub-rule-exclusions-before.conf
                   Include /etc/nginx/owasp-modsecurity-crs/plugins/loki-rule-exclusions-before.conf
+                  Include /etc/nginx/owasp-modsecurity-crs/plugins/postgres-rule-exclusions-before.conf
 
                   # OWASP Core Rule Set
                   Include /etc/nginx/owasp-modsecurity-crs/nginx-modsecurity.conf
