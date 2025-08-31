@@ -150,7 +150,7 @@ data:
       pass,\
       nolog,\
       t:none,\
-      setvar:'tx.allowed_methods=PUT POST'"
+      setvar:'tx.allowed_methods=PUT POST GET HEAD OPTIONS'"
 
     # allow "Request Containing Content, but Missing Content-Type header"  rule 920340
     # rule 920340
