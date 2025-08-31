@@ -153,7 +153,7 @@ data:
       setvar:'tx.allowed_methods=PUT POST'"
 
   mastodon-rule-exclusions-before.conf: |-
-    # Allow posting to mastodon rule 920420
+    # Allow posting to mastodon inbox rule 920420
     SecRule REQUEST_URI "@beginsWith /inbox" \
       "id:560000,\
       phase:1,\
@@ -162,7 +162,17 @@ data:
       nolog,\
       t:none,\
       setvar:'tx.allowed_request_content_type=application/activity+json'"
-      
+
+    # allow editing statuses - rule 911100
+    SecRule REQUEST_URI "@beginsWith /api/v1/statuses" \
+      "id:560001,\
+      phase:1,\
+      ver:'mastodon-exclusions-plugin/1.0.0',\
+      pass,\
+      nolog,\
+      t:none,\
+      setvar:'tx.allowed_methods=PUT POST GET HEAD OPTIONS'"
+
   matrix-rule-exclusions-before.conf: |-
     # -------------------------------------------------------------------------
     # allow uploads for matrix via element web and mobile
