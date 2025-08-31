@@ -92,6 +92,7 @@ data:
       pass,\
       nolog,\
       ctl:ruleRemoveTargetById=932125;ARGS:left"
+
   home-assistant-rule-exclusions-before.conf: |
     # -------------------------------------------------------------------------
     # home assistant rule exclusions
@@ -138,6 +139,19 @@ data:
       t:none,\
       nolog,\
       ctl:ruleRemoveTargetById=933150;ARGS:json.data.unique_id"
+
+  loki-rule-exclusions-before.conf: |-
+    # Allow PUT method to /loki/<org name>/
+    # this is for when loki tries to flush chunks
+    SecRule REQUEST_URI "@beginsWith /loki?orgId" \
+      "id:911100,\
+      phase:1,\
+      ver:'home-assistant-rule-exclusions-plugin/1.0.0',\
+      pass,\
+      nolog,\
+      t:none,\
+      setvar:'tx.allowed_methods=PUT POST'"
+      
   matrix-rule-exclusions-before.conf: |-
     # -------------------------------------------------------------------------
     # allow uploads for matrix via element web and mobile
