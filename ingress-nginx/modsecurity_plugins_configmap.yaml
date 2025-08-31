@@ -152,6 +152,17 @@ data:
       t:none,\
       setvar:'tx.allowed_methods=PUT POST'"
 
+    # allow "Request Containing Content, but Missing Content-Type header"  rule 920340
+    # rule 920340
+    SecRule REQUEST_URI "@beginsWith /loki" \
+      "id:550001,\
+      phase:1,\
+      ver:'loki-exclusions-plugin/1.0.0',\
+      pass,\
+      nolog,\
+      t:none,\
+      ctl:ruleRemoveById=920340"
+
   mastodon-rule-exclusions-before.conf: |-
     # Allow posting to mastodon inbox rule 920420
     SecRule REQUEST_URI "@beginsWith /inbox" \
