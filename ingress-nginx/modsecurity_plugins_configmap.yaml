@@ -279,7 +279,7 @@ data:
     # Remote Command Execution: Java process spawn (CVE-2017-9805)
     # 944110
     SecRule REQUEST_URI "@rx ^(.*-postgres\/.*-postgres\/wals\/)?" \
-      "id:570001,\
+      "id:570002,\
       phase:1,\
       ver:'postgres-exclusions-plugin/1.0.0',\
       pass,\
