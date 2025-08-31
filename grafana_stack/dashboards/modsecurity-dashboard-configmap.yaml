@@ -32,8 +32,8 @@ data:
       "description": "Dashboard to work with ModSecurity and the OWASP Coreruleset.",
       "editable": true,
       "fiscalYearStartMonth": 0,
-      "gnetId": 15495,
       "graphTooltip": 0,
+      "id": 17,
       "links": [
         {
           "asDropdown": true,
@@ -48,12 +48,11 @@ data:
           "url": ""
         }
       ],
-      "liveNow": false,
       "panels": [
         {
           "datasource": {
             "type": "loki",
-            "uid": "${DS_LOKI}"
+            "uid": "loki"
           },
           "description": "",
           "fieldConfig": {
@@ -77,7 +76,7 @@ data:
                 "steps": [
                   {
                     "color": "green",
-                    "value": null
+                    "value": 0
                   },
                   {
                     "color": "red",
@@ -98,6 +97,12 @@ data:
           "maxDataPoints": 1,
           "options": {
             "displayMode": "lcd",
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": false
+            },
             "maxVizHeight": 300,
             "minVizHeight": 10,
             "minVizWidth": 0,
@@ -115,15 +120,16 @@ data:
             "text": {},
             "valueMode": "color"
           },
-          "pluginVersion": "11.0.0",
+          "pluginVersion": "12.1.0",
           "targets": [
             {
               "datasource": {
                 "type": "loki",
-                "uid": "${DS_LOKI}"
+                "uid": "loki"
               },
+              "direction": "backward",
               "editorMode": "builder",
-              "expr": "sum by (client_ip) (count_over_time({job=\"ingress-nginx/ingress-nginx\"} \n|~ `ModSecurity` != `http_referrer` \n| json messages_details_match=\"transaction.messages[0].details.match\", \nmessages_details_reference=\"transaction.messages[0].details.reference\", \nmessages_details_ruleId=\"transaction.messages[0].details.ruleId\", \nmessages_details_file=\"transaction.messages[0].details.file\", \nmessages_details_lineNumber=\"transaction.messages[0].details.lineNumber\", \nmessages_details_data=\"transaction.messages[0].details.data\", \nmessages_details_severity=\"transaction.messages[0].details.severity\", \nmessages_details_ver=\"transaction.messages[0].details.ver\", \nmessages_details_rev=\"transaction.messages[0].details.rev\", \nmessages_details_tags=\"transaction.messages[0].details.tags\", \nmessages_details_maturity=\"transaction.messages[0].details.maturity\",\nmessages_details_accuracy=\"transaction.messages[0].details.accuracy\", \ntransaction_date=\"transaction.time_stamp\", \nclient_ip=\"transaction.client_ip\", \ntransaction_host_ip=\"transaction.host_ip\", \ntransaction_host_port=\"transaction.host_port\", \ntranaction_request_uri=\"transaction.request.uri\" | __error__=\"\" [$__interval]))",
+              "expr": "sum by(client_ip) (count_over_time({app=\"ingress-nginx\"} |~ `ModSecurity` != `http_referrer` | json messages_details_match=\"transaction.messages[0].details.match\", messages_details_reference=\"transaction.messages[0].details.reference\", messages_details_ruleId=\"transaction.messages[0].details.ruleId\", messages_details_file=\"transaction.messages[0].details.file\", messages_details_lineNumber=\"transaction.messages[0].details.lineNumber\", messages_details_data=\"transaction.messages[0].details.data\", messages_details_severity=\"transaction.messages[0].details.severity\", messages_details_ver=\"transaction.messages[0].details.ver\", messages_details_rev=\"transaction.messages[0].details.rev\", messages_details_tags=\"transaction.messages[0].details.tags\", messages_details_maturity=\"transaction.messages[0].details.maturity\", messages_details_accuracy=\"transaction.messages[0].details.accuracy\", transaction_date=\"transaction.time_stamp\", client_ip=\"transaction.client_ip\", transaction_host_ip=\"transaction.host_ip\", transaction_host_port=\"transaction.host_port\", tranaction_request_uri=\"transaction.request.uri\" | __error__=`` [$__interval]))",
               "legendFormat": "{{client_ip}}",
               "queryType": "range",
               "refId": "A",
@@ -160,7 +166,7 @@ data:
                 "steps": [
                   {
                     "color": "green",
-                    "value": null
+                    "value": 0
                   },
                   {
                     "color": "red",
@@ -181,6 +187,12 @@ data:
           "maxDataPoints": 10,
           "options": {
             "displayMode": "lcd",
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": false
+            },
             "maxVizHeight": 49,
             "minVizHeight": 19,
             "minVizWidth": 8,
@@ -201,15 +213,16 @@ data:
             },
             "valueMode": "color"
           },
-          "pluginVersion": "11.0.0",
+          "pluginVersion": "12.1.0",
           "targets": [
             {
               "datasource": {
                 "type": "loki",
                 "uid": "${DS_LOKI}"
               },
+              "direction": "backward",
               "editorMode": "builder",
-              "expr": "sum by(message, ruleId, vhost) (count_over_time({job=\"ingress-nginx/ingress-nginx\"} |~ `ModSecurity` != `http_referrer` | json messages_details_match=\"transaction.messages[0].details.match\", messages_details_reference=\"transaction.messages[0].details.reference\", ruleId=\"transaction.messages[0].details.ruleId\", messages_details_file=\"transaction.messages[0].details.file\", messages_details_lineNumber=\"transaction.messages[0].details.lineNumber\", messages_details_data=\"transaction.messages[0].details.data\", messages_details_severity=\"transaction.messages[0].details.severity\", messages_details_ver=\"transaction.messages[0].details.ver\", messages_details_rev=\"transaction.messages[0].details.rev\", messages_details_tags=\"transaction.messages[0].details.tags\", messages_details_maturity=\"transaction.messages[0].details.maturity\", messages_details_accuracy=\"transaction.messages[0].details.accuracy\", transaction_date=\"transaction.time_stamp\", client_ip=\"transaction.client_ip\", transaction_host_port=\"transaction.host_port\", tranaction_request_uri=\"transaction.request.uri\", message=\"transaction.messages[0].message\", vhost=\"transaction.request.headers.host\" | __error__=`` [$__interval]))",
+              "expr": "sum by(message, ruleId, vhost) (count_over_time({app=\"ingress-nginx\"} |~ `ModSecurity` != `http_referrer` | json messages_details_match=\"transaction.messages[0].details.match\", messages_details_reference=\"transaction.messages[0].details.reference\", ruleId=\"transaction.messages[0].details.ruleId\", messages_details_file=\"transaction.messages[0].details.file\", messages_details_lineNumber=\"transaction.messages[0].details.lineNumber\", messages_details_data=\"transaction.messages[0].details.data\", messages_details_severity=\"transaction.messages[0].details.severity\", messages_details_ver=\"transaction.messages[0].details.ver\", messages_details_rev=\"transaction.messages[0].details.rev\", messages_details_tags=\"transaction.messages[0].details.tags\", messages_details_maturity=\"transaction.messages[0].details.maturity\", messages_details_accuracy=\"transaction.messages[0].details.accuracy\", transaction_date=\"transaction.time_stamp\", client_ip=\"transaction.client_ip\", transaction_host_port=\"transaction.host_port\", tranaction_request_uri=\"transaction.request.uri\", message=\"transaction.messages[0].message\", vhost=\"transaction.request.headers.host\" | __error__=`` [$__interval]))",
               "legendFormat": "{{vhost}}: {{message}}",
               "queryType": "range",
               "refId": "A",
@@ -246,6 +259,7 @@ data:
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 43,
                 "gradientMode": "hue",
@@ -280,7 +294,7 @@ data:
                 "steps": [
                   {
                     "color": "green",
-                    "value": null
+                    "value": 0
                   },
                   {
                     "color": "red",
@@ -306,20 +320,22 @@ data:
               "showLegend": true
             },
             "tooltip": {
+              "hideZeros": false,
               "maxHeight": 600,
               "mode": "single",
               "sort": "none"
             }
           },
-          "pluginVersion": "8.1.7",
+          "pluginVersion": "12.1.0",
           "targets": [
             {
               "datasource": {
                 "type": "loki",
                 "uid": "${DS_LOKI}"
               },
-              "editorMode": "code",
-              "expr": "sum by (severity) (count_over_time({job=\"ingress-nginx/ingress-nginx\"} \n|~ `ModSecurity` != `http_referrer` \n| json messages_details_match=\"transaction.messages[0].details.match\", \nmessages_details_reference=\"transaction.messages[0].details.reference\", \nmessages_details_ruleId=\"transaction.messages[0].details.ruleId\", \nmessages_details_file=\"transaction.messages[0].details.file\", \nmessages_details_lineNumber=\"transaction.messages[0].details.lineNumber\", \nmessages_details_data=\"transaction.messages[0].details.data\", \nseverity=\"transaction.messages[0].details.severity\", \nmessages_details_ver=\"transaction.messages[0].details.ver\", \nmessages_details_rev=\"transaction.messages[0].details.rev\", \nmessages_details_tags=\"transaction.messages[0].details.tags\", \nmessages_details_maturity=\"transaction.messages[0].details.maturity\", \nmessages_details_accuracy=\"transaction.messages[0].details.accuracy\", \ntransaction_date=\"transaction.time_stamp\", \ntransaction_client_ip=\"transaction.client_ip\", \ntransaction_host_ip=\"transaction.host_ip\", \ntransaction_host_port=\"transaction.host_port\", \ntranaction_request_uri=\"transaction.request.uri\" | __error__=\"\" [$__interval]))",
+              "direction": "backward",
+              "editorMode": "builder",
+              "expr": "sum by(severity) (count_over_time({app=\"ingress-nginx\"} |~ `ModSecurity` != `http_referrer` | json messages_details_match=\"transaction.messages[0].details.match\", messages_details_reference=\"transaction.messages[0].details.reference\", messages_details_ruleId=\"transaction.messages[0].details.ruleId\", messages_details_file=\"transaction.messages[0].details.file\", messages_details_lineNumber=\"transaction.messages[0].details.lineNumber\", messages_details_data=\"transaction.messages[0].details.data\", severity=\"transaction.messages[0].details.severity\", messages_details_ver=\"transaction.messages[0].details.ver\", messages_details_rev=\"transaction.messages[0].details.rev\", messages_details_tags=\"transaction.messages[0].details.tags\", messages_details_maturity=\"transaction.messages[0].details.maturity\", messages_details_accuracy=\"transaction.messages[0].details.accuracy\", transaction_date=\"transaction.time_stamp\", transaction_client_ip=\"transaction.client_ip\", transaction_host_ip=\"transaction.host_ip\", transaction_host_port=\"transaction.host_port\", tranaction_request_uri=\"transaction.request.uri\" | __error__=`` [$__interval]))",
               "legendFormat": "{{severity}}",
               "queryType": "range",
               "refId": "A",
@@ -330,12 +346,13 @@ data:
                 "type": "loki",
                 "uid": "${DS_LOKI}"
               },
+              "direction": "backward",
+              "editorMode": "code",
               "expr": "{job=\"nginx_error\"}",
               "queryType": "range",
               "refId": "B"
             }
           ],
-          "thresholds": [],
           "title": "🔎  Detection of Activity by Severity",
           "transformations": [
             {
@@ -353,6 +370,10 @@ data:
             "type": "loki",
             "uid": "${DS_LOKI}"
           },
+          "fieldConfig": {
+            "defaults": {},
+            "overrides": []
+          },
           "gridPos": {
             "h": 9,
             "w": 16,
@@ -362,6 +383,7 @@ data:
           "id": 4,
           "options": {
             "dedupStrategy": "numbers",
+            "enableInfiniteScrolling": false,
             "enableLogDetails": true,
             "prettifyLogMessage": false,
             "showCommonLabels": true,
@@ -370,14 +392,16 @@ data:
             "sortOrder": "Descending",
             "wrapLogMessage": false
           },
+          "pluginVersion": "12.1.0",
           "targets": [
             {
               "datasource": {
                 "type": "loki",
                 "uid": "${DS_LOKI}"
               },
+              "direction": "backward",
               "editorMode": "builder",
-              "expr": "{job=\"ingress-nginx/ingress-nginx\"} |= `ModSecurity` != `http_referrer` |= `match` | json messages_details_match=\"transaction.messages[0].details.match\", messages_details_reference=\"transaction.messages[0].details.reference\", messages_details_ruleId=\"transaction.messages[0].details.ruleId\", messages_details_file=\"transaction.messages[0].details.file\", messages_details_lineNumber=\"transaction.messages[0].details.lineNumber\", messages_details_data=\"transaction.messages[0].details.data\", messages_details_severity=\"transaction.messages[0].details.severity\", messages_details_ver=\"transaction.messages[0].details.ver\", messages_details_rev=\"transaction.messages[0].details.rev\", messages_details_tags=\"transaction.messages[0].details.tags\", messages_details_maturity=\"transaction.messages[0].details.maturity\", messages_details_accuracy=\"transaction.messages[0].details.accuracy\", transaction_date=\"transaction.time_stamp\", transaction_client_ip=\"transaction.client_ip\", transaction_host_ip=\"transaction.host_ip\", transaction_host_port=\"transaction.host_port\", tranaction_request_uri=\"transaction.request.uri\", messages_message=\"transaction.messages[0].message\" | __error__=`` | line_format `{{.transaction_date}} Severity: {{.messages_details_severity}} Rule: {{.messages_details_ruleId}} Reason: {{.messages_message}} Event: request for {{.transaction_host_ip}}:{{.transaction_host_port}}{{.tranaction_request_uri}} from {{.transaction_client_ip}}`",
+              "expr": "{app=\"ingress-nginx\"} |= `ModSecurity` != `http_referrer` |= `match` | json messages_details_match=\"transaction.messages[0].details.match\", messages_details_reference=\"transaction.messages[0].details.reference\", messages_details_ruleId=\"transaction.messages[0].details.ruleId\", messages_details_file=\"transaction.messages[0].details.file\", messages_details_lineNumber=\"transaction.messages[0].details.lineNumber\", messages_details_data=\"transaction.messages[0].details.data\", messages_details_severity=\"transaction.messages[0].details.severity\", messages_details_ver=\"transaction.messages[0].details.ver\", messages_details_rev=\"transaction.messages[0].details.rev\", messages_details_tags=\"transaction.messages[0].details.tags\", messages_details_maturity=\"transaction.messages[0].details.maturity\", messages_details_accuracy=\"transaction.messages[0].details.accuracy\", transaction_date=\"transaction.time_stamp\", transaction_client_ip=\"transaction.client_ip\", transaction_host_ip=\"transaction.host_ip\", transaction_host_port=\"transaction.host_port\", tranaction_request_uri=\"transaction.request.uri\", messages_message=\"transaction.messages[0].message\" | __error__=`` | line_format `{{.transaction_date}} Severity: {{.messages_details_severity}} Rule: {{.messages_details_ruleId}} Reason: {{.messages_message}} Event: request for {{.transaction_host_ip}}:{{.transaction_host_port}}{{.tranaction_request_uri}} from {{.transaction_client_ip}}`",
               "queryType": "range",
               "refId": "A"
             }
@@ -386,8 +410,9 @@ data:
           "type": "logs"
         }
       ],
+      "preload": false,
       "refresh": "2m",
-      "schemaVersion": 39,
+      "schemaVersion": 41,
       "tags": [
         "nginx"
       ],
@@ -395,16 +420,13 @@ data:
         "list": [
           {
             "description": "loki",
-            "hide": 0,
             "includeAll": false,
             "label": "loki",
-            "multi": false,
             "name": "DS_LOKI",
             "options": [],
             "query": "loki",
             "refresh": 1,
             "regex": "",
-            "skipUrlSync": false,
             "type": "datasource"
           }
         ]
@@ -413,11 +435,9 @@ data:
         "from": "now-12h",
         "to": "now"
       },
-      "timeRangeUpdatedDuringEditOrView": false,
       "timepicker": {},
       "timezone": "",
       "title": "ModSecurity OWASP CRS",
       "uid": "edqfpnv9fn2m8f",
-      "version": 1,
-      "weekStart": ""
+      "version": 1
     }
