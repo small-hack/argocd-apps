@@ -185,7 +185,7 @@ data:
       t:none,\
       setvar:'tx.allowed_request_content_type=|application/activity+json|'"
 
-    SecRule REQUEST_URI "@beginsWith /users/.*/inbox" \
+    SecRule REQUEST_URI "@rx ^/users/.*/inbox" \
       "id:560001,\
       phase:1,\
       ver:'activitypub-exclusions-plugin/1.0.0',\
@@ -215,7 +215,7 @@ data:
 
     # allow searching for statuses - rule 920600, 920470 and 920420
     # see: https://github.com/coreruleset/coreruleset/issues/3497
-    SecRule REQUEST_URI "@beginsWith /users/.*/statuses/.*$" \
+    SecRule REQUEST_URI "@rx ^/users/.*/statuses/.*$" \
       "id:560006,\
       phase:1,\
       ver:'activitypub-exclusions-plugin/1.0.0',\
@@ -233,7 +233,7 @@ data:
       t:none,\
       ctl:ruleRemoveById=920600"
 
-    SecRule REQUEST_URI "@beginsWith /users/.*/statuses/.*$" \
+    SecRule REQUEST_URI "@rx ^/users/.*/statuses/.*$" \
       "id:560005,\
       phase:1,\
       ver:'activitypub-exclusions-plugin/1.0.0',\
