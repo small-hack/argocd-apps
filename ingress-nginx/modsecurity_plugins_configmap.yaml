@@ -151,6 +151,17 @@ data:
       nolog,\
       t:none,\
       setvar:'tx.allowed_methods=PUT POST'"
+
+  mastodon-rule-exclusions-before.conf: |-
+    # Allow posting to mastodon 
+    SecRule REQUEST_URI "@beginsWith /loki?orgId" \
+      "id:920420,\
+      phase:1,\
+      ver:'mastodon-exclusions-plugin/1.0.0',\
+      pass,\
+      nolog,\
+      t:none,\
+      setvar:'tx.allowed_request_content_type=application/activity+json'
       
   matrix-rule-exclusions-before.conf: |-
     # -------------------------------------------------------------------------
