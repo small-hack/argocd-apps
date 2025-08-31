@@ -3382,3 +3382,13 @@ data:
         nolog,\
         ver:'nextcloud-rule-exclusions-plugin/1.2.0',\
         setvar:'tx.allowed_methods=%{tx.allowed_methods} DELETE'"
+
+    # Handle "Method is not allowed by policy" blocking webdav
+    SecRule REQUEST_URI "@beginsWith /remote.php/dav/files" \
+      "id:9508994,\
+      phase:1,\
+      ver:'nextcloud-rule-exclusions-plugin/1.0.0',\
+      pass,\
+      nolog,\
+      t:none,\
+      setvar:'tx.allowed_methods=PUT POST GET HEAD OPTIONS PROPFIND'"
