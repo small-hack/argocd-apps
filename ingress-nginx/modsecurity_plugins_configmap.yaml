@@ -245,14 +245,14 @@ data:
     # avoids rule 920420 :Request content type is not allowed by policy
     # this is actually for minio or seaweedfs to be able to support GoToSocial
     # S3 enabled bucket lookups for images (Uploads)
-    SecRule REQUEST_URI "@rx ^/.*/.*/(attachment|emoji)/(small|original)/.*$"
+    SecRule REQUEST_URI "@rx ^/.*/.*/(attachment|emoji)/(static|small|original|)/.*$"
       "id:560005,\
       phase:1,\
       ver:'activitypub-exclusions-plugin/1.0.0',\
       pass,\
       nolog,\
       t:none,\
-      setvar:'tx.allowed_request_content_type=|image/png|image/jpg|image/jpeg|image/webp|image/gif|video/mpeg|video/mp4|video/webm|"
+      setvar:'tx.allowed_request_content_type=|image/png|image/jpg|image/jpeg|image/webp|image/gif|video/mpeg|video/mp4|video/webm|image/apng|"
 
     # Request content type is not allowed by policy
     # removing rule from mastodon because attachments can be almost anything
@@ -263,7 +263,7 @@ data:
       pass,\
       nolog,\
       t:none,\
-      setvar:'tx.allowed_request_content_type=|image/png|image/jpg|image/jpeg|image/webp|image/gif|video/mpeg|video/mp4|video/webm|"
+      setvar:'tx.allowed_request_content_type=|image/png|image/jpg|image/jpeg|image/webp|image/gif|video/mpeg|video/mp4|video/webm|image/apng|"
 
     # Ignore "Illegal Accept header: charset parameter" for gotosocial profiles
     # see: https://github.com/coreruleset/coreruleset/issues/3497
