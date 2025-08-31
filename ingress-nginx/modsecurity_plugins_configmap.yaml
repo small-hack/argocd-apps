@@ -144,7 +144,7 @@ data:
     # Allow PUT method to /loki/<org name>/ rule 911100
     # this is for when loki tries to flush chunks
     SecRule REQUEST_URI "@beginsWith /loki?orgId" \
-      "id:30001,\
+      "id:550000,\
       phase:1,\
       ver:'loki-exclusions-plugin/1.0.0',\
       pass,\
@@ -155,7 +155,7 @@ data:
   mastodon-rule-exclusions-before.conf: |-
     # Allow posting to mastodon rule 920420
     SecRule REQUEST_URI "@beginsWith /inbox" \
-      "id:40001,\
+      "id:560000,\
       phase:1,\
       ver:'mastodon-exclusions-plugin/1.0.0',\
       pass,\
