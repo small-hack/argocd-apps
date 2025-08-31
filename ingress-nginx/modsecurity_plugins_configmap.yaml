@@ -175,7 +175,7 @@ data:
       ctl:ruleRemoveById=921110"
 
   activitypub-rule-exclusions-before.conf: |-
-    # Allow posting to mastodon inbox rule 920420
+    # Allow posting to mastodon inbox - rules 920420, 920470
     SecRule REQUEST_URI "@beginsWith /inbox" \
       "id:560000,\
       phase:1,\
@@ -194,9 +194,18 @@ data:
       t:none,\
       setvar:'tx.allowed_request_content_type=application/activity+json'"
 
+    SecRule REQUEST_URI "@beginsWith /inbox" \
+      "id:560002,\
+      phase:1,\
+      ver:'activitypub-exclusions-plugin/1.0.0',\
+      pass,\
+      nolog,\
+      t:none,\
+      ctl:ruleRemoveById=920600"
+
     # allow editing statuses on mastodon - rule 911100
     SecRule REQUEST_URI "@beginsWith /api/v1/statuses" \
-      "id:560002,\
+      "id:560003,\
       phase:1,\
       ver:'activitypub-exclusions-plugin/1.0.0',\
       pass,\
@@ -207,7 +216,7 @@ data:
     # allow searching for statuses - rule 920600
     # see: https://github.com/coreruleset/coreruleset/issues/3497
     SecRule REQUEST_URI "@rx ^/@.*/statuses/.*$" \
-      "id:560003,\
+      "id:560004,\
       phase:1,\
       ver:'activitypub-exclusions-plugin/1.0.0',\
       pass,\
