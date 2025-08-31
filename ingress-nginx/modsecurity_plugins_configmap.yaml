@@ -143,7 +143,7 @@ data:
   loki-rule-exclusions-before.conf: |-
     # Allow PUT method to /loki/<org name>/ rule 911100
     # this is for when loki tries to flush chunks
-    SecRule REQUEST_URI "@beginsWith /loki?orgId" \
+    SecRule REQUEST_URI "@beginsWith /loki" \
       "id:550000,\
       phase:1,\
       ver:'loki-exclusions-plugin/1.0.0',\
