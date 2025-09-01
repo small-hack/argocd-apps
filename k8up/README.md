@@ -4,5 +4,4 @@ This directory is used to deploy a [k8up](https://github.com/k8up-io/k8up/) app 
 <img src="./screenshots/k8up-app-of-apps.png">
 
 ## Sync Waves
-1. k8up Custom Resource Definitions
-2. k8up helm chart
+1. k8up helm chart

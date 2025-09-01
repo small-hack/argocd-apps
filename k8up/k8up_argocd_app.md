@@ -1,3 +1,5 @@
+this is what it would look like to deploy the CRDs separately:
+```yaml
 ---
 # CRDs for backups
 apiVersion: argoproj.io/v1alpha1
@@ -23,3 +25,4 @@ spec:
     automated:
       prune: true
       selfHeal: true
+```

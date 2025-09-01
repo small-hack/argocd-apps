@@ -6,7 +6,7 @@ metadata:
   name: k8up-helm-app-set
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "2"
+    argocd.argoproj.io/sync-wave: "1"
 spec:
   goTemplate: true
   # generator allows us to source specific values from an external k8s secret
