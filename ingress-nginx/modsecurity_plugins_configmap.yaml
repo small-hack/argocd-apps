@@ -291,7 +291,7 @@ data:
 
     # ALlow users to upload content
     SecRule REQUEST_URI "@rx ^/users/.*$" \
-      "id:560008,\
+      "id:560009,\
       phase:1,\
       ver:'activitypub-exclusions-plugin/1.0.0',\
       pass,\
