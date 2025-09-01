@@ -46,6 +46,13 @@
 *      #565f89 light blue grey
 ------------------------------------------------------------------------------*/
 
+@font-face {
+    font-family: 'mononoki-regular';
+    src: url('https://github.com/madmalik/mononoki/raw/refs/heads/main/export/mononoki-Regular.ttf');
+    font-weight: normal;
+    font-style: normal;
+}
+
 :root {
 --bg: #232336;
 --text: #bdd8ff;
@@ -187,6 +194,7 @@
 ------------------------*/
 .account__display-name strong, .status__display-name strong {
   color: var(--textBold) !important;
+  font-family: 'mononoki-regular' !important;
 }
 
 /*---------------------------------------------
