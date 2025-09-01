@@ -120,7 +120,7 @@ spec:
                   SecRuleEngine On
 
                   # Enable scanning of the request body
-                  SecRequestBodyAccess On
+                  SecRequestBodyAccess DetectionOnly
 
                   # Enable XML parsing
                   SecRule REQUEST_HEADERS:Content-Type "(?:text|application(?:/soap\+|/)|application/xml)/" \
