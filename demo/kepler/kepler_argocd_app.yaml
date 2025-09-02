@@ -67,9 +67,9 @@ spec:
           usrSrc: true  # /usr/src may not available, ie GKE
 
         serviceMonitor:
-          enabled: false
-          namespace: ""
-          interval: 30s
+          enabled: true
+          namespace: "monitoring"
+          interval: 10s
           scrapeTimeout: 5s
           labels: {}
 
