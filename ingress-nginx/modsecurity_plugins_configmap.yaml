@@ -2581,3 +2581,15 @@ data:
         ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:json.editorBody,\
         ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:json.subject,\
         ctl:ruleRemoveTargetByTag=OWASP_CRS;ARGS:subject"
+
+    # Getting files from web interface, avoids 911100
+    # Matches:
+    # - /remote.php/dav/files/username/
+    SecRule REQUEST_FILENAME "@beginsWith /remote.php/dav/files/.*$" \
+        "id:9508992,\
+        phase:3,\
+        pass,\
+        t:none,\
+        nolog,\
+        ver:'nextcloud-rule-exclusions-plugin/1.4.0',\
+        setvar:'tx.allowed_methods=PUT POST GET HEAD OPTIONS DELETE GET PROPFIND'"
