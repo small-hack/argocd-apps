@@ -55,7 +55,7 @@ spec:
       source:
         repoURL: 'https://nextcloud.github.io/helm'
         chart: nextcloud
-        targetRevision: 6.6.10
+        targetRevision: 7.0.2
         helm:
           # release name for this helm chart release. If this is not set,
           # Argo CD will use the name of the Application as the release name
@@ -66,7 +66,7 @@ spec:
               # this is a custom nextcloud image with ffmpeg on it
               # it's otherwise exact the same as nextcloud:fpm-alpine
               repository: jessebot/nextcloud
-              tag: 31.0.6-fpm-alpine
+              tag: 31.0.7-fpm-alpine
               pullPolicy: IfNotPresent
 
             podLabels:
@@ -666,7 +666,7 @@ spec:
               image:
                 repository: collabora/code
                 pullPolicy: IfNotPresent
-                tag: 24.04.10.2.1
+                tag: 25.04.5.1.1
 
               collabora:
                 fullnameOverrride: "collabora"
