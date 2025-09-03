@@ -212,7 +212,7 @@ spec:
               bootstrap: "kubeadm:v1.9.1"
               controlPlane: "kubeadm:v1.9.1"
               infrastructure: "kubevirt:v0.1.9"
-              addon: ""
+              addon: "helm:v0.2.6"
 
               manager: {}
               #  featureGates:
