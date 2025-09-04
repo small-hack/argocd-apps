@@ -688,7 +688,8 @@ data:
         SecRule REQUEST_FILENAME "@contains /remote.php/dav/files/" \
             "t:none,\
             ctl:ruleRemoveById=920340,\
-            ctl:ruleRemoveById=920341"
+            ctl:ruleRemoveById=920341,\
+            ctl:ruleRemoveById=911100"
 
     # Moving chunked file uploads to the user's files directory
     SecRule REQUEST_FILENAME "@rx /remote\.php/dav/uploads/[^/]+/[^/]+/\.file$" \
@@ -728,7 +729,8 @@ data:
             ctl:ruleRemoveById=955100,\
             ctl:ruleRemoveById=955110,\
             ctl:ruleRemoveById=955300,\
-            ctl:ruleRemoveById=955350"
+            ctl:ruleRemoveById=955350,\
+            ctl:ruleRemoveById=911100"
 
     # Fix false positives for filenames when uploading/downloading files
     # Matches:
