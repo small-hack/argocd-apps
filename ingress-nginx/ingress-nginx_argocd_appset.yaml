@@ -43,8 +43,8 @@ spec:
             controller:
               image:
                 image: deserializeme/ingress-nginx-go-ftw
-                tag: "0.0.2"
-                digest: sha256:7e9ef16be7b8a97f7a212961a54e43aca9e29aa64b77cb8d92aedfda5e3636d6
+                tag: "0.0.3"
+                digest: sha256:891bba25e7cc711c83c1ea76f70b054b7edcbc81a4c37a47207b30741c3861a2
                 digestChroot: ""
               # Mutually exclusive with keda autoscaling
               autoscaling:
@@ -152,9 +152,9 @@ spec:
                   SecRequestBodyLimitAction Reject
 
                   # Send ModSecurity audit logs to the stdout (only for rejected requests)
-                  SecAuditLog /var/log/modsec_audit.log
+                  SecAuditLog /dev/stdout
 
-                  SecAuditLogFormat Native
+                  SecAuditLogFormat JSON
 
                   # could be On/Off/RelevantOnly
                   SecAuditEngine RelevantOnly
