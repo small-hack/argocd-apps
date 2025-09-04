@@ -589,8 +589,3 @@ data:
         t:none,\
         nolog,\
         setvar:'tx.allowed_request_content_type=|application/grpc-web+proto|'"
-
-    # zitadel sends a __Host-zitadel.useragent cookie that sometimes has a = in it
-    SecRuleUpdateTargetById 941120 "!REQUEST_COOKIES:__Host-zitadel.useragent"
-
-       ctl:ruleRemoveById=911100"
