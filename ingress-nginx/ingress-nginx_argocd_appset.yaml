@@ -36,6 +36,10 @@ spec:
         helm:
           releaseName: 'ingress-nginx'
           valuesObject:
+            global:
+              image:
+                # -- Registry host to pull images from.
+                registry: docker.io
             controller:
               image:
                 image: deserializeme/ingress-nginx-go-ftw
