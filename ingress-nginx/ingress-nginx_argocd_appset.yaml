@@ -43,7 +43,7 @@ spec:
             controller:
               image:
                 image: deserializeme/ingress-nginx-go-ftw
-                tag: "0.0.5"
+                tag: "0.0.4"
                 digest: sha256:3467ddcd8153349ce789bcecae2e11c76d7aa249eb35503dbbf4b0131f1f2187
                 digestChroot: ""
               # Mutually exclusive with keda autoscaling
