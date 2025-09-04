@@ -36,7 +36,16 @@ spec:
         helm:
           releaseName: 'ingress-nginx'
           valuesObject:
+            global:
+              image:
+                # -- Registry host to pull images from.
+                registry: docker.io
             controller:
+              image:
+                image: deserializeme/ingress-nginx-go-ftw
+                tag: "0.0.4"
+                digest: sha256:bec1d37166a401ac4b7388c08062dfd667a87e84ccde819045e878d70aece94a
+                digestChroot: ""
               # Mutually exclusive with keda autoscaling
               autoscaling:
                 enabled: true
@@ -142,9 +151,9 @@ spec:
                   SecRequestBodyLimitAction Reject
 
                   # Send ModSecurity audit logs to the stdout (only for rejected requests)
-                  SecAuditLog /dev/stdout
+                  SecAuditLog /var/log/modsec_audit.log
 
-                  SecAuditLogFormat JSON
+                  SecAuditLogFormat Native
 
                   # could be On/Off/RelevantOnly
                   SecAuditEngine RelevantOnly
