@@ -153,7 +153,7 @@ spec:
                   # Send ModSecurity audit logs to the stdout (only for rejected requests)
                   SecAuditLog /var/log/modsec_audit.log
 
-                  SecAuditLogFormat Native
+                  SecAuditLogFormat JSON
 
                   # could be On/Off/RelevantOnly
                   SecAuditEngine RelevantOnly
