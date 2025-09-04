@@ -228,7 +228,7 @@ data:
       pass,\
       nolog,\
       t:none,\
-      setvar:'tx.allowed_request_content_type=|application/activity+json| |application/ld+json|',\
+      setvar:'tx.allowed_request_content_type=|application/activity+json|application/ld+json',\
       ctl:ruleRemoveById=920600"
 
     # these are both for getting statuses (like if a status is searched for)
@@ -252,7 +252,7 @@ data:
       pass,\
       nolog,\
       t:none,\
-      setvar:'tx.allowed_request_content_type=|image/png| |image/jpg| |image/jpeg| |image/webp| |image/gif| |video/mpeg| |video/mp4| |video/webm| |image/apng|'"
+      setvar:'tx.allowed_request_content_type=|image/png|image/jpg|image/jpeg|image/webp|image/gif|video/mpeg|video/mp4|video/webm|image/apng|'"
 
     # Request content type is not allowed by policy
     # removing rule from mastodon because attachments can be almost anything
@@ -263,7 +263,7 @@ data:
       pass,\
       nolog,\
       t:none,\
-      setvar:'tx.allowed_request_content_type=|image/png| |image/jpg| |image/jpeg| |image/webp| |image/gif| |video/mpeg| |video/mp4| |video/webm| |image/apng| |application/octet-stream| |application/xml| |application/activity+json|'"
+      setvar:'tx.allowed_request_content_type=|image/png|image/jpg|image/jpeg|image/webp|image/gif|video/mpeg|video/mp4|video/webm|image/apng|application/octet-stream|application/xml|application/activity+json|'"
 
     # Same as above for for things not in cache
     # Request content type is not allowed by policy
@@ -275,7 +275,7 @@ data:
       pass,\
       nolog,\
       t:none,\
-      setvar:'tx.allowed_request_content_type=|image/png| |image/jpg| |image/jpeg| |image/webp| |image/gif| |video/mpeg| |video/mp4| |video/webm| |image/apng| |application/octet-stream| |application/xml| |application/activity+json|'"
+      setvar:'tx.allowed_request_content_type=|image/png|image/jpg|image/jpeg|image/webp|image/gif|video/mpeg|video/mp4|video/webm|image/apng|application/octet-stream|application/xml|application/activity+json|'"
 
     # Ignore "Illegal Accept header: charset parameter" for gotosocial profiles
     # see: https://github.com/coreruleset/coreruleset/issues/3497
@@ -297,8 +297,7 @@ data:
       pass,\
       nolog,\
       t:none,\
-      setvar:'tx.allowed_request_content_type=|image/png| |image/jpg| |image/jpeg| |image/webp| |image/gif| |video/mpeg| |video/mp4| |video/webm| |image/apng| |application/octet-stream| |application/xml| |application/activity+json|'"
-
+      setvar:'tx.allowed_request_content_type=|image/png|image/jpg|image/jpeg|image/webp|image/gif|video/mpeg|video/mp4|video/webm|image/apng|application/octet-stream|application/xml|application/activity+json|'"
 
   postgres-rule-exclusions-before.conf: |-
     # Prevents blocking pgbarmand backup operations
@@ -333,7 +332,6 @@ data:
       nolog,\
       t:none,\
       ctl:ruleRemoveById=944110"
-
 
   tempo-rule-exclusions-before.conf: |-
     # Prevents blocking remote-writes for parquet
@@ -393,7 +391,7 @@ data:
         pass,\
         t:none,\
         nolog,\
-        setvar:'tx.allowed_request_content_type=|application/octet-stream| |image/jpeg| |image/png| |image/gif|'"
+        setvar:'tx.allowed_request_content_type=|application/octet-stream|image/jpeg|image/png|image/gif|'"
 
     # allow PUT, OPTIONS to allow uploads
     # url should be like /_matrix/media/v3/upload or /_matrix/media/r0/upload
