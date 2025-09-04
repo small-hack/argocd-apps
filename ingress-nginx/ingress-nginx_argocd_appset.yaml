@@ -37,10 +37,11 @@ spec:
           releaseName: 'ingress-nginx'
           valuesObject:
             controller:
-              image: deserializeme/ingress-nginx-go-ftw
-              tag: "0.0.1"
-              digest: sha256:c6a2f8a43a763a4c8bd44d362c3dcd2aa5080d743e277c1d543608cf473f0c7e
-              digestChroot: ""
+              image:
+                image: deserializeme/ingress-nginx-go-ftw
+                tag: "0.0.1"
+                digest: sha256:c6a2f8a43a763a4c8bd44d362c3dcd2aa5080d743e277c1d543608cf473f0c7e
+                digestChroot: ""
               # Mutually exclusive with keda autoscaling
               autoscaling:
                 enabled: true
