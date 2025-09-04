@@ -2585,9 +2585,9 @@ data:
     # - /remote.php/dav/files/username/
     SecRule REQUEST_FILENAME "@beginsWith /remote.php/dav/files/.*$" \
         "id:9508992,\
-        phase:3,\
+        phase:1,\
         pass,\
         t:none,\
         nolog,\
         ver:'nextcloud-rule-exclusions-plugin/1.4.0',\
-        setvar:'tx.allowed_methods=PUT POST GET HEAD OPTIONS DELETE GET PROPFIND'"
+        ctl:ruleRemoveById=911100"
