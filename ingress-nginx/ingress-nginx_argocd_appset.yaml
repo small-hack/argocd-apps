@@ -36,16 +36,7 @@ spec:
         helm:
           releaseName: 'ingress-nginx'
           valuesObject:
-            global:
-              image:
-                # -- Registry host to pull images from.
-                registry: docker.io
             controller:
-              image:
-                image: deserializeme/ingress-nginx-go-ftw
-                tag: "0.0.3"
-                digest: sha256:891bba25e7cc711c83c1ea76f70b054b7edcbc81a4c37a47207b30741c3861a2
-                digestChroot: ""
               # Mutually exclusive with keda autoscaling
               autoscaling:
                 enabled: true
