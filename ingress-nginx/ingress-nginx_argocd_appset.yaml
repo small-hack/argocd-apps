@@ -36,16 +36,7 @@ spec:
         helm:
           releaseName: 'ingress-nginx'
           valuesObject:
-            global:
-              image:
-                # -- Registry host to pull images from.
-                registry: docker.io
             controller:
-              image:
-                image: deserializeme/ingress-nginx-go-ftw
-                tag: "0.0.6"
-                digest: sha256:d9b7b9b3ef600032c17af7b0a5997976e8bda0c1138313239167ed439c6c3317
-                digestChroot: ""
               # Mutually exclusive with keda autoscaling
               autoscaling:
                 enabled: true
@@ -125,7 +116,7 @@ spec:
                   Include /etc/nginx/owasp-modsecurity-crs/nginx-modsecurity.conf
 
                   # Enable prevention mode. Can be any of: DetectionOnly,On,Off (default is DetectionOnly)
-                  SecRuleEngine DetectionOnly
+                  SecRuleEngine On
 
                   # Enable scanning of the request body
                   SecRequestBodyAccess On
