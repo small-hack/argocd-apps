@@ -385,26 +385,23 @@ data:
     #   /remote.php/webdav/path/to/file
     #   /public.php/webdav/path/to/file
     #   /public.php/dav/files/<share-id>/path/to/file
-    SecRule REQUEST_FILENAME "@rx /(?:public|remote)\.php/(?:dav/files|dav/webdav|webdav)/" \
+    SecRule REQUEST_URI "@rx ^\/(public|remote)\.php\/(dav\/files|dav\/webdav|webdav).*$" \
         "id:910000,\
         phase:1,\
         pass,\
         t:none,\
         nolog,\
         ver:'webdav-rule-exclusions-plugin/1.0.0',\
-        chain"
-        SecRule REQUEST_METHOD "@streq GET" \
-            "t:none,\
-            ctl:ruleRemoveById=951000-951999,\
-            ctl:ruleRemoveById=953100-953130,\
-            ctl:ruleRemoveById=954100,\
-            ctl:ruleRemoveById=954110,\
-            ctl:ruleRemoveById=954120,\
-            ctl:ruleRemoveById=955100,\
-            ctl:ruleRemoveById=955110,\
-            ctl:ruleRemoveById=955300,\
-            ctl:ruleRemoveById=955350,\
-            ctl:ruleRemoveById=911100"
+        ctl:ruleRemoveById=951000-951999,\
+        ctl:ruleRemoveById=953100-953130,\
+        ctl:ruleRemoveById=954100,\
+        ctl:ruleRemoveById=954110,\
+        ctl:ruleRemoveById=954120,\
+        ctl:ruleRemoveById=955100,\
+        ctl:ruleRemoveById=955110,\
+        ctl:ruleRemoveById=955300,\
+        ctl:ruleRemoveById=955350,\
+        ctl:ruleRemoveById=911100"
 
 
   matrix-rule-exclusions-before.conf: |-
