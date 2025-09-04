@@ -33,7 +33,7 @@ data:
       "editable": true,
       "fiscalYearStartMonth": 0,
       "graphTooltip": 0,
-      "id": 17,
+      "id": 22,
       "links": [
         {
           "asDropdown": true,
@@ -89,14 +89,14 @@ data:
           },
           "gridPos": {
             "h": 10,
-            "w": 6,
+            "w": 9,
             "x": 0,
             "y": 0
           },
           "id": 8,
           "maxDataPoints": 1,
           "options": {
-            "displayMode": "lcd",
+            "displayMode": "basic",
             "legend": {
               "calcs": [],
               "displayMode": "list",
@@ -104,20 +104,20 @@ data:
               "showLegend": false
             },
             "maxVizHeight": 300,
-            "minVizHeight": 10,
-            "minVizWidth": 0,
+            "minVizHeight": 16,
+            "minVizWidth": 8,
             "namePlacement": "auto",
             "orientation": "horizontal",
             "reduceOptions": {
               "calcs": [
-                "sum"
+                "lastNotNull"
               ],
               "fields": "",
-              "values": false
+              "limit": 100,
+              "values": true
             },
-            "showUnfilled": true,
+            "showUnfilled": false,
             "sizing": "auto",
-            "text": {},
             "valueMode": "color"
           },
           "pluginVersion": "12.1.0",
@@ -136,13 +136,29 @@ data:
               "step": ""
             }
           ],
-          "title": "👿 Top Attackers - Client IP",
+          "title": "👿 Top 25 Attackers - Client IP",
           "transformations": [
             {
               "id": "renameByRegex",
               "options": {
                 "regex": "Value",
                 "renamePattern": "No IP"
+              }
+            },
+            {
+              "id": "reduce",
+              "options": {}
+            },
+            {
+              "id": "sortBy",
+              "options": {
+                "fields": {},
+                "sort": [
+                  {
+                    "desc": true,
+                    "field": "Max"
+                  }
+                ]
               }
             }
           ],
@@ -157,7 +173,7 @@ data:
           "fieldConfig": {
             "defaults": {
               "color": {
-                "mode": "continuous-BlYlRd"
+                "mode": "thresholds"
               },
               "mappings": [],
               "noValue": "oof",
@@ -179,38 +195,34 @@ data:
           },
           "gridPos": {
             "h": 10,
-            "w": 18,
-            "x": 6,
+            "w": 15,
+            "x": 9,
             "y": 0
           },
           "id": 5,
           "maxDataPoints": 10,
           "options": {
-            "displayMode": "lcd",
+            "displayMode": "basic",
             "legend": {
               "calcs": [],
               "displayMode": "list",
               "placement": "bottom",
               "showLegend": false
             },
-            "maxVizHeight": 49,
-            "minVizHeight": 19,
+            "maxVizHeight": 300,
+            "minVizHeight": 16,
             "minVizWidth": 8,
-            "namePlacement": "left",
+            "namePlacement": "auto",
             "orientation": "horizontal",
             "reduceOptions": {
               "calcs": [
-                "sum"
+                "lastNotNull"
               ],
               "fields": "",
-              "values": false
+              "values": true
             },
-            "showUnfilled": true,
-            "sizing": "manual",
-            "text": {
-              "titleSize": 10,
-              "valueSize": 20
-            },
+            "showUnfilled": false,
+            "sizing": "auto",
             "valueMode": "color"
           },
           "pluginVersion": "12.1.0",
@@ -221,7 +233,7 @@ data:
                 "uid": "${DS_LOKI}"
               },
               "direction": "backward",
-              "editorMode": "builder",
+              "editorMode": "code",
               "expr": "sum by(message, ruleId, vhost) (count_over_time({app=\"ingress-nginx\"} |~ `ModSecurity` != `http_referrer` | json messages_details_match=\"transaction.messages[0].details.match\", messages_details_reference=\"transaction.messages[0].details.reference\", ruleId=\"transaction.messages[0].details.ruleId\", messages_details_file=\"transaction.messages[0].details.file\", messages_details_lineNumber=\"transaction.messages[0].details.lineNumber\", messages_details_data=\"transaction.messages[0].details.data\", messages_details_severity=\"transaction.messages[0].details.severity\", messages_details_ver=\"transaction.messages[0].details.ver\", messages_details_rev=\"transaction.messages[0].details.rev\", messages_details_tags=\"transaction.messages[0].details.tags\", messages_details_maturity=\"transaction.messages[0].details.maturity\", messages_details_accuracy=\"transaction.messages[0].details.accuracy\", transaction_date=\"transaction.time_stamp\", client_ip=\"transaction.client_ip\", transaction_host_port=\"transaction.host_port\", tranaction_request_uri=\"transaction.request.uri\", message=\"transaction.messages[0].message\", vhost=\"transaction.request.headers.host\" | __error__=`` [$__interval]))",
               "legendFormat": "{{vhost}}: {{message}}",
               "queryType": "range",
@@ -236,6 +248,38 @@ data:
               "options": {
                 "regex": "/^(:)/",
                 "renamePattern": "No hostname:"
+              }
+            },
+            {
+              "id": "reduce",
+              "options": {
+                "labelsToFields": true,
+                "reducers": [
+                  "max"
+                ]
+              }
+            },
+            {
+              "id": "sortBy",
+              "options": {
+                "fields": {},
+                "sort": [
+                  {
+                    "desc": true,
+                    "field": "Max"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "filterFieldsByName",
+              "options": {
+                "include": {
+                  "names": [
+                    "message",
+                    "Max"
+                  ]
+                }
               }
             }
           ],
@@ -260,8 +304,8 @@ data:
                 "axisPlacement": "auto",
                 "barAlignment": 0,
                 "barWidthFactor": 0.6,
-                "drawStyle": "line",
-                "fillOpacity": 43,
+                "drawStyle": "bars",
+                "fillOpacity": 0,
                 "gradientMode": "hue",
                 "hideFrom": {
                   "legend": false,
@@ -269,7 +313,7 @@ data:
                   "viz": false
                 },
                 "insertNulls": false,
-                "lineInterpolation": "stepBefore",
+                "lineInterpolation": "stepAfter",
                 "lineStyle": {
                   "fill": "solid"
                 },
@@ -306,8 +350,8 @@ data:
             "overrides": []
           },
           "gridPos": {
-            "h": 9,
-            "w": 8,
+            "h": 8,
+            "w": 24,
             "x": 0,
             "y": 10
           },
@@ -370,15 +414,263 @@ data:
             "type": "loki",
             "uid": "${DS_LOKI}"
           },
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "bars",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "stepAfter",
+                "lineStyle": {
+                  "fill": "solid"
+                },
+                "lineWidth": 1,
+                "pointSize": 4,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "always",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 24,
+            "x": 0,
+            "y": 18
+          },
+          "id": 9,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "table",
+              "placement": "right",
+              "showLegend": false
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "maxHeight": 600,
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "12.1.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "loki",
+                "uid": "${DS_LOKI}"
+              },
+              "direction": "backward",
+              "editorMode": "builder",
+              "expr": "sum by(client_ip) (count_over_time({app=\"ingress-nginx\"} |~ `ModSecurity` != `http_referrer` | json messages_details_match=\"transaction.messages[0].details.match\", messages_details_reference=\"transaction.messages[0].details.reference\", messages_details_ruleId=\"transaction.messages[0].details.ruleId\", messages_details_file=\"transaction.messages[0].details.file\", messages_details_lineNumber=\"transaction.messages[0].details.lineNumber\", messages_details_data=\"transaction.messages[0].details.data\", messages_details_severity=\"transaction.messages[0].details.severity\", messages_details_ver=\"transaction.messages[0].details.ver\", messages_details_rev=\"transaction.messages[0].details.rev\", messages_details_tags=\"transaction.messages[0].details.tags\", messages_details_maturity=\"transaction.messages[0].details.maturity\", messages_details_accuracy=\"transaction.messages[0].details.accuracy\", transaction_date=\"transaction.time_stamp\", client_ip=\"transaction.client_ip\", transaction_host_ip=\"transaction.host_ip\", transaction_host_port=\"transaction.host_port\", tranaction_request_uri=\"transaction.request.uri\" | __error__=`` [$__interval]))",
+              "legendFormat": "{{severity}}",
+              "queryType": "range",
+              "refId": "A",
+              "step": ""
+            },
+            {
+              "datasource": {
+                "type": "loki",
+                "uid": "${DS_LOKI}"
+              },
+              "direction": "backward",
+              "editorMode": "code",
+              "expr": "{job=\"nginx_error\"}",
+              "queryType": "range",
+              "refId": "B"
+            }
+          ],
+          "title": "🔎  Detection of Activity by Client IP",
+          "transformations": [
+            {
+              "id": "renameByRegex",
+              "options": {
+                "regex": "Value",
+                "renamePattern": "1"
+              }
+            }
+          ],
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "bars",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "stepAfter",
+                "lineStyle": {
+                  "fill": "solid"
+                },
+                "lineWidth": 1,
+                "pointSize": 4,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "always",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 24,
+            "x": 0,
+            "y": 26
+          },
+          "id": 10,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "table",
+              "placement": "right",
+              "showLegend": false
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "maxHeight": 600,
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "12.1.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "loki",
+                "uid": "${DS_LOKI}"
+              },
+              "direction": "backward",
+              "editorMode": "builder",
+              "expr": "sum by(tranaction_request_uri) (count_over_time({app=\"ingress-nginx\"} |~ `ModSecurity` != `http_referrer` | json messages_details_match=\"transaction.messages[0].details.match\", messages_details_reference=\"transaction.messages[0].details.reference\", ruleId=\"transaction.messages[0].details.ruleId\", messages_details_file=\"transaction.messages[0].details.file\", messages_details_lineNumber=\"transaction.messages[0].details.lineNumber\", messages_details_data=\"transaction.messages[0].details.data\", messages_details_severity=\"transaction.messages[0].details.severity\", messages_details_ver=\"transaction.messages[0].details.ver\", messages_details_rev=\"transaction.messages[0].details.rev\", messages_details_tags=\"transaction.messages[0].details.tags\", messages_details_maturity=\"transaction.messages[0].details.maturity\", messages_details_accuracy=\"transaction.messages[0].details.accuracy\", transaction_date=\"transaction.time_stamp\", client_ip=\"transaction.client_ip\", transaction_host_port=\"transaction.host_port\", tranaction_request_uri=\"transaction.request.uri\", message=\"transaction.messages[0].message\", vhost=\"transaction.request.headers.host\" | __error__=`` [$__interval]))",
+              "legendFormat": "{{severity}}",
+              "queryType": "range",
+              "refId": "A",
+              "step": ""
+            },
+            {
+              "datasource": {
+                "type": "loki",
+                "uid": "${DS_LOKI}"
+              },
+              "direction": "backward",
+              "editorMode": "code",
+              "expr": "{job=\"nginx_error\"}",
+              "queryType": "range",
+              "refId": "B"
+            }
+          ],
+          "title": "🔎  Detection of Activity by Requested Endpoint",
+          "transformations": [
+            {
+              "id": "renameByRegex",
+              "options": {
+                "regex": "Value",
+                "renamePattern": "1"
+              }
+            }
+          ],
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
           "fieldConfig": {
             "defaults": {},
             "overrides": []
           },
           "gridPos": {
-            "h": 9,
-            "w": 16,
-            "x": 8,
-            "y": 10
+            "h": 20,
+            "w": 24,
+            "x": 0,
+            "y": 34
           },
           "id": 4,
           "options": {
@@ -419,6 +711,10 @@ data:
       "templating": {
         "list": [
           {
+            "current": {
+              "text": "Loki",
+              "value": "loki"
+            },
             "description": "loki",
             "includeAll": false,
             "label": "loki",
@@ -432,12 +728,12 @@ data:
         ]
       },
       "time": {
-        "from": "now-12h",
+        "from": "now-30m",
         "to": "now"
       },
       "timepicker": {},
       "timezone": "",
-      "title": "ModSecurity OWASP CRS",
-      "uid": "edqfpnv9fn2m8f",
-      "version": 1
+      "title": "ModSecurity OWASP CRS 2",
+      "uid": "edqfpnv9fn2m",
+      "version": 2
     }
