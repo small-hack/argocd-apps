@@ -207,54 +207,91 @@ spec:
             #
             ################################################################################
             capi:
-              enabled: true
-              core: "cluster-api:v1.9.1"
-              bootstrap: "kubeadm:v1.9.1"
-              controlPlane: "kubeadm:v1.9.1"
-              infrastructure: "kubevirt:v0.1.9"
-              addon: "helm:v0.2.6"
+              enabled: false
+              # Cluster API provider options
+              core:
+                cluster-api:
+                  version: "v1.9.1"
+                  createNamespace: true
 
-              manager: {}
-              #  featureGates:
-              #    kubeadm:
-              #      MachinePool: true
-              #      KubeadmBootstrapFormatIgnition: true
-              #    core:
-              #      MachinePool: true
-              #      KubeadmBootstrapFormatIgnition: true
-              #    kubevirt:
-              #      MachinePool: true
-              #      KubeadmBootstrapFormatIgnition: true
-              #    bootstrap:
-              #      MachinePool: true
-              #      KubeadmBootstrapFormatIgnition: true
+              bootstrap:
+                kubeadm:
+                  version: "v1.9.1"
+                  createNamespace: true
+
+              controlPlane:
+                kubeadm:
+                 version: "v1.9.1"
+                 createNamespace: true
+
+              infrastructure:
+                kubevirt:
+                  version: "v0.1.10"
+                  createNamespace: true
+
+              addon:
+                helm:
+                 version: "v0.3.2"
+                 createNamespace: true
+
+              ipam: {}
+              # in-cluster: {}          # Name, required
+              #   namespace: ""         # Optional
+              #   version: ""           # Optional
+              #   createNamespace: true # Optional
+
+              manager.featureGates: {}
+              # Configuration for enabling feature gates in different providers
+              # manager:
+              #   featureGates:
+              #     proxmox: # Name of the provider
+              #       ClusterTopology: true
+              #     core:
+              #       ClusterTopology: true
+              #     kubeadm:
+              #       ClusterTopology: true
+
+              fetchConfig: {}
+              # ---
+              # Common configuration secret options
 
               configSecret: {}
 
+              # ---
+              # CAPI operator deployment options
+              logLevel: 2
               replicaCount: 1
+
+              leaderElection:
+                enabled: true
 
               image:
                 manager:
-                  repository: registry.k8s.io/capi-operator/cluster-api-operator
-                  tag: v0.15.0
+                  repository: gcr.io/k8s-staging-capi-operator/cluster-api-operator
+                  tag: dev
                   pullPolicy: IfNotPresent
-
               env:
                 manager: []
 
+              diagnosticsAddress: ":8443"
+              healthAddr: ":9440"
+              profilerAddress: ":6060"
+
+              contentionProfiling: false
+              insecureDiagnostics: false
+              watchConfigSecret: false
+              watchConfigMap: false
+
               imagePullSecrets: {}
 
-              args:
-                - --leader-elect
-
-              resources: {}
-              #  manager:
-              #    limits:
-              #      cpu: 100m
-              #      memory: 150Mi
-              #    requests:
-              #      cpu: 100m
-              #      memory: 100Mi
+              resources:
+                manager:
+                  limits:
+                    cpu: 100m
+                    memory: 300Mi
+                  requests:
+                    cpu: 100m
+                    memory: 100Mi
 
               containerSecurityContext: {}
 
@@ -273,7 +310,6 @@ spec:
                             operator: In
                             values:
                               - linux
-
               tolerations:
                 - effect: NoSchedule
                   key: node-role.kubernetes.io/master
@@ -291,3 +327,5 @@ spec:
                   - mountPath: /tmp/k8s-webhook-server/serving-certs
                     name: cert
                     readOnly: true
+
+              enableHelmHook: true
