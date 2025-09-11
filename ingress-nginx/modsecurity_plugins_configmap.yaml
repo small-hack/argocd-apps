@@ -385,7 +385,7 @@ data:
     #   /remote.php/webdav/path/to/file
     #   /public.php/webdav/path/to/file
     #   /public.php/dav/files/<share-id>/path/to/file
-    SecRule REQUEST_URI "@rx ^\/(public|remote)\.php\/(dav\/files|dav\/webdav|webdav|dav\/addressbooks|dav\/calendars).*$" \
+    SecRule REQUEST_URI "@rx ^\/(public|remote)\.php\/(dav\/files|dav\/webdav|uploads|webdav|dav\/addressbooks|dav\/calendars).*$" \
         "id:910000,\
         phase:1,\
         pass,\
