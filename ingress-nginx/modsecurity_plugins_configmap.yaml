@@ -149,7 +149,7 @@ data:
     # 944110
     # Allow PUT method to /loki/<org name>/ rule 911100
     # this is for when loki tries to flush chunks
-    SecRule REQUEST_URI "@rx ^\/loki\/fake.*$" \
+    SecRule REQUEST_URI "@beginsWith /loki" \
       "id:550001,\
       phase:1,\
       ver:'loki-exclusions-plugin/1.0.0',\
