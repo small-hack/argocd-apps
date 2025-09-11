@@ -149,6 +149,7 @@ data:
     # 944110
     # Allow PUT method to /loki/<org name>/ rule 921110
     # this is for when loki tries to flush chunks
+    # Suspicious Java class detected Event 944130
     SecRule REQUEST_URI "@beginsWith /loki" \
       "id:550001,\
       phase:1,\
@@ -159,7 +160,8 @@ data:
       ctl:ruleRemoveById=911100,\
       ctl:ruleRemoveById=920340,\
       ctl:ruleRemoveById=921110,\
-      ctl:ruleRemoveById=944100"
+      ctl:ruleRemoveById=944100,\
+      ctl:ruleRemoveById=944130"
 
   activitypub-rule-exclusions-before.conf: |-
     # Allow posting to mastodon inbox - rules 920420, 920470
