@@ -154,6 +154,10 @@ data:
 
     # allow "Request Containing Content, but Missing Content-Type header"  rule 920340
     # rule 920340
+    # Dont treat loki writes as an http smuggeling attack
+    # Rule 921110
+    # Remote Command Execution: Java process spawn (CVE-2017-9805)
+    # 944110
     SecRule REQUEST_URI "@rx ^\/loki\/fake.*$" \
       "id:550001,\
       phase:1,\
@@ -161,21 +165,7 @@ data:
       pass,\
       nolog,\
       t:none,\
-      ctl:ruleRemoveById=920340"
-
-    # Dont treat loki writes as an http smuggeling attack
-    # Rule 921110
-    # Remote Command Execution: Java process spawn (CVE-2017-9805)
-    # 944110
-    SecRule REQUEST_URI "@rx ^\/loki\/fake.*$" \
-      "id:550002,\
-      phase:1,\
-      ver:'loki-exclusions-plugin/1.0.0',\
-      pass,\
-      nolog,\
-      t:none,\
-      ctl:ruleRemoveById=921110,\
-      ctl:ruleRemoveById=944110"
+      ctl:ruleRemoveById=920340,ctl:ruleRemoveById=921110,ctl:ruleRemoveById=944110"
 
   activitypub-rule-exclusions-before.conf: |-
     # Allow posting to mastodon inbox - rules 920420, 920470
