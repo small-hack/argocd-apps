@@ -147,7 +147,7 @@ data:
     # Rule 921110
     # Remote Command Execution: Java process spawn (CVE-2017-9805)
     # 944110
-    # Allow PUT method to /loki/<org name>/ rule 911100
+    # Allow PUT method to /loki/<org name>/ rule 921110
     # this is for when loki tries to flush chunks
     SecRule REQUEST_URI "@beginsWith /loki" \
       "id:550001,\
@@ -159,7 +159,7 @@ data:
       ctl:ruleRemoveById=911100,\
       ctl:ruleRemoveById=920340,\
       ctl:ruleRemoveById=921110,\
-      ctl:ruleRemoveById=944110"
+      ctl:ruleRemoveById=944100"
 
   activitypub-rule-exclusions-before.conf: |-
     # Allow posting to mastodon inbox - rules 920420, 920470
