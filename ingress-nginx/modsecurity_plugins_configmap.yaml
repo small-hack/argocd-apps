@@ -174,7 +174,7 @@ data:
       pass,\
       nolog,\
       t:none,\
-      ctl:ruleRemoveById=921110",\
+      ctl:ruleRemoveById=921110,\
       ctl:ruleRemoveById=944110"
 
   activitypub-rule-exclusions-before.conf: |-
