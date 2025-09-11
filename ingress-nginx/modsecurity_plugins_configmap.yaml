@@ -159,7 +159,7 @@ data:
       ctl:ruleRemoveById=911100,\
       ctl:ruleRemoveById=920340,\
       ctl:ruleRemoveById=921110,\
-      ctl:ruleRemoveById=944110,"
+      ctl:ruleRemoveById=944110"
 
   activitypub-rule-exclusions-before.conf: |-
     # Allow posting to mastodon inbox - rules 920420, 920470
