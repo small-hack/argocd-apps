@@ -301,7 +301,7 @@ data:
     # rule 920420 :Request content type is not allowed by policy
     # also bypasses rule 920600.
     SecRule REQUEST_URI "@beginsWith /inbox" \
-      "id:560000,\
+      "id:560012,\
       phase:1,\
       ver:'activitypub-exclusions-plugin/1.0.0',\
       pass,\
