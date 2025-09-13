@@ -219,18 +219,6 @@ data:
       t:none,\
       ctl:ruleRemoveById=920600"
 
-    # these are both for getting statuses (like if a status is searched for)
-    # Same as above but for peertube
-    # avoids rule 920600
-    SecRule REQUEST_URI "@rx ^\/(users|accounts)\/.*$" \
-      "id:560005,\
-      phase:1,\
-      ver:'activitypub-exclusions-plugin/1.0.0',\
-      pass,\
-      nolog,\
-      t:none,\
-      ctl:ruleRemoveById=920600"
-
     # avoids rule 920420 :Request content type is not allowed by policy
     # this is actually for minio or seaweedfs to be able to support GoToSocial
     # S3 enabled bucket lookups for images (Uploads)
@@ -297,6 +285,17 @@ data:
       nolog,\
       t:none,\
       setvar:'tx.allowed_request_content_type=|text/plain|image/png|image/jpg|image/jpeg|image/webp|image/gif|video/mpeg|video/mp4|video/webm|image/apng|application/octet-stream|application/xml|application/activity+json|'"
+
+    # these are both for getting statuses (like if a status is searched for) for peertube
+    # avoids rule 920600
+    SecRule REQUEST_URI "@rx ^\/(users|accounts)\/.*$" \
+      "id:560005,\
+      phase:1,\
+      ver:'activitypub-exclusions-plugin/1.0.0',\
+      pass,\
+      nolog,\
+      t:none,\
+      ctl:ruleRemoveById=920600"
 
   postgres-rule-exclusions-before.conf: |-
     # Prevents blocking pgbarmand backup operations
