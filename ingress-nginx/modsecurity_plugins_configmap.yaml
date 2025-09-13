@@ -177,7 +177,7 @@ data:
       setvar:'tx.allowed_request_content_type=|application/activity+json|',\
       ctl:ruleRemoveById=920600"
 
-    SecRule REQUEST_URI "@rx ^/users/.*/inbox" \
+    SecRule REQUEST_URI "@rx ^\/(users|accounts)\/.*\/inbox.*" \
       "id:560001,\
       phase:1,\
       ver:'activitypub-exclusions-plugin/1.0.0',\
@@ -276,7 +276,7 @@ data:
       t:none,\
       setvar:'tx.allowed_request_content_type=|image/png|image/jpg|image/jpeg|image/webp|image/gif|video/mpeg|video/mp4|video/webm|image/apng|application/octet-stream|application/xml|application/activity+json|'"
 
-    # ALlow peertube connections
+    # ALlow peertube subscriptions
     SecRule REQUEST_URI "@rx ^/socket.io/.*$" \
       "id:560010,\
       phase:1,\
