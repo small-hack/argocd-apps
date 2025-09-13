@@ -284,9 +284,7 @@ data:
       pass,\
       nolog,\
       t:none,\
-      setvar:'tx.allowed_request_content_type=|text/plain|image/png|image/jpg|image/jpeg|image/webp|image/gif|
-video/mpeg|video/mp4|video/webm|image/apng|application/octet-stream|application/xml|application/activity+json|
-'"
+      setvar:'tx.allowed_request_content_type=|text/plain|image/png|image/jpg|image/jpeg|image/webp|image/gif|video/mpeg|video/mp4|video/webm|image/apng|application/octet-stream|application/xml|application/activity+json|'"
 
   postgres-rule-exclusions-before.conf: |-
     # Prevents blocking pgbarmand backup operations
