@@ -289,7 +289,7 @@ data:
     # these are both for getting statuses (like if a status is searched for) for peertube
     # avoids rule 920600
     SecRule REQUEST_URI "@rx ^\/(users|accounts)\/.*$" \
-      "id:560005,\
+      "id:560011,\
       phase:1,\
       ver:'activitypub-exclusions-plugin/1.0.0',\
       pass,\
