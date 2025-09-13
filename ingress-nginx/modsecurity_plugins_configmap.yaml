@@ -174,7 +174,7 @@ data:
       pass,\
       nolog,\
       t:none,\
-      setvar:'tx.allowed_request_content_type=|application/activity+json|',\
+      setvar:'tx.allowed_request_content_type=|application/activity+json|modsecurity_plugins_configmap.yaml',\
       ctl:ruleRemoveById=920600"
 
     SecRule REQUEST_URI "@rx ^\/(users|accounts)\/.*\/inbox.*" \
@@ -295,6 +295,19 @@ data:
       pass,\
       nolog,\
       t:none,\
+      ctl:ruleRemoveById=920600"
+
+    # Allow posting to peertube inbox - rules 920420, 920470
+    # rule 920420 :Request content type is not allowed by policy
+    # also bypasses rule 920600.
+    SecRule REQUEST_URI "@beginsWith /inbox" \
+      "id:560000,\
+      phase:1,\
+      ver:'activitypub-exclusions-plugin/1.0.0',\
+      pass,\
+      nolog,\
+      t:none,\
+      setvar:'tx.allowed_request_content_type=|application/activity+json|application/ld+json|',\
       ctl:ruleRemoveById=920600"
 
   postgres-rule-exclusions-before.conf: |-
