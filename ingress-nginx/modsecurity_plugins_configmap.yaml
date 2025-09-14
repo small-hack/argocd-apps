@@ -311,7 +311,7 @@ data:
       ctl:ruleRemoveById=920600"
 
     # Allow commenting on mastodon posts, bypasses rule 920600.
-    SecRule REQUEST_URI "@rx ^\/@.*\/.*$ \
+    SecRule REQUEST_URI "@rx ^\/@.*\/.*$" \
       "id:560013,\
       phase:1,\
       ver:'activitypub-exclusions-plugin/1.0.0',\
