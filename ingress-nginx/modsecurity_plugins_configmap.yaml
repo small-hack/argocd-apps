@@ -310,6 +310,16 @@ data:
       setvar:'tx.allowed_request_content_type=|application/activity+json|application/ld+json|',\
       ctl:ruleRemoveById=920600"
 
+    # Allow commenting on mastodon posts, bypasses rule 920600.
+    SecRule REQUEST_URI "@rx ^\/@.*\/.*$ \
+      "id:560013,\
+      phase:1,\
+      ver:'activitypub-exclusions-plugin/1.0.0',\
+      pass,\
+      nolog,\
+      t:none,\
+      ctl:ruleRemoveById=920600"
+
   postgres-rule-exclusions-before.conf: |-
     # Prevents blocking pgbarmand backup operations
     SecRule REQUEST_URI "@rx ^(.*-postgres\/.*-postgres\/wals\/)?" \
