@@ -247,7 +247,7 @@ data:
     # Same as above for for things not in cache
     # Request content type is not allowed by policy
     # removing rule from mastodon because attachments can be almost anything
-    SecRule REQUEST_URI "@rx ^.mastodon\/(preview_cards|media_attachments|accounts|custom_emojis)\/(images|files|avatars|headers).*$" \
+    SecRule REQUEST_URI "@rx ^.mastodon\/(preview_cards|media_attachments|accounts|custom_emojis)\/(images|thumbnails|files|avatars|headers).*$" \
       "id:560007,\
       phase:1,\
       ver:'activitypub-exclusions-plugin/1.0.0',\
