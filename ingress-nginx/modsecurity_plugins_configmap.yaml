@@ -211,6 +211,7 @@ data:
 
     # these are both for getting statuses (like if a status is searched for)
     # avoids rule 920600
+    # avoids 942100 SQL Injection Attack Detected via libinjection
     SecRule REQUEST_URI "@rx ^/@.*/statuses/.*$" \
       "id:560004,\
       phase:1,\
@@ -218,7 +219,8 @@ data:
       pass,\
       nolog,\
       t:none,\
-      ctl:ruleRemoveById=920600"
+      ctl:ruleRemoveById=920600,\
+      ctl:ruleRemoveById=942100"
 
     # avoids rule 920420 :Request content type is not allowed by policy
     # this is actually for minio or seaweedfs to be able to support GoToSocial
