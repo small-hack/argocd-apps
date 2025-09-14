@@ -166,7 +166,7 @@ data:
   activitypub-rule-exclusions-before.conf: |-
     # Allow posting to mastodon inbox - rules 920420, 920470
     # rule 920420 :Request content type is not allowed by policy
-    # also bypasses rule 920600.
+    # also bypasses rule 920600 and 920420
     SecRule REQUEST_URI "@beginsWith /inbox" \
       "id:560000,\
       phase:1,\
@@ -174,9 +174,10 @@ data:
       pass,\
       nolog,\
       t:none,\
-      setvar:'tx.allowed_request_content_type=application/activity+json|application/ld+json|text/html|',\
       ctl:ruleRemoveById=920600,\
-      ctl:ruleRemoveById=920470"
+      ctl:ruleRemoveById=920470,\
+      ctl:ruleRemoveById=920420"
+
 
     SecRule REQUEST_URI "@rx ^\/(users|accounts)\/.*\/inbox.*" \
       "id:560001,\
