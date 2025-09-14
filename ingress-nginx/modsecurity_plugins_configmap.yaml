@@ -174,9 +174,9 @@ data:
       pass,\
       nolog,\
       t:none,\
-      ctl:ruleRemoveById=920600,\
+      ctl:ruleRemoveById=920420,\
       ctl:ruleRemoveById=920470,\
-      ctl:ruleRemoveById=920420"
+      ctl:ruleRemoveById=920600"
 
 
     SecRule REQUEST_URI "@rx ^\/(users|accounts)\/.*\/inbox.*" \
