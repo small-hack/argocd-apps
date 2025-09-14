@@ -174,8 +174,9 @@ data:
       pass,\
       nolog,\
       t:none,\
-      setvar:'tx.allowed_request_content_type=|application/activity+json|application/ld+json|',\
-      ctl:ruleRemoveById=920600"
+      setvar:'tx.allowed_request_content_type=application/activity+json|application/ld+json|text/html|',\
+      ctl:ruleRemoveById=920600,\
+      ctl:ruleRemoveById=920470"
 
     SecRule REQUEST_URI "@rx ^\/(users|accounts)\/.*\/inbox.*" \
       "id:560001,\
@@ -295,19 +296,6 @@ data:
       pass,\
       nolog,\
       t:none,\
-      ctl:ruleRemoveById=920600"
-
-    # Allow posting to peertube inbox - rules 920420, 920470
-    # rule 920420 :Request content type is not allowed by policy
-    # also bypasses rule 920600.
-    SecRule REQUEST_URI "@beginsWith /inbox" \
-      "id:560012,\
-      phase:1,\
-      ver:'activitypub-exclusions-plugin/1.0.0',\
-      pass,\
-      nolog,\
-      t:none,\
-      setvar:'tx.allowed_request_content_type=|application/activity+json|application/ld+json|',\
       ctl:ruleRemoveById=920600"
 
     # Allow commenting on mastodon posts, bypasses rule 920600.
