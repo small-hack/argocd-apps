@@ -172,7 +172,7 @@ data:
       phase:1,\
       ver:'activitypub-exclusions-plugin/1.0.0',\
       pass,\
-      nolog,\
+      log,\
       t:none,\
       ctl:ruleRemoveById=920420,\
       ctl:ruleRemoveById=920470,\
@@ -183,7 +183,7 @@ data:
       phase:1,\
       ver:'activitypub-exclusions-plugin/1.0.0',\
       pass,\
-      nolog,\
+      log,\
       t:none,\
       setvar:'tx.allowed_request_content_type=|application/activity+json|application/ld+json'"
 
