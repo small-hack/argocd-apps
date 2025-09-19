@@ -212,6 +212,10 @@ spec:
                 # Customize the number of hashtags shown in 'Explore'
                 - name: MAX_TRENDING_TAGS
                   value: "20"
+                # enables FASP
+                # https://github.com/mastodon/mastodon/pull/34031
+                - name: EXPERIMENTAL_FASP
+                  value: "fasp"
 
               s3:
                 enabled: true
