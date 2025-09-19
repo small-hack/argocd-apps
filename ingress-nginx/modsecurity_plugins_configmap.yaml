@@ -323,8 +323,14 @@ data:
       t:none,\
       setvar:'tx.allowed_methods=PUT POST GET HEAD OPTIONS DELETE'"
 
-    # allow "Request Containing Content, but Missing Content-Type header"  rule 920340
+    # allow "Request Containing Content, but Missing Content-Type header"
     # rule 920340
+    # Ignore false positive:
+    # Remote Command Execution: Java process spawn (CVE-2017-9805)
+    # 944110
+    # Ignore false positive:
+    # Remote Command Execution: Java serialization (CVE-2015-4852)
+    # 944110
     SecRule REQUEST_URI "@rx ^(.*-postgres\/.*-postgres\/wals\/)?" \
       "id:570001,\
       phase:1,\
@@ -332,30 +338,8 @@ data:
       pass,\
       nolog,\
       t:none,\
-      ctl:ruleRemoveById=920340"
-
-    # Ignore false positive:
-    # Remote Command Execution: Java process spawn (CVE-2017-9805)
-    # 944110
-    SecRule REQUEST_URI "@rx ^(.*-postgres\/.*-postgres\/wals\/)?" \
-      "id:570002,\
-      phase:1,\
-      ver:'postgres-exclusions-plugin/1.0.0',\
-      pass,\
-      nolog,\
-      t:none,\
-      ctl:ruleRemoveById=944110"
-
-    # Ignore false positive:
-    # Remote Command Execution: Java serialization (CVE-2015-4852)
-    # 944110
-    SecRule REQUEST_URI "@rx ^(.*-postgres\/.*-postgres\/wals\/)?" \
-      "id:570003,\
-      phase:1,\
-      ver:'postgres-exclusions-plugin/1.0.0',\
-      pass,\
-      nolog,\
-      t:none,\
+      ctl:ruleRemoveById=920340,\
+      ctl:ruleRemoveById=944110,\
       ctl:ruleRemoveById=944120"
 
   tempo-rule-exclusions-before.conf: |-
