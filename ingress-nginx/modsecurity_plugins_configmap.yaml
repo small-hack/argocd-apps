@@ -326,7 +326,7 @@ data:
       ctl:ruleRemoveById=911100,\
       ctl:ruleRemoveById=920340"
 
-    SecRule REQUEST_URI "@rx ^.mastodon\/cache\/(preview_cards|media_attachments|accounts|custom_emojis)\/(images|files|avatars|headers).*$" \
+    SecRule REQUEST_URI "@rx ^.mastodon\/.*\/(preview_cards|media_attachments|accounts|custom_emojis)\/(images|files|avatars|headers).*" \
       "id:560015,\
       phase:1,\
       ver:'activitypub-exclusions-plugin/1.0.0',\
