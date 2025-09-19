@@ -333,6 +333,7 @@ data:
       ctl:ruleRemoveById=944110,\
       ctl:ruleRemoveById=944120"
 
+    # Prevents blocking pgbarmand backup operations
     SecRule REQUEST_URI "@rx ^.*-postgres\/.*" \
       "id:570002,\
       phase:1,\
@@ -340,7 +341,7 @@ data:
       pass,\
       nolog,\
       t:none,\
-      ctl:ruleRemoveById=911100"
+      setvar:'tx.allowed_methods=PUT POST GET HEAD OPTIONS DELETE'"
 
   tempo-rule-exclusions-before.conf: |-
     # Prevents blocking remote-writes for parquet
