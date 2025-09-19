@@ -323,7 +323,7 @@ data:
       nolog,\
       t:none,\
       ctl:ruleRemoveById=911100,\
-      ctl:ruleRemoveById=920340\
+      ctl:ruleRemoveById=920340"
 
 
   postgres-rule-exclusions-before.conf: |-
