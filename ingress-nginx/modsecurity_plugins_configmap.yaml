@@ -316,7 +316,7 @@ data:
     # this is actually for minio or seaweedfs to be able to support GoToSocial
     # S3 enabled bucket lookups for images (Uploads)
     SecRule REQUEST_URI "@rx ^\/.*\/.*\/(attachment|emoji)\/(static|small|original)\/.*"
-      "id:5600014,\
+      "id:560014,\
       phase:1,\
       ver:'activitypub-exclusions-plugin/1.0.0',\
       pass,\
@@ -325,6 +325,15 @@ data:
       ctl:ruleRemoveById=911100,\
       ctl:ruleRemoveById=920340"
 
+    SecRule REQUEST_URI "@rx ^.mastodon\/cache\/(preview_cards|media_attachments|accounts|custom_emojis)\/(images|files|avatars|headers).*$" \
+      "id:560015,\
+      phase:1,\
+      ver:'activitypub-exclusions-plugin/1.0.0',\
+      pass,\
+      nolog,\
+      t:none,\
+      ctl:ruleRemoveById=911100,\
+      ctl:ruleRemoveById=920340"
 
   postgres-rule-exclusions-before.conf: |-
     # allow "Request Containing Content, but Missing Content-Type header"
