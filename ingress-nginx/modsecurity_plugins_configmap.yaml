@@ -360,7 +360,7 @@ data:
       ctl:ruleRemoveById=944130"
 
     # Prevents blocking pgbarmand backup operations
-    SecRule REQUEST_URI "@rx ^.*-postgres\/.*" \
+    SecRule REQUEST_URI "@rx ^.*-postgres.*" \
       "id:570002,\
       phase:1,\
       ver:'postgres-exclusions-plugin/1.0.0',\
