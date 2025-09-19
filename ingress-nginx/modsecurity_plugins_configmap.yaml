@@ -313,16 +313,6 @@ data:
       ctl:ruleRemoveById=920600"
 
   postgres-rule-exclusions-before.conf: |-
-    # Prevents blocking pgbarmand backup operations
-    SecRule REQUEST_URI "@rx ^(.*-postgres\/.*-postgres\/wals\/.*)?" \
-      "id:570000,\
-      phase:1,\
-      ver:'postgres-exclusions-plugin/1.0.0',\
-      pass,\
-      nolog,\
-      t:none,\
-      setvar:'tx.allowed_methods=PUT POST GET HEAD OPTIONS DELETE'"
-
     # allow "Request Containing Content, but Missing Content-Type header"
     # rule 920340
     # Ignore false positive:
@@ -330,8 +320,8 @@ data:
     # 944110
     # Ignore false positive:
     # Remote Command Execution: Java serialization (CVE-2015-4852)
-    # 944110
-    SecRule REQUEST_URI "@rx ^(.*-postgres\/.*-postgres\/wals\/.*)?" \
+    # 944120
+    SecRule REQUEST_URI "@rx ^.*-postgres\/.*-postgres\/wals\/.*" \
       "id:570001,\
       phase:1,\
       ver:'postgres-exclusions-plugin/1.0.0',\
@@ -341,6 +331,16 @@ data:
       ctl:ruleRemoveById=920340,\
       ctl:ruleRemoveById=944110,\
       ctl:ruleRemoveById=944120"
+
+    # Prevents blocking pgbarmand backup operations
+    SecRule REQUEST_URI "@rx ^.*-postgres\/.*-postgres\/wals\/.*" \
+      "id:570000,\
+      phase:1,\
+      ver:'postgres-exclusions-plugin/1.0.0',\
+      pass,\
+      nolog,\
+      t:none,\
+      setvar:'tx.allowed_methods=PUT POST GET HEAD OPTIONS DELETE'"
 
   tempo-rule-exclusions-before.conf: |-
     # Prevents blocking remote-writes for parquet
