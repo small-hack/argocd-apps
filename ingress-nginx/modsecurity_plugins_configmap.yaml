@@ -314,7 +314,7 @@ data:
 
   postgres-rule-exclusions-before.conf: |-
     # Prevents blocking pgbarmand backup operations
-    SecRule REQUEST_URI "@rx ^(.*-postgres\/.*-postgres\/wals\/)?" \
+    SecRule REQUEST_URI "@rx ^(.*-postgres\/.*-postgres\/wals\/.*)?" \
       "id:570000,\
       phase:1,\
       ver:'postgres-exclusions-plugin/1.0.0',\
@@ -331,7 +331,7 @@ data:
     # Ignore false positive:
     # Remote Command Execution: Java serialization (CVE-2015-4852)
     # 944110
-    SecRule REQUEST_URI "@rx ^(.*-postgres\/.*-postgres\/wals\/)?" \
+    SecRule REQUEST_URI "@rx ^(.*-postgres\/.*-postgres\/wals\/.*)?" \
       "id:570001,\
       phase:1,\
       ver:'postgres-exclusions-plugin/1.0.0',\
