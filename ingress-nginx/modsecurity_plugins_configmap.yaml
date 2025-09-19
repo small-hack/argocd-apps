@@ -111,7 +111,7 @@ data:
 
     # Allow PUT method to login endpoint
     SecRule REQUEST_URI "@beginsWith /auth/login_flow" \
-      "id:20024,\/postgres
+      "id:20024,\
       phase:1,\
       ver:'home-assistant-rule-exclusions-plugin/1.0.0',\
       pass,\
