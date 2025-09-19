@@ -322,7 +322,9 @@ data:
       pass,\
       nolog,\
       t:none,\
-      ctl:ruleRemoveById=911100"
+      ctl:ruleRemoveById=911100,\
+      ctl:ruleRemoveById=920340\
+
 
   postgres-rule-exclusions-before.conf: |-
     # allow "Request Containing Content, but Missing Content-Type header"
