@@ -111,7 +111,7 @@ data:
 
     # Allow PUT method to login endpoint
     SecRule REQUEST_URI "@beginsWith /auth/login_flow" \
-      "id:20024,\
+      "id:20024,\/postgres
       phase:1,\
       ver:'home-assistant-rule-exclusions-plugin/1.0.0',\
       pass,\
@@ -328,19 +328,19 @@ data:
       pass,\
       nolog,\
       t:none,\
+      ctl:ruleRemoveById=911100,\
       ctl:ruleRemoveById=920340,\
       ctl:ruleRemoveById=944110,\
       ctl:ruleRemoveById=944120"
 
-    # Prevents blocking pgbarmand backup operations
-    SecRule REQUEST_URI "@rx ^.*-postgres\/.*-postgres\/wals\/.*" \
-      "id:570000,\
+    SecRule REQUEST_URI "@rx ^.*-postgres\/.*" \
+      "id:570002,\
       phase:1,\
       ver:'postgres-exclusions-plugin/1.0.0',\
       pass,\
       nolog,\
       t:none,\
-      setvar:'tx.allowed_methods=PUT POST GET HEAD OPTIONS DELETE'"
+      ctl:ruleRemoveById=911100"
 
   tempo-rule-exclusions-before.conf: |-
     # Prevents blocking remote-writes for parquet
