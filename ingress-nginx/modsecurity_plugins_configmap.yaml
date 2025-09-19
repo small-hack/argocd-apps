@@ -186,7 +186,7 @@ data:
       pass,\
       log,\
       t:none,\
-      setvar:'tx.allowed_request_content_type=|application/activity+json|application/ld+json'"
+      setvar:'tx.allowed_request_content_type=|application/activity+json|application/ld+json|text/html'"
 
     # allow editing statuses on mastodon - rule 911100
     SecRule REQUEST_URI "@beginsWith /api/v1/statuses" \
@@ -335,6 +335,15 @@ data:
       t:none,\
       ctl:ruleRemoveById=911100,\
       ctl:ruleRemoveById=920340"
+
+    SecRule REQUEST_URI "@rx ^\/(users|accounts)\/.*\/views.*" \
+      "id:560001,\
+      phase:1,\
+      ver:'activitypub-exclusions-plugin/1.0.0',\
+      pass,\
+      log,\
+      t:none,\
+      setvar:'tx.allowed_request_content_type=|application/activity+json|application/ld+json|text/html'"
 
   postgres-rule-exclusions-before.conf: |-
     # allow "Request Containing Content, but Missing Content-Type header"
