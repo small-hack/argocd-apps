@@ -315,7 +315,7 @@ data:
     # avoids rule 911100 :Method is not allowed by policy Event
     # this is actually for minio or seaweedfs to be able to support GoToSocial
     # S3 enabled bucket lookups for images (Uploads)
-    SecRule REQUEST_URI "@rx ^/.*/.*/(attachment|emoji)/(static|small|original|)/.*$"
+    SecRule REQUEST_URI "@rx ^\/.*\/.*\/(attachment|emoji)\/(static|small|original)\/.*"
       "id:5600014,\
       phase:1,\
       ver:'activitypub-exclusions-plugin/1.0.0',\
