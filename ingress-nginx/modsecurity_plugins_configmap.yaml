@@ -356,7 +356,8 @@ data:
       ctl:ruleRemoveById=920340,\
       ctl:ruleRemoveById=944100,\
       ctl:ruleRemoveById=944110,\
-      ctl:ruleRemoveById=944120"
+      ctl:ruleRemoveById=944120,\
+      ctl:ruleRemoveById=944130"
 
     # Prevents blocking pgbarmand backup operations
     SecRule REQUEST_URI "@rx ^.*-postgres\/.*" \
