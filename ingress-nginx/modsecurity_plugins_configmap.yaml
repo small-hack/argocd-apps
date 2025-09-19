@@ -337,7 +337,7 @@ data:
       ctl:ruleRemoveById=920340"
 
     SecRule REQUEST_URI "@rx ^\/(users|accounts)\/.*\/views.*" \
-      "id:560001,\
+      "id:560016,\
       phase:1,\
       ver:'activitypub-exclusions-plugin/1.0.0',\
       pass,\
