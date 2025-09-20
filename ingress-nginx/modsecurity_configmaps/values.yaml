@@ -1,0 +1,5 @@
+# -- enable the activity pub exceptions
+activity_pub: true
+
+# -- enable the nextcloud exceptions
+nextcloud: true
