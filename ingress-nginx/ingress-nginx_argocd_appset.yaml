@@ -144,7 +144,6 @@ spec:
                   Include /etc/nginx/owasp-modsecurity-crs/plugins/home-assistant-rule-exclusions-before.conf
                   Include /etc/nginx/owasp-modsecurity-crs/plugins/matrix-rule-exclusions-before.conf
                   Include /etc/nginx/owasp-modsecurity-crs/plugins/nextcloud-rule-exclusions-before.conf
-                  Include /etc/nginx/owasp-modsecurity-crs/plugins/postgres-s3-rule-exclusions-before.conf
                   Include /etc/nginx/owasp-modsecurity-crs/plugins/zitadel-rule-exclusions-before.conf
                   Include /etc/nginx/owasp-modsecurity-crs/plugins/activitypub-rule-exclusions-before.conf
                   Include /etc/nginx/owasp-modsecurity-crs/plugins/loki-rule-exclusions-before.conf
