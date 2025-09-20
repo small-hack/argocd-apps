@@ -1,0 +1,32 @@
+# -- enable the activity pub exceptions
+activitypub: true
+
+# -- enable the argocd exceptions
+argocd: true
+
+# -- enable the grafana exceptions
+grafana: true
+
+# -- enable the home assistant exceptions
+home-assistant: true
+
+# -- enable the loki exceptions
+loki: true
+
+# -- enable the matrix exceptions
+matrix: true
+
+# -- enable the mimir exceptions
+mimir: true
+
+# -- enable the nextcloud exceptions
+nextcloud: true
+
+# -- enable the postgresql exceptions
+postgresql: true
+
+# -- enable the tempo exceptions
+tempo: true
+
+# -- enable the zitadel exceptions
+zitadel: true
