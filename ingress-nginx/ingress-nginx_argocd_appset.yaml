@@ -35,8 +35,47 @@ spec:
         targetRevision: 4.13.1
         helm:
           releaseName: 'ingress-nginx'
+          # https://github.com/kubernetes/ingress-nginx/blob/main/charts/ingress-nginx/values.yaml
           valuesObject:
             controller:
+              # not sure if this is possible
+              # https://github.com/kiwigrid/k8s-sidecar
+              # extraContainers:
+              #   - name: modsecurity-config-reloader
+              #     image: quay.io/kiwigrid/k8s-sidecar:1.30.3
+              #     imagePullPolicy: IfNotPresent
+              #     resources:
+              #       requests:
+              #         cpu: 100m
+              #         memory: 100Mi
+              #       limits:
+              #         cpu: 2
+              #         memory: 500Mi
+              #     env:
+              #       - name: METHOD
+              #         value: WATCH
+              #       - name: LABEL
+              #         value: nginx-configmap
+              #       - name: LABEL_VALUE
+              #         value: '1'
+              #       - name: FOLDER
+              #         value: /tmp/plugins
+              #       - name: RESOURCE
+              #         value: both
+              #     securityContext:
+              #       allowPrivilegeEscalation: false
+              #       capabilities:
+              #         drop:
+              #           - ALL
+              #       seccompProfile:
+              #         type: RuntimeDefault
+              #     volumes:
+              #       - name: plugins
+              #         configMap:
+              #           name: modsecurity-plugins
+              #     volumeMounts:
+              #       - name: plugins
+              #         mountPath: /tmp/plugins
               # Mutually exclusive with keda autoscaling
               autoscaling:
                 enabled: true
