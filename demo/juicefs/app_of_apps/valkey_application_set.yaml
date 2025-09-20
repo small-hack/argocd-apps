@@ -2,7 +2,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: valkey-app-set
+  name: juicefs-valkey-app-set
   namespace: argocd
   annotations:
     # wait till after secrets are populated in sync wave 1
@@ -24,7 +24,7 @@ spec:
       annotations:
         argocd.argoproj.io/sync-wave: "2"
     spec:
-      project: valkey
+      project: juicefs
 
       # the sync policy for this Argo CD Application
       syncPolicy:
@@ -48,7 +48,7 @@ spec:
         helm:
           # helm parameter overrides
           valuesObject:
-            fullnameOverride: "valkey"
+            fullnameOverride: "juicefs-valkey"
 
             global:
               storageClass: "{{ .global_storage_class }}"
@@ -56,7 +56,7 @@ spec:
             # for auth, we get the valkey credentials from an ExternalSecret
             auth:
               enabled: true
-              existingSecret: "valkey-credentials"
+              existingSecret: "juicefs-valkey-credentials"
               existingSecretPasswordKey: "password"
 
             # TLS settings
@@ -69,13 +69,13 @@ spec:
             primary:
               persistence:
                 enabled: true
-                existingClaim: "valkey-primary"
+                existingClaim: "juicefs-valkey-primary"
 
             # valkey replica configuration
             replica:
               persistence:
                 enabled: true
-                existingClaim: "valkey-replica"
+                existingClaim: "juicefs-valkey-replica"
 
 
             # persistnent volume retention policy for the StatefulSet
@@ -86,7 +86,7 @@ spec:
 
             metrics:
               # we use a grafana exporter that logs into valkey directly
-              enabled: false
+              enabled: true
 
             # definitions: https://github.com/bitnami/charts/blob/main/bitnami/common/templates/_resources.tpl#L15
             # Options: nano, micro, small, medium, large, xlarge, 2xlarge
