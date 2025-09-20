@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: modsecurity-plugins
+data:
+  empty-after.conf: |
+    # no data
+  empty-before.conf: |
+    # no data
+  empty-config.conf: |
+    # no data
+  {{/* range through all modsecurity exception files */}}
+  {{ range $path, $_ :=  .Files.Glob  "modsecurity_exception_files/**.conf" }}
+  {{/* create a simple file name to template with */}}
+  {{- $file_name := $path | trimPrefix "modsecurity_exception_files/" | lower | nospace | trimSuffix ".conf" -}}
+
+  {{- $file_name | nindent 2 }}-rule-exclusions-before.conf: |-
+    {{- $.Files.Get $path | nindent 4 }}
+  {{- end }}

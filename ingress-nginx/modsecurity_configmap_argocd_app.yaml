@@ -1,0 +1,56 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ingress-nginx-modsecurity-configmap-app
+  namespace: argocd
+spec:
+  project: ingress-nginx
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: ingress-nginx
+  syncPolicy:
+    syncOptions:
+      - ApplyOutOfSyncOnly=true
+    automated:
+      prune: true
+      selfHeal: true
+  source:
+    repoURL: 'https://github.com/small-hack/argocd-apps.git'
+    path: ingress-nginx/modsecurity_configmap/
+    targetRevision: main
+    helm:
+      releaseName: 'ingress-nginx-modsecurity-configmap'
+      valuesObject:
+        # -- enable the activity pub exceptions
+        activitypub: true
+
+        # -- enable the argocd exceptions
+        argocd: true
+
+        # -- enable the grafana exceptions
+        grafana: true
+
+        # -- enable the home assistant exceptions
+        home-assistant: true
+
+        # -- enable the loki exceptions
+        loki: true
+
+        # -- enable the matrix exceptions
+        matrix: true
+
+        # -- enable the mimir exceptions
+        mimir: true
+
+        # -- enable the nextcloud exceptions
+        nextcloud: true
+
+        # -- enable the postgresql exceptions
+        postgresql: true
+
+        # -- enable the tempo exceptions
+        tempo: true
+
+        # -- enable the zitadel exceptions
+        zitadel: true
