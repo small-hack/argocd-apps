@@ -9,8 +9,11 @@ data:
     # no data
   empty-config.conf: |
     # no data
+  {{/* range through all modsecurity exception files */}}
+  {{ range $path, $_ :=  .Files.Glob  "modsecurity_exception_files/**.conf" }}
+  {{/* create a simple file name to template with */}}
+  {{- $file_name := $path | trimPrefix "modsecurity_exception_files/" | lower | nospace | trimSuffix ".conf" -}}
 
-{{ range $path, $_ :=  .Files.Glob  "modsecurity_exception_files/**.conf" }}
-  {{ $.Files.Get $path }}: |
-    beepboop
-{{ end }}
+  {{- $file_name | nindent 2 }}-rule-exclusions-before.conf: |-
+    {{- $.Files.Get $path | nindent 4 }}
+  {{- end }}
