@@ -24,7 +24,7 @@ spec:
               - juicefs_valkey_pvc_storage_class
   template:
     metadata:
-      name: grafana-stack-s3-pvc
+      name: juicefs-s3-pvc
       annotations:
         argocd.argoproj.io/sync-wave: "1"
     spec:
