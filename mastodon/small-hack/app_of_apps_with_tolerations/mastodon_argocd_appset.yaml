@@ -168,6 +168,9 @@ spec:
                 # enable pre-deployment migrations
                 # - name: SKIP_POST_DEPLOYMENT_MIGRATIONS
                 #   value: "true"
+                #
+                - name: RAILS_LOG_LEVEL
+                  value: debug
 
                 # Maximum allowed character count
                 - name: MAX_TOOT_CHARS
