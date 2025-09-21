@@ -50,7 +50,7 @@ spec:
       source:
         # forked from: https://github.com/mastodon/chart/tree/main
         repoURL: 'https://small-hack.github.io/mastodon-helm-chart'
-        targetRevision: 11.0.4
+        targetRevision: 11.1.0
         chart: mastodon
         helm:
           releaseName: mastodon
@@ -286,6 +286,13 @@ spec:
                 base_url: streaming.{{ .mastodon_hostname }}
                 # -- Number of Streaming Pods running
                 replicas: 1
+                resources:
+                  limits:
+                    cpu: "1000m"
+                    memory: 1Gi
+                  requests:
+                    cpu: 250m
+                    memory: 128Mi
                 # Specify extra environment variables to be added to streaming pods.
                 extraEnvVars:
                   LOG_LEVEL: silly
