@@ -42,7 +42,7 @@ spec:
 
       # where we should get the source of this Argo CD Application
       source:
-        repoURL: 'oci://registry-1.docker.io/'
+        repoURL: 'registry-1.docker.io'
         chart: bitnamicharts/valkey
         targetRevision: 3.0.30
         helm:
