@@ -50,7 +50,7 @@ spec:
       source:
         # forked from: https://github.com/mastodon/chart/tree/main
         repoURL: 'https://small-hack.github.io/mastodon-helm-chart'
-        targetRevision: 9.8.7
+        targetRevision: 10.1.3
         chart: mastodon
         helm:
           releaseName: mastodon
@@ -81,10 +81,6 @@ spec:
               hooks:
                 dbMigrate:
                   enabled: true
-
-                # disabled due to https://github.com/mastodon/chart/issues/158
-                assetsPrecompile:
-                  enabled: false
 
                 # Upload website assets to S3 before deploying using rclone.
                 # Whenever there is an update to Mastodon, sometimes there are assets files
@@ -235,19 +231,20 @@ spec:
 
               sidekiq:
                 workers:
-                - name: all-queues
-                  # -- Number of threads / parallel sidekiq jobs that are executed per Pod
-                  concurrency: 25
-                  # -- Sidekiq queues for Mastodon that are handled by this worker. See https://docs.joinmastodon.org/admin/scaling/#concurrency
-                  # See https://github.com/mperham/sidekiq/wiki/Advanced-Options#queues for how to weight queues as argument
-                  queues:
-                    - default,8
-                    - push,6
-                    - ingress,4
-                    - mailers,2
-                    - pull
-                    # Make sure the scheduler queue only exists once and with a worker that has 1 replica.
-                    - scheduler
+                  - name: all-queues
+                    # -- Number of threads / parallel sidekiq jobs that are executed per Pod
+                    concurrency: 25
+                    # -- Sidekiq queues for Mastodon that are handled by this worker. See https://docs.joinmastodon.org/admin/scaling/#concurrency
+                    # See https://github.com/mperham/sidekiq/wiki/Advanced-Options#queues for how to weight queues as argument
+                    queues:
+                      - default,8
+                      - push,6
+                      - ingress,4
+                      - mailers,2
+                      - pull
+                      # Make sure the scheduler queue only exists once and with a worker that has 1 replica.
+                      - scheduler
+                      - fasp
 
               smtp:
                 auth_method: login
@@ -265,7 +262,7 @@ spec:
 
               streaming:
                 image:
-                  repository: ghcr.io/mastodon/mastodon-streaming
+                  repository: ghcr.io/glitch-soc/mastodon-streaming
                 port: 4000
                 # -- this should be set manually since os.cpus() returns the number of CPUs on
                 # the node running the pod, which is unrelated to the resources allocated to
