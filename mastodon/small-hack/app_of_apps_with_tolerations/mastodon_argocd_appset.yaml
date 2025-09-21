@@ -286,6 +286,9 @@ spec:
                 base_url: streaming.{{ .mastodon_hostname }}
                 # -- Number of Streaming Pods running
                 replicas: 1
+                # Specify extra environment variables to be added to streaming pods.
+                extraEnvVars:
+                  LOG_LEVEL: silly
 
               web:
                 port: 3000
