@@ -110,10 +110,9 @@ data:
             "orientation": "horizontal",
             "reduceOptions": {
               "calcs": [
-                "lastNotNull"
+                "sum"
               ],
               "fields": "",
-              "limit": 100,
               "values": true
             },
             "showUnfilled": false,
@@ -147,7 +146,11 @@ data:
             },
             {
               "id": "reduce",
-              "options": {}
+              "options": {
+                "reducers": [
+                  "sum"
+                ]
+              }
             },
             {
               "id": "sortBy",
@@ -156,7 +159,7 @@ data:
                 "sort": [
                   {
                     "desc": true,
-                    "field": "Max"
+                    "field": "Total"
                   }
                 ]
               }
@@ -255,7 +258,7 @@ data:
               "options": {
                 "labelsToFields": true,
                 "reducers": [
-                  "max"
+                  "sum"
                 ]
               }
             },
@@ -266,7 +269,7 @@ data:
                 "sort": [
                   {
                     "desc": true,
-                    "field": "Max"
+                    "field": "Total"
                   }
                 ]
               }
@@ -277,7 +280,7 @@ data:
                 "include": {
                   "names": [
                     "message",
-                    "Max"
+                    "Total"
                   ]
                 }
               }
