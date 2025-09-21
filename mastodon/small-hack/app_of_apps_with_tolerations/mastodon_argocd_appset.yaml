@@ -347,7 +347,7 @@ spec:
                     paths:
                       - path: "/"
                 tls:
-                  - secretName: mastodon-tls
+                  - secretName: mastodon-streaming-tls
                     hosts:
                       - streaming.{{ .mastodon_hostname }}
 
