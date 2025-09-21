@@ -38,7 +38,7 @@ spec:
       # where this Argo CD Application should be deployed
       destination:
         server: https://kubernetes.default.svc
-        namespace: valkey
+        namespace: juicefs
 
       # where we should get the source of this Argo CD Application
       source:
