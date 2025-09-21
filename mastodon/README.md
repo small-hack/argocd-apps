@@ -1,6 +1,7 @@
 # Argo CD ApplicationSets for Mastodon
 
 **Stable directory**: [small-hack](./small-hack)
+**UnStable directory**: [mastodon](./mastodon)
 
 Example Argo CD tree view of Mastodon (small-hack) App:
 
