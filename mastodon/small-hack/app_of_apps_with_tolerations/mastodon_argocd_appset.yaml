@@ -50,7 +50,7 @@ spec:
       source:
         # forked from: https://github.com/mastodon/chart/tree/main
         repoURL: 'https://small-hack.github.io/mastodon-helm-chart'
-        targetRevision: 11.0.2
+        targetRevision: 11.0.3
         chart: mastodon
         helm:
           releaseName: mastodon
