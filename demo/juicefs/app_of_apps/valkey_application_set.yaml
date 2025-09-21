@@ -20,7 +20,7 @@ spec:
               - global_storage_class
   template:
     metadata:
-      name: valkey-app
+      name: juicefs-valkey-app
       annotations:
         argocd.argoproj.io/sync-wave: "2"
     spec:
