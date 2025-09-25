@@ -80,7 +80,7 @@ spec:
                       - "{{ .juicefs_s3_dshboard_url }}"
 
             storageClasses:
-            - name: "juicefs-sc"
+            - name: "juicefs"
               enabled: true
               reclaimPolicy: Delete
               allowVolumeExpansion: true
