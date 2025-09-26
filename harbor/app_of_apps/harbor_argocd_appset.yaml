@@ -429,36 +429,36 @@ spec:
                     secretKeyRef:
                       name: harbor-registry-credentials
                       key: REGISTRY_CREDENTIAL_USERNAME
-                - name: OIDC_CLIENT_ID
-                  valueFrom:
-                    secretKeyRef:
-                      name: oidc-harbor
-                      key: client_id
-                - name: OIDC_CLIENT_SECRET
-                  valueFrom:
-                    secretKeyRef:
-                      name: oidc-harbor
-                      key: client_secret
-                - name: OIDC_ENDPOINT
-                  valueFrom:
-                    secretKeyRef:
-                      name: oidc-harbor
-                      key: endpoint
-                - name: CONFIG_OVERWRITE_JSON
-                  value: |
-                    {
-                      "auth_mode": "oidc_auth",
-                      "oidc_name": "Zitadel",
-                      "oidc_endpoint": "$(OIDC_ENDPOINT)",
-                      "oidc_groups_claim": "groups",
-                      "oidc_admin_group": "harbor_admins",
-                      "oidc_client_id": "$(OIDC_CLIENT_ID)",
-                      "oidc_client_secret": "$(OIDC_CLIENT_SECRET)",
-                      "oidc_scope": "openid,email,profile,email",
-                      "oidc_verify_cert": "false",
-                      "oidc_auto_onboard": "true",
-                      "oidc_user_claim": "name"
-                    }
+               # - name: OIDC_CLIENT_ID
+               #   valueFrom:
+               #     secretKeyRef:
+               #       name: oidc-harbor
+               #       key: client_id
+               # - name: OIDC_CLIENT_SECRET
+               #   valueFrom:
+               #     secretKeyRef:
+               #       name: oidc-harbor
+               #       key: client_secret
+               # - name: OIDC_ENDPOINT
+               #   valueFrom:
+               #     secretKeyRef:
+               #       name: oidc-harbor
+               #       key: endpoint
+               # - name: CONFIG_OVERWRITE_JSON
+               #   value: |
+               #     {
+               #       "auth_mode": "oidc_auth",
+               #       "oidc_name": "Zitadel",
+               #       "oidc_endpoint": "$(OIDC_ENDPOINT)",
+               #       "oidc_groups_claim": "groups",
+               #       "oidc_admin_group": "harbor_admins",
+               #       "oidc_client_id": "$(OIDC_CLIENT_ID)",
+               #       "oidc_client_secret": "$(OIDC_CLIENT_SECRET)",
+               #       "oidc_scope": "openid,email,profile,email",
+               #       "oidc_verify_cert": "false",
+               #       "oidc_auto_onboard": "true",
+               #       "oidc_user_claim": "name"
+               #     }
               nodeSelector: {}
               tolerations: []
               affinity: {}
