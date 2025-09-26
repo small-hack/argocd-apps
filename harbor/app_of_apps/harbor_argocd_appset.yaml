@@ -57,7 +57,7 @@ spec:
             # The initial password of Harbor admin. Change it from portal after launching Harbor
             # or give an existing secret for it
             # key in secret is given via (default to HARBOR_ADMIN_PASSWORD)
-            #existingSecretAdminPassword: "harbor-admin-credentials"
+            existingSecretAdminPassword: "harbor-registry-credentials"
             #existingSecretAdminPasswordKey: password
             # The name of the secret which contains key named "ca.crt". Setting this enables the
             # download link on portal to download the CA certificate when the certificate isn't
