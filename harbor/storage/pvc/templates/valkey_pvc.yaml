@@ -1,0 +1,28 @@
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: valkey-primary
+  annotations:
+    k8up.io/backup: 'true'
+spec:
+  storageClassName: {{ .Values.valkey_pvc.storageClassName }}
+  accessModes:
+    - {{ .Values.valkey_pvc.accessMode }}
+  resources:
+    requests:
+      storage: {{ .Values.valkey_pvc.storage }}
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: valkey-replica
+  annotations:
+    k8up.io/backup: 'true'
+spec:
+  storageClassName: {{ .Values.valkey_pvc.storageClassName }}
+  accessModes:
+    - {{ .Values.valkey_pvc.accessMode }}
+  resources:
+    requests:
+      storage: {{ .Values.valkey_pvc.storage }}

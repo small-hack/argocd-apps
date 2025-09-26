@@ -1,0 +1,95 @@
+{{- if and (eq .Values.provider "bitwarden") (eq .Values.s3_provider "seaweedfs") }}
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: seaweedfs-s3-secret
+spec:
+  target:
+    name: seaweedfs-s3-secret
+    deletionPolicy: Delete
+    template:
+      type: Opaque
+      data:
+        admin_access_key_id: |-
+          {{ `{{ .adminAccessKey }}` }}
+        admin_secret_access_key:  |-
+          {{ `{{ .adminSecretKey }}` }}
+        seaweedfs_s3_config: |-
+          {"identities":[
+            {"name": "anvAdmin",
+             "credentials": [
+               {"accessKey": "{{ `{{ .adminAccessKey }}` }}",
+                "secretKey": "{{ `{{ .adminSecretKey }}` }}"}
+             ],
+             "actions": ["Admin","Read","Write"]},
+            {"name": "harbor",
+             "credentials": [
+               {"accessKey": "{{ `{{ .userAccessKey }}` }}",
+                "secretKey": "{{ `{{ .userSecretKey }}` }}"}
+             ],
+             "actions": ["Read:harbor","Write:harbor","List:harbor"]},
+            {"name": "anonymous", "actions": ["Read:harbor"]},
+            {"name": "harbor-postgres",
+             "credentials": [
+               {"accessKey": "{{ `{{ .dbAccessKey }}` }}",
+                "secretKey": "{{ `{{ .dbSecretKey }}` }}"}
+             ],
+             "actions": ["Read:harbor-postgres","Write:harbor-postgres","List:harbor-postgres"]}
+          ]}
+  data:
+    - secretKey: adminAccessKey
+      sourceRef:
+        storeRef:
+          name: bitwarden-login
+          kind: ClusterSecretStore
+      remoteRef:
+        key: {{ .Values.s3AdminCredentialsBitwardenID }}
+        property: username
+
+    - secretKey: adminSecretKey
+      sourceRef:
+        storeRef:
+          name: bitwarden-login
+          kind: ClusterSecretStore
+      remoteRef:
+        key: {{ .Values.s3AdminCredentialsBitwardenID }}
+        property: password
+
+    - secretKey: dbAccessKey
+      sourceRef:
+        storeRef:
+          name: bitwarden-login
+          kind: ClusterSecretStore
+      remoteRef:
+        key: {{ .Values.s3PostgresCredentialsBitwardenID }}
+        property: username
+
+    - secretKey: dbSecretKey
+      sourceRef:
+        storeRef:
+          name: bitwarden-login
+          kind: ClusterSecretStore
+      remoteRef:
+        key: {{ .Values.s3PostgresCredentialsBitwardenID }}
+        property: password
+
+    - secretKey: userAccessKey
+      sourceRef:
+        storeRef:
+          name: bitwarden-login
+          kind: ClusterSecretStore
+      remoteRef:
+        key: {{ .Values.s3HarborUserCredentialsBitwardenID }}
+        property: username
+
+    - secretKey: userSecretKey
+      sourceRef:
+        storeRef:
+          name: bitwarden-login
+          kind: ClusterSecretStore
+      remoteRef:
+        key: {{ .Values.s3HarborUserCredentialsBitwardenID }}
+        property: password
+
+{{- end }}
