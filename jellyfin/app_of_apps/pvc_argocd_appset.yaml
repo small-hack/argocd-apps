@@ -82,3 +82,44 @@ spec:
                         operator: In
                         values:
                           - '{{ .jellyfin_affinity_value }}'
+
+            k8up:
+              # -- for setting tolerations of node taints
+              tolerations:
+                key: '{{ .jellyfin_toleration_key }}'
+                operator: '{{ .jellyfin_toleration_operator }}'
+                value: '{{ .jellyfin_toleration_value }}'
+                effect: '{{ .jellyfin_toleration_effect }}'
+
+              # -- for setting affinity to a specific node by matchExpressions
+              affinity:
+                key: '{{ .jellyfin_affinity_key }}'
+                value: '{{ .jellyfin_affinity_value }}'
+
+              backup_name: 'jellyfin-nightly-backup'
+
+              # -- can be set to 's3' or 'local'
+              backup_type: 's3'
+
+              s3:
+                bucket: '{{ .jellyfin_s3_backup_bucket }}'
+                endpoint: '{{ .jellyfin_s3_backup_endpoint }}'
+                accessKeyIDSecretRef:
+                  name: 's3-backups-credentials'
+                  key: 'accessKeyId'
+                  optional: false
+                secretAccessKeySecretRef:
+                  name: 's3-backups-credentials'
+                  key: 'secretAccessKey'
+                  optional: false
+
+              repoPasswordSecretRef:
+                name: 's3-backups-credentials'
+                key: 'resticRepoPassword'
+
+              prometheus_url: 'push-gateway.prometheus.svc:9091'
+
+              schedules:
+                backup: '{{ .jellyfin_pvc_backup_schedule }}'
+                check: '0 0 * * *'
+                prune: '0 0 * * *'
