@@ -1,0 +1,43 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: telemetrygen
+  name: telemetrygen
+  namespace: monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: telemetrygen
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: telemetrygen
+    spec:
+      # in total 5 spans per second are generated, with 1/3 (33%) containing an error
+      containers:
+        # this generates 3 spans per second
+        - name: telemetrygen-good
+          image: ghcr.io/open-telemetry/opentelemetry-collector-contrib/telemetrygen
+          args:
+            - traces
+            - --otlp-endpoint=alloy-metrics.monitoring.svc:4317
+            - --otlp-insecure
+            - --duration=1h
+            - --service=good_service
+            - --rate=2 # spans per second
+            - --child-spans=2
+        # this generates 2 spans per second with an error status
+        - name: telemetrygen-faulty
+          image: ghcr.io/open-telemetry/opentelemetry-collector-contrib/telemetrygen
+          args:
+            - traces
+            - --otlp-endpoint=alloy-metrics.monitoring.svc:4317
+            - --otlp-insecure
+            - --duration=1h
+            - --service=faulty_service
+            - --rate=1 # spans per second
+            - --child-spans=1
+            - --status-code=Error
