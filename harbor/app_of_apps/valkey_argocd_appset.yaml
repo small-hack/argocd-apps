@@ -72,10 +72,11 @@ spec:
 
             # valkey replica configuration
             replica:
+              replicaCount: 1
+
               persistence:
                 enabled: true
                 existingClaim: "valkey-replica"
-
 
             # persistnent volume retention policy for the StatefulSet
             persistentVolumeClaimRetentionPolicy:
