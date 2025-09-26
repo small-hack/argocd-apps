@@ -57,14 +57,14 @@ spec:
             # The initial password of Harbor admin. Change it from portal after launching Harbor
             # or give an existing secret for it
             # key in secret is given via (default to HARBOR_ADMIN_PASSWORD)
-            existingSecretAdminPassword: "harbor-admin-credentials"
-            existingSecretAdminPasswordKey: password
+            #existingSecretAdminPassword: "harbor-admin-credentials"
+            #existingSecretAdminPasswordKey: password
             # The name of the secret which contains key named "ca.crt". Setting this enables the
             # download link on portal to download the CA certificate when the certificate isn't
             # generated automatically
             caSecretName: ""
             # If using existingSecretSecretKey, the key must be secretKey
-            existingSecretSecretKey: "harbor-admin-credentials"
+            #existingSecretSecretKey: "harbor-admin-credentials"
             # Run the migration job via helm hook
             enableMigrateHelmHook: false
             # The custom ca bundle secret, the secret must contain key named "ca.crt"
@@ -413,22 +413,22 @@ spec:
               #  requests:
               #    memory: 256Mi
               #    cpu: 100m
-              extraEnvVars:
-                - name: HARBOR_ADMIN_PASSWORD
-                  valueFrom:
-                    secretKeyRef:
-                      name: harbor-registry-credentials
-                      key: HARBOR_ADMIN_PASSWORD
-                - name: REGISTRY_CREDENTIAL_PASSWORD
-                  valueFrom:
-                    secretKeyRef:
-                      name: harbor-registry-credentials
-                      key: REGISTRY_CREDENTIAL_PASSWORD
-                - name: REGISTRY_CREDENTIAL_USERNAME
-                  valueFrom:
-                    secretKeyRef:
-                      name: harbor-registry-credentials
-                      key: REGISTRY_CREDENTIAL_USERNAME
+              extraEnvVars: []
+               # - name: HARBOR_ADMIN_PASSWORD
+               #   valueFrom:
+               #     secretKeyRef:
+               #       name: harbor-registry-credentials
+               #       key: HARBOR_ADMIN_PASSWORD
+               # - name: REGISTRY_CREDENTIAL_PASSWORD
+               #   valueFrom:
+               #     secretKeyRef:
+               #       name: harbor-registry-credentials
+               #       key: REGISTRY_CREDENTIAL_PASSWORD
+               # - name: REGISTRY_CREDENTIAL_USERNAME
+               #   valueFrom:
+               #     secretKeyRef:
+               #       name: harbor-registry-credentials
+               #       key: REGISTRY_CREDENTIAL_USERNAME
                # - name: OIDC_CLIENT_ID
                #   valueFrom:
                #     secretKeyRef:
@@ -490,7 +490,7 @@ spec:
               secret: ""
               # Fill in the name of a kubernetes secret if you want to use your own
               # If using existingSecret, the key must be secret
-              existingSecret: "harbor-admin-credentials"
+              #existingSecret: "harbor-admin-credentials"
               # Fill the name of a kubernetes secret if you want to use your own
               # TLS certificate and private key for token encryption/decryption.
               # The secret must contain keys named:
