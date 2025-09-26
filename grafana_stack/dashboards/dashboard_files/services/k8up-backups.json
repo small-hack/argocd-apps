@@ -387,7 +387,7 @@
             "h": 6,
             "w": 8,
             "x": 0,
-            "y": 7
+            "y": 94
           },
           "id": 17,
           "options": {
@@ -460,7 +460,7 @@
             "h": 6,
             "w": 8,
             "x": 8,
-            "y": 7
+            "y": 94
           },
           "id": 15,
           "options": {
@@ -534,7 +534,7 @@
             "h": 6,
             "w": 8,
             "x": 16,
-            "y": 7
+            "y": 94
           },
           "id": 33,
           "options": {
@@ -579,7 +579,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "P8E80F9AEF21F6940"
+            "uid": "${DS_LOKI}"
           },
           "description": "logs for k8up for GoToSocial",
           "fieldConfig": {
@@ -590,7 +590,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 13
+            "y": 100
           },
           "id": 39,
           "options": {
@@ -609,11 +609,11 @@
             {
               "datasource": {
                 "type": "loki",
-                "uid": "P8E80F9AEF21F6940"
+                "uid": "${DS_LOKI}"
               },
               "direction": "backward",
-              "editorMode": "builder",
-              "expr": "{namespace=\"forgejo\", container=\"backup\"} |= ``",
+              "editorMode": "code",
+              "expr": "{namespace=\"forgejo\", container=\"backup\"}",
               "queryType": "range",
               "refId": "A"
             }
@@ -633,6 +633,19 @@
         "w": 24,
         "x": 0,
         "y": 1
+      },
+      "id": 78,
+      "panels": [],
+      "title": "👻 Ghost",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 2
       },
       "id": 49,
       "panels": [
@@ -687,7 +700,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   },
                   {
                     "color": "red",
@@ -702,7 +716,7 @@
             "h": 6,
             "w": 8,
             "x": 0,
-            "y": 40
+            "y": 2
           },
           "id": 66,
           "options": {
@@ -720,7 +734,7 @@
               "sort": "none"
             }
           },
-          "pluginVersion": "11.6.1",
+          "pluginVersion": "12.1.0",
           "targets": [
             {
               "datasource": {
@@ -793,7 +807,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   },
                   {
                     "color": "red",
@@ -808,7 +823,7 @@
             "h": 6,
             "w": 8,
             "x": 8,
-            "y": 40
+            "y": 2
           },
           "id": 67,
           "options": {
@@ -827,7 +842,7 @@
               "sort": "none"
             }
           },
-          "pluginVersion": "11.6.1",
+          "pluginVersion": "12.1.0",
           "targets": [
             {
               "datasource": {
@@ -901,7 +916,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   },
                   {
                     "color": "red",
@@ -916,7 +932,7 @@
             "h": 6,
             "w": 8,
             "x": 16,
-            "y": 40
+            "y": 2
           },
           "id": 68,
           "options": {
@@ -935,7 +951,7 @@
               "sort": "none"
             }
           },
-          "pluginVersion": "11.6.1",
+          "pluginVersion": "12.1.0",
           "targets": [
             {
               "datasource": {
@@ -972,7 +988,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   },
                   {
                     "color": "red",
@@ -987,7 +1004,7 @@
             "h": 6,
             "w": 8,
             "x": 0,
-            "y": 46
+            "y": 57
           },
           "id": 69,
           "options": {
@@ -1007,7 +1024,7 @@
             "textMode": "auto",
             "wideLayout": true
           },
-          "pluginVersion": "11.6.1",
+          "pluginVersion": "12.1.0",
           "targets": [
             {
               "datasource": {
@@ -1044,7 +1061,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "red"
+                    "color": "red",
+                    "value": 0
                   },
                   {
                     "color": "green",
@@ -1059,7 +1077,7 @@
             "h": 6,
             "w": 8,
             "x": 8,
-            "y": 46
+            "y": 57
           },
           "id": 70,
           "options": {
@@ -1079,7 +1097,7 @@
             "textMode": "auto",
             "wideLayout": true
           },
-          "pluginVersion": "11.6.1",
+          "pluginVersion": "12.1.0",
           "targets": [
             {
               "datasource": {
@@ -1117,7 +1135,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   },
                   {
                     "color": "red",
@@ -1132,7 +1151,7 @@
             "h": 6,
             "w": 8,
             "x": 16,
-            "y": 46
+            "y": 57
           },
           "id": 71,
           "options": {
@@ -1152,7 +1171,7 @@
             "textMode": "auto",
             "wideLayout": true
           },
-          "pluginVersion": "11.6.1",
+          "pluginVersion": "12.1.0",
           "targets": [
             {
               "datasource": {
@@ -1177,7 +1196,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "P8E80F9AEF21F6940"
+            "uid": "${DS_LOKI}"
           },
           "description": "logs for k8up for GoToSocial",
           "fieldConfig": {
@@ -1188,7 +1207,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 52
+            "y": 63
           },
           "id": 72,
           "options": {
@@ -1202,15 +1221,16 @@
             "sortOrder": "Descending",
             "wrapLogMessage": false
           },
-          "pluginVersion": "11.6.1",
+          "pluginVersion": "12.1.0",
           "targets": [
             {
               "datasource": {
                 "type": "loki",
-                "uid": "P8E80F9AEF21F6940"
+                "uid": "${DS_LOKI}"
               },
-              "editorMode": "builder",
-              "expr": "{namespace=\"gotosocial\", container=\"backup\"} |= ``",
+              "direction": "backward",
+              "editorMode": "code",
+              "expr": "{namespace=\"gotosocial\", container=\"backup\"}",
               "queryType": "range",
               "refId": "A"
             }
@@ -1229,7 +1249,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 2
+        "y": 3
       },
       "id": 7,
       "panels": [
@@ -1299,7 +1319,7 @@
             "h": 6,
             "w": 8,
             "x": 0,
-            "y": 97
+            "y": 222
           },
           "id": 51,
           "options": {
@@ -1404,7 +1424,7 @@
             "h": 6,
             "w": 8,
             "x": 8,
-            "y": 97
+            "y": 222
           },
           "id": 52,
           "options": {
@@ -1511,7 +1531,7 @@
             "h": 6,
             "w": 8,
             "x": 16,
-            "y": 97
+            "y": 222
           },
           "id": 53,
           "options": {
@@ -1581,7 +1601,7 @@
             "h": 6,
             "w": 8,
             "x": 0,
-            "y": 103
+            "y": 228
           },
           "id": 54,
           "options": {
@@ -1653,7 +1673,7 @@
             "h": 6,
             "w": 8,
             "x": 8,
-            "y": 103
+            "y": 228
           },
           "id": 55,
           "options": {
@@ -1726,7 +1746,7 @@
             "h": 6,
             "w": 8,
             "x": 16,
-            "y": 103
+            "y": 228
           },
           "id": 56,
           "options": {
@@ -1782,7 +1802,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 109
+            "y": 234
           },
           "id": 43,
           "options": {
@@ -1822,7 +1842,286 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 3
+        "y": 4
+      },
+      "id": 73,
+      "panels": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 6,
+            "w": 8,
+            "x": 0,
+            "y": 5
+          },
+          "id": 20,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "percentChangeColorMode": "standard",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showPercentChange": false,
+            "textMode": "auto",
+            "wideLayout": true
+          },
+          "pluginVersion": "12.1.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "disableTextWrap": false,
+              "editorMode": "builder",
+              "expr": "sum by(instance) (k8up_backup_restic_available_snapshots{namespace=\"jellyfin\"})",
+              "fullMetaSearch": false,
+              "includeNullMetadata": true,
+              "instant": false,
+              "legendFormat": "__auto",
+              "range": true,
+              "refId": "A",
+              "useBackend": false
+            }
+          ],
+          "title": "k8up backup restic snapshots - Jellyfin",
+          "type": "stat"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "yellow",
+                    "value": 0
+                  },
+                  {
+                    "color": "green",
+                    "value": 1
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 6,
+            "w": 8,
+            "x": 8,
+            "y": 5
+          },
+          "id": 24,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "percentChangeColorMode": "standard",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showPercentChange": false,
+            "textMode": "auto",
+            "wideLayout": true
+          },
+          "pluginVersion": "12.1.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "disableTextWrap": false,
+              "editorMode": "builder",
+              "expr": "sum by(exported_namespace) (k8up_jobs_successful_counter{jobType=\"backup\", exported_namespace=\"jellyfin\"})",
+              "fullMetaSearch": false,
+              "includeNullMetadata": true,
+              "instant": false,
+              "legendFormat": "__auto",
+              "range": true,
+              "refId": "A",
+              "useBackend": false
+            }
+          ],
+          "title": "successful k8up jobs - Jellyfin",
+          "type": "stat"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "red",
+                    "value": 1
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 6,
+            "w": 8,
+            "x": 16,
+            "y": 5
+          },
+          "id": 31,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "percentChangeColorMode": "standard",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showPercentChange": false,
+            "textMode": "auto",
+            "wideLayout": true
+          },
+          "pluginVersion": "12.1.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "disableTextWrap": false,
+              "editorMode": "builder",
+              "expr": "sum by(exported_namespace) (k8up_jobs_failed_counter{jobType=\"backup\", exported_namespace=\"jellyfin\"})",
+              "fullMetaSearch": false,
+              "includeNullMetadata": true,
+              "instant": false,
+              "legendFormat": "__auto",
+              "range": true,
+              "refId": "A",
+              "useBackend": false
+            }
+          ],
+          "title": "failed k8up jobs - jellyfin",
+          "type": "stat"
+        },
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "description": "logs for k8up for mastodon",
+          "fieldConfig": {
+            "defaults": {},
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 7,
+            "w": 24,
+            "x": 0,
+            "y": 11
+          },
+          "id": 46,
+          "options": {
+            "dedupStrategy": "none",
+            "enableInfiniteScrolling": false,
+            "enableLogDetails": true,
+            "prettifyLogMessage": false,
+            "showCommonLabels": false,
+            "showLabels": false,
+            "showTime": false,
+            "sortOrder": "Descending",
+            "wrapLogMessage": false
+          },
+          "pluginVersion": "12.1.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "loki",
+                "uid": "${DS_LOKI}"
+              },
+              "direction": "backward",
+              "editorMode": "code",
+              "expr": "{namespace=\"jellyfin\", container=\"backup\"}",
+              "queryType": "range",
+              "refId": "A"
+            }
+          ],
+          "title": "K8up logs for jellyfin",
+          "transparent": true,
+          "type": "logs"
+        }
+      ],
+      "title": "🪼 Jellyfin",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 5
       },
       "id": 8,
       "panels": [
@@ -1877,7 +2176,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   },
                   {
                     "color": "red",
@@ -1892,7 +2192,7 @@
             "h": 6,
             "w": 8,
             "x": 0,
-            "y": 284
+            "y": 18
           },
           "id": 19,
           "options": {
@@ -1905,11 +2205,12 @@
               "showLegend": true
             },
             "tooltip": {
+              "hideZeros": false,
               "mode": "single",
               "sort": "none"
             }
           },
-          "pluginVersion": "11.4.0",
+          "pluginVersion": "12.1.0",
           "targets": [
             {
               "datasource": {
@@ -1984,7 +2285,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   },
                   {
                     "color": "red",
@@ -1999,7 +2301,7 @@
             "h": 6,
             "w": 8,
             "x": 8,
-            "y": 284
+            "y": 18
           },
           "id": 47,
           "options": {
@@ -2012,12 +2314,13 @@
               "showLegend": true
             },
             "tooltip": {
+              "hideZeros": false,
               "maxHeight": 600,
               "mode": "single",
               "sort": "none"
             }
           },
-          "pluginVersion": "11.4.0",
+          "pluginVersion": "12.1.0",
           "targets": [
             {
               "datasource": {
@@ -2092,7 +2395,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   },
                   {
                     "color": "red",
@@ -2107,7 +2411,7 @@
             "h": 6,
             "w": 8,
             "x": 16,
-            "y": 284
+            "y": 18
           },
           "id": 48,
           "options": {
@@ -2120,12 +2424,13 @@
               "showLegend": true
             },
             "tooltip": {
+              "hideZeros": false,
               "maxHeight": 600,
               "mode": "single",
               "sort": "none"
             }
           },
-          "pluginVersion": "11.4.0",
+          "pluginVersion": "12.1.0",
           "targets": [
             {
               "datasource": {
@@ -2162,7 +2467,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   },
                   {
                     "color": "red",
@@ -2177,9 +2483,9 @@
             "h": 6,
             "w": 8,
             "x": 0,
-            "y": 320
+            "y": 24
           },
-          "id": 20,
+          "id": 74,
           "options": {
             "colorMode": "value",
             "graphMode": "area",
@@ -2197,7 +2503,7 @@
             "textMode": "auto",
             "wideLayout": true
           },
-          "pluginVersion": "11.4.0",
+          "pluginVersion": "12.1.0",
           "targets": [
             {
               "datasource": {
@@ -2234,7 +2540,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "yellow"
+                    "color": "yellow",
+                    "value": 0
                   },
                   {
                     "color": "green",
@@ -2249,9 +2556,9 @@
             "h": 6,
             "w": 8,
             "x": 8,
-            "y": 320
+            "y": 24
           },
-          "id": 24,
+          "id": 75,
           "options": {
             "colorMode": "value",
             "graphMode": "area",
@@ -2269,7 +2576,7 @@
             "textMode": "auto",
             "wideLayout": true
           },
-          "pluginVersion": "11.4.0",
+          "pluginVersion": "12.1.0",
           "targets": [
             {
               "datasource": {
@@ -2306,7 +2613,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   },
                   {
                     "color": "red",
@@ -2321,9 +2629,9 @@
             "h": 6,
             "w": 8,
             "x": 16,
-            "y": 320
+            "y": 24
           },
-          "id": 31,
+          "id": 76,
           "options": {
             "colorMode": "value",
             "graphMode": "area",
@@ -2341,7 +2649,7 @@
             "textMode": "auto",
             "wideLayout": true
           },
-          "pluginVersion": "11.4.0",
+          "pluginVersion": "12.1.0",
           "targets": [
             {
               "datasource": {
@@ -2365,9 +2673,8 @@
         },
         {
           "datasource": {
-            "default": false,
             "type": "loki",
-            "uid": "P8E80F9AEF21F6940"
+            "uid": "${DS_LOKI}"
           },
           "description": "logs for k8up for mastodon",
           "fieldConfig": {
@@ -2378,11 +2685,12 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 326
+            "y": 30
           },
-          "id": 46,
+          "id": 77,
           "options": {
             "dedupStrategy": "none",
+            "enableInfiniteScrolling": false,
             "enableLogDetails": true,
             "prettifyLogMessage": false,
             "showCommonLabels": false,
@@ -2391,15 +2699,16 @@
             "sortOrder": "Descending",
             "wrapLogMessage": false
           },
-          "pluginVersion": "11.4.0",
+          "pluginVersion": "12.1.0",
           "targets": [
             {
               "datasource": {
                 "type": "loki",
-                "uid": "P8E80F9AEF21F6940"
+                "uid": "${DS_LOKI}"
               },
-              "editorMode": "builder",
-              "expr": "{namespace=\"mastodon\", container=\"backup\"} |= ``",
+              "direction": "backward",
+              "editorMode": "code",
+              "expr": "{namespace=\"mastodon\", container=\"backup\"}",
               "queryType": "range",
               "refId": "A"
             }
@@ -2418,7 +2727,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 4
+        "y": 6
       },
       "id": 5,
       "panels": [
@@ -2488,7 +2797,7 @@
             "h": 6,
             "w": 8,
             "x": 0,
-            "y": 273
+            "y": 398
           },
           "id": 13,
           "options": {
@@ -2594,7 +2903,7 @@
             "h": 6,
             "w": 8,
             "x": 8,
-            "y": 273
+            "y": 398
           },
           "id": 37,
           "options": {
@@ -2700,7 +3009,7 @@
             "h": 6,
             "w": 8,
             "x": 16,
-            "y": 273
+            "y": 398
           },
           "id": 38,
           "options": {
@@ -2770,7 +3079,7 @@
             "h": 5,
             "w": 8,
             "x": 0,
-            "y": 279
+            "y": 404
           },
           "id": 1,
           "options": {
@@ -2842,7 +3151,7 @@
             "h": 5,
             "w": 8,
             "x": 8,
-            "y": 279
+            "y": 404
           },
           "id": 2,
           "options": {
@@ -2915,7 +3224,7 @@
             "h": 5,
             "w": 8,
             "x": 16,
-            "y": 279
+            "y": 404
           },
           "id": 29,
           "options": {
@@ -2971,7 +3280,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 284
+            "y": 409
           },
           "id": 57,
           "options": {
@@ -3011,7 +3320,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 5
+        "y": 7
       },
       "id": 25,
       "panels": [
@@ -3081,7 +3390,7 @@
             "h": 8,
             "w": 10,
             "x": 0,
-            "y": 304
+            "y": 429
           },
           "id": 22,
           "options": {
@@ -3150,7 +3459,7 @@
             "h": 8,
             "w": 10,
             "x": 10,
-            "y": 304
+            "y": 429
           },
           "id": 23,
           "options": {
@@ -3218,7 +3527,7 @@
             "h": 4,
             "w": 10,
             "x": 0,
-            "y": 312
+            "y": 437
           },
           "id": 21,
           "options": {
@@ -3289,7 +3598,7 @@
             "h": 4,
             "w": 10,
             "x": 10,
-            "y": 312
+            "y": 437
           },
           "id": 30,
           "options": {
@@ -3340,7 +3649,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 6
+        "y": 8
       },
       "id": 4,
       "panels": [
@@ -3410,7 +3719,7 @@
             "h": 6,
             "w": 8,
             "x": 0,
-            "y": 317
+            "y": 442
           },
           "id": 12,
           "options": {
@@ -3516,7 +3825,7 @@
             "h": 6,
             "w": 8,
             "x": 8,
-            "y": 317
+            "y": 442
           },
           "id": 35,
           "options": {
@@ -3622,7 +3931,7 @@
             "h": 6,
             "w": 8,
             "x": 16,
-            "y": 317
+            "y": 442
           },
           "id": 34,
           "options": {
@@ -3692,7 +4001,7 @@
             "h": 5,
             "w": 8,
             "x": 0,
-            "y": 323
+            "y": 448
           },
           "id": 26,
           "options": {
@@ -3764,7 +4073,7 @@
             "h": 5,
             "w": 8,
             "x": 8,
-            "y": 323
+            "y": 448
           },
           "id": 28,
           "options": {
@@ -3837,7 +4146,7 @@
             "h": 5,
             "w": 8,
             "x": 16,
-            "y": 323
+            "y": 448
           },
           "id": 14,
           "options": {
@@ -3893,7 +4202,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 328
+            "y": 453
           },
           "id": 36,
           "options": {
@@ -3933,7 +4242,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 7
+        "y": 9
       },
       "id": 50,
       "panels": [
@@ -4003,7 +4312,7 @@
             "h": 6,
             "w": 8,
             "x": 0,
-            "y": 64
+            "y": 189
           },
           "id": 59,
           "options": {
@@ -4108,7 +4417,7 @@
             "h": 6,
             "w": 8,
             "x": 8,
-            "y": 64
+            "y": 189
           },
           "id": 60,
           "options": {
@@ -4215,7 +4524,7 @@
             "h": 6,
             "w": 8,
             "x": 16,
-            "y": 64
+            "y": 189
           },
           "id": 61,
           "options": {
@@ -4285,7 +4594,7 @@
             "h": 6,
             "w": 8,
             "x": 0,
-            "y": 89
+            "y": 214
           },
           "id": 62,
           "options": {
@@ -4357,7 +4666,7 @@
             "h": 6,
             "w": 8,
             "x": 8,
-            "y": 89
+            "y": 214
           },
           "id": 63,
           "options": {
@@ -4430,7 +4739,7 @@
             "h": 6,
             "w": 8,
             "x": 16,
-            "y": 89
+            "y": 214
           },
           "id": 64,
           "options": {
@@ -4486,7 +4795,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 95
+            "y": 220
           },
           "id": 58,
           "options": {
@@ -4526,7 +4835,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 8
+        "y": 10
       },
       "id": 6,
       "panels": [
@@ -4596,7 +4905,7 @@
             "h": 6,
             "w": 8,
             "x": 0,
-            "y": 65
+            "y": 190
           },
           "id": 10,
           "options": {
@@ -4703,7 +5012,7 @@
             "h": 6,
             "w": 8,
             "x": 8,
-            "y": 65
+            "y": 190
           },
           "id": 40,
           "options": {
@@ -4811,7 +5120,7 @@
             "h": 6,
             "w": 8,
             "x": 16,
-            "y": 65
+            "y": 190
           },
           "id": 41,
           "options": {
@@ -4882,7 +5191,7 @@
             "h": 6,
             "w": 8,
             "x": 0,
-            "y": 71
+            "y": 196
           },
           "id": 11,
           "options": {
@@ -4950,7 +5259,7 @@
             "h": 6,
             "w": 8,
             "x": 8,
-            "y": 71
+            "y": 196
           },
           "id": 27,
           "options": {
@@ -5023,7 +5332,7 @@
             "h": 6,
             "w": 8,
             "x": 16,
-            "y": 71
+            "y": 196
           },
           "id": 32,
           "options": {
@@ -5079,7 +5388,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 77
+            "y": 202
           },
           "id": 42,
           "options": {
@@ -5157,5 +5466,5 @@
   "timezone": "browser",
   "title": "K8up backups",
   "uid": "adp2mzw5g81z4c",
-  "version": 1
+  "version": 2
 }
