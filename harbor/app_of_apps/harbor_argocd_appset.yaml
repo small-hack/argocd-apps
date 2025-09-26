@@ -629,14 +629,6 @@ spec:
               priorityClassName:
               # containers to be run before the controller's container starts.
               initContainers: []
-              # Example:
-              #
-              # - name: wait
-              #   image: busybox
-              #   command: [ 'sh', '-c', "sleep 20" ]
-              # Secret is used to secure the upload state from client
-              # and registry storage backend.
-              # See: https://github.com/distribution/distribution/blob/release/2.8/docs/configuration.md#http
               # If a secret key is not specified, Helm will generate one.
               # Must be a string of 16 chars.
               secret: ""
@@ -646,14 +638,14 @@ spec:
               existingSecretKey: REGISTRY_HTTP_SECRET
               # If true, the registry returns relative URLs in Location headers. The client is responsible for resolving the correct URL.
               relativeurls: false
-              credentials:
-                username: "harbor_registry_user"
-                password: "harbor_registry_password"
-                # If using existingSecret, the key must be REGISTRY_PASSWD and REGISTRY_HTPASSWD
-                existingSecret: ""
-                # Login and password in htpasswd string format. Excludes `registry.credentials.username`  and `registry.credentials.password`. May come in handy when integrating with tools like argocd or flux. This allows the same line to be generated each time the template is rendered, instead of the `htpasswd` function from helm, which generates different lines each time because of the salt.
+              #credentials:
+              #  username: "harbor_registry_user"
+              #  password: "harbor_registry_password"
+              #  # If using existingSecret, the key must be REGISTRY_PASSWD and REGISTRY_HTPASSWD
+              #  existingSecret: ""
+              #  # Login and password in htpasswd string format. Excludes `registry.credentials.username`  and `registry.credentials.password`. May come in handy when integrating with tools like argocd or flux. This allows the same line to be generated each time the template is rendered, instead of the `htpasswd` function from helm, which generates different lines each time because of the salt.
                 # htpasswdString: $apr1$XLefHzeG$Xl4.s00sMSCCcMyJljSZb0 # example string
-                htpasswdString: ""
+              #  htpasswdString: ""
               middleware:
                 enabled: false
                 type: cloudFront
@@ -937,7 +929,7 @@ spec:
             #
             ################################################################################
             trace:
-              enabled: true
+              enabled: false
               # trace provider: jaeger or otel
               # jaeger should be 1.26+
               provider: otel
@@ -952,7 +944,7 @@ spec:
                 # jaeger supports two modes:
                 #   collector mode(uncomment endpoint and uncomment username, password if needed)
                 #   agent mode(uncomment agent_host and agent_port)
-                endpoint: http://hostname:14268/api/traces
+                endpoint: http://hostname:14268/
                 # username:
                 # password:
                 # agent_host: hostname
