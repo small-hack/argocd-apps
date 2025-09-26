@@ -269,8 +269,6 @@ spec:
               # and redis components, i.e. they are never deleted automatically)
               resourcePolicy: "keep"
               persistentVolumeClaim:
-                registry:
-                  existingClaim: "registry"
                 jobservice:
                   jobLog:
                     existingClaim: "jobs"
@@ -315,9 +313,9 @@ spec:
                 # Specify the type of storage: "filesystem", "azure", "gcs", "s3", "swift",
                 # "oss" and fill the information needed in the corresponding section. The type
                 # must be "filesystem" if you want to use persistent volumes for registry
-                type: filesystem
-                filesystem:
-                  rootdirectory: /storage
+                type: s3
+                #filesystem:
+                #  rootdirectory: /storage
                 azure:
                   accountname: accountname
                   accountkey: base64encodedaccountkey
@@ -333,9 +331,9 @@ spec:
                   useWorkloadIdentity: false
                 s3:
                   # keys in the secret should be REGISTRY_STORAGE_S3_ACCESSKEY and REGISTRY_STORAGE_S3_SECRETKEY for registry
-                  #existingSecret: "admin-s3-credentials"
-                  #region: us-west-1
-                  #bucket: harbor
+                  existingSecret: "admin-s3-credentials"
+                  region: eu-central-1
+                  bucket: harbor
                 swift:
                   authurl: https://storage.myprovider.com/v3/auth
                   username: username
@@ -413,7 +411,7 @@ spec:
               #  requests:
               #    memory: 256Mi
               #    cpu: 100m
-              extraEnvVars: []
+              extraEnvVars:
                # - name: HARBOR_ADMIN_PASSWORD
                #   valueFrom:
                #     secretKeyRef:
@@ -429,36 +427,36 @@ spec:
                #     secretKeyRef:
                #       name: harbor-registry-credentials
                #       key: REGISTRY_CREDENTIAL_USERNAME
-               # - name: OIDC_CLIENT_ID
-               #   valueFrom:
-               #     secretKeyRef:
-               #       name: oidc-harbor
-               #       key: client_id
-               # - name: OIDC_CLIENT_SECRET
-               #   valueFrom:
-               #     secretKeyRef:
-               #       name: oidc-harbor
-               #       key: client_secret
-               # - name: OIDC_ENDPOINT
-               #   valueFrom:
-               #     secretKeyRef:
-               #       name: oidc-harbor
-               #       key: endpoint
-               # - name: CONFIG_OVERWRITE_JSON
-               #   value: |
-               #     {
-               #       "auth_mode": "oidc_auth",
-               #       "oidc_name": "Zitadel",
-               #       "oidc_endpoint": "$(OIDC_ENDPOINT)",
-               #       "oidc_groups_claim": "groups",
-               #       "oidc_admin_group": "harbor_admins",
-               #       "oidc_client_id": "$(OIDC_CLIENT_ID)",
-               #       "oidc_client_secret": "$(OIDC_CLIENT_SECRET)",
-               #       "oidc_scope": "openid,email,profile,email",
-               #       "oidc_verify_cert": "false",
-               #       "oidc_auto_onboard": "true",
-               #       "oidc_user_claim": "name"
-               #     }
+               - name: OIDC_CLIENT_ID
+                 valueFrom:
+                   secretKeyRef:
+                     name: oidc-harbor
+                     key: client_id
+               - name: OIDC_CLIENT_SECRET
+                 valueFrom:
+                   secretKeyRef:
+                     name: oidc-harbor
+                     key: client_secret
+               - name: OIDC_ENDPOINT
+                 valueFrom:
+                   secretKeyRef:
+                     name: oidc-harbor
+                     key: endpoint
+               - name: CONFIG_OVERWRITE_JSON
+                 value: |
+                   {
+                     "auth_mode": "oidc_auth",
+                     "oidc_name": "Zitadel",
+                     "oidc_endpoint": "$(OIDC_ENDPOINT)",
+                     "oidc_groups_claim": "groups",
+                     "oidc_admin_group": "harbor_admins",
+                     "oidc_client_id": "$(OIDC_CLIENT_ID)",
+                     "oidc_client_secret": "$(OIDC_CLIENT_SECRET)",
+                     "oidc_scope": "openid,email,profile,email",
+                     "oidc_verify_cert": "false",
+                     "oidc_auto_onboard": "true",
+                     "oidc_user_claim": "name"
+                   }
               nodeSelector: {}
               tolerations: []
               affinity: {}
