@@ -333,9 +333,9 @@ spec:
                   useWorkloadIdentity: false
                 s3:
                   # keys in the secret should be REGISTRY_STORAGE_S3_ACCESSKEY and REGISTRY_STORAGE_S3_SECRETKEY for registry
-                  existingSecret: "admin-s3-credentials"
-                  region: us-west-1
-                  bucket: harbor
+                  #existingSecret: "admin-s3-credentials"
+                  #region: us-west-1
+                  #bucket: harbor
                 swift:
                   authurl: https://storage.myprovider.com/v3/auth
                   username: username
