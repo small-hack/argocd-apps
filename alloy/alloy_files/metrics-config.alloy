@@ -35,6 +35,9 @@ prometheus.scrape "nodes" {
         scrape_interval = "10s"
         targets         = discovery.kubernetes.nodes.targets
         forward_to      = [prometheus.remote_write.default.receiver]
+	clsutering {
+	    enabled = true
+	}
 }
 
 discovery.relabel "kubelet" {
@@ -79,6 +82,9 @@ prometheus.operator.servicemonitors "default" {
             default_scrape_interval = "10s"
             default_scrape_timeout  = "5s"
         }
+	clsutering {
+	    enabled = true
+	}
 }
 
 prometheus.operator.podmonitors "default" {
@@ -87,6 +93,9 @@ prometheus.operator.podmonitors "default" {
             default_scrape_interval = "10s"
             default_scrape_timeout  = "5s"
         }
+	clsutering {
+	    enabled = true
+	}
 }
 
 discovery.relabel "cadvisor" {
@@ -116,16 +125,21 @@ discovery.relabel "cadvisor" {
 }
 
 prometheus.scrape "cadvisor" {
-  job_name   = "integrations/kubernetes/cadvisor"
-  targets    = discovery.relabel.cadvisor.output
-  scheme     = "https"
-  scrape_interval = "10s"
-  bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
-  tls_config {
-    insecure_skip_verify = true
-  }
+	job_name   = "integrations/kubernetes/cadvisor"
+ 	targets    = discovery.relabel.cadvisor.output
+ 	scheme     = "https"
+ 	scrape_interval = "10s"
+ 	bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
 
-  forward_to = [prometheus.remote_write.default.receiver]
+	tls_config {
+ 	  insecure_skip_verify = true
+ 	}
+
+	clsutering {
+	    enabled = true
+	}
+
+	forward_to = [prometheus.remote_write.default.receiver]
 }
 
 prometheus.remote_write "default" {
