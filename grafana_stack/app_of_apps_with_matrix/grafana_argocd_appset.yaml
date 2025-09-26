@@ -58,12 +58,6 @@ spec:
                   name: grafana-oidc-credentials
                   key: client_secret
 
-            sidecar:
-              dashboards:
-                enabled: true
-                label: grafana_dashboard
-                labelValue: "1"
-
             grafana.ini:
               auth:
                 disable_login_form: true
@@ -86,6 +80,71 @@ spec:
 
               server:
                 root_url: "https://{{ .grafana_stack_grafana_hostname }}"
+
+            sidecar:
+              dashboards:
+                enabled: true
+                label: grafana_dashboard
+                labelValue: "1"
+                folder: /var/lib/grafana/dashboards
+                provider:
+                  foldersFromFileStructure: true
+                searchNamespace: ALL
+
+              datasources:
+                enabled: true
+                label: grafana_datasource
+                lavelValue: 1
+                httpMethod: POST
+
+            dashboardProviders:
+              dashboardProviders.yaml:
+                apiVersion: 1
+                providers:
+                  - name: 'default'
+                    orgId: 1
+                    folder: ''
+                    type: file
+                    disableDeletion: false
+                    editable: true
+                    options:
+                      path: /var/lib/grafana/dashboards/default
+
+                  - name: 'kubernetes'
+                    orgId: 1
+                    folder: ''
+                    type: file
+                    disableDeletion: false
+                    editable: true
+                    options:
+                      path: /var/lib/grafana/dashboards/kubernertes
+
+                  - name: 'services'
+                    orgId: 1
+                    folder: ''
+                    type: file
+                    disableDeletion: false
+                    editable: true
+                    options:
+                      path: /var/lib/grafana/dashboards/services
+
+                  - name: 'security'
+                    orgId: 1
+                    folder: ''
+                    type: file
+                    disableDeletion: false
+                    editable: true
+                    options:
+                      path: /var/lib/grafana/dashboards/security
+
+                  - name: 'monitoring'
+                    orgId: 1
+                    folder: ''
+                    type: file
+                    disableDeletion: false
+                    editable: true
+                    options:
+                      path: /var/lib/grafana/dashboards/monitoring
 
             # Configure grafana datasources. docs:
             # http://docs.grafana.org/administration/provisioning/#datasources

@@ -8,11 +8,6 @@ metadata:
 spec:
   project: monitoring
 
-  source:
-    repoURL: 'https://github.com/small-hack/argocd-apps'
-    targetRevision: main
-    path: grafana_stack/dashboards/
-
   destination:
     server: "https://kubernetes.default.svc"
     namespace: monitoring
@@ -24,3 +19,12 @@ spec:
     automated:
       prune: true
       selfHeal: true
+
+  source:
+    repoURL: 'https://github.com/small-hack/argocd-apps'
+    targetRevision: main
+    path: grafana_stack/dashboards/
+    helm:
+      valuesObject:
+        dashboards:
+          deploy_all: true

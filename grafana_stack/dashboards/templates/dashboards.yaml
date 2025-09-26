@@ -1,0 +1,36 @@
+{{- if .Values.dashboards.deploy_all }}
+{{/* iterate through every file path under the dashboard_files directory */}}
+{{- range $path, $_ :=  .Files.Glob  "dashboard_files/**.json" }}
+{{/*
+     determine the base file name, remove spaces, change all characters to
+     lowercase, and remove "dashboard_files/" from the path
+ */}}
+{{- $file_name := $path | trimPrefix "dashboard_files/" | lower | nospace -}}
+{{/*
+    trim observability or kubernetes or .json from file name for use in the ConfigMap metadata.name
+*/}}
+{{- $file_name_no_folder := $file_name | trimPrefix "monitoring/" | trimPrefix "kubernetes/" | trimPrefix "services/" | trimPrefix "security/" | trimSuffix ".json" -}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    grafana_dashboard: "1"
+  name: grafana-dashboard-{{ $file_name_no_folder }}
+  annotations:
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+    {{- if contains "kubernetes" $file_name }}
+    # sort dashboard into grafana folder based on their repo directory
+    k8s-sidecar-target-directory: /var/lib/grafana/dashboards/kubernetes
+    {{- else if contains "monitoring" $file_name }}
+    # sort dashboard into grafana folder based on their repo directory
+    k8s-sidecar-target-directory: /var/lib/grafana/dashboards/monitoring
+    {{- else if contains "services" $file_name }}
+    # sort dashboard into grafana folder based on their repo directory
+    k8s-sidecar-target-directory: /var/lib/grafana/dashboards/services
+    {{- end }}
+data:
+  {{ $file_name_no_folder }}.json: |-
+    {{- $.Files.Get $path | nindent 4 }}
+{{- end }}
+{{- end }}
