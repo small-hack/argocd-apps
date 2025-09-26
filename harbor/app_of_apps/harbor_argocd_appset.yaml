@@ -840,7 +840,7 @@ spec:
                 username: ""
                 password: ""
                 # If using existingSecret, the key must be REDIS_PASSWORD, if ACL mode enabled, also inlcudes data of username, the keys must be REDIS_USERNAME
-                existingSecret: ""
+                existingSecret: "harbor-valkey-credentials"
               ## Additional deployment annotations
               podAnnotations: {}
               ## Additional deployment labels
