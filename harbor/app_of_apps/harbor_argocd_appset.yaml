@@ -743,7 +743,7 @@ spec:
                 port: "5432"
                 username: "harbor"
                 password: "password"
-                coreDatabase: "registry"
+                coreDatabase: "harbor"
                 # if using existing secret, the key must be "password"
                 existingSecret: "harbor-pgsql-credentials"
                 # "disable" - No SSL
