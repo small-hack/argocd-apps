@@ -1,0 +1,87 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: juicefs-valkey-pvc-app-set
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  goTemplate: true
+  # generator allows us to source specific values from an external k8s secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - juicefs_s3_backup_endpoint
+              - juicefs_s3_backup_bucket
+              - juicefs_s3_backup_region
+              - juicefs_s3_pvc_capacity
+              - juicefs_pvc_backup_schedule
+              - juicefs_valkey_pvc_storage_class
+  template:
+    metadata:
+      name: juicefs-s3-pvc
+      annotations:
+        argocd.argoproj.io/sync-wave: "1"
+    spec:
+      project: juicefs
+      destination:
+        server: "https://kubernetes.default.svc"
+        namespace: juicefs
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+        automated:
+          prune: true
+          selfHeal: true
+      source:
+        repoURL: https://github.com/small-hack/argocd-apps.git
+        path: s3_persistence_and_backups/
+        targetRevision: main
+        helm:
+          valuesObject:
+            provider: juicefs
+            pvc_capacity: '{{ .juicefs_s3_pvc_capacity }}'
+            pvc_storageClassName: '{{ .juicefs_valkey_pvc_storage_class }}'
+
+            seaweedfs:
+              # -- deploy a master data PVC for seaweedfs
+              master_pvc: false
+
+            # not in use yet
+            k8up:
+              # -- user to run the backups as
+              securityContext:
+                runAsUser: 82
+
+              backup_name: 'juicefs-valkey-nightly-backup'
+
+              # -- can be set to 's3' or 'local'
+              backup_type: 's3'
+
+              s3:
+                bucket: '{{ .juicefs_s3_backup_bucket }}'
+                endpoint: '{{ .juicefs_s3_backup_endpoint }}'
+                accessKeyIDSecretRef:
+                  name: 's3-backups-credentials'
+                  key: 'accessKeyId'
+                  optional: false
+                secretAccessKeySecretRef:
+                  name: 's3-backups-credentials'
+                  key: 'secretAccessKey'
+                  optional: false
+
+              repoPasswordSecretRef:
+                name: 's3-backups-credentials'
+                key: 'resticRepoPassword'
+
+              prometheus_url: 'push-gateway.prometheus.svc:9091'
+
+              schedules:
+                backup: '{{ .juicefs_pvc_backup_schedule }}'
+                check: '0 0 * * *'
+                prune: '0 0 * * *'

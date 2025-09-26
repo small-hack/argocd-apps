@@ -1,0 +1,99 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/component: filer
+    app.kubernetes.io/instance: seaweedfs
+    app.kubernetes.io/name: seaweedfs
+  name: seaweedfs-filer-nodeport
+spec:
+  internalTrafficPolicy: Cluster
+  ipFamilyPolicy: SingleStack
+  ports:
+    - name: swfs-filer
+      port: 8888
+      protocol: TCP
+      targetPort: 8888
+    - name: swfs-filer-grpc
+      port: 18888
+      protocol: TCP
+      targetPort: 18888
+    - name: swfs-s3
+      port: 8333
+      protocol: TCP
+      targetPort: 8333
+    - name: metrics
+      port: 9327
+      protocol: TCP
+      targetPort: 9327
+  publishNotReadyAddresses: true
+  selector:
+    app.kubernetes.io/component: filer
+    app.kubernetes.io/name: seaweedfs
+  sessionAffinity: None
+  type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/component: master
+    app.kubernetes.io/instance: seaweedfs
+    app.kubernetes.io/name: seaweedfs
+  name: seaweedfs-master-nodeport
+spec:
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+    - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+    - name: swfs-master
+      port: 9333
+      protocol: TCP
+      targetPort: 9333
+    - name: swfs-master-grpc
+      port: 19333
+      protocol: TCP
+      targetPort: 19333
+    - name: metrics
+      port: 9327
+      protocol: TCP
+      targetPort: 9327
+  publishNotReadyAddresses: true
+  selector:
+    app.kubernetes.io/component: master
+    app.kubernetes.io/name: seaweedfs
+  sessionAffinity: None
+  type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/component: volume
+    app.kubernetes.io/instance: seaweedfs
+    app.kubernetes.io/name: seaweedfs
+  name: seaweedfs-volume-nodeport
+spec:
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+    - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+    - name: swfs-volume
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    - name: swfs-volume-18080
+      port: 18080
+      protocol: TCP
+      targetPort: 18080
+    - name: metrics
+      port: 9327
+      protocol: TCP
+      targetPort: 9327
+  selector:
+    app.kubernetes.io/component: volume
+    app.kubernetes.io/name: seaweedfs
+  sessionAffinity: None
+  type: NodePort

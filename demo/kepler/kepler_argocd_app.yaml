@@ -13,7 +13,7 @@ spec:
     namespace: kepler
   source:
     repoURL: 'https://sustainable-computing-io.github.io/kepler-helm-chart'
-    targetRevision: 0.5.13
+    targetRevision: 0.6.1
     chart: kepler
     helm:
       values: |
@@ -67,9 +67,9 @@ spec:
           usrSrc: true  # /usr/src may not available, ie GKE
 
         serviceMonitor:
-          enabled: false
-          namespace: ""
-          interval: 30s
+          enabled: true
+          namespace: "monitoring"
+          interval: 10s
           scrapeTimeout: 5s
           labels: {}
 
