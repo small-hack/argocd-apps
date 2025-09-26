@@ -1,0 +1,11 @@
+apiVersion: v2
+name: dashboards
+description: Turn json dashboard files into yaml configmaps
+
+type: application
+version: 0.0.1
+appVersion: 0.0.0
+
+maintainers:
+  - name: "cloudymax"
+    url: "https://github.com/cloudymax/"
