@@ -54,7 +54,7 @@ spec:
 
             # for auth, we get the valkey credentials from an ExternalSecret
             auth:
-              enabled: true
+              enabled: false
               existingSecret: "valkey-credentials"
               existingSecretPasswordKey: "valkey_password"
 

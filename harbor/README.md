@@ -9,3 +9,10 @@ We used to deploy this helm chart, [goharbor/harbor-helm](https://github.com/goh
 1. External Secrets, Persistent Volumes
 2. PostgreSQL Cluster, Valkey
 3. Harbor helm chart
+
+
+# Security issue
+
+Valkey runs without a password untilt he following issues with the helm chart are fixed:
+- https://github.com/goharbor/harbor-helm/issues/2148
+- https://github.com/goharbor/harbor-helm/issues/2207
