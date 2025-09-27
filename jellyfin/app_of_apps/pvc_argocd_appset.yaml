@@ -16,6 +16,8 @@ spec:
         input:
           parameters:
             secret_vars:
+              - jellyfin_s3_backup_endpoint
+              - jellyfin_s3_backup_bucket
               - jellyfin_media_pvc_enabled
               - jellyfin_media_storage
               - jellyfin_media_access_mode
