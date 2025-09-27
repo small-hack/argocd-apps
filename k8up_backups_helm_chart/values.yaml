@@ -34,7 +34,7 @@ repoPasswordSecretRef:
   key: ''
 
 # -- url to push to for prometheus gateway
-prometheus_url: ''
+prometheus_url: 'push-gateway.monitoring.svc:9091'
 
 # -- user to run the backups as
 podSecurityContext:
