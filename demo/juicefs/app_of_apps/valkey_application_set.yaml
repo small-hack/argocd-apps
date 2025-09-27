@@ -17,7 +17,7 @@ spec:
         input:
           parameters:
             secret_vars:
-              - global_storage_class
+              - juicefs_valkey_pvc_storage_class
   template:
     metadata:
       name: juicefs-valkey-app
@@ -49,7 +49,7 @@ spec:
           # helm parameter overrides
           valuesObject:
             global:
-              storageClass: "{{ .global_storage_class }}"
+              storageClass: "{{ .juicefs_valkey_pvc_storage_class }}"
 
             fullnameOverride: "juicefs-valkey"
 
