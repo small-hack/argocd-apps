@@ -453,7 +453,7 @@ spec:
                      "oidc_admin_group": "harbor_admins",
                      "oidc_client_id": "$(OIDC_CLIENT_ID)",
                      "oidc_client_secret": "$(OIDC_CLIENT_SECRET)",
-                     "oidc_scope": "openid,email,profile",
+                     "oidc_scope": "openid,email,profile,offline_access,preferred_username",
                      "oidc_verify_cert": "false",
                      "oidc_auto_onboard": "true",
                      "oidc_user_claim": "preferred_username"
