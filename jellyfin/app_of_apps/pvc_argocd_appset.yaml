@@ -48,7 +48,7 @@ spec:
           selfHeal: true
       source:
         repoURL: https://github.com/small-hack/argocd-apps.git
-        path: demo/jellyfin/storage/pvc/
+        path: jellyfin/storage/pvc/
         targetRevision: main
         helm:
           valuesObject:
@@ -117,7 +117,7 @@ spec:
                 name: 's3-backups-credentials'
                 key: 'resticRepoPassword'
 
-              prometheus_url: 'push-gateway.prometheus.svc:9091'
+              prometheus_url: 'push-gateway.monitoring.svc:9091'
 
               schedules:
                 backup: '{{ .jellyfin_pvc_backup_schedule }}'

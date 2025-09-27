@@ -80,7 +80,7 @@ spec:
                 name: 's3-backups-credentials'
                 key: 'resticRepoPassword'
 
-              prometheus_url: 'push-gateway.prometheus.svc:9091'
+              prometheus_url: 'push-gateway.monitoring.svc:9091'
 
               schedules:
                 backup: '{{ .grafana_stack_pvc_backup_schedule }}'

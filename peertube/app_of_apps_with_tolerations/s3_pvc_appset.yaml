@@ -98,7 +98,7 @@ spec:
                 name: 'peertube-s3-postgres-credentials'
                 key: 'resticRepoPassword'
 
-              prometheus_url: 'push-gateway.prometheus.svc:9091'
+              prometheus_url: 'push-gateway.monitoring.svc:9091'
 
               schedules:
                 backup: "0 0 0 * * *"
