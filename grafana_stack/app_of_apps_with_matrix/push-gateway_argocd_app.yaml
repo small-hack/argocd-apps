@@ -20,7 +20,7 @@ spec:
   # where to put this app
   destination:
     server: https://kubernetes.default.svc
-    namespace: prometheus
+    namespace: monitoring
 
   # where to source this app from
   source:
