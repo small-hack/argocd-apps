@@ -1,7 +1,7 @@
 apiVersion: k8up.io/v1
 kind: PodConfig
 metadata:
-  name: file-backups-podconfig
+  name: jellyfin-podconfig
 spec:
   template:
     spec:
