@@ -44,7 +44,7 @@ spec:
           releaseName: harbor-postgres-cluster
           valuesObject:
             name: harbor-postgres
-            instances: 1
+            instances: 2
             bootstrap:
               initdb:
                 database: harbor
