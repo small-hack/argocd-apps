@@ -5,7 +5,7 @@ metadata:
   name: root-backup-nextcloud-s3
   namespace: nextcloud
 spec:
-  promURL: http://push-gateway.prometheus:9091/
+  promURL: http://push-gateway.monitoring:9091/
   podSecurityContext:
     runAsUser: 0
   failedJobsHistoryLimit: 10
