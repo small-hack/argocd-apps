@@ -150,6 +150,7 @@ spec:
                   Include /etc/nginx/owasp-modsecurity-crs/plugins/postgresql-rule-exclusions-before.conf
                   Include /etc/nginx/owasp-modsecurity-crs/plugins/tempo-rule-exclusions-before.conf
                   Include /etc/nginx/owasp-modsecurity-crs/plugins/mimir-rule-exclusions-before.conf
+                  Include /etc/nginx/owasp-modsecurity-crs/plugins/harbor-rule-exclusions-before.conf
 
                   # OWASP Core Rule Set
                   Include /etc/nginx/owasp-modsecurity-crs/nginx-modsecurity.conf
