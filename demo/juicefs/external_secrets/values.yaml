@@ -1,6 +1,6 @@
 # -- if this is not set to "bitwarden", we will not actually deploy any templates
 # we may support other secret providers in the future
-provider: "juicefs"
+provider: "bitwarden"
 
 # -- if set to seaweedfs we deploy a policy secret. can also be minio
 s3_provider: "seaweedfs"
