@@ -21,6 +21,7 @@ spec:
               - juicefs_s3_dshboard_url
               - global_cluster_issuer
               - vouch_hostname
+              - juicefs_hostname
   template:
     metadata:
       name: juicefs-csi-driver-app
@@ -63,19 +64,19 @@ spec:
                     proxy_set_header X-User  $user;
                     proxy_set_header X-Email $email;
                 hosts:
-                - host: "{{ .juicefs_s3_dshboard_url }}"
+                - host: "{{ .juicefs_hostname }}"
                   paths:
                   - path: /
                     pathType: ImplementationSpecific
                 tls:
                   - secretName: juicefs-tls
                     hosts:
-                      - "{{ .juicefs_s3_dshboard_url }}"
+                      - "{{ .juicefs_hostname }}"
 
             storageClasses:
             - name: "juicefs"
               enabled: false
-              
+
       syncPolicy:
         syncOptions:
           - CreateNamespace=true
