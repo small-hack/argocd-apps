@@ -3,7 +3,7 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: juicefs-valkey-primary
+  name: valkey-data-juicefs-valkey-0
   annotations:
     k8up.io/backup: "true"
 spec:
@@ -17,7 +17,63 @@ spec:
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: juicefs-valkey-replica
+  name: valkey-data-juicefs-valkey-1
+  annotations:
+    k8up.io/backup: "true"
+spec:
+  storageClassName: {{ .Values.pvc_storageClassName }}
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.pvc_capacity }}
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: valkey-data-juicefs-valkey-2
+  annotations:
+    k8up.io/backup: "true"
+spec:
+  storageClassName: {{ .Values.pvc_storageClassName }}
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.pvc_capacity }}
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: valkey-data-juicefs-valkey-3
+  annotations:
+    k8up.io/backup: "true"
+spec:
+  storageClassName: {{ .Values.pvc_storageClassName }}
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.pvc_capacity }}
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: valkey-data-juicefs-valkey-4
+  annotations:
+    k8up.io/backup: "true"
+spec:
+  storageClassName: {{ .Values.pvc_storageClassName }}
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.pvc_capacity }}
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: valkey-data-juicefs-valkey-5
   annotations:
     k8up.io/backup: "true"
 spec:
