@@ -89,6 +89,7 @@ spec:
               configmap: |
                 maxmemory 6gb
                 maxmemory-policy allkeys-lru
+                appendfsync everysec
 
               updateStrategy:
                 type: RollingUpdate
