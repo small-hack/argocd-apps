@@ -12,4 +12,5 @@
 |      Loki      |  90001 |
 |      tempo     | 100000 |
 |      Mimir     | 110001 |
+|     Harbor     | 120001 |
 |    Nextcloud   | 950000 |
