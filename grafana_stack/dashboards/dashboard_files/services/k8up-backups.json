@@ -23,12 +23,245 @@
   "links": [],
   "panels": [
     {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "mimir"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": []
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 0
+      },
+      "id": 83,
+      "options": {
+        "displayLabels": [
+          "value"
+        ],
+        "legend": {
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true,
+          "values": [
+            "percent"
+          ]
+        },
+        "pieType": "pie",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.1.0",
+      "targets": [
+        {
+          "disableTextWrap": false,
+          "editorMode": "builder",
+          "expr": "count(k8up_jobs_successful_counter{jobType=\"backup\"})",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
+          "legendFormat": "Successes",
+          "range": true,
+          "refId": "A",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "mimir"
+          },
+          "disableTextWrap": false,
+          "editorMode": "builder",
+          "expr": "count(k8up_jobs_failed_counter{jobType=\"backup\"})",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "Failures",
+          "range": true,
+          "refId": "B",
+          "useBackend": false
+        }
+      ],
+      "title": "All Backups",
+      "type": "piechart"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "mimir"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 5,
+        "x": 8,
+        "y": 0
+      },
+      "id": 84,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "value_and_name",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.1.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "mimir"
+          },
+          "disableTextWrap": false,
+          "editorMode": "builder",
+          "expr": "count by(exported_namespace) (k8up_jobs_failed_counter{jobType=\"backup\"})",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "interval": "$__rate_interval",
+          "legendFormat": "{{exported_namespace}}",
+          "range": true,
+          "refId": "B",
+          "useBackend": false
+        }
+      ],
+      "title": "Failures by app name",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "mimir"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 11,
+        "x": 13,
+        "y": 0
+      },
+      "id": 85,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "value_and_name",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.1.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "mimir"
+          },
+          "disableTextWrap": false,
+          "editorMode": "builder",
+          "expr": "count by(exported_namespace) (k8up_jobs_successful_counter{jobType=\"backup\"})",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "{{exported_namespace}}",
+          "range": true,
+          "refId": "B",
+          "useBackend": false
+        }
+      ],
+      "title": "Successes by app name",
+      "type": "stat"
+    },
+    {
       "collapsed": true,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 0
+        "y": 8
       },
       "id": 65,
       "panels": [
@@ -590,7 +823,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 13
+            "y": 32
           },
           "id": 39,
           "options": {
@@ -632,7 +865,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 1
+        "y": 9
       },
       "id": 78,
       "panels": [
@@ -667,7 +900,7 @@
             "h": 6,
             "w": 8,
             "x": 0,
-            "y": 264
+            "y": 283
           },
           "id": 80,
           "options": {
@@ -740,7 +973,7 @@
             "h": 6,
             "w": 8,
             "x": 8,
-            "y": 264
+            "y": 283
           },
           "id": 81,
           "options": {
@@ -814,7 +1047,7 @@
             "h": 6,
             "w": 8,
             "x": 16,
-            "y": 264
+            "y": 283
           },
           "id": 82,
           "options": {
@@ -870,7 +1103,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 270
+            "y": 289
           },
           "id": 79,
           "options": {
@@ -912,7 +1145,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 2
+        "y": 10
       },
       "id": 49,
       "panels": [
@@ -983,7 +1216,7 @@
             "h": 6,
             "w": 8,
             "x": 0,
-            "y": 278
+            "y": 297
           },
           "id": 66,
           "options": {
@@ -1090,7 +1323,7 @@
             "h": 6,
             "w": 8,
             "x": 8,
-            "y": 278
+            "y": 297
           },
           "id": 67,
           "options": {
@@ -1199,7 +1432,7 @@
             "h": 6,
             "w": 8,
             "x": 16,
-            "y": 278
+            "y": 297
           },
           "id": 68,
           "options": {
@@ -1271,7 +1504,7 @@
             "h": 6,
             "w": 8,
             "x": 0,
-            "y": 284
+            "y": 303
           },
           "id": 69,
           "options": {
@@ -1344,7 +1577,7 @@
             "h": 6,
             "w": 8,
             "x": 8,
-            "y": 284
+            "y": 303
           },
           "id": 70,
           "options": {
@@ -1418,7 +1651,7 @@
             "h": 6,
             "w": 8,
             "x": 16,
-            "y": 284
+            "y": 303
           },
           "id": 71,
           "options": {
@@ -1474,7 +1707,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 290
+            "y": 309
           },
           "id": 72,
           "options": {
@@ -1516,7 +1749,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 3
+        "y": 11
       },
       "id": 7,
       "panels": [
@@ -1587,7 +1820,7 @@
             "h": 6,
             "w": 8,
             "x": 0,
-            "y": 298
+            "y": 317
           },
           "id": 51,
           "options": {
@@ -1694,7 +1927,7 @@
             "h": 6,
             "w": 8,
             "x": 8,
-            "y": 298
+            "y": 317
           },
           "id": 52,
           "options": {
@@ -1803,7 +2036,7 @@
             "h": 6,
             "w": 8,
             "x": 16,
-            "y": 298
+            "y": 317
           },
           "id": 53,
           "options": {
@@ -1875,7 +2108,7 @@
             "h": 6,
             "w": 8,
             "x": 0,
-            "y": 304
+            "y": 323
           },
           "id": 54,
           "options": {
@@ -1948,7 +2181,7 @@
             "h": 6,
             "w": 8,
             "x": 8,
-            "y": 304
+            "y": 323
           },
           "id": 55,
           "options": {
@@ -2022,7 +2255,7 @@
             "h": 6,
             "w": 8,
             "x": 16,
-            "y": 304
+            "y": 323
           },
           "id": 56,
           "options": {
@@ -2078,7 +2311,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 310
+            "y": 329
           },
           "id": 43,
           "options": {
@@ -2120,7 +2353,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 4
+        "y": 12
       },
       "id": 73,
       "panels": [
@@ -2155,7 +2388,7 @@
             "h": 6,
             "w": 8,
             "x": 0,
-            "y": 386
+            "y": 405
           },
           "id": 20,
           "options": {
@@ -2228,7 +2461,7 @@
             "h": 6,
             "w": 8,
             "x": 8,
-            "y": 386
+            "y": 405
           },
           "id": 24,
           "options": {
@@ -2301,7 +2534,7 @@
             "h": 6,
             "w": 8,
             "x": 16,
-            "y": 386
+            "y": 405
           },
           "id": 31,
           "options": {
@@ -2357,7 +2590,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 392
+            "y": 411
           },
           "id": 46,
           "options": {
@@ -2399,7 +2632,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 5
+        "y": 13
       },
       "id": 8,
       "panels": [
@@ -2470,7 +2703,7 @@
             "h": 6,
             "w": 8,
             "x": 0,
-            "y": 400
+            "y": 419
           },
           "id": 19,
           "options": {
@@ -2579,7 +2812,7 @@
             "h": 6,
             "w": 8,
             "x": 8,
-            "y": 400
+            "y": 419
           },
           "id": 47,
           "options": {
@@ -2689,7 +2922,7 @@
             "h": 6,
             "w": 8,
             "x": 16,
-            "y": 400
+            "y": 419
           },
           "id": 48,
           "options": {
@@ -2761,7 +2994,7 @@
             "h": 6,
             "w": 8,
             "x": 0,
-            "y": 406
+            "y": 425
           },
           "id": 74,
           "options": {
@@ -2834,7 +3067,7 @@
             "h": 6,
             "w": 8,
             "x": 8,
-            "y": 406
+            "y": 425
           },
           "id": 75,
           "options": {
@@ -2907,7 +3140,7 @@
             "h": 6,
             "w": 8,
             "x": 16,
-            "y": 406
+            "y": 425
           },
           "id": 76,
           "options": {
@@ -2963,7 +3196,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 412
+            "y": 431
           },
           "id": 77,
           "options": {
@@ -3005,7 +3238,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 6
+        "y": 14
       },
       "id": 5,
       "panels": [
@@ -3076,7 +3309,7 @@
             "h": 6,
             "w": 8,
             "x": 0,
-            "y": 420
+            "y": 439
           },
           "id": 13,
           "options": {
@@ -3184,7 +3417,7 @@
             "h": 6,
             "w": 8,
             "x": 8,
-            "y": 420
+            "y": 439
           },
           "id": 37,
           "options": {
@@ -3292,7 +3525,7 @@
             "h": 6,
             "w": 8,
             "x": 16,
-            "y": 420
+            "y": 439
           },
           "id": 38,
           "options": {
@@ -3364,7 +3597,7 @@
             "h": 5,
             "w": 8,
             "x": 0,
-            "y": 426
+            "y": 445
           },
           "id": 1,
           "options": {
@@ -3437,7 +3670,7 @@
             "h": 5,
             "w": 8,
             "x": 8,
-            "y": 426
+            "y": 445
           },
           "id": 2,
           "options": {
@@ -3511,7 +3744,7 @@
             "h": 5,
             "w": 8,
             "x": 16,
-            "y": 426
+            "y": 445
           },
           "id": 29,
           "options": {
@@ -3567,7 +3800,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 431
+            "y": 450
           },
           "id": 57,
           "options": {
@@ -3609,7 +3842,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 7
+        "y": 15
       },
       "id": 4,
       "panels": [
@@ -3680,7 +3913,7 @@
             "h": 6,
             "w": 8,
             "x": 0,
-            "y": 457
+            "y": 476
           },
           "id": 12,
           "options": {
@@ -3788,7 +4021,7 @@
             "h": 6,
             "w": 8,
             "x": 8,
-            "y": 457
+            "y": 476
           },
           "id": 35,
           "options": {
@@ -3896,7 +4129,7 @@
             "h": 6,
             "w": 8,
             "x": 16,
-            "y": 457
+            "y": 476
           },
           "id": 34,
           "options": {
@@ -3968,7 +4201,7 @@
             "h": 5,
             "w": 8,
             "x": 0,
-            "y": 463
+            "y": 482
           },
           "id": 26,
           "options": {
@@ -4041,7 +4274,7 @@
             "h": 5,
             "w": 8,
             "x": 8,
-            "y": 463
+            "y": 482
           },
           "id": 28,
           "options": {
@@ -4115,7 +4348,7 @@
             "h": 5,
             "w": 8,
             "x": 16,
-            "y": 463
+            "y": 482
           },
           "id": 14,
           "options": {
@@ -4171,7 +4404,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 468
+            "y": 487
           },
           "id": 36,
           "options": {
@@ -4213,7 +4446,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 8
+        "y": 16
       },
       "id": 50,
       "panels": [
@@ -4284,7 +4517,7 @@
             "h": 6,
             "w": 8,
             "x": 0,
-            "y": 476
+            "y": 495
           },
           "id": 59,
           "options": {
@@ -4391,7 +4624,7 @@
             "h": 6,
             "w": 8,
             "x": 8,
-            "y": 476
+            "y": 495
           },
           "id": 60,
           "options": {
@@ -4500,7 +4733,7 @@
             "h": 6,
             "w": 8,
             "x": 16,
-            "y": 476
+            "y": 495
           },
           "id": 61,
           "options": {
@@ -4572,7 +4805,7 @@
             "h": 6,
             "w": 8,
             "x": 0,
-            "y": 482
+            "y": 501
           },
           "id": 62,
           "options": {
@@ -4645,7 +4878,7 @@
             "h": 6,
             "w": 8,
             "x": 8,
-            "y": 482
+            "y": 501
           },
           "id": 63,
           "options": {
@@ -4719,7 +4952,7 @@
             "h": 6,
             "w": 8,
             "x": 16,
-            "y": 482
+            "y": 501
           },
           "id": 64,
           "options": {
@@ -4775,7 +5008,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 488
+            "y": 507
           },
           "id": 58,
           "options": {
@@ -4817,7 +5050,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 9
+        "y": 17
       },
       "id": 6,
       "panels": [
@@ -4888,7 +5121,7 @@
             "h": 6,
             "w": 8,
             "x": 0,
-            "y": 515
+            "y": 10
           },
           "id": 10,
           "options": {
@@ -4996,7 +5229,7 @@
             "h": 6,
             "w": 8,
             "x": 8,
-            "y": 515
+            "y": 10
           },
           "id": 40,
           "options": {
@@ -5105,7 +5338,7 @@
             "h": 6,
             "w": 8,
             "x": 16,
-            "y": 515
+            "y": 10
           },
           "id": 41,
           "options": {
@@ -5177,7 +5410,7 @@
             "h": 6,
             "w": 8,
             "x": 0,
-            "y": 521
+            "y": 16
           },
           "id": 11,
           "options": {
@@ -5246,7 +5479,7 @@
             "h": 6,
             "w": 8,
             "x": 8,
-            "y": 521
+            "y": 16
           },
           "id": 27,
           "options": {
@@ -5320,7 +5553,7 @@
             "h": 6,
             "w": 8,
             "x": 16,
-            "y": 521
+            "y": 16
           },
           "id": 32,
           "options": {
@@ -5376,7 +5609,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 527
+            "y": 22
           },
           "id": 42,
           "options": {
@@ -5455,5 +5688,5 @@
   "timezone": "browser",
   "title": "K8up backups",
   "uid": "adp2mzw5g81z4c",
-  "version": 4
+  "version": 5
 }
