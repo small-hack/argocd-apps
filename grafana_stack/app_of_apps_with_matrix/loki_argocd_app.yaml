@@ -21,6 +21,7 @@ spec:
       - CreateNamespace=true
       - ApplyOutOfSyncOnly=true
       - Retry=true
+      - ServerSideApply=true
 
     automated:
       selfHeal: true
@@ -77,11 +78,24 @@ spec:
         # enable, this section is being replaced by:
         # https://github.com/grafana/meta-monitoring-chart
         monitoring:
+          # Dashboards for monitoring Loki
           dashboards:
+            # -- If enabled, create configmap with dashboards for monitoring Loki
             enabled: true
+            # -- Alternative namespace to create dashboards ConfigMap in
+            namespace: null
+            # -- Additional annotations for the dashboards ConfigMap
+            annotations:
+              k8s-sidecar-target-directory: /var/lib/grafana/dashboards/monitoring
+            # -- Labels for the dashboards ConfigMap
+            labels:
+              grafana_dashboard: "1"
+
+          # -- ServiceMonitor configuration
           serviceMonitor:
+            # -- If enabled, ServiceMonitor resources for Prometheus Operator are created
             enabled: true
-            interval: 10s
+
 
         # Configuration for the memberlist service
         memberlist:
