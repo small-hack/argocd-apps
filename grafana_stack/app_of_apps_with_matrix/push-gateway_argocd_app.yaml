@@ -7,7 +7,7 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "3"
 spec:
-  project: prometheus
+  project: monitoring
 
   # reconciliation policy
   syncPolicy:
