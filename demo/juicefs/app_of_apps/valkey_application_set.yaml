@@ -18,6 +18,7 @@ spec:
           parameters:
             secret_vars:
               - juicefs_valkey_pvc_storage_class
+              - juicefs_valkey_pvc_size
   template:
     metadata:
       name: juicefs-valkey-app
@@ -77,7 +78,7 @@ spec:
                 k8up.io/backup: "true"
               accessModes:
                 - ReadWriteOnce
-              size: 32Gi
+              size: "{{ .juicefs_valkey_pvc_size }}"
 
             persistentVolumeClaimRetentionPolicy:
               enabled: true
