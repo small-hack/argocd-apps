@@ -178,6 +178,8 @@ spec:
               dashboards:
                 # -- If enabled, Grafana dashboards are deployed
                 enabled: true
+                annotations:
+                  k8s-sidecar-target-directory: /var/lib/grafana/dashboards/monitoring
 
               # ServiceMonitor configuration for monitoring Kubernetes Services with Prometheus Operator, Grafana Agent (deprecated), and/or Grafana Alloy
               serviceMonitor:
