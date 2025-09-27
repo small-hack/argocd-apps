@@ -387,7 +387,7 @@
             "h": 6,
             "w": 8,
             "x": 0,
-            "y": 33
+            "y": 7
           },
           "id": 17,
           "options": {
@@ -460,7 +460,7 @@
             "h": 6,
             "w": 8,
             "x": 8,
-            "y": 33
+            "y": 7
           },
           "id": 15,
           "options": {
@@ -534,7 +534,7 @@
             "h": 6,
             "w": 8,
             "x": 16,
-            "y": 33
+            "y": 7
           },
           "id": 33,
           "options": {
@@ -590,7 +590,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 39
+            "y": 13
           },
           "id": 39,
           "options": {
@@ -667,7 +667,7 @@
             "h": 6,
             "w": 8,
             "x": 0,
-            "y": 2
+            "y": 264
           },
           "id": 80,
           "options": {
@@ -740,7 +740,7 @@
             "h": 6,
             "w": 8,
             "x": 8,
-            "y": 2
+            "y": 264
           },
           "id": 81,
           "options": {
@@ -814,7 +814,7 @@
             "h": 6,
             "w": 8,
             "x": 16,
-            "y": 2
+            "y": 264
           },
           "id": 82,
           "options": {
@@ -870,7 +870,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 8
+            "y": 270
           },
           "id": 79,
           "options": {
@@ -983,7 +983,7 @@
             "h": 6,
             "w": 8,
             "x": 0,
-            "y": 153
+            "y": 278
           },
           "id": 66,
           "options": {
@@ -1090,7 +1090,7 @@
             "h": 6,
             "w": 8,
             "x": 8,
-            "y": 153
+            "y": 278
           },
           "id": 67,
           "options": {
@@ -1199,7 +1199,7 @@
             "h": 6,
             "w": 8,
             "x": 16,
-            "y": 153
+            "y": 278
           },
           "id": 68,
           "options": {
@@ -1271,7 +1271,7 @@
             "h": 6,
             "w": 8,
             "x": 0,
-            "y": 208
+            "y": 284
           },
           "id": 69,
           "options": {
@@ -1344,7 +1344,7 @@
             "h": 6,
             "w": 8,
             "x": 8,
-            "y": 208
+            "y": 284
           },
           "id": 70,
           "options": {
@@ -1418,7 +1418,7 @@
             "h": 6,
             "w": 8,
             "x": 16,
-            "y": 208
+            "y": 284
           },
           "id": 71,
           "options": {
@@ -1474,7 +1474,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 214
+            "y": 290
           },
           "id": 72,
           "options": {
@@ -1571,7 +1571,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   },
                   {
                     "color": "red",
@@ -1586,7 +1587,7 @@
             "h": 6,
             "w": 8,
             "x": 0,
-            "y": 373
+            "y": 298
           },
           "id": 51,
           "options": {
@@ -1599,11 +1600,12 @@
               "showLegend": true
             },
             "tooltip": {
+              "hideZeros": false,
               "mode": "single",
               "sort": "none"
             }
           },
-          "pluginVersion": "11.4.0",
+          "pluginVersion": "12.1.0",
           "targets": [
             {
               "datasource": {
@@ -1676,7 +1678,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   },
                   {
                     "color": "red",
@@ -1691,7 +1694,7 @@
             "h": 6,
             "w": 8,
             "x": 8,
-            "y": 373
+            "y": 298
           },
           "id": 52,
           "options": {
@@ -1704,12 +1707,13 @@
               "showLegend": true
             },
             "tooltip": {
+              "hideZeros": false,
               "maxHeight": 600,
               "mode": "single",
               "sort": "none"
             }
           },
-          "pluginVersion": "11.4.0",
+          "pluginVersion": "12.1.0",
           "targets": [
             {
               "datasource": {
@@ -1783,7 +1787,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   },
                   {
                     "color": "red",
@@ -1798,7 +1803,7 @@
             "h": 6,
             "w": 8,
             "x": 16,
-            "y": 373
+            "y": 298
           },
           "id": 53,
           "options": {
@@ -1811,12 +1816,13 @@
               "showLegend": true
             },
             "tooltip": {
+              "hideZeros": false,
               "maxHeight": 600,
               "mode": "single",
               "sort": "none"
             }
           },
-          "pluginVersion": "11.4.0",
+          "pluginVersion": "12.1.0",
           "targets": [
             {
               "datasource": {
@@ -1853,7 +1859,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   },
                   {
                     "color": "red",
@@ -1868,7 +1875,7 @@
             "h": 6,
             "w": 8,
             "x": 0,
-            "y": 379
+            "y": 304
           },
           "id": 54,
           "options": {
@@ -1888,7 +1895,7 @@
             "textMode": "auto",
             "wideLayout": true
           },
-          "pluginVersion": "11.4.0",
+          "pluginVersion": "12.1.0",
           "targets": [
             {
               "datasource": {
@@ -1925,7 +1932,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "red"
+                    "color": "red",
+                    "value": 0
                   },
                   {
                     "color": "green",
@@ -1940,7 +1948,7 @@
             "h": 6,
             "w": 8,
             "x": 8,
-            "y": 379
+            "y": 304
           },
           "id": 55,
           "options": {
@@ -1960,7 +1968,7 @@
             "textMode": "auto",
             "wideLayout": true
           },
-          "pluginVersion": "11.4.0",
+          "pluginVersion": "12.1.0",
           "targets": [
             {
               "datasource": {
@@ -1998,7 +2006,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   },
                   {
                     "color": "red",
@@ -2013,7 +2022,7 @@
             "h": 6,
             "w": 8,
             "x": 16,
-            "y": 379
+            "y": 304
           },
           "id": 56,
           "options": {
@@ -2033,7 +2042,7 @@
             "textMode": "auto",
             "wideLayout": true
           },
-          "pluginVersion": "11.4.0",
+          "pluginVersion": "12.1.0",
           "targets": [
             {
               "datasource": {
@@ -2058,7 +2067,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "P8E80F9AEF21F6940"
+            "uid": "${DS_LOKI}"
           },
           "description": "logs for k8up for home assistant",
           "fieldConfig": {
@@ -2069,11 +2078,12 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 385
+            "y": 310
           },
           "id": 43,
           "options": {
             "dedupStrategy": "none",
+            "enableInfiniteScrolling": false,
             "enableLogDetails": true,
             "prettifyLogMessage": false,
             "showCommonLabels": false,
@@ -2082,15 +2092,16 @@
             "sortOrder": "Descending",
             "wrapLogMessage": false
           },
-          "pluginVersion": "11.4.0",
+          "pluginVersion": "12.1.0",
           "targets": [
             {
               "datasource": {
                 "type": "loki",
-                "uid": "P8E80F9AEF21F6940"
+                "uid": "${DS_LOKI}"
               },
-              "editorMode": "builder",
-              "expr": "{namespace=\"home-assistant\", container=\"backup\"} |= ``",
+              "direction": "backward",
+              "editorMode": "code",
+              "expr": "{namespace=\"home-assistant\", container=\"backup\"}",
               "queryType": "range",
               "refId": "A"
             }
@@ -2144,7 +2155,7 @@
             "h": 6,
             "w": 8,
             "x": 0,
-            "y": 18
+            "y": 386
           },
           "id": 20,
           "options": {
@@ -2217,7 +2228,7 @@
             "h": 6,
             "w": 8,
             "x": 8,
-            "y": 18
+            "y": 386
           },
           "id": 24,
           "options": {
@@ -2290,7 +2301,7 @@
             "h": 6,
             "w": 8,
             "x": 16,
-            "y": 18
+            "y": 386
           },
           "id": 31,
           "options": {
@@ -2346,7 +2357,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 24
+            "y": 392
           },
           "id": 46,
           "options": {
@@ -2459,7 +2470,7 @@
             "h": 6,
             "w": 8,
             "x": 0,
-            "y": 169
+            "y": 400
           },
           "id": 19,
           "options": {
@@ -2568,7 +2579,7 @@
             "h": 6,
             "w": 8,
             "x": 8,
-            "y": 169
+            "y": 400
           },
           "id": 47,
           "options": {
@@ -2678,7 +2689,7 @@
             "h": 6,
             "w": 8,
             "x": 16,
-            "y": 169
+            "y": 400
           },
           "id": 48,
           "options": {
@@ -2750,7 +2761,7 @@
             "h": 6,
             "w": 8,
             "x": 0,
-            "y": 175
+            "y": 406
           },
           "id": 74,
           "options": {
@@ -2823,7 +2834,7 @@
             "h": 6,
             "w": 8,
             "x": 8,
-            "y": 175
+            "y": 406
           },
           "id": 75,
           "options": {
@@ -2896,7 +2907,7 @@
             "h": 6,
             "w": 8,
             "x": 16,
-            "y": 175
+            "y": 406
           },
           "id": 76,
           "options": {
@@ -2952,7 +2963,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 181
+            "y": 412
           },
           "id": 77,
           "options": {
@@ -3049,7 +3060,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   },
                   {
                     "color": "red",
@@ -3064,7 +3076,7 @@
             "h": 6,
             "w": 8,
             "x": 0,
-            "y": 549
+            "y": 420
           },
           "id": 13,
           "options": {
@@ -3077,12 +3089,13 @@
               "showLegend": true
             },
             "tooltip": {
+              "hideZeros": false,
               "maxHeight": 600,
               "mode": "single",
               "sort": "none"
             }
           },
-          "pluginVersion": "11.4.0",
+          "pluginVersion": "12.1.0",
           "targets": [
             {
               "datasource": {
@@ -3155,7 +3168,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   },
                   {
                     "color": "red",
@@ -3170,7 +3184,7 @@
             "h": 6,
             "w": 8,
             "x": 8,
-            "y": 549
+            "y": 420
           },
           "id": 37,
           "options": {
@@ -3183,12 +3197,13 @@
               "showLegend": true
             },
             "tooltip": {
+              "hideZeros": false,
               "maxHeight": 600,
               "mode": "single",
               "sort": "none"
             }
           },
-          "pluginVersion": "11.4.0",
+          "pluginVersion": "12.1.0",
           "targets": [
             {
               "datasource": {
@@ -3261,7 +3276,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   },
                   {
                     "color": "red",
@@ -3276,7 +3292,7 @@
             "h": 6,
             "w": 8,
             "x": 16,
-            "y": 549
+            "y": 420
           },
           "id": 38,
           "options": {
@@ -3289,12 +3305,13 @@
               "showLegend": true
             },
             "tooltip": {
+              "hideZeros": false,
               "maxHeight": 600,
               "mode": "single",
               "sort": "none"
             }
           },
-          "pluginVersion": "11.4.0",
+          "pluginVersion": "12.1.0",
           "targets": [
             {
               "datasource": {
@@ -3331,7 +3348,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   },
                   {
                     "color": "red",
@@ -3346,7 +3364,7 @@
             "h": 5,
             "w": 8,
             "x": 0,
-            "y": 555
+            "y": 426
           },
           "id": 1,
           "options": {
@@ -3366,7 +3384,7 @@
             "textMode": "auto",
             "wideLayout": true
           },
-          "pluginVersion": "11.4.0",
+          "pluginVersion": "12.1.0",
           "targets": [
             {
               "datasource": {
@@ -3403,7 +3421,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   },
                   {
                     "color": "red",
@@ -3418,7 +3437,7 @@
             "h": 5,
             "w": 8,
             "x": 8,
-            "y": 555
+            "y": 426
           },
           "id": 2,
           "options": {
@@ -3438,7 +3457,7 @@
             "textMode": "auto",
             "wideLayout": true
           },
-          "pluginVersion": "11.4.0",
+          "pluginVersion": "12.1.0",
           "targets": [
             {
               "datasource": {
@@ -3476,7 +3495,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   },
                   {
                     "color": "red",
@@ -3491,7 +3511,7 @@
             "h": 5,
             "w": 8,
             "x": 16,
-            "y": 555
+            "y": 426
           },
           "id": 29,
           "options": {
@@ -3511,7 +3531,7 @@
             "textMode": "auto",
             "wideLayout": true
           },
-          "pluginVersion": "11.4.0",
+          "pluginVersion": "12.1.0",
           "targets": [
             {
               "datasource": {
@@ -3536,7 +3556,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "P8E80F9AEF21F6940"
+            "uid": "${DS_LOKI}"
           },
           "description": "logs for k8up for matrix",
           "fieldConfig": {
@@ -3547,11 +3567,12 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 560
+            "y": 431
           },
           "id": 57,
           "options": {
             "dedupStrategy": "none",
+            "enableInfiniteScrolling": false,
             "enableLogDetails": true,
             "prettifyLogMessage": false,
             "showCommonLabels": false,
@@ -3560,15 +3581,16 @@
             "sortOrder": "Descending",
             "wrapLogMessage": false
           },
-          "pluginVersion": "11.4.0",
+          "pluginVersion": "12.1.0",
           "targets": [
             {
               "datasource": {
                 "type": "loki",
-                "uid": "P8E80F9AEF21F6940"
+                "uid": "${DS_LOKI}"
               },
-              "editorMode": "builder",
-              "expr": "{namespace=\"matrix\", container=\"backup\"} |= ``",
+              "direction": "backward",
+              "editorMode": "code",
+              "expr": "{namespace=\"matrix\", container=\"backup\"}",
               "queryType": "range",
               "refId": "A"
             }
@@ -3642,7 +3664,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   },
                   {
                     "color": "red",
@@ -3657,7 +3680,7 @@
             "h": 6,
             "w": 8,
             "x": 0,
-            "y": 593
+            "y": 457
           },
           "id": 12,
           "options": {
@@ -3670,12 +3693,13 @@
               "showLegend": true
             },
             "tooltip": {
+              "hideZeros": false,
               "maxHeight": 600,
               "mode": "single",
               "sort": "none"
             }
           },
-          "pluginVersion": "11.4.0",
+          "pluginVersion": "12.1.0",
           "targets": [
             {
               "datasource": {
@@ -3748,7 +3772,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   },
                   {
                     "color": "red",
@@ -3763,7 +3788,7 @@
             "h": 6,
             "w": 8,
             "x": 8,
-            "y": 593
+            "y": 457
           },
           "id": 35,
           "options": {
@@ -3776,12 +3801,13 @@
               "showLegend": true
             },
             "tooltip": {
+              "hideZeros": false,
               "maxHeight": 600,
               "mode": "single",
               "sort": "none"
             }
           },
-          "pluginVersion": "11.4.0",
+          "pluginVersion": "12.1.0",
           "targets": [
             {
               "datasource": {
@@ -3854,7 +3880,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   },
                   {
                     "color": "red",
@@ -3869,7 +3896,7 @@
             "h": 6,
             "w": 8,
             "x": 16,
-            "y": 593
+            "y": 457
           },
           "id": 34,
           "options": {
@@ -3882,12 +3909,13 @@
               "showLegend": true
             },
             "tooltip": {
+              "hideZeros": false,
               "maxHeight": 600,
               "mode": "single",
               "sort": "none"
             }
           },
-          "pluginVersion": "11.4.0",
+          "pluginVersion": "12.1.0",
           "targets": [
             {
               "datasource": {
@@ -3924,7 +3952,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   },
                   {
                     "color": "red",
@@ -3939,7 +3968,7 @@
             "h": 5,
             "w": 8,
             "x": 0,
-            "y": 599
+            "y": 463
           },
           "id": 26,
           "options": {
@@ -3959,7 +3988,7 @@
             "textMode": "auto",
             "wideLayout": true
           },
-          "pluginVersion": "11.4.0",
+          "pluginVersion": "12.1.0",
           "targets": [
             {
               "datasource": {
@@ -3996,7 +4025,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   },
                   {
                     "color": "red",
@@ -4011,7 +4041,7 @@
             "h": 5,
             "w": 8,
             "x": 8,
-            "y": 599
+            "y": 463
           },
           "id": 28,
           "options": {
@@ -4031,7 +4061,7 @@
             "textMode": "auto",
             "wideLayout": true
           },
-          "pluginVersion": "11.4.0",
+          "pluginVersion": "12.1.0",
           "targets": [
             {
               "datasource": {
@@ -4069,7 +4099,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   },
                   {
                     "color": "red",
@@ -4084,7 +4115,7 @@
             "h": 5,
             "w": 8,
             "x": 16,
-            "y": 599
+            "y": 463
           },
           "id": 14,
           "options": {
@@ -4104,7 +4135,7 @@
             "textMode": "auto",
             "wideLayout": true
           },
-          "pluginVersion": "11.4.0",
+          "pluginVersion": "12.1.0",
           "targets": [
             {
               "datasource": {
@@ -4129,7 +4160,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "P8E80F9AEF21F6940"
+            "uid": "${DS_LOKI}"
           },
           "description": "logs for k8up for nextcloud",
           "fieldConfig": {
@@ -4140,11 +4171,12 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 604
+            "y": 468
           },
           "id": 36,
           "options": {
             "dedupStrategy": "none",
+            "enableInfiniteScrolling": false,
             "enableLogDetails": true,
             "prettifyLogMessage": false,
             "showCommonLabels": false,
@@ -4153,15 +4185,16 @@
             "sortOrder": "Descending",
             "wrapLogMessage": false
           },
-          "pluginVersion": "11.4.0",
+          "pluginVersion": "12.1.0",
           "targets": [
             {
               "datasource": {
                 "type": "loki",
-                "uid": "P8E80F9AEF21F6940"
+                "uid": "${DS_LOKI}"
               },
-              "editorMode": "builder",
-              "expr": "{namespace=\"nextcloud\", container=\"backup\"} |= ``",
+              "direction": "backward",
+              "editorMode": "code",
+              "expr": "{namespace=\"nextcloud\", container=\"backup\"}",
               "queryType": "range",
               "refId": "A"
             }
@@ -4235,7 +4268,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   },
                   {
                     "color": "red",
@@ -4250,7 +4284,7 @@
             "h": 6,
             "w": 8,
             "x": 0,
-            "y": 340
+            "y": 476
           },
           "id": 59,
           "options": {
@@ -4263,11 +4297,12 @@
               "showLegend": true
             },
             "tooltip": {
+              "hideZeros": false,
               "mode": "single",
               "sort": "none"
             }
           },
-          "pluginVersion": "11.4.0",
+          "pluginVersion": "12.1.0",
           "targets": [
             {
               "datasource": {
@@ -4340,7 +4375,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   },
                   {
                     "color": "red",
@@ -4355,7 +4391,7 @@
             "h": 6,
             "w": 8,
             "x": 8,
-            "y": 340
+            "y": 476
           },
           "id": 60,
           "options": {
@@ -4368,12 +4404,13 @@
               "showLegend": true
             },
             "tooltip": {
+              "hideZeros": false,
               "maxHeight": 600,
               "mode": "single",
               "sort": "none"
             }
           },
-          "pluginVersion": "11.4.0",
+          "pluginVersion": "12.1.0",
           "targets": [
             {
               "datasource": {
@@ -4447,7 +4484,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   },
                   {
                     "color": "red",
@@ -4462,7 +4500,7 @@
             "h": 6,
             "w": 8,
             "x": 16,
-            "y": 340
+            "y": 476
           },
           "id": 61,
           "options": {
@@ -4475,12 +4513,13 @@
               "showLegend": true
             },
             "tooltip": {
+              "hideZeros": false,
               "maxHeight": 600,
               "mode": "single",
               "sort": "none"
             }
           },
-          "pluginVersion": "11.4.0",
+          "pluginVersion": "12.1.0",
           "targets": [
             {
               "datasource": {
@@ -4517,7 +4556,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "red"
+                    "color": "red",
+                    "value": 0
                   },
                   {
                     "color": "green",
@@ -4532,7 +4572,7 @@
             "h": 6,
             "w": 8,
             "x": 0,
-            "y": 365
+            "y": 482
           },
           "id": 62,
           "options": {
@@ -4552,7 +4592,7 @@
             "textMode": "auto",
             "wideLayout": true
           },
-          "pluginVersion": "11.4.0",
+          "pluginVersion": "12.1.0",
           "targets": [
             {
               "datasource": {
@@ -4589,7 +4629,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "red"
+                    "color": "red",
+                    "value": 0
                   },
                   {
                     "color": "green",
@@ -4604,7 +4645,7 @@
             "h": 6,
             "w": 8,
             "x": 8,
-            "y": 365
+            "y": 482
           },
           "id": 63,
           "options": {
@@ -4624,7 +4665,7 @@
             "textMode": "auto",
             "wideLayout": true
           },
-          "pluginVersion": "11.4.0",
+          "pluginVersion": "12.1.0",
           "targets": [
             {
               "datasource": {
@@ -4662,7 +4703,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   },
                   {
                     "color": "red",
@@ -4677,7 +4719,7 @@
             "h": 6,
             "w": 8,
             "x": 16,
-            "y": 365
+            "y": 482
           },
           "id": 64,
           "options": {
@@ -4697,7 +4739,7 @@
             "textMode": "auto",
             "wideLayout": true
           },
-          "pluginVersion": "11.4.0",
+          "pluginVersion": "12.1.0",
           "targets": [
             {
               "datasource": {
@@ -4722,7 +4764,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "P8E80F9AEF21F6940"
+            "uid": "${DS_LOKI}"
           },
           "description": "logs for k8up for PeerTube",
           "fieldConfig": {
@@ -4733,11 +4775,12 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 371
+            "y": 488
           },
           "id": 58,
           "options": {
             "dedupStrategy": "none",
+            "enableInfiniteScrolling": false,
             "enableLogDetails": true,
             "prettifyLogMessage": false,
             "showCommonLabels": false,
@@ -4746,15 +4789,16 @@
             "sortOrder": "Descending",
             "wrapLogMessage": false
           },
-          "pluginVersion": "11.4.0",
+          "pluginVersion": "12.1.0",
           "targets": [
             {
               "datasource": {
                 "type": "loki",
-                "uid": "P8E80F9AEF21F6940"
+                "uid": "${DS_LOKI}"
               },
-              "editorMode": "builder",
-              "expr": "{namespace=\"peertube\", container=\"backup\"} |= ``",
+              "direction": "backward",
+              "editorMode": "code",
+              "expr": "{namespace=\"peertube\", container=\"backup\"}",
               "queryType": "range",
               "refId": "A"
             }
@@ -4828,7 +4872,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   },
                   {
                     "color": "red",
@@ -4843,7 +4888,7 @@
             "h": 6,
             "w": 8,
             "x": 0,
-            "y": 341
+            "y": 515
           },
           "id": 10,
           "options": {
@@ -4862,7 +4907,7 @@
               "sort": "none"
             }
           },
-          "pluginVersion": "11.6.1",
+          "pluginVersion": "12.1.0",
           "targets": [
             {
               "datasource": {
@@ -4935,7 +4980,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   },
                   {
                     "color": "red",
@@ -4950,7 +4996,7 @@
             "h": 6,
             "w": 8,
             "x": 8,
-            "y": 341
+            "y": 515
           },
           "id": 40,
           "options": {
@@ -4969,7 +5015,7 @@
               "sort": "none"
             }
           },
-          "pluginVersion": "11.6.1",
+          "pluginVersion": "12.1.0",
           "targets": [
             {
               "datasource": {
@@ -5043,7 +5089,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   },
                   {
                     "color": "red",
@@ -5058,7 +5105,7 @@
             "h": 6,
             "w": 8,
             "x": 16,
-            "y": 341
+            "y": 515
           },
           "id": 41,
           "options": {
@@ -5077,7 +5124,7 @@
               "sort": "none"
             }
           },
-          "pluginVersion": "11.6.1",
+          "pluginVersion": "12.1.0",
           "targets": [
             {
               "datasource": {
@@ -5114,7 +5161,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   },
                   {
                     "color": "red",
@@ -5129,7 +5177,7 @@
             "h": 6,
             "w": 8,
             "x": 0,
-            "y": 347
+            "y": 521
           },
           "id": 11,
           "options": {
@@ -5149,7 +5197,7 @@
             "textMode": "auto",
             "wideLayout": true
           },
-          "pluginVersion": "11.6.1",
+          "pluginVersion": "12.1.0",
           "targets": [
             {
               "datasource": {
@@ -5186,7 +5234,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   }
                 ]
               }
@@ -5197,7 +5246,7 @@
             "h": 6,
             "w": 8,
             "x": 8,
-            "y": 347
+            "y": 521
           },
           "id": 27,
           "options": {
@@ -5217,7 +5266,7 @@
             "textMode": "auto",
             "wideLayout": true
           },
-          "pluginVersion": "11.6.1",
+          "pluginVersion": "12.1.0",
           "targets": [
             {
               "datasource": {
@@ -5255,7 +5304,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": 0
                   },
                   {
                     "color": "red",
@@ -5270,7 +5320,7 @@
             "h": 6,
             "w": 8,
             "x": 16,
-            "y": 347
+            "y": 521
           },
           "id": 32,
           "options": {
@@ -5290,7 +5340,7 @@
             "textMode": "auto",
             "wideLayout": true
           },
-          "pluginVersion": "11.6.1",
+          "pluginVersion": "12.1.0",
           "targets": [
             {
               "datasource": {
@@ -5315,7 +5365,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "P8E80F9AEF21F6940"
+            "uid": "${DS_LOKI}"
           },
           "description": "logs for k8up for zitadel",
           "fieldConfig": {
@@ -5326,7 +5376,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 353
+            "y": 527
           },
           "id": 42,
           "options": {
@@ -5340,15 +5390,16 @@
             "sortOrder": "Descending",
             "wrapLogMessage": false
           },
-          "pluginVersion": "11.6.1",
+          "pluginVersion": "12.1.0",
           "targets": [
             {
               "datasource": {
                 "type": "loki",
-                "uid": "P8E80F9AEF21F6940"
+                "uid": "${DS_LOKI}"
               },
-              "editorMode": "builder",
-              "expr": "{namespace=\"zitadel\", container=\"backup\"} |= ``",
+              "direction": "backward",
+              "editorMode": "code",
+              "expr": "{namespace=\"zitadel\", container=\"backup\"}",
               "queryType": "range",
               "refId": "A"
             }
@@ -5404,5 +5455,5 @@
   "timezone": "browser",
   "title": "K8up backups",
   "uid": "adp2mzw5g81z4c",
-  "version": 1
+  "version": 4
 }
