@@ -3,9 +3,6 @@ apiVersion: k8up.io/v1
 kind: Schedule
 metadata:
   name: {{ .Values.k8up.backup_name }}
-  annotations:
-    "helm.sh/hook": post-install
-    "helm.sh/resource-policy": keep
 spec:
   podConfigRef:
     name: s3-backups-podconfig
