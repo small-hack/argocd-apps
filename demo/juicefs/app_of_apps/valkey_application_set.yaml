@@ -118,7 +118,7 @@ spec:
 
             cluster:
               init: true
-              nodes: 3
+              nodes: 6
               replicas: 1
               externalAccess:
                 enabled: false
