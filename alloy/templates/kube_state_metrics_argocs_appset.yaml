@@ -40,7 +40,7 @@ spec:
         # https://github.com/grafana/alloy/tree/main/operations/helm/charts/alloy
         repoURL: https://prometheus-community.github.io/helm-charts
         chart: kube-state-metrics
-        targetRevision: 5.31.0
+        targetRevision: 5.37.0
         helm:
           releaseName: kube-state-metrics
           valuesObject:
