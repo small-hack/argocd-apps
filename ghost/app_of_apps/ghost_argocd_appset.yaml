@@ -58,66 +58,40 @@ spec:
               blog_title: '{{ .ghost_blog_title }}'
 
               # -- enable HTTPS for the ghost blog
-              enable_https: ""
+              enable_https: false
 
               # -- skip install of ghost at pod restart
-              skip_bootstrap: ""
+              skip_bootstrap: false
 
               # admin info
               admin:
-                # -- admin username. ignored if existingSecret not ""
-                username: '{{ .ghost_admin_user }}'
-                # -- admin password. ignored if existingSecret not ""
-                password: ""
-                # -- admin email. ignored if existingSecret not ""
-                email: '{{ .ghost_admin_email }}'
                 # -- existing kubernetes secret with ghost admin credentials
-                # existingSecret: "ghost-admin-credentials"
+                existingSecret: "ghost-admin-credentials"
                 # keys in existing kubernetes secret for admin credentials
                 secretKeys:
-                  # -- Key in existing Kubernetes Secret with the admin username.
-                  username: ""
-                  # -- Key in existing Kubernetes Secret with the admin password.
-                  password: ""
-                  # -- Key in existing Kubernetes Secret with the admin email.
-                  email: ""
+                  username: "username"
+                  password: "ghost-password"
+                  email: "email"
 
               smtp:
-                # -- smtp hostname. ignored if existingSecret not ""
-                host: "{{ .ghost_smtp_hostname }}"
-                # -- smtp port. ignored if existingSecret not ""
-                port: "{{ .ghost_smtp_port }}"
-                # -- smtp username. ignored if existingSecret not ""
-                username: "{{ .ghost_smtp_user }}"
-                # -- smtp password. ignored if existingSecret not ""
-                password: ""
-                # -- smtp protocol. ignored if existingSecret not ""
-                protocol: "tls"
                 # -- existing kubernetes secret with ghost smtp credentials
                 existingSecret: "ghost-smtp-credentials"
                 # keys in existing kubernetes secret for smtp credentials
                 secretKeys:
-                  # -- Key in existing Kubernetes Secret with the smtp host.
-                  host: ""
-                  # -- Key in existing Kubernetes Secret with the smtp port.
-                  port: ""
-                  # -- Key in existing Kubernetes Secret with the smtp protocol.
-                  protocol: ""
-                  # -- Key in existing Kubernetes Secret with the smtp username.
-                  username: ""
-                  # -- Key in existing Kubernetes Secret with the smtp password.
-                  password: ""
+                  host: "hostname"
+                  port: "port"
+                  protocol: "protocol"
+                  username: "username"
+                  password: "password"
 
             # Set container requests and limits for different resources like CPU or memory (essential for production workloads)
-            # Example:
-            # resources:
-            #   requests:
-            #     cpu: 2
-            #     memory: 512Mi
-            #   limits:
-            #     cpu: 3
-            #     memory: 1024Mi
-            resources: {}
+            resources:
+              requests:
+                cpu: 200m
+                memory: 512Mi
+              limits:
+                cpu: 3
+                memory: 2Gi
 
             ## Configure the ingress resource that allows you to access the Ghost installation
             ingress:
@@ -142,27 +116,17 @@ spec:
                     - '{{ .ghost_hostname }}'
 
             ## Persistence Parameters
-            ## ref: https://kubernetes.io/docs/concepts/storage/persistent-volumes/
             persistence:
               # The name of an existing PVC to use for persistence
               existingClaim: "ghost-data"
 
             # External Database Configuration
-            # All of these values are only used if `mysql.enabled=false`
             externalDatabase:
-              # External Database server host
-              host: localhost
-              # External Database server port
-              port: 3306
-              # External Database username
-              user: bn_ghost
-              # External Database database name
-              database: bitnami_ghost
-              # The name of an existing secret with database credentials
-              ## NOTE: Must contain key `mysql-password`
-              ## NOTE: When it's set, the `externalDatabase.password` parameter is ignored
-              existingSecret: ""
-              # External Database ssl
-              ssl: false
-              # External Database ssl CA filepath
-              sslCaFile: ""
+              existingSecret: "ghost-mysql-credentials"
+              secretKeys:
+                hostname: "host"
+                port: "port"
+                username: "username"
+                password: "mysql-password"
+                root_password: "mysql-root-password"
+                database: "database"

@@ -3,8 +3,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  namespace: ghost
-  name: ghost
+  name: ghost-data
   annotations:
     k8up.io/backup: 'true'
 spec:
