@@ -331,9 +331,9 @@ spec:
 
               - name: postgres-client-certs
                 mountPath: /etc/secrets/app
-                
+
               #- name: postgres-certs
-              #  mountPath: /data/git/.postgresql           
+              #  mountPath: /data/git/.postgresql
 
             ## @section Init
             ## @param initPreScript Bash shell script copied verbatim to the start of the init-container.
@@ -386,18 +386,11 @@ spec:
 
               # Either specify inline `key` and `secret` or refer to them via `existingSecret`
               ## @param gitea.oauth OAuth configuration
-              oauth: []
-                # - name: 'OAuth 1'
-                #   provider:
-                #   key:
-                #   secret:
-                #   existingSecret:
-                #   autoDiscoverUrl:
-                #   useCustomUrls:
-                #   customAuthUrl:
-                #   customTokenUrl:
-                #   customProfileUrl:
-                #   customEmailUrl:
+              oauth:
+                - name: 'Zitadel'
+                  provider: zitadel
+                  existingSecret: oidc-forgejo
+                  autoDiscoverUrl: https://iam.vleermuis.tech
 
               ## @param gitea.additionalConfigSources Additional configuration from secret or configmap
               additionalConfigSources: []
