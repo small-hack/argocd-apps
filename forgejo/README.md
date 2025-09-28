@@ -11,12 +11,14 @@ We're using this [helm chart](https://code.forgejo.org/forgejo-contrib/forgejo-h
 
 ## IMPORTANT
 
-This uses an oci image repo which can only be used if it is added as a repo to argocd:
+1. An OIDC user must have a zitadel authorization for `forgejo_admins`. After the initial login your account will not have admin access - You mush log out and then back-in before Forgejo will switch your account to be an admin.
 
-```bash
-kns argocd
-argocd repo add code.forgejo.org --type helm --name forgejo --enable-oci
-```
+2. This uses an oci image repo which can only be used if it is added as a repo to argocd:
+
+    ```bash
+    kns argocd
+    argocd repo add code.forgejo.org --type helm --name forgejo --enable-oci
+    ```
 
 TODO:
 
