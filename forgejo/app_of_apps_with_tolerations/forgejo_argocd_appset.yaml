@@ -455,7 +455,7 @@ spec:
                     key: "port"
 
               - name: GITEA__MAILER__USER
-                value: 'noreply@{{ .forgejo_hostname }}'
+                value: smalladmin@smallhack.org
 
               # Configure OpenSSH's log level. Only available for root-based Forgejo image.
               ssh:
