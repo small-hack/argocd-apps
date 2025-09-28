@@ -391,7 +391,7 @@ spec:
                   provider: openidConnect
                   existingSecret: oidc-forgejo
                   autoDiscoverUrl: https://iam.vleermuis.tech/.well-known/openid-configuration
-                  scopes: 'openid email preferred_username scopes'
+                  scopes: 'openid email preferred_username scopes groups'
                   adminGroup: forgejo_admins
 
               ## @param gitea.additionalConfigSources Additional configuration from secret or configmap
