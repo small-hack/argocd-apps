@@ -391,7 +391,7 @@ spec:
                   provider: openidConnect
                   existingSecret: oidc-forgejo
                   autoDiscoverUrl: https://iam.vleermuis.tech/.well-known/openid-configuration
-                  scopes: 'openid email profile'
+                  scopes: 'openid email profile groups'
                   groupClaimName: groups
                   adminGroup: forgejo_admins
                   restrictedGroup: forgejo_users
@@ -429,6 +429,15 @@ spec:
                   secretKeyRef:
                     name: forgejo-pgsql-credentials
                     key: password
+
+              - name: GITEA__MAILER__SMTP_ADDR
+                value: test
+
+              - name: GITEA__MAILER__SMTP_PORT
+                value: 12345
+
+              - name: GITEA__MAILER__FROM
+                value: test
 
               # Configure OpenSSH's log level. Only available for root-based Forgejo image.
               ssh:
@@ -501,7 +510,9 @@ spec:
                 webhook: {}
 
                 ## @param gitea.config.mailer Mailer configuration (disabled by default)
-                mailer: {}
+                mailer:
+                  ENABLED: "true"
+                  PROTOCOL: "SMTP"
 
                 ## @param gitea.config.email.incoming Configuration for handling incoming mail (disabled by default)
                 email.incoming: {}
