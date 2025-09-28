@@ -391,10 +391,11 @@ spec:
                   provider: openidConnect
                   existingSecret: oidc-forgejo
                   autoDiscoverUrl: https://iam.vleermuis.tech/.well-known/openid-configuration
-                  scopes: 'openid email profile groups'
+                  scopes: 'openid email profile'
+                  groupClaimName: groups
                   adminGroup: forgejo_admins
                   restrictedGroup: forgejo_users
-                  iconUrl: "https://cdn.sanity.io/images/y3uu7rkl/production/dc96d585628e721be392cdbacc13202e89af9200-295x80.svg"
+                  iconUrl: "https://iam.vleermuis.tech/ui/console/assets/images/zitadel-logo-solo-light.svg"
 
               ## @param gitea.additionalConfigSources Additional configuration from secret or configmap
               additionalConfigSources: []
