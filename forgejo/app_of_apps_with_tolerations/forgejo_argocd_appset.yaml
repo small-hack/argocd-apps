@@ -390,8 +390,8 @@ spec:
                 - name: 'Zitadel'
                   provider: openidConnect
                   existingSecret: oidc-forgejo
-                  autoDiscoverUrl: https://iam.vleermuis.tech
-                  scopes: 'openid email name'
+                  autoDiscoverUrl: https://iam.vleermuis.tech/.well-known/openid-configuration
+                  scopes: 'openid email preferred_username scopes'
 
               ## @param gitea.additionalConfigSources Additional configuration from secret or configmap
               additionalConfigSources: []
