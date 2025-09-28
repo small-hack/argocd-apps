@@ -537,8 +537,8 @@ spec:
 
                 ## @param gitea.config.cache Cache configuration
                 cache:
-                  ENABLED: true
-                  ADAPTER: redis-cluster
+                  ENABLED: "true"
+                  ADAPTER: "redis-cluster"
 
                 ## @param gitea.config.session Session/cookie handling
                 session: {}
