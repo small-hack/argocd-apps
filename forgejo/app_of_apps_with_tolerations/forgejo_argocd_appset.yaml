@@ -437,7 +437,7 @@ spec:
                 value: "12345"
 
               - name: GITEA__MAILER__FROM
-                value: test
+                value: test@example.com
 
               # Configure OpenSSH's log level. Only available for root-based Forgejo image.
               ssh:
