@@ -37,7 +37,7 @@ spec:
         # https://github.com/grafana/alloy/tree/main/operations/helm/charts/alloy
         repoURL: https://prometheus-community.github.io/helm-charts
         chart: prometheus-node-exporter
-        targetRevision: 4.45.0
+        targetRevision: 4.48.0
         helm:
           releaseName: node-exporter
           valuesObject:
