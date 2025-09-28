@@ -21,6 +21,7 @@ spec:
               - zitadel_hostname
               - global_cluster_issuer
               - vouch_hostname
+              - grafana_stack_s3_pvc_storage_class
   template:
     metadata:
       name: mimir
@@ -82,6 +83,8 @@ spec:
               zoneAwareReplication:
                 # -- Enable zone-aware replication for ingester
                 enabled: false
+              persistentVolume:
+                storageClass: "{{ .grafana_stack_s3_pvc_storage_class }}"
 
             # mimir's store_gateway
             store_gateway:
@@ -91,18 +94,24 @@ spec:
               zoneAwareReplication:
                 # -- Enable zone-aware replication for ingester
                 enabled: false
+              persistentVolume:
+                storageClass: "{{ .grafana_stack_s3_pvc_storage_class }}"
 
             # mimir's forked alertmanager
             alertmanager:
               #topologySpreadConstraints: []
               enabled: true
               replic§as: 2
+              persistentVolume:
+                storageClass: "{{ .grafana_stack_s3_pvc_storage_class }}"
 
             #distributor:
             #  topologySpreadConstraints: []
 
-            #compactor:
-            #  topologySpreadConstraints: []
+            compactor:
+              #topologySpreadConstraints: []
+              persistentVolume:
+                storageClass: "{{ .grafana_stack_s3_pvc_storage_class }}"
 
             #ruler:
             #  topologySpreadConstraints: []

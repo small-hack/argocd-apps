@@ -21,8 +21,8 @@ spec:
               - grafana_stack_s3_backup_bucket
               - grafana_stack_s3_backup_region
               - grafana_stack_s3_pvc_capacity
+              - grafana_stack_s3_pvc_storage_class
               - grafana_stack_pvc_backup_schedule
-              - global_pvc_storage_class
   template:
     metadata:
       name: grafana-stack-s3-pvc
@@ -47,7 +47,7 @@ spec:
           valuesObject:
             provider: '{{ .grafana_stack_s3_provider }}'
             pvc_capacity: '{{ .grafana_stack_s3_pvc_capacity }}'
-            pvc_storageClassName: '{{ .global_pvc_storage_class }}'
+            pvc_storageClassName: '{{ .grafana_stack_s3_pvc_storage_class }}'
 
             seaweedfs:
               # -- deploy a master data PVC for seaweedfs

@@ -18,10 +18,12 @@ spec:
           parameters:
             secret_vars:
               - global_cluster_issuer
-              - nextcloud_toleration_key
-              - nextcloud_toleration_operator
-              - nextcloud_toleration_value
-              - nextcloud_toleration_effect
+              - grafana_stack_toleration_key
+              - grafana_stack_toleration_operator
+              - grafana_stack_toleration_value
+              - grafana_stack_toleration_effect
+              - grafana_stack_affinity_key
+              - grafana_stack_affinity_value
   template:
     metadata:
       name: alloy-metrics
@@ -108,10 +110,10 @@ spec:
               replicas: 4
 
             tolerations:
-              - key: '{{ .nextcloud_toleration_key }}'
-                operator: '{{ .nextcloud_toleration_operator }}'
-                value: '{{ .nextcloud_toleration_value }}'
-                effect: '{{ .nextcloud_toleration_effect }}'
+              - key: '{{ .grafana_stack_toleration_key }}'
+                operator: '{{ .grafana_stack_toleration_operator }}'
+                value: '{{ .grafana_stack_toleration_value }}'
+                effect: '{{ .grafana_stack_toleration_effect }}'
 
             networkPolicy:
               enabled: false
