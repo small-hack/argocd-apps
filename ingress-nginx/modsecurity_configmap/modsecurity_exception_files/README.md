@@ -14,4 +14,5 @@
 | Mimir          | 110001 |
 | Harbor         | 120001 |
 | Jellyfin       | 130000 |
+| Forgejo        | 140000 |
 | Nextcloud      | 950000 |

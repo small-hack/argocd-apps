@@ -152,6 +152,7 @@ spec:
                   Include /etc/nginx/owasp-modsecurity-crs/plugins/mimir-rule-exclusions-before.conf
                   Include /etc/nginx/owasp-modsecurity-crs/plugins/harbor-rule-exclusions-before.conf
                   Include /etc/nginx/owasp-modsecurity-crs/plugins/jellyfin-rule-exclusions-before.conf
+                  Include /etc/nginx/owasp-modsecurity-crs/plugins/forgejo-rule-exclusions-before.conf
 
                   # OWASP Core Rule Set
                   Include /etc/nginx/owasp-modsecurity-crs/nginx-modsecurity.conf
