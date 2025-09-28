@@ -454,9 +454,6 @@ spec:
                     name: "forgejo-smtp-credentials"
                     key: "port"
 
-              - name: GITEA__MAILER__USER
-                value: smalladmin@smallhack.org
-
               # Configure OpenSSH's log level. Only available for root-based Forgejo image.
               ssh:
                 logLevel: 'INFO'
@@ -494,7 +491,8 @@ spec:
                   DB_TYPE: postgres
                   HOST: forgejo-postgres-rw.forgejo.svc:5432
                   NAME: forgejo
-                  USER: forgejo
+                  FROM: forgejo
+
 
                 ## @param gitea.config.indexer Settings for what content is indexed and how
                 indexer: {}
@@ -530,7 +528,10 @@ spec:
                 ## @param gitea.config.mailer Mailer configuration (disabled by default)
                 mailer:
                   ENABLED: "true"
+                  SUBJECT_PREFIX: "[git.smallhack.org]"
                   PROTOCOL: "SMTP"
+                  MAILER_TYPE: "smtp"
+                  FROM: git@smallhack.org
 
                 ## @param gitea.config.email.incoming Configuration for handling incoming mail (disabled by default)
                 email.incoming: {}
