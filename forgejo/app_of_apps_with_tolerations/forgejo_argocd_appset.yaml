@@ -434,7 +434,7 @@ spec:
                 value: test
 
               - name: GITEA__MAILER__SMTP_PORT
-                value: 12345
+                value: "12345"
 
               - name: GITEA__MAILER__FROM
                 value: test
