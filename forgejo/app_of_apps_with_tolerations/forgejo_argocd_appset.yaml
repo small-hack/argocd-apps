@@ -448,12 +448,6 @@ spec:
                     name: "forgejo-smtp-credentials"
                     key: "login"
 
-              - name: GITEA__MAILER__SMTP_PORT
-                valueFrom:
-                  secretKeyRef:
-                    name: "forgejo-smtp-credentials"
-                    key: "port"
-
               # Configure OpenSSH's log level. Only available for root-based Forgejo image.
               ssh:
                 logLevel: 'INFO'
@@ -529,8 +523,10 @@ spec:
                 mailer:
                   ENABLED: "true"
                   SUBJECT_PREFIX: "[git.smallhack.org]"
-                  PROTOCOL: "smtp"
-                  FROM: git@smallhack.org
+                  PROTOCOL: "smtps"
+                  FROM: noreply@smallhack.org
+                  NAME: git.smallhack.org
+                  SMTP_PORT: "465"
 
                 ## @param gitea.config.email.incoming Configuration for handling incoming mail (disabled by default)
                 email.incoming: {}
