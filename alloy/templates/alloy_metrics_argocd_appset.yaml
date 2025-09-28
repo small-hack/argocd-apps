@@ -105,7 +105,7 @@ spec:
               # Must be one of 'daemonset', 'deployment', or 'statefulset'.
               type: 'deployment'
               # Number of pods to deploy.
-              replicas: 4
+              replicas: 5
 
             tolerations:
               - key: '{{ .nextcloud_toleration_key }}'
