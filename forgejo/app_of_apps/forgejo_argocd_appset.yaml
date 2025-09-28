@@ -390,18 +390,11 @@ spec:
 
               # Either specify inline `key` and `secret` or refer to them via `existingSecret`
               ## @param gitea.oauth OAuth configuration
-              oauth: []
-                # - name: 'OAuth 1'
-                #   provider:
-                #   key:
-                #   secret:
-                #   existingSecret:
-                #   autoDiscoverUrl:
-                #   useCustomUrls:
-                #   customAuthUrl:
-                #   customTokenUrl:
-                #   customProfileUrl:
-                #   customEmailUrl:
+              oauth:
+                - name: 'Zitadel'
+                  provider: zitadel
+                  existingSecret: oidc-forgejo
+                  autoDiscoverUrl: https://iam.vleermuis.tech
 
               ## @param gitea.additionalConfigSources Additional configuration from secret or configmap
               additionalConfigSources: []
