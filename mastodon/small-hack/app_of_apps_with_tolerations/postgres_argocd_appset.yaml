@@ -89,7 +89,7 @@ spec:
                   name: mastodon-postgres
 
             monitoring:
-              enablePodMonitor: false
+              enablePodMonitor: true
 
             postgresql:
               parameters:
