@@ -388,7 +388,7 @@ spec:
               ## @param gitea.oauth OAuth configuration
               oauth:
                 - name: 'Zitadel'
-                  provider: zitadel
+                  provider: oidc
                   existingSecret: oidc-forgejo
                   autoDiscoverUrl: https://iam.vleermuis.tech
 
