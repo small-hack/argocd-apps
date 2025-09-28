@@ -387,7 +387,7 @@ spec:
               # Either specify inline `key` and `secret` or refer to them via `existingSecret`
               ## @param gitea.oauth OAuth configuration
               oauth:
-                - name: 'Zitadel'
+                - name: 'OpenID Connect'
                   provider: oidc
                   existingSecret: oidc-forgejo
                   autoDiscoverUrl: https://iam.vleermuis.tech
