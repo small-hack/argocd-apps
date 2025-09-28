@@ -456,7 +456,7 @@ spec:
 
               # Configure OpenSSH's log level. Only available for root-based Forgejo image.
               ssh:
-                logLevel: 'INFO'
+                logLevel: 'DEBUG'
 
               config:
                 # values in the DEFAULT section
