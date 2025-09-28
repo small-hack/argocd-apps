@@ -43,7 +43,7 @@ spec:
       source:
         repoURL: https://small-hack.github.io/ghost-helm-chart
         chart: ghost
-        targetRevision: 1.1.0
+        targetRevision: 1.2.0
         helm:
           releaseName: "ghost"
           # https://github.com/small-hack/ghost-helm-chart/blob/main/charts/ghost/values.yaml
@@ -131,3 +131,15 @@ spec:
                 password: "mysql-password"
                 root_password: "mysql-root-password"
                 database: "database"
+
+            activity_pub:
+              # External Database Configuration
+              externalDatabase:
+                existingSecret: ghost-activitypub-mysql-credentials
+                secretKeys:
+                  hostname: "host"
+                  port: "port"
+                  username: "username"
+                  password: "mysql-password"
+                  root_password: "mysql-root-password"
+                  database: "database"
