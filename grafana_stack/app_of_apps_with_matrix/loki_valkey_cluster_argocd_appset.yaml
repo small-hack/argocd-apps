@@ -17,7 +17,7 @@ spec:
         input:
           parameters:
             secret_vars:
-              - grafana_stack_s3_pvc_storage_class
+              - grafana_stack_s3_storage_class
   template:
     metadata:
       name: loki-valkey-cluster
@@ -47,7 +47,7 @@ spec:
         helm:
           valuesObject:
             global:
-              storageClass: "{{ .grafana_stack_s3_pvc_storage_class }}"
+              storageClass: "{{ .grafana_stack_s3_storage_class }}"
 
             fullnameOverride: "loki-valkey"
 
