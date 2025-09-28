@@ -536,7 +536,9 @@ spec:
                 email.incoming: {}
 
                 ## @param gitea.config.cache Cache configuration
-                cache: {}
+                cache:
+                  ENABLED: true
+                  ADAPTER: redis-cluster
 
                 ## @param gitea.config.session Session/cookie handling
                 session: {}
