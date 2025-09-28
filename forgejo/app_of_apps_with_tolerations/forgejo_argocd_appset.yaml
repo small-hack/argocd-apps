@@ -454,12 +454,6 @@ spec:
                     name: "forgejo-smtp-credentials"
                     key: "port"
 
-              - name: GITEA__MAILER__PROTOCOL
-                valueFrom:
-                  secretKeyRef:
-                    name: "forgejo-smtp-credentials"
-                    key: "protocol"
-
               - name: GITEA__MAILER__USER
                 value: noreply@'{{ .forgejo_hostname }}'
 
@@ -536,6 +530,7 @@ spec:
                 ## @param gitea.config.mailer Mailer configuration (disabled by default)
                 mailer:
                   ENABLED: "true"
+                  PROTOCOL: "SMTP"
 
                 ## @param gitea.config.email.incoming Configuration for handling incoming mail (disabled by default)
                 email.incoming: {}
