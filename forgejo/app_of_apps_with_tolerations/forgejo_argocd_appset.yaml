@@ -529,8 +529,7 @@ spec:
                 mailer:
                   ENABLED: "true"
                   SUBJECT_PREFIX: "[git.smallhack.org]"
-                  PROTOCOL: "SMTP"
-                  MAILER_TYPE: "smtp"
+                  PROTOCOL: "smtp"
                   FROM: git@smallhack.org
 
                 ## @param gitea.config.email.incoming Configuration for handling incoming mail (disabled by default)
