@@ -431,13 +431,37 @@ spec:
                     key: password
 
               - name: GITEA__MAILER__SMTP_ADDR
-                value: test
+                valueFrom:
+                  secretKeyRef:
+                    name: "forgejo-smtp-credentials"
+                    key: "server"
 
-              - name: GITEA__MAILER__SMTP_PORT
-                value: "12345"
+              - name: GITEA__MAILER__PASSWD
+                valueFrom:
+                  secretKeyRef:
+                    name: "forgejo-smtp-credentials"
+                    key: "password"
 
-              - name: GITEA__MAILER__FROM
-                value: test@example.com
+              - name: GITEA__MAILER__USER
+                valueFrom:
+                  secretKeyRef:
+                    name: "forgejo-smtp-credentials"
+                    key: "login"
+
+              - name: GITEA__MAILER__PORT
+                valueFrom:
+                  secretKeyRef:
+                    name: "forgejo-smtp-credentials"
+                    key: "port"
+
+              - name: GITEA__MAILER__PROTOCOL
+                valueFrom:
+                  secretKeyRef:
+                    name: "forgejo-smtp-credentials"
+                    key: "protocol"
+
+              - name: GITEA__MAILER__USER
+                value: noreply@'{{ .forgejo_hostname }}'
 
               # Configure OpenSSH's log level. Only available for root-based Forgejo image.
               ssh:
@@ -512,7 +536,6 @@ spec:
                 ## @param gitea.config.mailer Mailer configuration (disabled by default)
                 mailer:
                   ENABLED: "true"
-                  PROTOCOL: "SMTP"
 
                 ## @param gitea.config.email.incoming Configuration for handling incoming mail (disabled by default)
                 email.incoming: {}
