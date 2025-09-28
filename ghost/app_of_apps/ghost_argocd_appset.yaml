@@ -52,7 +52,7 @@ spec:
 
             ghost:
               # -- public url of the ghost blog
-              url: '{{ .ghost_hostname }}'
+              url: 'https://{{ .ghost_hostname }}'
 
               # -- title of your ghost blog
               blog_title: '{{ .ghost_blog_title }}'
