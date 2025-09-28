@@ -18,6 +18,10 @@ spec:
           parameters:
             secret_vars:
               - global_cluster_issuer
+              - nextcloud_toleration_key
+              - nextcloud_toleration_operator
+              - nextcloud_toleration_value
+              - nextcloud_toleration_effect
   template:
     metadata:
       name: alloy-metrics
@@ -101,7 +105,13 @@ spec:
               # Must be one of 'daemonset', 'deployment', or 'statefulset'.
               type: 'deployment'
               # Number of pods to deploy.
-              replicas: 3
+              replicas: 4
+
+            tolerations:
+              - key: '{{ .nextcloud_toleration_key }}'
+                operator: '{{ .nextcloud_toleration_operator }}'
+                value: '{{ .nextcloud_toleration_value }}'
+                effect: '{{ .nextcloud_toleration_effect }}'
 
             networkPolicy:
               enabled: false
