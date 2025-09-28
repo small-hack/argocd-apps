@@ -448,14 +448,14 @@ spec:
                     name: "forgejo-smtp-credentials"
                     key: "login"
 
-              - name: GITEA__MAILER__PORT
+              - name: GITEA__MAILER__SMTP_PORT
                 valueFrom:
                   secretKeyRef:
                     name: "forgejo-smtp-credentials"
                     key: "port"
 
               - name: GITEA__MAILER__USER
-                value: noreply@'{{ .forgejo_hostname }}'
+                value: 'noreply@{{ .forgejo_hostname }}'
 
               # Configure OpenSSH's log level. Only available for root-based Forgejo image.
               ssh:
