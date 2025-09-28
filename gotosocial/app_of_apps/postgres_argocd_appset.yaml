@@ -84,7 +84,7 @@ spec:
                 cluster:
                   name: gotosocial-postgres
             monitoring:
-              enablePodMonitor: false
+              enablePodMonitor: true
             postgresql:
               parameters:
                 max_wal_size: "1GB"
