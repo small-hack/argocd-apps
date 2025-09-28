@@ -52,7 +52,7 @@ spec:
       source:
         repoURL: https://small-hack.github.io/ghost-helm-chart
         chart: ghost
-        targetRevision: 1.0.5
+        targetRevision: 1.1.0
         helm:
           releaseName: "ghost"
           # https://github.com/small-hack/ghost-helm-chart/blob/main/charts/ghost/values.yaml
@@ -92,6 +92,7 @@ spec:
                   protocol: "protocol"
                   username: "username"
                   password: "password"
+                  from_address: "from_address"
 
             # Set container requests and limits for different resources like CPU or memory (essential for production workloads)
             resources:
