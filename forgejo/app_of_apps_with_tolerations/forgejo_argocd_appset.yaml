@@ -456,7 +456,7 @@ spec:
 
               # Configure OpenSSH's log level. Only available for root-based Forgejo image.
               ssh:
-                logLevel: 'DEBUG'
+                logLevel: 'INFO'
 
               config:
                 # values in the DEFAULT section
@@ -553,7 +553,8 @@ spec:
                 attachment: {}
 
                 ## @param gitea.config.log Logging configuration
-                log: {}
+                log:
+                  LEVEL: "Debug"
 
                 ## @param gitea.config.cron Cron job configuration
                 cron: {}
