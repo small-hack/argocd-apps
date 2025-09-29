@@ -237,7 +237,7 @@ spec:
                           proxy_pass 'https://{{ .ghost_hostname }}';
                       }
 
-                      location <%= location %> {
+                      location / {
                           proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
                           proxy_set_header X-Forwarded-Proto $scheme;
                           proxy_set_header X-Real-IP $remote_addr;
@@ -245,10 +245,6 @@ spec:
                           proxy_pass http://127.0.0.1:<%= port %>;
                           <% if (location !== '/') { %>proxy_redirect off;<% } %>
                           add_header X-Content-Type-Options $header_content_type_options;
-                      }
-
-                      location ~ ^/.well-known/acme-challenge {
-                          allow all;
                       }
 
                       client_max_body_size 50m;
