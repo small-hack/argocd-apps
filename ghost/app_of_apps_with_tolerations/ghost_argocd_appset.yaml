@@ -224,7 +224,7 @@ spec:
                           proxy_set_header Host $http_host;
                           add_header X-Content-Type-Options $header_content_type_options;
                           proxy_ssl_server_name on;
-                          proxy_pass 'https://{{ .ghost_hostname }}';
+                          proxy_pass 'http://ghost-activitypub:8080;
                       }
 
                       location ~ /.well-known/(webfinger|nodeinfo) {
@@ -234,7 +234,7 @@ spec:
                           proxy_set_header Host $http_host;
                           add_header X-Content-Type-Options $header_content_type_options;
                           proxy_ssl_server_name on;
-                          proxy_pass 'https://{{ .ghost_hostname }}';
+                          proxy_pass http://ghost-activitypub:8080;
                       }
 
                       location / {
