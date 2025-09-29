@@ -10,7 +10,7 @@ spec:
   project: pxc-operator
   destination:
     server: "https://kubernetes.default.svc"
-    namespace: cnpg-system
+    namespace: pxc-operator
   syncPolicy:
     syncOptions:
       - ApplyOutOfSyncOnly=true
@@ -19,7 +19,7 @@ spec:
       prune: true
       selfHeal: true
   source:
-    repoURL: 'https://percona.github.io/percona-helm-charts/'
+    repoURL: 'https://percona.github.io/percona-helm-charts'
     chart: pxc-operator
     targetRevision: 1.18.0
     helm:
