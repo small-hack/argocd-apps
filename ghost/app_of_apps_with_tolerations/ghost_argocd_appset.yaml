@@ -195,7 +195,7 @@ spec:
 
               service:
                 # -- port exposed by proxy service
-                port: 80
+                port: 2368
 
               # -- config to be mounted into the nginx container
               config: |-
@@ -210,11 +210,11 @@ spec:
                       server_name  0.0.0.0;
 
                       location / {
-                        proxy_pass http://ghost:80;
-                        proxy_set_header X-Forwarded-For $remote_addr;
-                        add_header Access-Control-Allow-Origin *;
-                        proxy_set_header Host $host;
-                        proxy_set_header X-Forwarded-Proto https;
+                        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                        proxy_set_header X-Forwarded-Proto $scheme;
+                        proxy_set_header X-Real-IP $remote_addr;
+                        proxy_set_header Host $http_host;
+                        proxy_pass http://ghost:2368;
                       }
 
                       location ~ /.ghost/activitypub/* {
