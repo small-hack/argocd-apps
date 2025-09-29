@@ -53,7 +53,7 @@ spec:
       source:
         repoURL: https://small-hack.github.io/ghost-helm-chart
         chart: ghost
-        targetRevision: 1.11.0
+        targetRevision: 1.11.2
         helm:
           releaseName: "ghost"
           # https://github.com/small-hack/ghost-helm-chart/blob/main/charts/ghost/values.yaml
@@ -192,6 +192,11 @@ spec:
             proxy:
               # -- enable/disable the embedded proxy
               enabled: true
+
+              service:
+                # -- port exposed by proxy service
+                port: 80
+
               # -- config to be mounted into the nginx container
               config: |-
                 user nginx;
@@ -229,3 +234,5 @@ spec:
                       }
                   }
                 }
+
+
