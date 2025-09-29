@@ -1,0 +1,32 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: pxc-operator-application
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  project: pxc-operator
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: cnpg-system
+  syncPolicy:
+    syncOptions:
+      - ApplyOutOfSyncOnly=true
+      - ServerSideApply=true
+    automated:
+      prune: true
+      selfHeal: true
+  source:
+    repoURL: 'https://percona.github.io/percona-helm-charts/'
+    chart: pxc-operator
+    targetRevision: 1.18.0
+    helm:
+      releaseName: pxc-operator
+      valuesObject:
+        replicaCount: 1
+        watchAllNamespaces: true
+        logStructured: true
+        logLevel: "INFO"
+        disableTelemetry: false
