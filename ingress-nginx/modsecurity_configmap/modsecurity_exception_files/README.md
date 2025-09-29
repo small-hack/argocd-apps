@@ -16,4 +16,5 @@
 | Jellyfin       | 130000 |
 | Forgejo        | 140000 |
 | Ghost          | 150000 |
+| AI             | 160000 |
 | Nextcloud      | 950000 |
