@@ -105,8 +105,9 @@ spec:
               persistentVolume:
                 storageClass: "{{ .grafana_stack_s3_pvc_storage_class }}"
 
-            #distributor:
-            #  topologySpreadConstraints: []
+            distributor:
+              #topologySpreadConstraints: []
+              replicas: 2
 
             compactor:
               #topologySpreadConstraints: []
