@@ -155,6 +155,7 @@ spec:
                   Include /etc/nginx/owasp-modsecurity-crs/plugins/forgejo-rule-exclusions-before.conf
                   Include /etc/nginx/owasp-modsecurity-crs/plugins/ghost-rule-exclusions-before.conf
                   Include /etc/nginx/owasp-modsecurity-crs/plugins/ai-rule-exclusions-before.conf
+                  Include /etc/nginx/owasp-modsecurity-crs/plugins/banned-rule-exclusions-before.conf
 
                   # OWASP Core Rule Set
                   Include /etc/nginx/owasp-modsecurity-crs/nginx-modsecurity.conf
