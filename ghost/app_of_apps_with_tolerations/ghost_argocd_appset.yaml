@@ -53,7 +53,7 @@ spec:
       source:
         repoURL: https://small-hack.github.io/ghost-helm-chart
         chart: ghost
-        targetRevision: 1.9.1
+        targetRevision: 1.11.0
         helm:
           releaseName: "ghost"
           # https://github.com/small-hack/ghost-helm-chart/blob/main/charts/ghost/values.yaml
@@ -199,3 +199,25 @@ spec:
                   root_password: "mysql-root-password"
                   database: "database"
                   connection_string: "mysql-connection-string"
+
+            # Options for embedded nginx reverse-proxy
+            proxy:
+              # -- enable/disable the embedded proxy
+              enabled: true
+              # -- config to be mounted into the nginx container
+              config: |-
+                user nginx;
+                worker_processes  1;
+                events {
+                  worker_connections  10240;
+                }
+                http {
+                  server {
+                      listen       80;
+                      server_name  0.0.0.0;
+                      location / {
+                        root   /usr/share/nginx/html; #Change this line
+                        index  index.html index.htm;
+                    }
+                  }
+                }
