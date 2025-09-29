@@ -120,7 +120,7 @@ spec:
                 - host: '{{ .ghost_hostname }}'
                   paths:
                     - path: /
-                      pathType: ImplementationSpecific
+                      pathType: Prefix
 
               # Default path for the ingress record
               className: "nginx"
