@@ -20,7 +20,7 @@ spec:
                 name: ghost-activitypub
                 port:
                   number: 8080
-            path: /\.ghost/activitypub(?/.*)?
+            path: /\.ghost/activitypub/.*
             pathType: ImplementationSpecific
           - backend:
               service:
@@ -51,7 +51,7 @@ spec:
                 name: ghost-activitypub
                 port:
                   number: 8080
-            path: /\.ghost/activitypub(?/.*)?
+            path: /\.ghost/activitypub/.*
             pathType: ImplementationSpecific
           - backend:
               service:
