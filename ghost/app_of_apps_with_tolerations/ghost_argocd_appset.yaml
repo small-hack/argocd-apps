@@ -129,6 +129,8 @@ spec:
               annotations:
                 kubernetes.io/tls-acme: "true"
                 cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
+                nginx.ingress.kubernetes.io/ssl-redirect: "true"
+                nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
                 nginx.ingress.kubernetes.io/server-snippet: |-
                   location ~ ^/.ghost/activitypub(?/.*)?$ {
                   proxy_pass              ``http://0.0.0.0:8080``; # keep the /.ghost/activitypub prefix intact
