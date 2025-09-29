@@ -210,7 +210,7 @@ spec:
                       server_name  0.0.0.0;
 
                       location / {
-                        proxy_pass ghost:80;
+                        proxy_pass http://ghost:80;
                         proxy_set_header X-Forwarded-For $remote_addr;
                         add_header Access-Control-Allow-Origin *;
                         proxy_set_header Host $host;
@@ -218,7 +218,7 @@ spec:
                       }
 
                       location ~ /.ghost/activitypub/* {
-                        proxy_pass ghost-activitypub:8080;
+                        proxy_pass http://ghost-activitypub:8080;
                         proxy_set_header X-Forwarded-For $remote_addr;
                         add_header Access-Control-Allow-Origin *;
                         proxy_set_header Host $host;
@@ -226,7 +226,7 @@ spec:
                       }
 
                       location ~ /.well-known/(webfinger|nodeinfo) {
-                        proxy_pass ghost-activitypub:8080;
+                        proxy_pass http://ghost-activitypub:8080;
                         proxy_set_header X-Forwarded-For $remote_addr;
                         add_header Access-Control-Allow-Origin *;
                         proxy_set_header Host $host;
