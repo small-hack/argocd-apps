@@ -10,5 +10,5 @@ We're currently using the [small-hack Ghost helm chart](https://github.com/small
 ## Sync Waves
 
 1. External Secrets and PVCs
-2. MySQL
-3. ghost docker web app
+2. MySQL (one for ActivityPub and one for Ghost)
+3. Ghost web app (includes ActivityPub deployment as well)
