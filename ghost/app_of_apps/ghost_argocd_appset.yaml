@@ -32,19 +32,22 @@ spec:
         argocd.argoproj.io/sync-wave: "3"
     spec:
       project: ghost
+
       destination:
         server: https://kubernetes.default.svc
         namespace: ghost
+
       syncPolicy:
         syncOptions:
           - ApplyOutOfSyncOnly=true
         automated:
           prune: true
           selfHeal: true
+
       source:
         repoURL: https://small-hack.github.io/ghost-helm-chart
         chart: ghost
-        targetRevision: 1.9.0
+        targetRevision: 1.11.0
         helm:
           releaseName: "ghost"
           # https://github.com/small-hack/ghost-helm-chart/blob/main/charts/ghost/values.yaml
@@ -55,14 +58,14 @@ spec:
               # -- public url of the ghost blog
               url: 'https://{{ .ghost_hostname }}'
 
-              # -- public url of the ghost blog
-              admin_url: 'https://{{ .ghost_admin_hostname }}'
-
               # -- domain of the ghost blog
               domain: '{{ .ghost_hostname }}'
 
               # -- admin domain of the ghost blog
               admin_domain: '{{ .ghost_admin_hostname }}'
+
+              # -- public url of the ghost blog
+              admin_url: 'https://{{ .ghost_admin_hostname }}'
 
               # -- title of your ghost blog
               blog_title: '{{ .ghost_blog_title }}'
@@ -71,7 +74,7 @@ spec:
               enable_https: false
 
               # -- skip install of ghost at pod restart
-              skip_bootstrap: false
+              skip_bootstrap: true
 
               # admin info
               admin:
@@ -114,7 +117,7 @@ spec:
                 - host: '{{ .ghost_hostname }}'
                   paths:
                     - path: /
-                      pathType: ImplementationSpecific
+                      pathType: Prefix
 
               # Default path for the ingress record
               className: "nginx"
@@ -123,6 +126,19 @@ spec:
               annotations:
                 kubernetes.io/tls-acme: "true"
                 cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
+                nginx.ingress.kubernetes.io/ssl-redirect: "true"
+                nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+                nginx.ingress.kubernetes.io/server-snippet: |-
+                  location ~ ^/.ghost/activitypub(?/.*)?$ {
+                  proxy_pass              ``http://0.0.0.0:8080``; # keep the /.ghost/activitypub prefix intact
+                  proxy_http_version      1.1;
+                  proxy_set_header        Host              $host;
+                  proxy_set_header        Authorization     $http_authorization;
+                  proxy_set_header        X-Real-IP         $remote_addr;
+                  proxy_set_header        X-Forwarded-For   $proxy_add_x_forwarded_for;
+                  proxy_set_header        X-Forwarded-Proto $scheme;
+                  proxy_no_cache          1;
+                  proxy_cache_bypass      1;
 
               tls:
                 - secretName: ghost-tls
@@ -131,6 +147,7 @@ spec:
                     - '{{ .ghost_admin_hostname }}'
 
             ## Persistence Parameters
+            ## ref: https://kubernetes.io/docs/concepts/storage/persistent-volumes/
             persistence:
               # The name of an existing PVC to use for persistence
               existingClaim: "ghost-data"
@@ -147,6 +164,8 @@ spec:
                 database: "database"
 
             activity_pub:
+              # not sure what this does
+              skipSignatureVerfication: false
               # External Database Configuration
               externalDatabase:
                 existingSecret: ghost-activitypub-mysql-credentials
@@ -158,3 +177,25 @@ spec:
                   root_password: "mysql-root-password"
                   database: "database"
                   connection_string: "mysql-connection-string"
+
+            # Options for embedded nginx reverse-proxy
+            proxy:
+              # -- enable/disable the embedded proxy
+              enabled: true
+              # -- config to be mounted into the nginx container
+              config: |-
+                user nginx;
+                worker_processes  1;
+                events {
+                  worker_connections  10240;
+                }
+                http {
+                  server {
+                      listen       80;
+                      server_name  0.0.0.0;
+                      location / {
+                        root   /usr/share/nginx/html; #Change this line
+                        index  index.html index.htm;
+                    }
+                  }
+                }
