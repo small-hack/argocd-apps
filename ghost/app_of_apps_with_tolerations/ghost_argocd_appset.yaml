@@ -183,6 +183,7 @@ spec:
                           - '{{ .ghost_affinity_value }}'
 
             activity_pub:
+              skipSignatureVerfication: true
               # External Database Configuration
               externalDatabase:
                 existingSecret: ghost-activitypub-mysql-credentials
