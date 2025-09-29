@@ -53,7 +53,7 @@ spec:
       source:
         repoURL: https://small-hack.github.io/ghost-helm-chart
         chart: ghost
-        targetRevision: 1.8.0
+        targetRevision: 1.9.0
         helm:
           releaseName: "ghost"
           # https://github.com/small-hack/ghost-helm-chart/blob/main/charts/ghost/values.yaml
@@ -69,6 +69,9 @@ spec:
 
               # -- admin domain of the ghost blog
               admin_domain: '{{ .ghost_admin_hostname }}'
+
+              # -- public url of the ghost blog
+              admin_url: 'https://{{ .ghost_admin_hostname }}'
 
               # -- title of your ghost blog
               blog_title: '{{ .ghost_blog_title }}'
@@ -183,7 +186,8 @@ spec:
                           - '{{ .ghost_affinity_value }}'
 
             activity_pub:
-              skipSignatureVerfication: true
+              # not sure what this does
+              skipSignatureVerfication: false
               # External Database Configuration
               externalDatabase:
                 existingSecret: ghost-activitypub-mysql-credentials

@@ -44,7 +44,7 @@ spec:
       source:
         repoURL: https://small-hack.github.io/ghost-helm-chart
         chart: ghost
-        targetRevision: 1.8.0
+        targetRevision: 1.9.0
         helm:
           releaseName: "ghost"
           # https://github.com/small-hack/ghost-helm-chart/blob/main/charts/ghost/values.yaml
@@ -54,6 +54,9 @@ spec:
             ghost:
               # -- public url of the ghost blog
               url: 'https://{{ .ghost_hostname }}'
+
+              # -- public url of the ghost blog
+              admin_url: 'https://{{ .ghost_admin_hostname }}'
 
               # -- domain of the ghost blog
               domain: '{{ .ghost_hostname }}'
