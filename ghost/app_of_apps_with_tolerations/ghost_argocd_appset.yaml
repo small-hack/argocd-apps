@@ -177,6 +177,8 @@ spec:
             activity_pub:
               # not sure what this does
               skipSignatureVerfication: false
+              image:
+                tag: "edge"
               # External Database Configuration
               externalDatabase:
                 existingSecret: ghost-activitypub-mysql-credentials
