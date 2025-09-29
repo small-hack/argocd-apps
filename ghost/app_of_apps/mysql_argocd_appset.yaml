@@ -41,7 +41,7 @@ spec:
       source:
         repoURL: registry-1.docker.io
         chart: bitnamicharts/mysql
-        targetRevision: 23.0.10
+        targetRevision: 14.0.3
         helm:
           releaseName: "mysql"
           # ref: https://github.com/bitnami/charts/blob/main/bitnami/mysql/values.yaml
