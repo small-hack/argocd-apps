@@ -61,30 +61,30 @@ spec:
             fullnameOverride: "ghost"
 
             ghost:
-              # -- public url of the ghost blog
+              # public url of the ghost blog
               url: 'https://{{ .ghost_hostname }}'
 
-              # -- domain of the ghost blog
+              # domain of the ghost blog
               domain: '{{ .ghost_hostname }}'
 
-              # -- admin domain of the ghost blog
+              # admin domain of the ghost blog
               admin_domain: '{{ .ghost_admin_hostname }}'
 
-              # -- public url of the ghost blog
+              # public url of the ghost blog
               admin_url: 'https://{{ .ghost_admin_hostname }}'
 
-              # -- title of your ghost blog
+              # title of your ghost blog
               blog_title: '{{ .ghost_blog_title }}'
 
-              # -- enable HTTPS for the ghost blog
+              # enable HTTPS for the ghost blog
               enable_https: false
 
-              # -- skip install of ghost at pod restart
+              # skip install of ghost at pod restart
               skip_bootstrap: true
 
               # admin info
               admin:
-                # -- existing kubernetes secret with ghost admin credentials
+                # existing kubernetes secret with ghost admin credentials
                 existingSecret: "ghost-admin-credentials"
                 # keys in existing kubernetes secret for admin credentials
                 secretKeys:
@@ -93,7 +93,7 @@ spec:
                   email: "email"
 
               smtp:
-                # -- existing kubernetes secret with ghost smtp credentials
+                # existing kubernetes secret with ghost smtp credentials
                 existingSecret: "ghost-smtp-credentials"
                 # keys in existing kubernetes secret for smtp credentials
                 secretKeys:
@@ -104,7 +104,8 @@ spec:
                   password: "password"
                   from_address: "from_address"
 
-            # Set container requests and limits for different resources like CPU or memory (essential for production workloads)
+            # Set container requests and limits for different resources like
+            # CPU or memory (essential for production workloads)
             resources:
               requests:
                 cpu: 200m
@@ -113,7 +114,7 @@ spec:
                 cpu: 3
                 memory: 2Gi
 
-            ## Configure the ingress resource that allows you to access the Ghost installation
+            # access to the Ghost installation from outside the cluster
             ingress:
               # Enable ingress record generation for Ghost
               enabled: true
@@ -132,8 +133,9 @@ spec:
               annotations:
                 kubernetes.io/tls-acme: "true"
                 cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
-                nginx.ingress.kubernetes.io/ssl-redirect: "true"
-                nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+                # nginx.ingress.kubernetes.io/ssl-redirect: "true"
+                # nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+
               tls:
                 - secretName: ghost-tls
                   hosts:
@@ -141,7 +143,6 @@ spec:
                     - '{{ .ghost_admin_hostname }}'
 
             ## Persistence Parameters
-            ## ref: https://kubernetes.io/docs/concepts/storage/persistent-volumes/
             persistence:
               # The name of an existing PVC to use for persistence
               existingClaim: "ghost-data"
