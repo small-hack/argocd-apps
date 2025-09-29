@@ -17,6 +17,7 @@ spec:
             secret_vars:
               - global_cluster_issuer
               - ghost_hostname
+              - ghost_admin_hostname
               - ghost_admin_user
               - ghost_admin_email
               - ghost_blog_title
@@ -52,7 +53,7 @@ spec:
       source:
         repoURL: https://small-hack.github.io/ghost-helm-chart
         chart: ghost
-        targetRevision: 1.4.0
+        targetRevision: 1.5.0
         helm:
           releaseName: "ghost"
           # https://github.com/small-hack/ghost-helm-chart/blob/main/charts/ghost/values.yaml
@@ -62,6 +63,12 @@ spec:
             ghost:
               # -- public url of the ghost blog
               url: 'https://{{ .ghost_hostname }}'
+
+              # -- domain of the ghost blog
+              domain: '{{ .ghost_hostname }}'
+
+              # -- admin domain of the ghost blog
+              admin_domain: '{{ .ghost_admin_hostname }}'
 
               # -- title of your ghost blog
               blog_title: '{{ .ghost_blog_title }}'
@@ -124,6 +131,7 @@ spec:
                 - secretName: ghost-tls
                   hosts:
                     - '{{ .ghost_hostname }}'
+                    - '{{ .ghost_admin_hostname }}'
 
             ## Persistence Parameters
             ## ref: https://kubernetes.io/docs/concepts/storage/persistent-volumes/
