@@ -79,7 +79,7 @@ spec:
             # mimir's ingester
             ingester:
               #topologySpreadConstraints: []
-              replicas: 2
+              replicas: 3
               zoneAwareReplication:
                 # -- Enable zone-aware replication for ingester
                 enabled: false
