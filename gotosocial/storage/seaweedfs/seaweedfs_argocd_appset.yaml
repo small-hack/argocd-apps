@@ -58,7 +58,7 @@ spec:
               certificates:
                 alphacrds: false
               monitoring:
-                enabled: false
+                enabled: true
                 gatewayHost: null
                 gatewayPort: null
               enableReplication: false
