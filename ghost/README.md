@@ -1,8 +1,6 @@
 # Ghost Argo CD Application
 
-This is an Argo CD Application to deploy [ghost](https://ghost.org/).
-
-We're currently using the [small-hack Ghost helm chart](https://github.com/small-hack/ghost-helm-chart), and we use the official [ghost docker image](https://hub.docker.com/_/ghost/tags).
+This is an Argo CD Application to deploy [Ghost](https://ghost.org/), a blogging platform. We're currently using the [small-hack Ghost helm chart](https://github.com/small-hack/ghost-helm-chart), and we use the official [ghost docker image](https://hub.docker.com/_/ghost/tags).
 
 <img width="1040" height="388" alt="Screenshot of the the ghost app in the Argo CD web interface using tree view mode. You can see the ghost app branches into 4 appsets that all have their own corresponding apps, including: ghost-app-set, ghost-bitwarden-eso, ghost-mysql-app-set, ghost-activitypub-mysql-app-set, and ghost-pvc-appset" src="https://github.com/user-attachments/assets/dcc0f0a6-b24c-4635-b0fa-86aeec49e169" />
 
