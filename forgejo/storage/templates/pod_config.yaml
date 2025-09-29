@@ -24,9 +24,12 @@ spec:
                   operator: In
                   values:
                     - {{ .Values.k8up.affinity.value }}
+      securityContext:
+        fsGroup: 0
+        runAsUser: 0
       containers:
         - name: test
           env:
-          - name: GHOST
+          - name: FORGEJO
             value: 'true'
 {{- end }}
