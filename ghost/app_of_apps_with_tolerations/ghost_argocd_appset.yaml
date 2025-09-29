@@ -199,11 +199,6 @@ spec:
 
               # -- config to be mounted into the nginx container
               config: |-
-                map $status $header_content_type_options {
-                    204 "";
-                    default "nosniff";
-                }
-
                 server {
                     listen 80;
                     listen [::]:80;
