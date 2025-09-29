@@ -86,16 +86,16 @@ spec:
                 bucket: peertube-postgres
                 endpoint: "{{ .peertube_s3_backup_endpoint }}"
                 accessKeyIDSecretRef:
-                  name: 'peertube-s3-postgres-credentials'
+                  name: 's3-postgres-credentials'
                   key: 'accessKeyId'
                   optional: false
                 secretAccessKeySecretRef:
-                  name: 'peertube-s3-postgres-credentials'
+                  name: 's3-postgres-credentials'
                   key: 'secretAccessKey'
                   optional: false
 
               repoPasswordSecretRef:
-                name: 'peertube-s3-postgres-credentials'
+                name: 's3-postgres-credentials'
                 key: 'resticRepoPassword'
 
               prometheus_url: 'push-gateway.monitoring.svc:9091'
