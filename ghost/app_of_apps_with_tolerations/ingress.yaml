@@ -1,0 +1,81 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    kubernetes.io/tls-acme: "true"
+    nginx.ingress.kubernetes.io/use-regex: "true"
+  labels:
+    app.kubernetes.io/name: ghost
+  name: ghost
+  namespace: ghost
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: blog.smallhack.org
+      http:
+        paths:
+          - backend:
+              service:
+                name: ghost-activitypub
+                port:
+                  number: 8080
+            path: /\.ghost/activitypub(?/.*)?
+            pathType: ImplementationSpecific
+          - backend:
+              service:
+                name: ghost-activitypub
+                port:
+                  number: 8080
+            path: /\.well-known/webfinger
+            pathType: ImplementationSpecific
+          - backend:
+              service:
+                name: ghost-activitypub
+                port:
+                  number: 8080
+            path: /\.well-known/nodeinfo
+            pathType: ImplementationSpecific
+          - backend:
+              service:
+                name: ghost
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
+    - host: admin.blog.smallhack.org
+      http:
+        paths:
+          - backend:
+              service:
+                name: ghost-activitypub
+                port:
+                  number: 8080
+            path: /\.ghost/activitypub(?/.*)?
+            pathType: ImplementationSpecific
+          - backend:
+              service:
+                name: ghost-activitypub
+                port:
+                  number: 8080
+            path: /\.well-known/webfinger
+            pathType: ImplementationSpecific
+          - backend:
+              service:
+                name: ghost-activitypub
+                port:
+                  number: 8080
+            path: /\.well-known/nodeinfo
+            pathType: ImplementationSpecific
+          - backend:
+              service:
+                name: ghost
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - blog.smallhack.org
+        - admin.blog.smallhack.org
+      secretName: ghost-tls

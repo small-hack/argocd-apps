@@ -124,7 +124,7 @@ spec:
             # access to the Ghost installation from outside the cluster
             ingress:
               # Enable ingress record generation for Ghost
-              enabled: true
+              enabled: false
 
               # Default host for the ingress record
               hosts:
