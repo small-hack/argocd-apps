@@ -3,8 +3,22 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  namespace: ghost
   name: ghost-mysql
+  annotations:
+    k8up.io/backup: 'true'
+spec:
+  storageClassName: {{ .Values.pvc_storageClassName }}
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.pvc_capacity }}
+---
+# Dynamic Persistent volume claim for postgresql specifically to persist
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ghost-activitypub-mysql
   annotations:
     k8up.io/backup: 'true'
 spec:
