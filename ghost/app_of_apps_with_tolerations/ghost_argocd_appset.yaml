@@ -116,11 +116,14 @@ spec:
               enabled: true
 
               # Default host for the ingress record
-              hostname: '{{ .ghost_hostname }}'
+              hosts:
+                - host: '{{ .ghost_hostname }}'
+                  paths:
+                    - path: /
+                      pathType: ImplementationSpecific
 
               # Default path for the ingress record
-              path: /
-              ingressClassName: "nginx"
+              className: "nginx"
 
               # Additional custom annotations for Ghost service
               annotations:
