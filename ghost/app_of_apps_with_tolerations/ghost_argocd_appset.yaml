@@ -131,7 +131,7 @@ spec:
                 cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
                 nginx.ingress.kubernetes.io/server-snippet: |-
                   location ~ ^/.ghost/activitypub(?/.*)?$ {
-                  proxy_pass              ``http://127.0.0.1:8080``; # keep the /.ghost/activitypub prefix intact
+                  proxy_pass              ``http://0.0.0.0:8080``; # keep the /.ghost/activitypub prefix intact
                   proxy_http_version      1.1;
                   proxy_set_header        Host              $host;
                   proxy_set_header        Authorization     $http_authorization;
