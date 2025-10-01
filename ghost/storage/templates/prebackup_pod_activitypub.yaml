@@ -7,12 +7,12 @@ spec:
   pod:
     spec:
       containers:
-        - image: mariadb:10.4
+        - name: ghost-activitypub-mysqldump
+          image: mariadb:10.4
           command:
             - 'sleep'
             - 'infinity'
           imagePullPolicy: Always
-          name: mysqldump
           env:
             - name: USER
               valueFrom:
