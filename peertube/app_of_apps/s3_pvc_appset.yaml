@@ -60,7 +60,7 @@ spec:
               backup_type: "s3"
 
               s3:
-                bucket: peertube-postgres
+                bucket: "{{ .peertube_s3_backup_bucket }}"
                 endpoint: "{{ .peertube_s3_backup_endpoint }}"
                 accessKeyIDSecretRef:
                   name: 's3-backups-credentials'
