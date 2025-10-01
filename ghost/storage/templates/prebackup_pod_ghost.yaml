@@ -1,0 +1,31 @@
+apiVersion: k8up.io/v1
+kind: PreBackupPod
+metadata:
+  name: ghost-mysqldump
+spec:
+  backupCommand: sh -c 'mysqldump -u$USER -p$PW -h $DB_HOST --all-databases'
+  pod:
+    spec:
+      containers:
+        - image: mariadb:10.4
+          command:
+            - 'sleep'
+            - 'infinity'
+          imagePullPolicy: Always
+          name: mysqldump
+          env:
+            - name: USER
+              valueFrom:
+                secretKeyRef:
+                  key: username
+                  name: ghost-mysql-credentials
+            - name: PW
+              valueFrom:
+                secretKeyRef:
+                  key: mysql-password
+                  name: ghost-mysql-credentials
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  key: host
+                  name: ghost-mysql-credentials
