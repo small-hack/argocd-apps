@@ -72,7 +72,6 @@ spec:
             seaweedfs:
               master_pvc: false
 
-            # not in use yet
             k8up:
               backup_name: "peertube-nightly-backup"
 
@@ -86,16 +85,16 @@ spec:
                 bucket: peertube-postgres
                 endpoint: "{{ .peertube_s3_backup_endpoint }}"
                 accessKeyIDSecretRef:
-                  name: 's3-postgres-credentials'
+                  name: 's3-backups-credentials'
                   key: 'accessKeyId'
                   optional: false
                 secretAccessKeySecretRef:
-                  name: 's3-postgres-credentials'
+                  name: 's3-backups-credentials'
                   key: 'secretAccessKey'
                   optional: false
 
               repoPasswordSecretRef:
-                name: 's3-postgres-credentials'
+                name: 's3-backups-credentials'
                 key: 'resticRepoPassword'
 
               prometheus_url: 'push-gateway.monitoring.svc:9091'
