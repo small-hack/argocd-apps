@@ -107,7 +107,7 @@ spec:
               # Must be one of 'daemonset', 'deployment', or 'statefulset'.
               type: 'deployment'
               # Number of pods to deploy.
-              replicas: 4
+              replicas: 2
 
             tolerations:
               - key: '{{ .grafana_stack_toleration_key }}'
