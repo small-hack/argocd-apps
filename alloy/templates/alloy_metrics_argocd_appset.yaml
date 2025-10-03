@@ -105,9 +105,12 @@ spec:
 
             controller:
               # Must be one of 'daemonset', 'deployment', or 'statefulset'.
-              type: 'deployment'
+              type: 'daemonset'
               # Number of pods to deploy.
-              replicas: 2
+              replicas: 1
+              tolerations:
+                - effect: NoSchedule
+                  operator: Exists
 
             tolerations:
               - key: '{{ .grafana_stack_toleration_key }}'
