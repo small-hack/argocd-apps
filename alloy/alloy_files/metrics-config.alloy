@@ -4,7 +4,7 @@ logging {
 }
 
 livedebugging {
-        enabled = true
+        enabled = false
 }
 
 discovery.kubernetes "nodes" {
