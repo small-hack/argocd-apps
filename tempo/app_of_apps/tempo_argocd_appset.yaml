@@ -41,7 +41,7 @@ spec:
         repoURL: https://grafana.github.io/helm-charts
         # https://github.com/grafana/helm-charts/tree/main/charts/tempo-distributed
         chart: tempo-distributed
-        targetRevision: 1.46.4
+        targetRevision: 1.48.0
         helm:
           releaseName: tempo
           valuesObject:
