@@ -88,6 +88,10 @@ spec:
               type: 'daemonset'
               # Number of pods to deploy. Ignored when controller.type is 'daemonset'.
               replicas: 1
+              
+              tolerations:
+                - effect: NoSchedule
+                  operator: Exists
 
             networkPolicy:
               enabled: false
