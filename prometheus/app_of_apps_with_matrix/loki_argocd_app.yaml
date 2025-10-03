@@ -32,7 +32,7 @@ spec:
     repoURL: ghcr.io/grafana/helm-charts
     chart: loki
     # this'll be set automatically by kargo down the line
-    targetRevision: 6.41.1
+    targetRevision: 6.42.0
     helm:
       releaseName: loki
       skipCrds: true
