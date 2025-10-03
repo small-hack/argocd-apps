@@ -5,6 +5,7 @@ logging {
 
 discovery.kubernetes "pods" {
     role = "pod"
+    field = "spec.nodeName=" + coalesce(sys.env("HOSTNAME"), constants.hostname)
 }
 
 discovery.relabel "pod_logs" {
@@ -57,10 +58,6 @@ discovery.relabel "pod_logs" {
       regex = "^(\\S+):\\/\\/.+$"
       replacement = "$1"
     }
-}
-
-discovery.kubernetes "nodes" {
-    role = "node"
 }
 
 loki.source.kubernetes "pod_logs" {
