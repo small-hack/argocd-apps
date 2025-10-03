@@ -15,9 +15,9 @@ prometheus.scrape "nodes" {
         scrape_interval = "30s"
         targets         = discovery.kubernetes.nodes.targets
         forward_to      = [prometheus.remote_write.default.receiver]
-	clustering {
-	    enabled = true
-	}
+	//clustering {
+	//    enabled = true
+	//}
 }
 
 discovery.relabel "kubelet" {
@@ -62,9 +62,9 @@ prometheus.operator.servicemonitors "default" {
             default_scrape_interval = "30s"
             default_scrape_timeout  = "5s"
         }
-	clustering {
-	    enabled = true
-	}
+	//clustering {
+	//    enabled = true
+	//}
 }
 
 prometheus.operator.podmonitors "default" {
@@ -73,9 +73,9 @@ prometheus.operator.podmonitors "default" {
             default_scrape_interval = "30s"
             default_scrape_timeout  = "5s"
         }
-	clustering {
-	    enabled = true
-	}
+	//clustering {
+	//    enabled = true
+	//}
 }
 
 discovery.relabel "cadvisor" {
@@ -115,9 +115,9 @@ prometheus.scrape "cadvisor" {
  	  insecure_skip_verify = true
  	}
 
-	clustering {
-	    enabled = true
-	}
+	//clustering {
+	//    enabled = true
+	//}
 
 	forward_to = [prometheus.remote_write.default.receiver]
 }
