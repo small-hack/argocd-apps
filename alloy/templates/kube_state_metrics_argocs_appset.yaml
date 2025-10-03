@@ -45,7 +45,7 @@ spec:
           releaseName: kube-state-metrics
           valuesObject:
             # Default values for kube-state-metrics.
-            prometheusScrape: false
+            prometheusScrape: true
 
             # If set to true, this will deploy kube-state-metrics as a StatefulSet and the data
             # will be automatically sharded across <.Values.replicas> pods using the built-in
@@ -62,4 +62,7 @@ spec:
             prometheus:
               monitor:
                 enabled: true
+              ## selfMonitor endpoint
+              metrics:
+                interval: "30"
 
