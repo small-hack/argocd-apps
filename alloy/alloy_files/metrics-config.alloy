@@ -9,6 +9,10 @@ livedebugging {
 
 discovery.kubernetes "nodes" {
         role = "node"
+        selectors {
+      	  role = "node"
+      	  field = "spec.nodeName=" + coalesce(sys.env("HOSTNAME"), constants.hostname)
+    	}
 }
 
 prometheus.scrape "nodes" {
