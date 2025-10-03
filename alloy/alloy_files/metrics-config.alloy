@@ -78,49 +78,49 @@ prometheus.operator.podmonitors "default" {
 	}
 }
 
-//discovery.relabel "cadvisor" {
-//	targets = discovery.kubernetes.nodes.targets
-//
-//	rule {
-//	    replacement     = "/metrics/cadvisor"
-//	    target_label    = "__metrics_path__"
-//	}
-//
-//	rule {
-//	    replacement	  = "kubernetes.default.svc:443"
-//	    target_label  = "__address__"
-//	}
-//
-//	rule {
-//	    regex         = "(.+)"
-//	    source_labels = ["__meta_kubernetes_node_name"]
-//	    replacement   = "/api/v1/nodes/$1/proxy/metrics/cadvisor"
-//	    target_label  = "__metrics_path__"
-//	}
-//
-//	rule {
-//	    source_labels = ["__meta_kubernetes_node_address_Hostname"]
-//	    target_label  = "node"
-//	}
-//}
+discovery.relabel "cadvisor" {
+	targets = discovery.kubernetes.nodes.targets
 
-//prometheus.scrape "cadvisor" {
-//	job_name   = "integrations/kubernetes/cadvisor"
-// 	targets    = discovery.relabel.cadvisor.output
-// 	scheme     = "https"
-// 	scrape_interval = "30s"
-// 	bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
-//
-//	tls_config {
-// 	  insecure_skip_verify = true
-// 	}
-//
-//	clustering {
-//	    enabled = true
-//	}
-//
-//	forward_to = [prometheus.remote_write.default.receiver]
-//}
+	rule {
+	    replacement     = "/metrics/cadvisor"
+	    target_label    = "__metrics_path__"
+	}
+
+	rule {
+	    replacement	  = "kubernetes.default.svc:443"
+	    target_label  = "__address__"
+	}
+
+	rule {
+	    regex         = "(.+)"
+	    source_labels = ["__meta_kubernetes_node_name"]
+	    replacement   = "/api/v1/nodes/$1/proxy/metrics/cadvisor"
+	    target_label  = "__metrics_path__"
+	}
+
+	rule {
+	    source_labels = ["__meta_kubernetes_node_address_Hostname"]
+	    target_label  = "node"
+	}
+}
+
+prometheus.scrape "cadvisor" {
+	job_name   = "integrations/kubernetes/cadvisor"
+ 	targets    = discovery.relabel.cadvisor.output
+ 	scheme     = "https"
+ 	scrape_interval = "30s"
+ 	bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
+
+	tls_config {
+ 	  insecure_skip_verify = true
+ 	}
+
+	clustering {
+	    enabled = true
+	}
+
+	forward_to = [prometheus.remote_write.default.receiver]
+}
 
 prometheus.remote_write "default" {
         endpoint {
