@@ -5,7 +5,10 @@ logging {
 
 discovery.kubernetes "pods" {
     role = "pod"
-    field = "spec.nodeName=" + coalesce(sys.env("HOSTNAME"), constants.hostname)
+    selectors {
+      role = "pod"
+      field = "spec.nodeName=" + coalesce(sys.env("HOSTNAME"), constants.hostname)
+    }
 }
 
 discovery.relabel "pod_logs" {
