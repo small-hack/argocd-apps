@@ -12,7 +12,7 @@ discovery.kubernetes "nodes" {
 }
 
 prometheus.scrape "nodes" {
-        scrape_interval = "30s"
+        scrape_interval = "15s"
         targets         = discovery.kubernetes.nodes.targets
         forward_to      = [prometheus.remote_write.default.receiver]
 	clustering {
@@ -23,7 +23,7 @@ prometheus.scrape "nodes" {
 prometheus.operator.servicemonitors "default" {
         forward_to = [prometheus.remote_write.default.receiver]
         scrape {
-            default_scrape_interval = "30s"
+            default_scrape_interval = "15s"
             default_scrape_timeout  = "5s"
         }
 	clustering {
@@ -34,7 +34,7 @@ prometheus.operator.servicemonitors "default" {
 prometheus.operator.podmonitors "default" {
         forward_to = [prometheus.remote_write.default.receiver]
         scrape {
-            default_scrape_interval = "30s"
+            default_scrape_interval = "15s"
             default_scrape_timeout  = "5s"
         }
 	clustering {
@@ -66,7 +66,7 @@ prometheus.scrape "cadvisor" {
 	job_name   = "kubelet"
  	targets    = discovery.kubernetes.nodes.targets
  	scheme     = "https"
- 	scrape_interval = "30s"
+ 	scrape_interval = "15s"
 	honor_labels = true
 	metrics_path = "/metrics/cadvisor"
 
