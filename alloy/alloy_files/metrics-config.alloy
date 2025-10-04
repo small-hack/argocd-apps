@@ -125,7 +125,8 @@ prometheus.remote_write "default" {
 
 	wal {
 	    truncate_frequency = "15m"
-	    max_keepalive_time = "1h"
+	    min_keepalive_time = "5m"
+	    max_keepalive_time = "30m"
 	}
 }
 
