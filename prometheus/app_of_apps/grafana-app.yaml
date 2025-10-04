@@ -40,7 +40,7 @@ spec:
       source:
         repoURL: https://grafana.github.io/helm-charts
         chart: grafana
-        targetRevision: 9.4.5
+        targetRevision: 10.0.0
         helm:
           version: v3
           skipCrds: true
