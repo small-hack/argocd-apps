@@ -60,7 +60,7 @@ spec:
               # https://github.com/glitch-soc/mastodon/pkgs/container/mastodon
               repository: ghcr.io/glitch-soc/mastodon
               # tag: we were previously using v4.4.4
-              tag: nightly.2025-09-27
+              tag: nightly.2025-10-04
 
             tolerations:
               - key: '{{ .mastodon_toleration_key }}'
