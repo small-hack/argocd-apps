@@ -92,6 +92,11 @@ prometheus.relabel "kubelet" {
 	    target_label = "metrics_path"
 	}
 
+	rule {
+	    source_labels = ["__meta_kubernetes_node_address_Hostname"]
+	    target_label  = "node"
+	}
+
 	forward_to = [prometheus.remote_write.default.receiver]
 }
 
@@ -99,6 +104,11 @@ prometheus.relabel "cadvisor" {
 	rule {
 	    replacement = "/metrics/cadvisor"
 	    target_label = "metrics_path"
+	}
+
+	rule {
+	    source_labels = ["__meta_kubernetes_node_address_Hostname"]
+	    target_label  = "node"
 	}
 
 	forward_to = [prometheus.remote_write.default.receiver]
