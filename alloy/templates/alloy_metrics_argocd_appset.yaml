@@ -58,7 +58,8 @@ spec:
               # improve Grafana Alloy.
               enableReporting: false
               extraEnv:
-                GOMEMLIMIT: 9GiB
+                - name: GOMEMLIMIT
+                  value: 9GiB
 
               configMap:
                 # Create a new ConfigMap for the config file.
