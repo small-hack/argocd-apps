@@ -20,42 +20,6 @@ prometheus.scrape "nodes" {
 	}
 }
 
-discovery.relabel "kubelet" {
-        targets = discovery.kubernetes.nodes.targets
-
-        rule {
-            replacement  = "kubernetes.default.svc:443"
-            target_label = "__address__"
-        }
-
-        rule {
-            regex	      = "(.+)"
-            source_labels = ["__meta_kubernetes_node_name"]
-            replacement   = "/api/v1/nodes/$1/proxy/metrics"
-            target_label  = "__metrics_path__"
-        }
-
-        rule {
-            source_labels = ["__meta_kubernetes_node_address_hostname"]
-            target_label  = "node"
-        }
-}
-
-prometheus.scrape "kubelet" {
-	job_name = "integrations/kubernetes/kubelet"
-	targets  = discovery.relabel.kubelet.output
-	scheme   = "https"
-
-	tls_config {
-	    server_name		 = "kubernetes"
-	    ca_file		 = "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
-	    insecure_skip_verify = false
-	}
-
-	bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
-	forward_to	  = [prometheus.remote_write.default.receiver]
-}
-
 prometheus.operator.servicemonitors "default" {
         forward_to = [prometheus.remote_write.default.receiver]
         scrape {
@@ -78,45 +42,63 @@ prometheus.operator.podmonitors "default" {
 	}
 }
 
-discovery.relabel "cadvisor" {
-	targets = discovery.kubernetes.nodes.targets
-
-	rule {
-	    replacement     = "/metrics/cadvisor"
-	    target_label    = "__metrics_path__"
-	}
-
-	rule {
-	    replacement	  = "kubernetes.default.svc:443"
-	    target_label  = "__address__"
-	}
-
-	rule {
-	    regex         = "(.+)"
-	    source_labels = ["__meta_kubernetes_node_name"]
-	    replacement   = "/api/v1/nodes/$1/proxy/metrics/cadvisor"
-	    target_label  = "__metrics_path__"
-	}
-
-	rule {
-	    source_labels = ["__meta_kubernetes_node_address_Hostname"]
-	    target_label  = "node"
-	}
-}
-
-prometheus.scrape "cadvisor" {
-	job_name   = "integrations/kubernetes/cadvisor"
- 	targets    = discovery.relabel.cadvisor.output
- 	scheme     = "https"
- 	scrape_interval = "30s"
- 	bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
+prometheus.scrape "kubelet" {
+	job_name     = "integrations/kubernetes/kubelet"
+	targets	     = discovery.kubernetes.nodes.targets
+	scheme	     = "https"
+	honor_labels = true
 
 	tls_config {
- 	  insecure_skip_verify = true
- 	}
+	    server_name		 = "kubernetes"
+	    ca_file		 = "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
+	    insecure_skip_verify = false
+	}
 
 	clustering {
 	    enabled = true
+	}
+
+	bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
+	forward_to	  = [prometheus.relabel.kubelet.receiver]
+}
+
+prometheus.scrape "cadvisor" {
+	job_name   = "kubelet"
+ 	targets    = discovery.kubernetes.nodes.targets
+ 	scheme     = "https"
+ 	scrape_interval = "30s"
+	honor_labels = true
+	metrics_path = "/metrics/cadvisor"
+
+
+	tls_config {
+	  ca_file = "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
+	  insecure_skip_verify = false
+	}
+
+	clustering {
+	    enabled = true
+	}
+
+ 	bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
+	forward_to = [prometheus.relabel.cadvisor.receiver]
+}
+
+// the "metrics_path" label is required for the "kubelet" jobs to
+// be compatible with the kube-prometheus-stack alerting rules
+prometheus.relabel "kubelet" {
+	rule {
+	    replacement = "/metrics"
+	    target_label = "metrics_path"
+	}
+
+	forward_to = [prometheus.remote_write.default.receiver]
+}
+
+prometheus.relabel "cadvisor" {
+	rule {
+	    replacement = "/metrics/cadvisor"
+	    target_label = "metrics_path"
 	}
 
 	forward_to = [prometheus.remote_write.default.receiver]
@@ -186,5 +168,4 @@ ksm.scrape "metrics" {
     prometheus.remote_write.default.receiver,
   ]
 }
-
 
