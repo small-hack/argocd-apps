@@ -32,7 +32,7 @@ spec:
             cpu: 50m
           limits:
             memory: 2000Mi
-            cpu: 800m
+            cpu: 1000m
         volumeMounts:
         - name: rootfs
           mountPath: /rootfs
