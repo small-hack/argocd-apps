@@ -122,6 +122,11 @@ prometheus.remote_write "default" {
 	external_labels = {
 	    "cluster" = "default",
 	}
+
+	wal {
+	    truncate_frequency = "15m"
+	    max_keepalive_time = "1h"
+	}
 }
 
 tracing {
