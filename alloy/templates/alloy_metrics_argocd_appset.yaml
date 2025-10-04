@@ -57,6 +57,8 @@ spec:
               # Enables sending Grafana Labs anonymous usage stats to help
               # improve Grafana Alloy.
               enableReporting: false
+              extraEnv:
+                GOMEMLIMIT: 9GiB
 
               configMap:
                 # Create a new ConfigMap for the config file.
@@ -106,7 +108,7 @@ spec:
             controller:
               # Must be one of 'daemonset', 'deployment', or 'statefulset'.
               type: 'deployment'
-              
+
               # Number of pods to deploy.
               replicas: 3
 
