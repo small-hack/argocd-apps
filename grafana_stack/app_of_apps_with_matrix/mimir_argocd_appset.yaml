@@ -85,6 +85,7 @@ spec:
                 enabled: false
               persistentVolume:
                 storageClass: "{{ .grafana_stack_s3_storage_class }}"
+                size: 32G
 
             # mimir's store_gateway
             store_gateway:
@@ -96,6 +97,7 @@ spec:
                 enabled: false
               persistentVolume:
                 storageClass: "{{ .grafana_stack_s3_storage_class }}"
+                size: 32G
 
             # mimir's forked alertmanager
             alertmanager:
@@ -113,6 +115,7 @@ spec:
               #topologySpreadConstraints: []
               persistentVolume:
                 storageClass: "{{ .grafana_stack_s3_storage_class }}"
+                size: 32G
 
             #ruler:
             #  topologySpreadConstraints: []
