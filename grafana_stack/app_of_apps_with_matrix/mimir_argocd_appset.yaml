@@ -113,6 +113,7 @@ spec:
 
             compactor:
               #topologySpreadConstraints: []
+              data_dir: /data
               persistentVolume:
                 storageClass: "{{ .grafana_stack_s3_storage_class }}"
                 size: 32G
