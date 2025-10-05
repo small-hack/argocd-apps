@@ -98,8 +98,9 @@ spec:
               # Resource requests and limits to apply to the config reloader container.
               resources:
                 requests:
-                  cpu: "10m"
-                  memory: "50Mi"
+                  cpu: "200m"
+                  memory: "2G"
+                  
               # Security context to apply to the Grafana configReloader container.
               securityContext:
                 # this is the UID of the "nobody" user that the configReloader image runs as
@@ -111,7 +112,7 @@ spec:
               type: 'deployment'
 
               # Number of pods to deploy.
-              replicas: 3
+              replicas: 2
 
             tolerations:
               - key: '{{ .grafana_stack_toleration_key }}'
