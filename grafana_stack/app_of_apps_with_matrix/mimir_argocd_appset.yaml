@@ -87,8 +87,6 @@ spec:
                 storageClass: "{{ .grafana_stack_s3_storage_class }}"
                 size: 32G
               env: 
-                - name: GOMAXPROCS
-                  value: 4
                 - name: GOMEMLIMIT
                   value: "10GiB"
 
