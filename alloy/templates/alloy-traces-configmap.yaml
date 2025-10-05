@@ -1,0 +1,10 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: alloy-traces-cfg
+data:
+  config.alloy: |-
+    {{ range $path, $_ :=  .Files.Glob  "alloy_files/traces-config.alloy" }}
+    {{- $.Files.Get $path | nindent 4 }}
+    {{ end }}

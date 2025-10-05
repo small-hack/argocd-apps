@@ -1,0 +1,48 @@
+logging {
+    level  = "info"
+    format = "json"
+}
+
+livedebugging {
+        enabled = false
+}
+
+tracing {
+  sampling_fraction = 0.1
+
+  write_to = [otelcol.exporter.otlp.tempo.input]
+}
+
+otelcol.receiver.otlp "otlp_receiver" {
+  // Listen on all available bindable addresses on port 4317 (which is the
+  // default OTLP gRPC port) for the OTLP protocol.
+  grpc {
+    endpoint = "0.0.0.0:4317"
+  }
+
+  http {
+    endpoint = "0.0.0.0:4318"
+
+    cors {
+      allowed_origins = ["*"]
+      allowed_headers = ["*"]
+      max_age         = 600
+    }
+  }
+
+  output {
+    traces = [otelcol.exporter.otlp.tempo.input]
+  }
+}
+
+// OTLP exporter to Tempo
+otelcol.exporter.otlp "tempo" {
+  client {
+    endpoint = "tempo-gateway.monitoring.svc:4317"
+    tls {
+      insecure = true
+      insecure_skip_verify = true
+    }
+  }
+}
+
