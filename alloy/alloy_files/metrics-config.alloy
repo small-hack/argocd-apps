@@ -143,7 +143,7 @@ ksm.scrape "metrics" {
   targets   	  = ksm.kubernetes.targets.output
   job_label 	  = "kube-state-metrics"
   scrape_interval = "15s"
-  clustering      = "true"
+  clustering      = true
 
   forward_to = [
     prometheus.remote_write.default.receiver,
