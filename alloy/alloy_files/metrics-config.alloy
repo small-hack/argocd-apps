@@ -129,3 +129,20 @@ prometheus.remote_write "default" {
 	    max_keepalive_time = "30m"
 	}
 }
+
+import.git "ksm" {
+  repository = "https://github.com/grafana/alloy-modules.git"
+  revision = "main"
+  path = "modules/kubernetes/kube-state-metrics/metrics.alloy"
+  pull_frequency = "15m"
+}
+
+ksm.kubernetes "targets" {}
+
+ksm.scrape "metrics" {
+  targets = ksm.kubernetes.targets.output
+  
+  forward_to = [
+    prometheus.remote_write.default.receiver,
+  ]
+}
