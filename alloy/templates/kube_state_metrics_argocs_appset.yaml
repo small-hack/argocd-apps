@@ -61,7 +61,7 @@ spec:
 
             prometheus:
               monitor:
-                enabled: true
+                enabled: false
               ## selfMonitor endpoint
               metrics:
                 interval: "30"
