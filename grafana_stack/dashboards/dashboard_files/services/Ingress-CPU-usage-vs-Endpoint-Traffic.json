@@ -18,7 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 48,
+  "id": 49,
   "links": [],
   "panels": [
     {
@@ -210,7 +210,7 @@
           },
           "direction": "backward",
           "editorMode": "builder",
-          "expr": "count by(vhost) (rate({namespace=\"ingress-nginx\", container=\"controller\"} | json | __error__=`` [$__interval]))",
+          "expr": "count by(vhost) (count_over_time({namespace=\"ingress-nginx\", container=\"controller\"} | json | __error__=`` [$__interval]))",
           "legendFormat": "{{.vhost}}",
           "queryType": "range",
           "refId": "A"
@@ -304,5 +304,5 @@
   "timezone": "browser",
   "title": "Ingress CPU usage vs Endpoint Traffic",
   "uid": "7a673f5d-d95c-403e-a8c0-20f3403aa35f",
-  "version": 1
+  "version": 2
 }
