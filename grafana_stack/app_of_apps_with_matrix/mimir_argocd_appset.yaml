@@ -112,7 +112,7 @@ spec:
 
             distributor:
               #topologySpreadConstraints: []
-              replicas: 2
+              replicas: 4
 
             compactor:
               #topologySpreadConstraints: []
@@ -127,8 +127,9 @@ spec:
             #query_scheduler:
             #  topologySpreadConstraints: []
 
-            #querier:
-            #  topologySpreadConstraints: []
+            querier:
+              topologySpreadConstraints: []
+              replicas: 3
 
             #query_frontend:
             #  topologySpreadConstraints: []
