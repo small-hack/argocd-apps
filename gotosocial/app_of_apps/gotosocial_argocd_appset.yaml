@@ -167,6 +167,14 @@ spec:
                 - name: GTS_ADVANCED_RATE_LIMIT_EXCEPTIONS
                   value: "192.168.0.0/16,10.42.0.0/16"
 
+                # change max poll options to 10
+                - name: GTS_STATUSES_POLL_MAX_OPTIONS
+                  value: "10"
+
+                # change max poll option characters to 150
+                - name: GTS_STATUSES_POLL_OPTION_MAX_CHARS
+                  value: "150"
+
               # for postgres ssl certs
               extraVolumes:
                 - name: postgres-ca
