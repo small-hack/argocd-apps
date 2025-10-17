@@ -58,7 +58,7 @@ spec:
           selfHeal: true
       source:
         repoURL: 'https://small-hack.github.io/matrix-chart'
-        targetRevision: 20.3.2
+        targetRevision: 21.0.0
         chart: matrix
         # repoURL: 'https://github.com/small-hack/matrix-chart'
         # targetRevision: main
