@@ -5,7 +5,7 @@ metadata:
   labels:
     app.kubernetes.io/name: telemetrygen
   name: telemetrygen
-  namespace: monitoring
+  namespace: observability
 spec:
   replicas: 1
   selector:
@@ -23,7 +23,7 @@ spec:
           image: ghcr.io/open-telemetry/opentelemetry-collector-contrib/telemetrygen
           args:
             - traces
-            - --otlp-endpoint=alloy-metrics.monitoring.svc:4317
+            - --otlp-endpoint=alloy-metrics.observability.svc:4317
             - --otlp-insecure
             - --duration=1h
             - --service=good_service
@@ -34,7 +34,7 @@ spec:
           image: ghcr.io/open-telemetry/opentelemetry-collector-contrib/telemetrygen
           args:
             - traces
-            - --otlp-endpoint=alloy-metrics.monitoring.svc:4317
+            - --otlp-endpoint=alloy-metrics.observability.svc:4317
             - --otlp-insecure
             - --duration=1h
             - --service=faulty_service
