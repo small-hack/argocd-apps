@@ -156,7 +156,7 @@ spec:
                 - name: data
                   type: "existingClaim"
                   claimName: "swfs-volume-data"
-                  maxVolumes: 0
+                  maxVolumes: 10
 
               livenessProbe:
                 enabled: true
