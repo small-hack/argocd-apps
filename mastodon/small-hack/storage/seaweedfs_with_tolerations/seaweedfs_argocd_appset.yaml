@@ -151,6 +151,7 @@ spec:
               loggingOverrideLevel: null
               fileSizeLimitMB: null
               minFreeSpacePercent: 7
+              compactionMBps: "1024"
               dataDirs:
                 - name: data
                   type: "existingClaim"
