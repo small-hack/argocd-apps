@@ -226,7 +226,7 @@ spec:
               service:
                 enabled: true
                 type: LoadBalancer
-                externalTrafficPolicy: 'Local'
+                externalTrafficPolicy: 'Cluster'
                 loadBalancerIP: 192.168.1.101
                 annotations:
                   metallb.io/allow-shared-ip: forgejo
