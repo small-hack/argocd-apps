@@ -22,7 +22,7 @@ spec:
               - forgejo_s3_backup_region
               - forgejo_s3_pvc_capacity
               - forgejo_pvc_backup_schedule
-              - forgejo_s3_pvc_storage_class
+              - global_pvc_storage_class
               - forgejo_toleration_key
               - forgejo_toleration_operator
               - forgejo_toleration_value
@@ -55,7 +55,7 @@ spec:
             app: forgejo
             provider: '{{ .forgejo_s3_provider }}'
             pvc_capacity: '{{ .forgejo_s3_pvc_capacity }}'
-            pvc_storageClassName: '{{ .forgejo_s3_pvc_storage_class }}'
+            pvc_storageClassName: '{{ .global_pvc_storage_class }}'
 
             tolerations:
               - key: '{{ .forgejo_toleration_key }}'
