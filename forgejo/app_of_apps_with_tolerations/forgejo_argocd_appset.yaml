@@ -163,7 +163,8 @@ spec:
                 # loadBalancerSourceRanges Source range filter for ssh loadbalancer
                 loadBalancerSourceRanges: []
                 # annotations SSH service annotations
-                annotations: {}
+                annotations:
+                  metallb.io/allow-shared-ip: forgejo
                 # labels SSH service additional labels
                 labels: {}
                 # loadBalancerClass Loadbalancer class
