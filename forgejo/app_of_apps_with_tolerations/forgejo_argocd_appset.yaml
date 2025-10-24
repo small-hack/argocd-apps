@@ -5,6 +5,8 @@ kind: ApplicationSet
 metadata:
   name: forgejo-web-app-set
   namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
 spec:
   goTemplate: true
   # generator allows us to source specific values from an external k8s secret
@@ -26,13 +28,13 @@ spec:
   template:
     metadata:
       name: forgejo-web-app
-      # annotations:
-      #   argocd.argoproj.io/sync-wave: "3"
     spec:
-      project: default
+      project: forgejo
+
       destination:
         server: https://kubernetes.default.svc
         namespace: forgejo
+
       syncPolicy:
         syncOptions:
           - CreateNamespace=true
@@ -40,48 +42,41 @@ spec:
         automated:
           prune: true
           selfHeal: true
+
       source:
         repoURL: 'code.forgejo.org'
         targetRevision: 15.0.1
         chart: forgejo-helm/forgejo
         helm:
           valuesObject:
-            ## @param namespaceOverride String to fully override common.names.namespace
+            # String to fully override common.names.namespace
             namespaceOverride: ''
 
-            ## @param replicaCount number of replicas for the deployment
+            # number of replicas for the deployment
             replicaCount: 1
 
-            ## @section strategy
-            ## @param strategy.type strategy type
-            ## @param strategy.rollingUpdate.maxSurge maxSurge
-            ## @param strategy.rollingUpdate.maxUnavailable maxUnavailable
             strategy:
+              # strategy type
               type: 'RollingUpdate'
               rollingUpdate:
                 maxSurge: '100%'
                 maxUnavailable: 0
 
-            ## @param clusterDomain cluster domain
+            # cluster domain
             clusterDomain: cluster.local
 
-            ## @section Image
-            ## @param image.registry image registry, e.g. gcr.io,docker.io
-            ## @param image.repository Image to start for this pod
-            ## @param image.tag Visit: [Image tag](https://code.forgejo.org/forgejo/-/packages/container/forgejo/versions). Defaults to `appVersion` within Chart.yaml.
-            ## @param image.digest Image digest. Allows to pin the given image tag. Useful for having control over mutable tags like `latest`
-            ## @param image.pullPolicy Image pull policy
-            ## @param image.rootless Wether or not to pull the rootless version of Forgejo
-            ## @param image.fullOverride Completely overrides the image registry, path/image, tag and digest. **Adjust `image.rootless` accordingly and review [Rootless defaults](#rootless-defaults).**
             image:
+              # image registry, e.g. gcr.io,docker.io
               registry: code.forgejo.org
+              # Image to start for this pod
               repository: forgejo/forgejo
+              # Visit: [Image tag](https://code.forgejo.org/forgejo/-/packages/container/forgejo/versions). Defaults to `appVersion` within Chart.yaml.
               # Overrides the image tag whose default is the chart appVersion.
               tag: ''
-              digest: ''
+              #pullPolicy Image pull policy
               pullPolicy: IfNotPresent
+              # Wether or not to pull the rootless version of Forgejo
               rootless: true
-              fullOverride: ''
 
             ## @section Security
             # Security context is only usable with rootless image due to image design
@@ -108,10 +103,10 @@ spec:
             #   runAsNonRoot: true
             #   runAsUser: 1000
 
-            ## @deprecated The securityContext variable has been split two:
-            ## - containerSecurityContext
-            ## - podSecurityContext.
-            ## @param securityContext Run init and Forgejo containers as a specific securityContext
+            # @deprecated The securityContext variable has been split two:
+            # - containerSecurityContext
+            # - podSecurityContext.
+            #  Run init and Forgejo containers as a specific securityContext
             securityContext: {}
 
             ## @param podDisruptionBudget Pod disruption budget
@@ -119,66 +114,67 @@ spec:
             #  maxUnavailable: 1
             #  minAvailable: 1
 
-            ## @section Service
             service:
-              ## @param service.http.type Kubernetes service type for web traffic
-              ## @param service.http.port Port number for web traffic
-              ## @param service.http.clusterIP ClusterIP setting for http autosetup for deployment is None
-              ## @param service.http.loadBalancerIP LoadBalancer IP setting
-              ## @param service.http.nodePort NodePort for http service
-              ## @param service.http.externalTrafficPolicy If `service.http.type` is `NodePort` or `LoadBalancer`, set this to `Local` to enable source IP preservation
-              ## @param service.http.externalIPs External IPs for service
-              ## @param service.http.ipFamilyPolicy HTTP service dual-stack policy
-              ## @param service.http.ipFamilies HTTP service dual-stack familiy selection,for dual-stack parameters see official kubernetes [dual-stack concept documentation](https://kubernetes.io/docs/concepts/services-networking/dual-stack/).
-              ## @param service.http.loadBalancerSourceRanges Source range filter for http loadbalancer
-              ## @param service.http.annotations HTTP service annotations
-              ## @param service.http.labels HTTP service additional labels
-              ## @param service.http.loadBalancerClass Loadbalancer class
               http:
+                # Kubernetes service type for web traffic
                 type: ClusterIP
+                # Port number for web traffic
                 port: 3000
+                # ClusterIP setting for http autosetup for deployment is None
                 clusterIP: None
+                # LoadBalancer IP setting
                 loadBalancerIP:
+                # NodePort for http service
                 nodePort:
+                # If `service.http.type` is `NodePort` or `LoadBalancer`,
+                # set this to `Local` to enable source IP preservation
                 externalTrafficPolicy:
+                # External IPs for service
                 externalIPs:
+                # HTTP service dual-stack policy
                 ipFamilyPolicy:
+                # HTTP service dual-stack familiy selection, for dual-stack
+                # parameters see official kubernetes dual-stack concept documentation:
+                # https://kubernetes.io/docs/concepts/services-networking/dual-stack/
                 ipFamilies:
+                # Source range filter for http loadbalancer
                 loadBalancerSourceRanges: []
+                # HTTP service annotations
                 annotations: {}
+                # HTTP service additional labels
                 labels: {}
+                # Loadbalancer class
                 loadBalancerClass:
-              ## @param service.ssh.type Kubernetes service type for ssh traffic
-              ## @param service.ssh.port Port number for ssh traffic
-              ## @param service.ssh.clusterIP ClusterIP setting for ssh autosetup for deployment is None
-              ## @param service.ssh.loadBalancerIP LoadBalancer IP setting
-              ## @param service.ssh.nodePort NodePort for ssh service
-              ## @param service.ssh.externalTrafficPolicy If `service.ssh.type` is `NodePort` or `LoadBalancer`, set this to `Local` to enable source IP preservation
-              ## @param service.ssh.externalIPs External IPs for service
-              ## @param service.ssh.ipFamilyPolicy SSH service dual-stack policy
-              ## @param service.ssh.ipFamilies SSH service dual-stack familiy selection,for dual-stack parameters see official kubernetes [dual-stack concept documentation](https://kubernetes.io/docs/concepts/services-networking/dual-stack/).
-              ## @param service.ssh.hostPort HostPort for ssh service
-              ## @param service.ssh.loadBalancerSourceRanges Source range filter for ssh loadbalancer
-              ## @param service.ssh.annotations SSH service annotations
-              ## @param service.ssh.labels SSH service additional labels
-              ## @param service.ssh.loadBalancerClass Loadbalancer class
               ssh:
+                # type Kubernetes service type for ssh traffic
                 type: ClusterIP
+                # port Port number for ssh traffic
                 port: 22
+                # clusterIP ClusterIP setting for ssh autosetup for deployment is None
                 clusterIP: None
+                # loadBalancerIP LoadBalancer IP setting
                 loadBalancerIP:
+                # nodePort NodePort for ssh service
                 nodePort:
+                # externalTrafficPolicy If `service.ssh.type` is `NodePort` or `LoadBalancer`, set this to `Local` to enable source IP preservation
                 externalTrafficPolicy:
+                # externalIPs External IPs for service
                 externalIPs:
+                # ipFamilyPolicy SSH service dual-stack policy
                 ipFamilyPolicy:
+                # ipFamilies SSH service dual-stack familiy selection,for dual-stack parameters see official kubernetes [dual-stack concept documentation](https://kubernetes.io/docs/concepts/services-networking/dual-stack/).
                 ipFamilies:
+                # hostPort HostPort for ssh service
                 hostPort:
+                # loadBalancerSourceRanges Source range filter for ssh loadbalancer
                 loadBalancerSourceRanges: []
+                # annotations SSH service annotations
                 annotations: {}
+                # labels SSH service additional labels
                 labels: {}
+                # loadBalancerClass Loadbalancer class
                 loadBalancerClass:
 
-            ## @section Ingress
             ingress:
               enabled: true
               className: nginx
@@ -197,22 +193,22 @@ spec:
                    - '{{ .forgejo_hostname }}'
 
             ## @section Route
-            ## @param route.enabled Enable route
-            ## @param route.annotations Route annotations
-            ## @param route.host Host to use for the route (will be assigned automatically by OKD / OpenShift is not defined)
-            ## @param route.wildcardPolicy Wildcard policy if any for the route, currently only 'Subdomain' or 'None' is allowed.
-            ## @param route.tls.termination termination type (see [OKD documentation](https://docs.okd.io/latest/rest_api/network_apis/route-route-openshift-io-v1.html#spec-tls))
-            ## @param route.tls.insecureEdgeTerminationPolicy the desired behavior for insecure connections to a route (e.g. with http)
-            ## @param route.tls.existingSecret the name of a predefined secret of type kubernetes.io/tls with both key (tls.crt and tls.key) set accordingly (if defined attributes 'certificate', 'caCertificate' and 'privateKey' are ignored)
-            ## @param route.tls.certificate PEM encoded single certificate
-            ## @param route.tls.privateKey PEM encoded private key
-            ## @param route.tls.caCertificate PEM encoded CA certificate or chain that issued the certificate
-            ## @param route.tls.destinationCACertificate PEM encoded CA certificate used to verify the authenticity of final end point when 'termination' is set to 'passthrough' (ignored otherwise)
             route:
+              # Enable route
               enabled: false
+              # Route annotations
               annotations: {}
+              # Host to use for the route (will be assigned automatically by OKD / OpenShift is not defined)
               host:
+              # Wildcard policy if any for the route, currently only 'Subdomain' or 'None' is allowed.
               wildcardPolicy:
+              # route.tls.termination termination type (see [OKD documentation](https://docs.okd.io/latest/rest_api/network_apis/route-route-openshift-io-v1.html#spec-tls))
+              # route.tls.insecureEdgeTerminationPolicy the desired behavior for insecure connections to a route (e.g. with http)
+              # route.tls.existingSecret the name of a predefined secret of type kubernetes.io/tls with both key (tls.crt and tls.key) set accordingly (if defined attributes 'certificate', 'caCertificate' and 'privateKey' are ignored)
+              # route.tls.certificate PEM encoded single certificate
+              # route.tls.privateKey PEM encoded private key
+              # route.tls.caCertificate PEM encoded CA certificate or chain that issued the certificate
+              # route.tls.destinationCACertificate PEM encoded CA certificate used to verify the authenticity of final end point when 'termination' is set to 'passthrough' (ignored otherwise)
               tls:
                 termination: edge
                 insecureEdgeTerminationPolicy: Redirect
@@ -238,9 +234,7 @@ spec:
                 # ...
                 # -----END CERTIFICATE-----
 
-            ## @section deployment
-            #
-            ## @param resources Kubernetes resources
+            # Kubernetes resources
             resources:
               # We usually recommend not to specify default resources and to leave this as a conscious
               # choice for the user. This also increases chances charts run on environments with little
@@ -253,7 +247,7 @@ spec:
                 cpu: 100m
                 memory: 128Mi
 
-            ## @param nodeSelector NodeSelector for the deployment
+            # NodeSelector for the deployment
             nodeSelector: {}
 
             tolerations:
@@ -272,13 +266,13 @@ spec:
                         values:
                           - '{{ .forgejo_affinity_value }}'
 
-            ## @param topologySpreadConstraints TopologySpreadConstraints for the deployment
+            # TopologySpreadConstraints for the deployment
             topologySpreadConstraints: []
 
-            ## @param dnsConfig dnsConfig for the deployment
+            # dnsConfig for the deployment
             dnsConfig: {}
 
-            ## @param priorityClassName priorityClassName for the deployment
+            # priorityClassName for the deployment
             priorityClassName: ''
 
             deployment:
@@ -287,8 +281,6 @@ spec:
               terminationGracePeriodSeconds: 60
               labels: {}
               annotations: {}
-
-            ## @section ServiceAccount
 
             serviceAccount:
               create: true
@@ -299,7 +291,7 @@ spec:
               mount: true
               claimName: forgejo
 
-            ## @param extraVolumes Additional volumes to mount to the Forgejo deployment
+            ## Additional volumes to mount to the Forgejo deployment
             # - name: postgres-ssl-vol
             #   secret:
             #     secretName: gitea-postgres-ssl
@@ -469,18 +461,18 @@ spec:
                 # Cross-origin resource sharing settings
                 cors: {}
 
-                ## @param gitea.config.ui User interface settings
+                # User interface settings
                 ui: {}
 
-                ## @param gitea.config.markdown Markdown parser settings
+                # Markdown parser settings
                 markdown: {}
 
-                ## @param gitea.config.server [object] General server settings
+                # [object] General server settings
                 server:
                   SSH_PORT: 22 # rootful image
                   SSH_LISTEN_PORT: 2222 # rootless image
 
-                ## @param gitea.config.database Database configuration (only necessary with an [externally managed DB](https://code.forgejo.org/forgejo-helm/forgejo-helm#external-database)).
+                # Database configuration (only necessary with an [externally managed DB](https://code.forgejo.org/forgejo-helm/forgejo-helm#external-database)).
                 database:
                   DB_TYPE: postgres
                   HOST: forgejo-postgres-rw.forgejo.svc:5432
@@ -488,38 +480,38 @@ spec:
                   FROM: forgejo
 
 
-                ## @param gitea.config.indexer Settings for what content is indexed and how
+                # Settings for what content is indexed and how
                 indexer: {}
 
-                ## @param gitea.config.queue Job queue configuration
+                # Job queue configuration
                 queue:
                   TYPE: redis
 
-                ## @param gitea.config.admin Admin user settings
+                # Admin user settings
                 admin: {}
 
-                ## @param gitea.config.security Site security settings
+                # Site security settings
                 security: {}
 
-                ## @param gitea.config.camo Settings for the [camo](https://github.com/cactus/go-camo) media proxy server (disabled by default)
+                # Settings for the [camo](https://github.com/cactus/go-camo) media proxy server (disabled by default)
                 camo: {}
 
-                ## @param gitea.config.openid Configuration for authentication with OpenID (disabled by default)
+                # Configuration for authentication with OpenID (disabled by default)
                 openid: {}
 
-                ## @param gitea.config.oauth2_client OAuth2 client settings
+                # OAuth2 client settings
                 oauth2_client: {}
 
-                ## @param gitea.config.service Configuration for miscellaneous Forgejo services
+                # Configuration for miscellaneous Forgejo services
                 service: {}
 
-                ## @param gitea.config.ssh.minimum_key_sizes SSH minimum key sizes
+                # SSH minimum key sizes
                 ssh.minimum_key_sizes: {}
 
-                ## @param gitea.config.webhook Webhook settings
+                # Webhook settings
                 webhook: {}
 
-                ## @param gitea.config.mailer Mailer configuration (disabled by default)
+                # Mailer configuration (disabled by default)
                 mailer:
                   ENABLED: "true"
                   SUBJECT_PREFIX: "[git.smallhack.org]"
@@ -528,7 +520,7 @@ spec:
                   NAME: git.smallhack.org
                   SMTP_PORT: "465"
 
-                ## @param gitea.config.email.incoming Configuration for handling incoming mail (disabled by default)
+                # Configuration for handling incoming mail (disabled by default)
                 email.incoming: {}
 
                 ## @param gitea.config.cache Cache configuration
@@ -539,77 +531,77 @@ spec:
                 ## @param gitea.config.session Session/cookie handling
                 session: {}
 
-                ## @param gitea.config.picture User avatar settings
+                # User avatar settings
                 picture: {}
 
-                ## @param gitea.config.project Project board defaults
+                # Project board defaults
                 project: {}
 
-                ## @param gitea.config.attachment Issue and PR attachment configuration
+                # Issue and PR attachment configuration
                 attachment: {}
 
-                ## @param gitea.config.log Logging configuration
+                # Logging configuration
                 log:
                   LEVEL: "Debug"
 
-                ## @param gitea.config.cron Cron job configuration
+                # Cron job configuration
                 cron: {}
 
-                ## @param gitea.config.git Global settings for Git
+                # Global settings for Git
                 git: {}
 
-                ## @param gitea.config.metrics Settings for the Prometheus endpoint (disabled by default)
+                # Settings for the Prometheus endpoint (disabled by default)
                 metrics: {}
 
-                ## @param gitea.config.api Settings for the Swagger API documentation endpoints
+                # Settings for the Swagger API documentation endpoints
                 api: {}
 
-                ## @param gitea.config.oauth2 Settings for the [OAuth2 provider](https://forgejo.org/docs/latest/admin/oauth2-provider/)
+                # Settings for the [OAuth2 provider](https://forgejo.org/docs/latest/admin/oauth2-provider/)
                 oauth2: {}
 
-                ## @param gitea.config.i18n Internationalization settings
+                # Internationalization settings
                 i18n: {}
 
-                ## @param gitea.config.markup Configuration for advanced markup processors
+                # Configuration for advanced markup processors
                 markup: {}
 
-                ## @param gitea.config.highlight.mapping File extension to language mapping overrides for syntax highlighting
+                # File extension to language mapping overrides for syntax highlighting
                 highlight.mapping: {}
 
-                ## @param gitea.config.time Locale settings
+                # Locale settings
                 time: {}
 
-                ## @param gitea.config.migrations Settings for Git repository migrations
+                # Settings for Git repository migrations
                 migrations: {}
 
-                ## @param gitea.config.federation Federation configuration
+                # Federation configuration
                 federation: {}
 
-                ## @param gitea.config.packages Package registry settings
+                # Package registry settings
                 packages: {}
 
-                ## @param gitea.config.mirror Configuration for repository mirroring
+                # Configuration for repository mirroring
                 mirror: {}
 
-                ## @param gitea.config.lfs Large File Storage configuration
+                # Large File Storage configuration
                 lfs: {}
 
-                ## @param gitea.config.repo-avatar Repository avatar storage configuration
+                # Repository avatar storage configuration
                 repo-avatar: {}
 
-                ## @param gitea.config.avatar User/org avatar storage configuration
+                # User/org avatar storage configuration
                 avatar: {}
 
-                ## @param gitea.config.storage General storage settings
+                # General storage settings
                 storage: {}
 
-                ## @param gitea.config.proxy Proxy configuration (disabled by default)
+                # Proxy configuration (disabled by default)
                 proxy: {}
 
-                ## @param gitea.config.actions Configuration for [Forgejo Actions](https://forgejo.org/docs/latest/user/actions/)
+                # Configuration for [Forgejo Actions](https://forgejo.org/docs/latest/user/actions/)
                 actions: {}
 
-                ## @param gitea.config.other Uncategorized configuration options
+                # Uncategorized configuration options
                 other: {}
 
             livenessProbe:
