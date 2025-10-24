@@ -30,8 +30,10 @@ spec:
     {{- end }}
   # Backup nightly at scheduled time (Central Europe Time)
   backup:
+    {{- if or .Values.k8up.tolerations .Values.k8up.affinity }}
     podConfigRef:
       name: forgejo-podconfig
+    {{- end }}
     schedule: {{ .Values.k8up.schedules.backup }}
     failedJobsHistoryLimit: 5
     successfulJobsHistoryLimit: 2

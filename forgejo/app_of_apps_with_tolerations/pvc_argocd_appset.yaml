@@ -57,15 +57,21 @@ spec:
             k8up:
               # -- for setting tolerations of node taints
               tolerations:
-                key: '{{ .forgejo_toleration_key }}'
-                operator: '{{ .forgejo_toleration_operator }}'
-                value: '{{ .forgejo_toleration_value }}'
-                effect: '{{ .forgejo_toleration_effect }}'
+                - key: '{{ .forgejo_toleration_key }}'
+                  operator: '{{ .forgejo_toleration_operator }}'
+                  value: '{{ .forgejo_toleration_value }}'
+                  effect: '{{ .forgejo_toleration_effect }}'
 
               # -- for setting affinity to a specific node by matchExpressions
               affinity:
-                key: '{{ .forgejo_affinity_key }}'
-                value: '{{ .forgejo_affinity_value }}'
+                nodeAffinity:
+                  requiredDuringSchedulingIgnoredDuringExecution:
+                    nodeSelectorTerms:
+                      - matchExpressions:
+                        - key: '{{ .forgejo_affinity_key }}'
+                          operator: In
+                          values:
+                            - '{{ .forgejo_affinity_value }}'
 
               backup_name: 'forgejo-nightly-backup'
 

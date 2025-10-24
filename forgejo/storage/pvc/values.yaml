@@ -4,15 +4,21 @@ pvc_storageClassName: "local-path"
 # for enabling backups to a remote s3 provider or local disk backup
 k8up:
   # -- for setting tolerations of node taints
-  tolerations:
-    key: ""
-    operator: ""
-    value: ""
-    effect: ""
+  tolerations: []
+  #   - key: ""
+  #     operator: ""
+  #     value: ""
+  #     effect: ""
   # -- for setting affinity to a specific node by matchExpressions
-  affinity:
-    key: ""
-    value: ""
+  affinity: {}
+  #   nodeAffinity:
+  #     requiredDuringSchedulingIgnoredDuringExecution:
+  #       nodeSelectorTerms:
+  #         - matchExpressions:
+  #           - key: {{ .Values.k8up.affinity.key }}
+  #             operator: In
+  #             values:
+  #               - {{ .Values.k8up.affinity.value }}
 
   # -- set the pod security context for the backup job
   securityContext:
