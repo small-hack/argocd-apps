@@ -464,6 +464,7 @@ spec:
 
                 # [object] General server settings
                 server:
+                  SSH_DOMAIN: '{{ .forgejo_hostname }}'
                   SSH_PORT: 22 # rootful image
                   SSH_LISTEN_PORT: 2222 # rootless image
 
