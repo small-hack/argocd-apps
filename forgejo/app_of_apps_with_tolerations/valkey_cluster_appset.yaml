@@ -27,7 +27,7 @@ spec:
       annotations:
         argocd.argoproj.io/sync-wave: "1"
     spec:
-      project: default
+      project: forgejo
       destination:
         server: https://kubernetes.default.svc
         namespace: forgejo
