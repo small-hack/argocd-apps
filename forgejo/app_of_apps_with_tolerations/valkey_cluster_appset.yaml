@@ -49,6 +49,10 @@ spec:
 
             global:
               storageClass: "local-path"
+  
+            image:
+              registry: docker.io
+              repository: bitnamilegacy/valkey-cluster
 
             fullnameOverride: "valkey"
 
@@ -128,4 +132,9 @@ spec:
               # we use a grafana exporter that logs into valkey directly
               enabled: true
               resourcesPreset: nano
+              image:
+                registry: docker.io
+                repository: bitnamilegacy/redis-exporter
+              serviceMonitor:
+                enabled: true
 
