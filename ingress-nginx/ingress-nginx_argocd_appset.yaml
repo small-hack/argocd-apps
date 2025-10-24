@@ -227,6 +227,8 @@ spec:
                 enabled: true
                 type: LoadBalancer
                 externalTrafficPolicy: 'Local'
+                annotations:
+                  metallb.io/allow-shared-ip: forgejo
                 external:
                   enabled: true
 
