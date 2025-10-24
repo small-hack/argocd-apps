@@ -80,7 +80,7 @@ spec:
             k8up:
               # -- user to run the backups as
               securityContext:
-                runAsUser: 0
+                runAsUser: 1000
 
               backup_name: 'forgejo-s3-nightly-backup'
 
