@@ -147,7 +147,7 @@ spec:
                 # clusterIP ClusterIP setting for ssh autosetup for deployment is None
                 clusterIP: None
                 # loadBalancerIP LoadBalancer IP setting
-                loadBalancerIP:
+                loadBalancerIP: 192.168.1.101
                 # nodePort NodePort for ssh service
                 nodePort:
                 # externalTrafficPolicy If `service.ssh.type` is `NodePort` or `LoadBalancer`, set this to `Local` to enable source IP preservation
