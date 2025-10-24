@@ -22,7 +22,7 @@ spec:
               - libre_translate_hostname
   template:
     metadata:
-      name: libretranslate-app
+      name: libretranslate-webt-app
       annotations:
         argocd.argoproj.io/sync-wave: "2"
     spec:
