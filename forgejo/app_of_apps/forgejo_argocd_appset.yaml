@@ -134,7 +134,7 @@ spec:
                 loadBalancerClass:
               ssh:
                 # type Kubernetes service type for ssh traffic
-                type: ClusterIP
+                type: LoadBalancer
                 # port Port number for ssh traffic
                 port: 22
                 # clusterIP ClusterIP setting for ssh autosetup for deployment is None
