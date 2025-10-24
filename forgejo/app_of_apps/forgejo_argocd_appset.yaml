@@ -243,12 +243,6 @@ spec:
             # NodeSelector for the deployment
             nodeSelector: {}
 
-            tolerations:
-              - key: '{{ .forgejo_toleration_key }}'
-                operator: '{{ .forgejo_toleration_operator }}'
-                value: '{{ .forgejo_toleration_value }}'
-                effect: '{{ .forgejo_toleration_effect }}'
-
             # TopologySpreadConstraints for the deployment
             topologySpreadConstraints: []
 
