@@ -49,6 +49,10 @@ spec:
 
             global:
               storageClass: "local-path"
+              
+            image:
+              registry: docker.io
+              repository: bitnamilegacy/valkey-cluster
 
             fullnameOverride: "valkey"
 
