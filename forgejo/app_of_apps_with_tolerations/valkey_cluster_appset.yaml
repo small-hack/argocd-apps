@@ -132,4 +132,9 @@ spec:
               # we use a grafana exporter that logs into valkey directly
               enabled: true
               resourcesPreset: nano
+              image:
+                registry: docker.io
+                repository: bitnamilegacy/redis-exporter
+              serviceMonitor:
+                enabled: true
 
