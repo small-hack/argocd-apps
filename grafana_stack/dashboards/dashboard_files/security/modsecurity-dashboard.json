@@ -25,7 +25,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 46,
+  "id": 49,
   "links": [
     {
       "asDropdown": true,
@@ -111,7 +111,7 @@
         "sizing": "auto",
         "valueMode": "color"
       },
-      "pluginVersion": "12.1.1",
+      "pluginVersion": "12.2.0",
       "targets": [
         {
           "datasource": {
@@ -220,7 +220,7 @@
         "sizing": "auto",
         "valueMode": "color"
       },
-      "pluginVersion": "12.1.1",
+      "pluginVersion": "12.2.0",
       "targets": [
         {
           "datasource": {
@@ -289,6 +289,111 @@
       "fieldConfig": {
         "defaults": {
           "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 10
+      },
+      "id": 10,
+      "options": {
+        "displayMode": "gradient",
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "maxVizHeight": 300,
+        "minVizHeight": 16,
+        "minVizWidth": 8,
+        "namePlacement": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [],
+          "fields": "",
+          "limit": 100,
+          "values": true
+        },
+        "showUnfilled": true,
+        "sizing": "auto",
+        "valueMode": "color"
+      },
+      "pluginVersion": "12.2.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "direction": "backward",
+          "editorMode": "builder",
+          "expr": "sum by(tranaction_request_uri) (count_over_time({app=\"ingress-nginx\"} |~ `ModSecurity` != `http_referrer` | json messages_details_match=\"transaction.messages[0].details.match\", messages_details_reference=\"transaction.messages[0].details.reference\", ruleId=\"transaction.messages[0].details.ruleId\", messages_details_file=\"transaction.messages[0].details.file\", messages_details_lineNumber=\"transaction.messages[0].details.lineNumber\", messages_details_data=\"transaction.messages[0].details.data\", messages_details_severity=\"transaction.messages[0].details.severity\", messages_details_ver=\"transaction.messages[0].details.ver\", messages_details_rev=\"transaction.messages[0].details.rev\", messages_details_tags=\"transaction.messages[0].details.tags\", messages_details_maturity=\"transaction.messages[0].details.maturity\", messages_details_accuracy=\"transaction.messages[0].details.accuracy\", transaction_date=\"transaction.time_stamp\", client_ip=\"transaction.client_ip\", transaction_host_port=\"transaction.host_port\", tranaction_request_uri=\"transaction.request.uri\", message=\"transaction.messages[0].message\", vhost=\"transaction.request.headers.host\" | json | messages_details_severity != `0` | __error__=`` [$__auto]))",
+          "legendFormat": "{{severity}}",
+          "queryType": "range",
+          "refId": "A",
+          "step": ""
+        }
+      ],
+      "title": "🔎  Top Attacked Endpoints",
+      "transformations": [
+        {
+          "id": "joinByLabels",
+          "options": {
+            "value": "tranaction_request_uri"
+          }
+        },
+        {
+          "id": "reduce",
+          "options": {
+            "reducers": [
+              "sum"
+            ]
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": {
+            "fields": {},
+            "sort": [
+              {
+                "desc": true,
+                "field": "Total"
+              }
+            ]
+          }
+        }
+      ],
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
             "mode": "palette-classic"
           },
           "custom": {
@@ -318,6 +423,7 @@
               "type": "linear"
             },
             "showPoints": "auto",
+            "showValues": false,
             "spanNulls": true,
             "stacking": {
               "group": "A",
@@ -348,7 +454,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 10
+        "y": 18
       },
       "id": 7,
       "options": {
@@ -365,7 +471,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.1.1",
+      "pluginVersion": "12.2.0",
       "targets": [
         {
           "datasource": {
@@ -442,6 +548,7 @@
               "type": "linear"
             },
             "showPoints": "always",
+            "showValues": false,
             "spanNulls": false,
             "stacking": {
               "group": "A",
@@ -472,7 +579,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 18
+        "y": 26
       },
       "id": 9,
       "options": {
@@ -489,7 +596,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.1.1",
+      "pluginVersion": "12.2.0",
       "targets": [
         {
           "datasource": {
@@ -533,130 +640,6 @@
         "type": "loki",
         "uid": "${DS_LOKI}"
       },
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "bars",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "stepAfter",
-            "lineStyle": {
-              "fill": "solid"
-            },
-            "lineWidth": 1,
-            "pointSize": 4,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "always",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": 0
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 24,
-        "x": 0,
-        "y": 26
-      },
-      "id": 10,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "table",
-          "placement": "right",
-          "showLegend": false
-        },
-        "tooltip": {
-          "hideZeros": false,
-          "maxHeight": 600,
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "12.1.1",
-      "targets": [
-        {
-          "datasource": {
-            "type": "loki",
-            "uid": "${DS_LOKI}"
-          },
-          "direction": "backward",
-          "editorMode": "code",
-          "expr": "sum by(tranaction_request_uri) (count_over_time({app=\"ingress-nginx\"} |~ `ModSecurity` != `http_referrer` | json messages_details_match=\"transaction.messages[0].details.match\", messages_details_reference=\"transaction.messages[0].details.reference\", ruleId=\"transaction.messages[0].details.ruleId\", messages_details_file=\"transaction.messages[0].details.file\", messages_details_lineNumber=\"transaction.messages[0].details.lineNumber\", messages_details_data=\"transaction.messages[0].details.data\", messages_details_severity=\"transaction.messages[0].details.severity\", messages_details_ver=\"transaction.messages[0].details.ver\", messages_details_rev=\"transaction.messages[0].details.rev\", messages_details_tags=\"transaction.messages[0].details.tags\", messages_details_maturity=\"transaction.messages[0].details.maturity\", messages_details_accuracy=\"transaction.messages[0].details.accuracy\", transaction_date=\"transaction.time_stamp\", client_ip=\"transaction.client_ip\", transaction_host_port=\"transaction.host_port\", tranaction_request_uri=\"transaction.request.uri\", message=\"transaction.messages[0].message\", vhost=\"transaction.request.headers.host\"  | json | messages_details_severity != \"0\" | __error__=`` [$__interval]))",
-          "legendFormat": "{{severity}}",
-          "queryType": "range",
-          "refId": "A",
-          "step": ""
-        },
-        {
-          "datasource": {
-            "type": "loki",
-            "uid": "${DS_LOKI}"
-          },
-          "direction": "backward",
-          "editorMode": "code",
-          "expr": "{job=\"nginx_error\"}",
-          "queryType": "range",
-          "refId": "B"
-        }
-      ],
-      "title": "🔎  Detection of Activity by Requested Endpoint",
-      "transformations": [
-        {
-          "id": "renameByRegex",
-          "options": {
-            "regex": "Value",
-            "renamePattern": "1"
-          }
-        }
-      ],
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "loki",
-        "uid": "${DS_LOKI}"
-      },
       "fieldConfig": {
         "defaults": {},
         "overrides": []
@@ -679,7 +662,7 @@
         "sortOrder": "Descending",
         "wrapLogMessage": false
       },
-      "pluginVersion": "12.1.1",
+      "pluginVersion": "12.2.0",
       "targets": [
         {
           "datasource": {
@@ -699,7 +682,7 @@
   ],
   "preload": false,
   "refresh": "2m",
-  "schemaVersion": 41,
+  "schemaVersion": 42,
   "tags": [
     "nginx"
   ],
