@@ -1,4 +1,3 @@
-{{- if or .Values.k8up.tolerations .Values.affinity }}
 apiVersion: k8up.io/v1
 kind: PodConfig
 metadata:
@@ -19,11 +18,10 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       securityContext:
-        fsGroup: 0
-        runAsUser: 0
+        fsGroup: {{ .Values.k8up.podSecurityContext.runAsUser }}
+        runAsUser: {{ .Values.k8up.podSecurityContext.runAsUser }}
       containers:
         - name: test
           env:
           - name: FORGEJO
             value: 'true'
-{{- end }}

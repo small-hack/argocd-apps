@@ -22,7 +22,7 @@ k8up:
 
   # -- set the pod security context for the backup job
   securityContext:
-    runAsUser: 0
+    runAsUser: 1000
 
   backup_name: "forgejo-nightly"
 
