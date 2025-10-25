@@ -35,7 +35,7 @@ spec:
     promURL: {{ .Values.k8up.prometheus_url }}
     {{- range .Values.k8up.labelSelectors }}
     labelSelectors:
-      {{- toYaml . | nindent 6 }}
+      - {{- toYaml . | nindent 6 }}
     {{- end }}
   # verify the backups are ok
   check:
