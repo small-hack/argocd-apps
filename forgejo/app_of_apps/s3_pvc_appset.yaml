@@ -80,6 +80,13 @@ spec:
                 name: 's3-backups-credentials'
                 key: 'resticRepoPassword'
 
+              labelSelectors:
+                - matchExpressions:
+                  - key: forgejo
+                    operator: NotIn
+                    values:
+                      - "true"
+
               prometheus_url: 'push-gateway.monitoring.svc:9091'
 
               schedules:

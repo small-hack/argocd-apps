@@ -109,3 +109,10 @@ spec:
                 backup: '{{ .forgejo_pvc_backup_schedule }}'
                 check: '0 0 * * *'
                 prune: '0 0 * * *'
+
+              labelSelectors:
+                - matchExpressions:
+                  - key: forgejo
+                    operator: NotIn
+                    values:
+                      - "true"
