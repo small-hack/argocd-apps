@@ -1,6 +1,6 @@
 # s3-persistence-chart
 
-![Version: 2.0.0](https://img.shields.io/badge/Version-2.0.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.0](https://img.shields.io/badge/AppVersion-1.0.0-informational?style=flat-square)
+![Version: 2.0.1](https://img.shields.io/badge/Version-2.0.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.0](https://img.shields.io/badge/AppVersion-1.0.0-informational?style=flat-square)
 
 A Helm chart for deploying a self hosted s3 provider on Kubernetes including backups using k8up
 
@@ -10,7 +10,7 @@ A Helm chart for deploying a self hosted s3 provider on Kubernetes including bac
 |-----|------|---------|-------------|
 | affinity | object | `{}` | tolerate affinity |
 | app | string | `"example"` |  |
-| k8up | object | `{"affinity":true,"backup_name":"","backup_type":"s3","local":{"mountPath":""},"prometheus_url":"","repoPasswordSecretRef":{"key":"","name":""},"retention":{"keepDaily":7,"keepMonthly":1,"keepWeekly":2},"s3":{"accessKeyIDSecretRef":{"key":"","name":"","optional":false},"bucket":"","endpoint":"","secretAccessKeySecretRef":{"key":"","name":"","optional":false}},"schedules":{"backup":"","check":"","prune":""},"securityContext":{"runAsUser":0},"tolerations":true}` | for enabling backups to a remote s3 provider or local disk backup |
+| k8up | object | `{"affinity":true,"backup_name":"","backup_type":"s3","local":{"mountPath":""},"prometheus_url":"","repoPasswordSecretRef":{"key":"","name":""},"retention":{"keepDaily":3,"keepMonthly":1,"keepWeekly":1},"s3":{"accessKeyIDSecretRef":{"key":"","name":"","optional":false},"bucket":"","endpoint":"","secretAccessKeySecretRef":{"key":"","name":"","optional":false}},"schedules":{"backup":"","check":"","prune":""},"securityContext":{"runAsUser":0},"tolerations":true}` | for enabling backups to a remote s3 provider or local disk backup |
 | k8up.affinity | bool | `true` | add affinity to the podconfig for k8up |
 | k8up.backup_name | string | `""` | name of the nightly backup |
 | k8up.backup_type | string | `"s3"` | can be set to 's3' or 'local' |
@@ -18,9 +18,9 @@ A Helm chart for deploying a self hosted s3 provider on Kubernetes including bac
 | k8up.repoPasswordSecretRef | object | `{"key":"","name":""}` | secret for your restic repo |
 | k8up.repoPasswordSecretRef.key | string | `""` | key in secret to use for repo password |
 | k8up.repoPasswordSecretRef.name | string | `""` | name of the secret to use |
-| k8up.retention.keepDaily | int | `7` | daily backups to keep |
+| k8up.retention.keepDaily | int | `3` | daily backups to keep |
 | k8up.retention.keepMonthly | int | `1` | weekly backups to keep |
-| k8up.retention.keepWeekly | int | `2` | weekly backups to keep |
+| k8up.retention.keepWeekly | int | `1` | weekly backups to keep |
 | k8up.s3.accessKeyIDSecretRef.key | string | `""` | key in the secret to use for access key id |
 | k8up.s3.accessKeyIDSecretRef.name | string | `""` | name of the secret to use |
 | k8up.s3.bucket | string | `""` | s3 bucket to backup to |

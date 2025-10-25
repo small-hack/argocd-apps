@@ -35,9 +35,9 @@ k8up:
 
   retention:
     # -- daily backups to keep
-    keepDaily: 7
+    keepDaily: 3
     # -- weekly backups to keep
-    keepWeekly: 2
+    keepWeekly: 1
     # -- weekly backups to keep
     keepMonthly: 1
 

@@ -44,5 +44,5 @@ spec:
   prune:
     schedule: {{ .Values.k8up.schedules.prune }}
     retention:
-      keepDaily: 7
-      keepWeekly: 8
+      keepDaily: 3
+      keepWeekly: 1
