@@ -62,7 +62,21 @@ k8up:
       optional: false
 
   local:
+    # -- mount path for local backups
     mountPath: ''
+
+  # -- optional label seelectors for the backup
+  # see https://docs.k8up.io/k8up/2.13/how-tos/backup.html#_target_specific_pvcs_or_prebackuppods
+  labelSelectors: []
+  # - matchExpressions:
+  #   - key: my-label-key
+  #     operator: Exists
+  # - matchExpressions:
+  #   - key: another-label-key
+  #     operator: In
+  #     values:
+  #       - acceptable-value
+  #       - another-acceptable-value
 
   # -- secret for your restic repo
   repoPasswordSecretRef:

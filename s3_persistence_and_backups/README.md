@@ -10,10 +10,12 @@ A Helm chart for deploying a self hosted s3 provider on Kubernetes including bac
 |-----|------|---------|-------------|
 | affinity | object | `{}` | tolerate affinity |
 | app | string | `"example"` |  |
-| k8up | object | `{"affinity":true,"backup_name":"","backup_type":"s3","local":{"mountPath":""},"prometheus_url":"","repoPasswordSecretRef":{"key":"","name":""},"retention":{"keepDaily":3,"keepMonthly":1,"keepWeekly":1},"s3":{"accessKeyIDSecretRef":{"key":"","name":"","optional":false},"bucket":"","endpoint":"","secretAccessKeySecretRef":{"key":"","name":"","optional":false}},"schedules":{"backup":"","check":"","prune":""},"securityContext":{"runAsUser":0},"tolerations":true}` | for enabling backups to a remote s3 provider or local disk backup |
+| k8up | object | `{"affinity":true,"backup_name":"","backup_type":"s3","labelSelectors":[],"local":{"mountPath":""},"prometheus_url":"","repoPasswordSecretRef":{"key":"","name":""},"retention":{"keepDaily":3,"keepMonthly":1,"keepWeekly":1},"s3":{"accessKeyIDSecretRef":{"key":"","name":"","optional":false},"bucket":"","endpoint":"","secretAccessKeySecretRef":{"key":"","name":"","optional":false}},"schedules":{"backup":"","check":"","prune":""},"securityContext":{"runAsUser":0},"tolerations":true}` | for enabling backups to a remote s3 provider or local disk backup |
 | k8up.affinity | bool | `true` | add affinity to the podconfig for k8up |
 | k8up.backup_name | string | `""` | name of the nightly backup |
 | k8up.backup_type | string | `"s3"` | can be set to 's3' or 'local' |
+| k8up.labelSelectors | list | `[]` | optional label seelectors for the backup see https://docs.k8up.io/k8up/2.13/how-tos/backup.html#_target_specific_pvcs_or_prebackuppods |
+| k8up.local.mountPath | string | `""` | mount path for local backups |
 | k8up.prometheus_url | string | `""` | url to push to for prometheus gateway |
 | k8up.repoPasswordSecretRef | object | `{"key":"","name":""}` | secret for your restic repo |
 | k8up.repoPasswordSecretRef.key | string | `""` | key in secret to use for repo password |
