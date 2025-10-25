@@ -38,7 +38,7 @@ spec:
         - key: forgejo-pvc
           operator: In
           values:
-            - yes
+            - "true"
   # verify the backups are ok
   check:
     schedule: {{ .Values.k8up.schedules.check }}
