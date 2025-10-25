@@ -82,7 +82,7 @@ spec:
 
               labelSelectors:
                 - matchExpressions:
-                  - key: forgejo
+                  - key: forgejo-pvc
                     operator: NotIn
                     values:
                       - "true"
