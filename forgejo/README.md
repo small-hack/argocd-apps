@@ -4,7 +4,7 @@
 
 > a self-hosted lightweight software forge. Easy to install and low maintenance, it just does the job. Brought to you by an inclusive community under the umbrella of Codeberg e.V., a democratic non-profit organization, Forgejo can be trusted to be exclusively Free Software. It includes and cooperates with hundreds of projects (Gitea, Git, ...) and is focused on scaling, federation and privacy.
 
-We're using this [helm chart](https://code.forgejo.org/forgejo-contrib/forgejo-helm) to experiment right now.
+We're using the [forgejo-helm/forgejo-helm](https://code.forgejo.org/forgejo-helm/forgejo-helm) chart.
 
 <img width="1042" alt="Screenshot of the the forgejo app in the Argo CD web interface using tree view mode. You can see the forgejo app branches into 4 appsets that all have their own corresponding apps, including: forgejo-bitwarden-eso, forgejo-postgres-app-set, forgejo-valkey-cluster-appset, and forgejo-web-app-set" src="https://github.com/user-attachments/assets/e712db42-8241-41ab-8a3d-ae05daa8991a" />
 
@@ -22,8 +22,4 @@ We're using this [helm chart](https://code.forgejo.org/forgejo-contrib/forgejo-h
 
 TODO:
 
-1. convert existing secrets to external secrets or random passwords
-2. add seaweedfs backups
-3. add zitadel auth
-4. Create an App-of-Apps
-5. Add to smol-k8s-lab config
+1. Add to smol-k8s-lab config

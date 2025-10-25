@@ -42,6 +42,7 @@ spec:
         targetRevision: 15.0.1
         chart: forgejo-helm/forgejo
         helm:
+          # https://code.forgejo.org/forgejo-helm/forgejo-helm
           valuesObject:
             # String to fully override common.names.namespace
             namespaceOverride: ''
@@ -64,8 +65,7 @@ spec:
               registry: code.forgejo.org
               # Image to start for this pod
               repository: forgejo/forgejo
-              # Visit: [Image tag](https://code.forgejo.org/forgejo/-/packages/container/forgejo/versions). Defaults to `appVersion` within Chart.yaml.
-              # Overrides the image tag whose default is the chart appVersion.
+              # https://code.forgejo.org/forgejo/-/packages/container/forgejo/versions
               tag: ''
               #pullPolicy Image pull policy
               pullPolicy: IfNotPresent
