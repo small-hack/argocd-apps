@@ -5,8 +5,8 @@ kind: PersistentVolumeClaim
 metadata:
   namespace: forgejo
   name: forgejo
-  annotations:
-    k8up.io/backup: 'true'
+  labels:
+    forgejo-pvc: yes
 spec:
   storageClassName: {{ .Values.pvc_storageClassName }}
   accessModes:

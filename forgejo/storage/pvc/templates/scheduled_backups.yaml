@@ -33,6 +33,12 @@ spec:
     failedJobsHistoryLimit: 5
     successfulJobsHistoryLimit: 2
     promURL: {{ .Values.k8up.prometheus_url }}
+    labelSelectors:
+      - matchExpressions:
+        - key: forgejo-pvc
+          operator: In
+          values:
+            - yes
   # verify the backups are ok
   check:
     schedule: {{ .Values.k8up.schedules.check }}
