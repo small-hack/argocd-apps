@@ -71,3 +71,8 @@ k8up:
     backup: ''
     check: ''
     prune: ''
+
+  retention:
+    keepDaily: 3
+    keepWeekly: 1
+    keepMonthly: 1
