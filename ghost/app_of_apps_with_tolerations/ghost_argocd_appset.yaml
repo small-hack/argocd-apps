@@ -53,7 +53,7 @@ spec:
       source:
         repoURL: https://small-hack.github.io/ghost-helm-chart
         chart: ghost
-        targetRevision: 2.3.0
+        targetRevision: 2.3.1
         helm:
           releaseName: "ghost"
           # https://github.com/small-hack/ghost-helm-chart/blob/main/charts/ghost/values.yaml
