@@ -1,0 +1,9 @@
+# -- git server platform (github, gitea, forgejo, etc)
+platform: "forgejo"
+# -- git server endpoint to contact with renovate
+endpoint: "https://git.smallhack.org/api/v1"
+# -- username of the renovate user for that endpoint
+username: "renovate"
+
+# -- this is temporary
+create_env_var_secret: false

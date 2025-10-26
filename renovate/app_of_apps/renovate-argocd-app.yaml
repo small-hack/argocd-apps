@@ -1,0 +1,144 @@
+---
+# renovate is for backups of persistent volume claims
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: renovate-helm-app-set
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  goTemplate: true
+  # generator allows us to source specific values from an external k8s secret
+  generators:
+    - plugin:
+        configMapRef:
+          name: secret-var-plugin-generator
+        input:
+          parameters:
+            secret_vars:
+              - global_time_zone
+              - renovate_schedule
+  template:
+    metadata:
+      name: renovate-helm-release
+    spec:
+      project: renovate
+      destination:
+        server: "https://kubernetes.default.svc"
+        namespace: renovate
+      syncPolicy:
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+          - CreateNamespace=true
+        automated:
+          prune: true
+          selfHeal: true
+      source:
+        # official renovate helm repo
+        # https://github.com/renovatebot/helm-charts/tree/main/charts/renovate
+        repoURL: https://docs.renovatebot.com/helm-charts
+        chart: renovate
+        targetRevision: 4.8.6
+        helm:
+          valuesObject:
+            fullnameOverride: 'renovate'
+
+            cronjob:
+              # Schedules the job to run using cron notation
+              schedule: '{{ .renovate_schedule }}'
+
+              # You can specify a time zone for a CronJob by setting timeZone to the name of a valid time zone.
+              # https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/#time-zones
+              timeZone: '{{ .global_time_zone }}'
+
+              # If it is set to true, all subsequent executions are suspended.
+              # This setting does not apply to already started executions.
+              suspend: false
+
+            renovate:
+              # Custom exiting global renovate config
+              existingConfigFile: '/config/renovate.json'
+
+              # Inline global renovate config.json
+              # See https://docs.renovatebot.com/self-hosted-configuration
+              config: ""
+
+              # Use the Helm tpl function on your configuration. See README for how to use this value
+              configEnableHelmTpl: false
+
+              # Use this to create the renovate-config as a secret instead of a configmap
+              configIsSecret: false
+
+              # Renovate Container-level security-context
+              securityContext: {}
+
+              # Options related to persistence
+              persistence:
+                cache:
+                  # Allow the cache to persist between runs
+                  enabled: false
+
+            ssh_config:
+              # Whether to enable the use and creation of a secret containing .ssh files
+              enabled: false
+
+              # Provide .ssh config file contents for contents of the config file
+              config: ''
+
+              # or provide the name of an existing secret to be read instead.
+              # -- Name of the existing secret containing a valid .ssh configuration
+              existingSecret: 'renovate-bot-secrets'
+
+            # Env vars that should be referenced from a k8s secret,
+            # cannot be used when existingSecret is set
+            secrets: {}
+
+            # k8s secret to reference env vars from. Overrides secrets if set
+            existingSecret: ''
+
+            # -- Additional volumes to the pod
+            extraVolumes:
+              # location to store the config json that has the updated JWT
+              - name: config
+                configMap:
+                  name: renovate-config
+
+            # -- Additional volumeMounts to the container
+            extraVolumeMounts:
+              - name: config
+                mountPath: /config
+
+            serviceAccount:
+              # Specifies whether a service account should be created
+              create: true
+
+            # Specify resource limits and requests for the renovate container
+            resources:
+              limits:
+               cpu: 1000m
+               memory: 1Gi
+              requests:
+               cpu: 100m
+               memory: 128Mi
+
+            env:
+              # temporarily set log level to debug for troubleshooting
+              LOG_LEVEL: "debug"
+
+            # only if we want to get a full detailed release notes description
+            # envList:
+            #   - name: GITHUB_COM_TOKEN
+            #     valueFrom:
+            #       secretKeyRef:
+            #         name: renovate-bot-secrets
+            #         key: github_com_token
+
+            redis:
+              # Configuration for a Redis subchart. Additional documentation at
+              # https://github.com/bitnami/charts/tree/master/bitnami/redis
+              # Enable the Redis subchart?
+              enabled: false
+
+            # -- Pod-level security-context
+            securityContext: {}

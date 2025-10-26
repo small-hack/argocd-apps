@@ -1,0 +1,18 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: renovate-config
+data:
+  renovate.json: |
+    {
+      "platform": "{{ .Values.platform }}",
+      "endpoint": "{{ .Values.endpoint }}",
+      "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+      "username": "{{ .Values.username }}",
+      "printConfig": true,
+      "token": "REPLACEME",
+      "gitAuthor": "Renovate Bot <bot@renovateapp.com>",
+      "allowedPostUpgradeCommands": ["^scripts"],
+      "autodiscover": true
+    }
