@@ -97,7 +97,7 @@ spec:
               annotations:
                 kubernetes.io/tls-acme: "true"
                 cert-manager.io/cluster-issuer: '{{ .global_cluster_issuer }}'
-                nginx.ingress.kubernetes.io/proxy-body-size: 12m
+                nginx.ingress.kubernetes.io/proxy-body-size: 250m
                 nginx.ingress.kubernetes.io/server-snippet: |
                   location /livez {
                     return 404;
