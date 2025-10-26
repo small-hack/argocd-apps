@@ -40,63 +40,75 @@ spec:
           selfHeal: true
 
       source:
-        repoURL: https://small-hack.github.io/cloudnative-pg-cluster-chart
-        chart: cnpg-cluster
-        targetRevision: 0.5.0
+        # repoURL: https://small-hack.github.io/cloudnative-pg-cluster-chart
+        # chart: cnpg-cluster
+        repoURL: https://cloudnative-pg.github.io/charts
+        chart: cluster
+        targetRevision: 0.3.1
         helm:
           releaseName: forgejo-postgres-cluster
+          # https://github.com/cloudnative-pg/charts/blob/main/charts/cluster/values.yaml
           valuesObject:
+            type: postgresql
+
             name: forgejo-postgres
             instances: 2
 
-            bootstrap:
+            cluster:
+              # annotations for the cluster object
+              annotations:
+                cnpg.io/skipEmptyWalArchiveCheck: enabled
+
+              # initdb for postgresql in the cluster object
               initdb:
                 database: forgejo
                 owner: forgejo
                 secret:
                   name: forgejo-pgsql-credentials
 
-            backup:
-              # barman is a utility for backing up postgres to s3
-              barmanObjectStore:
-                destinationPath: "s3://forgejo-postgres"
-                endpointURL: "https://{{ .forgejo_s3_endpoint }}"
-                s3Credentials:
-                  accessKeyId:
-                    name: s3-postgres-credentials
-                    key: "accessKeyId"
-                  secretAccessKey:
-                    name: s3-postgres-credentials
-                    key: "secretAccessKey"
-                wal:
-                  compression: gzip
-                  maxParallel: 8
-                  encryption: AES256
-              retentionPolicy: "7d"
-
-            certificates:
-              server:
+              # enable monitoring for the cluster
+              monitoring:
                 enabled: true
-                generate: true
-              client:
-                enabled: true
-                generate: true
-              user:
-                enabled: true
-                username:
-                  - forgejo
+                podMonitor:
+                  enabled: true
 
-            scheduledBackup:
-              name: forgejo-pg-backup
-              spec:
-                # Midnight daily backups for postgres data
-                schedule: '{{ .forgejo_postgres_backup_schedule }}'
-                backupOwnerReference: self
-                cluster:
-                  name: forgejo-postgres
+            backups:
+              # backups are disabled by default. This enables them
+              enabled: true
+              # Overrides the provider specific default endpoint. Defaults to:
+              # S3: https://s3.<region>.amazonaws.com"
+              endpointURL: "https://{{ .forgejo_s3_endpoint }}"
+              # Overrides the provider specific default path
+              destinationPath: "s3://forgejo-postgres"
 
-            monitoring:
-              enablePodMonitor: true
+              # -- One of `s3`, `azure` or `google`
+              provider: s3
+
+              s3:
+                region: auto
+                bucket: forgejo-postgres
+
+              # existing secret for the s3 credentials
+              secret:
+                create: false
+                name: s3-postgres-credentials
+
+              # wal backup details
+              wal:
+                compression: gzip
+                maxParallel: 8
+                encryption: AES256
+
+              # -- Retention policy for backups
+              retentionPolicy: "2d"
+
+              scheduledBackups:
+                - name: forgejo-pg-backup
+                  schedule: '{{ .forgejo_postgres_backup_schedule }}'
+                  # Midnight daily backups for postgres data
+                  backupOwnerReference: self
+                  # Backup method: barmanObjectStore or volumeSnapshot
+                  method: barmanObjectStore
 
             postgresql:
               pg_hba:

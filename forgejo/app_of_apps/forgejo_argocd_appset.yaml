@@ -267,17 +267,16 @@ spec:
             # - name: postgres-ssl-vol
             #   secret:
             #     secretName: gitea-postgres-ssl
-            extraVolumes:
-              - name: postgres-ca
-                secret:
-                  secretName: forgejo-postgres-server-ca-key-pair
-                  defaultMode: 438
+            # extraVolumes:
+            #   - name: postgres-ca
+            #     secret:
+            #       secretName: forgejo-postgres-server-ca-key-pair
+            #       defaultMode: 438
 
-              - name: postgres-client-certs
-                secret:
-                  secretName: forgejo-postgres-forgejo-cert
-                  defaultMode: 438
-
+            #   - name: postgres-client-certs
+            #     secret:
+            #       secretName: forgejo-postgres-forgejo-cert
+            #       defaultMode: 438
               #- name: postgres-certs
               #  persistentVolumeClaim:
               #    claimName: postgres-certs
@@ -289,12 +288,12 @@ spec:
             # - name: postgres-ssl-vol
             #   readOnly: true
             #   mountPath: "/pg-ssl"
-            extraVolumeMounts:
-              - name: postgres-ca
-                mountPath: /etc/secrets/ca
+            # extraVolumeMounts:
+            #   - name: postgres-ca
+            #     mountPath: /etc/secrets/ca
 
-              - name: postgres-client-certs
-                mountPath: /etc/secrets/app
+            #   - name: postgres-client-certs
+            #     mountPath: /etc/secrets/app
 
               #- name: postgres-certs
               #  mountPath: /data/git/.postgresql
@@ -451,7 +450,6 @@ spec:
                   HOST: forgejo-postgres-rw.forgejo.svc:5432
                   NAME: forgejo
                   FROM: forgejo
-
 
                 # Settings for what content is indexed and how
                 indexer: {}
