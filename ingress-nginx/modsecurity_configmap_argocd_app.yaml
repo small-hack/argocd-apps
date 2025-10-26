@@ -16,7 +16,7 @@ spec:
       prune: true
       selfHeal: true
   source:
-    repoURL: 'https://github.com/small-hack/argocd-apps.git'
+    repoURL: 'https://git.smallhack.org/small-hack/argocd-apps'
     path: ingress-nginx/modsecurity_configmap/
     targetRevision: main
     helm:
