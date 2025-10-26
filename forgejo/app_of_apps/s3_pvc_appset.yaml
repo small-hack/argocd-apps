@@ -91,6 +91,6 @@ spec:
 
               schedules:
                 # backup: '{{ .forgejo_pvc_backup_schedule }}'
-                backup: '45 14 * * *'
+                backup: '13 15 * * *'
                 check: '0 0 * * *'
                 prune: '0 0 * * *'
