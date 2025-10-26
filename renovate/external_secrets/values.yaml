@@ -5,5 +5,5 @@ endpoint: "https://git.smallhack.org/api/v1"
 # -- username of the renovate user for that endpoint
 username: "renovate"
 
-# -- this is temporary
-create_env_var_secret: false
+# -- bitwarden id for your renovate personal access token
+patBitwardenID: ""

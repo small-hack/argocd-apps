@@ -1,0 +1,25 @@
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: renovate-pat
+spec:
+  target:
+    # Name for the secret to be created on the cluster
+    name: renovate-pat
+    deletionPolicy: Delete
+    template:
+      type: Opaque
+      data:
+        pat: |-
+          {{ `{{ .pat }}` }}
+  data:
+    # git personal access token for renovate
+    - secretKey: pat
+      sourceRef:
+        storeRef:
+          name: bitwarden-login
+          kind: ClusterSecretStore
+      remoteRef:
+        key: {{ .Values.patBitwardenID }}
+        property: password
