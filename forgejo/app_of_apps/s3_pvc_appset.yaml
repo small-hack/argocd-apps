@@ -40,7 +40,7 @@ spec:
           prune: true
           selfHeal: true
       source:
-        repoURL: https://github.com/small-hack/argocd-apps.git
+        repoURL: https://git.smallhack.org/small-hack/argocd-apps.git
         path: s3_persistence_and_backups/
         targetRevision: main
         helm:
