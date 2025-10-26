@@ -126,8 +126,14 @@ spec:
               # temporarily set log level to debug for troubleshooting
               LOG_LEVEL: "debug"
 
+            envList:
+              - name: RENOVATE_TOKEN
+                valueFrom:
+                  secretKeyRef:
+                    name: renovate-pat
+                    key: pat
+
             # only if we want to get a full detailed release notes description
-            # envList:
             #   - name: GITHUB_COM_TOKEN
             #     valueFrom:
             #       secretKeyRef:
