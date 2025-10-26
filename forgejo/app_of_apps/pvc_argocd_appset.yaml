@@ -73,6 +73,6 @@ spec:
               prometheus_url: 'push-gateway.monitoring.svc:9091'
 
               schedules:
-                backup: '20 21 * * *'
+                backup: '0 * * * *'
                 check: '0 0 * * *'
                 prune: '0 0 * * *'
