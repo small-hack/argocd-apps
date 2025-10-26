@@ -61,10 +61,10 @@ spec:
                 s3Credentials:
                   accessKeyId:
                     name: s3-postgres-credentials
-                    key: "accessKeyId"
+                    key: "ACCESS_KEY_ID"
                   secretAccessKey:
                     name: s3-postgres-credentials
-                    key: "secretAccessKey"
+                    key: "ACCESS_SECRET_KEY"
                 wal:
                   compression: gzip
                   maxParallel: 8
