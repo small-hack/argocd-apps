@@ -106,7 +106,7 @@ spec:
               scheduledBackups:
                 - name: forgejo-pg-backup
                   # schedule: '{{ .forgejo_postgres_backup_schedule }}'
-                  schedule: '0 39 14 * * *'
+                  schedule: '0 30 18 * * *'
                   # Midnight daily backups for postgres data
                   backupOwnerReference: self
                   # Backup method: barmanObjectStore or volumeSnapshot
