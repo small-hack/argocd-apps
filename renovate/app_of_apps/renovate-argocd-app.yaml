@@ -21,7 +21,7 @@ spec:
               - renovate_schedule
   template:
     metadata:
-      name: renovate-helm-release
+      name: renovate-helm
     spec:
       project: renovate
       destination:
