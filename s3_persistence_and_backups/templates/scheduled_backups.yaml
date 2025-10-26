@@ -29,7 +29,7 @@ spec:
     {{- end }}
   # Backup nightly at scheduled time (Central Europe Time)
   backup:
-    schedule: {{ .Values.k8up.schedules.backup }}
+    schedule: {{ .Values.k8up.schedules.backup |quote }}
     failedJobsHistoryLimit: 5
     successfulJobsHistoryLimit: 2
     promURL: {{ .Values.k8up.prometheus_url }}
@@ -39,11 +39,11 @@ spec:
     {{- end }}
   # verify the backups are ok
   check:
-    schedule: {{ .Values.k8up.schedules.check }}
+    schedule: {{ .Values.k8up.schedules.check |quote }}
     promURL: {{ .Values.k8up.prometheus_url }}
   # delete old backups
   prune:
-    schedule: {{ .Values.k8up.schedules.prune }}
+    schedule: {{ .Values.k8up.schedules.prune |quote }}
     retention:
       keepDaily: {{ .Values.k8up.retention.keepDaily }}
       keepWeekly: {{ .Values.k8up.retention.keepWeekly }}
