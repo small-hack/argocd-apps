@@ -52,9 +52,10 @@ spec:
             type: postgresql
 
             fullnameOverride: forgejo-postgres
-            instances: 2
 
             cluster:
+              instances: 2
+
               # annotations for the cluster object
               annotations:
                 cnpg.io/skipEmptyWalArchiveCheck: enabled
