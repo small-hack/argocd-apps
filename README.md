@@ -6,6 +6,9 @@ https://github.com/small-hack/argocd-apps/assets/2389292/76b0fe06-554e-4e46-856f
 
 These Argo CD apps were originally designed to be compatible with [`smol-k8s-lab`](https://github.com/small-hack/smol-k8s-lab), but they can be used anywhere :)
 
+> [!NOTICE]
+> This repo will receive less updates going forward as it gets migrated to [git.smallhack.org](https://git.smallhack.org/small-hack/argocd-apps). We're still available and reachable there!
+
 ## Core Tenants
 
 Here's some quick guidelines, but you if you'd like to contribute, please read the full contributing guidelines [here](./CONTRIBUTING.md) 😃!
