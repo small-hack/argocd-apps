@@ -1,0 +1,7 @@
+apiVersion: generators.external-secrets.io/v1alpha1
+kind: SSHKey
+metadata:
+  name: renovate-ssh-key-generator
+spec:
+  keyType: "ed25519"
+  comment: "renovate@bot.fake.tld"

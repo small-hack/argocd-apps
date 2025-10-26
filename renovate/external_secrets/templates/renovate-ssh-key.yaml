@@ -1,0 +1,14 @@
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: renovate-ssh-key
+spec:
+  refreshInterval: "1d0m0s"
+  target:
+    name: renovate-key-secret
+  dataFrom:
+    - sourceRef:
+        generatorRef:
+          apiVersion: generators.external-secrets.io/v1alpha1
+          kind: SSHKey
+          name: renovate-ssh-key-generator
