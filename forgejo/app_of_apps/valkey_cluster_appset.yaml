@@ -15,12 +15,6 @@ spec:
           parameters:
             secret_vars:
               - global_time_zone
-              - forgejo_toleration_key
-              - forgejo_toleration_operator
-              - forgejo_toleration_value
-              - forgejo_toleration_effect
-              - forgejo_affinity_key
-              - forgejo_affinity_value
   template:
     metadata:
       name: forgejo-valkey-cluster-app
@@ -49,7 +43,7 @@ spec:
 
             global:
               storageClass: "local-path"
-              
+
             image:
               registry: docker.io
               repository: bitnamilegacy/valkey-cluster
@@ -87,22 +81,6 @@ spec:
                 type: RollingUpdate
                 rollingUpdate:
                   partition: 0
-
-              tolerations:
-                - key: '{{ .forgejo_toleration_key }}'
-                  operator: '{{ .forgejo_toleration_operator }}'
-                  value: '{{ .forgejo_toleration_value }}'
-                  effect: '{{ .forgejo_toleration_effect }}'
-
-              affinity:
-                nodeAffinity:
-                  requiredDuringSchedulingIgnoredDuringExecution:
-                    nodeSelectorTerms:
-                      - matchExpressions:
-                        - key: '{{ .forgejo_affinity_key }}'
-                          operator: In
-                          values:
-                            - '{{ .forgejo_affinity_value }}'
 
               podManagementPolicy: Parallel
               automountServiceAccountToken: false
