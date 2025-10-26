@@ -51,7 +51,7 @@ spec:
           valuesObject:
             type: postgresql
 
-            name: forgejo-postgres
+            fullnameOverride: forgejo-postgres
             instances: 2
 
             cluster:
