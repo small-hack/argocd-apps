@@ -6,7 +6,7 @@ metadata:
   namespace: forgejo
   name: forgejo
   labels:
-    forgejo-pvc: "true"
+    forgejo-pvc: "enabled"
 spec:
   storageClassName: {{ .Values.pvc_storageClassName }}
   accessModes:
