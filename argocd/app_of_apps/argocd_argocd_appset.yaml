@@ -494,6 +494,7 @@ spec:
                 create: false
                 # -- Automount API credentials for the Service Account
                 automountServiceAccountToken: false
+
               metrics:
                 # -- Deploy redis metrics service
                 enabled: false
