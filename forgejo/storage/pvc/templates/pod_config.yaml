@@ -2,6 +2,8 @@ apiVersion: k8up.io/v1
 kind: PodConfig
 metadata:
   name: backups-podconfig
+  labels:
+    forgejo-pvc: "enabled"
 spec:
   template:
     spec:
