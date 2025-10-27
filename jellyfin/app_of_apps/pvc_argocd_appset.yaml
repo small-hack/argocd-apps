@@ -52,7 +52,7 @@ spec:
       source:
         repoURL: https://github.com/small-hack/argocd-apps.git
         path: jellyfin/storage/pvc/
-        targetRevision: main
+        targetRevision: forgejo-current
         helm:
           valuesObject:
             # -- enable jellyfin media pvc
