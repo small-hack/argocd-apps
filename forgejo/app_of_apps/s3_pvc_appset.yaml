@@ -85,7 +85,7 @@ spec:
                   - key: forgejo-pvc
                     operator: NotIn
                     values:
-                      - "true"
+                      - "enabled"
 
               prometheus_url: 'push-gateway.monitoring.svc:9091'
 
