@@ -63,8 +63,8 @@ spec:
               enabled: true
               path: /bitnami/valkey/data
               storageClass: local-path
-              annotations:
-                k8up.io/backup: 'true'
+              # annotations:
+              #   k8up.io/backup: 'true'
               accessModes:
                 - ReadWriteOnce
               size: 8G

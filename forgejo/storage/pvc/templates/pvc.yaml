@@ -6,6 +6,7 @@ metadata:
   namespace: forgejo
   name: forgejo
   labels:
+    k8up.io/backup: 'true'
     forgejo-pvc: "enabled"
 spec:
   storageClassName: {{ .Values.pvc_storageClassName }}
