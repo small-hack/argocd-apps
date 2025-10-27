@@ -40,9 +40,10 @@ spec:
           selfHeal: true
       source:
         # repoURL: https://git.smallhack.org/small-hack/argocd-apps.git
+        # targetRevision: main
         repoURL: https://github.com/small-hack/argocd-apps.git
         path: forgejo/storage/pvc/
-        targetRevision: main
+        targetRevision: forgejo-current
         helm:
           valuesObject:
             pvc_capacity: '{{ .forgejo_pvc_capacity }}'
