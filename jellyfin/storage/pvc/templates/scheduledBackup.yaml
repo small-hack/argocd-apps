@@ -29,7 +29,7 @@ spec:
   backup:
     podConfigRef:
       name: jellyfin-podconfig
-    schedule: {{ .Values.k8up.schedules.backup }}
+    schedule: {{ .Values.k8up.schedules.backup | quote }}
     failedJobsHistoryLimit: 5
     successfulJobsHistoryLimit: 2
     promURL: {{ .Values.k8up.prometheus_url }}
