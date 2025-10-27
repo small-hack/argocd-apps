@@ -76,6 +76,6 @@ spec:
               prometheus_url: 'push-gateway.prometheus.svc:9091'
 
               schedules:
-                backup: '{{ .harbor_pvc_backup_schedule }}'
+                backup: "15 0 * * *"
                 check: "48 13 * * *"
                 prune: "49 13 * * *"
