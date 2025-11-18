@@ -137,6 +137,11 @@ spec:
                   ingress.kubernetes.io/proxy-body-size: "0"
                   nginx.ingress.kubernetes.io/ssl-redirect: "true"
                   nginx.ingress.kubernetes.io/proxy-body-size: "0"
+                  nginx.ingress.kubernetes.io/proxy_ignore_headers: X-Accel-Buffering
+                  nginx.ingress.kubernetes.io/proxy_buffering: "off"
+                  nginx.ingress.kubernetes.io/proxy-send-timeout: "60000"
+                  nginx.ingress.kubernetes.io/proxy-read-timeout: "60000"
+                  nginx.ingress.kubernetes.io/proxy-connect-timeout: "60000"
                 # ingress-specific labels
                 labels: {}
               route:
