@@ -132,6 +132,7 @@ spec:
                 annotations:
                   # note different ingress controllers may require a different ssl-redirect annotation
                   # for Envoy, use ingress.kubernetes.io/force-ssl-redirect: "true" and remove the nginx lines below
+                  nginx.ingress.kubernetes.io/client-body-buffer-size: 64M
                   cert-manager.io/cluster-issuer: "{{ .global_cluster_issuer }}"
                   ingress.kubernetes.io/ssl-redirect: "true"
                   ingress.kubernetes.io/proxy-body-size: "0"
