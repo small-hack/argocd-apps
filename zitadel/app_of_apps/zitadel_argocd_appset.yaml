@@ -170,7 +170,7 @@ spec:
               machinekeyWriter:
                 image:
                   repository: alpine/k8s
-                  tag: "latest"
+                  tag: "1.34.1"
                   
             ingress:
               enabled: true
