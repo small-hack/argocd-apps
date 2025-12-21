@@ -166,6 +166,11 @@ spec:
               backoffLimit: 100
               activeDeadlineSeconds: 120
 
+            setupJob:
+              machinekeyWriter:
+                image:
+                  repository: alpine/k8s
+                  
             ingress:
               enabled: true
               className: "nginx"
