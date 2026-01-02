@@ -18,9 +18,8 @@ data:
                         ]
                 },
                 {
-                        "node": "bradley",
+                        "node": "smallbradley",
                         "paths": [
-                                "/mnt/raid0",
                                 "/mnt/raid1",
                                 "/var/lib/rancher/k3s/storage"
                         ]
@@ -41,6 +40,13 @@ data:
                 },
                 {
                         "node": "scremlin",
+                        "paths": [
+                                "/mnt/raid1",
+                                "/var/lib/rancher/k3s/storage"
+                        ]
+                },
+                {
+                        "node": "bambino",
                         "paths": [
                                 "/mnt/raid1",
                                 "/var/lib/rancher/k3s/storage"
